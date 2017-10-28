@@ -21,10 +21,6 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.ide.completion.util.SpaceInsertHandler;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -36,6 +32,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.containers.ConcurrentFactoryMap;
+import consulo.csharp.ide.completion.util.SpaceInsertHandler;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.util.NotNullPairFunction;
 
@@ -45,30 +45,16 @@ import consulo.util.NotNullPairFunction;
  */
 public class CSharpCompletionUtil
 {
-	public static NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement> ourSpaceInsert = new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
-	{
-		@NotNull
-		@Override
-		public LookupElement fun(LookupElementBuilder lookupElementBuilder, IElementType iElementType)
-		{
-			lookupElementBuilder = lookupElementBuilder.withInsertHandler(SpaceInsertHandler.INSTANCE);
-			return lookupElementBuilder;
-		}
-	};
+	public static NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement> ourSpaceInsert = (b, t) -> b.withInsertHandler(SpaceInsertHandler.INSTANCE);
 
-	private static Map<IElementType, String> ourCache = new ConcurrentFactoryMap<IElementType, String>()
+	private static Map<IElementType, String> ourCache = ConcurrentFactoryMap.createMap(elementType ->
 	{
-		@Nullable
-		@Override
-		protected String create(IElementType elementType)
+		if(elementType == CSharpTokens.NULL_LITERAL)
 		{
-			if(elementType == CSharpTokens.NULL_LITERAL)
-			{
-				return "null";
-			}
-			return elementType.toString().replace("_KEYWORD", "").toLowerCase(Locale.US);
+			return "null";
 		}
-	};
+		return elementType.toString().replace("_KEYWORD", "").toLowerCase(Locale.US);
+	});
 
 	public static final Key<IElementType> KEYWORD_ELEMENT_TYPE = Key.create("csharp.keyword.element.type");
 
@@ -91,10 +77,8 @@ public class CSharpCompletionUtil
 				}
 
 				CSharpReferenceExpression.ResolveToKind kind = ((CSharpReferenceExpression) parent).kind();
-				if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE ||
-						kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR ||
-						kind == CSharpReferenceExpression.ResolveToKind.EXPRESSION_OR_TYPE_LIKE ||
-						kind == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
+				if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR || kind == CSharpReferenceExpression.ResolveToKind
+						.EXPRESSION_OR_TYPE_LIKE || kind == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
 				{
 					return true;
 				}

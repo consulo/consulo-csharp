@@ -50,9 +50,9 @@ import consulo.dotnet.psi.*;
  * @author VISTALL
  * @since 07.01.14.
  */
-public class CSharpKeywordCompletionContributor extends CompletionContributor
+class CSharpKeywordCompletionContributor
 {
-	private static final Map<String, Boolean> ourPreprocessorDirectives = new HashMap<String, Boolean>();
+	private static final Map<String, Boolean> ourPreprocessorDirectives = new HashMap<>();
 
 	static
 	{
@@ -64,9 +64,9 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		ourPreprocessorDirectives.put("endif", Boolean.FALSE);
 	}
 
-	public CSharpKeywordCompletionContributor()
+	static void extend(CompletionContributor contributor)
 	{
-		extend(CompletionType.BASIC, psiElement(CSharpPreprocesorTokens.ILLEGAL_KEYWORD), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, psiElement(CSharpPreprocesorTokens.ILLEGAL_KEYWORD), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -91,7 +91,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.field(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.field(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -108,7 +108,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.USING_KEYWORD)).inside(CSharpUsingNamespaceStatement.class), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.USING_KEYWORD)).inside(CSharpUsingNamespaceStatement.class), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -126,7 +126,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().inside(DotNetGenericParameter.class), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, psiElement().inside(DotNetGenericParameter.class), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -153,7 +153,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, psiElement(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -189,8 +189,8 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression().inside(CSharpUserType.class).inside(CSharpGenericConstraint.class).afterLeaf(psiElement(CSharpTokens.COLON)),
-				new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression().inside(CSharpUserType.class).inside(CSharpGenericConstraint.class).afterLeaf(psiElement(CSharpTokens.COLON)), new
+				CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -201,7 +201,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, psiElement(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -220,18 +220,13 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 					}
 
 					PsiElement prevSibling = PsiTreeUtil.prevVisibleLeaf(parent1);
-					if(prevSibling == null ||
-							prevSibling.getNode().getElementType() == CSharpTokens.LBRACE ||
-							prevSibling.getNode().getElementType() == CSharpTokens.RBRACE ||
-							prevSibling.getNode().getElementType() == CSharpTokens.LPAR ||
-							prevSibling.getNode().getElementType() == CSharpTokens.COMMA ||
-							prevSibling.getNode().getElementType() == CSharpTokens.RBRACKET ||
-							prevSibling.getNode().getElementType() == CSharpTokens.SEMICOLON ||
-							prevSibling.getNode().getElementType() == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE ||
+					if(prevSibling == null || prevSibling.getNode().getElementType() == CSharpTokens.LBRACE || prevSibling.getNode().getElementType() == CSharpTokens.RBRACE || prevSibling.getNode()
+							.getElementType() == CSharpTokens.LPAR || prevSibling.getNode().getElementType() == CSharpTokens.COMMA || prevSibling.getNode().getElementType() == CSharpTokens.RBRACKET
+							|| prevSibling.getNode().getElementType() == CSharpTokens.SEMICOLON || prevSibling.getNode().getElementType() == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE ||
 							CSharpTokenSets.MODIFIERS.contains(prevSibling.getNode().getElementType()))
 					{
-						TokenSet tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START, TokenSet.create(CSharpTokens.DELEGATE_KEYWORD,
-								CSharpTokens.NAMESPACE_KEYWORD));
+						TokenSet tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START, TokenSet.create(CSharpTokens.DELEGATE_KEYWORD, CSharpTokens
+								.NAMESPACE_KEYWORD));
 
 						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, CSharpCompletionUtil.ourSpaceInsert, new Condition<IElementType>()
 						{
@@ -260,10 +255,8 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 
 								DotNetParameter parameter = PsiTreeUtil.getParentOfType(position, DotNetParameter.class);
 
-								if(elementType == CSharpTokens.REF_KEYWORD ||
-										elementType == CSharpTokens.OUT_KEYWORD ||
-										elementType == CSharpTokens.THIS_KEYWORD ||
-										elementType == CSharpTokens.PARAMS_KEYWORD)
+								if(elementType == CSharpTokens.REF_KEYWORD || elementType == CSharpTokens.OUT_KEYWORD || elementType == CSharpTokens.THIS_KEYWORD || elementType == CSharpTokens
+										.PARAMS_KEYWORD)
 								{
 									if(parameter == null)
 									{
@@ -288,12 +281,5 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 				}
 			}
 		});
-	}
-
-	@RequiredReadAction
-	@Override
-	public void fillCompletionVariants(CompletionParameters parameters, CompletionResultSet result)
-	{
-		super.fillCompletionVariants(parameters, CSharpCompletionSorting.modifyResultSet(parameters, result));
 	}
 }

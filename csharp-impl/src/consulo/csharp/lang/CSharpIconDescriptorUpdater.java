@@ -252,6 +252,11 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			}
 		}
 
+		if(owner.hasModifier(CSharpModifier.STATIC) && !(owner instanceof CSharpTypeDeclaration))
+		{
+			iconDescriptor.addLayerIcon(AllIcons.Nodes.StaticMark);
+		}
+
 		if(owner.hasModifier(CSharpModifier.SEALED) || owner.hasModifier(CSharpModifier.READONLY) || element instanceof DotNetVariable && ((DotNetVariable) element).isConstant())
 		{
 			iconDescriptor.addLayerIcon(AllIcons.Nodes.FinalMark);

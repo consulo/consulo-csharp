@@ -16,15 +16,7 @@
 
 package consulo.csharp.ide.completion;
 
-import static com.intellij.patterns.StandardPatterns.psiElement;
-
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
-import consulo.csharp.lang.psi.CSharpSoftTokens;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.csharp.module.extension.CSharpModuleUtil;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -33,16 +25,22 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import consulo.annotations.RequiredReadAction;
 import consulo.codeInsight.completion.CompletionProvider;
+import consulo.csharp.ide.completion.patterns.CSharpPatterns;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
+import consulo.csharp.lang.psi.CSharpSoftTokens;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpModuleUtil;
 
 /**
  * @author VISTALL
  * @since 03.01.15
  */
-public class CSharpLinqCompletionContributor extends CompletionContributor
+class CSharpLinqCompletionContributor
 {
-	public CSharpLinqCompletionContributor()
+	static void extend(CompletionContributor contributor)
 	{
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -62,12 +60,5 @@ public class CSharpLinqCompletionContributor extends CompletionContributor
 				CSharpCompletionUtil.elementToLookup(result, CSharpSoftTokens.FROM_KEYWORD, null, null);
 			}
 		});
-	}
-
-	@RequiredReadAction
-	@Override
-	public void fillCompletionVariants(CompletionParameters parameters, CompletionResultSet result)
-	{
-		super.fillCompletionVariants(parameters, CSharpCompletionSorting.modifyResultSet(parameters, result));
 	}
 }

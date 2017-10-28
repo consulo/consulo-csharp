@@ -42,6 +42,7 @@ import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 
 /**
@@ -52,22 +53,22 @@ public class CSharpCompletionSorting
 {
 	public static class KindSorter extends LookupElementWeigher
 	{
-		private static Key<Type> ourForceType = Key.create("csharp.our.force.type");
+		private static Key<Type> ourForceType = Key.create("csharpOurForceType");
 
 		public enum Type
 		{
-			lambda,
+			top,
 			delegate,
 			localVariableOrParameter,
 			parameterInCall,
 			keyword,
-			hiddenKeywords,
-			preprocessorKeywords,
 			constants,
 			member,
 			overrideMember,
+			preprocessorKeywords,
 			any,
-			namespace
+			hiddenKeywords,
+			namespace,
 		}
 
 		protected KindSorter()
@@ -113,10 +114,8 @@ public class CSharpCompletionSorting
 				return Type.constants;
 			}
 
-			if(psiElement instanceof CSharpPropertyDeclaration ||
-					psiElement instanceof CSharpEventDeclaration ||
-					psiElement instanceof CSharpFieldDeclaration ||
-					psiElement instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) psiElement).isDelegate())
+			if(psiElement instanceof CSharpPropertyDeclaration || psiElement instanceof CSharpEventDeclaration || psiElement instanceof CSharpFieldDeclaration || psiElement instanceof
+					CSharpMethodDeclaration && !((CSharpMethodDeclaration) psiElement).isDelegate())
 			{
 				return Type.member;
 			}
@@ -134,6 +133,12 @@ public class CSharpCompletionSorting
 		holder.putUserData(KindSorter.ourForceType, type);
 	}
 
+	@Nullable
+	public static KindSorter.Type getSort(UserDataHolder userDataHolder)
+	{
+		return userDataHolder.getUserData(KindSorter.ourForceType);
+	}
+
 	public static void copyForce(UserDataHolder from, UserDataHolder to)
 	{
 		KindSorter.Type data = from.getUserData(KindSorter.ourForceType);
@@ -144,11 +149,12 @@ public class CSharpCompletionSorting
 	}
 
 	@Nullable
+	@RequiredReadAction
 	private static LookupElementWeigher recursiveSorter(CompletionParameters completionParameters, CompletionResultSet result)
 	{
 		PsiElement position = completionParameters.getPosition();
 
-		CSharpCallArgumentListOwner argumentListOwner = PsiTreeUtil.getContextOfType(position, CSharpCallArgumentListOwner.class);
+		PsiElement argumentListOwner = PsiTreeUtil.getContextOfType(position, CSharpCallArgumentListOwner.class, DotNetVariable.class);
 		if(argumentListOwner != null)
 		{
 			return new CSharpRecursiveGuardWeigher(argumentListOwner);

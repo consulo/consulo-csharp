@@ -18,11 +18,12 @@ package consulo.csharp.ide.completion.weigher;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementWeigher;
 import com.intellij.psi.PsiElement;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import consulo.dotnet.psi.DotNetVariable;
 
 /**
  * @author VISTALL
@@ -38,12 +39,17 @@ public class CSharpRecursiveGuardWeigher extends LookupElementWeigher
 
 	private PsiElement myTarget;
 
-	public CSharpRecursiveGuardWeigher(CSharpCallArgumentListOwner argumentListOwner)
+	@RequiredReadAction
+	public CSharpRecursiveGuardWeigher(PsiElement owner)
 	{
 		super("csharpRecursiveWeigher");
-		if(argumentListOwner instanceof CSharpMethodCallExpressionImpl)
+		if(owner instanceof CSharpMethodCallExpressionImpl)
 		{
-			myTarget = argumentListOwner.resolveToCallable();
+			myTarget = ((CSharpMethodCallExpressionImpl) owner).resolveToCallable();
+		}
+		else if(owner instanceof DotNetVariable)
+		{
+			myTarget = owner;
 		}
 	}
 

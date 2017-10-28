@@ -16,11 +16,13 @@
 
 package consulo.csharp.ide.completion.weigher;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.completion.CompletionLocation;
+import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionWeigher;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.util.NotNullLazyKey;
@@ -28,10 +30,13 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilBase;
+import com.intellij.util.ProcessingContext;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.completion.CSharpCompletionSorting;
 import consulo.csharp.ide.completion.CSharpCompletionUtil;
-import consulo.csharp.ide.completion.CSharpExpressionCompletionContributor;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
+import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -64,8 +69,45 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 		HIGH
 	}
 
-	private static final NotNullLazyKey<List<ExpectedTypeInfo>, CompletionLocation> ourExpectedInfoTypes = NotNullLazyKey.create("ourExpectedInfoTypes", proximityLocation ->
-			CSharpExpressionCompletionContributor.getExpectedTypeInfosForExpression(proximityLocation.getCompletionParameters().getPosition(), null));
+	private static final NotNullLazyKey<List<ExpectedTypeInfo>, CompletionLocation> ourExpectedInfoTypes = NotNullLazyKey.create("ourExpectedInfoTypes", it -> getExpectedTypeInfosForExpression(it
+			.getCompletionParameters().getPosition(), null));
+
+
+	@NotNull
+	@RequiredReadAction
+	public static List<ExpectedTypeInfo> getExpectedTypeInfosForExpression(CompletionParameters parameters, @Nullable ProcessingContext context)
+	{
+		return getExpectedTypeInfosForExpression(parameters.getPosition(), context);
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static List<ExpectedTypeInfo> getExpectedTypeInfosForExpression(PsiElement position, @Nullable ProcessingContext context)
+	{
+		if(PsiUtilBase.getElementType(position) != CSharpTokens.IDENTIFIER)
+		{
+			return Collections.emptyList();
+		}
+
+		PsiElement parent = position.getParent();
+		if(!(parent instanceof CSharpReferenceExpressionEx))
+		{
+			return Collections.emptyList();
+		}
+
+		List<ExpectedTypeInfo> expectedTypeInfos = context == null ? null : context.get(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS);
+		if(expectedTypeInfos != null)
+		{
+			return expectedTypeInfos;
+		}
+
+		expectedTypeInfos = ExpectedTypeVisitor.findExpectedTypeRefs(parent);
+		if(context != null)
+		{
+			context.put(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS, expectedTypeInfos);
+		}
+		return expectedTypeInfos;
+	}
 
 	@Override
 	@RequiredReadAction
@@ -74,6 +116,12 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 		if(element.getPsiElement() instanceof CSharpConstructorDeclaration)
 		{
 			return null;
+		}
+
+		CSharpCompletionSorting.KindSorter.Type sort = CSharpCompletionSorting.getSort(element);
+		if(sort == CSharpCompletionSorting.KindSorter.Type.top)
+		{
+			return Position.UP_KEYWORD;
 		}
 
 		List<ExpectedTypeInfo> expectedTypeInfoList = ourExpectedInfoTypes.getValue(completionLocation);

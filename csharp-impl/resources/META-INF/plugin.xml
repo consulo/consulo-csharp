@@ -162,14 +162,9 @@
 				implementation="consulo.csharp.ide.codeInsight.CSharpUnresolvedReferenceQuickFixProvider"/>
 
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpMemberNameCompletionContributor"/>
-		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpKeywordCompletionContributor"/>
 		<completion.contributor language="C#"
 								implementationClass="consulo.csharp.ide.completion.CSharpOverrideOrImplementCompletionContributor"/>
-		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpAccessorCompletionContributor"/>
-		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpLinqCompletionContributor"/>
-		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpStatementCompletionContributor"/>
-		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpSuggestInstanceCompletionContributor"/>
-		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpExpressionCompletionContributor"/>
+		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpNoVariantsDelegator"/>
 
 		<weigher key="proximity" implementationClass="consulo.csharp.ide.completion.weigher.CSharpObsoleteProximityWeigher" id="csharpObsoleteWeighter"/>

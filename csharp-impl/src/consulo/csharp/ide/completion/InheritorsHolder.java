@@ -35,9 +35,9 @@ import com.intellij.util.containers.ContainerUtil;
 /**
  * @author peter
  */
-public class InheritorsHolder implements Consumer<LookupElement>
+class InheritorsHolder implements Consumer<LookupElement>
 {
-	private final Set<String> myAddedTypeLikes = new THashSet<String>();
+	private final Set<String> myAddedTypeLikes = new THashSet<>();
 	private final CompletionResultSet myResult;
 
 	public InheritorsHolder(CompletionResultSet result)

@@ -20,9 +20,6 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpEventDeclaration;
-import consulo.csharp.lang.psi.CSharpSoftTokens;
-import consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -46,6 +43,9 @@ import com.intellij.util.ProcessingContext;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.codeInsight.completion.CompletionProvider;
+import consulo.csharp.lang.psi.CSharpEventDeclaration;
+import consulo.csharp.lang.psi.CSharpSoftTokens;
+import consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetXXXAccessor;
 
@@ -53,11 +53,11 @@ import consulo.dotnet.psi.DotNetXXXAccessor;
  * @author VISTALL
  * @since 24.12.14
  */
-public class CSharpAccessorCompletionContributor extends CompletionContributor
+class CSharpAccessorCompletionContributor
 {
-	public CSharpAccessorCompletionContributor()
+	static void extend(CompletionContributor contributor)
 	{
-		extend(CompletionType.BASIC, psiElement().andNot(psiElement().inside(DotNetXXXAccessor.class)), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, psiElement().andNot(psiElement().inside(DotNetXXXAccessor.class)), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -126,7 +126,7 @@ public class CSharpAccessorCompletionContributor extends CompletionContributor
 		});
 	}
 
-	private void buildAccessorKeywordsCompletion(CompletionResultSet resultSet, final CSharpXXXAccessorOwner accessorOwner, @Nullable InsertHandler<LookupElement> insertHandler)
+	private static void buildAccessorKeywordsCompletion(CompletionResultSet resultSet, final CSharpXXXAccessorOwner accessorOwner, @Nullable InsertHandler<LookupElement> insertHandler)
 	{
 		TokenSet tokenSet = accessorOwner instanceof CSharpEventDeclaration ? TokenSet.create(CSharpSoftTokens.ADD_KEYWORD, CSharpSoftTokens.REMOVE_KEYWORD) : TokenSet.create(CSharpSoftTokens
 				.GET_KEYWORD, CSharpSoftTokens.SET_KEYWORD);

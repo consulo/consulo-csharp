@@ -20,7 +20,6 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import gnu.trove.THashSet;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +29,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionInitializationContext;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.CompletionUtilCore;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
@@ -53,7 +50,6 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilBase;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
@@ -67,11 +63,11 @@ import consulo.csharp.ide.CSharpLookupElementBuilder;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
-import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandler;
 import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.ide.completion.util.SpaceInsertHandler;
+import consulo.csharp.ide.completion.weigher.CSharpInheritCompletionWeighter;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.*;
@@ -96,15 +92,15 @@ import consulo.ide.IconDescriptorUpdaters;
  * @author VISTALL
  * @since 23.11.14
  */
-public class CSharpExpressionCompletionContributor extends CompletionContributor
+class CSharpExpressionCompletionContributor
 {
 	private static final TokenSet ourExpressionLiterals = TokenSet.create(CSharpTokens.NULL_LITERAL, CSharpTokens.FALSE_KEYWORD, CSharpTokens.TRUE_KEYWORD, CSharpTokens.DEFAULT_KEYWORD, CSharpTokens
 			.TYPEOF_KEYWORD, CSharpTokens.SIZEOF_KEYWORD, CSharpTokens.THIS_KEYWORD, CSharpTokens.BASE_KEYWORD, CSharpSoftTokens.AWAIT_KEYWORD, CSharpTokens.NEW_KEYWORD, CSharpTokens
 			.__MAKEREF_KEYWORD, CSharpTokens.__REFTYPE_KEYWORD, CSharpTokens.__REFVALUE_KEYWORD, CSharpSoftTokens.NAMEOF_KEYWORD);
 
-	public CSharpExpressionCompletionContributor()
+	static void extend(CompletionContributor contributor)
 	{
-		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -185,7 +181,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -198,7 +194,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				}
 
 				boolean allowAsync = CSharpModuleUtil.findLanguageVersion(parent).isAtLeast(CSharpLanguageVersion._4_0);
-				List<ExpectedTypeInfo> expectedTypeRefs = getExpectedTypeInfosForExpression(parameters, context);
+				List<ExpectedTypeInfo> expectedTypeRefs = CSharpInheritCompletionWeighter.getExpectedTypeInfosForExpression(parameters, context);
 				for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
 				{
 					DotNetTypeRef typeRef = expectedTypeRef.getTypeRef();
@@ -255,7 +251,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				lookupElementBuilder = lookupElementBuilder.withPresentableText(builder.append("{ }").toString());
 				lookupElementBuilder = lookupElementBuilder.withIcon(AllIcons.Nodes.Lambda);
 
-				CSharpCompletionSorting.force(lookupElementBuilder, CSharpCompletionSorting.KindSorter.Type.lambda);
+				CSharpCompletionSorting.force(lookupElementBuilder, CSharpCompletionSorting.KindSorter.Type.top);
 				result.addElement(lookupElementBuilder);
 			}
 
@@ -331,13 +327,13 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
 		{
 			@Override
 			@RequiredReadAction
 			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				List<ExpectedTypeInfo> expectedTypeInfos = getExpectedTypeInfosForExpression(parameters, context);
+				List<ExpectedTypeInfo> expectedTypeInfos = CSharpInheritCompletionWeighter.getExpectedTypeInfosForExpression(parameters, context);
 
 				for(ExpectedTypeInfo expectedTypeInfo : expectedTypeInfos)
 				{
@@ -369,7 +365,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2, CSharpCallArgument.class), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2, CSharpCallArgument.class), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -454,7 +450,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
 		{
 			@Override
 			@RequiredReadAction
@@ -474,7 +470,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 				final CSharpTypeDeclaration contextType = getContextType(expression);
 
-				final List<ExpectedTypeInfo> expectedTypeRefs = getExpectedTypeInfosForExpression(parameters, context);
+				final List<ExpectedTypeInfo> expectedTypeRefs = CSharpInheritCompletionWeighter.getExpectedTypeInfosForExpression(parameters, context);
 				for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
 				{
 					PsiElement element = expectedTypeRef.getTypeRef().resolve().getElement();
@@ -623,7 +619,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -658,7 +654,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2, CSharpArrayInitializerImpl.class).withSuperParent(3,
+		contributor.extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2, CSharpArrayInitializerImpl.class).withSuperParent(3,
 				CSharpNewExpressionImpl.class), new CompletionProvider()
 		{
 			@Override
@@ -726,7 +722,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class), new CompletionProvider()
 		{
 
 			@RequiredReadAction
@@ -845,19 +841,6 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				}
 			}
 		});
-	}
-
-	@Override
-	public void beforeCompletion(@NotNull CompletionInitializationContext context)
-	{
-		context.setDummyIdentifier(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED);
-	}
-
-	@RequiredReadAction
-	@Override
-	public void fillCompletionVariants(CompletionParameters parameters, CompletionResultSet result)
-	{
-		super.fillCompletionVariants(parameters, CSharpCompletionSorting.modifyResultSet(parameters, result));
 	}
 
 	private static boolean needRemapToAnyResolving(CSharpReferenceExpression.ResolveToKind kind, CSharpReferenceExpression expression)
@@ -1018,41 +1001,5 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 		}
 
 		return null;
-	}
-
-	@NotNull
-	@RequiredReadAction
-	public static List<ExpectedTypeInfo> getExpectedTypeInfosForExpression(CompletionParameters parameters, @Nullable ProcessingContext context)
-	{
-		return getExpectedTypeInfosForExpression(parameters.getPosition(), context);
-	}
-
-	@NotNull
-	@RequiredReadAction
-	public static List<ExpectedTypeInfo> getExpectedTypeInfosForExpression(PsiElement position, @Nullable ProcessingContext context)
-	{
-		if(PsiUtilBase.getElementType(position) != CSharpTokens.IDENTIFIER)
-		{
-			return Collections.emptyList();
-		}
-
-		PsiElement parent = position.getParent();
-		if(!(parent instanceof CSharpReferenceExpressionEx))
-		{
-			return Collections.emptyList();
-		}
-
-		List<ExpectedTypeInfo> expectedTypeInfos = context == null ? null : context.get(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS);
-		if(expectedTypeInfos != null)
-		{
-			return expectedTypeInfos;
-		}
-
-		expectedTypeInfos = ExpectedTypeVisitor.findExpectedTypeRefs(parent);
-		if(context != null)
-		{
-			context.put(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS, expectedTypeInfos);
-		}
-		return expectedTypeInfos;
 	}
 }

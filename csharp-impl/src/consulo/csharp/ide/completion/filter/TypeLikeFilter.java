@@ -16,10 +16,10 @@
 
 package consulo.csharp.ide.completion.filter;
 
-import consulo.csharp.ide.completion.CSharpCompletionUtil;
-import consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.filters.ElementFilterBase;
+import consulo.csharp.ide.completion.CSharpCompletionUtil;
+import consulo.dotnet.psi.DotNetNamedElement;
 
 /**
  * @author VISTALL

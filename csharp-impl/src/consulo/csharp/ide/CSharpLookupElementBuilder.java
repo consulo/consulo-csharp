@@ -141,27 +141,15 @@ public class CSharpLookupElementBuilder
 
 				String genericText = DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element);
 
-				String parameterText = genericText + "(" + StringUtil.join(parameterInfos, new Function<CSharpSimpleParameterInfo, String>()
-				{
-					@Override
-					@RequiredReadAction
-					public String fun(CSharpSimpleParameterInfo parameter)
-					{
-						return CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), element) + " " + parameter.getNotNullName();
-					}
-				}, ", ") + ")";
+				String parameterText = genericText + "(" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), element) + " " + parameter.getNotNullName(), ", ") + ")";
 
 				if(inheritGeneric == CSharpMethodUtil.Result.CAN)
 				{
 					builder = builder.withPresentableText(name);
-					builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
+					builder = builder.withInsertHandler((context, item) ->
 					{
-						@Override
-						public void handleInsert(InsertionContext context, LookupElement item)
-						{
-							CaretModel caretModel = context.getEditor().getCaretModel();
-							caretModel.moveToOffset(caretModel.getOffset() - 3);
-						}
+						CaretModel caretModel = context.getEditor().getCaretModel();
+						caretModel.moveToOffset(caretModel.getOffset() - 3);
 					});
 				}
 				else
