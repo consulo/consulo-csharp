@@ -16,6 +16,13 @@
 
 package consulo.csharp.ide.completion.insertHandler;
 
+import com.intellij.codeInsight.TailType;
+import com.intellij.codeInsight.completion.InsertHandler;
+import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiErrorElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.csharp.ide.completion.util.CSharpParenthesesInsertHandler;
 import consulo.csharp.lang.psi.CSharpCodeFragment;
@@ -25,13 +32,6 @@ import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -69,7 +69,13 @@ public class CSharpParenthesesWithSemicolonInsertHandler implements InsertHandle
 		{
 			context.commitDocument();
 			PsiElement elementAt = context.getFile().findElementAt(context.getStartOffset());
-			PsiElement parent = PsiTreeUtil.getParentOfType(elementAt, CSharpMethodCallExpressionImpl.class, CSharpLocalVariable.class);
+			PsiElement parent = PsiTreeUtil.getParentOfType(elementAt, CSharpMethodCallExpressionImpl.class);
+			if(parent != null && parent.getNextSibling() instanceof PsiErrorElement)
+			{
+				TailType.SEMICOLON.processTail(context.getEditor(), context.getTailOffset());
+			}
+
+			parent = PsiTreeUtil.getParentOfType(elementAt, CSharpLocalVariable.class);
 			if(parent != null && parent.getNextSibling() instanceof PsiErrorElement)
 			{
 				TailType.SEMICOLON.processTail(context.getEditor(), context.getTailOffset());
