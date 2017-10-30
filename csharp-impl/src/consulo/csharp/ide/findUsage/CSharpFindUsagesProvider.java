@@ -27,7 +27,6 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.Function;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.lexer.CSharpLexer;
 import consulo.csharp.lang.psi.*;
@@ -168,14 +167,7 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		}
 		if(element instanceof CSharpLocalVariableDeclarationStatement)
 		{
-			return StringUtil.join(((CSharpLocalVariableDeclarationStatement) element).getVariables(), new Function<CSharpLocalVariable, String>()
-			{
-				@Override
-				public String fun(CSharpLocalVariable cSharpLocalVariable)
-				{
-					return cSharpLocalVariable.getName();
-				}
-			}, ", ");
+			return StringUtil.join(((CSharpLocalVariableDeclarationStatement) element).getVariables(), local -> local.getName(), ", ");
 		}
 		return "getDescriptiveName " + element.getNode().getElementType();
 	}
