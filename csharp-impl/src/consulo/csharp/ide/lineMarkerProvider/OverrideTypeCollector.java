@@ -58,7 +58,7 @@ public class OverrideTypeCollector implements LineMarkerCollector
 			if(hasChild(parent))
 			{
 				final Icon icon = parent.isInterface() ? AllIcons.Gutter.ImplementedMethod : AllIcons.Gutter.OverridenMethod;
-				LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, FunctionUtil.constant("Searching for overriding"), new GutterIconNavigationHandler<PsiElement>()
+				LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, FunctionUtil.constant("Searching for overriding"), new GutterIconNavigationHandler<PsiElement>()
 				{
 					@Override
 					@RequiredDispatchThread
@@ -66,15 +66,8 @@ public class OverrideTypeCollector implements LineMarkerCollector
 					{
 						final DotNetTypeDeclaration typeDeclaration = CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);
 						assert typeDeclaration != null;
-						final CommonProcessors.CollectProcessor<DotNetTypeDeclaration> collectProcessor = new CommonProcessors.CollectProcessor<DotNetTypeDeclaration>();
-						if(!ProgressManager.getInstance().runProcessWithProgressSynchronously(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								TypeInheritorsSearch.search(typeDeclaration, true).forEach(collectProcessor);
-							}
-						}, "Searching for overriding", true, typeDeclaration.getProject(), (JComponent) mouseEvent.getComponent()))
+						final CommonProcessors.CollectProcessor<DotNetTypeDeclaration> collectProcessor = new CommonProcessors.CollectProcessor<>();
+						if(!ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> TypeInheritorsSearch.search(typeDeclaration, true).forEach(collectProcessor), "Searching for overriding", true, typeDeclaration.getProject(), (JComponent) mouseEvent.getComponent()))
 						{
 							return;
 						}

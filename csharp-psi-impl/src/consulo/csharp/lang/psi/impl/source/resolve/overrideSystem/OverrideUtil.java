@@ -54,7 +54,6 @@ import consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetType;
@@ -231,13 +230,24 @@ public class OverrideUtil
 		}
 	}
 
-	public static boolean isAllowForOverride(PsiElement parent)
+	@RequiredReadAction
+	public static boolean isAllowForOverride(@NotNull PsiElement parent)
 	{
-		if(parent instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) parent).isDelegate() && !((CSharpMethodDeclaration) parent).hasModifier(DotNetModifier.STATIC))
+		if(!(parent instanceof DotNetVirtualImplementOwner))
 		{
-			return true;
+			return false;
 		}
-		return parent instanceof DotNetVirtualImplementOwner;
+
+		if(parent instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) parent).isDelegate())
+		{
+			return false;
+		}
+
+		if(parent instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) parent).hasModifier(CSharpModifier.STATIC))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	@NotNull
@@ -360,7 +370,7 @@ public class OverrideUtil
 		for(PsiElement psiElement : getAllMembers(element, element.getResolveScope(), extractor, false, true))
 		{
 			ProgressManager.checkCanceled();
-			
+
 			if(psiElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) psiElement).hasModifier(modifier))
 			{
 				psiElements.add((DotNetModifierListOwner) psiElement);

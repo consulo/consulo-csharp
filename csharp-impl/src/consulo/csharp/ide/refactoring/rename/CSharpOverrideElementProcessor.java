@@ -23,15 +23,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.refactoring.rename.RenamePsiElementProcessor;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 
 /**
  * @author VISTALL
@@ -42,9 +42,9 @@ public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 	private int myLastResult;
 
 	@Override
+	@RequiredReadAction
 	public void prepareRenaming(PsiElement element, String newName, Map<PsiElement, String> allRenames, SearchScope scope)
 	{
-
 		// if name is empty that mean start rename
 		if(StringUtil.isEmpty(newName))
 		{
@@ -56,9 +56,9 @@ public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 			Set<DotNetVirtualImplementOwner> allElements = getAllElements(element);
 			if(!allElements.isEmpty())
 			{
-				MessageDialogBuilder.YesNo builder = MessageDialogBuilder.yesNo("Rename", "Rename all override/implement methods or this method?");
-				builder = builder.yesText("All Methods");
-				builder = builder.noText("This Method");
+				MessageDialogBuilder.YesNo builder = MessageDialogBuilder.yesNo("Rename", "Rename all override/implement targets or this target?");
+				builder = builder.yesText("All Targets");
+				builder = builder.noText("This Target");
 
 				if((myLastResult = builder.show()) == Messages.YES)
 				{
@@ -80,20 +80,21 @@ public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static Set<DotNetVirtualImplementOwner> getAllElements(PsiElement element)
 	{
 		Collection<DotNetVirtualImplementOwner> temp1 = OverrideUtil.collectOverridingMembers((DotNetVirtualImplementOwner) element);
 		Collection<DotNetVirtualImplementOwner> temp2 = OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) element);
-		Set<DotNetVirtualImplementOwner> set = new THashSet<DotNetVirtualImplementOwner>(temp1.size() + temp1.size() );
+		Set<DotNetVirtualImplementOwner> set = new THashSet<DotNetVirtualImplementOwner>(temp1.size() + temp1.size());
 		set.addAll(temp1);
 		set.addAll(temp2);
 		return set;
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean canProcessElement(@NotNull PsiElement element)
 	{
-		return element instanceof DotNetVirtualImplementOwner && !(element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element)
-				.isDelegate());
+		return OverrideUtil.isAllowForOverride(element);
 	}
 }

@@ -157,6 +157,7 @@
 		<usageTypeProvider implementation="consulo.csharp.ide.findUsage.usageType.CSharpUsageTypeProvider"/>
 		<lang.findUsagesProvider language="C#" implementationClass="consulo.csharp.ide.findUsage.CSharpFindUsagesProvider"/>
 		<lang.findUsagesProvider language="C#Preprocessor" implementationClass="consulo.csharp.ide.findUsage.CSharpFindUsagesProvider"/>
+		<findUsagesHandlerFactory implementation="consulo.csharp.ide.findUsage.CSharpFindUsageHandlerFactory" />
 
 		<codeInsight.unresolvedReferenceQuickFixProvider
 				implementation="consulo.csharp.ide.codeInsight.CSharpUnresolvedReferenceQuickFixProvider"/>
