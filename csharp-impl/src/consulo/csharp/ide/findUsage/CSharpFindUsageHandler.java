@@ -43,7 +43,6 @@ public class CSharpFindUsageHandler extends FindUsagesHandler
 					return PsiUtilCore.toPsiElementArray(members);
 				}
 			}
-
 		}
 		return super.getPrimaryElements();
 	}

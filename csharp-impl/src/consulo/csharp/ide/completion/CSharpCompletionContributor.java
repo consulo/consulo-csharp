@@ -41,6 +41,8 @@ public class CSharpCompletionContributor extends CompletionContributor
 		CSharpKeywordCompletionContributor.extend(this);
 
 		CSharpExpressionCompletionContributor.extend(this);
+
+		CSharpMemberAddByCompletionContributor.extend(this);
 	}
 
 	@Override

@@ -70,7 +70,7 @@ import consulo.ide.IconDescriptorUpdaters;
  * @author VISTALL
  * @since 17.12.14
  */
-public class CSharpOverrideOrImplementCompletionContributor extends CSharpMemberAddByCompletionContributor
+public class CSharpOverrideOrImplementCompletionContributor implements CSharpMemberAddByCompletionContributor
 {
 	@RequiredReadAction
 	@Override

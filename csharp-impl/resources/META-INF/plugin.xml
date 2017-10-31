@@ -68,6 +68,8 @@
 						interface="consulo.csharp.compiler.CSharpCompilerProvider"/>
 		<extensionPoint name="toNativeElementTransformer"
 						interface="consulo.csharp.lang.psi.ToNativeElementTransformer"/>
+		<extensionPoint name="memberAddByCompletionContributor"
+						interface="consulo.csharp.ide.completion.CSharpMemberAddByCompletionContributor" />
 	</extensionPoints>
 
 	<extensions defaultExtensionNs="consulo.csharp">
@@ -82,15 +84,14 @@
 				implementation="consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.ConversionMethodsProvider"/>
 
 		<toNativeElementTransformer implementation="consulo.csharp.lang.psi.impl.msil.transformer.MsilToNativeElementTransformer"/>
+
+		<memberAddByCompletionContributor implementation="consulo.csharp.ide.completion.CSharpOverrideOrImplementCompletionContributor" />
 	</extensions>
 
 	<extensions defaultExtensionNs="consulo.dotnet">
 		<debuggerSourceLineResolver language="C#" implementationClass="consulo.csharp.ide.debugger.CSharpDebuggerSourceLineResolver"/>
-
 		<debuggerProvider implementation="consulo.csharp.ide.debugger.CSharpDebuggerProvider"/>
-	</extensions>
 
-	<extensions defaultExtensionNs="consulo.dotnet">
 		<allTypesSearch implementation="consulo.csharp.lang.psi.impl.search.CSharpAllTypesSearchExecutor"/>
 		<directTypeInheritorsSearch implementation="consulo.csharp.lang.psi.impl.search.CSharpDirectTypeInheritorsSearcherExecutor"/>
 		<psiSearcher implementation="consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
@@ -163,8 +164,6 @@
 				implementation="consulo.csharp.ide.codeInsight.CSharpUnresolvedReferenceQuickFixProvider"/>
 
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpMemberNameCompletionContributor"/>
-		<completion.contributor language="C#"
-								implementationClass="consulo.csharp.ide.completion.CSharpOverrideOrImplementCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpSuggestInstanceCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpNoVariantsDelegator"/>

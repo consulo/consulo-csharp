@@ -16,48 +16,47 @@
 
 package consulo.csharp.ide.completion;
 
-import static com.intellij.patterns.StandardPatterns.psiElement;
-
 import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.openapi.extensions.ExtensionPointName;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.ProcessingContext;
 import consulo.annotations.RequiredReadAction;
 import consulo.codeInsight.completion.CompletionProvider;
+import consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetQualifiedElement;
 
 /**
  * @author VISTALL
  * @since 24.12.14
  */
-public abstract class CSharpMemberAddByCompletionContributor extends CompletionContributor
+public interface CSharpMemberAddByCompletionContributor
 {
-	public CSharpMemberAddByCompletionContributor()
+	ExtensionPointName<CSharpMemberAddByCompletionContributor> EP_NAME = ExtensionPointName.create("consulo.csharp.memberAddByCompletionContributor");
+
+	static void extend(CompletionContributor contributor)
 	{
-		extend(CompletionType.BASIC, psiElement().withSuperParent(4, CSharpTypeDeclaration.class), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.field(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
 			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				DotNetQualifiedElement currentElement = PsiTreeUtil.getParentOfType(parameters.getPosition(), DotNetQualifiedElement.class);
+				CSharpFieldDeclaration currentElement = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpFieldDeclaration.class);
 				assert currentElement != null;
 
-				// if we not field - return
-				if(!(currentElement instanceof CSharpFieldDeclaration))
-				{
-					return;
-				}
-
-				DotNetModifierList modifierList = ((CSharpFieldDeclaration) currentElement).getModifierList();
+				DotNetModifierList modifierList = currentElement.getModifierList();
 				if(modifierList != null)
 				{
 					int textLength = modifierList.getTextLength();
@@ -67,27 +66,34 @@ public abstract class CSharpMemberAddByCompletionContributor extends CompletionC
 					}
 				}
 
+				PsiElement nextSibling = UsefulPsiTreeUtil.getNextSiblingSkippingWhiteSpacesAndComments(currentElement);
+				TextRange textRange = nextSibling == null ? null : new TextRange(currentElement.getTextRange().getEndOffset(), nextSibling.getTextRange().getStartOffset());
+				if(textRange != null && !StringUtil.containsLineBreak(textRange.subSequence(currentElement.getContainingFile().getText())))
+				{
+					return;
+				}
+
 				CSharpTypeDeclaration typeDeclaration = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpTypeDeclaration.class);
+
 				assert typeDeclaration != null;
 
-				final CompletionResultSet delegateResultSet = CSharpCompletionSorting.modifyResultSet(parameters, result);
 				Consumer<LookupElement> delegate = lookupElement ->
 				{
 					if(lookupElement != null)
 					{
 						CSharpCompletionSorting.force(lookupElement, CSharpCompletionSorting.KindSorter.Type.overrideMember);
-						delegateResultSet.consume(lookupElement);
+						result.consume(lookupElement);
 					}
 				};
 
-				processCompletion(parameters, context, delegate, typeDeclaration);
+				for(CSharpMemberAddByCompletionContributor completionContributor : EP_NAME.getExtensions())
+				{
+					completionContributor.processCompletion(parameters, context, delegate, typeDeclaration);
+				}
 			}
 		});
 	}
 
 	@RequiredReadAction
-	public abstract void processCompletion(@NotNull CompletionParameters parameters,
-			@NotNull ProcessingContext context,
-			@NotNull Consumer<LookupElement> result,
-			@NotNull CSharpTypeDeclaration typeDeclaration);
+	void processCompletion(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull Consumer<LookupElement> result, @NotNull CSharpTypeDeclaration typeDeclaration);
 }
