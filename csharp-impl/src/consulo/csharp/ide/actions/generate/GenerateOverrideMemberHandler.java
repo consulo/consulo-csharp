@@ -109,7 +109,7 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 
 		boolean isInterface = typeDeclaration.isInterface();
 
-		List<PsiElement> elements = new ArrayList<PsiElement>();
+		List<PsiElement> elements = new ArrayList<>();
 		for(PsiElement element : allMembers)
 		{
 			if(isInterface)

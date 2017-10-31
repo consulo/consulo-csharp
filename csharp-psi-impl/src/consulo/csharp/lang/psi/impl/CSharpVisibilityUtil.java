@@ -24,6 +24,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.impl.runtime.AssemblyModule;
 import consulo.dotnet.psi.DotNetInheritUtil;
@@ -106,9 +107,14 @@ public class CSharpVisibilityUtil
 	}
 
 	@NotNull
-	private static List<DotNetTypeDeclaration> collectAllTypes(PsiElement place)
+	@RequiredReadAction
+	private static List<DotNetTypeDeclaration> collectAllTypes(@NotNull PsiElement place)
 	{
 		List<DotNetTypeDeclaration> typeDeclarations = new SmartList<>();
+		if(place instanceof CSharpTypeDeclaration)
+		{
+			typeDeclarations.add((DotNetTypeDeclaration) place);
+		}
 		PsiElement type = place;
 		while((type = PsiTreeUtil.getContextOfType(type, DotNetTypeDeclaration.class)) != null)
 		{
