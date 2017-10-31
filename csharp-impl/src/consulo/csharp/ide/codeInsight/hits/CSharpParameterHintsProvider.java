@@ -21,10 +21,12 @@ import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpExpressionWithOperatorImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NErrorCallArgument;
@@ -86,7 +88,7 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 
 				PsiElement parameterElement = nCallArgument.getParameterElement();
 				DotNetExpression argumentExpression = nCallArgument.getCallArgument() == null ? null : nCallArgument.getCallArgument().getArgumentExpression();
-				if(!(argumentExpression instanceof CSharpConstantExpressionImpl) || parameterElement == null)
+				if(!isConstant(argumentExpression) || parameterElement == null)
 				{
 					continue;
 				}
@@ -96,6 +98,22 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 			return list;
 		}
 		return Collections.emptyList();
+	}
+
+	private static boolean isConstant(DotNetExpression expression)
+	{
+		if(expression instanceof CSharpConstantExpressionImpl)
+		{
+			return true;
+		}
+
+		if(expression instanceof CSharpPrefixExpressionImpl)
+		{
+			return ((CSharpPrefixExpressionImpl) expression).getOperatorElement().getOperatorElementType() == CSharpTokens.MINUS && isConstant(((CSharpPrefixExpressionImpl) expression).getExpression
+					());
+		}
+
+		return true;
 	}
 
 	@RequiredReadAction
