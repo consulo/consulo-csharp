@@ -38,6 +38,7 @@ import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import consulo.csharp.lang.psi.CSharpEventDeclaration;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
+import consulo.csharp.lang.psi.CSharpLambdaParameter;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
@@ -105,7 +106,7 @@ public class CSharpCompletionSorting
 			}
 
 			PsiElement psiElement = element.getPsiElement();
-			if(psiElement instanceof CSharpLocalVariable || psiElement instanceof DotNetParameter)
+			if(psiElement instanceof CSharpLocalVariable || psiElement instanceof DotNetParameter || psiElement instanceof CSharpLambdaParameter)
 			{
 				return Type.localVariableOrParameter;
 			}

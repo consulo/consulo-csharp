@@ -73,7 +73,7 @@ public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNe
 			place)
 	{
 		DotNetStatement[] statements = getStatements();
-		List<PsiElement> elements = new ArrayList<PsiElement>(statements.length);
+		List<PsiElement> elements = new ArrayList<>(statements.length);
 		for(DotNetStatement statement : statements)
 		{
 			if(statement == lastParent)

@@ -18,25 +18,31 @@ package consulo.csharp.ide;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.codeInsight.TailType;
+import com.intellij.codeInsight.completion.InsertHandler;
+import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.editor.CaretModel;
+import com.intellij.openapi.util.Iconable;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.Function;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.completion.CSharpCompletionSorting;
 import consulo.csharp.ide.completion.insertHandler.CSharpParenthesesWithSemicolonInsertHandler;
 import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import consulo.csharp.ide.completion.util.LtGtInsertHandler;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpPreprocessorDefine;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodUtil;
-import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDefStatement;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import consulo.dotnet.DotNetTypes;
@@ -44,22 +50,14 @@ import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.DotNetAttributeUtil;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import consulo.ide.IconDescriptorUpdaters;
-import com.intellij.openapi.editor.CaretModel;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -76,7 +74,7 @@ public class CSharpLookupElementBuilder
 			return LookupElement.EMPTY_ARRAY;
 		}
 
-		List<LookupElement> list = new ArrayList<LookupElement>(arguments.length);
+		List<LookupElement> list = new ArrayList<>(arguments.length);
 		for(PsiElement argument : arguments)
 		{
 			ContainerUtil.addIfNotNull(list, buildLookupElementWithContextType(argument, null, DotNetGenericExtractor.EMPTY, null));
@@ -141,7 +139,8 @@ public class CSharpLookupElementBuilder
 
 				String genericText = DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element);
 
-				String parameterText = genericText + "(" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), element) + " " + parameter.getNotNullName(), ", ") + ")";
+				String parameterText = genericText + "(" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), element) + " " +
+						parameter.getNotNullName(), ", ") + ")";
 
 				if(inheritGeneric == CSharpMethodUtil.Result.CAN)
 				{
@@ -185,36 +184,32 @@ public class CSharpLookupElementBuilder
 			}, ", ") + "]";
 			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(((CSharpIndexMethodDeclaration) element).getReturnTypeRef(), element));
 			builder = builder.withPresentableText(parameterText);
-			builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
+			builder = builder.withInsertHandler((context, item) ->
 			{
-				@Override
-				public void handleInsert(InsertionContext context, LookupElement item)
+				CharSequence charSequence = context.getDocument().getImmutableCharSequence();
+
+				int start = -1, end = -1;
+				for(int i = context.getTailOffset(); i != 0; i--)
 				{
-					CharSequence charSequence = context.getDocument().getImmutableCharSequence();
-
-					int start = -1, end = -1;
-					for(int i = context.getTailOffset(); i != 0; i--)
+					char c = charSequence.charAt(i);
+					if(c == '.')
 					{
-						char c = charSequence.charAt(i);
-						if(c == '.')
-						{
-							start = i;
-							break;
-						}
-						else if(c == '[')
-						{
-							end = i;
-						}
+						start = i;
+						break;
 					}
-
-					if(start != -1 && end != -1)
+					else if(c == '[')
 					{
-						// .[ -> [ replace
-						context.getDocument().replaceString(start, end + 1, "[");
+						end = i;
 					}
-
-					context.getEditor().getCaretModel().moveToOffset(end);
 				}
+
+				if(start != -1 && end != -1)
+				{
+					// .[ -> [ replace
+					context.getDocument().replaceString(start, end + 1, "[");
+				}
+
+				context.getEditor().getCaretModel().moveToOffset(end);
 			});
 		}
 		/*else if(element instanceof DotNetXXXAccessor)
@@ -353,12 +348,20 @@ public class CSharpLookupElementBuilder
 		}
 		else if(element instanceof DotNetVariable)
 		{
-			DotNetVariable dotNetVariable = (DotNetVariable) element;
-			builder = LookupElementBuilder.create(dotNetVariable);
+			DotNetVariable variable = (DotNetVariable) element;
+			if((variable instanceof CSharpFieldDeclaration || variable instanceof CSharpPropertyDeclaration) && needAddThisPrefix(variable, completionParent))
+			{
+				builder = LookupElementBuilder.create(variable, "this." + variable.getName());
+				builder = builder.withLookupString(variable.getName());
+			}
+			else
+			{
+				builder = LookupElementBuilder.create(variable);
+			}
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 
-			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(dotNetVariable.toTypeRef(true), dotNetVariable));
+			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(variable.toTypeRef(true), variable));
 
 			builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
 			{
@@ -386,7 +389,7 @@ public class CSharpLookupElementBuilder
 		}
 		else if(element instanceof CSharpPreprocessorDefine)
 		{
-			builder = LookupElementBuilder.create((CSharpPreprocessorDefine) element);
+			builder = LookupElementBuilder.create(element);
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 		}
 		else if(element instanceof CSharpTypeDeclaration)
@@ -440,5 +443,66 @@ public class CSharpLookupElementBuilder
 
 		builder = builder.withInsertHandler(LtGtInsertHandler.getInstance(true));
 		return builder;
+	}
+
+	@RequiredReadAction
+	private static boolean needAddThisPrefix(@NotNull DotNetVariable variable, @Nullable PsiElement parentCompletion)
+	{
+		if(parentCompletion == null || variable.hasModifier(CSharpModifier.STATIC))
+		{
+			return false;
+		}
+
+		PsiElement parent = parentCompletion;
+		do
+		{
+			if(parent instanceof DotNetParameterListOwner)
+			{
+				for(DotNetParameter parameter : ((DotNetParameterListOwner) parent).getParameters())
+				{
+					if(Objects.equals(parameter.getName(), variable.getName()))
+					{
+						return true;
+					}
+				}
+			}
+			else if(parent instanceof CSharpLambdaExpressionImpl)
+			{
+				for(CSharpLambdaParameter parameter : ((CSharpLambdaExpressionImpl) parent).getParameters())
+				{
+					if(Objects.equals(parameter.getName(), variable.getName()))
+					{
+						return true;
+					}
+				}
+			}
+			else if(parent instanceof CSharpBlockStatementImpl)
+			{
+				for(DotNetStatement statement : ((CSharpBlockStatementImpl) parent).getStatements())
+				{
+					if(statement.getTextOffset() > parentCompletion.getTextOffset())
+					{
+						break;
+					}
+
+					if(statement instanceof CSharpLocalVariableDeclarationStatement)
+					{
+						CSharpLocalVariable[] variables = ((CSharpLocalVariableDeclarationStatement) statement).getVariables();
+						for(CSharpLocalVariable localVariable : variables)
+						{
+							if(Objects.equals(localVariable.getName(), variable.getName()))
+							{
+								return true;
+							}
+						}
+					}
+				}
+			}
+
+			parent = parent.getParent();
+		}
+		while(parent != null);
+
+		return false;
 	}
 }
