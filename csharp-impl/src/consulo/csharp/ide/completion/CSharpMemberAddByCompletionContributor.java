@@ -47,7 +47,7 @@ public interface CSharpMemberAddByCompletionContributor
 
 	static void extend(CompletionContributor contributor)
 	{
-		contributor.extend(CompletionType.BASIC, CSharpPatterns.field(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.fieldStart(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override

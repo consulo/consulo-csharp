@@ -21,9 +21,11 @@ import com.intellij.patterns.PatternCondition;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
@@ -31,6 +33,7 @@ import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpUserType;
+import consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetType;
 
@@ -41,7 +44,7 @@ import consulo.dotnet.psi.DotNetType;
 public class CSharpPatterns
 {
 	@NotNull
-	public static PsiElementPattern.Capture<PsiElement> referenceExpression()
+	public static PsiElementPattern.Capture<PsiElement> expressionStart()
 	{
 		return StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class).with(new PatternCondition<PsiElement>("error validator")
 		{
@@ -50,12 +53,22 @@ public class CSharpPatterns
 			{
 				CSharpReferenceExpression expression = PsiTreeUtil.getParentOfType(element, CSharpReferenceExpression.class);
 				assert expression != null;
-				/*PsiElement prevElement = UsefulPsiTreeUtil.getPrevSiblingSkipWhiteSpaces(callArgument, true);
-				if(prevElement instanceof PsiErrorElement)
-				{
-					return;
-				}  */
 
+				PsiElement parent = expression.getParent();
+				if(parent instanceof CSharpCallArgument)
+				{
+					PsiElement temp = UsefulPsiTreeUtil.getPrevSiblingSkipWhiteSpaces(parent, true);
+					if(temp instanceof PsiErrorElement)
+					{
+						return false;
+					}
+
+					temp = UsefulPsiTreeUtil.getNextSiblingSkippingWhiteSpacesAndComments(parent);
+					if(temp instanceof PsiErrorElement)
+					{
+						return false;
+					}
+				}
 				return true;
 			}
 		});
@@ -98,7 +111,7 @@ public class CSharpPatterns
 	}
 
 	@NotNull
-	public static PsiElementPattern.Capture<PsiElement> field()
+	public static PsiElementPattern.Capture<PsiElement> fieldStart()
 	{
 		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).withSuperParent(3, CSharpFieldDeclaration.class);
 	}

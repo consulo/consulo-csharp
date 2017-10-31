@@ -97,7 +97,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 	static void extend(CompletionContributor contributor)
 	{
 		// Action test = obj => ...
-		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.expressionStart(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -260,7 +260,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 		});
 
 		// suggesting factory methods from expected types like Test test = Test.create()
-		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.expressionStart(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override

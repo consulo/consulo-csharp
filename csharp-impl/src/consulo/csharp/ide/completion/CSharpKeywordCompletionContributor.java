@@ -91,7 +91,7 @@ class CSharpKeywordCompletionContributor
 			}
 		});
 
-		contributor.extend(CompletionType.BASIC, CSharpPatterns.field(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.fieldStart(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -189,7 +189,7 @@ class CSharpKeywordCompletionContributor
 			}
 		});
 
-		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression().inside(CSharpUserType.class).inside(CSharpGenericConstraint.class).afterLeaf(psiElement(CSharpTokens.COLON)), new
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.expressionStart().inside(CSharpUserType.class).inside(CSharpGenericConstraint.class).afterLeaf(psiElement(CSharpTokens.COLON)), new
 				CompletionProvider()
 		{
 			@RequiredReadAction

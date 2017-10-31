@@ -99,7 +99,7 @@ class CSharpExpressionCompletionContributor
 
 	static void extend(CompletionContributor contributor)
 	{
-		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.expressionStart(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -184,7 +184,7 @@ class CSharpExpressionCompletionContributor
 			}
 		});
 
-		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.expressionStart(), new CompletionProvider()
 		{
 			@Override
 			@RequiredReadAction
@@ -222,7 +222,7 @@ class CSharpExpressionCompletionContributor
 			}
 		});
 
-		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression().withSuperParent(2, CSharpCallArgument.class), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.expressionStart().withSuperParent(2, CSharpCallArgument.class), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -308,7 +308,7 @@ class CSharpExpressionCompletionContributor
 			}
 		});
 
-		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.expressionStart(), new CompletionProvider()
 		{
 			@Override
 			@RequiredReadAction
@@ -477,7 +477,7 @@ class CSharpExpressionCompletionContributor
 			}
 		});
 
-		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.expressionStart(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -580,7 +580,7 @@ class CSharpExpressionCompletionContributor
 			}
 		});
 
-		contributor.extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.expressionStart(), new CompletionProvider()
 		{
 
 			@RequiredReadAction

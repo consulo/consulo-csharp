@@ -40,7 +40,7 @@ class CSharpLinqCompletionContributor
 {
 	static void extend(CompletionContributor contributor)
 	{
-		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.expressionStart(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
