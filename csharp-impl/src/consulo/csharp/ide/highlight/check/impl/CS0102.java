@@ -16,26 +16,27 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.util.ObjectUtil;
+import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetMemberOwner;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetQualifiedElement;
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.util.ObjectUtil;
-import com.intellij.util.SmartList;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -52,46 +53,76 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 	}
 
 	@NotNull
-	public static <T extends DotNetMemberOwner & DotNetQualifiedElement> List<CompilerCheckBuilder> doCheck(@NotNull CompilerCheck<T> compilerCheck,
-			@NotNull T element)
+	@RequiredReadAction
+	public static <T extends DotNetMemberOwner & DotNetQualifiedElement> List<CompilerCheckBuilder> doCheck(@NotNull CompilerCheck<T> compilerCheck, @NotNull T t)
 	{
-		List<CompilerCheckBuilder> results = new SmartList<CompilerCheckBuilder>();
+		List<CompilerCheckBuilder> results = new SmartList<>();
 
-		final DotNetNamedElement[] members = element.getMembers();
+		final DotNetNamedElement[] members = t.getMembers();
 
-		for(final DotNetNamedElement namedElement : members)
+		List<DotNetNamedElement> duplicateMembers = new ArrayList<>();
+		for(DotNetNamedElement searchElement : members)
 		{
-			DotNetNamedElement findTarget = ContainerUtil.find(members, new Condition<DotNetNamedElement>()
+			if(!(searchElement instanceof PsiNameIdentifierOwner))
 			{
-				@Override
-				public boolean value(DotNetNamedElement element)
-				{
-					if(element == namedElement)
-					{
-						return false;
-					}
-
-					boolean equal = CSharpElementCompareUtil.isEqualWithVirtualImpl(element, namedElement, element);
-					// we dont interest if it partial types
-					if(equal && isPartial(element) && isPartial(namedElement))
-					{
-						return false;
-					}
-					return equal;
-				}
-			});
-
-			if(findTarget != null)
-			{
-				PsiElement toHighlight = findTarget;
-				if(findTarget instanceof PsiNameIdentifierOwner)
-				{
-					PsiElement nameIdentifier = ((PsiNameIdentifierOwner) findTarget).getNameIdentifier();
-					toHighlight = ObjectUtil.notNull(nameIdentifier, findTarget);
-				}
-
-				results.add(compilerCheck.newBuilder(toHighlight, element.getPresentableQName(), findTarget.getName()));
+				continue;
 			}
+
+			String searchName = searchElement.getName();
+			if(searchName == null)
+			{
+				continue;
+			}
+
+			for(DotNetNamedElement mayDuplicate : members)
+			{
+				if(searchElement == mayDuplicate)
+				{
+					continue;
+				}
+
+				if(!(mayDuplicate instanceof PsiNameIdentifierOwner))
+				{
+					continue;
+				}
+
+				String targetName = mayDuplicate.getName();
+				if(searchName.equals(targetName))
+				{
+					// skip type declarations if partial
+					if(searchElement instanceof CSharpTypeDeclaration && mayDuplicate instanceof CSharpTypeDeclaration && CSharpElementCompareUtil.isEqualWithVirtualImpl(searchElement, mayDuplicate,
+							searchElement) && isPartial(searchElement) && isPartial(mayDuplicate))
+					{
+						continue;
+					}
+
+					if(searchElement instanceof DotNetLikeMethodDeclaration && mayDuplicate instanceof DotNetLikeMethodDeclaration && !CSharpElementCompareUtil.isEqualWithVirtualImpl(searchElement,
+							mayDuplicate, searchElement))
+					{
+						continue;
+					}
+
+					if(searchElement instanceof CSharpPropertyDeclaration && mayDuplicate instanceof CSharpPropertyDeclaration && !CSharpElementCompareUtil.isEqualWithVirtualImpl(searchElement,
+							mayDuplicate, searchElement))
+					{
+						continue;
+					}
+
+					duplicateMembers.add(mayDuplicate);
+				}
+			}
+		}
+
+		for(DotNetNamedElement duplicateMember : duplicateMembers)
+		{
+			PsiElement toHighlight = duplicateMember;
+			if(duplicateMember instanceof PsiNameIdentifierOwner)
+			{
+				PsiElement nameIdentifier = ((PsiNameIdentifierOwner) duplicateMember).getNameIdentifier();
+				toHighlight = ObjectUtil.notNull(nameIdentifier, duplicateMember);
+			}
+
+			results.add(compilerCheck.newBuilder(toHighlight, t.getPresentableQName(), duplicateMember.getName()));
 		}
 		return results;
 	}
