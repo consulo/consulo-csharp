@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.SmartList;
@@ -54,7 +55,7 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 
 	@NotNull
 	@RequiredReadAction
-	public static <T extends DotNetMemberOwner & DotNetQualifiedElement> List<CompilerCheckBuilder> doCheck(@NotNull CompilerCheck<T> compilerCheck, @NotNull T t)
+	public static List<CompilerCheckBuilder> doCheck(@NotNull CompilerCheck<? extends DotNetMemberOwner> compilerCheck, @NotNull DotNetMemberOwner t)
 	{
 		List<CompilerCheckBuilder> results = new SmartList<>();
 
@@ -113,6 +114,7 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 			}
 		}
 
+		String name = t instanceof PsiFile ? "<global namespace>" : ((DotNetQualifiedElement) t).getPresentableQName();
 		for(DotNetNamedElement duplicateMember : duplicateMembers)
 		{
 			PsiElement toHighlight = duplicateMember;
@@ -121,8 +123,7 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 				PsiElement nameIdentifier = ((PsiNameIdentifierOwner) duplicateMember).getNameIdentifier();
 				toHighlight = ObjectUtil.notNull(nameIdentifier, duplicateMember);
 			}
-
-			results.add(compilerCheck.newBuilder(toHighlight, t.getPresentableQName(), duplicateMember.getName()));
+			results.add(compilerCheck.newBuilder(toHighlight, name, duplicateMember.getName()));
 		}
 		return results;
 	}

@@ -16,26 +16,33 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.dotnet.psi.DotNetMemberOwner;
 
 /**
  * @author VISTALL
  * @since 10.06.14
  */
-public class CS0101 extends CompilerCheck<CSharpNamespaceDeclaration>
+public class CS0101 extends CompilerCheck<DotNetMemberOwner>
 {
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpNamespaceDeclaration element)
+	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull DotNetMemberOwner element)
 	{
-		return CS0102.doCheck(this, element);
+		if(element instanceof CSharpFile || element instanceof CSharpNamespaceDeclaration)
+		{
+			return CS0102.doCheck(this, element);
+		}
+		return Collections.emptyList();
 	}
 }
