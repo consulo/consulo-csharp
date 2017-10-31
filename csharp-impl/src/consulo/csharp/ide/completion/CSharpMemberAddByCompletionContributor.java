@@ -75,7 +75,10 @@ public interface CSharpMemberAddByCompletionContributor
 
 				CSharpTypeDeclaration typeDeclaration = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpTypeDeclaration.class);
 
-				assert typeDeclaration != null;
+				if(typeDeclaration == null)
+				{
+					return;
+				}
 
 				Consumer<LookupElement> delegate = lookupElement ->
 				{
