@@ -17,6 +17,12 @@
 package consulo.csharp.ide.completion.patterns;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.patterns.PatternCondition;
+import com.intellij.patterns.PsiElementPattern;
+import com.intellij.patterns.StandardPatterns;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.ProcessingContext;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
@@ -27,12 +33,6 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetType;
-import com.intellij.patterns.PatternCondition;
-import com.intellij.patterns.PsiElementPattern;
-import com.intellij.patterns.StandardPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ProcessingContext;
 
 /**
  * @author VISTALL
@@ -43,7 +43,22 @@ public class CSharpPatterns
 	@NotNull
 	public static PsiElementPattern.Capture<PsiElement> referenceExpression()
 	{
-		return StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class);
+		return StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class).with(new PatternCondition<PsiElement>("error validator")
+		{
+			@Override
+			public boolean accepts(@NotNull PsiElement element, ProcessingContext processingContext)
+			{
+				CSharpReferenceExpression expression = PsiTreeUtil.getParentOfType(element, CSharpReferenceExpression.class);
+				assert expression != null;
+				/*PsiElement prevElement = UsefulPsiTreeUtil.getPrevSiblingSkipWhiteSpaces(callArgument, true);
+				if(prevElement instanceof PsiErrorElement)
+				{
+					return;
+				}  */
+
+				return true;
+			}
+		});
 	}
 
 	@NotNull

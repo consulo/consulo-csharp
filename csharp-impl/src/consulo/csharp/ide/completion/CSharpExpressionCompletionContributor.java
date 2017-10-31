@@ -42,6 +42,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
@@ -221,7 +222,7 @@ class CSharpExpressionCompletionContributor
 			}
 		});
 
-		contributor.extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2, CSharpCallArgument.class), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression().withSuperParent(2, CSharpCallArgument.class), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -298,7 +299,8 @@ class CSharpExpressionCompletionContributor
 				for(String wantToCompleteParameter : wantToCompleteParameters)
 				{
 					LookupElementBuilder builder = LookupElementBuilder.create(wantToCompleteParameter + ": ");
-					builder = builder.withIcon(AllIcons.Nodes.Parameter);
+					builder = builder.withTailText("<expression>", true);
+					builder = builder.withIcon(IconLoader.getTransparentIcon(AllIcons.Nodes.Parameter));
 
 					CSharpCompletionSorting.force(builder, CSharpCompletionSorting.KindSorter.Type.parameterInCall);
 					result.consume(builder);
@@ -510,8 +512,8 @@ class CSharpExpressionCompletionContributor
 			}
 		});
 
-		contributor.extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2, CSharpArrayInitializerImpl.class).withSuperParent(3,
-				CSharpNewExpressionImpl.class), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2, CSharpArrayInitializerImpl.class).withSuperParent
+				(3, CSharpNewExpressionImpl.class), new CompletionProvider()
 		{
 			@Override
 			@RequiredReadAction
