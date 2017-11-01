@@ -111,7 +111,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		{
 			if(elementType == CSharpTokens.LINE_COMMENT)
 			{
-				return myCodeStyleSettings.KEEP_FIRST_COLUMN_COMMENT ? Indent.getAbsoluteNoneIndent() : Indent.getNormalIndent();
+				return /*myCodeStyleSettings.KEEP_FIRST_COLUMN_COMMENT ? Indent.getAbsoluteNoneIndent() :*/ Indent.getNormalIndent();
 			}
 			return Indent.getNormalIndent();
 		}
