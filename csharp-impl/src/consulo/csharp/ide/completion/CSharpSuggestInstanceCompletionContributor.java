@@ -271,8 +271,8 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 
 				assert expression != null;
 
-				// do not allow method calls inside new expression
-				if(expression.getParent() instanceof DotNetType)
+				// do not allow method calls inside new expression & do not allow with qualified expression
+				if(expression.getParent() instanceof DotNetType || expression.getQualifier() != null)
 				{
 					return;
 				}
