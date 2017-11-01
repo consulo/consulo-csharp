@@ -16,8 +16,11 @@
 
 package consulo.csharp.ide.completion;
 
+import gnu.trove.THashSet;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,10 +32,14 @@ import com.intellij.codeInsight.lookup.LookupElementWeigher;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.codeStyle.NameUtil;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
+import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.completion.weigher.CSharpRecursiveGuardWeigher;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
@@ -130,6 +137,80 @@ public class CSharpCompletionSorting
 		}
 	}
 
+	private static class ExpectedNameSorter extends LookupElementWeigher
+	{
+		private Set<String> myExpectedNames;
+
+		@RequiredReadAction
+		private ExpectedNameSorter(List<ExpectedTypeInfo> expectedTypeInfos)
+		{
+			super("csharpByExpectedNameSorter");
+
+			myExpectedNames = new THashSet<>();
+			for(ExpectedTypeInfo expectedTypeInfo : expectedTypeInfos)
+			{
+				PsiElement typeProvider = expectedTypeInfo.getTypeProvider();
+				if(typeProvider instanceof PsiNamedElement)
+				{
+					myExpectedNames.add(((PsiNamedElement) typeProvider).getName());
+				}
+			}
+		}
+
+		@Nullable
+		@Override
+		@RequiredReadAction
+		public Comparable weigh(@NotNull LookupElement element)
+		{
+			if(myExpectedNames.isEmpty())
+			{
+				return null;
+			}
+
+			String targetName = getName(element);
+			if(targetName != null)
+			{
+				int max = 0;
+				final List<String> wordsNoDigits = NameUtil.nameToWordsLowerCase(truncDigits(targetName));
+				for(String expectedName : myExpectedNames)
+				{
+					final THashSet<String> set = new THashSet<>(NameUtil.nameToWordsLowerCase(truncDigits(expectedName)));
+					set.retainAll(wordsNoDigits);
+					max = Math.max(max, set.size());
+				}
+				return -max;
+			}
+			return 0;
+		}
+
+		@Nullable
+		@RequiredReadAction
+		private static String getName(LookupElement element)
+		{
+			PsiElement psiElement = element.getPsiElement();
+			if(psiElement instanceof DotNetVariable || psiElement instanceof CSharpMethodDeclaration)
+			{
+				return ((PsiNamedElement) psiElement).getName();
+			}
+			return null;
+		}
+
+		private static String truncDigits(String name)
+		{
+			int count = name.length() - 1;
+			while(count >= 0)
+			{
+				char c = name.charAt(count);
+				if(!Character.isDigit(c))
+				{
+					break;
+				}
+				count--;
+			}
+			return name.substring(0, count + 1);
+		}
+	}
+
 	public static void force(UserDataHolder holder, KindSorter.Type type)
 	{
 		holder.putUserData(KindSorter.ourForceType, type);
@@ -173,7 +254,21 @@ public class CSharpCompletionSorting
 		ContainerUtil.addIfNotNull(afterStats, recursiveSorter(completionParameters, result));
 		afterStats.add(new KindSorter());
 
+		List<LookupElementWeigher> afterProximity = new ArrayList<>();
+
+		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(completionParameters.getPosition());
+		if(expectedTypeRefs.isEmpty())
+		{
+			expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(completionParameters.getPosition().getParent());
+		}
+
+		if(!expectedTypeRefs.isEmpty())
+		{
+			afterProximity.add(new ExpectedNameSorter(expectedTypeRefs));
+		}
+
 		sorter = sorter.weighAfter("stats", afterStats.toArray(new LookupElementWeigher[afterStats.size()]));
+		sorter = sorter.weighAfter("proximity", afterProximity.toArray(new LookupElementWeigher[afterProximity.size()]));
 		result = result.withRelevanceSorter(sorter);
 		return result;
 	}
