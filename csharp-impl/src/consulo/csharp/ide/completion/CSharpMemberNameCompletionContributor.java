@@ -19,23 +19,29 @@ package consulo.csharp.ide.completion;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandlerWithChar;
-import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
-import consulo.csharp.lang.psi.CSharpIdentifier;
-import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import consulo.annotations.RequiredReadAction;
 import consulo.codeInsight.completion.CompletionProvider;
+import consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandlerWithChar;
+import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import consulo.csharp.lang.psi.CSharpIdentifier;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.resolve.DotNetPsiSearcher;
 
 /**
  * @author VISTALL
@@ -65,6 +71,31 @@ public class CSharpMemberNameCompletionContributor extends CompletionContributor
 					{
 						LookupElementBuilder element = LookupElementBuilder.create(suggestedName);
 						element = element.withInsertHandler(new CSharpTailInsertHandlerWithChar(TailType.EQ, '='));
+						result.addElement(element);
+					}
+				}
+				else if(parent instanceof CSharpTypeDeclaration)
+				{
+					PsiFile originalFile = parameters.getOriginalFile();
+					VirtualFile virtualFile = originalFile.getVirtualFile();
+					assert virtualFile != null;
+					String nameWithoutExtension = virtualFile.getNameWithoutExtension();
+					if(!nameWithoutExtension.contains("."))
+					{
+						String parentQName = ((CSharpTypeDeclaration) parent).getPresentableParentQName();
+						String qName = nameWithoutExtension;
+						if(!StringUtil.isEmpty(parentQName))
+						{
+							qName = parentQName + "." + nameWithoutExtension;
+						}
+
+						DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(originalFile.getProject()).findType(qName, originalFile.getResolveScope());
+						if(type != null)
+						{
+							return;
+						}
+
+						LookupElementBuilder element = LookupElementBuilder.create(nameWithoutExtension);
 						result.addElement(element);
 					}
 				}
