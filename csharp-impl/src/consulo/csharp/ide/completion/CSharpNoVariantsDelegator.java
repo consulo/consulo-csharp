@@ -136,8 +136,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 		}
 		else
 		{
-			if(parameters.getCompletionType() == CompletionType.BASIC && parameters.getInvocationCount() <= 1 && CSharpCompletionUtil.mayStartClassName(result) && CSharpCompletionUtil
-					.isClassNamePossible(parameters))
+			if(parameters.getCompletionType() == CompletionType.BASIC && parameters.getInvocationCount() <= 1 && CSharpCompletionUtil.mayStartClassName(result) && CSharpCompletionUtil.isClassNamePossible(parameters))
 			{
 				addTypesForUsing(parameters, CSharpCompletionSorting.modifyResultSet(parameters, result.withPrefixMatcher(tracker.betterMatcher)), holder);
 			}

@@ -35,6 +35,7 @@ import com.intellij.util.containers.ConcurrentFactoryMap;
 import consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.util.NotNullPairFunction;
@@ -72,6 +73,11 @@ public class CSharpCompletionUtil
 			if(parent instanceof CSharpReferenceExpression)
 			{
 				if(((CSharpReferenceExpression) parent).getQualifier() != null)
+				{
+					return false;
+				}
+
+				if(parent.getParent() instanceof CSharpConstructorSuperCallImpl)
 				{
 					return false;
 				}

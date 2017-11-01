@@ -27,6 +27,7 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.CompletionUtilCore;
+import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
@@ -41,6 +42,7 @@ import consulo.codeInsight.completion.CompletionProvider;
 import consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
 import consulo.dotnet.DotNetRunUtil;
@@ -64,8 +66,22 @@ class CSharpKeywordCompletionContributor
 		ourPreprocessorDirectives.put("endif", Boolean.FALSE);
 	}
 
+	private static final TokenSet THIS_OR_BASE = TokenSet.create(CSharpTokens.THIS_KEYWORD, CSharpTokens.BASE_KEYWORD);
+
 	static void extend(CompletionContributor contributor)
 	{
+		contributor.extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2, CSharpConstructorSuperCallImpl.class),
+				(parameters, context, result) ->
+		{
+			CSharpTypeDeclaration typeDeclaration = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpTypeDeclaration.class);
+			if(typeDeclaration == null)
+			{
+				return;
+			}
+
+			CSharpCompletionUtil.tokenSetToLookup(result, THIS_OR_BASE, (b, elementType) -> b.withInsertHandler(ParenthesesInsertHandler.getInstance(true)), null);
+		});
+
 		contributor.extend(CompletionType.BASIC, psiElement(CSharpPreprocesorTokens.ILLEGAL_KEYWORD), new CompletionProvider()
 		{
 			@RequiredReadAction

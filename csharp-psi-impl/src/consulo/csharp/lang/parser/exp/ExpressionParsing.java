@@ -18,6 +18,10 @@ package consulo.csharp.lang.parser.exp;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.PsiBuilder;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.BitUtil;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.ModifierSet;
 import consulo.csharp.lang.parser.SharedParsingHelpers;
@@ -28,10 +32,6 @@ import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.BitUtil;
 
 public class ExpressionParsing extends SharedParsingHelpers
 {
@@ -362,8 +362,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			final PsiBuilder.Marker right = parseExpression(builder, type, set);
 
 			tokenType = builder.getTokenType();
-			if(tokenType != null && ops.contains(tokenType) || tokenType == null || !ops.contains(tokenType) || tokenType != currentExprTokenType ||
-					right == null)
+			if(tokenType != null && ops.contains(tokenType) || tokenType == null || !ops.contains(tokenType) || tokenType != currentExprTokenType || right == null)
 			{
 				// save
 				result = result.precede();
@@ -538,10 +537,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			else if(tokenType == LPAR)
 			{
 				IElementType expType = exprType(expr);
-				if(expType != REFERENCE_EXPRESSION &&
-						expType != INDEX_ACCESS_EXPRESSION &&
-						expType != PARENTHESES_EXPRESSION &&
-						expType != METHOD_CALL_EXPRESSION)
+				if(expType != REFERENCE_EXPRESSION && expType != INDEX_ACCESS_EXPRESSION && expType != PARENTHESES_EXPRESSION && expType != METHOD_CALL_EXPRESSION)
 				{
 					startMarker.drop();
 					return expr;
@@ -1147,8 +1143,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 						arrow = builder.lookAhead(1) == DARROW;
 						break;
 					}
-					else if(tokenType == LPAR || tokenType == SEMICOLON ||
-							tokenType == LBRACE || tokenType == RBRACE)
+					else if(tokenType == LPAR || tokenType == SEMICOLON || tokenType == LBRACE || tokenType == RBRACE)
 					{
 						break;
 					}
@@ -1246,7 +1241,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(single)
 		{
-			expectOrReportIdentifier(builder,  0);
+			expectOrReportIdentifier(builder, 0);
 
 			mark.done(CSharpElements.LAMBDA_PARAMETER);
 		}
@@ -1308,8 +1303,13 @@ public class ExpressionParsing extends SharedParsingHelpers
 	public static void parseConstructorSuperCall(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker marker = builder.mark();
-		if(THIS_OR_BASE.contains(builder.getTokenType()))
+		if(THIS_OR_BASE.contains(builder.getTokenType()) || builder.getTokenType() == CSharpTokens.IDENTIFIER)
 		{
+			if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
+			{
+				builder.error("Expected 'base' or 'this'");
+			}
+
 			doneOneElement(builder, builder.getTokenType(), REFERENCE_EXPRESSION, null);
 
 			if(builder.getTokenType() == LPAR)
@@ -1787,8 +1787,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 	}
 
-	private static PsiBuilder.Marker parseExpressionWithTypeInLParRPar(CSharpBuilderWrapper builder, int flags, PsiBuilder.Marker mark,
-			IElementType to)
+	private static PsiBuilder.Marker parseExpressionWithTypeInLParRPar(CSharpBuilderWrapper builder, int flags, PsiBuilder.Marker mark, IElementType to)
 	{
 		PsiBuilder.Marker newMarker = mark == null ? builder.mark() : mark.precede();
 		builder.advanceLexer();
@@ -1839,10 +1838,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return parseQualifiedReference(builder, prevMarker, NONE, TokenSet.EMPTY);
 	}
 
-	public static ReferenceInfo parseQualifiedReference(@NotNull CSharpBuilderWrapper builder,
-			@Nullable final PsiBuilder.Marker prevMarker,
-			int flags,
-			@NotNull TokenSet nameStopperSet)
+	public static ReferenceInfo parseQualifiedReference(@NotNull CSharpBuilderWrapper builder, @Nullable final PsiBuilder.Marker prevMarker, int flags, @NotNull TokenSet nameStopperSet)
 	{
 		if(prevMarker != null)
 		{

@@ -34,6 +34,7 @@ import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.csharp.lang.psi.UsefulPsiTreeUtil;
+import consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetType;
 
@@ -68,6 +69,10 @@ public class CSharpPatterns
 					{
 						return false;
 					}
+				}
+				else if(parent instanceof CSharpConstructorSuperCallImpl)
+				{
+					return false;
 				}
 				return true;
 			}
