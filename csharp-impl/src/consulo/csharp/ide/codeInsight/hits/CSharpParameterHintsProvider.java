@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.hints.InlayInfo;
@@ -93,13 +94,20 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 					continue;
 				}
 
-				list.add(new InlayInfo(nCallArgument.getParameterName(), argumentExpression.getTextOffset()));
+				String parameterName = nCallArgument.getParameterName();
+				if(parameterName == null)
+				{
+					continue;
+				}
+
+				list.add(new InlayInfo(parameterName, argumentExpression.getTextOffset()));
 			}
 			return list;
 		}
 		return Collections.emptyList();
 	}
 
+	@Contract("null -> false")
 	private static boolean isConstant(DotNetExpression expression)
 	{
 		if(expression instanceof CSharpConstantExpressionImpl)
@@ -109,11 +117,10 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 
 		if(expression instanceof CSharpPrefixExpressionImpl)
 		{
-			return ((CSharpPrefixExpressionImpl) expression).getOperatorElement().getOperatorElementType() == CSharpTokens.MINUS && isConstant(((CSharpPrefixExpressionImpl) expression).getExpression
-					());
+			return ((CSharpPrefixExpressionImpl) expression).getOperatorElement().getOperatorElementType() == CSharpTokens.MINUS && isConstant(((CSharpPrefixExpressionImpl) expression).getExpression());
 		}
 
-		return true;
+		return false;
 	}
 
 	@RequiredReadAction
