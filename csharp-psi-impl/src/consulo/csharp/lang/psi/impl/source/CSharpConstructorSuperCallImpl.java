@@ -18,21 +18,21 @@ package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
+import consulo.csharp.lang.psi.CSharpCallArgument;
+import consulo.csharp.lang.psi.CSharpCallArgumentList;
+import consulo.csharp.lang.psi.CSharpConstructorSuperCall;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.dotnet.psi.DotNetExpression;
 
 /**
  * @author VISTALL
  * @since 17.05.14
  */
-public class CSharpConstructorSuperCallImpl extends CSharpElementImpl implements CSharpCallArgumentListOwner
+public class CSharpConstructorSuperCallImpl extends CSharpElementImpl implements CSharpConstructorSuperCall
 {
 	public CSharpConstructorSuperCallImpl(@NotNull ASTNode node)
 	{
@@ -65,6 +65,7 @@ public class CSharpConstructorSuperCallImpl extends CSharpElementImpl implements
 		return getExpression().resolve();
 	}
 
+	@Override
 	@NotNull
 	public CSharpReferenceExpression getExpression()
 	{

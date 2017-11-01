@@ -16,19 +16,14 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.Nullable;
-import consulo.dotnet.psi.DotNetConstructorDeclaration;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author VISTALL
- * @since 09.01.14
+ * @since 01-Nov-17
  */
-public interface CSharpConstructorDeclaration extends DotNetConstructorDeclaration, CSharpSimpleLikeMethodAsElement, PsiNameIdentifierOwner
+public interface CSharpConstructorSuperCall extends CSharpCallArgumentListOwner
 {
-	@Nullable
-	default CSharpConstructorSuperCall getConstructorSuperCall()
-	{
-		return null;
-	}
+	@NotNull
+	CSharpReferenceExpression getExpression();
 }

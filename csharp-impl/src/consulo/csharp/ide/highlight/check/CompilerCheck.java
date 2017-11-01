@@ -31,6 +31,7 @@ import com.intellij.openapi.util.NullableFactory;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.CSharpErrorBundle;
@@ -212,6 +213,21 @@ public abstract class CompilerCheck<T extends PsiElement>
 			message = id + ": " + message;
 		}
 		return message;
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static PsiElement getNameIdentifier(PsiElement element)
+	{
+		if(element instanceof PsiNameIdentifierOwner)
+		{
+			PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
+			if(nameIdentifier != null)
+			{
+				return nameIdentifier;
+			}
+		}
+		return element;
 	}
 
 	@RequiredReadAction
