@@ -26,6 +26,8 @@
 						 displayName="Unnecessary Modifier" groupName="C#" enabledByDefault="true"/>
 		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.unnecessarySemicolon.UnnecessarySemicolonInspection"
 						 displayName="Unnecessary Semicolon" groupName="C#" enabledByDefault="true" level="WARNING"/>
+		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.unnecessaryEnumUnderlyingType.UnnecessaryEnumUnderlyingTypeInspection"
+						 displayName="Unnecessary enum underlying type" groupName="C#" enabledByDefault="true" level="WARNING"/>
 		<localInspection
 				language="C#"
 				implementationClass="consulo.csharp.ide.codeInspection.unnecessaryNamedArgument.UnnecessaryNamedArgumentInspection"
