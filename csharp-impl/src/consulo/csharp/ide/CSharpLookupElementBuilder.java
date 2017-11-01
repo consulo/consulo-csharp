@@ -189,7 +189,7 @@ public class CSharpLookupElementBuilder
 				CharSequence charSequence = context.getDocument().getImmutableCharSequence();
 
 				int start = -1, end = -1;
-				for(int i = context.getTailOffset(); i != 0; i--)
+				for(int i = context.getStartOffset(); i != 0; i--)
 				{
 					char c = charSequence.charAt(i);
 					if(c == '.')
@@ -207,9 +207,8 @@ public class CSharpLookupElementBuilder
 				{
 					// .[ -> [ replace
 					context.getDocument().replaceString(start, end + 1, "[");
+					context.getEditor().getCaretModel().moveToOffset(end);
 				}
-
-				context.getEditor().getCaretModel().moveToOffset(end);
 			});
 		}
 		/*else if(element instanceof DotNetXXXAccessor)
