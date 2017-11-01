@@ -48,7 +48,6 @@ import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.DotNetAttributeUtil;
-import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.psi.DotNetParameter;
@@ -455,8 +454,7 @@ public class CSharpLookupElementBuilder
 
 		if(parentCompletion instanceof CSharpReferenceExpression)
 		{
-			DotNetExpression qualifier = ((CSharpReferenceExpression) parentCompletion).getQualifier();
-			if(qualifier instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) qualifier).kind() == CSharpReferenceExpression.ResolveToKind.THIS)
+			if(((CSharpReferenceExpression) parentCompletion).getQualifier() != null)
 			{
 				return false;
 			}
