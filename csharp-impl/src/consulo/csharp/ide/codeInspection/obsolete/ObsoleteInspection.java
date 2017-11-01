@@ -16,8 +16,17 @@
 
 package consulo.csharp.ide.codeInspection.obsolete;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.codeInspection.LocalInspectionTool;
+import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInspection.CSharpInspectionBundle;
 import consulo.csharp.ide.projectView.CSharpElementTreeNode;
@@ -33,13 +42,10 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetAttributeUtil;
 import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.tree.IElementType;
+import consulo.msil.lang.psi.MsilCustomAttribute;
+import consulo.msil.lang.stubbing.MsilCustomAttributeArgumentList;
+import consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
+import consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
 
 /**
  * @author VISTALL
@@ -106,38 +112,53 @@ public class ObsoleteInspection extends LocalInspectionTool
 		}
 	}
 
+	@RequiredReadAction
 	public static String getMessage(DotNetAttribute attribute)
 	{
-		if(!(attribute instanceof CSharpAttribute))
+		if(attribute instanceof CSharpAttribute)
 		{
-			return null;
-		}
-
-		CSharpCallArgumentList parameterList = ((CSharpAttribute) attribute).getParameterList();
-		if(parameterList == null)
-		{
-			return null;
-		}
-
-		DotNetExpression[] expressions = parameterList.getExpressions();
-		if(expressions.length == 0)
-		{
-			for(CSharpFieldOrPropertySet namedCallArgument : parameterList.getSets())
+			CSharpCallArgumentList parameterList = ((CSharpAttribute) attribute).getParameterList();
+			if(parameterList == null)
 			{
-				if(namedCallArgument instanceof CSharpNamedFieldOrPropertySet)
+				return null;
+			}
+
+			DotNetExpression[] expressions = parameterList.getExpressions();
+			if(expressions.length == 0)
+			{
+				for(CSharpFieldOrPropertySet namedCallArgument : parameterList.getSets())
 				{
-					CSharpReferenceExpression argumentNameReference = (CSharpReferenceExpression) namedCallArgument.getNameElement();
-					if("Message".equals(argumentNameReference.getReferenceName()))
+					if(namedCallArgument instanceof CSharpNamedFieldOrPropertySet)
 					{
-						return new ConstantExpressionEvaluator(namedCallArgument.getValueExpression()).getValueAs(String.class);
+						CSharpReferenceExpression argumentNameReference = (CSharpReferenceExpression) namedCallArgument.getNameElement();
+						if("Message".equals(argumentNameReference.getReferenceName()))
+						{
+							return new ConstantExpressionEvaluator(namedCallArgument.getValueExpression()).getValueAs(String.class);
+						}
 					}
 				}
 			}
+			else
+			{
+				DotNetExpression expression = expressions[0];
+				return new ConstantExpressionEvaluator(expression).getValueAs(String.class);
+			}
 		}
-		else
+		else if(attribute instanceof MsilCustomAttribute)
 		{
-			DotNetExpression expression = expressions[0];
-			return new ConstantExpressionEvaluator(expression).getValueAs(String.class);
+			MsilCustomAttributeArgumentList attributeArgumentList = MsilCustomAttributeStubber.build((MsilCustomAttribute) attribute);
+
+			List<MsiCustomAttributeValue> constructorArguments = attributeArgumentList.getConstructorArguments();
+			if(!constructorArguments.isEmpty())
+			{
+				MsiCustomAttributeValue msiCustomAttributeValue = constructorArguments.get(0);
+
+				Object value = msiCustomAttributeValue.getValue();
+				if(value instanceof String)
+				{
+					return (String) value;
+				}
+			}
 		}
 		return null;
 	}
