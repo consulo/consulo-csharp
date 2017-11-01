@@ -66,6 +66,7 @@ import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
+import consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImplUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
@@ -299,6 +300,11 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 				{
 					Pair<String, DotNetTypeDeclaration> element = CSharpTypeUtil.resolveTypeElement(expectedTypeRef.getTypeRef());
 					if(element == null)
+					{
+						continue;
+					}
+
+					if(CSharpNativeTypeImplUtil.ourElementToQTypes.containsValue(element.getFirst()))
 					{
 						continue;
 					}
