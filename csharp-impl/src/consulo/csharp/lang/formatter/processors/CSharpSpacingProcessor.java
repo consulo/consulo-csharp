@@ -270,10 +270,13 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, LOCAL_VARIABLE).spaces(1);
 		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, FIELD_DECLARATION).spaces(1);
 		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.IDENTIFIER, EVENT_DECLARATION).none();
+		myBuilder.betweenInside(CSharpTokens.DOT, CSharpStubElements.IDENTIFIER, EVENT_DECLARATION).none();
 		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, EVENT_DECLARATION).spaces(1);
 		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.IDENTIFIER, PROPERTY_DECLARATION).none();
+		myBuilder.betweenInside(CSharpTokens.DOT, CSharpStubElements.IDENTIFIER, PROPERTY_DECLARATION).none();
 		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, PROPERTY_DECLARATION).spaces(1);
 		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.IDENTIFIER, METHOD_DECLARATION).none();
+		myBuilder.betweenInside(CSharpTokens.DOT, CSharpStubElements.IDENTIFIER, METHOD_DECLARATION).none();
 		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, METHOD_DECLARATION).spaces(1);
 		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, CONSTRUCTOR_DECLARATION).spaces(1);
 		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.THIS_KEYWORD, ARRAY_METHOD_DECLARATION).none();
