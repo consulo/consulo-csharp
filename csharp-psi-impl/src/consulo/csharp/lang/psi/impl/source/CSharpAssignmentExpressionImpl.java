@@ -17,6 +17,7 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -45,6 +46,18 @@ public class CSharpAssignmentExpressionImpl extends CSharpExpressionWithOperator
 			return (DotNetExpression) firstChild;
 		}
 		throw new IllegalArgumentException();
+	}
+
+	@Nullable
+	@RequiredReadAction
+	public DotNetExpression getRightExpression()
+	{
+		DotNetExpression[] parameterExpressions = getParameterExpressions();
+		if(parameterExpressions.length == 2)
+		{
+			return parameterExpressions[1];
+		}
+		return null;
 	}
 
 	@Override
