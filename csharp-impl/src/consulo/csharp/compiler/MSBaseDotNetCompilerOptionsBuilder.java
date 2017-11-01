@@ -36,7 +36,6 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.StandardFileSystems;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.util.Function;
 import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.dotnet.DotNetTarget;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
@@ -117,7 +116,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 				{
 					message += "(" + matcher.group(5) + ")";
 				}
-				return new DotNetCompilerMessage(category, message, fileUrl, codeLine, codeColumn);
+				return new DotNetCompilerMessage(category, message, fileUrl, codeLine, codeColumn - 1);
 			}
 		}
 		return null;
@@ -166,27 +165,13 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		Set<File> libraryFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.LIBRARY, false, DotNetCompilerUtil.ACCEPT_ALL);
 		if(!libraryFiles.isEmpty())
 		{
-			addArgument("/reference:" + StringUtil.join(libraryFiles, new Function<File, String>()
-			{
-				@Override
-				public String fun(File file)
-				{
-					return StringUtil.QUOTER.fun(file.getAbsolutePath());
-				}
-			}, ","));
+			addArgument("/reference:" + StringUtil.join(libraryFiles, file -> StringUtil.QUOTER.fun(file.getAbsolutePath()), ","));
 		}
 
 		Set<File> moduleFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.NET_MODULE, false, DotNetCompilerUtil.ACCEPT_ALL);
 		if(!moduleFiles.isEmpty())
 		{
-			addArgument("/addmodule:" + StringUtil.join(moduleFiles, new Function<File, String>()
-			{
-				@Override
-				public String fun(File file)
-				{
-					return StringUtil.QUOTER.fun(file.getAbsolutePath());
-				}
-			}, ","));
+			addArgument("/addmodule:" + StringUtil.join(moduleFiles, file -> StringUtil.QUOTER.fun(file.getAbsolutePath()), ","));
 		}
 
 		if(extension.isAllowDebugInfo())
