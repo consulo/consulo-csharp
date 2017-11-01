@@ -30,15 +30,7 @@ public interface CSharpGenericConstraint extends DotNetElement
 {
 	public static final CSharpGenericConstraint[] EMPTY_ARRAY = new CSharpGenericConstraint[0];
 
-	public static ArrayFactory<CSharpGenericConstraint> ARRAY_FACTORY = new ArrayFactory<CSharpGenericConstraint>()
-	{
-		@NotNull
-		@Override
-		public CSharpGenericConstraint[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpGenericConstraint[count];
-		}
-	};
+	public static ArrayFactory<CSharpGenericConstraint> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpGenericConstraint[count];
 
 	@Nullable
 	DotNetGenericParameter resolve();

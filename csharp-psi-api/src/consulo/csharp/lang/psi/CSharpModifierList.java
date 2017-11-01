@@ -28,15 +28,7 @@ public interface CSharpModifierList extends DotNetModifierList
 {
 	public static final CSharpModifierList[] EMPTY_ARRAY = new CSharpModifierList[0];
 
-	public static ArrayFactory<CSharpModifierList> ARRAY_FACTORY = new ArrayFactory<CSharpModifierList>()
-	{
-		@NotNull
-		@Override
-		public CSharpModifierList[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpModifierList[count];
-		}
-	};
+	public static ArrayFactory<CSharpModifierList> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpModifierList[count];
 
 	@NotNull
 	CSharpAttributeList[] getAttributeLists();
