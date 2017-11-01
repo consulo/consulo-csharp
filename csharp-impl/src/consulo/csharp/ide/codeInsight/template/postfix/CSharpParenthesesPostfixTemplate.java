@@ -17,8 +17,10 @@
 package consulo.csharp.ide.codeInsight.template.postfix;
 
 import org.jetbrains.annotations.NotNull;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
 import consulo.dotnet.psi.DotNetExpression;
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplate;
@@ -39,6 +41,7 @@ public class CSharpParenthesesPostfixTemplate extends PostfixTemplate
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean isApplicable(@NotNull PsiElement context, @NotNull Document copyDocument, int newOffset)
 	{
 		DotNetExpression expression = PsiTreeUtil.getParentOfType(context, DotNetExpression.class);
@@ -48,6 +51,10 @@ public class CSharpParenthesesPostfixTemplate extends PostfixTemplate
 		}
 		PsiElement parent = expression.getParent();
 		if(parent instanceof CSharpNamespaceDeclaration || parent instanceof CSharpUsingListChild)
+		{
+			return false;
+		}
+		if(expression instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) expression).kind() ==  CSharpReferenceExpression.ResolveToKind.THIS)
 		{
 			return false;
 		}
