@@ -19,10 +19,12 @@ package consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.util.Pair;
+import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -52,7 +54,13 @@ public class CS1729 extends CompilerCheck<CSharpConstructorDeclaration>
 			return null;
 		}
 
-		Pair<DotNetTypeDeclaration, DotNetGenericExtractor> type = CSharpTypeDeclarationImplUtil.resolveBaseType((DotNetTypeDeclaration) element.getParent(), element);
+		PsiElement parent = element.getParent();
+		if(!(parent instanceof CSharpTypeDeclaration))
+		{
+			return null;
+		}
+
+		Pair<DotNetTypeDeclaration, DotNetGenericExtractor> type = CSharpTypeDeclarationImplUtil.resolveBaseType((DotNetTypeDeclaration) parent, element);
 		if(type == null)
 		{
 			return null;
