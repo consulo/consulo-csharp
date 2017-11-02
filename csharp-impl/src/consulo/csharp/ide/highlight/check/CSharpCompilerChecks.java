@@ -37,6 +37,7 @@ public enum CSharpCompilerChecks
 	CS0019(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // operator checks
 	CS0023(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  null cant be reference qualifier(dot operator)
 	CS0026(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), //  'this' dont exists in static context
+	CS0027(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), //  this can't used inside field declaration
 	CS0029(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  cant convert A to B with implicit
 	CS0030(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // cant convert A to B
 	CS0077(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // as operator cant be used with notnull types
