@@ -62,7 +62,7 @@ public class CS0236 extends CompilerCheck<CSharpReferenceExpression>
 		}
 
 		PsiElement target = element.resolve();
-		if(PsiTreeUtil.getParentOfType(element, DotNetType.class) != null)
+		if(PsiTreeUtil.getParentOfType(element, DotNetType.class) != null || target instanceof CSharpTypeDeclaration)
 		{
 			return null;
 		}
