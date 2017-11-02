@@ -30,6 +30,7 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.dotnet.psi.DotNetType;
 
 /**
  * @author VISTALL
@@ -61,6 +62,10 @@ public class CS0236 extends CompilerCheck<CSharpReferenceExpression>
 		}
 
 		PsiElement target = element.resolve();
+		if(PsiTreeUtil.getParentOfType(element, DotNetType.class) != null)
+		{
+			return null;
+		}
 
 		if(target instanceof DotNetModifierListOwner && !((DotNetModifierListOwner) target).hasModifier(CSharpModifier.STATIC) && parent.isEquivalentTo(target.getParent()))
 		{
