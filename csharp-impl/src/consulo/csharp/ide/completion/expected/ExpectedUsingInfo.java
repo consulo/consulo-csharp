@@ -16,9 +16,8 @@
 
 package consulo.csharp.ide.completion.expected;
 
-import gnu.trove.THashSet;
-
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -39,9 +38,11 @@ import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import consulo.csharp.lang.psi.CSharpUsingTypeStatement;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import consulo.dotnet.psi.DotNetConstructorDeclaration;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -57,18 +58,26 @@ public class ExpectedUsingInfo
 	@Nullable
 	public static ExpectedUsingInfo calculateFrom(@NotNull PsiElement element)
 	{
-		Set<PsiElement> elements = new THashSet<>();
+		Set<PsiElement> elements = new LinkedHashSet<>();
 
 		if(element instanceof DotNetLikeMethodDeclaration)
 		{
 			DotNetLikeMethodDeclaration likeMethodDeclaration = (DotNetLikeMethodDeclaration) element;
 
-			fillFromTypeRef(likeMethodDeclaration.getReturnTypeRef(), elements);
+			if(!(element instanceof DotNetConstructorDeclaration))
+			{
+				fillFromTypeRef(likeMethodDeclaration.getReturnTypeRef(), elements);
+			}
 
 			for(DotNetTypeRef typeRef : likeMethodDeclaration.getParameterTypeRefs())
 			{
 				fillFromTypeRef(typeRef, elements);
 			}
+		}
+
+		if(element instanceof DotNetVariable)
+		{
+			fillFromTypeRef(((DotNetVariable) element).toTypeRef(true), elements);
 		}
 
 		if(element instanceof DotNetVirtualImplementOwner)
@@ -105,6 +114,28 @@ public class ExpectedUsingInfo
 				}
 			}
 		}
+	}
+
+	@Nullable
+	public static ExpectedUsingInfo merge(@Nullable ExpectedUsingInfo oldInfo, @Nullable ExpectedUsingInfo newInfo)
+	{
+		if(oldInfo == null && newInfo == null)
+		{
+			return null;
+		}
+		if(oldInfo == null)
+		{
+			return newInfo;
+		}
+		if(newInfo == null)
+		{
+			return oldInfo;
+		}
+
+		Set<PsiElement> elements = new LinkedHashSet<>();
+		elements.addAll(oldInfo.myElements);
+		elements.addAll(newInfo.myElements);
+		return new ExpectedUsingInfo(elements);
 	}
 
 	private final Set<PsiElement> myElements;

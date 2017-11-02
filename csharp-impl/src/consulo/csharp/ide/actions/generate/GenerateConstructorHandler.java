@@ -40,6 +40,7 @@ import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.actions.generate.memberChoose.CSharpVariableChooseObject;
 import consulo.csharp.ide.actions.generate.memberChoose.ConstructorChooseMember;
+import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
@@ -198,13 +199,26 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 
 		final PsiElement elementAt = getTargetForInsert(file, editor);
 
+		ExpectedUsingInfo expectedUsingInfo = chooseMember.getExpectedUsingInfo();
+		for(CSharpVariableChooseObject object : additionalParameters)
+		{
+			expectedUsingInfo = ExpectedUsingInfo.merge(expectedUsingInfo, object.getExpectedUsingInfo());
+		}
+
+		final ExpectedUsingInfo finalExpectedUsingInfo = expectedUsingInfo;
 		new WriteCommandAction.Simple<Object>(file.getProject(), file)
 		{
 			@Override
 			protected void run() throws Throwable
 			{
 				final PsiElement psiElement = typeDeclaration.addAfter(method, elementAt);
+
 				typeDeclaration.addAfter(PsiParserFacade.SERVICE.getInstance(file.getProject()).createWhiteSpaceFromText("\n"), psiElement);
+
+				if(finalExpectedUsingInfo != null)
+				{
+					finalExpectedUsingInfo.insertUsingBefore(typeDeclaration);
+				}
 
 				PsiDocumentManager.getInstance(getProject()).commitDocument(editor.getDocument());
 

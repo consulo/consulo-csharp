@@ -17,9 +17,11 @@
 package consulo.csharp.ide.actions.generate.memberChoose;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
+import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
@@ -33,15 +35,7 @@ public class CSharpVariableChooseObject extends CSharpMemberChooseObject<DotNetV
 {
 	public static final CSharpVariableChooseObject[] EMPTY_ARRAY = new CSharpVariableChooseObject[0];
 
-	public static ArrayFactory<CSharpVariableChooseObject> ARRAY_FACTORY = new ArrayFactory<CSharpVariableChooseObject>()
-	{
-		@NotNull
-		@Override
-		public CSharpVariableChooseObject[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpVariableChooseObject[count];
-		}
-	};
+	public static ArrayFactory<CSharpVariableChooseObject> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpVariableChooseObject[count];
 
 	public CSharpVariableChooseObject(DotNetVariable declaration)
 	{
@@ -62,6 +56,14 @@ public class CSharpVariableChooseObject extends CSharpMemberChooseObject<DotNetV
 			return CSharpElementPresentationUtil.formatProperty((CSharpPropertyDeclaration) myDeclaration, CSharpElementPresentationUtil.SCALA_FORMAT);
 		}
 		throw new IllegalArgumentException(myDeclaration.getClass().getName());
+	}
+
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public ExpectedUsingInfo getExpectedUsingInfo()
+	{
+		return ExpectedUsingInfo.calculateFrom(myDeclaration);
 	}
 
 	@Override

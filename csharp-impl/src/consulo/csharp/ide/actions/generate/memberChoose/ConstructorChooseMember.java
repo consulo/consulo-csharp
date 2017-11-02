@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.generation.ClassMember;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -29,6 +30,7 @@ import com.intellij.util.ArrayFactory;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
+import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.DotNetTypes;
@@ -45,15 +47,7 @@ public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetCons
 {
 	public static final ConstructorChooseMember[] EMPTY_ARRAY = new ConstructorChooseMember[0];
 
-	public static ArrayFactory<ConstructorChooseMember> ARRAY_FACTORY = new ArrayFactory<ConstructorChooseMember>()
-	{
-		@NotNull
-		@Override
-		public ConstructorChooseMember[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new ConstructorChooseMember[count];
-		}
-	};
+	public static ArrayFactory<ConstructorChooseMember> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new ConstructorChooseMember[count];
 
 	public ConstructorChooseMember(DotNetConstructorDeclaration declaration)
 	{
@@ -89,7 +83,7 @@ public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetCons
 				builder.append(", ");
 			}
 			DotNetVariable parameter = targets.get(i);
-			CSharpTypeRefPresentationUtil.appendTypeRef(myDeclaration, builder, parameter.toTypeRef(true), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+			CSharpTypeRefPresentationUtil.appendTypeRef(myDeclaration, builder, parameter.toTypeRef(true), CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 			builder.append(" ");
 			builder.append(getParameterName(parameter));
 		}
@@ -173,5 +167,13 @@ public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetCons
 	public String getPresentationText()
 	{
 		return CSharpElementPresentationUtil.formatMethod(myDeclaration, CSharpElementPresentationUtil.METHOD_PARAMETER_NAME);
+	}
+
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public ExpectedUsingInfo getExpectedUsingInfo()
+	{
+		return ExpectedUsingInfo.calculateFrom(myDeclaration);
 	}
 }
