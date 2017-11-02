@@ -129,7 +129,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 
 					if(newElementList == null)
 					{
-						newElementList = new ArrayList<PsiElement>(psiElements.length);
+						newElementList = new ArrayList<>(psiElements.length);
 						// we need copy head to new list
 						newElementList.addAll(Arrays.asList(psiElements).subList(0, i));
 					}
@@ -271,7 +271,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
-		List<DotNetTypeRef> extendTypeRefs = new SmartList<DotNetTypeRef>();
+		List<DotNetTypeRef> extendTypeRefs = new SmartList<>();
 		for(DotNetTypeDeclaration type : myTypeDeclarations)
 		{
 			DotNetTypeList extendList = type.getExtendList();
@@ -284,7 +284,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 
 		if(extendTypeRefs.isEmpty())
 		{
-			Set<String> set = new THashSet<String>();
+			Set<String> set = new THashSet<>();
 			for(DotNetTypeDeclaration type : myTypeDeclarations)
 			{
 				ContainerUtil.addIfNotNull(set, CSharpTypeDeclarationImplUtil.getDefaultSuperType(type));
@@ -316,11 +316,12 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return false;
 	}
 
+	@NotNull
 	@RequiredReadAction
 	@Override
 	public DotNetTypeRef getTypeRefForEnumConstants()
 	{
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@RequiredReadAction
@@ -371,7 +372,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
-		List<DotNetNamedElement> elements = new ArrayList<DotNetNamedElement>();
+		List<DotNetNamedElement> elements = new ArrayList<>();
 		for(CSharpTypeDeclaration typeDeclaration : myTypeDeclarations)
 		{
 			Collections.addAll(elements, typeDeclaration.getMembers());
@@ -383,7 +384,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		// composite type dont hold partial type
+		// composite type dont hold partial modifier
 		if(modifier == CSharpModifier.PARTIAL)
 		{
 			return false;

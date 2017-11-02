@@ -21,6 +21,21 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.codeInsight.CodeInsightActionHandler;
+import com.intellij.ide.util.MemberChooser;
+import com.intellij.ide.util.MemberChooserBuilder;
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Pair;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiParserFacade;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.util.Processor;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.actions.generate.memberChoose.CSharpVariableChooseObject;
@@ -44,22 +59,6 @@ import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
-import com.intellij.codeInsight.CodeInsightActionHandler;
-import com.intellij.ide.util.MemberChooser;
-import com.intellij.ide.util.MemberChooserBuilder;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiParserFacade;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.util.Function;
-import com.intellij.util.Processor;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -92,8 +91,8 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 		}
 
 		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
-		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element(typeDeclaration), psiElementProcessor,
-				new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element(typeDeclaration), psiElementProcessor, new
+				ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
 
 		ResolveState resolveState = ResolveState.initial();
 		resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, StaticResolveSelectors.CONSTRUCTOR_GROUP);
@@ -101,7 +100,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 
 		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, baseType, false, false, resolveState);
 
-		List<ConstructorChooseMember> members = new ArrayList<ConstructorChooseMember>();
+		List<ConstructorChooseMember> members = new ArrayList<>();
 		for(PsiElement psiElement : psiElementProcessor.getElements())
 		{
 			if(psiElement instanceof CSharpElementGroup)
@@ -121,7 +120,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 		}
 		else
 		{
-			final MemberChooserBuilder<ConstructorChooseMember> builder = new MemberChooserBuilder<ConstructorChooseMember>(project);
+			final MemberChooserBuilder<ConstructorChooseMember> builder = new MemberChooserBuilder<>(project);
 			builder.setTitle("Choose Constructor");
 			builder.allowMultiSelection(true);
 
@@ -152,7 +151,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 			@NotNull ConstructorChooseMember chooseMember)
 	{
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, typeDeclaration.getResolveScope(), typeDeclaration);
-		final List<DotNetVariable> fieldOrProperties = new ArrayList<DotNetVariable>();
+		final List<DotNetVariable> fieldOrProperties = new ArrayList<>();
 		context.processElements(new Processor<PsiElement>()
 		{
 			@Override
@@ -174,19 +173,12 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 		List<CSharpVariableChooseObject> additionalParameters = Collections.emptyList();
 		if(!fieldOrProperties.isEmpty())
 		{
-			final MemberChooserBuilder<CSharpVariableChooseObject> builder = new MemberChooserBuilder<CSharpVariableChooseObject>(typeDeclaration.getProject());
+			final MemberChooserBuilder<CSharpVariableChooseObject> builder = new MemberChooserBuilder<>(typeDeclaration.getProject());
 			builder.setTitle("Choose Fields or Properties");
 			builder.allowMultiSelection(true);
 			builder.allowEmptySelection(true);
 
-			List<CSharpVariableChooseObject> map = ContainerUtil.map(fieldOrProperties, new Function<DotNetVariable, CSharpVariableChooseObject>()
-			{
-				@Override
-				public CSharpVariableChooseObject fun(DotNetVariable variable)
-				{
-					return new CSharpVariableChooseObject(variable);
-				}
-			});
+			List<CSharpVariableChooseObject> map = ContainerUtil.map(fieldOrProperties, CSharpVariableChooseObject::new);
 
 			MemberChooser<CSharpVariableChooseObject> fieldChooser = builder.createBuilder(ContainerUtil.toArray(map, CSharpVariableChooseObject.ARRAY_FACTORY));
 
@@ -204,9 +196,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 
 		final DotNetLikeMethodDeclaration method = CSharpFileFactory.createMethod(typeDeclaration.getProject(), text);
 
-		final int offset = editor.getCaretModel().getOffset();
-		final PsiElement elementAt = file.findElementAt(offset);
-		assert elementAt != null;
+		final PsiElement elementAt = getTargetForInsert(file, editor);
 
 		new WriteCommandAction.Simple<Object>(file.getProject(), file)
 		{
@@ -221,6 +211,33 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 				CodeStyleManager.getInstance(getProject()).reformat(psiElement);
 			}
 		}.execute();
+	}
+
+	@RequiredReadAction
+	@NotNull
+	private static PsiElement getTargetForInsert(PsiFile file, Editor editor)
+	{
+		int offset = editor.getCaretModel().getOffset();
+
+		PsiElement elementAt = file.findElementAt(offset);
+		assert elementAt != null;
+
+		CSharpTypeDeclaration declaration = CSharpGenerateAction.findTypeDeclaration(editor, file);
+		if(declaration == null)
+		{
+			return elementAt;
+		}
+
+		PsiElement leftBrace = declaration.getLeftBrace();
+		if(leftBrace == null)
+		{
+			return elementAt;
+		}
+		if(offset <= leftBrace.getTextOffset())
+		{
+			return leftBrace;
+		}
+		return elementAt;
 	}
 
 	@Override
