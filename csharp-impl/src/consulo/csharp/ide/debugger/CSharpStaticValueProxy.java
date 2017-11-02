@@ -45,8 +45,7 @@ public class CSharpStaticValueProxy implements DotNetValueProxy
 	}
 
 	@Override
-	public void accept(DotNetValueProxyVisitor dotNetValueProxyVisitor)
+	public void accept(DotNetValueProxyVisitor visitor)
 	{
-		throw new UnsupportedOperationException();
 	}
 }
