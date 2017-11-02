@@ -30,20 +30,6 @@ import javax.swing.JPanel;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
-import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
-import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
-import consulo.csharp.ide.highlight.check.impl.CS0023;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.csharp.module.extension.CSharpModuleUtil;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
@@ -58,6 +44,20 @@ import com.intellij.util.ui.JBUI;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
+import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
+import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
+import consulo.csharp.ide.highlight.check.impl.CS0023;
+import consulo.csharp.lang.psi.CSharpConstantUtil;
+import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpModuleUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
@@ -169,7 +169,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 					nextX++;
 				}
 
-				if(isConstant(initializer))
+				if(CSharpConstantUtil.isConstant(initializer))
 				{
 					myConstant = new NonFocusableCheckBox("Constant?");
 					myConstant.setMnemonic('c');
@@ -356,15 +356,6 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 			return false;
 		}
 		return true;
-	}
-
-	public boolean isConstant(DotNetExpression initializer)
-	{
-		if(initializer instanceof CSharpConstantExpressionImpl)
-		{
-			return true;
-		}
-		return false;
 	}
 
 	private void removeCollisionOnNonQualifiedReferenceExpressions(Collection<String> suggestedNames, CSharpReferenceExpression referenceExpression)
