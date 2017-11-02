@@ -16,13 +16,18 @@
 
 package consulo.csharp.lang.psi.impl.resolve.baseResolveContext;
 
-import gnu.trove.THashMap;
-
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.AtomicNullableLazyValue;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.Consumer;
+import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.containers.MultiMap;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
@@ -33,13 +38,6 @@ import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.AtomicNullableLazyValue;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.Consumer;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.MultiMap;
 
 /**
  * @author VISTALL
@@ -62,7 +60,7 @@ public abstract class MapElementGroupCollector<K, E extends PsiElement> extends 
 			}
 			else
 			{
-				map = new THashMap<>();
+				map = new LinkedHashMap<>();
 				final DotNetGenericExtractor extractor = getExtractor();
 				final DotNetModifierListOwner parent = myResolveContext.getElement();
 				final Project project = getProject();
@@ -74,16 +72,7 @@ public abstract class MapElementGroupCollector<K, E extends PsiElement> extends 
 
 					if(extractor != DotNetGenericExtractor.EMPTY)
 					{
-						value = ContainerUtil.map(value, new Function<E, E>()
-						{
-							@Override
-							@SuppressWarnings("unchecked")
-							public E fun(final E element)
-							{
-								return element instanceof DotNetNamedElement ? (E) GenericUnwrapTool.extract((DotNetNamedElement) element, extractor, parent) : element;
-							}
-						});
-
+						value = ContainerUtil.map(value, element -> element instanceof DotNetNamedElement ? (E) GenericUnwrapTool.extract((DotNetNamedElement) element, extractor, parent) : element);
 					}
 
 					CSharpElementGroup<E> group = new CSharpElementGroupImpl<>(project, key, value);
@@ -105,21 +94,16 @@ public abstract class MapElementGroupCollector<K, E extends PsiElement> extends 
 	@SuppressWarnings("unchecked")
 	private MultiMap<K, E> calcElements()
 	{
-		final MultiMap<K, E> multiMap = new MultiMap<>();
-		Consumer consumer = new Consumer<E>()
+		final MultiMap<K, E> multiMap = MultiMap.createLinked();
+		Consumer consumer = e ->
 		{
-			@Override
-			@RequiredReadAction
-			public void consume(PsiElement e)
+			K keyForElement = getKeyForElement((E) e);
+			if(keyForElement == null)
 			{
-				K keyForElement = getKeyForElement((E) e);
-				if(keyForElement == null)
-				{
-					return;
-				}
-
-				multiMap.getModifiable(keyForElement).add((E) e);
+				return;
 			}
+
+			multiMap.getModifiable(keyForElement).add((E) e);
 		};
 
 		CSharpElementVisitor visitor = createVisitor(consumer);
