@@ -36,6 +36,8 @@ import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.completion.CSharpCompletionSorting;
+import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
+import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.completion.insertHandler.CSharpParenthesesWithSemicolonInsertHandler;
 import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import consulo.csharp.ide.completion.util.LtGtInsertHandler;
@@ -44,6 +46,7 @@ import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
@@ -57,6 +60,7 @@ import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.ide.IconDescriptorUpdaters;
 
 /**
@@ -362,12 +366,33 @@ public class CSharpLookupElementBuilder
 
 			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(variable.toTypeRef(true), variable));
 
+			CSharpRefTypeRef.Type refType = null;
+			if(completionParent != null)
+			{
+				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(completionParent);
+				if(expectedTypeRefs.size() == 1)
+				{
+					ExpectedTypeInfo expectedTypeInfo = expectedTypeRefs.get(0);
+					DotNetTypeRef typeRef = expectedTypeInfo.getTypeRef();
+					if(typeRef instanceof CSharpRefTypeRef)
+					{
+						refType = ((CSharpRefTypeRef) typeRef).getType();
+					}
+				}
+			}
+
+			final CSharpRefTypeRef.Type finalRefType = refType;
 			builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
 			{
 				@Override
 				@RequiredDispatchThread
 				public void handleInsert(InsertionContext context, LookupElement item)
 				{
+					if(finalRefType != null)
+					{
+						context.getDocument().insertString(context.getStartOffset(), finalRefType + " ");
+					}
+
 					char completionChar = context.getCompletionChar();
 					switch(completionChar)
 					{
