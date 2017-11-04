@@ -36,6 +36,7 @@ import consulo.annotations.RequiredReadAction;
 import consulo.codeInsight.completion.CompletionProvider;
 import consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandlerWithChar;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -96,6 +97,21 @@ public class CSharpMemberNameCompletionContributor extends CompletionContributor
 						}
 
 						LookupElementBuilder element = LookupElementBuilder.create(nameWithoutExtension);
+						result.addElement(element);
+					}
+				}
+				else if(parent instanceof CSharpConstructorDeclaration)
+				{
+					PsiElement maybeType = parent.getParent();
+					if(maybeType instanceof CSharpTypeDeclaration)
+					{
+						String name = ((CSharpTypeDeclaration) maybeType).getName();
+						if(name == null)
+						{
+							return;
+						}
+
+						LookupElementBuilder element = LookupElementBuilder.create(name);
 						result.addElement(element);
 					}
 				}
