@@ -45,6 +45,7 @@ import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpOutRefWrapExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
@@ -369,14 +370,19 @@ public class CSharpLookupElementBuilder
 			CSharpRefTypeRef.Type refType = null;
 			if(completionParent != null)
 			{
-				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(completionParent);
-				if(expectedTypeRefs.size() == 1)
+				PsiElement parent = completionParent.getParent();
+
+				if(!(parent instanceof CSharpOutRefWrapExpressionImpl))
 				{
-					ExpectedTypeInfo expectedTypeInfo = expectedTypeRefs.get(0);
-					DotNetTypeRef typeRef = expectedTypeInfo.getTypeRef();
-					if(typeRef instanceof CSharpRefTypeRef)
+					List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(completionParent);
+					if(expectedTypeRefs.size() == 1)
 					{
-						refType = ((CSharpRefTypeRef) typeRef).getType();
+						ExpectedTypeInfo expectedTypeInfo = expectedTypeRefs.get(0);
+						DotNetTypeRef typeRef = expectedTypeInfo.getTypeRef();
+						if(typeRef instanceof CSharpRefTypeRef)
+						{
+							refType = ((CSharpRefTypeRef) typeRef).getType();
+						}
 					}
 				}
 			}
