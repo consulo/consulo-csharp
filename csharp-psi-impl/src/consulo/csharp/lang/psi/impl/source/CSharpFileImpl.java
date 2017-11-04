@@ -61,7 +61,7 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 	@Override
 	public void deleteChildRange(PsiElement first, PsiElement last) throws IncorrectOperationException
 	{
-		DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElement(this);
+		DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElementNoNameCheck(this);
 		if(singleElement != null && (singleElement == first || singleElement == last))
 		{
 			delete();

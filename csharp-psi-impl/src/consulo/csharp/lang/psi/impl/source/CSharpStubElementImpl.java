@@ -70,7 +70,7 @@ public abstract class CSharpStubElementImpl<S extends StubElement> extends StubB
 	public void deleteChildInternal(@NotNull ASTNode child)
 	{
 		PsiFile containingFile = getContainingFile();
-		DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElement((CSharpFileImpl) containingFile);
+		DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElementNoNameCheck((CSharpFileImpl) containingFile);
 		if(singleElement != null && singleElement == child.getPsi())
 		{
 			containingFile.delete();
