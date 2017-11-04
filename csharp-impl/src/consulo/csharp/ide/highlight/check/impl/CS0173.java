@@ -24,6 +24,7 @@ import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.impl.source.CSharpConditionalExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
@@ -37,10 +38,17 @@ public class CS0173 extends CompilerCheck<CSharpConditionalExpressionImpl>
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpConditionalExpressionImpl element)
 	{
+		DotNetExpression trueExpression = element.getTrueExpression();
+		DotNetExpression falseExpression = element.getFalseExpression();
+		if(trueExpression == null || falseExpression == null)
+		{
+			return null;
+		}
+
 		DotNetTypeRef typeRef = element.toTypeRef(true);
 		if(typeRef instanceof CSharpNullTypeRef)
 		{
-			return newBuilder(element, "<null>", "<null>");
+			return newBuilder(element, formatTypeRef(trueExpression.toTypeRef(true), element), formatTypeRef(falseExpression.toTypeRef(true), element));
 		}
 		return null;
 	}

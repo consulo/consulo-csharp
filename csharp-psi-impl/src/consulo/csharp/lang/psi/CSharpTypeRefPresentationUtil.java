@@ -136,7 +136,7 @@ public class CSharpTypeRefPresentationUtil
 		}
 		else if(typeRef instanceof CSharpNullTypeRef && BitUtil.isSet(flags, NULL))
 		{
-			builder.append("null");
+			builder.append("<null>");
 			return;
 		}
 
