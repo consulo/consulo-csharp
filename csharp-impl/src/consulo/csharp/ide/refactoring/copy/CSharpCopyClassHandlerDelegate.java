@@ -16,36 +16,267 @@
 
 package consulo.csharp.ide.refactoring.copy;
 
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import com.intellij.CommonBundle;
+import com.intellij.ide.util.EditorHelper;
+import com.intellij.ide.util.PlatformPackageUtil;
+import com.intellij.openapi.command.CommandProcessor;
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.Computable;
+import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.vfs.VfsUtil;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.psi.PsiBinaryFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileSystemItem;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilCore;
+import com.intellij.refactoring.RefactoringBundle;
+import com.intellij.refactoring.copy.CopyFilesOrDirectoriesDialog;
 import com.intellij.refactoring.copy.CopyFilesOrDirectoriesHandler;
+import com.intellij.refactoring.copy.CopyHandler;
+import com.intellij.refactoring.copy.CopyHandlerDelegateBase;
+import com.intellij.refactoring.move.moveFilesOrDirectories.MoveFilesOrDirectoriesUtil;
+import com.intellij.refactoring.util.CommonRefactoringUtil;
+import com.intellij.util.ArrayUtil;
+import com.intellij.util.IncorrectOperationException;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.dotnet.psi.DotNetNamedElement;
 
 /**
  * @author VISTALL
  * @since 24.10.2015
  */
-public class CSharpCopyClassHandlerDelegate extends CopyFilesOrDirectoriesHandler
+public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 {
+	private static Logger LOG = Logger.getInstance(CSharpCopyClassHandlerDelegate.class);
+
 	@Override
 	public boolean canCopy(PsiElement[] elements, boolean fromUpdate)
 	{
 		if(elements.length == 1 && elements[0] instanceof CSharpTypeDeclaration)
 		{
-			return super.canCopy(new PsiElement[]{elements[0].getContainingFile()}, fromUpdate);
+			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public void doClone(PsiElement element)
+	@RequiredReadAction
+	public void doCopy(final PsiElement[] elements, PsiDirectory defaultTargetDirectory)
 	{
-		super.doClone(element.getContainingFile());
+		CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) elements[0];
+
+		if(defaultTargetDirectory == null)
+		{
+			defaultTargetDirectory = PlatformPackageUtil.getDirectory(typeDeclaration.getContainingFile());
+		}
+
+		Project project = defaultTargetDirectory != null ? defaultTargetDirectory.getProject() : typeDeclaration.getProject();
+		if(defaultTargetDirectory != null)
+		{
+			defaultTargetDirectory = CopyFilesOrDirectoriesHandler.resolveDirectory(defaultTargetDirectory);
+			if(defaultTargetDirectory == null)
+			{
+				return;
+			}
+		}
+
+		defaultTargetDirectory = tryNotNullizeDirectory(project, defaultTargetDirectory);
+
+		doCopy(typeDeclaration, defaultTargetDirectory, project);
+	}
+
+	@RequiredReadAction
+	private static void doCopy(@NotNull CSharpTypeDeclaration typeDeclaration, @Nullable PsiDirectory defaultTargetDirectory, Project project)
+	{
+		PsiDirectory targetDirectory;
+		String newName;
+		boolean openInEditor;
+		VirtualFile virtualFile = PsiUtilCore.getVirtualFile(typeDeclaration);
+		CopyFilesOrDirectoriesDialog dialog = new CopyFilesOrDirectoriesDialog(new PsiElement[]{typeDeclaration.getContainingFile()}, defaultTargetDirectory, project, false);
+		if(dialog.showAndGet())
+		{
+			newName = dialog.getNewName();
+			targetDirectory = dialog.getTargetDirectory();
+			openInEditor = dialog.openInEditor();
+		}
+		else
+		{
+			return;
+		}
+
+		if(targetDirectory != null)
+		{
+			PsiManager manager = PsiManager.getInstance(project);
+			try
+			{
+				if(virtualFile.isDirectory())
+				{
+					PsiFileSystemItem psiElement = manager.findDirectory(virtualFile);
+					MoveFilesOrDirectoriesUtil.checkIfMoveIntoSelf(psiElement, targetDirectory);
+				}
+			}
+			catch(IncorrectOperationException e)
+			{
+				CommonRefactoringUtil.showErrorHint(project, null, e.getMessage(), CommonBundle.getErrorTitle(), null);
+				return;
+			}
+
+			CommandProcessor.getInstance().executeCommand(project, () -> doCopy(typeDeclaration, newName, targetDirectory, false, openInEditor), RefactoringBundle.message("copy.handler.copy.files" +
+					".directories"), null);
+		}
 	}
 
 	@Override
-	public void doCopy(PsiElement[] elements, PsiDirectory defaultTargetDirectory)
+	@RequiredReadAction
+	public void doClone(PsiElement element)
 	{
-		super.doCopy(new PsiElement[]{elements[0].getContainingFile()}, defaultTargetDirectory);
+		PsiDirectory targetDirectory;
+		if(element instanceof PsiDirectory)
+		{
+			targetDirectory = ((PsiDirectory) element).getParentDirectory();
+		}
+		else
+		{
+			targetDirectory = PlatformPackageUtil.getDirectory(element);
+		}
+		targetDirectory = tryNotNullizeDirectory(element.getProject(), targetDirectory);
+		if(targetDirectory == null)
+		{
+			return;
+		}
+
+		CopyFilesOrDirectoriesDialog dialog = new CopyFilesOrDirectoriesDialog(new PsiElement[]{element.getContainingFile()}, null, element.getProject(), true);
+		if(dialog.showAndGet())
+		{
+			String newName = dialog.getNewName();
+			doCopy((CSharpTypeDeclaration) element, newName, targetDirectory, true, true);
+		}
+	}
+
+	@RequiredReadAction
+	private static void doCopy(@NotNull final CSharpTypeDeclaration target,
+			@Nullable final String newName,
+			@NotNull final PsiDirectory targetDirectory,
+			final boolean doClone,
+			final boolean openInEditor)
+	{
+		Project project = target.getProject();
+
+		PsiFile oldFile = targetDirectory.findFile(newName);
+		if(oldFile != null)
+		{
+			Messages.showErrorDialog(project, "File already exists", RefactoringBundle.message("error.title"));
+			return;
+		}
+
+		PsiFile containingFile = target.getContainingFile();
+
+		PsiFile copyFile = (PsiFile) containingFile.copy();
+		copyFile.setName(newName);
+
+		CSharpTypeDeclaration copy = PsiTreeUtil.findElementOfClassAtOffset(copyFile, target.getTextOffset(), CSharpTypeDeclaration.class, false);
+
+		assert copy != null;
+
+		String copyTypeName = FileUtil.getNameWithoutExtension(newName);
+		if(CSharpNameSuggesterUtil.isIdentifier(copyTypeName))
+		{
+			PsiElement typeIdentifier = copy.getNameIdentifier();
+			if(typeIdentifier != null)
+			{
+				typeIdentifier.replace(CSharpFileFactory.createIdentifier(project, newName));
+			}
+
+			for(DotNetNamedElement element : copy.getMembers())
+			{
+				if(element instanceof CSharpConstructorDeclaration)
+				{
+					PsiElement constructorIdentifier = ((CSharpConstructorDeclaration) element).getNameIdentifier();
+					if(constructorIdentifier != null)
+					{
+						constructorIdentifier.replace(CSharpFileFactory.createIdentifier(project, newName));
+					}
+				}
+			}
+
+			List<CSharpReferenceExpression> referenceToChange = new ArrayList<>();
+			copy.accept(new CSharpRecursiveElementVisitor()
+			{
+				@Override
+				@RequiredReadAction
+				public void visitReferenceExpression(CSharpReferenceExpression expression)
+				{
+					super.visitReferenceExpression(expression);
+
+					PsiElement resolveTarget = expression.resolve();
+					if(target.isEquivalentTo(resolveTarget) || resolveTarget instanceof CSharpConstructorDeclaration && target.isEquivalentTo(resolveTarget.getParent()))
+					{
+						referenceToChange.add(expression);
+					}
+				}
+			});
+
+			for(CSharpReferenceExpression expression : referenceToChange)
+			{
+				expression.handleElementRename(copyTypeName);
+			}
+		}
+
+		PsiFile file = WriteCommandAction.runWriteCommandAction(project, (Computable<PsiFile>) () -> (PsiFile) targetDirectory.add(copyFile));
+
+		CopyHandler.updateSelectionInActiveProjectView(file, project, doClone);
+		if(openInEditor)
+		{
+			if(!(file instanceof PsiBinaryFile))
+			{
+				EditorHelper.openInEditor(file);
+				ToolWindowManager.getInstance(project).activateEditorComponent();
+			}
+		}
+	}
+
+	@Nullable
+	@RequiredReadAction
+	private static PsiDirectory tryNotNullizeDirectory(@NotNull Project project, @Nullable PsiDirectory defaultTargetDirectory)
+	{
+		if(defaultTargetDirectory == null)
+		{
+			VirtualFile root = ArrayUtil.getFirstElement(ProjectRootManager.getInstance(project).getContentRoots());
+			if(root == null)
+			{
+				root = project.getBaseDir();
+			}
+			if(root == null)
+			{
+				root = VfsUtil.getUserHomeDir();
+			}
+			defaultTargetDirectory = root != null ? PsiManager.getInstance(project).findDirectory(root) : null;
+
+			if(defaultTargetDirectory == null)
+			{
+				LOG.warn("No directory found for project: " + project.getName() + ", root: " + root);
+			}
+		}
+		return defaultTargetDirectory;
 	}
 }
