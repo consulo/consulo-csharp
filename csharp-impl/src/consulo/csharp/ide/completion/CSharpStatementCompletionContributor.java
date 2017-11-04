@@ -41,7 +41,6 @@ import consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandler;
 import consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
 import consulo.csharp.ide.completion.util.SpaceInsertHandler;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTokenSets;
@@ -195,12 +194,6 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 			@RequiredReadAction
 			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				CSharpLocalVariable localVariable = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpLocalVariable.class);
-				assert localVariable != null;
-				if(!CSharpPsiUtilImpl.isNullOrEmpty(localVariable))
-				{
-					return;
-				}
 				CSharpCompletionUtil.tokenSetToLookup(result, ourParStatementKeywords, (t, v) ->
 				{
 					t = t.withInsertHandler(buildInsertHandler(v));

@@ -35,6 +35,7 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetType;
 
@@ -82,7 +83,66 @@ public class CSharpPatterns
 	@NotNull
 	public static PsiElementPattern.Capture<PsiElement> statementStart()
 	{
-		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).withSuperParent(3, CSharpLocalVariable.class).with(new PatternCondition<PsiElement>("null-identifier-local-var")
+		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).with(new PatternCondition<PsiElement>("statement-validator")
+		{
+			@Override
+			@RequiredReadAction
+			public boolean accepts(@NotNull PsiElement element, ProcessingContext processingContext)
+			{
+				PsiElement parent = element.getParent();
+				PsiElement parent2 = parent == null ? null : parent.getParent();
+				PsiElement parent3 = parent2 == null ? null : parent2.getParent();
+				if(parent3 instanceof CSharpLocalVariable)
+				{
+					return validateLocalVariable((CSharpLocalVariable) parent3);
+				}
+
+				if(parent instanceof CSharpReferenceExpression && parent2 instanceof CSharpExpressionStatementImpl)
+				{
+					return validateReferenceExpression((CSharpReferenceExpression) parent);
+				}
+				return false;
+			}
+
+			@RequiredReadAction
+			private boolean validateReferenceExpression(CSharpReferenceExpression expression)
+			{
+				if(expression.getQualifier() != null)
+				{
+					return false;
+				}
+				CSharpReferenceExpression.ResolveToKind kind = expression.kind();
+				return kind == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER;
+			}
+
+			@RequiredReadAction
+			private boolean validateLocalVariable(CSharpLocalVariable localVariable)
+			{
+				// we cant use it when 'const <exp>'
+				if(localVariable == null || localVariable.isConstant())
+				{
+					return false;
+				}
+				// disable it inside non local decl statement, like catch
+				if(!(localVariable.getParent() instanceof CSharpLocalVariableDeclarationStatement))
+				{
+					return false;
+				}
+				DotNetType type = localVariable.getType();
+				if(!(type instanceof CSharpUserType))
+				{
+					return false;
+				}
+				CSharpReferenceExpression referenceExpression = ((CSharpUserType) type).getReferenceExpression();
+				if(referenceExpression.getQualifier() != null)
+				{
+					return false;
+				}
+				return CSharpPsiUtilImpl.isNullOrEmpty(localVariable);
+			}
+		});
+		/*return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).withSuperParent(3, CSharpLocalVariable.class).with(new PatternCondition<PsiElement>
+		("null-identifier-local-var")
 
 		{
 			@Override
@@ -112,7 +172,7 @@ public class CSharpPatterns
 				}
 				return CSharpPsiUtilImpl.isNullOrEmpty(localVariable);
 			}
-		});
+		}); */
 	}
 
 	@NotNull
