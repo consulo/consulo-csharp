@@ -18,10 +18,11 @@ package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.util.ArrayUtil2;
@@ -89,6 +90,16 @@ public class CSharpConditionalExpressionImpl extends CSharpExpressionImpl implem
 
 		DotNetTypeRef trueType = trueExpression.toTypeRef(resolveFromParent);
 		DotNetTypeRef falseType = falseExpression.toTypeRef(resolveFromParent);
+		if(trueType instanceof CSharpNullTypeRef)
+		{
+			return falseType;
+		}
+
+		if(falseType instanceof CSharpNullTypeRef)
+		{
+			return trueType;
+		}
+
 		if(CSharpTypeUtil.isInheritableWithImplicit(falseType, trueType, this))
 		{
 			return trueType;
