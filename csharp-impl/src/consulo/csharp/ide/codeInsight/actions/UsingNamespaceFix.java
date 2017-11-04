@@ -322,6 +322,8 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			DotNetParameter parameter = parameters[0];
 			DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
 			DotNetGenericParameter[] genericParameters = method.getGenericParameters();
+			// if method have generic parameters - extract this by default generic parameter type for correct check #isInheritable()
+			// due generic parameter T is not inheritable by other types
 			if(genericParameters.length > 0)
 			{
 				Map<DotNetGenericParameter, DotNetTypeRef> map = new HashMap<>(genericParameters.length);
