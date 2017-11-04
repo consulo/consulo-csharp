@@ -19,7 +19,9 @@ package consulo.csharp.ide.codeInsight.actions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
@@ -45,27 +47,38 @@ import com.intellij.util.Processors;
 import com.intellij.util.containers.ArrayListSet;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAttribute;
+import consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpNewExpression;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
+import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex;
 import consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
 import consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import consulo.dotnet.DotNetBundle;
+import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent;
 import consulo.dotnet.libraryAnalyzer.NamespaceReference;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetInheritUtil;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetNamespaceDeclaration;
+import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetShortNameSearcher;
+import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.GlobalSearchScopeFilter;
 import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilMethodEntry;
@@ -258,6 +271,10 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			return;
 		}
 
+		DotNetExpression callQualifier = ref.getQualifier();
+
+		DotNetTypeRef qualifierTypeRef = callQualifier.toTypeRef(true);
+
 		Collection<DotNetLikeMethodDeclaration> list = ExtensionMethodIndex.getInstance().get(referenceName, ref.getProject(), ref.getResolveScope());
 
 		for(DotNetLikeMethodDeclaration it : list)
@@ -296,10 +313,36 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 				continue;
 			}
 
-			PsiElement parentOfMethod = method.getParent();
-			if(parentOfMethod instanceof DotNetQualifiedElement)
+			DotNetParameter[] parameters = method.getParameters();
+			if(parameters.length == 0)
 			{
-				set.add(new NamespaceReference(((DotNetQualifiedElement) parentOfMethod).getPresentableParentQName(), null));
+				continue;
+			}
+
+			DotNetParameter parameter = parameters[0];
+			DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
+			DotNetGenericParameter[] genericParameters = method.getGenericParameters();
+			if(genericParameters.length > 0)
+			{
+				Map<DotNetGenericParameter, DotNetTypeRef> map = new HashMap<>(genericParameters.length);
+				for(DotNetGenericParameter genericParameter : genericParameters)
+				{
+					DotNetTypeRef[] extendTypes = CSharpGenericConstraintUtil.getExtendTypes(genericParameter);
+
+					map.put(genericParameter, extendTypes.length == 1 ? extendTypes[0] : new CSharpTypeRefByQName(qualifier, DotNetTypes.System.Object));
+				}
+				extractor = CSharpGenericExtractor.create(map);
+			}
+
+			DotNetTypeRef extractedParameterTypeRef = GenericUnwrapTool.exchangeTypeRef(parameter.toTypeRef(true), extractor, qualifier);
+
+			if(CSharpTypeUtil.isInheritable(extractedParameterTypeRef, qualifierTypeRef, qualifier))
+			{
+				PsiElement parentOfMethod = method.getParent();
+				if(parentOfMethod instanceof DotNetQualifiedElement)
+				{
+					set.add(new NamespaceReference(((DotNetQualifiedElement) parentOfMethod).getPresentableParentQName(), null));
+				}
 			}
 		}
 	}

@@ -28,9 +28,9 @@ import consulo.dotnet.psi.DotNetGenericParameter;
  */
 public interface CSharpGenericConstraint extends DotNetElement
 {
-	public static final CSharpGenericConstraint[] EMPTY_ARRAY = new CSharpGenericConstraint[0];
+	CSharpGenericConstraint[] EMPTY_ARRAY = new CSharpGenericConstraint[0];
 
-	public static ArrayFactory<CSharpGenericConstraint> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpGenericConstraint[count];
+	ArrayFactory<CSharpGenericConstraint> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpGenericConstraint[count];
 
 	@Nullable
 	DotNetGenericParameter resolve();
