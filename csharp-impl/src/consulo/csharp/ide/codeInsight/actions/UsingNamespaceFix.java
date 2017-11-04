@@ -45,29 +45,30 @@ import com.intellij.util.Processors;
 import com.intellij.util.containers.ArrayListSet;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAttribute;
-import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpNewExpression;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
+import consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex;
 import consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
 import consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import consulo.dotnet.DotNetBundle;
 import consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent;
 import consulo.dotnet.libraryAnalyzer.NamespaceReference;
-import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetInheritUtil;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetShortNameSearcher;
 import consulo.dotnet.resolve.GlobalSearchScopeFilter;
+import consulo.msil.lang.psi.MsilClassEntry;
+import consulo.msil.lang.psi.MsilMethodEntry;
 
 /**
  * @author VISTALL
@@ -257,24 +258,48 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			return;
 		}
 
-		CSharpCallArgument[] callArguments = ((CSharpMethodCallExpressionImpl) parent).getCallArguments();
-
-
-		CSharpCallArgument[] newCallArguments = new CSharpCallArgument[callArguments.length + 1];
-		newCallArguments[0] = new CSharpLightCallArgument((DotNetExpression) qualifier);
-		System.arraycopy(callArguments, 0, newCallArguments, 1, callArguments.length);
-
 		Collection<DotNetLikeMethodDeclaration> list = ExtensionMethodIndex.getInstance().get(referenceName, ref.getProject(), ref.getResolveScope());
 
-		for(DotNetLikeMethodDeclaration possibleMethod : list)
+		for(DotNetLikeMethodDeclaration it : list)
 		{
-			if(MethodResolver.calc(newCallArguments, possibleMethod, ref).isValidResult())
+			DotNetLikeMethodDeclaration method = null;
+
+			if(it instanceof MsilMethodEntry)
 			{
-				PsiElement parentOfMethod = possibleMethod.getParent();
-				if(parentOfMethod instanceof DotNetQualifiedElement)
+				PsiElement msilClass = it.getParent();
+
+				if(msilClass instanceof MsilClassEntry)
 				{
-					set.add(new NamespaceReference(((DotNetQualifiedElement) parentOfMethod).getPresentableParentQName(), null));
+					PsiElement wrap = MsilToCSharpUtil.wrap(msilClass, null);
+
+					if(wrap instanceof CSharpTypeDeclaration)
+					{
+						DotNetNamedElement[] members = ((CSharpTypeDeclaration) wrap).getMembers();
+						for(DotNetNamedElement member : members)
+						{
+							if(member.getOriginalElement() == it)
+							{
+								method = (DotNetLikeMethodDeclaration) member;
+								break;
+							}
+						}
+					}
 				}
+			}
+			else
+			{
+				method = it;
+			}
+
+			if(method == null)
+			{
+				continue;
+			}
+
+			PsiElement parentOfMethod = method.getParent();
+			if(parentOfMethod instanceof DotNetQualifiedElement)
+			{
+				set.add(new NamespaceReference(((DotNetQualifiedElement) parentOfMethod).getPresentableParentQName(), null));
 			}
 		}
 	}

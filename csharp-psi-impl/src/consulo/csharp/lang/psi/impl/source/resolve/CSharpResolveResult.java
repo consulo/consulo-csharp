@@ -18,6 +18,9 @@ package consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.Key;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpLinqVariable;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
@@ -26,29 +29,29 @@ import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import com.intellij.openapi.util.Key;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
 
 /**
  * @author VISTALL
  * @since 05.03.2016
  */
-public class CSharpResolveResult extends PsiElementResolveResult
+public class CSharpResolveResult implements ResolveResult
 {
 	public static final Key<PsiElement> FORCE_PROVIDER_ELEMENT = Key.create("csharp.provider.element");
 
 	private PsiElement myProviderElement;
 	protected Boolean myAssignable = null;
+	private final boolean myValid;
+	private final PsiElement myElement;
 
-	public CSharpResolveResult(@NotNull PsiElement element)
+	public CSharpResolveResult(@Nullable PsiElement element)
 	{
-		super(element);
+		this(element, element != null && element.isValid());
 	}
 
-	public CSharpResolveResult(@NotNull PsiElement element, boolean validResult)
+	public CSharpResolveResult(@Nullable PsiElement element, boolean validResult)
 	{
-		super(element, validResult);
+		myElement = element;
+		myValid = validResult;
 	}
 
 	@NotNull
@@ -96,5 +99,18 @@ public class CSharpResolveResult extends PsiElementResolveResult
 		{
 			myAssignable = Boolean.TRUE;
 		}
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getElement()
+	{
+		return myElement;
+	}
+
+	@Override
+	public boolean isValidResult()
+	{
+		return myValid;
 	}
 }

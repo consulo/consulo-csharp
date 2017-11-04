@@ -63,6 +63,7 @@ import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import consulo.csharp.lang.psi.impl.source.resolve.AsPsiElementProcessor;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
+import consulo.csharp.lang.psi.impl.source.resolve.CSharpUndefinedResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
@@ -310,6 +311,10 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			for(final DotNetExpression dotNetExpression : parameterExpressions)
 			{
 				final DotNetTypeRef expressionTypeRef = dotNetExpression.toTypeRef(true);
+				if(expressionTypeRef == DotNetTypeRef.UNKNOWN_TYPE)
+				{
+					return new MethodResolveResult[] {MethodResolveResult.createResult(MethodCalcResult.VALID, this, CSharpUndefinedResolveResult.INSTANCE)};
+				}
 
 				resolveUserDefinedOperators(elementType, expressionTypeRef, expressionTypeRef, resolveResults, null);
 

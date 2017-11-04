@@ -152,6 +152,11 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl>
 			DotNetTypeRef leftType = leftExpression.toTypeRef(true);
 			DotNetTypeRef rightType = rightExpression.toTypeRef(true);
 
+			if(leftType == DotNetTypeRef.UNKNOWN_TYPE || rightType == DotNetTypeRef.UNKNOWN_TYPE)
+			{
+				return null;
+			}
+
 			boolean applicable = CSharpTypeUtil.isInheritableWithImplicit(leftType, rightType, element) || CSharpTypeUtil.isInheritableWithImplicit(rightType, leftType, element);
 
 			if(!applicable)

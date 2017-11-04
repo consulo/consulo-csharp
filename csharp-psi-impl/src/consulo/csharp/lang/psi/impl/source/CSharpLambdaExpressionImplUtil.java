@@ -36,6 +36,7 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpUndefinedLambdaResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
@@ -56,11 +57,16 @@ public class CSharpLambdaExpressionImplUtil
 		CSharpLambdaResolveResult leftTypeRef = resolveLeftLambdaTypeRef(target);
 		if(leftTypeRef == null)
 		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+
+		if(leftTypeRef == CSharpUndefinedLambdaResolveResult.INSTANCE)
+		{
 			return DotNetTypeRef.UNKNOWN_TYPE;
 		}
 		DotNetTypeRef[] leftTypeParameters = leftTypeRef.getParameterTypeRefs();
 		DotNetTypeRef typeRef = ArrayUtil2.safeGet(leftTypeParameters, parameterIndex);
-		return ObjectUtil.notNull(typeRef, DotNetTypeRef.UNKNOWN_TYPE);
+		return ObjectUtil.notNull(typeRef, DotNetTypeRef.ERROR_TYPE);
 	}
 
 	@Nullable
@@ -125,7 +131,7 @@ public class CSharpLambdaExpressionImplUtil
 			ResolveResult validOrFirstMaybeResult = CSharpResolveUtil.findValidOrFirstMaybeResult(argumentListOwner.multiResolve(false));
 			if(validOrFirstMaybeResult == null)
 			{
-				return null;
+				return CSharpUndefinedLambdaResolveResult.INSTANCE;
 			}
 
 			if(validOrFirstMaybeResult instanceof MethodResolveResult)

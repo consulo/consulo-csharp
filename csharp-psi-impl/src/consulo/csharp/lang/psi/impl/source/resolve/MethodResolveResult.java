@@ -31,36 +31,39 @@ public class MethodResolveResult extends CSharpResolveResult
 {
 	public static final MethodResolveResult[] EMPTY_ARRAY = new MethodResolveResult[0];
 
-	public static ArrayFactory<MethodResolveResult> ARRAY_FACTORY = new ArrayFactory<MethodResolveResult>()
-	{
-		@NotNull
-		@Override
-		public MethodResolveResult[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new MethodResolveResult[count];
-		}
-	};
+	public static ArrayFactory<MethodResolveResult> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new MethodResolveResult[count];
 
 	@NotNull
-	public static MethodResolveResult createResult(@NotNull MethodCalcResult calcResult, @NotNull PsiElement element, @Nullable ResolveResult resolveResult)
+	public static MethodResolveResult createResult(@NotNull MethodCalcResult calcResult, @Nullable PsiElement element, @Nullable ResolveResult resolveResult)
 	{
-		PsiElement providerElement = element.getUserData(FORCE_PROVIDER_ELEMENT);
+		PsiElement providerElement = element == null ? null : element.getUserData(FORCE_PROVIDER_ELEMENT);
 		if(providerElement == null && resolveResult instanceof CSharpResolveResult)
 		{
 			providerElement = ((CSharpResolveResult) resolveResult).getProviderElement();
 		}
 		MethodResolveResult methodResolveResult = new MethodResolveResult(element, calcResult);
 		methodResolveResult.setProvider(providerElement);
+		if(resolveResult instanceof CSharpUndefinedResolveResult)
+		{
+			methodResolveResult.myUnknown = true;
+		}
 		return methodResolveResult;
 	}
 
 	@NotNull
 	private final MethodCalcResult myCalcResult;
 
-	private MethodResolveResult(@NotNull PsiElement element, @NotNull MethodCalcResult calcResult)
+	private boolean myUnknown;
+
+	private MethodResolveResult(@Nullable PsiElement element, @NotNull MethodCalcResult calcResult)
 	{
 		super(element, calcResult.isValidResult());
 		myCalcResult = calcResult;
+	}
+
+	public boolean isUnknown()
+	{
+		return myUnknown;
 	}
 
 	@NotNull

@@ -52,14 +52,7 @@ import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import consulo.csharp.lang.psi.impl.source.injection.CSharpForInjectionFragmentHolder;
-import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
-import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResultWithExtractor;
-import consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
-import consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.SortedMemberResolveScopeProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
+import consulo.csharp.lang.psi.impl.source.resolve.*;
 import consulo.csharp.lang.psi.impl.source.resolve.extensionResolver.ExtensionResolveScopeProcessor;
 import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.handlers.*;
@@ -281,6 +274,11 @@ public class CSharpReferenceExpressionImplUtil
 		if(resolveResult == null)
 		{
 			return DotNetTypeRef.ERROR_TYPE;
+		}
+
+		if(resolveResult instanceof MethodResolveResult && ((MethodResolveResult) resolveResult).isUnknown())
+		{
+			return DotNetTypeRef.UNKNOWN_TYPE;
 		}
 
 		DotNetTypeRef typeRef = CSharpReferenceExpressionImplUtil.toTypeRef(resolveResult);
@@ -749,6 +747,11 @@ public class CSharpReferenceExpressionImplUtil
 		if(forceQualifierElement == null && qualifier instanceof DotNetExpression)
 		{
 			qualifierTypeRef = ((DotNetExpression) qualifier).toTypeRef(false);
+			if(qualifierTypeRef == DotNetTypeRef.UNKNOWN_TYPE)
+			{
+				processor.process(CSharpUndefinedResolveResult.INSTANCE);
+				return;
+			}
 
 			if(element instanceof CSharpReferenceExpression)
 			{
