@@ -16,7 +16,6 @@
 
 package consulo.csharp.ide.parameterInfo;
 
-import java.util.Comparator;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +32,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ArrayFactory;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -43,11 +43,14 @@ import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpDictionaryInitializerImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetAttributeUtil;
+import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetVariable;
@@ -70,15 +73,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	{
 		public static final ItemToShow[] EMPTY_ARRAY = new ItemToShow[0];
 
-		public static ArrayFactory<ItemToShow> ARRAY_FACTORY = new ArrayFactory<ItemToShow>()
-		{
-			@NotNull
-			@Override
-			public ItemToShow[] create(int count)
-			{
-				return count == 0 ? EMPTY_ARRAY : new ItemToShow[count];
-			}
-		};
+		public static ArrayFactory<ItemToShow> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new ItemToShow[count];
 
 		private CSharpSimpleLikeMethod myLikeMethod;
 		private PsiElement myScope;
@@ -104,11 +99,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		@RequiredReadAction
 		public boolean isObsolete()
 		{
-			if(myLikeMethod instanceof DotNetModifierListOwner)
-			{
-				return DotNetAttributeUtil.hasAttribute((PsiElement) myLikeMethod, DotNetTypes.System.ObsoleteAttribute);
-			}
-			return false;
+			return myLikeMethod instanceof DotNetModifierListOwner && DotNetAttributeUtil.hasAttribute((PsiElement) myLikeMethod, DotNetTypes.System.ObsoleteAttribute);
 		}
 
 		@Override
@@ -191,9 +182,10 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	}
 
 	@NotNull
+	@RequiredReadAction
 	private static ItemToShow[] resolveToCallables(PsiElement element, CreateParameterInfoContext context)
 	{
-		List<ItemToShow> list = new SmartList<ItemToShow>();
+		List<ItemToShow> list = new SmartList<>();
 		if(element instanceof CSharpCallArgumentListOwner)
 		{
 			ResolveResult[] resolveResults = ((CSharpCallArgumentListOwner) element).multiResolve(false);
@@ -213,21 +205,17 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 			}
 		}
 
-		ContainerUtil.sort(list, new Comparator<ItemToShow>()
+		ContainerUtil.sort(list, (o1, o2) ->
 		{
-			@Override
-			public int compare(ItemToShow o1, ItemToShow o2)
+			if(o1.isValid())
 			{
-				if(o1.isValid())
-				{
-					return -1;
-				}
-				if(o2.isValid())
-				{
-					return 1;
-				}
-				return o1.myLikeMethod.getParameterInfos().length - o2.myLikeMethod.getParameterInfos().length;
+				return -1;
 			}
+			if(o2.isValid())
+			{
+				return 1;
+			}
+			return o1.myLikeMethod.getParameterInfos().length - o2.myLikeMethod.getParameterInfos().length;
 		});
 		return ContainerUtil.toArray(list, ItemToShow.ARRAY_FACTORY);
 	}
@@ -266,6 +254,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public PsiElement findElementForUpdatingParameterInfo(UpdateParameterInfoContext context)
 	{
 		return context.getFile().findElementAt(context.getEditor().getCaretModel().getOffset());
@@ -274,8 +263,9 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	@Override
 	public void updateParameterInfo(@NotNull PsiElement place, UpdateParameterInfoContext context)
 	{
+		CSharpCallArgumentListOwner owner = resolveCallArgumentListOwner(place);
 		int parameterIndex = -1;
-		CSharpCallArgumentList callArgumentList = PsiTreeUtil.getParentOfType(place, CSharpCallArgumentList.class, false);
+		CSharpCallArgumentList callArgumentList = owner == null ? null : owner.getParameterList();
 		if(callArgumentList != null)
 		{
 			IElementType delimiter = CSharpTokens.COMMA;
@@ -292,7 +282,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		{
 			context.setParameterOwner(place);
 		}
-		else if(context.getParameterOwner() != resolveCallArgumentListOwner(place))
+		else if(context.getParameterOwner() != owner)
 		{
 			context.removeHint();
 			return;
@@ -312,12 +302,26 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		{
 			return null;
 		}
-		CSharpCallArgumentListOwner owner = PsiTreeUtil.getParentOfType(place, CSharpCallArgumentListOwner.class);
-		while(owner != null && !owner.canResolve())
+
+		boolean isDelegateKeyword = PsiUtilCore.getElementType(place) == CSharpTokens.DELEGATE_KEYWORD;
+
+		DotNetElement element;
+		// if we targeted delegate keyword = do not try to search delegate expression
+		if(isDelegateKeyword)
 		{
-			owner = PsiTreeUtil.getParentOfType(owner, CSharpCallArgumentListOwner.class);
+			element = PsiTreeUtil.getParentOfType(place, CSharpCallArgumentListOwner.class, CSharpLambdaExpressionImpl.class);
 		}
-		return owner;
+		else
+		{
+			element = PsiTreeUtil.getParentOfType(place, CSharpCallArgumentListOwner.class, CSharpLambdaExpressionImpl.class, CSharpDelegateExpressionImpl.class);
+		}
+
+		if(element instanceof CSharpCallArgumentListOwner)
+		{
+			return (CSharpCallArgumentListOwner) element;
+		}
+
+		return null;
 	}
 
 	@Nullable
@@ -348,6 +352,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 
 		TextRange parameterRange = build.getParameterRange(context.getCurrentParameterIndex());
 
-		context.setupUIComponentPresentation(text, parameterRange.getStartOffset(), parameterRange.getEndOffset(), !context.isUIComponentEnabled(), p.isObsolete(), false, context.getDefaultParameterColor());
+		context.setupUIComponentPresentation(text, parameterRange.getStartOffset(), parameterRange.getEndOffset(), !context.isUIComponentEnabled(), p.isObsolete(), false, context
+				.getDefaultParameterColor());
 	}
 }

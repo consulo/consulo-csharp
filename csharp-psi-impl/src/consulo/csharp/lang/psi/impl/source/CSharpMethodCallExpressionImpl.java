@@ -54,12 +54,6 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 	}
 
 	@Override
-	public boolean canResolve()
-	{
-		return true;
-	}
-
-	@Override
 	@Nullable
 	public CSharpCallArgumentList getParameterList()
 	{

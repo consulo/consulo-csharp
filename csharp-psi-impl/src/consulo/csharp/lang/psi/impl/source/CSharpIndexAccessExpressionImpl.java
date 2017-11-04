@@ -140,12 +140,6 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
-	@Override
-	public boolean canResolve()
-	{
-		return true;
-	}
-
 	@NotNull
 	@Override
 	public CSharpCallArgument[] getCallArguments()

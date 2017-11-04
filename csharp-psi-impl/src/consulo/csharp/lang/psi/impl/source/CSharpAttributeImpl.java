@@ -78,12 +78,6 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttr
 		return DotNetTypeRef.ERROR_TYPE;
 	}
 
-	@Override
-	public boolean canResolve()
-	{
-		return true;
-	}
-
 	@Nullable
 	@Override
 	public CSharpCallArgumentList getParameterList()

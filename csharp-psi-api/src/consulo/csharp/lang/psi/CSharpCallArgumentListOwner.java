@@ -28,7 +28,10 @@ import consulo.dotnet.psi.DotNetExpression;
  */
 public interface CSharpCallArgumentListOwner extends DotNetCallArgumentListOwner
 {
-	boolean canResolve();
+	default boolean canResolve()
+	{
+		return true;
+	}
 
 	@Override
 	@NotNull

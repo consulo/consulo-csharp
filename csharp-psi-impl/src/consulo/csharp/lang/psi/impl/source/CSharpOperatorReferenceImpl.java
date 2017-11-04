@@ -528,12 +528,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return typeRefs;
 	}
 
-	@Override
-	public boolean canResolve()
-	{
-		return true;
-	}
-
 	@Nullable
 	@Override
 	public CSharpCallArgumentList getParameterList()

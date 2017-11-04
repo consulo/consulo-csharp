@@ -87,12 +87,6 @@ public class CSharpStubAttributeImpl extends CSharpStubElementImpl<CSharpWithStr
 		return DotNetTypeRef.ERROR_TYPE;
 	}
 
-	@Override
-	public boolean canResolve()
-	{
-		return true;
-	}
-
 	@Nullable
 	@Override
 	public CSharpCallArgumentList getParameterList()

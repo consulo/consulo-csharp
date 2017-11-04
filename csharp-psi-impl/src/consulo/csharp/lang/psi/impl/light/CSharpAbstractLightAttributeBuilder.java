@@ -68,12 +68,6 @@ public abstract class CSharpAbstractLightAttributeBuilder extends LightElement i
 		return null;
 	}
 
-	@Override
-	public boolean canResolve()
-	{
-		return true;
-	}
-
 	@Nullable
 	@Override
 	public CSharpCallArgumentList getParameterList()
