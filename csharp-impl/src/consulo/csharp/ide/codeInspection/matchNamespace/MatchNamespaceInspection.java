@@ -24,6 +24,7 @@ import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElementVisitor;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpFile;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 
 /**
@@ -39,6 +40,11 @@ public class MatchNamespaceInspection extends LocalInspectionTool
 	@RequiredReadAction
 	public PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder, boolean isOnTheFly, @NotNull LocalInspectionToolSession session)
 	{
+		if(!(holder.getFile() instanceof CSharpFile))
+		{
+			return PsiElementVisitor.EMPTY_VISITOR;
+		}
+
 		DotNetSimpleModuleExtension extension = ModuleUtilCore.getExtension(holder.getFile(), DotNetSimpleModuleExtension.class);
 		if(extension == null)
 		{
@@ -61,6 +67,6 @@ public class MatchNamespaceInspection extends LocalInspectionTool
 		{
 			return;
 		}
-		visitor.reportFile();
+		visitor.report();
 	}
 }

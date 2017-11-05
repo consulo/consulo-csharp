@@ -16,6 +16,8 @@
 
 package consulo.csharp.ide.codeInspection.matchNamespace;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.intellij.codeInspection.ProblemsHolder;
@@ -38,7 +40,7 @@ class MatchNamespaceVisitor extends CSharpElementVisitor
 	private ProblemsHolder myHolder;
 	private final String myExpectedNamespace;
 
-	private boolean myVisited;
+	private List<CSharpNamespaceDeclaration> myRootNamespaces = new ArrayList<>();
 
 	MatchNamespaceVisitor(ProblemsHolder holder, DotNetSimpleModuleExtension extension)
 	{
@@ -53,36 +55,39 @@ class MatchNamespaceVisitor extends CSharpElementVisitor
 	@RequiredReadAction
 	public void visitNamespaceDeclaration(CSharpNamespaceDeclaration declaration)
 	{
-		myVisited = true;
-
 		CSharpNamespaceDeclaration top = PsiTreeUtil.getParentOfType(declaration, CSharpNamespaceDeclaration.class);
 		if(top != null)
 		{
 			return;
 		}
 
-		String presentableQName = declaration.getPresentableQName();
-
-		if(!Objects.equals(myExpectedNamespace, presentableQName))
-		{
-			myHolder.registerProblem(declaration.getNamespaceReference(), CSharpInspectionBundle.message("expected.namespace.inspection", myExpectedNamespace));
-		}
+		myRootNamespaces.add(declaration);
 	}
 
-	public void reportFile()
+	@RequiredReadAction
+	public void report()
 	{
-		if(myVisited)
+		if(myRootNamespaces.isEmpty())
 		{
-			return;
+			PsiFile file = myHolder.getFile();
+
+			if(StringUtil.isEmpty(myExpectedNamespace))
+			{
+				return;
+			}
+
+			myHolder.registerProblem(file, CSharpInspectionBundle.message("expected.namespace.inspection", myExpectedNamespace));
 		}
-
-		PsiFile file = myHolder.getFile();
-
-		if(StringUtil.isEmpty(myExpectedNamespace))
+		else if(myRootNamespaces.size() == 1)
 		{
-			return;
-		}
+			CSharpNamespaceDeclaration declaration = myRootNamespaces.get(0);
 
-		myHolder.registerProblem(file, CSharpInspectionBundle.message("expected.namespace.inspection", myExpectedNamespace));
+			String presentableQName = declaration.getPresentableQName();
+
+			if(!Objects.equals(myExpectedNamespace, presentableQName))
+			{
+				myHolder.registerProblem(declaration.getNamespaceReference(), CSharpInspectionBundle.message("expected.namespace.inspection", myExpectedNamespace));
+			}
+		}
 	}
 }
