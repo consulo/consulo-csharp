@@ -196,6 +196,7 @@ public class CSharpCompletionSorting
 
 		@NotNull
 		@Override
+		@RequiredReadAction
 		public Comparable weigh(@NotNull LookupElement element)
 		{
 			final String name = getName(element);
@@ -207,6 +208,7 @@ public class CSharpCompletionSorting
 			return 0;
 		}
 
+		@RequiredReadAction
 		private static int getNameEndMatchingDegree(final String name, List<ExpectedTypeInfo> expectedInfos)
 		{
 			int res = 0;
@@ -223,16 +225,12 @@ public class CSharpCompletionSorting
 		}
 	}
 
+	@RequiredReadAction
 	private static int calcMatch(final List<String> words, int max, List<ExpectedTypeInfo> myExpectedInfos)
 	{
 		for(ExpectedTypeInfo expectedInfo : myExpectedInfos)
 		{
-			PsiElement typeProvider = expectedInfo.getTypeProvider();
-			if(typeProvider == null)
-			{
-				continue;
-			}
-			String expectedName = getName(typeProvider);
+			String expectedName = getName(expectedInfo.getTypeProvider());
 			if(expectedName == null)
 			{
 				continue;
