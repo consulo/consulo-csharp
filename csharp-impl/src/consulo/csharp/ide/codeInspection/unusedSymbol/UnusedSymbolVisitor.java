@@ -32,9 +32,9 @@ import com.intellij.util.Query;
  * @author VISTALL
  * @since 20.05.14
  */
-public class UnusedSymbolVisitor extends CSharpElementVisitor
+class UnusedSymbolVisitor extends CSharpElementVisitor
 {
-	private Map<PsiNameIdentifierOwner, Boolean> myVariableStates = new HashMap<PsiNameIdentifierOwner, Boolean>();
+	private Map<PsiNameIdentifierOwner, Boolean> myVariableStates = new HashMap<>();
 
 	@Override
 	public void visitLocalVariable(CSharpLocalVariable variable)
