@@ -182,33 +182,124 @@ public class CSharpCompletionSorting
 			}
 			return 0;
 		}
+	}
 
-		@Nullable
-		@RequiredReadAction
-		private static String getName(LookupElement element)
+	private static class PreferShorter extends LookupElementWeigher
+	{
+		private final List<ExpectedTypeInfo> myExpectedTypes;
+
+		public PreferShorter(List<ExpectedTypeInfo> expectedTypes)
 		{
-			PsiElement psiElement = element.getPsiElement();
-			if(psiElement instanceof DotNetVariable || psiElement instanceof CSharpMethodDeclaration)
-			{
-				return ((PsiNamedElement) psiElement).getName();
-			}
-			return null;
+			super("csharpShorter");
+			myExpectedTypes = expectedTypes;
 		}
 
-		private static String truncDigits(String name)
+		@NotNull
+		@Override
+		public Comparable weigh(@NotNull LookupElement element)
 		{
-			int count = name.length() - 1;
-			while(count >= 0)
+			final String name = getName(element);
+
+			if(name != null && getNameEndMatchingDegree(name, myExpectedTypes) != 0)
 			{
-				char c = name.charAt(count);
-				if(!Character.isDigit(c))
-				{
-					break;
-				}
-				count--;
+				return NameUtil.nameToWords(name).length - 1000;
 			}
-			return name.substring(0, count + 1);
+			return 0;
 		}
+
+		private static int getNameEndMatchingDegree(final String name, List<ExpectedTypeInfo> expectedInfos)
+		{
+			int res = 0;
+			if(name != null && expectedInfos != null)
+			{
+				final List<String> words = NameUtil.nameToWordsLowerCase(name);
+				final List<String> wordsNoDigits = NameUtil.nameToWordsLowerCase(truncDigits(name));
+				int max1 = calcMatch(words, 0, expectedInfos);
+				max1 = calcMatch(wordsNoDigits, max1, expectedInfos);
+				res = max1;
+			}
+
+			return res;
+		}
+	}
+
+	private static int calcMatch(final List<String> words, int max, List<ExpectedTypeInfo> myExpectedInfos)
+	{
+		for(ExpectedTypeInfo expectedInfo : myExpectedInfos)
+		{
+			PsiElement typeProvider = expectedInfo.getTypeProvider();
+			if(typeProvider == null)
+			{
+				continue;
+			}
+			String expectedName = getName(typeProvider);
+			if(expectedName == null)
+			{
+				continue;
+			}
+			max = calcMatch(expectedName, words, max);
+			max = calcMatch(truncDigits(expectedName), words, max);
+		}
+		return max;
+	}
+
+	private static int calcMatch(final String expectedName, final List<String> words, int max)
+	{
+		if(expectedName == null)
+		{
+			return max;
+		}
+
+		String[] expectedWords = NameUtil.nameToWords(expectedName);
+		int limit = Math.min(words.size(), expectedWords.length);
+		for(int i = 0; i < limit; i++)
+		{
+			String word = words.get(words.size() - i - 1);
+			String expectedWord = expectedWords[expectedWords.length - i - 1];
+			if(word.equalsIgnoreCase(expectedWord))
+			{
+				max = Math.max(max, i + 1);
+			}
+			else
+			{
+				break;
+			}
+		}
+		return max;
+	}
+
+	private static String truncDigits(String name)
+	{
+		int count = name.length() - 1;
+		while(count >= 0)
+		{
+			char c = name.charAt(count);
+			if(!Character.isDigit(c))
+			{
+				break;
+			}
+			count--;
+		}
+		return name.substring(0, count + 1);
+	}
+
+	@Nullable
+	@RequiredReadAction
+	private static String getName(LookupElement element)
+	{
+		PsiElement psiElement = element.getPsiElement();
+		return getName(psiElement);
+	}
+
+	@Nullable
+	@RequiredReadAction
+	private static String getName(@Nullable PsiElement psiElement)
+	{
+		if(psiElement instanceof DotNetVariable || psiElement instanceof CSharpMethodDeclaration)
+		{
+			return ((PsiNamedElement) psiElement).getName();
+		}
+		return null;
 	}
 
 	public static void force(UserDataHolder holder, KindSorter.Type type)
@@ -265,6 +356,7 @@ public class CSharpCompletionSorting
 		if(!expectedTypeRefs.isEmpty())
 		{
 			afterProximity.add(new ExpectedNameSorter(expectedTypeRefs));
+			afterProximity.add(new PreferShorter(expectedTypeRefs));
 		}
 
 		sorter = sorter.weighAfter("stats", afterStats.toArray(new LookupElementWeigher[afterStats.size()]));
