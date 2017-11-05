@@ -20,7 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
 import com.intellij.ui.breadcrumbs.BreadcrumbsProvider;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import consulo.dotnet.psi.DotNetQualifiedElement;
@@ -41,13 +44,40 @@ public class CSharpBreadcrumbsProvider implements BreadcrumbsProvider
 	@Override
 	public boolean acceptElement(@NotNull PsiElement psiElement)
 	{
-		return psiElement instanceof DotNetQualifiedElement;
+		return psiElement instanceof DotNetQualifiedElement || psiElement instanceof CSharpAnonymousMethodExpression;
 	}
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public String getElementInfo(@NotNull PsiElement psiElement)
 	{
+		if(psiElement instanceof CSharpAnonymousMethodExpression)
+		{
+			CSharpSimpleParameterInfo[] parameterInfos = ((CSharpAnonymousMethodExpression) psiElement).getParameterInfos();
+
+			StringBuilder builder = new StringBuilder();
+			if(parameterInfos.length == 1)
+			{
+				builder.append(parameterInfos[0].getNotNullName());
+			}
+			else
+			{
+				builder.append("(");
+				for(int i = 0; i < parameterInfos.length; i++)
+				{
+					CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
+					if(i != 0)
+					{
+						builder.append(",");
+					}
+					builder.append(parameterInfo.getNotNullName());
+				}
+				builder.append(")");
+			}
+			builder.append(" => {...}");
+			return builder.toString();
+		}
 		DotNetQualifiedElement qualifiedElement = (DotNetQualifiedElement) psiElement;
 		if(qualifiedElement instanceof DotNetNamespaceDeclaration)
 		{
