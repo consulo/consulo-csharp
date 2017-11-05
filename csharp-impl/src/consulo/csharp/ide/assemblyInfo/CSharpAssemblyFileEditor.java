@@ -30,12 +30,6 @@ import javax.swing.tree.DefaultTreeModel;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.annotations.RequiredDispatchThread;
-import consulo.csharp.ide.assemblyInfo.blocks.CSharpAssemblyBlock;
-import consulo.csharp.ide.assemblyInfo.blocks.CSharpSimpleStringAssemblyBlock;
-import consulo.dotnet.DotNetTypes;
-import com.intellij.codeHighlighting.BackgroundEditorHighlighter;
-import com.intellij.ide.structureView.StructureViewBuilder;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorLocation;
@@ -54,6 +48,10 @@ import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.treeStructure.SimpleTree;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.ui.tree.TreeUtil;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.csharp.ide.assemblyInfo.blocks.CSharpAssemblyBlock;
+import consulo.csharp.ide.assemblyInfo.blocks.CSharpSimpleStringAssemblyBlock;
+import consulo.dotnet.DotNetTypes;
 
 /**
  * @author VISTALL
@@ -215,13 +213,6 @@ public class CSharpAssemblyFileEditor extends UserDataHolderBase implements File
 
 	@Nullable
 	@Override
-	public BackgroundEditorHighlighter getBackgroundHighlighter()
-	{
-		return null;
-	}
-
-	@Nullable
-	@Override
 	public FileEditorLocation getCurrentLocation()
 	{
 		return null;
@@ -229,14 +220,7 @@ public class CSharpAssemblyFileEditor extends UserDataHolderBase implements File
 
 	@Nullable
 	@Override
-	public StructureViewBuilder getStructureViewBuilder()
-	{
-		return null;
-	}
-
-	@Nullable
-	@Override
-	public VirtualFile getVirtualFile()
+	public VirtualFile getFile()
 	{
 		return myVirtualFile;
 	}
