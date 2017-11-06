@@ -16,6 +16,8 @@
 
 package consulo.csharp.ide.completion;
 
+import gnu.trove.THashSet;
+
 import java.util.List;
 import java.util.Set;
 
@@ -151,6 +153,8 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 				{
 					builder.append("(");
 				}
+
+				Set<String> alreadyUsedNames = new THashSet<>();
 				for(int i = 0; i < parameterInfos.length; i++)
 				{
 					CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
@@ -158,14 +162,18 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 					{
 						builder.append(", ");
 					}
-					Set<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(parameterInfo.getTypeRef(), parent);
+					Set<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(parameterInfo.getTypeRef(), parent, alreadyUsedNames);
 					if(suggestedNames.isEmpty())
 					{
-						builder.append(parameterInfo.getNotNullName());
+						String parameterName = parameterInfo.getNotNullName();
+						alreadyUsedNames.add(parameterName);
+						builder.append(parameterName);
 					}
 					else
 					{
-						builder.append(ContainerUtil.iterateAndGetLastItem(suggestedNames));
+						String str = ContainerUtil.iterateAndGetLastItem(suggestedNames);
+						alreadyUsedNames.add(str);
+						builder.append(str);
 					}
 				}
 				if(parameterInfos.length == 0 || parameterInfos.length > 1)
@@ -196,6 +204,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 				{
 					builder.append("(");
 				}
+				Set<String> alreadyUsedNames = new THashSet<>();
 				for(int i = 0; i < parameterInfos.length; i++)
 				{
 					CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
@@ -205,14 +214,18 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 					}
 					builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameterInfo.getTypeRef(), parent));
 					builder.append(" ");
-					Set<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(parameterInfo.getTypeRef(), parent);
+					Set<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(parameterInfo.getTypeRef(), parent, alreadyUsedNames);
 					if(suggestedNames.isEmpty())
 					{
-						builder.append(parameterInfo.getNotNullName());
+						String name = parameterInfo.getNotNullName();
+						alreadyUsedNames.add(name);
+						builder.append(name);
 					}
 					else
 					{
-						builder.append(ContainerUtil.iterateAndGetLastItem(suggestedNames));
+						String name = ContainerUtil.iterateAndGetLastItem(suggestedNames);
+						alreadyUsedNames.add(name);
+						builder.append(name);
 					}
 				}
 				if(parameterInfos.length > 0)
@@ -344,8 +357,8 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 
 									String genericText = DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) member);
 
-									String parameterText = genericText + "(" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), member) +
-											" " + parameter.getNotNullName(), ", ") + ")";
+									String parameterText = genericText + "(" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(),
+											member) + " " + parameter.getNotNullName(), ", ") + ")";
 
 									builder = builder.withTailText(parameterText, false);
 								}

@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -57,6 +56,7 @@ import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 
 /**
@@ -141,21 +141,32 @@ public class CSharpNameSuggesterUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static Set<String> getSuggestedNames(final DotNetTypeRef typeRef, PsiElement scope)
+	public static Set<String> getSuggestedNames(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	{
+		return getSuggestedNames(typeRef, scope, Collections.emptySet());
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static Set<String> getSuggestedNames(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @NotNull Set<String> alreadyUsedNames)
 	{
 		Collection<String> candidates = new LinkedHashSet<>();
 
-		DotNetTypeResolveResult resolveResult = CSharpTypeUtil.findTypeRefFromExtends(typeRef, new CSharpTypeRefByQName(scope, DotNetTypes.System.Collections.Generic.IEnumerable$1), scope);
-		if(resolveResult != null)
+		// string is enumerable of chars, and it will provide name 'chars' skip it
+		if(!DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.String))
 		{
-			PsiElement element = resolveResult.getElement();
-			if(element instanceof DotNetGenericParameterListOwner)
+			DotNetTypeResolveResult resolveResult = CSharpTypeUtil.findTypeRefFromExtends(typeRef, new CSharpTypeRefByQName(scope, DotNetTypes.System.Collections.Generic.IEnumerable$1), scope);
+			if(resolveResult != null)
 			{
-				DotNetGenericParameter genericParameter = ((DotNetGenericParameterListOwner) element).getGenericParameters()[0];
-				DotNetTypeRef insideTypeRef = resolveResult.getGenericExtractor().extract(genericParameter);
-				if(insideTypeRef != null)
+				PsiElement element = resolveResult.getElement();
+				if(element instanceof DotNetGenericParameterListOwner)
 				{
-					candidates.addAll(generateNames(StringUtil.pluralize(CSharpTypeRefPresentationUtil.buildShortText(insideTypeRef, scope))));
+					DotNetGenericParameter genericParameter = ((DotNetGenericParameterListOwner) element).getGenericParameters()[0];
+					DotNetTypeRef insideTypeRef = resolveResult.getGenericExtractor().extract(genericParameter);
+					if(insideTypeRef != null)
+					{
+						candidates.addAll(generateNames(StringUtil.pluralize(CSharpTypeRefPresentationUtil.buildShortText(insideTypeRef, scope))));
+					}
 				}
 			}
 		}
@@ -163,6 +174,10 @@ public class CSharpNameSuggesterUtil
 		candidates.addAll(generateNames(CSharpTypeRefPresentationUtil.buildShortText(typeRef, scope)));
 
 		final Set<String> usedNames = CSharpRefactoringUtil.collectUsedNames(scope, scope);
+
+		usedNames.addAll(alreadyUsedNames);
+
+		filterKeywords(candidates);
 
 		final List<String> result = new ArrayList<>();
 
@@ -182,15 +197,6 @@ public class CSharpNameSuggesterUtil
 			result.add("o"); // never empty
 		}
 
-		for(ListIterator<String> iterator = result.listIterator(); iterator.hasNext(); )
-		{
-			String next = iterator.next();
-
-			if(isKeyword(next))
-			{
-				iterator.set(String.valueOf(next.charAt(0)));
-			}
-		}
 		return new TreeSet<>(result);
 	}
 
@@ -242,6 +248,9 @@ public class CSharpNameSuggesterUtil
 		{
 			usedNames.addAll(additionalUsedNames);
 		}
+
+		filterKeywords(candidates);
+
 		final List<String> result = new ArrayList<>();
 
 		for(String candidate : candidates)
@@ -260,16 +269,25 @@ public class CSharpNameSuggesterUtil
 			result.add("o"); // never empty
 		}
 
-		for(ListIterator<String> iterator = result.listIterator(); iterator.hasNext(); )
-		{
-			String next = iterator.next();
+		return new THashSet<>(result);
+	}
 
-			if(isKeyword(next))
+	private static void filterKeywords(Collection<String> candidates)
+	{
+		Set<String> keywords = new THashSet<>();
+		for(String candidate : candidates)
+		{
+			if(isKeyword(candidate))
 			{
-				iterator.set(String.valueOf(next.charAt(0)));
+				keywords.add(candidate);
 			}
 		}
-		return new THashSet<>(result);
+
+		for(String keyword : keywords)
+		{
+			candidates.remove(keyword);
+			candidates.add(String.valueOf(keyword.charAt(0)));
+		}
 	}
 
 	public static boolean isKeyword(String text)
