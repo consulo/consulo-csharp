@@ -74,4 +74,9 @@ public class CSharpMacroElementVisitor extends PsiElementVisitor
 	{
 		visitElement(element);
 	}
+
+	public void visitPragma(CSharpPreprocessorPragmaImpl element)
+	{
+		visitElement(element);
+	}
 }

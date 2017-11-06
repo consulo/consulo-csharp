@@ -16,18 +16,7 @@ import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 %eof{  return;
 %eof}
 
-DIGIT=[0-9]
-LETTER=[a-z]|[A-Z]
 WHITE_SPACE=[ \n\r\t\f]+
-SINGLE_LINE_COMMENT="/""/"[^\r\n]*
-SINGLE_LINE_DOC_COMMENT="/""/""/"[^\r\n]*
-MULTI_LINE_STYLE_COMMENT=("/*"[^"*"]{COMMENT_TAIL})|"/*"
-
-COMMENT_TAIL=([^"*"]*("*"+[^"*""/"])?)*("*"+"/")?
-CHARACTER_LITERAL="'"([^\\\'\r\n]|{ESCAPE_SEQUENCE})*("'"|\\)?
-STRING_LITERAL=\"([^\\\"\r\n]|{ESCAPE_SEQUENCE})*(\"|\\)?
-ESCAPE_SEQUENCE=\\[^\r\n]
-
 
 IDENTIFIER=[:jletter:] [:jletterdigit:]*
 
@@ -45,6 +34,7 @@ MACRO_REGION={MACRO_START}"region"
 MACRO_ENDREGION={MACRO_START}"endregion"
 MACRO_ELSE={MACRO_START}"else"
 MACRO_ELIF={MACRO_START}"elif"
+MACRO_PRAGMA={MACRO_START}"pragma"
 %%
 
 <YYINITIAL>
@@ -63,7 +53,9 @@ MACRO_ELIF={MACRO_START}"elif"
 
 	{MACRO_REGION}       { return CSharpPreprocesorTokens.MACRO_REGION_KEYWORD; }
 
-	{MACRO_ENDREGION}        { return CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD; }
+	{MACRO_ENDREGION}    { return CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD; }
+
+	{MACRO_PRAGMA}       { return CSharpPreprocesorTokens.MACRO_PRAGMA; }
 
 	"("                  { return CSharpPreprocesorTokens.LPAR; }
 

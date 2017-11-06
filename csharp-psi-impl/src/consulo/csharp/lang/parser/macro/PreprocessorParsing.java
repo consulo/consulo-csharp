@@ -65,7 +65,7 @@ public class PreprocessorParsing implements CSharpPreprocesorTokens, CSharpPrepr
 		{
 			builder.advanceLexer();
 
-			mark.done(MACRO_BLOCK_STOP);
+			mark.done(MACRO_STOP_DIRECTIVE);
 			return true;
 		}
 		else if(token == MACRO_REGION_KEYWORD || token == MACRO_ENDREGION_KEYWORD)
@@ -78,6 +78,18 @@ public class PreprocessorParsing implements CSharpPreprocesorTokens, CSharpPrepr
 			}
 
 			mark.done(token == MACRO_REGION_KEYWORD ? CSharpPreprocessorElements.REGION_DIRECTIVE : CSharpPreprocessorElements.ENDREGION_DIRECTIVE);
+			return true;
+		}
+		else if(token == MACRO_PRAGMA)
+		{
+			builder.advanceLexer();
+
+			while(!builder.eof())
+			{
+				builder.advanceLexer();
+			}
+
+			mark.done(PRAGMA_DIRECTIVE);
 			return true;
 		}
 		else

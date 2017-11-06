@@ -19,26 +19,9 @@ import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 %state MACRO_ENTERED
 %state MACRO_EXPRESSION
 
-DIGIT=[0-9]
-LETTER=[a-z]|[A-Z]
 WHITE_SPACE=[ \n\r\t\f]+
-SINGLE_LINE_COMMENT="/""/"[^\r\n]*
-SINGLE_LINE_DOC_COMMENT="/""/""/"[^\r\n]*
-MULTI_LINE_STYLE_COMMENT=("/*"[^"*"]{COMMENT_TAIL})|"/*"
-
-COMMENT_TAIL=([^"*"]*("*"+[^"*""/"])?)*("*"+"/")?
-CHARACTER_LITERAL="'"([^\\\'\r\n]|{ESCAPE_SEQUENCE})*("'"|\\)?
-STRING_LITERAL=\"([^\\\"\r\n]|{ESCAPE_SEQUENCE})*(\"|\\)?
-ESCAPE_SEQUENCE=\\[^\r\n]
-
 
 IDENTIFIER=[:jletter:] [:jletterdigit:]*
-
-WHITE_SPACE=[ \n\r\t\f]+
-
-
-MACRO_WHITE_SPACE=[ \t\f]+
-MACRO_NEW_LINE=\r\n|\n|\r
 
 MACRO_START="#"
 MACRO_DEFINE={MACRO_START}"define"
@@ -50,6 +33,7 @@ MACRO_ENDREGION={MACRO_START}"endregion"
 ILLEGAL_DIRECTIVE={MACRO_START}{IDENTIFIER}
 MACRO_ELSE={MACRO_START}"else"
 MACRO_ELIF={MACRO_START}"elif"
+MACRO_PRAGMA={MACRO_START}"pragma"
 %%
 
 
@@ -98,6 +82,8 @@ MACRO_ELIF={MACRO_START}"elif"
 	{MACRO_REGION}       { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_REGION_KEYWORD; }
 
 	{MACRO_ENDREGION}    { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD; }
+
+	{MACRO_PRAGMA}       { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_PRAGMA; }
 
 	{ILLEGAL_DIRECTIVE}  { yybegin(MACRO_EXPRESSION); return CSharpPreprocesorTokens.ILLEGAL_KEYWORD; }
 
