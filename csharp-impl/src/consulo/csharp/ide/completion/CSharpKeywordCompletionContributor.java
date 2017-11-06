@@ -64,6 +64,7 @@ class CSharpKeywordCompletionContributor
 		ourPreprocessorDirectives.put("elif", Boolean.TRUE);
 		ourPreprocessorDirectives.put("else", Boolean.TRUE);
 		ourPreprocessorDirectives.put("endif", Boolean.FALSE);
+		ourPreprocessorDirectives.put("pragma", Boolean.TRUE);
 	}
 
 	private static final TokenSet THIS_OR_BASE = TokenSet.create(CSharpTokens.THIS_KEYWORD, CSharpTokens.BASE_KEYWORD);
