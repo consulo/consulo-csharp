@@ -33,6 +33,7 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.SyntaxTraverser;
 import com.intellij.psi.codeStyle.NameUtil;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -49,6 +50,10 @@ import consulo.csharp.lang.psi.CSharpLambdaParameter;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -326,10 +331,32 @@ public class CSharpCompletionSorting
 	{
 		PsiElement position = completionParameters.getPosition();
 
+
+		Set<PsiElement> elements = new THashSet<>();
+
 		PsiElement argumentListOwner = PsiTreeUtil.getContextOfType(position, CSharpCallArgumentListOwner.class, DotNetVariable.class);
-		if(argumentListOwner != null)
+		if(argumentListOwner instanceof CSharpMethodCallExpressionImpl)
 		{
-			return new CSharpRecursiveGuardWeigher(argumentListOwner);
+			ContainerUtil.addIfNotNull(elements, ((CSharpMethodCallExpressionImpl) argumentListOwner).resolveToCallable());
+		}
+		else if(argumentListOwner instanceof DotNetVariable)
+		{
+			elements.add(argumentListOwner);
+		}
+
+		List<CSharpForeachStatementImpl> foreachStatements = SyntaxTraverser.psiApi().parents(position).filter(CSharpForeachStatementImpl.class).addAllTo(new ArrayList<>());
+		for(CSharpForeachStatementImpl foreachStatement : foreachStatements)
+		{
+			DotNetExpression iterableExpression = foreachStatement.getIterableExpression();
+			if(iterableExpression instanceof CSharpReferenceExpression)
+			{
+				ContainerUtil.addIfNotNull(elements, ((CSharpReferenceExpression) iterableExpression).resolve());
+			}
+		}
+
+		if(!elements.isEmpty())
+		{
+			return new CSharpRecursiveGuardWeigher(elements);
 		}
 		return null;
 	}
@@ -340,8 +367,8 @@ public class CSharpCompletionSorting
 		CompletionSorter sorter = CompletionSorter.defaultSorter(completionParameters, result.getPrefixMatcher());
 		List<LookupElementWeigher> afterStats = new ArrayList<>();
 
-		ContainerUtil.addIfNotNull(afterStats, recursiveSorter(completionParameters, result));
 		afterStats.add(new KindSorter());
+		ContainerUtil.addIfNotNull(afterStats, recursiveSorter(completionParameters, result));
 
 		List<LookupElementWeigher> afterProximity = new ArrayList<>();
 

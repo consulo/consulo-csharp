@@ -16,14 +16,14 @@
 
 package consulo.csharp.ide.completion.weigher;
 
+import java.util.Set;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementWeigher;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import consulo.dotnet.psi.DotNetVariable;
 
 /**
  * @author VISTALL
@@ -31,42 +31,38 @@ import consulo.dotnet.psi.DotNetVariable;
  */
 public class CSharpRecursiveGuardWeigher extends LookupElementWeigher
 {
-	enum Set
+	private enum Position
 	{
 		normal,
 		recursive
 	}
 
-	private PsiElement myTarget;
+	private Set<PsiElement> myElementSet;
 
 	@RequiredReadAction
-	public CSharpRecursiveGuardWeigher(PsiElement owner)
+	public CSharpRecursiveGuardWeigher(Set<PsiElement> elementSet)
 	{
 		super("csharpRecursiveWeigher");
-		if(owner instanceof CSharpMethodCallExpressionImpl)
-		{
-			myTarget = ((CSharpMethodCallExpressionImpl) owner).resolveToCallable();
-		}
-		else if(owner instanceof DotNetVariable)
-		{
-			myTarget = owner;
-		}
+		myElementSet = elementSet;
 	}
 
 	@Nullable
 	@Override
-	public Set weigh(@NotNull LookupElement element)
+	public Integer weigh(@NotNull LookupElement element)
 	{
 		PsiElement psiElement = element.getPsiElement();
 		if(psiElement == null)
 		{
-			return Set.normal;
+			return 0;
 		}
 
-		if(psiElement.isEquivalentTo(myTarget))
+		for(PsiElement e : myElementSet)
 		{
-			return Set.recursive;
+			if(psiElement.isEquivalentTo(e))
+			{
+				return Integer.MIN_VALUE;
+			}
 		}
-		return Set.normal;
+		return 0;
 	}
 }
