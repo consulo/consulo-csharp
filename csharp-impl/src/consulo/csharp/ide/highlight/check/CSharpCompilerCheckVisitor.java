@@ -19,13 +19,6 @@ package consulo.csharp.ide.highlight.check;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.ide.highlight.CSharpHighlightContext;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpFile;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.dotnet.psi.DotNetElement;
-import consulo.msil.representation.MsilFileRepresentationVirtualFile;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
@@ -35,6 +28,13 @@ import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.highlight.CSharpHighlightContext;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpFile;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.dotnet.psi.DotNetElement;
+import consulo.msil.representation.MsilFileRepresentationVirtualFile;
 
 /**
  * @author VISTALL
@@ -44,6 +44,7 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 {
 	private HighlightInfoHolder myHighlightInfoHolder;
 	private CSharpHighlightContext myHighlightContext;
+	private CSharpPragmaContext myPragmaContext;
 
 	@Override
 	@RequiredReadAction
@@ -58,8 +59,12 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 			{
 				ProgressIndicatorProvider.checkCanceled();
 
-				if(languageVersion.ordinal() >= classEntry.getLanguageVersion().ordinal() && classEntry.getTargetClass().isAssignableFrom(element
-						.getClass()))
+				if(myPragmaContext.isSuppressed(classEntry, element))
+				{
+					continue;
+				}
+
+				if(languageVersion.ordinal() >= classEntry.getLanguageVersion().ordinal() && classEntry.getTargetClass().isAssignableFrom(element.getClass()))
 				{
 					List<? extends CompilerCheck.HighlightInfoFactory> results = classEntry.check(languageVersion, myHighlightContext, element);
 					if(results.isEmpty())
@@ -100,10 +105,12 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 	@Override
 	public boolean analyze(@NotNull PsiFile psiFile, boolean b, @NotNull HighlightInfoHolder highlightInfoHolder, @NotNull Runnable runnable)
 	{
+		myPragmaContext = CSharpPragmaContext.get(psiFile);
 		myHighlightContext = new CSharpHighlightContext(psiFile);
 		myHighlightInfoHolder = highlightInfoHolder;
 		runnable.run();
 		myHighlightContext = null;
+
 		return true;
 	}
 

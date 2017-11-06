@@ -16,6 +16,11 @@
 
 package consulo.csharp.lang.parser.preprocessor;
 
+import gnu.trove.THashSet;
+
+import java.util.List;
+import java.util.Set;
+
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.tree.IElementType;
@@ -26,7 +31,7 @@ import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
  * @author VISTALL
  * @since 02.03.2016
  */
-public class PreprocessorParser
+public class PreprocessorLightParser
 {
 	public enum State
 	{
@@ -44,12 +49,13 @@ public class PreprocessorParser
 		ELSE,
 		ENDIF,
 		REGION,
-		ENDREGION
+		ENDREGION,
+		PRAGMA
 	}
 
 	public static void main(String[] args)
 	{
-		System.out.println(parse("#if TEST && TEST2"));
+		System.out.println(parse("#pragma warning disable 3131,31"));
 	}
 
 	@Nullable
@@ -78,6 +84,11 @@ public class PreprocessorParser
 					{
 						state = State.DIRECTIVE;
 						directive = elementType == CSharpPreprocesorTokens.MACRO_IF_KEYWORD ? Directive.IF : Directive.ELIF;
+					}
+					else if(elementType == CSharpPreprocesorTokens.MACRO_PRAGMA)
+					{
+						state = State.DIRECTIVE;
+						directive = Directive.PRAGMA;
 					}
 					else if(elementType == CSharpPreprocesorTokens.MACRO_ENDIF_KEYWORD)
 					{
@@ -122,6 +133,7 @@ public class PreprocessorParser
 						case ELIF:
 						case IF:
 						case REGION:
+						case PRAGMA:
 							value += lexer.getTokenText();
 							break;
 						default:
@@ -152,6 +164,8 @@ public class PreprocessorParser
 				case IF:
 				case ELIF:
 					return new IfPreprocessorDirective(value, directive == Directive.ELIF);
+				case PRAGMA:
+					return parsePragma(value);
 				case REGION:
 					return new RegionPreprocessorDirective(text);
 				case ELSE:
@@ -164,5 +178,67 @@ public class PreprocessorParser
 		}
 
 		return null;
+	}
+
+	private static PragmaWarningPreprocessorDirective parsePragma(String value)
+	{
+		if(StringUtil.isEmpty(value))
+		{
+			return null;
+		}
+
+		value = value.trim();
+
+		List<String> split = StringUtil.split(value, " ");
+		if(split.size() > 2)
+		{
+			String type = split.get(0);
+
+			if("warning".equalsIgnoreCase(type))
+			{
+				String action = split.get(1);
+
+				if("restore".equalsIgnoreCase(action) || "disable".equalsIgnoreCase(action))
+				{
+					// cut warning
+					value = value.substring(type.length() + 1, value.length());
+					// cut action
+					value = value.substring(action.length() + 1, value.length());
+
+					List<String> args = StringUtil.split(value, ",", true, true);
+
+					return new PragmaWarningPreprocessorDirective(type, action, formatCheck(args));
+				}
+			}
+		}
+		return null;
+	}
+
+	private static Set<String> formatCheck(List<String> args)
+	{
+		Set<String> list = new THashSet<>(args.size());
+		for(String arg : args)
+		{
+			arg = arg.trim();
+
+			if(arg.startsWith("CS"))
+			{
+				list.add(arg);
+			}
+			else
+			{
+				try
+				{
+					int i = Integer.parseInt(arg);
+
+					list.add(String.format("CS%04d", i));
+				}
+				catch(NumberFormatException ignored)
+				{
+				}
+			}
+		}
+
+		return list;
 	}
 }

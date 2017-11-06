@@ -193,6 +193,10 @@ public enum CSharpCompilerChecks
 		return results;
 	}
 
+	public boolean isSuppressable()
+	{
+		return myType != HighlightInfoType.ERROR;
+	}
 	@NotNull
 	public CSharpLanguageVersion getLanguageVersion()
 	{

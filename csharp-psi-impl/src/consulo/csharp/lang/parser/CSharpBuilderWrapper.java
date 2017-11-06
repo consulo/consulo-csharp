@@ -38,7 +38,7 @@ import consulo.csharp.lang.parser.preprocessor.ElsePreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.EndIfPreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.IfPreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
-import consulo.csharp.lang.parser.preprocessor.PreprocessorParser;
+import consulo.csharp.lang.parser.preprocessor.PreprocessorLightParser;
 import consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTemplateTokens;
@@ -225,7 +225,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		{
 			Set<String> variables = getUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES);
 			assert variables != null;
-			PreprocessorDirective directive = PreprocessorParser.parse(super.getTokenText());
+			PreprocessorDirective directive = PreprocessorLightParser.parse(super.getTokenText());
 			if(directive instanceof DefinePreprocessorDirective)
 			{
 				// if code is disabled - dont handle define

@@ -42,7 +42,7 @@ import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.parser.preprocessor.EndRegionPreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
-import consulo.csharp.lang.parser.preprocessor.PreprocessorParser;
+import consulo.csharp.lang.parser.preprocessor.PreprocessorLightParser;
 import consulo.csharp.lang.parser.preprocessor.RegionPreprocessorDirective;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
@@ -70,7 +70,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 				IElementType elementType = PsiUtilCore.getElementType(element);
 				if(elementType == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE)
 				{
-					PreprocessorDirective directive = PreprocessorParser.parse(element.getText());
+					PreprocessorDirective directive = PreprocessorLightParser.parse(element.getText());
 					if(directive instanceof RegionPreprocessorDirective)
 					{
 						regions.addLast(element);
