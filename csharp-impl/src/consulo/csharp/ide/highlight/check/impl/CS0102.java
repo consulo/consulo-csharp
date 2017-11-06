@@ -97,6 +97,12 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 						continue;
 					}
 
+					if(searchElement instanceof CSharpTypeDeclaration && mayDuplicate instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) searchElement).getGenericParametersCount() !=
+							((CSharpTypeDeclaration) mayDuplicate).getGenericParametersCount())
+					{
+						continue;
+					}
+
 					if(searchElement instanceof DotNetLikeMethodDeclaration && mayDuplicate instanceof DotNetLikeMethodDeclaration && !CSharpElementCompareUtil.isEqualWithVirtualImpl(searchElement,
 							mayDuplicate, searchElement))
 					{
