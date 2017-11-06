@@ -20,8 +20,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl;
+import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
 
 /**
@@ -56,6 +58,7 @@ public class CSharpConstantUtil
 		{
 			return false;
 		}
+
 		if(isConstant(element))
 		{
 			return true;
@@ -72,6 +75,17 @@ public class CSharpConstantUtil
 			{
 				return true;
 			}
+		}
+
+		if(element instanceof CSharpBinaryExpressionImpl)
+		{
+			DotNetExpression leftExpression = ((CSharpBinaryExpressionImpl) element).getLeftExpression();
+			DotNetExpression rightExpression = ((CSharpBinaryExpressionImpl) element).getRightExpression();
+			if(leftExpression == null || rightExpression == null)
+			{
+				return false;
+			}
+			return isCompileTimeConstant(leftExpression) && isCompileTimeConstant(rightExpression);
 		}
 		return false;
 	}
