@@ -31,12 +31,6 @@ import consulo.annotations.RequiredReadAction;
  */
 public class CSharpRecursiveGuardWeigher extends LookupElementWeigher
 {
-	private enum Position
-	{
-		normal,
-		recursive
-	}
-
 	private Set<PsiElement> myElementSet;
 
 	@RequiredReadAction
