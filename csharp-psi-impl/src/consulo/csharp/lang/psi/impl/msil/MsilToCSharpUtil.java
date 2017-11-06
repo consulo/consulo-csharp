@@ -183,6 +183,11 @@ public class MsilToCSharpUtil
 	{
 		if(element instanceof MsilClassEntry)
 		{
+			if(((MsilClassEntry) element).isNested() && parent == null)
+			{
+				throw new IllegalArgumentException("can't wrap without parent: " + ((MsilClassEntry) element).getVmQName());
+			}
+
 			if(parent != null)
 			{
 				PsiElement wrapElement = wrapToDelegateMethod((MsilClassEntry) element, parent, context);
@@ -222,7 +227,8 @@ public class MsilToCSharpUtil
 	{
 		if(DotNetInheritUtil.isInheritor(typeDeclaration, DotNetTypes.System.MulticastDelegate, false))
 		{
-			MsilMethodEntry msilMethodEntry = (MsilMethodEntry) ContainerUtil.find((typeDeclaration).getMembers(), element -> element instanceof MsilMethodEntry && Comparing.equal(element.getName(), "Invoke"));
+			MsilMethodEntry msilMethodEntry = (MsilMethodEntry) ContainerUtil.find((typeDeclaration).getMembers(), element -> element instanceof MsilMethodEntry && Comparing.equal(element.getName(),
+					"Invoke"));
 
 			assert msilMethodEntry != null : typeDeclaration.getPresentableQName();
 
@@ -278,7 +284,7 @@ public class MsilToCSharpUtil
 				}
 
 				DotNetTypeRef[] anotherArray = ArrayUtil.reverseArray(arguments);
-				List<DotNetTypeRef> list = new ArrayList<DotNetTypeRef>(genericParametersCount);
+				List<DotNetTypeRef> list = new ArrayList<>(genericParametersCount);
 				for(int i = 0; i < genericParametersCount; i++)
 				{
 					list.add(extractToCSharp(anotherArray[i], scope));

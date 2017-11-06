@@ -45,21 +45,28 @@ public class MsilToNativeElementTransformer implements ToNativeElementTransforme
 	{
 		if(element instanceof MsilClassEntry)
 		{
-			MsilClassEntry rootClassEntry = findRootClassEntry((MsilClassEntry) element);
-
-			PsiElement wrappedElement = MsilToCSharpUtil.wrap(element, null);
-			// we wrap it
-			if(wrappedElement != rootClassEntry)
+			if(((MsilClassEntry) element).isNested())
 			{
-				PsiElement elementByOriginal = findElementByOriginal(wrappedElement, element);
-				if(elementByOriginal != null)
+				MsilClassEntry rootClassEntry = findRootClassEntry((MsilClassEntry) element);
+
+				PsiElement wrappedElement = MsilToCSharpUtil.wrap(rootClassEntry, null);
+				// we wrap it
+				if(wrappedElement != rootClassEntry)
 				{
-					return elementByOriginal;
+					PsiElement elementByOriginal = findElementByOriginal(wrappedElement, element);
+					if(elementByOriginal != null)
+					{
+						return elementByOriginal;
+					}
+					else
+					{
+						LOGGER.warn("We cant find by original element class: " + rootClassEntry.getVmQName() + "/" + ((MsilClassEntry) element).getVmQName());
+					}
 				}
-				else
-				{
-					LOGGER.warn("We cant find by original element class: " + rootClassEntry.getVmQName() + "/" + ((MsilClassEntry) element).getVmQName());
-				}
+			}
+			else
+			{
+				return MsilToCSharpUtil.wrap(element, null);
 			}
 		}
 		return null;

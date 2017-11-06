@@ -31,17 +31,9 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public interface CSharpTypeDefStatement extends DotNetNamedElement, PsiNameIdentifierOwner, CSharpUsingListChild
 {
-	public static final CSharpTypeDefStatement[] EMPTY_ARRAY = new CSharpTypeDefStatement[0];
+	CSharpTypeDefStatement[] EMPTY_ARRAY = new CSharpTypeDefStatement[0];
 
-	public static ArrayFactory<CSharpTypeDefStatement> ARRAY_FACTORY = new ArrayFactory<CSharpTypeDefStatement>()
-	{
-		@NotNull
-		@Override
-		public CSharpTypeDefStatement[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpTypeDefStatement[count];
-		}
-	};
+	ArrayFactory<CSharpTypeDefStatement> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpTypeDefStatement[count];
 
 	@Nullable
 	@RequiredReadAction
