@@ -52,20 +52,12 @@ public class CSharpRefactoringUtil
 {
 	public static Set<String> collectUsedNames(@NotNull PsiElement context, @Nullable PsiElement toSkip)
 	{
-		return new THashSet<String>(ContainerUtil.map(collectUsedComponents(context, toSkip), new Function<PsiNamedElement, String>()
-		{
-			@Nullable
-			@Override
-			public String fun(PsiNamedElement componentName)
-			{
-				return componentName.getName();
-			}
-		}));
+		return new THashSet<>(ContainerUtil.map(collectUsedComponents(context, toSkip), PsiNamedElement::getName));
 	}
 
 	public static Set<PsiNamedElement> collectUsedComponents(@NotNull PsiElement context, @Nullable PsiElement toSkip)
 	{
-		final Set<PsiNamedElement> usedComponentNames = new THashSet<PsiNamedElement>();
+		final Set<PsiNamedElement> usedComponentNames = new THashSet<>();
 		PsiTreeUtil.treeWalkUp(new ComponentNameScopeProcessor(usedComponentNames, toSkip), context, null, new ResolveState());
 		return usedComponentNames;
 	}
@@ -95,7 +87,7 @@ public class CSharpRefactoringUtil
 		{
 			return Collections.emptyList();
 		}
-		final List<PsiElement> occurrences = new ArrayList<PsiElement>();
+		final List<PsiElement> occurrences = new ArrayList<>();
 		context.acceptChildren(new CSharpRecursiveElementVisitor()
 		{
 			@Override

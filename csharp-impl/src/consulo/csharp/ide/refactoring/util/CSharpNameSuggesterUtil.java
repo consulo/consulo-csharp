@@ -84,14 +84,19 @@ public class CSharpNameSuggesterUtil
 	{
 		PsiElement parent = variable.getParent();
 
-		Collection<String> suggestedNames = getSuggestedNames(variable.toTypeRef(true), variable);
+		Collection<String> suggestedNames = null;
 		if(parent instanceof CSharpForeachStatementImpl)
 		{
 			DotNetExpression iterableExpression = ((CSharpForeachStatementImpl) parent).getIterableExpression();
 			if(iterableExpression != null)
 			{
-				suggestedNames = getSuggestedNames(iterableExpression, suggestedNames, variable);
+				suggestedNames = getSuggestedNames(iterableExpression, Collections.emptyList(), variable);
 			}
+		}
+
+		if(suggestedNames == null)
+		{
+			suggestedNames = getSuggestedNames(variable.toTypeRef(true), variable);
 		}
 
 		DotNetExpression initializer = variable.getInitializer();

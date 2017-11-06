@@ -40,7 +40,7 @@ public class ComponentNameScopeProcessor extends BaseScopeProcessor
 	@Override
 	public boolean execute(@NotNull PsiElement element, ResolveState state)
 	{
-		if(myToSkip == element)
+		if(element.isEquivalentTo(myToSkip))
 		{
 			return true;
 		}
