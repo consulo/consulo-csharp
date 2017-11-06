@@ -37,19 +37,12 @@ import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpGenericConstraintList;
+import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterList;
-import consulo.dotnet.psi.DotNetInheritUtil;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.psi.DotNetTypeList;
-import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
 import consulo.msil.lang.psi.MsilClassEntry;
@@ -461,7 +454,12 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	@Override
 	public String getPresentableQName()
 	{
-		return MsilHelper.cutGenericMarker(myOriginal.getPresentableQName());
+		PsiElement parent = getParent();
+		if(parent instanceof CSharpNamespaceDeclaration || parent instanceof CSharpTypeDeclaration)
+		{
+			return ((DotNetQualifiedElement) parent).getPresentableQName() + "." + getName();
+		}
+		return getName();
 	}
 
 	@Override
