@@ -18,15 +18,15 @@ package consulo.csharp.lang.psi.impl.light.builder;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetXXXAccessor;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -34,9 +34,12 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpLightIndexMethodDeclarationBuilder extends CSharpLightLikeMethodDeclarationBuilder<CSharpLightIndexMethodDeclarationBuilder> implements CSharpIndexMethodDeclaration
 {
-	public CSharpLightIndexMethodDeclarationBuilder(Project project)
+	private final int myDimensions;
+
+	public CSharpLightIndexMethodDeclarationBuilder(Project project, int dimensions)
 	{
 		super(project);
+		myDimensions = dimensions;
 	}
 
 	@Override
@@ -59,10 +62,18 @@ public class CSharpLightIndexMethodDeclarationBuilder extends CSharpLightLikeMet
 		return DotNetTypeRef.ERROR_TYPE;
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getName()
 	{
-		return "[]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("[");
+		for(int i = 0; i < myDimensions; i++)
+		{
+			builder.append(",");
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 
 	@NotNull
@@ -72,6 +83,7 @@ public class CSharpLightIndexMethodDeclarationBuilder extends CSharpLightLikeMet
 		return DotNetXXXAccessor.EMPTY_ARRAY;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetNamedElement[] getMembers()

@@ -68,7 +68,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 			{
 				DotNetTypeRef innerTypeRef = ((DotNetPointerTypeRef) typeRef).getInnerTypeRef();
 
-				CSharpLightIndexMethodDeclarationBuilder builder = new CSharpLightIndexMethodDeclarationBuilder(expression.getProject());
+				CSharpLightIndexMethodDeclarationBuilder builder = new CSharpLightIndexMethodDeclarationBuilder(expression.getProject(), 0);
 				builder.withReturnType(innerTypeRef);
 				builder.addParameter(new CSharpLightParameterBuilder(expression.getProject()).withName("p").withTypeRef(new CSharpTypeRefByQName(expression, DotNetTypes.System.Int32)));
 				return new ResolveResult[]{new CSharpResolveResult(builder)};

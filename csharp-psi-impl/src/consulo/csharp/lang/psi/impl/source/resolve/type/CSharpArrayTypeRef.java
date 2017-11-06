@@ -17,17 +17,13 @@
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.NotNullLazyValue;
-import com.intellij.openapi.util.NullableLazyValue;
-import com.intellij.psi.PsiCodeFragment;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotations.RequiredReadAction;
-import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.csharp.lang.psi.impl.light.builder.CSharpLightIndexMethodDeclarationBuilder;
+import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
+import consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.resolve.DotNetArrayTypeRef;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -40,115 +36,16 @@ import consulo.dotnet.resolve.DotNetTypeResolveResult;
  */
 public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements DotNetArrayTypeRef
 {
-	public static class Result implements DotNetTypeResolveResult
-	{
-		private final PsiElement myScope;
-		private final int myDimensions;
-		private final DotNetTypeRef myInnerType;
-
-		private NullableLazyValue<PsiElement> myValue = new NullableLazyValue<PsiElement>()
-		{
-			@Nullable
-			@Override
-			protected PsiElement compute()
-			{
-				return createTypeDeclaration(myScope.getProject(), myScope.getResolveScope(), myDimensions);
-			}
-		};
-
-		private NotNullLazyValue<DotNetGenericExtractor> myExtractorValue = new NotNullLazyValue<DotNetGenericExtractor>()
-		{
-			@NotNull
-			@Override
-			protected DotNetGenericExtractor compute()
-			{
-				PsiElement element = getElement();
-
-				if(!(element instanceof DotNetGenericParameterListOwner))
-				{
-					return DotNetGenericExtractor.EMPTY;
-				}
-				return CSharpGenericExtractor.create(((DotNetGenericParameterListOwner) element).getGenericParameters(), new DotNetTypeRef[]{myInnerType});
-			}
-		};
-
-		@NotNull
-		private static DotNetTypeDeclaration createTypeDeclaration(@NotNull Project project, @NotNull GlobalSearchScope searchScope, int dimensions)
-		{
-			StringBuilder builder = new StringBuilder();
-			builder.append("public class ArrayImpl<T> : System.Array, System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IList<T>");
-			builder.append("{");
-			builder.append("private ArrayImpl() {}");
-			builder.append("public T this[long index");
-			for(int i = 0; i < dimensions; i++)
-			{
-				builder.append(", int index").append(i);
-			}
-			builder.append("] { get; set; }");
-			builder.append("public T this[ulong index");
-			for(int i = 0; i < dimensions; i++)
-			{
-				builder.append(", int index").append(i);
-			}
-			builder.append("] { get; set; }");
-			builder.append("public T this[int index");
-			for(int i = 0; i < dimensions; i++)
-			{
-				builder.append(", int index").append(i);
-			}
-			builder.append("] { get; set; }");
-			builder.append("public T this[uint index");
-			for(int i = 0; i < dimensions; i++)
-			{
-				builder.append(", int index").append(i);
-			}
-			builder.append("] { get; set; }");
-			builder.append("public System.Collections.Generic.IEnumerator<T> System.Collections.Generic.IEnumerator<T>.GetEnumerator() {}");
-			builder.append("}");
-
-			DotNetTypeDeclaration typeDeclaration = CSharpFileFactory.createTypeDeclaration(project, builder.toString());
-			PsiCodeFragment containingFile = (PsiCodeFragment) typeDeclaration.getContainingFile();
-			containingFile.forceResolveScope(searchScope);
-			return typeDeclaration;
-		}
-
-		public Result(PsiElement scope, int dimensions, DotNetTypeRef innerType)
-		{
-			myScope = scope;
-			myDimensions = dimensions;
-			myInnerType = innerType;
-		}
-
-		@Nullable
-		@Override
-		public PsiElement getElement()
-		{
-			return myValue.getValue();
-		}
-
-		@NotNull
-		@Override
-		public DotNetGenericExtractor getGenericExtractor()
-		{
-			return myExtractorValue.getValue();
-		}
-
-		@Override
-		public boolean isNullable()
-		{
-			return true;
-		}
-	}
-
 	private final PsiElement myScope;
-	private final DotNetTypeRef myInnerType;
+	private final DotNetTypeRef myInnerTypeRef;
 	private final int myDimensions;
 
-	public CSharpArrayTypeRef(@NotNull PsiElement scope, @NotNull DotNetTypeRef innerType, int dimensions)
+	@RequiredReadAction
+	public CSharpArrayTypeRef(@NotNull PsiElement scope, @NotNull DotNetTypeRef innerTypeRef, int dimensions)
 	{
 		super(scope.getProject());
 		myScope = scope;
-		myInnerType = innerType;
+		myInnerTypeRef = innerTypeRef;
 		myDimensions = dimensions;
 	}
 
@@ -157,7 +54,48 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
-		return new Result(myScope, myDimensions, myInnerType);
+		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(myScope);
+		builder.withName("ArrayImpl" + System.nanoTime());
+		builder.addModifier(DotNetModifier.PUBLIC);
+
+		builder.addExtendType(new CSharpTypeRefByQName(myScope, "System.Array"));
+
+		if(myDimensions == 0)
+		{
+			builder.addExtendType(new CSharpGenericWrapperTypeRef(myScope.getProject(), new CSharpTypeRefByQName(myScope, DotNetTypes.System.Collections.Generic.IEnumerable$1), myInnerTypeRef));
+
+			builder.addExtendType(new CSharpGenericWrapperTypeRef(myScope.getProject(), new CSharpTypeRefByQName(myScope, DotNetTypes.System.Collections.Generic.IList$1), myInnerTypeRef));
+		}
+
+		addIndexMethodWithType(DotNetTypes.System.Int32, builder, myScope, myDimensions, myInnerTypeRef);
+		addIndexMethodWithType(DotNetTypes.System.UInt32, builder, myScope, myDimensions, myInnerTypeRef);
+		addIndexMethodWithType(DotNetTypes.System.Int64, builder, myScope, myDimensions, myInnerTypeRef);
+		addIndexMethodWithType(DotNetTypes.System.UInt64, builder, myScope, myDimensions, myInnerTypeRef);
+
+
+		return new CSharpUserTypeRef.Result<>(builder, DotNetGenericExtractor.EMPTY);
+	}
+
+	@RequiredReadAction
+	private static void addIndexMethodWithType(String parameterQName, CSharpLightTypeDeclarationBuilder builder, PsiElement scope, int dimensions, DotNetTypeRef innerType)
+	{
+		int parameterCount = dimensions + 1;
+
+		CSharpLightIndexMethodDeclarationBuilder methodDeclarationBuilder = new CSharpLightIndexMethodDeclarationBuilder(builder.getProject(), dimensions);
+		methodDeclarationBuilder.addModifier(DotNetModifier.PUBLIC);
+
+		for(int i = 0; i < parameterCount; i++)
+		{
+			CSharpLightParameterBuilder parameter = new CSharpLightParameterBuilder(scope);
+			parameter.withName("index" + i);
+			parameter.withTypeRef(new CSharpTypeRefByQName(scope, parameterQName));
+
+			methodDeclarationBuilder.addParameter(parameter);
+		}
+
+		methodDeclarationBuilder.withReturnType(innerType);
+
+		builder.addMember(methodDeclarationBuilder);
 	}
 
 	@RequiredReadAction
@@ -166,7 +104,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	public String toString()
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append(myInnerType.toString());
+		builder.append(myInnerTypeRef.toString());
 		builder.append("[");
 		for(int i = 0; i < myDimensions; i++)
 		{
@@ -180,7 +118,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	@NotNull
 	public DotNetTypeRef getInnerTypeRef()
 	{
-		return myInnerType;
+		return myInnerTypeRef;
 	}
 
 	public int getDimensions()

@@ -20,6 +20,11 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.pom.Navigatable;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
@@ -38,18 +43,12 @@ import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetTypeDeclarationUtil;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.pom.Navigatable;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.SmartList;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
  * @since 08.05.14
  */
-public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBuilder<CSharpLightTypeDeclarationBuilder> implements
-		CSharpTypeDeclaration
+public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBuilder<CSharpLightTypeDeclarationBuilder> implements CSharpTypeDeclaration
 {
 	public enum Type
 	{
@@ -59,10 +58,10 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		INTERFACE
 	}
 
-	private List<DotNetQualifiedElement> myMembers = new SmartList<DotNetQualifiedElement>();
-	private List<DotNetModifier> myModifiers = new SmartList<DotNetModifier>();
-	private List<DotNetTypeRef> myExtendTypes = new SmartList<DotNetTypeRef>();
-	private List<DotNetGenericParameter> myGenericParameters = new SmartList<DotNetGenericParameter>();
+	private List<DotNetQualifiedElement> myMembers = new SmartList<>();
+	private List<DotNetModifier> myModifiers = new SmartList<>();
+	private List<DotNetTypeRef> myExtendTypes = new SmartList<>();
+	private List<DotNetGenericParameter> myGenericParameters = new SmartList<>();
 	private Type myType = Type.DEFAULT;
 	private String myParentQName;
 
@@ -148,6 +147,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return DotNetInheritUtil.isInheritor(this, other, deep);
 	}
 
+	@NotNull
 	@RequiredReadAction
 	@Override
 	public DotNetTypeRef getTypeRefForEnumConstants()
