@@ -38,6 +38,7 @@ import consulo.csharp.lang.psi.impl.light.*;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResultUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
@@ -346,7 +347,16 @@ public class GenericUnwrapTool
 
 			if(element instanceof CSharpTypeDeclaration)
 			{
-				CSharpTypeDeclaration resultType = extract((CSharpTypeDeclaration) element, func.getExtractor());
+				CSharpMethodDeclaration delegateMethodTypeWrapper = CSharpLambdaResolveResultUtil.getDelegateMethodTypeWrapper(element);
+				CSharpTypeDeclaration resultType;
+				if(delegateMethodTypeWrapper != null)
+				{
+					resultType = CSharpLambdaResolveResultUtil.createTypeFromDelegate(delegateMethodTypeWrapper, func.getExtractor());
+				}
+				else
+				{
+					resultType = extract((CSharpTypeDeclaration) element, func.getExtractor());
+				}
 
 				DotNetGenericParameter[] genericParameters = ((CSharpTypeDeclaration) element).getGenericParameters();
 				if(genericParameters.length > 0)
