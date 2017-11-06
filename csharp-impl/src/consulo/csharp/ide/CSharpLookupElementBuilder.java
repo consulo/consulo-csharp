@@ -31,7 +31,6 @@ import com.intellij.openapi.editor.CaretModel;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
@@ -147,6 +146,8 @@ public class CSharpLookupElementBuilder
 				String parameterText = genericText + "(" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), element) + " " +
 						parameter.getNotNullName(), ", ") + ")";
 
+				builder = decapitalizeLookup(builder, name);
+
 				if(inheritGeneric == CSharpMethodUtil.Result.CAN)
 				{
 					builder = builder.withPresentableText(name);
@@ -178,15 +179,8 @@ public class CSharpLookupElementBuilder
 			builder = LookupElementBuilder.create(element, "[]");
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 			final CSharpSimpleParameterInfo[] parameterInfos = ((CSharpIndexMethodDeclaration) element).getParameterInfos();
-			String parameterText = "[" + StringUtil.join(parameterInfos, new Function<CSharpSimpleParameterInfo, String>()
-			{
-				@Override
-				@RequiredReadAction
-				public String fun(CSharpSimpleParameterInfo parameter)
-				{
-					return CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), element) + " " + parameter.getNotNullName();
-				}
-			}, ", ") + "]";
+			String parameterText = "[" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), element) + " " + parameter.getNotNullName()
+					, ", ") + "]";
 			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(((CSharpIndexMethodDeclaration) element).getReturnTypeRef(), element));
 			builder = builder.withPresentableText(parameterText);
 			builder = builder.withInsertHandler((context, item) ->
@@ -353,15 +347,18 @@ public class CSharpLookupElementBuilder
 		else if(element instanceof DotNetVariable)
 		{
 			DotNetVariable variable = (DotNetVariable) element;
+			String name = variable.getName();
 			if((variable instanceof CSharpFieldDeclaration || variable instanceof CSharpPropertyDeclaration) && needAddThisPrefix(variable, completionParent))
 			{
-				builder = LookupElementBuilder.create(variable, "this." + variable.getName());
-				builder = builder.withLookupString(variable.getName());
+				builder = LookupElementBuilder.create(variable, "this." + name);
+				builder = builder.withLookupString(name);
 			}
 			else
 			{
 				builder = LookupElementBuilder.create(variable);
 			}
+
+			builder = decapitalizeLookup(builder, name);
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 
@@ -430,6 +427,15 @@ public class CSharpLookupElementBuilder
 		if(builder != null && DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
 		{
 			builder = builder.withStrikeoutness(true);
+		}
+		return builder;
+	}
+
+	private static LookupElementBuilder decapitalizeLookup(LookupElementBuilder builder, String name)
+	{
+		if(name != null && name.length() > 0 && Character.isUpperCase(name.charAt(0)))
+		{
+			builder = builder.withLookupString(StringUtil.decapitalize(name));
 		}
 		return builder;
 	}
