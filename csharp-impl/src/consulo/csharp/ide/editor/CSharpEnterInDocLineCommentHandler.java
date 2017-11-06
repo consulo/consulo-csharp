@@ -17,7 +17,6 @@
 package consulo.csharp.ide.editor;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import com.intellij.codeInsight.editorActions.enter.EnterHandlerDelegateAdapter;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Document;
@@ -28,6 +27,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 
 /**
  * @author VISTALL
@@ -37,6 +38,7 @@ public class CSharpEnterInDocLineCommentHandler extends EnterHandlerDelegateAdap
 	private static final String DOC_LINE_START = "///";
 
 	@Override
+	@RequiredDispatchThread
 	public Result preprocessEnter(@NotNull final PsiFile file,
 			@NotNull final Editor editor,
 			@NotNull final Ref<Integer> caretOffsetRef,
@@ -44,16 +46,13 @@ public class CSharpEnterInDocLineCommentHandler extends EnterHandlerDelegateAdap
 			@NotNull final DataContext dataContext,
 			final EditorActionHandler originalHandler)
 	{
-		final int caretOffset = caretOffsetRef.get().intValue();
+		final int caretOffset = caretOffsetRef.get();
 		final Document document = editor.getDocument();
 		final PsiElement psiAtOffset = file.findElementAt(caretOffset);
-		final PsiElement probablyDocComment = psiAtOffset instanceof PsiWhiteSpace && psiAtOffset.getText().startsWith("\n") ? psiAtOffset
-				.getPrevSibling() : psiAtOffset == null && caretOffset > 0 && caretOffset == document.getTextLength() ? file.findElementAt
-				(caretOffset - 1) : psiAtOffset;
+		final PsiElement probablyDocComment = psiAtOffset instanceof PsiWhiteSpace && psiAtOffset.getText().startsWith("\n") ? psiAtOffset.getPrevSibling() : psiAtOffset == null && caretOffset > 0
+				&& caretOffset == document.getTextLength() ? file.findElementAt(caretOffset - 1) : psiAtOffset;
 
-		if(probablyDocComment != null &&
-				probablyDocComment.getTextOffset() < caretOffset &&
-				PsiTreeUtil.getParentOfType(probablyDocComment, CSharpDocRoot.class, false) != null)
+		if(probablyDocComment != null && PsiTreeUtil.getParentOfType(probablyDocComment, CSharpDocRoot.class, false) != null)
 		{
 			document.insertString(caretOffset, DOC_LINE_START + " ");
 			caretAdvance.set(4);
