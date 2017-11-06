@@ -34,8 +34,7 @@
 				language="C#"
 				implementationClass="consulo.csharp.ide.codeInspection.unnecessaryNamedArgument.UnnecessaryNamedArgumentInspection"
 				displayName="Unnecessary Named Argument" groupName="C#" enabledByDefault="true"/>
-		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.unusedSymbol.UnusedSymbolLocalInspection"
-						 displayName="Unused Symbol" groupName="C#" enabledByDefault="true"/>
+
 		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingInspection"
 						 displayName="Unused using" groupName="C#" enabledByDefault="true"/>
 		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.languageKeywordUsage.LanguageKeywordUsageInspection"

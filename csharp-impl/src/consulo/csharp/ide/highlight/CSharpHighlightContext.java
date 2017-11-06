@@ -18,6 +18,7 @@ package consulo.csharp.ide.highlight;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.UserDataHolderBase;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
@@ -31,7 +32,7 @@ import com.intellij.psi.PsiFile;
  * @author VISTALL
  * @since 17.04.2016
  */
-public class CSharpHighlightContext
+public class CSharpHighlightContext extends UserDataHolderBase
 {
 	private NullableLazyValue<Module> myModuleValue = new NullableLazyValue<Module>()
 	{

@@ -16,8 +16,14 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 
 /**
  * @author VISTALL
@@ -25,5 +31,26 @@ import consulo.csharp.lang.psi.CSharpLocalVariable;
  */
 public class CS0219 extends CompilerCheck<CSharpLocalVariable>
 {
-	// dummy. see UnusedSymbolLocalInspection
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpLocalVariable element)
+	{
+		if(element.getInitializer() == null)
+		{
+			return null;
+		}
+
+		if(CS0168.isUnused(element))
+		{
+			CompilerCheckBuilder builder = newBuilder(element.getNameIdentifier(), formatElement(element));
+			if(!(element.getParent() instanceof CSharpForeachStatementImpl))
+			{
+				builder.addQuickFix(new CS0168.DeleteLocalVariable(element));
+			}
+			return builder;
+		}
+
+		return null;
+	}
 }
