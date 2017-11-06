@@ -29,6 +29,7 @@ import java.util.Set;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.search.LocalSearchScope;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import consulo.csharp.lang.psi.CSharpModifier;
@@ -79,6 +80,21 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 			return ObjectUtil.notNull(compositeType, parent);
 		}
 		return parent;
+	}
+
+	@RequiredReadAction
+	@NotNull
+	public static LocalSearchScope createLocalScope(@NotNull DotNetTypeDeclaration parent)
+	{
+		DotNetTypeDeclaration type = selectCompositeOrSelfType(parent);
+		if(type instanceof CSharpCompositeTypeDeclaration)
+		{
+			return new LocalSearchScope(((CSharpCompositeTypeDeclaration) type).getTypeDeclarations());
+		}
+		else
+		{
+			return new LocalSearchScope(parent);
+		}
 	}
 
 	@RequiredReadAction
