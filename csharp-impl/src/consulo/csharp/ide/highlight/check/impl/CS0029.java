@@ -30,6 +30,7 @@ import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -293,6 +294,16 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				}
 				return Trinity.create(returnTypeRef, ((DotNetExpression) singleExpression).toTypeRef(true), singleExpression);
 			}
+		}
+		else if(element instanceof CSharpNamedFieldOrPropertySetImpl)
+		{
+			CSharpReferenceExpression nameElement = ((CSharpNamedFieldOrPropertySetImpl) element).getNameElement();
+			DotNetExpression valueExpression = ((CSharpNamedFieldOrPropertySetImpl) element).getValueExpression();
+			if(valueExpression == null)
+			{
+				return null;
+			}
+			return Trinity.create(nameElement.toTypeRef(true), valueExpression.toTypeRef(true), valueExpression);
 		}
 		else if(element instanceof CSharpReturnStatementImpl)
 		{
