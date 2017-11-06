@@ -47,6 +47,7 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
@@ -152,6 +153,7 @@ public class CSharpNameSuggesterUtil
 	{
 		Collection<String> candidates = new LinkedHashSet<>();
 
+		boolean enumerable = false;
 		// string is enumerable of chars, and it will provide name 'chars' skip it
 		if(!DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.String))
 		{
@@ -166,12 +168,16 @@ public class CSharpNameSuggesterUtil
 					if(insideTypeRef != null)
 					{
 						candidates.addAll(generateNames(StringUtil.pluralize(CSharpTypeRefPresentationUtil.buildShortText(insideTypeRef, scope))));
+						enumerable = true;
 					}
 				}
 			}
 		}
 
-		candidates.addAll(generateNames(CSharpTypeRefPresentationUtil.buildShortText(typeRef, scope)));
+		if(!enumerable)
+		{
+			candidates.addAll(generateNames(CSharpTypeRefPresentationUtil.buildShortText(typeRef, scope)));
+		}
 
 		final Set<String> usedNames = CSharpRefactoringUtil.collectUsedNames(scope, scope);
 
@@ -237,6 +243,10 @@ public class CSharpNameSuggesterUtil
 			final PsiElement callee = ((CSharpMethodCallExpressionImpl) expression).getCallExpression();
 			text = callee.getText();
 		}
+		else if(expression instanceof CSharpIndexAccessExpressionImpl)
+		{
+			text = StringUtil.unpluralize(((CSharpIndexAccessExpressionImpl) expression).getQualifier().getText());
+		}
 
 		if(text != null)
 		{
@@ -286,7 +296,15 @@ public class CSharpNameSuggesterUtil
 		for(String keyword : keywords)
 		{
 			candidates.remove(keyword);
-			candidates.add(String.valueOf(keyword.charAt(0)));
+
+			if(keyword.equals("string"))
+			{
+				candidates.add("str");
+			}
+			else
+			{
+				candidates.add(String.valueOf(keyword.charAt(0)));
+			}
 		}
 	}
 
