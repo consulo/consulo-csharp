@@ -31,7 +31,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public abstract class CSharpTypeRefCacher<E extends PsiElement>
 {
-	public static final boolean ENABLED = Boolean.parseBoolean(System.getProperty("csharp.enabled.cache", "true"));
+	public static final boolean ENABLED = true;
 
 	private static class Resolver<E extends PsiElement> implements NotNullFunction<E, DotNetTypeRef>
 	{

@@ -58,6 +58,6 @@ public abstract class CSharpExpressionImpl extends CSharpElementImpl implements 
 		{
 			return toTypeRefImpl(resolveFromParent);
 		}
-		return CSharpTypeRefCacher.ENABLED ? ourCacheSystem.toTypeRef(this, resolveFromParent) : toTypeRefImpl(resolveFromParent);
+		return ourCacheSystem.toTypeRef(this, resolveFromParent);
 	}
 }

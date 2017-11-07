@@ -63,7 +63,7 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
-		return CSharpTypeRefCacher.ENABLED ? ourCacheSystem.toTypeRef(this, resolveFromInitializer) : toTypeRefImpl(resolveFromInitializer);
+		return ourCacheSystem.toTypeRef(this, resolveFromInitializer);
 	}
 
 	@RequiredReadAction
