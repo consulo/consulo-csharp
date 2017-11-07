@@ -74,15 +74,15 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 						DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElementNoNameCheck(file);
 						if(singleElement instanceof CSharpDummyDeclarationImpl)
 						{
-							nodes.add(new CSharpElementTreeNode(file, settings, CSharpElementTreeNode.NO_VISIBILITY_ICON));
+							nodes.add(new CSharpElementTreeNode(file, settings, 0));
 						}
 						else if(singleElement != null)
 						{
-							nodes.add(new CSharpElementTreeNode(singleElement, settings, CSharpElementTreeNode.ALLOW_GRAY_FILE_NAME | CSharpElementTreeNode.NO_VISIBILITY_ICON));
+							nodes.add(new CSharpElementTreeNode(singleElement, settings, CSharpElementTreeNode.ALLOW_GRAY_FILE_NAME));
 						}
 						else
 						{
-							nodes.add(new CSharpElementTreeNode(file, settings, CSharpElementTreeNode.FORCE_EXPAND | CSharpElementTreeNode.NO_VISIBILITY_ICON));
+							nodes.add(new CSharpElementTreeNode(file, settings, CSharpElementTreeNode.FORCE_EXPAND));
 						}
 					}
 					else
@@ -99,7 +99,7 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 			{
 				if(value instanceof DotNetMemberOwner)
 				{
-					nodes.add(new CSharpElementTreeNode((DotNetMemberOwner) value, settings, CSharpElementTreeNode.NO_VISIBILITY_ICON));
+					nodes.add(new CSharpElementTreeNode((DotNetMemberOwner) value, settings, 0));
 				}
 				else
 				{

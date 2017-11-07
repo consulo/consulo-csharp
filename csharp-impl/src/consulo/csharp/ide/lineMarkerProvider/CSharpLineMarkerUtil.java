@@ -18,15 +18,9 @@ package consulo.csharp.ide.lineMarkerProvider;
 
 import java.awt.event.MouseEvent;
 import java.util.Collection;
-import java.util.Comparator;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpIdentifier;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.codeInsight.daemon.impl.PsiElementListNavigator;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.NavigatablePsiElement;
@@ -36,6 +30,11 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpIdentifier;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 
 /**
  * @author VISTALL
@@ -56,19 +55,15 @@ public class CSharpLineMarkerUtil
 	public static void openTargets(@NotNull Collection<? extends PsiElement> members, @NotNull MouseEvent mouseEvent, @NotNull String text, @NotNull final Function<PsiElement, PsiElement> map)
 	{
 		NavigatablePsiElement[] navigatablePsiElements = members.toArray(new NavigatablePsiElement[members.size()]);
-		ContainerUtil.sort(navigatablePsiElements, new Comparator<NavigatablePsiElement>()
+		ContainerUtil.sort(navigatablePsiElements, (o1, o2) ->
 		{
-			@Override
-			public int compare(NavigatablePsiElement o1, NavigatablePsiElement o2)
+			PsiElement map1 = map.fun(o1);
+			PsiElement map2 = map.fun(o2);
+			if(map1 instanceof PsiNamedElement && map2 instanceof PsiNamedElement)
 			{
-				PsiElement map1 = map.fun(o1);
-				PsiElement map2 = map.fun(o2);
-				if(map1 instanceof PsiNamedElement && map2 instanceof PsiNamedElement)
-				{
-					return Comparing.compare(((PsiNamedElement) map1).getName(), ((PsiNamedElement) map2).getName());
-				}
-				return 0;
+				return Comparing.compare(((PsiNamedElement) map1).getName(), ((PsiNamedElement) map2).getName());
 			}
+			return 0;
 		});
 
 		PsiElementListNavigator.openTargets(mouseEvent, navigatablePsiElements, text, text, new PsiMappedElementListCellRender(map));

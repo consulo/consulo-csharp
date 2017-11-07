@@ -19,7 +19,6 @@ package consulo.csharp.ide.lineMarkerProvider;
 import javax.swing.Icon;
 
 import com.intellij.ide.util.PsiElementListCellRenderer;
-import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.presentation.java.SymbolPresentationUtil;
 import com.intellij.util.Function;
@@ -40,7 +39,7 @@ public class PsiMappedElementListCellRender extends PsiElementListCellRenderer<P
 	@Override
 	protected int getIconFlags()
 	{
-		return Iconable.ICON_FLAG_VISIBILITY;
+		return 0;
 	}
 
 	@Override

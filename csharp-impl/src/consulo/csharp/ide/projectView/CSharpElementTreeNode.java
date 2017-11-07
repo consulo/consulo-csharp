@@ -26,7 +26,6 @@ import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -42,7 +41,6 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.ide.IconDescriptorUpdaters;
 
 /**
  * @author VISTALL
@@ -101,8 +99,6 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 	public static final int FORCE_EXPAND = 1 << 0;
 	// if we have solo type - but file name is not equal
 	public static final int ALLOW_GRAY_FILE_NAME = 1 << 1;
-	// disable visibility icon - on root nodes
-	public static final int NO_VISIBILITY_ICON = 1 << 2;
 
 	private final int myFlags;
 
@@ -152,7 +148,7 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 		List<AbstractTreeNode> list = new ArrayList<>(members.length);
 		for(DotNetNamedElement dotNetElement : members)
 		{
-			list.add(new CSharpElementTreeNode(dotNetElement, settings, BitUtil.isSet(myFlags, CSharpElementTreeNode.NO_VISIBILITY_ICON) ? CSharpElementTreeNode.NO_VISIBILITY_ICON : 0));
+			list.add(new CSharpElementTreeNode(dotNetElement, settings, 0));
 		}
 		return list;
 	}
@@ -212,8 +208,6 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 	protected void updateImpl(PresentationData presentationData)
 	{
 		DotNetNamedElement value = getValue();
-
-		presentationData.setIcon(IconDescriptorUpdaters.getIcon(value, BitUtil.isSet(myFlags, NO_VISIBILITY_ICON) ? 0 : Iconable.ICON_FLAG_VISIBILITY));
 
 		presentationData.setPresentableText(getPresentableText(value));
 
