@@ -18,8 +18,6 @@ package consulo.csharp.lang.psi.impl.light;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.pom.Navigatable;
@@ -28,6 +26,8 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.ObjectUtil;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
 
 /**
  * @author VISTALL
@@ -44,6 +44,20 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 	{
 		super(original.getManager(), CSharpLanguage.INSTANCE);
 		myOriginal = original;
+	}
+
+	@Override
+	public boolean isEquivalentTo(PsiElement another)
+	{
+		PsiElement ori1 = another.getOriginalElement();
+		PsiElement ori2 = getOriginalElement();
+
+		if(ori1.isEquivalentTo(ori2))
+		{
+			return true;
+		}
+
+		return super.isEquivalentTo(another);
 	}
 
 	@SuppressWarnings("unchecked")
