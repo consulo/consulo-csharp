@@ -18,6 +18,13 @@ package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
@@ -38,13 +45,6 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclarationUtil;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
 
 /**
  * @author VISTALL
@@ -124,15 +124,8 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 	@Override
 	public DotNetQualifiedElement[] getMembers()
 	{
-		return CachedValuesManager.getCachedValue(this, new CachedValueProvider<DotNetQualifiedElement[]>()
-		{
-			@Nullable
-			@Override
-			public Result<DotNetQualifiedElement[]> compute()
-			{
-				return Result.create(getStubOrPsiChildren(CSharpStubElements.QUALIFIED_MEMBERS, DotNetQualifiedElement.ARRAY_FACTORY), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
-			}
-		});
+		return CachedValuesManager.getCachedValue(this, () -> CachedValueProvider.Result.create(getStubOrPsiChildren(CSharpStubElements.QUALIFIED_MEMBERS, DotNetQualifiedElement.ARRAY_FACTORY),
+				PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT));
 	}
 
 	@Override

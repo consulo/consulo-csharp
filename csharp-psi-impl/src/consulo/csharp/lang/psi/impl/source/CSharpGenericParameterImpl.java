@@ -86,6 +86,6 @@ public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGener
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
 		return CachedValuesManager.getCachedValue(this, () -> CachedValueProvider.Result.create(CSharpGenericConstraintUtil.getExtendTypes(CSharpGenericParameterImpl.this), PsiModificationTracker
-				.MODIFICATION_COUNT));
+				.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT));
 	}
 }

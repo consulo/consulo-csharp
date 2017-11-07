@@ -214,7 +214,7 @@ public class MsilToCSharpUtil
 						wrapElement = new MsilClassAsCSharpTypeDefinition(thisParent, (MsilClassEntry) element, context);
 					}
 
-					return CachedValueProvider.Result.create(wrapElement, PsiModificationTracker.MODIFICATION_COUNT);
+					return CachedValueProvider.Result.create(wrapElement, PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
 				});
 			}
 		}
