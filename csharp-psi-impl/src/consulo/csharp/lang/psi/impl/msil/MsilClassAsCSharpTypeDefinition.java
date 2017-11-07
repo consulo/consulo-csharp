@@ -473,7 +473,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	@Override
 	public PsiElement getNameIdentifier()
 	{
-		return myOriginal.getNameIdentifier();
+		return null;
 	}
 
 	@RequiredWriteAction
