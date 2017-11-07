@@ -22,22 +22,6 @@ import org.emonic.base.codehierarchy.CodeHierarchyHelper;
 import org.emonic.base.documentation.IDocumentation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
-import consulo.csharp.lang.psi.CSharpEventDeclaration;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDefStatement;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
-import consulo.dotnet.documentation.DotNetDocumentationCache;
-import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetArrayTypeRef;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetPointerTypeRef;
-import consulo.dotnet.resolve.DotNetPsiSearcher;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.lang.documentation.DocumentationProvider;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
@@ -52,6 +36,23 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.Function;
 import com.intellij.xml.util.XmlStringUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
+import consulo.csharp.lang.psi.CSharpEventDeclaration;
+import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import consulo.dotnet.documentation.DotNetDocumentationCache;
+import consulo.dotnet.psi.*;
+import consulo.dotnet.resolve.DotNetArrayTypeRef;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.resolve.DotNetPointerTypeRef;
+import consulo.dotnet.resolve.DotNetPsiSearcher;
+import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.resolve.DotNetTypeResolveResult;
 
 /**
  * @author VISTALL
@@ -133,6 +134,21 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 			{
 				builder.append(XmlStringUtil.escapeString(element.getName()));
 			}
+		}
+		DotNetGenericParameter[] genericParameters = element.getGenericParameters();
+		if(genericParameters.length > 0)
+		{
+			builder.append("&lt;");
+			for(int i = 0; i < genericParameters.length; i++)
+			{
+				DotNetGenericParameter genericParameter = genericParameters[i];
+				if(i != 0)
+				{
+					builder.append(", ");
+				}
+				builder.append(genericParameter.getName());
+			}
+			builder.append("&gt;");
 		}
 		char[] openAndCloseTokens = CSharpParametersInfo.getOpenAndCloseTokens(element);
 		builder.append(openAndCloseTokens[0]);
@@ -319,6 +335,12 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		{
 			builder.append(generateLinksForType(((DotNetArrayTypeRef) typeRef).getInnerTypeRef(), element, qualified));
 			builder.append("[]");
+		}
+		else if(typeRef instanceof CSharpRefTypeRef)
+		{
+			builder.append(((CSharpRefTypeRef) typeRef).getType().name());
+			builder.append(" ");
+			builder.append(generateLinksForType(((CSharpRefTypeRef) typeRef).getInnerTypeRef(), element, qualified));
 		}
 		else if(typeRef instanceof DotNetPointerTypeRef)
 		{
