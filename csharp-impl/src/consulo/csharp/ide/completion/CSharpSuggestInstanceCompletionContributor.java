@@ -402,6 +402,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 
 							LookupElementBuilder builder = LookupElementBuilder.create(typeRef, typeText);
 							builder = builder.withIcon(getIconForInnerTypeRef((CSharpArrayTypeRef) typeRef, position));
+							builder = builder.withInsertHandler((c, item) -> c.getEditor().getCaretModel().moveToOffset(c.getTailOffset() - 1));
 							// add without {...}
 							result.addElement(PrioritizedLookupElement.withPriority(builder, 1));
 
