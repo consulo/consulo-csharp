@@ -16,9 +16,12 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
+import gnu.trove.THashSet;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -69,13 +72,13 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 			MsilClassAsCSharpTypeDefinition parentThis = MsilClassAsCSharpTypeDefinition.this;
 
 			DotNetNamedElement[] temp = myOriginal.getMembers();
-			List<DotNetNamedElement> copy = new ArrayList<DotNetNamedElement>(temp.length);
+			List<DotNetNamedElement> copy = new ArrayList<>(temp.length);
 			Collections.addAll(copy, temp);
 
-			List<DotNetNamedElement> list = new ArrayList<DotNetNamedElement>(temp.length);
+			List<DotNetNamedElement> list = new ArrayList<>(temp.length);
 
 			boolean isEnum = isEnum();
-			List<String> bannedFieldNames = new ArrayList<String>();
+			Set<String> bannedFieldNames = new THashSet<>();
 			for(DotNetNamedElement element : temp)
 			{
 				if(element instanceof MsilFieldEntry)
@@ -103,7 +106,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 				{
 					DotNetXXXAccessor[] accessors = ((MsilPropertyEntry) element).getAccessors();
 
-					List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs = new ArrayList<Pair<DotNetXXXAccessor, MsilMethodEntry>>(2);
+					List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs = new ArrayList<>(2);
 
 					for(DotNetXXXAccessor accessor : accessors)
 					{
@@ -136,7 +139,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 				{
 					DotNetXXXAccessor[] accessors = ((MsilEventEntry) element).getAccessors();
 
-					List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs = new ArrayList<Pair<DotNetXXXAccessor, MsilMethodEntry>>(2);
+					List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs = new ArrayList<>(2);
 
 					for(DotNetXXXAccessor accessor : accessors)
 					{

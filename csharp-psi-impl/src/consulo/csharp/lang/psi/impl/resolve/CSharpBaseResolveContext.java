@@ -300,17 +300,13 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	private static CSharpElementGroup<CSharpMethodDeclaration> filterElementGroupToExtensionGroup(CSharpElementGroup<PsiElement> elementGroup)
 	{
 		final List<CSharpMethodDeclaration> extensions = new SmartList<>();
-		elementGroup.process(new Processor<PsiElement>()
+		elementGroup.process(element ->
 		{
-			@Override
-			public boolean process(PsiElement element)
+			if(element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isExtension())
 			{
-				if(element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isExtension())
-				{
-					extensions.add((CSharpMethodDeclaration) element);
-				}
-				return true;
+				extensions.add((CSharpMethodDeclaration) element);
 			}
+			return true;
 		});
 		if(extensions.isEmpty())
 		{

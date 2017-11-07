@@ -36,53 +36,73 @@ import consulo.csharp.lang.psi.CSharpMethodDeclaration;
  */
 public interface CSharpResolveContext
 {
-	public static final CSharpResolveContext[] EMPTY_ARRAY = new CSharpResolveContext[0];
+	CSharpResolveContext[] EMPTY_ARRAY = new CSharpResolveContext[0];
 
-	public static ArrayFactory<CSharpResolveContext> ARRAY_FACTORY = new ArrayFactory<CSharpResolveContext>()
-	{
-		@NotNull
-		@Override
-		public CSharpResolveContext[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpResolveContext[count];
-		}
-	};
+	ArrayFactory<CSharpResolveContext> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpResolveContext[count];
 
 	CSharpResolveContext EMPTY = new CSharpResolveContextAdapter();
 
 	@Nullable
 	@RequiredReadAction
-	CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep);
+	default CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep)
+	{
+		return null;
+	}
 
 	@Nullable
 	@RequiredReadAction
-	CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup();
+	default CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
+	{
+		return null;
+	}
 
 	@Nullable
 	@RequiredReadAction
-	CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup();
+	default CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()
+	{
+		return null;
+	}
 
 	@Nullable
 	@RequiredReadAction
-	CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep);
+	default CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)
+	{
+		return null;
+	}
 
 	@Nullable
 	@RequiredReadAction
-	CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull CSharpCastType castType, boolean deep);
+	default CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull CSharpCastType castType, boolean deep)
+	{
+		return null;
+	}
 
 	@Nullable
 	@RequiredReadAction
-	CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name);
+	default CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
+	{
+		return null;
+	}
 
 	@RequiredReadAction
-	boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor);
+	default boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
+	{
+		return true;
+	}
 
+	@RequiredReadAction
 	@NotNull
-	@RequiredReadAction
-	PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder);
+	default PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
+	{
+		return PsiElement.EMPTY_ARRAY;
+	}
 
 	@RequiredReadAction
-	boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep);
+	default boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
+	{
+		return true;
+	}
+
 
 	@NotNull
 	PsiElement getElement();

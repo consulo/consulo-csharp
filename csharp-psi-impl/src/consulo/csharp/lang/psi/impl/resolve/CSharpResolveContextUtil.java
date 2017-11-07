@@ -78,7 +78,7 @@ public class CSharpResolveContextUtil
 			{
 				return CSharpResolveContext.EMPTY;
 			}
-			return new CSharpNamespaceResolveContext((DotNetNamespaceAsElement) element, resolveScope);
+			return cacheSimple(element, it -> new CSharpNamespaceResolveContext((DotNetNamespaceAsElement) it, resolveScope));
 		}
 		else if(element instanceof CSharpUsingNamespaceStatement || element instanceof CSharpUsingTypeStatement)
 		{
@@ -151,7 +151,8 @@ public class CSharpResolveContextUtil
 				@RequiredReadAction
 				public Result<CSharpResolveContext> compute()
 				{
-					return Result.<CSharpResolveContext>create(new CSharpTypeResolveContext(typeDeclaration, DotNetGenericExtractor.EMPTY, null), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+					return Result.<CSharpResolveContext>create(new CSharpTypeResolveContext(typeDeclaration, DotNetGenericExtractor.EMPTY, null), PsiModificationTracker
+							.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
 				}
 			}, false);
 			typeDeclaration.putUserData(RESOLVE_CONTEXT, cachedValue);
@@ -172,7 +173,8 @@ public class CSharpResolveContextUtil
 			return provider.getValue();
 		}
 
-		CachedValue<CSharpResolveContext> cachedValue = CachedValuesManager.getManager(element.getProject()).createCachedValue(() -> CachedValueProvider.Result.create(fun.fun(element), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT), false);
+		CachedValue<CSharpResolveContext> cachedValue = CachedValuesManager.getManager(element.getProject()).createCachedValue(() -> CachedValueProvider.Result.create(fun.fun(element),
+				PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT), false);
 		element.putUserData(RESOLVE_CONTEXT, cachedValue);
 		return cachedValue.getValue();
 	}

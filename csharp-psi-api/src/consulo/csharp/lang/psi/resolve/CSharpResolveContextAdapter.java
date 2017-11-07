@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import consulo.annotations.DeprecationInfo;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
@@ -33,6 +34,8 @@ import consulo.csharp.lang.CSharpCastType;
 * @author VISTALL
 * @since 05.03.2016
 */
+@Deprecated
+@DeprecationInfo("Use CSharpResolveContext")
 public class CSharpResolveContextAdapter implements CSharpResolveContext
 {
 	@RequiredReadAction

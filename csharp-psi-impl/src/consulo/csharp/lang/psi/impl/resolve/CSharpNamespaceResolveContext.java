@@ -19,6 +19,7 @@ package consulo.csharp.lang.psi.impl.resolve;
 import gnu.trove.THashSet;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -26,20 +27,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
-import com.intellij.psi.tree.IElementType;
+import com.intellij.util.ObjectUtil;
 import com.intellij.util.Processor;
 import com.intellij.util.Processors;
 import com.intellij.util.SmartList;
+import com.intellij.util.containers.FactoryMap;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.CSharpCastType;
-import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -65,6 +64,14 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	private final DotNetNamespaceAsElement myNamespaceAsElement;
 	private final GlobalSearchScope myResolveScope;
 
+	private FactoryMap<String, Object> myExtensionGroups = FactoryMap.createMap(name ->
+	{
+		CSharpElementGroup<CSharpMethodDeclaration> group = findExtensionMethodGroupByName0(name);
+		return group == null ? ObjectUtil.NULL : group;
+	});
+
+	private NotNullLazyValue<List<CSharpResolveContext>> myExtensionContexts = NotNullLazyValue.createValue(this::collectResolveContexts);
+
 	public CSharpNamespaceResolveContext(DotNetNamespaceAsElement namespaceAsElement, GlobalSearchScope resolveScope)
 	{
 		myNamespaceAsElement = namespaceAsElement;
@@ -74,47 +81,15 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep)
-	{
-		return null;
-	}
-
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
-	{
-		return null;
-	}
-
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()
-	{
-		return null;
-	}
-
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)
-	{
-		return null;
-	}
-
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull CSharpCastType castType, boolean deep)
-	{
-		return null;
-	}
-
-	@RequiredReadAction
-	@Nullable
-	@Override
+	@SuppressWarnings("unchecked")
 	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
+	{
+		Object o = myExtensionGroups.get(name);
+		return o == ObjectUtil.NULL ? null : (CSharpElementGroup<CSharpMethodDeclaration>) o;
+	}
+
+	@RequiredReadAction
+	private CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName0(@NotNull String name)
 	{
 		String presentableName = DotNetNamespaceStubUtil.getIndexableNamespace(myNamespaceAsElement.getPresentableQName());
 
@@ -157,28 +132,36 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	@Override
 	public boolean processExtensionMethodGroups(@NotNull final Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
-		return processExtensionMethodGroups(myNamespaceAsElement.getPresentableQName(), myNamespaceAsElement.getProject(), myResolveScope, processor);
+		for(CSharpResolveContext context : myExtensionContexts.getValue())
+		{
+			if(!context.processExtensionMethodGroups(processor))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@RequiredReadAction
-	public static boolean processExtensionMethodGroups(@Nullable final String qName,
-			@NotNull final Project project,
-			@NotNull final GlobalSearchScope scope,
-			@NotNull final Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
+	public List<CSharpResolveContext> collectResolveContexts()
 	{
+		String qName = myNamespaceAsElement.getPresentableQName();
 		if(qName == null)
 		{
-			return true;
+			return Collections.emptyList();
 		}
+
+		Project project = myNamespaceAsElement.getProject();
 		String indexableName = DotNetNamespaceStubUtil.getIndexableNamespace(qName);
 
 		Set<DotNetTypeDeclaration> result = new THashSet<>();
 
-		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, indexableName, project, scope, DotNetTypeDeclaration.class, Processors.cancelableCollectProcessor
-				(result));
+		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, indexableName, project, myResolveScope, DotNetTypeDeclaration.class, Processors
+				.cancelableCollectProcessor(result));
 
 		Set<String> processed = new THashSet<>();
 
+		List<CSharpResolveContext> list = new SmartList<>();
 		for(DotNetTypeDeclaration typeDeclaration : result)
 		{
 			ProgressManager.checkCanceled();
@@ -190,19 +173,16 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 				String vmQName = typeDeclaration.getVmQName();
 				if(processed.contains(vmQName))
 				{
-					return true;
+					continue;
 				}
 				processed.add(vmQName);
 			}
 
-			CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope, wrappedDeclaration);
+			CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, myResolveScope, wrappedDeclaration);
 
-			if(!context.processExtensionMethodGroups(processor))
-			{
-				return false;
-			}
+			list.add(context);
 		}
-		return true;
+		return list.isEmpty() ? Collections.emptyList() : list;
 	}
 
 	@RequiredReadAction
