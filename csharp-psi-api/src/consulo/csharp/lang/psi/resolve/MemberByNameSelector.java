@@ -16,11 +16,13 @@
 
 package consulo.csharp.lang.psi.resolve;
 
+import java.util.Collection;
+
 import org.jetbrains.annotations.NotNull;
-import consulo.annotations.RequiredReadAction;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
+import consulo.annotations.RequiredReadAction;
 
 /**
  * @author VISTALL
@@ -44,7 +46,7 @@ public class MemberByNameSelector extends UserDataHolderBase implements CSharpNa
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
+	public Collection<PsiElement> doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 	{
 		return context.findByName(myName, deep, this);
 	}

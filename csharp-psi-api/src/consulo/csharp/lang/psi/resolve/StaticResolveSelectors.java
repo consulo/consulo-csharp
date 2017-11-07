@@ -16,6 +16,9 @@
 
 package consulo.csharp.lang.psi.resolve;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.jetbrains.annotations.NotNull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
@@ -33,7 +36,7 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 				@RequiredReadAction
 				@NotNull
 				@Override
-				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
+				public Collection<PsiElement> doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 				{
 					throw new UnsupportedOperationException();
 				}
@@ -43,14 +46,14 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 				@RequiredReadAction
 				@NotNull
 				@Override
-				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
+				public Collection<PsiElement> doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 				{
 					CSharpElementGroup<CSharpIndexMethodDeclaration> group = context.indexMethodGroup(deep);
 					if(group == null)
 					{
-						return PsiElement.EMPTY_ARRAY;
+						return Collections.emptyList();
 					}
-					return new PsiElement[] {group};
+					return Collections.singletonList(group);
 				}
 			},
 
@@ -59,14 +62,14 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 				@RequiredReadAction
 				@NotNull
 				@Override
-				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
+				public Collection<PsiElement> doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 				{
 					CSharpElementGroup<CSharpConstructorDeclaration> group = context.constructorGroup();
 					if(group == null)
 					{
-						return PsiElement.EMPTY_ARRAY;
+						return Collections.emptyList();
 					}
-					return new PsiElement[] {group};
+					return Collections.singletonList(group);
 				}
 			},
 
@@ -75,14 +78,14 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 				@RequiredReadAction
 				@NotNull
 				@Override
-				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
+				public Collection<PsiElement> doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 				{
 					CSharpElementGroup<CSharpConstructorDeclaration> group = context.deConstructorGroup();
 					if(group == null)
 					{
-						return PsiElement.EMPTY_ARRAY;
+						return Collections.emptyList();
 					}
-					return new PsiElement[] {group};
+					return Collections.singletonList(group);
 				}
 			}
 }

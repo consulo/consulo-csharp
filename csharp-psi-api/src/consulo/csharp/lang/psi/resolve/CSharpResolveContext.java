@@ -16,6 +16,9 @@
 
 package consulo.csharp.lang.psi.resolve;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.util.UserDataHolder;
@@ -92,9 +95,9 @@ public interface CSharpResolveContext
 
 	@RequiredReadAction
 	@NotNull
-	default PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
+	default Collection<PsiElement> findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
 	{
-		return PsiElement.EMPTY_ARRAY;
+		return Collections.emptySet();
 	}
 
 	@RequiredReadAction

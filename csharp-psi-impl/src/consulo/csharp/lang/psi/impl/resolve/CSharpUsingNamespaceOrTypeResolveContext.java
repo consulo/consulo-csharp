@@ -16,6 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.resolve;
 
+import java.util.Collection;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import consulo.annotations.RequiredReadAction;
@@ -109,7 +111,7 @@ public class CSharpUsingNamespaceOrTypeResolveContext extends CSharpResolveConte
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
+	public Collection<PsiElement> findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
 	{
 		return myContextValue.getValue().findByName(name, deep, holder);
 	}

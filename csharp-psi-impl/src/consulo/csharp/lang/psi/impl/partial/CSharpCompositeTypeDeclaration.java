@@ -29,14 +29,6 @@ import java.util.Set;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.psi.search.LocalSearchScope;
-import consulo.csharp.lang.psi.CSharpGenericConstraint;
-import consulo.csharp.lang.psi.CSharpGenericConstraintList;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
@@ -45,6 +37,7 @@ import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.ObjectUtil;
@@ -54,6 +47,13 @@ import com.intellij.util.containers.MultiMap;
 import consulo.annotations.Immutable;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
+import consulo.csharp.lang.psi.CSharpGenericConstraint;
+import consulo.csharp.lang.psi.CSharpGenericConstraintList;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher;
+import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterList;
@@ -122,11 +122,13 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 
 	@NotNull
 	@RequiredReadAction
-	public static PsiElement[] wrapPartialTypes(@NotNull GlobalSearchScope scope, @NotNull Project project, @NotNull PsiElement[] psiElements)
+	public static Collection<PsiElement> wrapPartialTypes(@NotNull GlobalSearchScope scope, @NotNull Project project, @NotNull Collection<PsiElement> elements)
 	{
 		MultiMap<String, CSharpTypeDeclaration> partialTypes = null;
 
 		List<PsiElement> newElementList = null;
+
+		PsiElement[] psiElements = ContainerUtil.toArray(elements, PsiElement.ARRAY_FACTORY);
 
 		for(int i = 0; i < psiElements.length; i++)
 		{
@@ -163,7 +165,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 
 		if(partialTypes == null)
 		{
-			return psiElements;
+			return elements;
 		}
 
 		for(Map.Entry<String, Collection<CSharpTypeDeclaration>> entry : partialTypes.entrySet())
@@ -178,13 +180,12 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 			}
 			else
 			{
-				CSharpTypeDeclaration compositeType = CSharpPartialElementManager.getInstance(project).getOrCreateCompositeType(scope, entry.getKey
-						(), value);
+				CSharpTypeDeclaration compositeType = CSharpPartialElementManager.getInstance(project).getOrCreateCompositeType(scope, entry.getKey(), value);
 
 				newElementList.add(compositeType);
 			}
 		}
-		return ContainerUtil.toArray(newElementList, PsiElement.ARRAY_FACTORY);
+		return newElementList;
 	}
 
 	private Project myProject;

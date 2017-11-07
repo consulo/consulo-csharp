@@ -16,26 +16,27 @@
 
 package consulo.csharp.lang.psi.impl.resolve;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.UserDataHolder;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.util.Processor;
+import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.UserDataHolder;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Processor;
-import com.intellij.util.SmartList;
-import consulo.csharp.lang.CSharpCastType;
+import consulo.csharp.lang.util.ContainerUtil2;
 
 /**
  * @author VISTALL
@@ -171,15 +172,15 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
+	public Collection<PsiElement> findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
 	{
-		PsiElement[] array = PsiElement.EMPTY_ARRAY;
+		List<Collection<? extends PsiElement>> list = new SmartList<>();
 		for(CSharpResolveContext context : myContexts)
 		{
-			PsiElement[] byName = context.findByName(name, deep, holder);
-			array = ArrayUtil.mergeArrays(array, byName);
+			Collection<PsiElement> byName = context.findByName(name, deep, holder);
+			list.add(byName);
 		}
-		return array;
+		return ContainerUtil2.concat(list);
 	}
 
 	@RequiredReadAction

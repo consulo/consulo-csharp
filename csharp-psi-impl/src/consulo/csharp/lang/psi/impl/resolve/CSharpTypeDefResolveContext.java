@@ -16,6 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.resolve;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.jetbrains.annotations.NotNull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDefStatement;
@@ -49,9 +52,9 @@ public class CSharpTypeDefResolveContext extends CSharpResolveContextAdapter
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
+	public Collection<PsiElement> findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
 	{
-		return name.equals(myName) ? new PsiElement[] {myStatement} : PsiElement.EMPTY_ARRAY;
+		return name.equals(myName) ? Collections.singletonList(myStatement) : Collections.emptyList();
 	}
 
 	@NotNull

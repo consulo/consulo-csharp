@@ -16,6 +16,8 @@
 
 package consulo.csharp.lang.psi.resolve;
 
+import java.util.Collection;
+
 import org.jetbrains.annotations.NotNull;
 import consulo.annotations.RequiredReadAction;
 import com.intellij.psi.PsiElement;
@@ -28,5 +30,5 @@ public interface CSharpResolveSelector
 {
 	@NotNull
 	@RequiredReadAction
-	PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep);
+	Collection<PsiElement> doSelectElement(@NotNull CSharpResolveContext context, boolean deep);
 }

@@ -17,18 +17,8 @@
 package consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import consulo.annotations.DeprecationInfo;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.Processor;
-import consulo.csharp.lang.CSharpCastType;
+import consulo.annotations.DeprecationInfo;
 
 /**
 * @author VISTALL
@@ -38,76 +28,6 @@ import consulo.csharp.lang.CSharpCastType;
 @DeprecationInfo("Use CSharpResolveContext")
 public class CSharpResolveContextAdapter implements CSharpResolveContext
 {
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep)
-	{
-		return null;
-	}
-
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
-	{
-		return null;
-	}
-
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()
-	{
-		return null;
-	}
-
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)
-	{
-		return null;
-	}
-
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull CSharpCastType castType, boolean deep)
-	{
-		return null;
-	}
-
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
-	{
-		return null;
-	}
-
-	@RequiredReadAction
-	@Override
-	public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
-	{
-		return true;
-	}
-
-	@RequiredReadAction
-	@NotNull
-	@Override
-	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
-	{
-		return PsiElement.EMPTY_ARRAY;
-	}
-
-	@RequiredReadAction
-	@Override
-	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
-	{
-		return true;
-	}
-
 	@NotNull
 	@Override
 	public PsiElement getElement()

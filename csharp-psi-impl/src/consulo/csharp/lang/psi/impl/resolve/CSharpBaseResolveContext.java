@@ -20,13 +20,23 @@ import gnu.trove.THashSet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.NotNullLazyValue;
+import com.intellij.openapi.util.UserDataHolder;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.util.Processor;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -36,20 +46,12 @@ import consulo.csharp.lang.psi.impl.resolve.baseResolveContext.MapElementGroupCo
 import consulo.csharp.lang.psi.impl.resolve.baseResolveContext.SimpleElementGroupCollectors;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import consulo.csharp.lang.util.ContainerUtil2;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.openapi.util.NotNullLazyValue;
-import com.intellij.openapi.util.UserDataHolder;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Processor;
-import com.intellij.util.SmartList;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.csharp.lang.CSharpCastType;
 
 /**
  * @author VISTALL
@@ -345,31 +347,31 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@RequiredReadAction
 	@Override
 	@NotNull
-	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
+	public Collection<PsiElement> findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
 	{
 		Map<String, CSharpElementGroup<PsiElement>> map = myOtherCollectorValue.getValue().toMap();
 
-		PsiElement[] selectedElements;
+		Collection<PsiElement> selectedElements;
 		if(map == null)
 		{
-			selectedElements = PsiElement.EMPTY_ARRAY;
+			selectedElements = Collections.emptyList();
 		}
 		else
 		{
 			CSharpElementGroup<PsiElement> group = map.get(name);
 			if(group == null)
 			{
-				selectedElements = PsiElement.EMPTY_ARRAY;
+				selectedElements = Collections.emptyList();
 			}
 			else
 			{
-				selectedElements = new PsiElement[]{group};
+				selectedElements = Collections.singletonList(group);
 			}
 		}
 
 		if(deep)
 		{
-			selectedElements = ArrayUtil.mergeArrays(selectedElements, getSuperContext().findByName(name, true, holder));
+			selectedElements = ContainerUtil2.concat(selectedElements, getSuperContext().findByName(name, true, holder));
 		}
 		return selectedElements;
 	}

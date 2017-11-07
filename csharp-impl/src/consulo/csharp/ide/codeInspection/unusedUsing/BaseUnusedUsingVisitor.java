@@ -77,7 +77,7 @@ public abstract class BaseUnusedUsingVisitor extends CSharpElementVisitor
 				if(packageOfEnumerable.equals(referenceText))
 				{
 					DotNetNamespaceAsElement namespaceAsElement = ((CSharpUsingNamespaceStatement) key).resolve();
-					if(namespaceAsElement != null && namespaceAsElement.findChildren(className, expression.getResolveScope(), DotNetNamespaceAsElement.ChildrenFilter.ONLY_ELEMENTS).length > 0)
+					if(namespaceAsElement != null && namespaceAsElement.findChildren(className, expression.getResolveScope(), DotNetNamespaceAsElement.ChildrenFilter.ONLY_ELEMENTS).size() > 0)
 					{
 						putElement(key, expression);
 						break;

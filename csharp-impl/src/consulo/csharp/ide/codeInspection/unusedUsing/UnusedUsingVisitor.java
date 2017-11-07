@@ -102,7 +102,7 @@ public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 				if(packageOfEnumerable.equals(referenceText))
 				{
 					DotNetNamespaceAsElement namespaceAsElement = ((CSharpUsingNamespaceStatement) key).resolve();
-					if(namespaceAsElement != null && namespaceAsElement.findChildren(className, expression.getResolveScope(), DotNetNamespaceAsElement.ChildrenFilter.ONLY_ELEMENTS).length > 0)
+					if(namespaceAsElement != null && namespaceAsElement.findChildren(className, expression.getResolveScope(), DotNetNamespaceAsElement.ChildrenFilter.ONLY_ELEMENTS).size() > 0)
 					{
 						myUsingContext.put(key, Boolean.TRUE);
 						break;

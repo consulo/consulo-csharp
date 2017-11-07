@@ -16,11 +16,14 @@
 
 package consulo.csharp.lang.psi.resolve;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.jetbrains.annotations.NotNull;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 
 /**
  * @author VISTALL
@@ -38,13 +41,13 @@ public class OperatorByTokenSelector implements CSharpResolveSelector
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
+	public Collection<PsiElement> doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 	{
 		CSharpElementGroup<CSharpMethodDeclaration> groupByTokenType = context.findOperatorGroupByTokenType(myToken, deep);
 		if(groupByTokenType == null)
 		{
-			return PsiElement.EMPTY_ARRAY;
+			return Collections.emptyList();
 		}
-		return new PsiElement[] {groupByTokenType};
+		return Collections.singletonList(groupByTokenType);
 	}
 }

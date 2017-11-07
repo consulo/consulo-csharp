@@ -16,18 +16,20 @@
 
 package consulo.csharp.lang.psi.resolve;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.util.UserDataHolderBase;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.util.ContainerUtil2;
 import consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import consulo.dotnet.psi.DotNetInheritUtil;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.UserDataHolderBase;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -47,11 +49,11 @@ public class AttributeByNameSelector implements CSharpResolveSelector
 	@NotNull
 	@Override
 	@RequiredReadAction
-	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
+	public Collection<PsiElement> doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 	{
 		if(myNameWithAt.isEmpty())
 		{
-			return PsiElement.EMPTY_ARRAY;
+			return Collections.emptyList();
 		}
 
 		UserDataHolderBase options = new UserDataHolderBase();
@@ -63,19 +65,11 @@ public class AttributeByNameSelector implements CSharpResolveSelector
 		}
 		else
 		{
-			PsiElement[] array = context.findByName(myNameWithAt, deep, options);
+			Collection<PsiElement> withoutSuffix = context.findByName(myNameWithAt, deep, options);
 
-			array = ArrayUtil.mergeArrays(array, context.findByName(myNameWithAt + AttributeSuffix, deep, options));
+			Collection<PsiElement> array = ContainerUtil2.concat(withoutSuffix, context.findByName(myNameWithAt + AttributeSuffix, deep, options));
 
-			return ContainerUtil.findAllAsArray(array, new Condition<PsiElement>()
-			{
-				@Override
-				@RequiredReadAction
-				public boolean value(PsiElement element)
-				{
-					return element instanceof CSharpTypeDeclaration && DotNetInheritUtil.isAttribute((DotNetTypeDeclaration) element);
-				}
-			});
+			return ContainerUtil.findAll(array, element -> element instanceof CSharpTypeDeclaration && DotNetInheritUtil.isAttribute((DotNetTypeDeclaration) element));
 		}
 	}
 }

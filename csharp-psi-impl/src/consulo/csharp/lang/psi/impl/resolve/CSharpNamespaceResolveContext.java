@@ -189,7 +189,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
+	public Collection<PsiElement> findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
 	{
 		DotNetNamespaceAsElement.ChildrenFilter filter = holder.getUserData(BaseDotNetNamespaceAsElement.FILTER);
 		if(filter == null)
@@ -209,7 +209,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		{
 			filter = DotNetNamespaceAsElement.ChildrenFilter.NONE;
 		}
-		PsiElement[] children = myNamespaceAsElement.getChildren(myResolveScope, CSharpTransformer.INSTANCE, filter);
+		Collection<PsiElement> children = myNamespaceAsElement.getChildren(myResolveScope, CSharpTransformer.INSTANCE, filter);
 		children = CSharpCompositeTypeDeclaration.wrapPartialTypes(myResolveScope, myNamespaceAsElement.getProject(), children);
 
 		for(PsiElement element : children)

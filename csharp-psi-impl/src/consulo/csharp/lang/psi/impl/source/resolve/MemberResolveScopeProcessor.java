@@ -100,8 +100,8 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myResolveScope, element);
 
-		PsiElement[] psiElements = selector.doSelectElement(context, state.get(CSharpResolveUtil.WALK_DEEP) == Boolean.TRUE);
-		applyTypeArguments(psiElements);
+		Collection<PsiElement> psiElements = selector.doSelectElement(context, state.get(CSharpResolveUtil.WALK_DEEP) == Boolean.TRUE);
+		psiElements = applyTypeArguments(psiElements);
 		psiElements = CSharpCompositeTypeDeclaration.wrapPartialTypes(myResolveScope, myScopeElement.getProject(), psiElements);
 
 		for(PsiElement psiElement : OverrideUtil.filterOverrideElements(this, myScopeElement, psiElements, myOverrideProcessor))
@@ -126,26 +126,28 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 	}
 
 	@RequiredReadAction
-	private void applyTypeArguments(PsiElement[] psiElements)
+	private Collection<PsiElement> applyTypeArguments(Collection<PsiElement> psiElements)
 	{
-		if(!(myScopeElement instanceof CSharpReferenceExpression) || psiElements.length == 0)
+		if(!(myScopeElement instanceof CSharpReferenceExpression) || psiElements.size() == 0)
 		{
-			return;
+			return psiElements;
 		}
 
 		int typeArgumentListSize = CSharpReferenceExpressionImplUtil.getTypeArgumentListSize(myScopeElement);
 		if(typeArgumentListSize == 0)
 		{
-			return;
+			return psiElements;
 		}
 
 		DotNetTypeRef[] typeArgumentListRefs = ((CSharpReferenceExpression) myScopeElement).getTypeArgumentListRefs();
 
-		for(int i = 0; i < psiElements.length; i++)
+		List<PsiElement> newPsiElements = new ArrayList<>(psiElements.size());
+		for(PsiElement psiElement : psiElements)
 		{
 			ProgressManager.checkCanceled();
 
-			PsiElement psiElement = psiElements[i];
+			PsiElement addItem = psiElement;
+
 			if(psiElement instanceof CSharpElementGroup)
 			{
 				@SuppressWarnings("unchecked") CSharpElementGroup<PsiElement> elementGroup = (CSharpElementGroup<PsiElement>) psiElement;
@@ -153,8 +155,7 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 				Collection<PsiElement> elements = elementGroup.getElements();
 
 				boolean changed = false;
-
-				final List<PsiElement> anotherItems = new ArrayList<PsiElement>(elements.size());
+				final List<PsiElement> anotherItems = new ArrayList<>(elements.size());
 				for(PsiElement temp : elements)
 				{
 					if(temp instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) temp).getGenericParametersCount() == typeArgumentListSize)
@@ -174,9 +175,12 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 
 				if(changed)
 				{
-					psiElements[i] = new CSharpElementGroupImpl<PsiElement>(elementGroup.getProject(), elementGroup.getKey(), anotherItems);
+					addItem = new CSharpElementGroupImpl<>(elementGroup.getProject(), elementGroup.getKey(), anotherItems);
 				}
 			}
+
+			newPsiElements.add(addItem);
 		}
+		return newPsiElements;
 	}
 }

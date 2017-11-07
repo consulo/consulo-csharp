@@ -93,19 +93,19 @@ public class OverrideUtil
 	}
 
 	@NotNull
-	public static PsiElement[] filterOverrideElements(@NotNull PsiScopeProcessor processor,
+	public static Collection<PsiElement> filterOverrideElements(@NotNull PsiScopeProcessor processor,
 			@NotNull PsiElement scopeElement,
-			@NotNull PsiElement[] psiElements,
+			@NotNull Collection<PsiElement> psiElements,
 			@NotNull OverrideProcessor overrideProcessor)
 	{
-		if(psiElements.length == 0)
+		if(psiElements.size() == 0)
 		{
 			return psiElements;
 		}
 		if(!ExecuteTargetUtil.canProcess(processor, ExecuteTarget.ELEMENT_GROUP, ExecuteTarget.EVENT, ExecuteTarget.PROPERTY))
 		{
 			List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
-			return ContainerUtil.toArray(elements, PsiElement.ARRAY_FACTORY);
+			return elements;
 		}
 
 		List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
@@ -115,7 +115,7 @@ public class OverrideUtil
 
 	@NotNull
 	@SuppressWarnings("unchecked")
-	public static PsiElement[] filterOverrideElements(@NotNull PsiElement scopeElement, @NotNull Collection<PsiElement> elements, @NotNull OverrideProcessor overrideProcessor)
+	public static List<PsiElement> filterOverrideElements(@NotNull PsiElement scopeElement, @NotNull Collection<PsiElement> elements, @NotNull OverrideProcessor overrideProcessor)
 	{
 		List<PsiElement> copyElements = new ArrayList<>(elements);
 
@@ -152,7 +152,7 @@ public class OverrideUtil
 					{
 						if(!overrideProcessor.elementOverride(virtualImplementOwner, (DotNetVirtualImplementOwner) tempIterateElement))
 						{
-							return PsiElement.EMPTY_ARRAY;
+							return Collections.emptyList();
 						}
 						copyElements.remove(tempIterateElement);
 					}
@@ -185,22 +185,20 @@ public class OverrideUtil
 
 		if(elseElements.isEmpty() && groupElements.isEmpty())
 		{
-			return PsiElement.EMPTY_ARRAY;
+			return Collections.emptyList();
 		}
 		else if(elseElements.isEmpty())
 		{
-			return new PsiElement[]{
-					new CSharpElementGroupImpl<>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements)
-			};
+			return Collections.singletonList(new CSharpElementGroupImpl<>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements));
 		}
 		else if(groupElements.isEmpty())
 		{
-			return ContainerUtil.toArray(elseElements, PsiElement.ARRAY_FACTORY);
+			return elseElements;
 		}
 		else
 		{
 			elseElements.add(new CSharpElementGroupImpl<>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements));
-			return ContainerUtil.toArray(elseElements, PsiElement.ARRAY_FACTORY);
+			return elseElements;
 		}
 	}
 
@@ -343,7 +341,7 @@ public class OverrideUtil
 			{
 				CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, resolveScope, typeDeclaration);
 
-				PsiElement[] elements = selector.doSelectElement(context, false);
+				Collection<PsiElement> elements = selector.doSelectElement(context, false);
 				for(PsiElement element : CSharpResolveUtil.mergeGroupsToIterable(elements))
 				{
 					if(element == target)
@@ -401,7 +399,7 @@ public class OverrideUtil
 		Collection<PsiElement> results = collectProcessor.getResults();
 
 		List<PsiElement> mergedElements = CSharpResolveUtil.mergeGroupsToIterable(results);
-		PsiElement[] psiElements = OverrideUtil.filterOverrideElements(targetTypeDeclaration, mergedElements, OverrideProcessor.ALWAYS_TRUE);
+		List<PsiElement> psiElements = OverrideUtil.filterOverrideElements(targetTypeDeclaration, mergedElements, OverrideProcessor.ALWAYS_TRUE);
 
 		List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
 		if(overrideTool)
