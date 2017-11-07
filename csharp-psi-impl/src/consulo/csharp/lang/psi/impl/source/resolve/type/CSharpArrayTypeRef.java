@@ -19,6 +19,8 @@ package consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightIndexMethodDeclarationBuilder;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
@@ -36,6 +38,29 @@ import consulo.dotnet.resolve.DotNetTypeResolveResult;
  */
 public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements DotNetArrayTypeRef
 {
+	public static class ArrayResolveResult extends CSharpUserTypeRef.Result<CSharpTypeDeclaration>
+	{
+		private int myDimensions;
+		private DotNetTypeRef myInnerTypeRef;
+
+		public ArrayResolveResult(CSharpTypeDeclaration element, int dimensions, DotNetTypeRef innerTypeRef)
+		{
+			super(element, DotNetGenericExtractor.EMPTY);
+			myDimensions = dimensions;
+			myInnerTypeRef = innerTypeRef;
+		}
+
+		public int getDimensions()
+		{
+			return myDimensions;
+		}
+
+		public DotNetTypeRef getInnerTypeRef()
+		{
+			return myInnerTypeRef;
+		}
+	}
+
 	private final PsiElement myScope;
 	private final DotNetTypeRef myInnerTypeRef;
 	private final int myDimensions;
@@ -55,7 +80,8 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	protected DotNetTypeResolveResult resolveResult()
 	{
 		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(myScope);
-		builder.withName("ArrayImpl" + System.nanoTime());
+		builder.withParentQName("System");
+		builder.withName("ArrayImpl[" + CSharpTypeRefPresentationUtil.buildText(myInnerTypeRef, myScope) + "]");
 		builder.addModifier(DotNetModifier.PUBLIC);
 
 		builder.addExtendType(new CSharpTypeRefByQName(myScope, "System.Array"));
@@ -72,8 +98,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 		addIndexMethodWithType(DotNetTypes.System.Int64, builder, myScope, myDimensions, myInnerTypeRef);
 		addIndexMethodWithType(DotNetTypes.System.UInt64, builder, myScope, myDimensions, myInnerTypeRef);
 
-
-		return new CSharpUserTypeRef.Result<>(builder, DotNetGenericExtractor.EMPTY);
+		return new ArrayResolveResult(builder, myDimensions, myInnerTypeRef);
 	}
 
 	@RequiredReadAction

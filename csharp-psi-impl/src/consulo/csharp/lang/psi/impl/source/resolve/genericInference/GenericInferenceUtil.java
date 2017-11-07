@@ -40,6 +40,7 @@ import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
@@ -209,6 +210,13 @@ public class GenericInferenceUtil
 				}
 
 				inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, pLambdaResolveResult.getReturnTypeRef(), eLambdaResolveResult.getReturnTypeRef(), scope);
+			}
+
+			if(parameterTypeResolveResult instanceof CSharpArrayTypeRef.ArrayResolveResult && expressionTypeResolveResult instanceof CSharpArrayTypeRef.ArrayResolveResult)
+			{
+				DotNetTypeRef pTypeRef = ((CSharpArrayTypeRef.ArrayResolveResult) parameterTypeResolveResult).getInnerTypeRef();
+				DotNetTypeRef eTypeRef = ((CSharpArrayTypeRef.ArrayResolveResult) expressionTypeResolveResult).getInnerTypeRef();
+				inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, pTypeRef, eTypeRef, scope);
 			}
 
 			inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, parameterTypeRef, expressionTypeRef, scope);
