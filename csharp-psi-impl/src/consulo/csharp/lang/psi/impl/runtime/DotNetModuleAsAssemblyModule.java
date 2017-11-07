@@ -32,7 +32,6 @@ import consulo.internal.dotnet.asm.signature.TypeSignature;
 import consulo.msil.lang.psi.MsilAssemblyEntry;
 import consulo.msil.lang.psi.MsilCustomAttribute;
 import consulo.msil.lang.psi.MsilFile;
-import consulo.msil.lang.psi.MsilStubElements;
 import consulo.msil.lang.stubbing.MsilCustomAttributeArgumentList;
 import consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
 import consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
@@ -82,28 +81,29 @@ class DotNetModuleAsAssemblyModule implements AssemblyModule
 			return false;
 		}
 
-		PsiElement[] children = file.getGreenStub().getChildrenByType(MsilStubElements.ASSEMBLY, PsiElement.ARRAY_FACTORY);
-
-		for(PsiElement psiElement : children)
+		for(PsiElement psiElement : ((MsilFile) file).getMembers())
 		{
-			MsilAssemblyEntry assemblyEntry = (MsilAssemblyEntry) psiElement;
-
-			MsilCustomAttribute[] attributes = assemblyEntry.getAttributes();
-			for(MsilCustomAttribute attribute : attributes)
+			if(psiElement instanceof MsilAssemblyEntry)
 			{
-				if(DotNetTypeRefUtil.isVmQNameEqual(attribute.toTypeRef(), attribute, DotNetTypes2.System.Runtime.CompilerServices.InternalsVisibleToAttribute))
-				{
-					MsilCustomAttributeArgumentList argumentList = MsilCustomAttributeStubber.build(attribute);
-					List<MsiCustomAttributeValue> constructorArguments = argumentList.getConstructorArguments();
-					if(constructorArguments.size() != 1)
-					{
-						continue;
-					}
+				MsilAssemblyEntry assemblyEntry = (MsilAssemblyEntry) psiElement;
 
-					MsiCustomAttributeValue msiCustomAttributeValue = constructorArguments.get(0);
-					if(msiCustomAttributeValue.getTypeSignature() == TypeSignature.STRING && Comparing.equal(msiCustomAttributeValue.getValue(), assemblyName))
+				MsilCustomAttribute[] attributes = assemblyEntry.getAttributes();
+				for(MsilCustomAttribute attribute : attributes)
+				{
+					if(DotNetTypeRefUtil.isVmQNameEqual(attribute.toTypeRef(), attribute, DotNetTypes2.System.Runtime.CompilerServices.InternalsVisibleToAttribute))
 					{
-						return true;
+						MsilCustomAttributeArgumentList argumentList = MsilCustomAttributeStubber.build(attribute);
+						List<MsiCustomAttributeValue> constructorArguments = argumentList.getConstructorArguments();
+						if(constructorArguments.size() != 1)
+						{
+							continue;
+						}
+
+						MsiCustomAttributeValue msiCustomAttributeValue = constructorArguments.get(0);
+						if(msiCustomAttributeValue.getTypeSignature() == TypeSignature.STRING && Comparing.equal(msiCustomAttributeValue.getValue(), assemblyName))
+						{
+							return true;
+						}
 					}
 				}
 			}
