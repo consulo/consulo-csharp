@@ -23,8 +23,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.impl.source.PsiFileImpl;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.DotNetTypes2;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
@@ -32,6 +32,7 @@ import consulo.internal.dotnet.asm.signature.TypeSignature;
 import consulo.msil.lang.psi.MsilAssemblyEntry;
 import consulo.msil.lang.psi.MsilCustomAttribute;
 import consulo.msil.lang.psi.MsilFile;
+import consulo.msil.lang.psi.MsilStubElements;
 import consulo.msil.lang.stubbing.MsilCustomAttributeArgumentList;
 import consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
 import consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
@@ -75,33 +76,34 @@ class DotNetModuleAsAssemblyModule implements AssemblyModule
 		{
 			return false;
 		}
-		PsiFile file = PsiManager.getInstance(myProject).findFile(assemblyFile);
+		PsiFileImpl file = (PsiFileImpl) PsiManager.getInstance(myProject).findFile(assemblyFile);
 		if(!(file instanceof MsilFile))
 		{
 			return false;
 		}
 
-		for(PsiElement psiElement : file.getChildren())
-		{
-			if(psiElement instanceof MsilAssemblyEntry)
-			{
-				MsilCustomAttribute[] attributes = ((MsilAssemblyEntry) psiElement).getAttributes();
-				for(MsilCustomAttribute attribute : attributes)
-				{
-					if(DotNetTypeRefUtil.isVmQNameEqual(attribute.toTypeRef(), attribute, DotNetTypes2.System.Runtime.CompilerServices.InternalsVisibleToAttribute))
-					{
-						MsilCustomAttributeArgumentList argumentList = MsilCustomAttributeStubber.build(attribute);
-						List<MsiCustomAttributeValue> constructorArguments = argumentList.getConstructorArguments();
-						if(constructorArguments.size() != 1)
-						{
-							continue;
-						}
+		PsiElement[] children = file.getGreenStub().getChildrenByType(MsilStubElements.ASSEMBLY, PsiElement.ARRAY_FACTORY);
 
-						MsiCustomAttributeValue msiCustomAttributeValue = constructorArguments.get(0);
-						if(msiCustomAttributeValue.getTypeSignature() == TypeSignature.STRING && Comparing.equal(msiCustomAttributeValue.getValue(), assemblyName))
-						{
-							return true;
-						}
+		for(PsiElement psiElement : children)
+		{
+			MsilAssemblyEntry assemblyEntry = (MsilAssemblyEntry) psiElement;
+
+			MsilCustomAttribute[] attributes = assemblyEntry.getAttributes();
+			for(MsilCustomAttribute attribute : attributes)
+			{
+				if(DotNetTypeRefUtil.isVmQNameEqual(attribute.toTypeRef(), attribute, DotNetTypes2.System.Runtime.CompilerServices.InternalsVisibleToAttribute))
+				{
+					MsilCustomAttributeArgumentList argumentList = MsilCustomAttributeStubber.build(attribute);
+					List<MsiCustomAttributeValue> constructorArguments = argumentList.getConstructorArguments();
+					if(constructorArguments.size() != 1)
+					{
+						continue;
+					}
+
+					MsiCustomAttributeValue msiCustomAttributeValue = constructorArguments.get(0);
+					if(msiCustomAttributeValue.getTypeSignature() == TypeSignature.STRING && Comparing.equal(msiCustomAttributeValue.getValue(), assemblyName))
+					{
+						return true;
 					}
 				}
 			}

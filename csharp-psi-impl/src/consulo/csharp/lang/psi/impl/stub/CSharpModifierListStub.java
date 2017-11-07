@@ -16,14 +16,18 @@
 
 package consulo.csharp.lang.psi.impl.stub;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierList;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.BitUtil;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.dotnet.psi.DotNetModifier;
+import consulo.dotnet.psi.DotNetModifierList;
 
 /**
  * @author VISTALL
@@ -55,6 +59,20 @@ public class CSharpModifierListStub extends StubBase<DotNetModifierList>
 			}
 		}
 		return val;
+	}
+
+	@NotNull
+	public CSharpModifier[] getModifiers()
+	{
+		List<CSharpModifier> list = new SmartList<>();
+		for(CSharpModifier modifier : CSharpModifier.values())
+		{
+			if(hasModifier(modifier))
+			{
+				list.add(modifier);
+			}
+		}
+		return ContainerUtil.toArray(list, CSharpModifier.ARRAY_FACTORY);
 	}
 
 	public boolean hasModifier(DotNetModifier modifier)

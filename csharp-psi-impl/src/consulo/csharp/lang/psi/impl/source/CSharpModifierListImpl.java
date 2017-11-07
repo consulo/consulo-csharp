@@ -83,7 +83,7 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpM
 	@Override
 	public CSharpModifier[] getModifiers()
 	{
-		return CSharpModifierListImplUtil.getModifiersCached(this).toArray(new CSharpModifier[0]);
+		return CSharpModifierListImplUtil.getModifiersCached(this).toArray(CSharpModifier.EMPTY_ARRAY);
 	}
 
 	@Override

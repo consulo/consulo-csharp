@@ -55,15 +55,7 @@ public enum CSharpModifier implements DotNetModifier
 
 	public static final CSharpModifier[] EMPTY_ARRAY = new CSharpModifier[0];
 
-	public static ArrayFactory<CSharpModifier> ARRAY_FACTORY = new ArrayFactory<CSharpModifier>()
-	{
-		@NotNull
-		@Override
-		public CSharpModifier[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpModifier[count];
-		}
-	};
+	public static ArrayFactory<CSharpModifier> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpModifier[count];
 
 	private static Map<DotNetModifier, CSharpModifier> ourReplaceMap = new HashMap<DotNetModifier, CSharpModifier>()
 	{
