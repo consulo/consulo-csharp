@@ -101,6 +101,8 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 	public static final int FORCE_EXPAND = 1 << 0;
 	// if we have solo type - but file name is not equal
 	public static final int ALLOW_GRAY_FILE_NAME = 1 << 1;
+	// disable visibility icon - on root nodes
+	public static final int NO_VISIBILITY_ICON = 1 << 2;
 
 	private final int myFlags;
 
@@ -150,7 +152,7 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 		List<AbstractTreeNode> list = new ArrayList<>(members.length);
 		for(DotNetNamedElement dotNetElement : members)
 		{
-			list.add(new CSharpElementTreeNode(dotNetElement, settings, 0));
+			list.add(new CSharpElementTreeNode(dotNetElement, settings, BitUtil.isSet(myFlags, CSharpElementTreeNode.NO_VISIBILITY_ICON) ? CSharpElementTreeNode.NO_VISIBILITY_ICON : 0));
 		}
 		return list;
 	}
@@ -211,7 +213,7 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 	{
 		DotNetNamedElement value = getValue();
 
-		presentationData.setIcon(IconDescriptorUpdaters.getIcon(value, Iconable.ICON_FLAG_VISIBILITY));
+		presentationData.setIcon(IconDescriptorUpdaters.getIcon(value, BitUtil.isSet(myFlags, NO_VISIBILITY_ICON) ? 0 : Iconable.ICON_FLAG_VISIBILITY));
 
 		presentationData.setPresentableText(getPresentableText(value));
 

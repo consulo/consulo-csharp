@@ -69,7 +69,7 @@
 		<extensionPoint name="toNativeElementTransformer"
 						interface="consulo.csharp.lang.psi.ToNativeElementTransformer"/>
 		<extensionPoint name="memberAddByCompletionContributor"
-						interface="consulo.csharp.ide.completion.CSharpMemberAddByCompletionContributor" />
+						interface="consulo.csharp.ide.completion.CSharpMemberAddByCompletionContributor"/>
 	</extensionPoints>
 
 	<extensions defaultExtensionNs="consulo.csharp">
@@ -85,7 +85,7 @@
 
 		<toNativeElementTransformer implementation="consulo.csharp.lang.psi.impl.msil.transformer.MsilToNativeElementTransformer"/>
 
-		<memberAddByCompletionContributor implementation="consulo.csharp.ide.completion.CSharpOverrideOrImplementCompletionContributor" />
+		<memberAddByCompletionContributor implementation="consulo.csharp.ide.completion.CSharpOverrideOrImplementCompletionContributor"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="consulo.dotnet">
@@ -158,7 +158,7 @@
 		<usageTypeProvider implementation="consulo.csharp.ide.findUsage.usageType.CSharpUsageTypeProvider"/>
 		<lang.findUsagesProvider language="C#" implementationClass="consulo.csharp.ide.findUsage.CSharpFindUsagesProvider"/>
 		<lang.findUsagesProvider language="C#Preprocessor" implementationClass="consulo.csharp.ide.findUsage.CSharpFindUsagesProvider"/>
-		<findUsagesHandlerFactory implementation="consulo.csharp.ide.findUsage.CSharpFindUsageHandlerFactory" />
+		<findUsagesHandlerFactory implementation="consulo.csharp.ide.findUsage.CSharpFindUsageHandlerFactory"/>
 
 		<codeInsight.unresolvedReferenceQuickFixProvider
 				implementation="consulo.csharp.ide.codeInsight.CSharpUnresolvedReferenceQuickFixProvider"/>
@@ -314,6 +314,8 @@
 		<highlightUsagesHandlerFactory implementation="consulo.csharp.ide.highlight.CSharpHighlightUsagesHandlerFactory"/>
 		<newModuleBuilder implementation="consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder"/>
 
+		<callHierarchyProvider language="C#" implementationClass="consulo.csharp.ide.hierarchy.call.CSharpCallHierarchyProvider"/>
+
 		<eapDescriptor implementation="consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent$EapDescriptor"/>
 		<eapDescriptor implementation="consulo.csharp.ide.highlight.check.impl.CS0030$CS0030TypeCast"/>
 
@@ -326,6 +328,6 @@
 		<idIndexer filetype="C#" implementationClass="consulo.csharp.ide.idCache.CSharpIdIndexer"/>
 		<todoIndexer filetype="C#" implementationClass="consulo.csharp.ide.idCache.CSharpTodoIndexer"/>
 
-		<breadcrumbsInfoProvider implementation="consulo.csharp.ide.breadcrumbs.CSharpBreadcrumbsProvider" />
+		<breadcrumbsInfoProvider implementation="consulo.csharp.ide.breadcrumbs.CSharpBreadcrumbsProvider"/>
 	</extensions>
 </idea-plugin>
