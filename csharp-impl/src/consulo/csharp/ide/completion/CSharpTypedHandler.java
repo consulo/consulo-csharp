@@ -17,6 +17,22 @@
 package consulo.csharp.ide.completion;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.codeInsight.AutoPopupController;
+import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
+import com.intellij.codeStyle.CodeStyleFacade;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.ScrollType;
+import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.project.DumbService;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.util.Pair;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
@@ -35,22 +51,6 @@ import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.resolve.DotNetPointerTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
-import com.intellij.codeInsight.AutoPopupController;
-import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
-import com.intellij.codeStyle.CodeStyleFacade;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.ScrollType;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -76,16 +76,30 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 
 			autoPopupMemberLookup(project, editor);
 		}
+
 		if(c == '#')
 		{
 			autoPopupMemberLookup(project, editor);
 		}
+
 		if(c == ';')
 		{
 			if(handleSemicolon(editor))
 			{
 				return Result.STOP;
 			}
+		}
+
+		return Result.CONTINUE;
+	}
+
+	@Override
+	public Result checkAutoPopup(char charTyped, Project project, Editor editor, PsiFile file)
+	{
+		if(charTyped == '@')
+		{
+			AutoPopupController.getInstance(project).scheduleAutoPopup(editor);
+			return Result.STOP;
 		}
 		return Result.CONTINUE;
 	}

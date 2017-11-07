@@ -45,8 +45,11 @@ public class CSharpCompletionCharFilter extends CharFilter
 		{
 			return Result.ADD_TO_PREFIX;
 		}
+
 		switch(c)
 		{
+			case '@':
+				return Result.ADD_TO_PREFIX;
 			case '{':
 			case '<':
 				return Result.SELECT_ITEM_AND_FINISH_LOOKUP;

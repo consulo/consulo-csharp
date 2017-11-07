@@ -53,6 +53,25 @@ public class CSharpPsiUtilImpl
 
 	@Nullable
 	@RequiredReadAction
+	public static String getOriginalName(@NotNull PsiNameIdentifierOwner element)
+	{
+		PsiElement nameIdentifier = element.getNameIdentifier();
+		if(nameIdentifier == null)
+		{
+			return null;
+		}
+		if(nameIdentifier instanceof CSharpIdentifier)
+		{
+			return ((CSharpIdentifier) nameIdentifier).getValue();
+		}
+		else
+		{
+			return nameIdentifier.getText();
+		}
+	}
+
+	@Nullable
+	@RequiredReadAction
 	public static String getNameWithoutAt(@NotNull PsiNameIdentifierOwner element)
 	{
 		CSharpIdentifier nameIdentifier = (CSharpIdentifier) element.getNameIdentifier();
