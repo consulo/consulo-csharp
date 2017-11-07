@@ -22,6 +22,7 @@ import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpDefaultExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
@@ -87,6 +88,12 @@ public class CSharpConstantUtil
 			}
 			return isCompileTimeConstant(leftExpression) && isCompileTimeConstant(rightExpression);
 		}
+
+		if(element instanceof CSharpDefaultExpressionImpl)
+		{
+			return true;
+		}
+
 		return false;
 	}
 }
