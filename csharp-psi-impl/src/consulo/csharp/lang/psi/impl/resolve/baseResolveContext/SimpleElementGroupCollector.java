@@ -58,7 +58,7 @@ public abstract class SimpleElementGroupCollector<E extends PsiElement> extends 
 				elements = ContainerUtil.map(elements, element -> element instanceof DotNetNamedElement ? (E) GenericUnwrapTool.extract((DotNetNamedElement) element, extractor) : element);
 			}
 
-			return elements.isEmpty() ? null : new CSharpElementGroupImpl<E>(getProject(), myKey, elements);
+			return elements.isEmpty() ? null : new CSharpElementGroupImpl<>(getProject(), myKey, elements);
 		}
 	};
 
