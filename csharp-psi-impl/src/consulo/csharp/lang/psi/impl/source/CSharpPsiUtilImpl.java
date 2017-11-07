@@ -58,8 +58,9 @@ public class CSharpPsiUtilImpl
 		PsiElement nameIdentifier = element.getNameIdentifier();
 		if(nameIdentifier == null)
 		{
-			return null;
+			return element.getName();
 		}
+
 		if(nameIdentifier instanceof CSharpIdentifier)
 		{
 			return ((CSharpIdentifier) nameIdentifier).getValue();
