@@ -17,10 +17,20 @@
 package consulo.csharp.lang.psi.impl.light;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.NotNullLazyValue;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.impl.light.LightElement;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpCallArgument;
@@ -29,14 +39,6 @@ import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.util.SmartList;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -44,7 +46,7 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public abstract class CSharpAbstractLightAttributeBuilder extends LightElement implements CSharpAttribute
 {
-	private final List<CSharpCallArgument> myCallArguments = new SmartList<CSharpCallArgument>();
+	private List<NotNullLazyValue<CSharpCallArgument>> myCallArguments = Collections.emptyList();
 
 	public CSharpAbstractLightAttributeBuilder(Project project)
 	{
@@ -53,12 +55,22 @@ public abstract class CSharpAbstractLightAttributeBuilder extends LightElement i
 
 	public void addParameterExpression(Object o)
 	{
-		if(o instanceof String)
+		if(myCallArguments.isEmpty())
 		{
-			o = StringUtil.QUOTER.fun((String)o);
+			myCallArguments = new SmartList<>();
 		}
 
-		myCallArguments.add(new CSharpLightCallArgument(CSharpFileFactory.createExpression(getProject(), String.valueOf(o))));
+		myCallArguments.add(NotNullLazyValue.createValue(() ->
+		{
+			Object value = o;
+
+			if(value instanceof String)
+			{
+				value = StringUtil.QUOTER.fun((String) value);
+			}
+
+			return new CSharpLightCallArgument(CSharpFileFactory.createExpression(getProject(), String.valueOf(value)));
+		}));
 	}
 
 	@Nullable
@@ -80,7 +92,7 @@ public abstract class CSharpAbstractLightAttributeBuilder extends LightElement i
 	public DotNetExpression[] getParameterExpressions()
 	{
 		CSharpCallArgument[] arguments = getCallArguments();
-		List<DotNetExpression> list = new ArrayList<DotNetExpression>(arguments.length);
+		List<DotNetExpression> list = new ArrayList<>(arguments.length);
 		for(CSharpCallArgument callArgument : arguments)
 		{
 			if(!(callArgument instanceof CSharpNamedCallArgument))
@@ -97,7 +109,16 @@ public abstract class CSharpAbstractLightAttributeBuilder extends LightElement i
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
-		return ContainerUtil.toArray(myCallArguments, CSharpCallArgument.ARRAY_FACTORY);
+		if(myCallArguments.isEmpty())
+		{
+			return CSharpCallArgument.EMPTY_ARRAY;
+		}
+		List<CSharpCallArgument> arguments = new ArrayList<>(myCallArguments.size());
+		for(NotNullLazyValue<CSharpCallArgument> callArgument : myCallArguments)
+		{
+			arguments.add(callArgument.getValue());
+		}
+		return ContainerUtil.toArray(arguments, CSharpCallArgument.ARRAY_FACTORY);
 	}
 
 	@Nullable
@@ -111,6 +132,6 @@ public abstract class CSharpAbstractLightAttributeBuilder extends LightElement i
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
-		return new ResolveResult[0];
+		return ResolveResult.EMPTY_ARRAY;
 	}
 }
