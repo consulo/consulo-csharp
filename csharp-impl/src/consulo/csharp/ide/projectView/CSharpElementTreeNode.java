@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.PsiElement;
@@ -167,6 +168,19 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 				{
 					member.accept(new CSharpRecursiveElementVisitor()
 					{
+						@Override
+						public void visitElement(PsiElement element)
+						{
+							ProgressManager.checkCanceled();
+							if(element instanceof DotNetMemberOwner)
+							{
+								for(DotNetNamedElement namedElement : ((DotNetMemberOwner) element).getMembers())
+								{
+									namedElement.accept(this);
+								}
+							}
+						}
+
 						@Override
 						public void visitTypeDeclaration(CSharpTypeDeclaration declaration)
 						{
