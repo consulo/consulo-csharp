@@ -56,8 +56,8 @@ public abstract class CSharpTypeRefCacher<E extends PsiElement>
 	private static Key<CachedValue<DotNetTypeRef>> ourTrueTypeRefKey = Key.create("CSharpTypeCacheUtil.ourTrueTypeRefKey");
 	private static Key<CachedValue<DotNetTypeRef>> ourFalseTypeRefKey = Key.create("CSharpTypeCacheUtil.ourFalseTypeRefKey");
 
-	private NotNullFunction<E, DotNetTypeRef> myTrueFunction = new Resolver<E>(this, true);
-	private NotNullFunction<E, DotNetTypeRef> myFalseFunction = new Resolver<E>(this, false);
+	private NotNullFunction<E, DotNetTypeRef> myTrueFunction = new Resolver<>(this, true);
+	private NotNullFunction<E, DotNetTypeRef> myFalseFunction = new Resolver<>(this, false);
 
 	private final boolean myLocal;
 
@@ -74,6 +74,11 @@ public abstract class CSharpTypeRefCacher<E extends PsiElement>
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRef(E element, boolean resolveFromParentOrInitializer)
 	{
+		if(!ENABLED)
+		{
+			return toTypeRefImpl(element, resolveFromParentOrInitializer);
+		}
+
 		Key<CachedValue<DotNetTypeRef>> key = resolveFromParentOrInitializer ? ourTrueTypeRefKey : ourFalseTypeRefKey;
 		NotNullFunction<E, DotNetTypeRef> resolver = resolveFromParentOrInitializer ? myTrueFunction : myFalseFunction;
 		return myLocal ? DotNetTypeRefCacheUtil.localCacheTypeRef(key, element, resolver) : DotNetTypeRefCacheUtil.cacheTypeRef(key, element, resolver);
