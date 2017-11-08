@@ -23,12 +23,14 @@ import javax.swing.JTextField;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
-import consulo.annotations.RequiredDispatchThread;
+import com.intellij.application.options.codeStyle.CommenterForm;
 import com.intellij.openapi.application.ApplicationBundle;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
-import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.csharp.lang.CSharpLanguage;
 
 /**
  * @author VISTALL
@@ -47,6 +49,9 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 	private JTextField myStaticPropertySuffixField;
 	private JCheckBox myUseLanguageKeywordsCheckBox;
 	private JPanel myRoot;
+	private JPanel myAdditionalRootPanel;
+
+	private CommenterForm myCommenterForm;
 
 	public CSharpCodeGenerationSettingsConfigurable(CodeStyleSettings settings)
 	{
@@ -58,13 +63,6 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 	public String getDisplayName()
 	{
 		return ApplicationBundle.message("title.code.generation");
-	}
-
-	@Nullable
-	@Override
-	public String getHelpTopic()
-	{
-		return null;
 	}
 
 	@RequiredDispatchThread
@@ -89,6 +87,7 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		isModified |= isModified(myPropertySuffixField, mySettings.PROPERTY_SUFFIX);
 		isModified |= isModified(myStaticPropertySuffixField, mySettings.STATIC_PROPERTY_SUFFIX);
 		isModified |= myUseLanguageKeywordsCheckBox.isSelected() != mySettings.USE_LANGUAGE_DATA_TYPES;
+		isModified |= myCommenterForm.isModified(mySettings.getContainer());
 		return isModified;
 	}
 
@@ -111,6 +110,7 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		mySettings.PROPERTY_SUFFIX = myPropertySuffixField.getText().trim();
 		mySettings.STATIC_PROPERTY_SUFFIX = myStaticPropertySuffixField.getText().trim();
 		mySettings.USE_LANGUAGE_DATA_TYPES = myUseLanguageKeywordsCheckBox.isSelected();
+		myCommenterForm.apply(mySettings.getContainer());
 	}
 
 	@RequiredDispatchThread
@@ -127,12 +127,14 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		myPropertySuffixField.setText(mySettings.PROPERTY_SUFFIX);
 		myStaticPropertySuffixField.setText(mySettings.STATIC_PROPERTY_SUFFIX);
 		myUseLanguageKeywordsCheckBox.setSelected(mySettings.USE_LANGUAGE_DATA_TYPES);
+		myCommenterForm.reset(mySettings.getContainer());
 	}
 
-	@RequiredDispatchThread
-	@Override
-	public void disposeUIResources()
+	private void createUIComponents()
 	{
+		myAdditionalRootPanel = new JPanel(new VerticalFlowLayout());
 
+		myCommenterForm = new CommenterForm(CSharpLanguage.INSTANCE);
+		myAdditionalRootPanel.add(myCommenterForm.getCommenterPanel());
 	}
 }
