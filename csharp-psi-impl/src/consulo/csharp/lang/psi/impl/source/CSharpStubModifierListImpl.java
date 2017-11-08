@@ -93,28 +93,24 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	@Override
 	public CSharpModifier[] getModifiers()
 	{
-		CSharpModifierListStub stub = getStub();
-		if(stub != null)
-		{
-			return stub.getModifiers();
-		}
 		return CSharpModifierListImplUtil.getModifiersCached(this).toArray(CSharpModifier.EMPTY_ARRAY);
 	}
 
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		CSharpModifierListStub stub = getStub();
-		if(stub != null)
-		{
-			return stub.hasModifier(modifier);
-		}
 		return CSharpModifierListImplUtil.getModifiersCached(this).contains(CSharpModifier.as(modifier));
 	}
 
 	@Override
 	public boolean hasModifierInTree(@NotNull DotNetModifier modifier)
 	{
+		CSharpModifierListStub stub = getStub();
+		if(stub != null)
+		{
+			return stub.hasModifier(modifier);
+		}
+
 		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
 		return findChildByType(iElementType) != null;
 	}
