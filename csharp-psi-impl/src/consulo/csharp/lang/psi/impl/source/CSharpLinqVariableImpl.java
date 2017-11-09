@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import consulo.annotations.RequiredReadAction;
+import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpIdentifier;
@@ -195,6 +196,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpIdentifier getNameIdentifier()
@@ -202,6 +204,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		return findChildByClass(CSharpIdentifier.class);
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getName()
 	{
@@ -209,6 +212,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		return nameIdentifier == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(nameIdentifier.getValue());
 	}
 
+	@RequiredWriteAction
 	@Override
 	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
 	{

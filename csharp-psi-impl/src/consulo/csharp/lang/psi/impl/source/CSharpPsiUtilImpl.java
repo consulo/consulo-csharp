@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.util.Comparing;
@@ -88,9 +89,13 @@ public class CSharpPsiUtilImpl
 		return getNameWithoutAt(value);
 	}
 
-	@NotNull
-	public static String getNameWithoutAt(@NotNull String oldName)
+	@Contract("null -> null")
+	public static String getNameWithoutAt(@Nullable String oldName)
 	{
+		if(oldName == null)
+		{
+			return null;
+		}
 		if(oldName.isEmpty())
 		{
 			return oldName;
