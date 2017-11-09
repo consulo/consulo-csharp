@@ -132,6 +132,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		else if(parent instanceof CSharpLinqIntoClauseImpl)
 		{
 			PsiElement nextParent = parent.getParent();
+			String text = nextParent.getText();
 			if(nextParent instanceof CSharpLinqJoinClauseImpl)
 			{
 				CSharpLinqVariableImpl variable = ((CSharpLinqJoinClauseImpl) nextParent).getVariable();
@@ -147,6 +148,16 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 				PsiElement bodyParent = body.getParent();
 				if(bodyParent instanceof CSharpLinqExpressionImpl)
 				{
+					CSharpLinqSelectOrGroupClauseImpl selectOrGroupClause = body.getSelectOrGroupClause();
+					if(selectOrGroupClause != null)
+					{
+						DotNetExpression firstExpression = selectOrGroupClause.getFirstExpression();
+						if(firstExpression != null)
+						{
+							return firstExpression.toTypeRef(true);
+						}
+					}
+	
 					CSharpLinqFromClauseImpl fromClause = ((CSharpLinqExpressionImpl) bodyParent).getFromClause();
 					CSharpLinqVariableImpl variable = fromClause.getVariable();
 					if(variable != null)
