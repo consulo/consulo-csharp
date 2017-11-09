@@ -36,8 +36,8 @@ import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.*;
@@ -96,7 +96,7 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 		return 0;
 	}
 
-	// force expand members for root file nodes (if not that one)
+	// force expand members for root file nodes (if not than one)
 	public static final int FORCE_EXPAND = 1 << 0;
 	// if we have solo type - but file name is not equal
 	public static final int ALLOW_GRAY_FILE_NAME = 1 << 1;
@@ -166,9 +166,10 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 			{
 				if(member instanceof DotNetNamespaceDeclaration)
 				{
-					member.accept(new CSharpRecursiveElementVisitor()
+					member.accept(new CSharpElementVisitor()
 					{
 						@Override
+						@RequiredReadAction
 						public void visitElement(PsiElement element)
 						{
 							ProgressManager.checkCanceled();
