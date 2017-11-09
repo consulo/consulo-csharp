@@ -21,7 +21,6 @@ import gnu.trove.THashSet;
 import java.util.Collections;
 import java.util.Set;
 
-import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResult;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -36,6 +35,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Iconable;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -72,8 +72,10 @@ import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
  * @see com.intellij.codeInsight.completion.JavaNoVariantsDelegator
  * @since 23.08.2015
  */
-public class CSharpNoVariantsDelegator extends CompletionContributor
+class CSharpNoVariantsDelegator
 {
+	static final Key<Boolean> NOT_IMPORTED = Key.create("CSharpNoVariantsDelegator.NOT_IMPORTED");
+
 	public static class ResultTracker implements Consumer<CompletionResult>
 	{
 		private final CompletionResultSet myResult;
@@ -102,9 +104,8 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 	}
 
 	@RequiredReadAction
-	@Override
 	@RequiredDispatchThread
-	public void fillCompletionVariants(CompletionParameters parameters, CompletionResultSet result)
+	public static void fillCompletionVariants(CompletionParameters parameters, CompletionResultSet result)
 	{
 		final InheritorsHolder holder = new InheritorsHolder(result);
 		ResultTracker tracker = new ResultTracker(result)
@@ -132,13 +133,14 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 
 		if(empty)
 		{
-			delegate(parameters, CSharpCompletionSorting.modifyResultSet(parameters, result), holder);
+			delegate(parameters, result, holder);
 		}
 		else
 		{
-			if(parameters.getCompletionType() == CompletionType.BASIC && parameters.getInvocationCount() <= 1 && CSharpCompletionUtil.mayStartClassName(result) && CSharpCompletionUtil.isClassNamePossible(parameters))
+			if(parameters.getCompletionType() == CompletionType.BASIC && parameters.getInvocationCount() <= 1 && CSharpCompletionUtil.mayStartClassName(result) && CSharpCompletionUtil
+					.isClassNamePossible(parameters))
 			{
-				addTypesForUsing(parameters, CSharpCompletionSorting.modifyResultSet(parameters, result.withPrefixMatcher(tracker.betterMatcher)), holder);
+				addTypesForUsing(parameters, result.withPrefixMatcher(tracker.betterMatcher), holder);
 			}
 		}
 	}
@@ -250,7 +252,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 
 		String presentationText = MsilHelper.cutGenericMarker(someType.getName());
 
-		int genericCount = 0;
+		int genericCount;
 		DotNetGenericParameter[] genericParameters = someType.getGenericParameters();
 		if((genericCount = genericParameters.length) > 0)
 		{
@@ -306,6 +308,8 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 			builder = builder.withStrikeoutness(true);
 		}
 
-		consumer.consume(CSharpTypeLikeLookupElement.create(builder, DotNetGenericExtractor.EMPTY, referenceExpression));
+		CSharpTypeLikeLookupElement element = CSharpTypeLikeLookupElement.create(builder, DotNetGenericExtractor.EMPTY, referenceExpression);
+		element.putUserData(CSharpNoVariantsDelegator.NOT_IMPORTED, Boolean.TRUE);
+		consumer.consume(element);
 	}
 }

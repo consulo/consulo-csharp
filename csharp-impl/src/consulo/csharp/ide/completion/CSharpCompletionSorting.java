@@ -230,6 +230,23 @@ public class CSharpCompletionSorting
 		}
 	}
 
+	private static class NotImportedSorter extends LookupElementWeigher
+	{
+		public NotImportedSorter()
+		{
+			super("notImportedSorter");
+		}
+
+		@NotNull
+		@Override
+		@RequiredReadAction
+		public Comparable weigh(@NotNull LookupElement element)
+		{
+			Boolean data = element.getUserData(CSharpNoVariantsDelegator.NOT_IMPORTED);
+			return data != Boolean.TRUE;
+		}
+	}
+
 	@RequiredReadAction
 	private static int calcMatch(final List<String> words, int max, List<ExpectedTypeInfo> myExpectedInfos)
 	{
@@ -383,6 +400,8 @@ public class CSharpCompletionSorting
 			afterProximity.add(new ExpectedNameSorter(expectedTypeRefs));
 			afterProximity.add(new PreferShorter(expectedTypeRefs));
 		}
+
+		afterProximity.add(new NotImportedSorter());
 
 		sorter = sorter.weighAfter("stats", afterStats.toArray(new LookupElementWeigher[afterStats.size()]));
 		sorter = sorter.weighAfter("proximity", afterProximity.toArray(new LookupElementWeigher[afterProximity.size()]));

@@ -55,6 +55,10 @@ public class CSharpCompletionContributor extends CompletionContributor
 	@Override
 	public void fillCompletionVariants(CompletionParameters parameters, CompletionResultSet result)
 	{
-		super.fillCompletionVariants(parameters, CSharpCompletionSorting.modifyResultSet(parameters, result));
+		CompletionResultSet resultSet = CSharpCompletionSorting.modifyResultSet(parameters, result);
+
+		super.fillCompletionVariants(parameters, resultSet);
+
+		CSharpNoVariantsDelegator.fillCompletionVariants(parameters, resultSet);
 	}
 }
