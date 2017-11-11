@@ -753,6 +753,32 @@ public class CSharpReferenceExpressionImplUtil
 				return;
 			}
 
+			// try to remap data if parent is wrong, for example resolve to type, but actual it's a field
+			if(options.isCompletion() && qualifierTypeRef == DotNetTypeRef.ERROR_TYPE && qualifier instanceof CSharpReferenceExpressionEx)
+			{
+				ResolveResult[] resolveResults = ((CSharpReferenceExpressionEx) qualifier).multiResolveImpl(ResolveToKind.ANY_MEMBER, false);
+				for(ResolveResult resolveResult : resolveResults)
+				{
+					PsiElement el = resolveResult.getElement();
+					if(el instanceof CSharpLocalVariable)
+					{
+						DotNetType type = ((CSharpLocalVariable) el).getType();
+						if(type instanceof CSharpUserType)
+						{
+							CSharpReferenceExpression referenceExpression = ((CSharpUserType) type).getReferenceExpression();
+							if(referenceExpression.getQualifier() == qualifier)
+							{
+								// local variable is self holder
+								continue;
+							}
+						}
+					}
+
+					qualifierTypeRef = toTypeRef(resolveResult);
+					break;
+				}
+			}
+
 			if(element instanceof CSharpReferenceExpression)
 			{
 				CSharpReferenceExpression.AccessType memberAccessType = ((CSharpReferenceExpression) element).getMemberAccessType();
