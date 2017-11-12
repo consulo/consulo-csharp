@@ -52,7 +52,7 @@ public enum CSharpCompilerChecks
 	CS0128(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // local variable redeclaration check
 	CS0132(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static constructors are parameterless
 	CS0133(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constant value must be compile time constant
-	//CS0136(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // lambda parameter redeclaration check
+	CS0136(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // variable redeclaration check in different scopes
 	CS0144(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // abstract types or interfaces cant created by new expression
 	CS0145(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // const cant be without value
 	CS0146(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // circular extends check
