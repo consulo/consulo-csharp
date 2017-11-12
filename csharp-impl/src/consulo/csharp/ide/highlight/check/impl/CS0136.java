@@ -137,7 +137,7 @@ public class CS0136 extends CompilerCheck<DotNetVariable>
 
 		if(prevVariable != null)
 		{
-			return newBuilder(getNameIdentifier(element), name, name, getScope(prevVariable, element));
+			//return newBuilder(getNameIdentifier(element), name, name, getScope(prevVariable, element));
 		}
 		return null;
 	}
