@@ -32,7 +32,6 @@ import consulo.dotnet.debugger.proxy.DotNetNotSuspendedException;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetNullValueProxy;
-import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetStructValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 import consulo.dotnet.psi.DotNetModifier;
@@ -123,7 +122,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 		}
 		else
 		{
-			DotNetObjectValueProxy objectValueMirror = ObjectValueMirrorUtil.extractObjectValueMirror(popValue);
+			DotNetValueProxy objectValueMirror = ObjectValueMirrorUtil.extractObjectValueMirror(popValue);
 			if(objectValueMirror != null && invokeFieldOrProperty(context, name, objectValueMirror, typeMirror))
 			{
 				return;

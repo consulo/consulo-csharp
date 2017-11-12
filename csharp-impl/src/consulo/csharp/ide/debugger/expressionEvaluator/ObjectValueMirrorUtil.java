@@ -28,16 +28,16 @@ import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 public class ObjectValueMirrorUtil
 {
 	@Nullable
-	public static DotNetObjectValueProxy extractObjectValueMirror(@Nullable DotNetValueProxy value)
+	public static DotNetValueProxy extractObjectValueMirror(@Nullable DotNetValueProxy value)
 	{
 		if(value instanceof DotNetObjectValueProxy)
 		{
-			return (DotNetObjectValueProxy) value;
+			return value;
 		}
 
 		if(value instanceof DotNetStringValueProxy)
 		{
-			return (DotNetObjectValueProxy) ((DotNetStringValueProxy) value).getObjectValue();
+			return value;
 		}
 		return null;
 	}
