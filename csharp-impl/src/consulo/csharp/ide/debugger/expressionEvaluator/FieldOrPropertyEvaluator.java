@@ -156,9 +156,13 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 		DotNetFieldOrPropertyProxy[] fieldOrPropertyMirrors = DotNetDebuggerSearchUtil.getFieldAndProperties(typeMirror, true);
 		for(DotNetFieldOrPropertyProxy fieldOrPropertyMirror : fieldOrPropertyMirrors)
 		{
-			if(isMyMirror(fieldOrPropertyMirror) && fieldOrPropertyMirror.getName().equals(name) && invoke((M) fieldOrPropertyMirror, context, substituteStaticContext(popValue)))
+			if(isMyMirror(fieldOrPropertyMirror) && fieldOrPropertyMirror.getName().equals(name))
 			{
-				return true;
+				boolean invoke = invoke((M) fieldOrPropertyMirror, context, substituteStaticContext(popValue));
+				if(invoke)
+				{
+					return true;
+				}
 			}
 		}
 		return false;
