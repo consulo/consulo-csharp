@@ -16,154 +16,60 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import gnu.trove.THashSet;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import consulo.csharp.lang.psi.impl.source.*;
+import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
+import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetParameter;
-import com.intellij.psi.PsiElement;
+import consulo.dotnet.psi.DotNetStatement;
 
 /**
  * @author VISTALL
  * @since 20.05.14
  */
-public class CS0128 extends CompilerCheck<CSharpBlockStatementImpl>
+public class CS0128 extends CompilerCheck<CSharpLocalVariable>
 {
 	@RequiredReadAction
-	@NotNull
+	@Nullable
 	@Override
-	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpBlockStatementImpl element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpLocalVariable element)
 	{
-		PsiElement parent = element.getParent();
-		if(!(parent instanceof DotNetModifierListOwner))
+		CSharpBlockStatementImpl blockStatement = PsiTreeUtil.getParentOfType(element, CSharpBlockStatementImpl.class);
+		if(blockStatement == null)
 		{
-			return Collections.emptyList();
+			return null;
 		}
-		final List<CompilerCheckBuilder> results = new ArrayList<CompilerCheckBuilder>();
-		final Set<String> names = new THashSet<String>();
-		parent.accept(new CSharpRecursiveElementVisitor()
+
+		String name = element.getName();
+		if(name == null)
 		{
-			@Override
-			@RequiredReadAction
-			public void visitLocalVariable(CSharpLocalVariable variable)
+			return null;
+		}
+
+		for(DotNetStatement statement : blockStatement.getStatements())
+		{
+			if(statement instanceof CSharpLocalVariableDeclarationStatement)
 			{
-				String name = variable.getName();
-				if(names.contains(name))
+				CSharpLocalVariable[] variables = ((CSharpLocalVariableDeclarationStatement) statement).getVariables();
+				for(CSharpLocalVariable variable : variables)
 				{
-					results.add(newBuilder(variable.getNameIdentifier(), name));
-				}
-				else
-				{
-					names.add(name);
-				}
+					if(name.equals(variable.getName()) && variable != element)
+					{
+						return newBuilder(getNameIdentifier(element), name);
+					}
 
-				DotNetExpression initializer = variable.getInitializer();
-				if(initializer != null)
-				{
-					initializer.accept(this);
-				}
-			}
-
-			@Override
-			public void visitCatchStatement(CSharpCatchStatementImpl statement)
-			{
-				visitAndRollback(statement);
-			}
-
-			@Override
-			public void visitIfStatement(CSharpIfStatementImpl statement)
-			{
-				visitAndRollback(statement);
-			}
-
-			@Override
-			public void visitTryStatement(CSharpTryStatementImpl statement)
-			{
-				visitAndRollback(statement);
-			}
-
-			@Override
-			public void visitBlockStatement(CSharpBlockStatementImpl statement)
-			{
-				visitAndRollback(statement);
-			}
-
-			@Override
-			public void visitForeachStatement(CSharpForeachStatementImpl statement)
-			{
-				visitAndRollback(statement);
-			}
-
-			@Override
-			public void visitFixedStatement(CSharpFixedStatementImpl statement)
-			{
-				visitAndRollback(statement);
-			}
-
-			@Override
-			public void visitForStatement(CSharpForStatementImpl statement)
-			{
-				visitAndRollback(statement);
-			}
-
-			@Override
-			public void visitParameter(DotNetParameter parameter)
-			{
-				String name = parameter.getName();
-				names.add(name);
-			}
-
-			@Override
-			public void visitLambdaExpression(CSharpLambdaExpressionImpl expression)
-			{
-				visitAndRollback(expression);
-			}
-
-			@Override
-			public void visitAnonymMethodExpression(CSharpDelegateExpressionImpl method)
-			{
-				visitAndRollback(method);
-			}
-
-			@Override
-			public void visitLambdaParameter(CSharpLambdaParameterImpl parameter)
-			{
-				String name = parameter.getName();
-				if(names.contains(name))
-				{
-
-					results.add(newBuilderImpl(CS0136.class, parameter.getNameIdentifier(), name, name));
-				}
-				else
-				{
-					names.add(name);
+					if(variable == element)
+					{
+						return null;
+					}
 				}
 			}
-
-			private void visitAndRollback(PsiElement e)
-			{
-				Set<String> oldSet = new HashSet<String>(names);
-
-				visitElement(e);
-
-				names.clear();
-				names.addAll(oldSet);
-			}
-		});
-		return results;
+		}
+		return null;
 	}
 }
