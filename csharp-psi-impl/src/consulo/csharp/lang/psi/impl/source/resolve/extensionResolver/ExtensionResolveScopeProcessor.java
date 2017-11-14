@@ -24,7 +24,9 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.ResolveState;
+import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
@@ -101,6 +103,19 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 				{
 					ProgressManager.checkCanceled();
 
+					if(isAlreadyAdded(psiElement))
+					{
+						continue;
+					}
+
+					// if we typing inside file with extension methods, and extension method from this file is resolved to qualifier
+					// it will show twice, from completion file copy and original file
+					// skip completion copy
+					if(isCompletionCopy(psiElement))
+					{
+						continue;
+					}
+
 					GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(psiElement);
 
 					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, inferenceResult.getExtractor());
@@ -134,18 +149,13 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 			{
 				CSharpElementGroup<?> elementGroup = (CSharpElementGroup<?>) e;
 
-				groupIteration:
 				for(PsiElement psiElement : elementGroup.getElements())
 				{
 					CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) psiElement;
 
-					// dont need add twice or more
-					for(CSharpMethodDeclaration resolvedElement : myResolvedElements)
+					if(isAlreadyAdded(methodDeclaration))
 					{
-						if(resolvedElement.isEquivalentTo(methodDeclaration))
-						{
-							continue groupIteration;
-						}
+						continue;
 					}
 
 					GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(methodDeclaration);
@@ -163,6 +173,24 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 		}
 
 		return true;
+	}
+
+	private boolean isCompletionCopy(@NotNull PsiElement element)
+	{
+		PsiFile containingFile = element.getContainingFile();
+		return containingFile != null && containingFile.getViewProvider().getVirtualFile() instanceof LightVirtualFile;
+	}
+
+	private boolean isAlreadyAdded(@NotNull CSharpMethodDeclaration methodDeclaration)
+	{
+		for(CSharpMethodDeclaration resolvedElement : myResolvedElements)
+		{
+			if(resolvedElement.isEquivalentTo(methodDeclaration))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@NotNull
@@ -202,7 +230,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 	@RequiredReadAction
 	public void consumeAsMethodGroup()
 	{
-		if(myResolvedElements.isEmpty())
+		if(myCompletion || myResolvedElements.isEmpty())
 		{
 			return;
 		}
