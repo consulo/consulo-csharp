@@ -20,6 +20,14 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.refactoring.rename.RenamePsiElementProcessor;
+import com.intellij.util.containers.MultiMap;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -31,14 +39,6 @@ import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.rename.RenamePsiElementProcessor;
-import com.intellij.util.containers.MultiMap;
 
 /**
  * @author VISTALL

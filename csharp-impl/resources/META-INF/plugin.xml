@@ -193,6 +193,13 @@
 
 		<renamePsiElementProcessor implementation="consulo.csharp.ide.refactoring.rename.CSharpTypeRenamePsiElementProcessor"/>
 		<renamePsiElementProcessor implementation="consulo.csharp.ide.refactoring.rename.CSharpOverrideElementProcessor"/>
+
+		<elementDescriptionProvider implementation="consulo.csharp.ide.refactoring.rename.CSharpElementDescriptionProvider" />
+
+		<extendWordSelectionHandler implementation="consulo.csharp.ide.codeInsight.editorActions.CSharpExtendWordSelectionHandler" />
+
+		<basicWordSelectionFilter implementation="consulo.csharp.ide.codeInsight.editorActions.CSharpWordSelectionFilter" />
+
 		<gotoClassContributor implementation="consulo.csharp.ide.navigation.CSharpTypeNameContributor"/>
 		<gotoSymbolContributor implementation="consulo.csharp.ide.navigation.CSharpSymbolNameContributor"/>
 		<gotoDeclarationHandler implementation="consulo.csharp.ide.navigation.CSharpGotoDeclarationHandler"/>

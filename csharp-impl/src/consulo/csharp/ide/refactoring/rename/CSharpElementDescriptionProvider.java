@@ -14,39 +14,32 @@
  * limitations under the License.
  */
 
-package consulo.csharp.lang.psi.impl.light;
+package consulo.csharp.ide.refactoring.rename;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.ElementDescriptionLocation;
+import com.intellij.psi.ElementDescriptionProvider;
+import com.intellij.psi.PsiElement;
+import com.intellij.usageView.UsageViewShortNameLocation;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpNamedElement;
 
 /**
  * @author VISTALL
- * @since 13.01.14
+ * @since 14-Nov-17
  */
-public abstract class CSharpLightNamedElement<S extends PsiNamedElement> extends CSharpLightElement<S>  implements CSharpNamedElement
+public class CSharpElementDescriptionProvider implements ElementDescriptionProvider
 {
-	protected CSharpLightNamedElement(S original)
-	{
-		super(original);
-	}
-
-	@Override
-	public String getName()
-	{
-		return myOriginal.getName();
-	}
-
-	@RequiredReadAction
 	@Nullable
 	@Override
-	public String getNameWithAt()
+	@RequiredReadAction
+	public String getElementDescription(@NotNull PsiElement element, @NotNull ElementDescriptionLocation location)
 	{
-		if(myOriginal instanceof CSharpNamedElement)
+		if(location == UsageViewShortNameLocation.INSTANCE && element instanceof CSharpNamedElement)
 		{
-			return ((CSharpNamedElement) myOriginal).getNameWithAt();
+			return ((CSharpNamedElement) element).getNameWithAt();
 		}
-		return getName();
+		return null;
 	}
 }

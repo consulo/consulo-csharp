@@ -18,7 +18,6 @@ package consulo.csharp.ide.findUsage;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.navigation.ItemPresentation;
@@ -26,9 +25,7 @@ import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.TokenSet;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.lexer.CSharpLexer;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
@@ -53,7 +50,7 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 	@Override
 	public WordsScanner getWordsScanner()
 	{
-		return new DefaultWordsScanner(new CSharpLexer(), TokenSet.create(CSharpTokens.IDENTIFIER), CSharpTokenSets.COMMENTS, CSharpTokenSets.LITERALS);
+		return null;
 	}
 
 	@Override
