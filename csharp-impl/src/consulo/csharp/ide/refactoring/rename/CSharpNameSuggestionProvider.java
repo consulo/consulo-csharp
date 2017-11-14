@@ -17,7 +17,7 @@
 package consulo.csharp.ide.refactoring.rename;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
@@ -44,23 +44,21 @@ public class CSharpNameSuggestionProvider implements NameSuggestionProvider
 			return null;
 		}
 
-		Set<String> oldValidResult = new LinkedHashSet<>();
-		for(String name : result)
+		Iterator<String> iterator = result.iterator();
+		while(iterator.hasNext())
 		{
-			if(!CSharpNameSuggesterUtil.isKeyword(name))
+			String next = iterator.next();
+
+			if(CSharpNameSuggesterUtil.isKeyword(next))
 			{
-				oldValidResult.add(name);
+				iterator.remove();
 			}
 		}
-
-		result.clear();
 
 		if(element instanceof DotNetVariable)
 		{
 			Collection<String> names = CSharpNameSuggesterUtil.getSuggestedVariableNames((DotNetVariable) element);
 			result.addAll(names);
-			result.addAll(oldValidResult);
-
 			return new SuggestedNameInfo(ArrayUtil.toStringArray(names))
 			{
 			};
