@@ -26,7 +26,7 @@ import consulo.dotnet.psi.DotNetMethodDeclaration;
  * @author VISTALL
  * @since 30.11.13.
  */
-public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharpGenericConstraintOwner, CSharpSimpleLikeMethodAsElement
+public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharpGenericConstraintOwner, CSharpSimpleLikeMethodAsElement, CSharpNamedElement
 {
 	public static final CSharpMethodDeclaration[] EMPTY_ARRAY = new CSharpMethodDeclaration[0];
 

@@ -16,20 +16,37 @@
 
 package consulo.csharp.lang.psi;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
-import consulo.dotnet.psi.DotNetLocalVariable;
-import consulo.dotnet.psi.DotNetType;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.psi.DotNetNamedElement;
 
 /**
  * @author VISTALL
- * @since 16.12.13.
+ * @since 14-Nov-17
  */
-public interface CSharpLocalVariable extends DotNetLocalVariable, CSharpNamedElement
+public interface CSharpNamedElement extends DotNetNamedElement
 {
-	/**
-	 *
-	 * @return variable type, but dont inherit it from prev child if we use declaration like 'int b, c'
-	 */
+	@Contract("null -> null")
+	@RequiredReadAction
+	static String getEscapedName(@Nullable DotNetNamedElement element)
+	{
+		if(element == null)
+		{
+			return null;
+		}
+
+		if(element instanceof CSharpNamedElement)
+		{
+			return ((CSharpNamedElement) element).getNameWithAt();
+		}
+		return element.getName();
+	}
+
 	@Nullable
-	DotNetType getSelfType();
+	@RequiredReadAction
+	default String getNameWithAt()
+	{
+		return getName();
+	}
 }

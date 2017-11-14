@@ -23,6 +23,7 @@ import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpNamedElement;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
@@ -44,7 +45,7 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariableDeclStub<DotNetParameter>> implements DotNetParameter
+public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariableDeclStub<DotNetParameter>> implements DotNetParameter, CSharpNamedElement
 {
 	public CSharpStubParameterImpl(@NotNull ASTNode node)
 	{
@@ -158,6 +159,14 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 	public String getName()
 	{
 		return CSharpPsiUtilImpl.getNameWithoutAt(this);
+	}
+
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public String getNameWithAt()
+	{
+		return CSharpPsiUtilImpl.getNameWithAt(this);
 	}
 
 	@Override

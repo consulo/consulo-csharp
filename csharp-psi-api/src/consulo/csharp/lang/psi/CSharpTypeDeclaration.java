@@ -23,7 +23,7 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
  * @author VISTALL
  * @since 30.11.13.
  */
-public interface CSharpTypeDeclaration extends DotNetTypeDeclaration, CSharpGenericConstraintOwner, CSharpBodyWithBraces
+public interface CSharpTypeDeclaration extends DotNetTypeDeclaration, CSharpGenericConstraintOwner, CSharpBodyWithBraces, CSharpNamedElement
 {
 	public static final CSharpTypeDeclaration[] EMPTY_ARRAY = new CSharpTypeDeclaration[0];
 

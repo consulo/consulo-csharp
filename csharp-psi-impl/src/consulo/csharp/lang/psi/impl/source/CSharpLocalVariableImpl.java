@@ -142,6 +142,14 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 	@RequiredReadAction
 	@Nullable
 	@Override
+	public String getNameWithAt()
+	{
+		return CSharpPsiUtilImpl.getNameWithAt(this);
+	}
+
+	@RequiredReadAction
+	@Nullable
+	@Override
 	public PsiElement getNameIdentifier()
 	{
 		return findChildByClass(CSharpIdentifier.class);

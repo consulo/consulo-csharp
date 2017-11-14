@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.EmptyStub;
-import com.intellij.util.ArrayFactory;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -39,18 +38,6 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<EmptyStub<CSharpTypeDefStatement>> implements CSharpTypeDefStatement
 {
-	public static final CSharpTypeDefStatementImpl[] EMPTY_ARRAY = new CSharpTypeDefStatementImpl[0];
-
-	public static ArrayFactory<CSharpTypeDefStatementImpl> ARRAY_FACTORY = new ArrayFactory<CSharpTypeDefStatementImpl>()
-	{
-		@NotNull
-		@Override
-		public CSharpTypeDefStatementImpl[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpTypeDefStatementImpl[count];
-		}
-	};
-
 	public CSharpTypeDefStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);

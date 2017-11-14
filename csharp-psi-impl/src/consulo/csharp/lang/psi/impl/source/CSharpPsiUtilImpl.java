@@ -54,27 +54,14 @@ public class CSharpPsiUtilImpl
 
 	@Nullable
 	@RequiredReadAction
-	public static String getOriginalName(@NotNull PsiNameIdentifierOwner element)
+	public static String getNameWithoutAt(@NotNull PsiNameIdentifierOwner element)
 	{
-		PsiElement nameIdentifier = element.getNameIdentifier();
-		if(nameIdentifier == null)
-		{
-			return element.getName();
-		}
-
-		if(nameIdentifier instanceof CSharpIdentifier)
-		{
-			return ((CSharpIdentifier) nameIdentifier).getValue();
-		}
-		else
-		{
-			return nameIdentifier.getText();
-		}
+		return getNameWithoutAt(getNameWithAt(element));
 	}
 
 	@Nullable
 	@RequiredReadAction
-	public static String getNameWithoutAt(@NotNull PsiNameIdentifierOwner element)
+	public static String getNameWithAt(@NotNull PsiNameIdentifierOwner element)
 	{
 		CSharpIdentifier nameIdentifier = (CSharpIdentifier) element.getNameIdentifier();
 		if(nameIdentifier == null)
@@ -86,7 +73,7 @@ public class CSharpPsiUtilImpl
 		{
 			return null;
 		}
-		return getNameWithoutAt(value);
+		return value;
 	}
 
 	@Contract("null -> null")

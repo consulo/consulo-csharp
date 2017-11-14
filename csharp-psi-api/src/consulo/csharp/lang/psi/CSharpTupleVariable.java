@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetVariable;
 
@@ -24,17 +23,9 @@ import consulo.dotnet.psi.DotNetVariable;
  * @author VISTALL
  * @since 26-Nov-16.
  */
-public interface CSharpTupleVariable extends DotNetVariable
+public interface CSharpTupleVariable extends DotNetVariable, CSharpNamedElement
 {
 	public static final CSharpTupleVariable[] EMPTY_ARRAY = new CSharpTupleVariable[0];
 
-	public static ArrayFactory<CSharpTupleVariable> ARRAY_FACTORY = new ArrayFactory<CSharpTupleVariable>()
-	{
-		@NotNull
-		@Override
-		public CSharpTupleVariable[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpTupleVariable[count];
-		}
-	};
+	public static ArrayFactory<CSharpTupleVariable> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpTupleVariable[count];
 }

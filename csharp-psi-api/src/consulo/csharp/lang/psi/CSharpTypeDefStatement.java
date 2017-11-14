@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
-import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
@@ -29,7 +28,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  * @author VISTALL
  * @since 18.10.14
  */
-public interface CSharpTypeDefStatement extends DotNetNamedElement, PsiNameIdentifierOwner, CSharpUsingListChild
+public interface CSharpTypeDefStatement extends CSharpNamedElement, PsiNameIdentifierOwner, CSharpUsingListChild
 {
 	CSharpTypeDefStatement[] EMPTY_ARRAY = new CSharpTypeDefStatement[0];
 

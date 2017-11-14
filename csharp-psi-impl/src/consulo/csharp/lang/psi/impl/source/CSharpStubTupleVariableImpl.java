@@ -134,6 +134,14 @@ public class CSharpStubTupleVariableImpl extends CSharpStubElementImpl<CSharpVar
 		return CSharpPsiUtilImpl.getNameWithoutAt(this);
 	}
 
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public String getNameWithAt()
+	{
+		return CSharpPsiUtilImpl.getNameWithAt(this);
+	}
+
 	@Override
 	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
 	{

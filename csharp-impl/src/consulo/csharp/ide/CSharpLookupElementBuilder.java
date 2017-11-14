@@ -31,7 +31,6 @@ import com.intellij.openapi.editor.CaretModel;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
@@ -128,7 +127,7 @@ public class CSharpLookupElementBuilder
 
 			if(!methodDeclaration.isDelegate())
 			{
-				String name = CSharpPsiUtilImpl.getOriginalName(methodDeclaration);
+				String name = methodDeclaration.getNameWithAt();
 				if(name == null)
 				{
 					return null;
@@ -311,7 +310,7 @@ public class CSharpLookupElementBuilder
 		else if(element instanceof CSharpTypeDefStatement)
 		{
 			CSharpTypeDefStatement typeDefStatement = (CSharpTypeDefStatement) element;
-			String name = CSharpPsiUtilImpl.getOriginalName(typeDefStatement);
+			String name = CSharpNamedElement.getEscapedName(typeDefStatement);
 			if(name == null)
 			{
 				return null;
@@ -324,7 +323,7 @@ public class CSharpLookupElementBuilder
 		else if(element instanceof CSharpLabeledStatementImpl)
 		{
 			CSharpLabeledStatementImpl labeledStatement = (CSharpLabeledStatementImpl) element;
-			String name = CSharpPsiUtilImpl.getOriginalName(labeledStatement);
+			String name = CSharpNamedElement.getEscapedName(labeledStatement);
 			if(name == null)
 			{
 				return null;
@@ -336,7 +335,7 @@ public class CSharpLookupElementBuilder
 		else if(element instanceof DotNetGenericParameter)
 		{
 			DotNetGenericParameter genericParameter = (DotNetGenericParameter) element;
-			String name = CSharpPsiUtilImpl.getOriginalName(genericParameter);
+			String name = CSharpNamedElement.getEscapedName(genericParameter);
 			if(name == null)
 			{
 				return null;
@@ -348,7 +347,7 @@ public class CSharpLookupElementBuilder
 		else if(element instanceof DotNetVariable)
 		{
 			DotNetVariable variable = (DotNetVariable) element;
-			String name = CSharpPsiUtilImpl.getOriginalName(variable);
+			String name = CSharpNamedElement.getEscapedName(variable);
 			if((variable instanceof CSharpFieldDeclaration || variable instanceof CSharpPropertyDeclaration) && needAddThisPrefix(variable, completionParent))
 			{
 				builder = LookupElementBuilder.create(variable, "this." + name);
@@ -446,7 +445,7 @@ public class CSharpLookupElementBuilder
 	{
 		String genericText = CSharpElementPresentationUtil.formatGenericParameters(element, extractor);
 
-		String name = CSharpPsiUtilImpl.getOriginalName((PsiNameIdentifierOwner) element);
+		String name = CSharpNamedElement.getEscapedName(element);
 
 		LookupElementBuilder builder = LookupElementBuilder.create(element, name + (extractor == DotNetGenericExtractor.EMPTY ? "" : genericText));
 

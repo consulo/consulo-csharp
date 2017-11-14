@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
+import consulo.csharp.lang.psi.CSharpNamedElement;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.impl.stub.MemberStub;
 import consulo.dotnet.psi.DotNetModifier;
@@ -42,7 +43,7 @@ import com.intellij.util.IncorrectOperationException;
  * @since 15.12.13.
  */
 public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSharpStubElementImpl<S> implements PsiNameIdentifierOwner,
-		DotNetModifierListOwner, DotNetQualifiedElement, ContributedReferenceHost
+		DotNetModifierListOwner, DotNetQualifiedElement, ContributedReferenceHost, CSharpNamedElement
 {
 	public CSharpStubMemberImpl(@NotNull ASTNode node)
 	{
@@ -139,6 +140,14 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 	public String getName()
 	{
 		return CSharpPsiUtilImpl.getNameWithoutAt(this);
+	}
+
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public String getNameWithAt()
+	{
+		return CSharpPsiUtilImpl.getNameWithAt(this);
 	}
 
 	@Override

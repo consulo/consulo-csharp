@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpIdentifier;
+import consulo.csharp.lang.psi.CSharpNamedElement;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
@@ -33,7 +34,7 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 04.12.13.
  */
-public abstract class CSharpMemberImpl extends CSharpElementImpl implements PsiNameIdentifierOwner, DotNetModifierListOwner
+public abstract class CSharpMemberImpl extends CSharpElementImpl implements PsiNameIdentifierOwner, DotNetModifierListOwner, CSharpNamedElement
 {
 	public CSharpMemberImpl(@NotNull ASTNode node)
 	{
@@ -77,6 +78,14 @@ public abstract class CSharpMemberImpl extends CSharpElementImpl implements PsiN
 	public String getName()
 	{
 		return CSharpPsiUtilImpl.getNameWithoutAt(this);
+	}
+
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public String getNameWithAt()
+	{
+		return CSharpPsiUtilImpl.getNameWithAt(this);
 	}
 
 	@Override
