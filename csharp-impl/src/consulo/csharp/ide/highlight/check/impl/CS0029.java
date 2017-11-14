@@ -338,6 +338,12 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			}
 			return Trinity.create(expected, actual, ObjectUtil.notNull(expression, element));
 		}
+
+		PsiElement parent = element.getParent();
+		if(element instanceof DotNetExpression && parent instanceof CSharpNewArrayLengthImpl)
+		{
+			return Trinity.create(new CSharpTypeRefByQName(element, DotNetTypes.System.Int32), ((DotNetExpression)element).toTypeRef(true), element);
+		}
 		return null;
 	}
 }
