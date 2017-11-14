@@ -194,6 +194,10 @@
 		<renamePsiElementProcessor implementation="consulo.csharp.ide.refactoring.rename.CSharpTypeRenamePsiElementProcessor"/>
 		<renamePsiElementProcessor implementation="consulo.csharp.ide.refactoring.rename.CSharpOverrideElementProcessor"/>
 
+		<renameHandler implementation="consulo.csharp.ide.refactoring.rename.inplace.CSharpMemberInplaceRenameHandler" />
+
+		<nameSuggestionProvider implementation="consulo.csharp.ide.refactoring.rename.CSharpNameSuggestionProvider" order="last"/>
+
 		<elementDescriptionProvider implementation="consulo.csharp.ide.refactoring.rename.CSharpElementDescriptionProvider" />
 
 		<extendWordSelectionHandler implementation="consulo.csharp.ide.codeInsight.editorActions.CSharpExtendWordSelectionHandler" />
