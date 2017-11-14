@@ -78,7 +78,8 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 	@RequiredReadAction
 	public boolean isInplaceRenameAvailable(PsiElement element, PsiElement context)
 	{
-		return mayRenameInplace(element, context);
+		// we not allow default variable inplace renamer
+		return false;
 	}
 
 	@Override

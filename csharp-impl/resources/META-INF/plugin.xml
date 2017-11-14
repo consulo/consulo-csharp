@@ -195,6 +195,7 @@
 		<renamePsiElementProcessor implementation="consulo.csharp.ide.refactoring.rename.CSharpOverrideElementProcessor"/>
 
 		<renameHandler implementation="consulo.csharp.ide.refactoring.rename.inplace.CSharpMemberInplaceRenameHandler" />
+		<renameHandler implementation="consulo.csharp.ide.refactoring.rename.inplace.CSharpVariableInplaceRenamerHandler" />
 
 		<nameSuggestionProvider implementation="consulo.csharp.ide.refactoring.rename.CSharpNameSuggestionProvider" order="last"/>
 
