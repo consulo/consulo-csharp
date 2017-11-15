@@ -60,6 +60,7 @@ public enum CSharpCompilerChecks
 	CS0153(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // check goto case&default without switch
 	CS0155(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // throw object must be child of System.Exception
 	CS0157(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // return is not allowed inside finally blocks
+	CS0161(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  return check 
 	CS0168(CSharpLanguageVersion._1_0, HighlightInfoType.UNUSED_SYMBOL), // local variable usage check
 	CS0169(CSharpLanguageVersion._1_0, HighlightInfoType.UNUSED_SYMBOL), // field is not used
 	CS0173(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // failed to find conditional expression type
