@@ -40,6 +40,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import consulo.csharp.lang.parser.preprocessor.EndRegionPreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.PreprocessorLightParser;
@@ -54,11 +55,12 @@ import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
  */
 public class CSharpFoldingBuilder extends CustomFoldingBuilder
 {
+	@RequiredReadAction
 	@Override
 	protected void buildLanguageFoldRegions(@NotNull final List<FoldingDescriptor> descriptors, @NotNull PsiElement root, @NotNull Document document, boolean quick)
 	{
-		final Deque<PsiElement> regions = new ArrayDeque<PsiElement>();
-		final Set<CSharpUsingListChild> processedUsingStatements = new LinkedHashSet<CSharpUsingListChild>();
+		final Deque<PsiElement> regions = new ArrayDeque<>();
+		final Set<CSharpUsingListChild> processedUsingStatements = new LinkedHashSet<>();
 
 		root.accept(new CSharpRecursiveElementVisitor()
 		{
@@ -100,6 +102,11 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 						descriptors.add(new FoldingDescriptor(lastRegion, new TextRange(startOffset, element.getTextRange().getEndOffset())));
 					}
 				}
+				else if(element instanceof CSharpDocRoot)
+				{
+					// view CSharpDocFoldingBuilder for placeholder and expand configurable
+					descriptors.add(new FoldingDescriptor(element, element.getTextRange()));
+				}
 			}
 
 			@Override
@@ -137,7 +144,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 					return;
 				}
 
-				List<CSharpUsingListChild> children = new ArrayList<CSharpUsingListChild>(5);
+				List<CSharpUsingListChild> children = new ArrayList<>(5);
 
 				for(ASTNode node = child.getNode(); node != null; node = node.getTreeNext())
 				{
@@ -226,11 +233,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 		else if(psi instanceof PsiComment)
 		{
 			IElementType tokenType = ((PsiComment) psi).getTokenType();
-			if(tokenType == CSharpTokensImpl.LINE_DOC_COMMENT)
-			{
-				return "/// ...";
-			}
-			else if(tokenType == CSharpTokens.LINE_COMMENT)
+			if(tokenType == CSharpTokens.LINE_COMMENT)
 			{
 				return "// ...";
 			}

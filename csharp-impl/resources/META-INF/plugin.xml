@@ -306,6 +306,7 @@
 		<lang.braceMatcher language="C#" implementationClass="consulo.csharp.lang.CSharpPairedBraceMatcher"/>
 		<lang.importOptimizer language="C#" implementationClass="consulo.csharp.lang.CSharpImportOptimizer"/>
 		<lang.foldingBuilder language="C#" implementationClass="consulo.csharp.lang.CSharpFoldingBuilder"/>
+		<lang.foldingBuilder language="C#Doc" implementationClass="consulo.csharp.lang.CSharpDocFoldingBuilder"/>
 		<lang.syntaxHighlighterFactory language="C#" implementationClass="consulo.csharp.ide.highlight.CSharpSyntaxHighlighterFactory"/>
 		<lang.refactoringSupport language="C#" implementationClass="consulo.csharp.ide.refactoring.CSharpRefactoringSupportProvider"/>
 		<refactoring.changeSignatureUsageProcessor
