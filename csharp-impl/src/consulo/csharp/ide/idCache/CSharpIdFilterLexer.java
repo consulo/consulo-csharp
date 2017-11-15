@@ -16,8 +16,6 @@
 
 package consulo.csharp.ide.idCache;
 
-import java.lang.annotation.ElementType;
-
 import com.intellij.lexer.Lexer;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.impl.cache.impl.BaseFilterLexer;
@@ -34,16 +32,8 @@ import consulo.csharp.lang.psi.CSharpTokens;
  */
 public class CSharpIdFilterLexer extends BaseFilterLexer
 {
-	private static final TokenSet ourSkipWordsScanSet = TokenSet.orSet(TokenSet.create(TokenType.WHITE_SPACE,
-			CSharpTokens.LPAR,
-			CSharpTokens.RPAR,
-			CSharpTokens.LBRACE,
-			CSharpTokens.RBRACE,
-			CSharpTokens.LBRACKET,
-			CSharpTokens.RBRACKET,
-			CSharpTokens.SEMICOLON,
-			CSharpTokens.COMMA,
-			CSharpTokens.DOT), CSharpTokenSets.OVERLOADING_OPERATORS);
+	private static final TokenSet ourSkipWordsScanSet = TokenSet.orSet(TokenSet.create(TokenType.WHITE_SPACE, CSharpTokens.LPAR, CSharpTokens.RPAR, CSharpTokens.LBRACE, CSharpTokens.RBRACE,
+			CSharpTokens.LBRACKET, CSharpTokens.RBRACKET, CSharpTokens.SEMICOLON, CSharpTokens.COMMA, CSharpTokens.DOT), CSharpTokenSets.OVERLOADING_OPERATORS);
 
 	public CSharpIdFilterLexer(Lexer originalLexer, OccurrenceConsumer occurrenceConsumer)
 	{
@@ -55,8 +45,17 @@ public class CSharpIdFilterLexer extends BaseFilterLexer
 	{
 		final IElementType tokenType = myDelegate.getTokenType();
 
-		if(tokenType == CSharpTokens.IDENTIFIER || tokenType == CSharpTokens.LONG_LITERAL || tokenType == CSharpTokens.INTEGER_LITERAL || tokenType == CSharpTokens.CHARACTER_LITERAL || tokenType ==
-				CSharpTokens.ARROW || tokenType == CSharpTokens.DARROW)
+		if(tokenType == CSharpTokens.IDENTIFIER)
+		{
+			addOccurrenceInToken(UsageSearchContext.IN_CODE);
+			CharSequence tokenSequence = myDelegate.getTokenSequence();
+			if(tokenSequence.charAt(0) == '@')
+			{
+				scanWordsInToken(UsageSearchContext.IN_CODE, false, false);
+			}
+		}
+		else if(tokenType == CSharpTokens.LONG_LITERAL || tokenType == CSharpTokens.INTEGER_LITERAL || tokenType == CSharpTokens.CHARACTER_LITERAL || tokenType == CSharpTokens.ARROW || tokenType ==
+				CSharpTokens.DARROW)
 		{
 			addOccurrenceInToken(UsageSearchContext.IN_CODE);
 		}

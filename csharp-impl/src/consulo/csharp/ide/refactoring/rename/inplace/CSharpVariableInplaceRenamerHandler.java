@@ -40,7 +40,7 @@ public class CSharpVariableInplaceRenamerHandler extends VariableInplaceRenameHa
 	{
 		final PsiElement nameSuggestionContext = file.findElementAt(editor.getCaretModel().getOffset());
 
-		return editor.getSettings().isVariableInplaceRenameEnabled() && CSharpRefactoringSupportProvider.mayRenameInplace(element, nameSuggestionContext) && element instanceof CSharpNamedElement;
+		return editor.getSettings().isVariableInplaceRenameEnabled() && element instanceof CSharpNamedElement && CSharpRefactoringSupportProvider.mayRenameInplace(element, nameSuggestionContext);
 	}
 
 	@Nullable
