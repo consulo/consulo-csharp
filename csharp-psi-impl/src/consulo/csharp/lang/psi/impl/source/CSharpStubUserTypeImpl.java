@@ -17,6 +17,8 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.IStubElementType;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -25,10 +27,7 @@ import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpUserTypeRef;
 import consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import consulo.dotnet.psi.DotNetReferenceExpression;
-import consulo.dotnet.resolve.DotNetPsiSearcher;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.stubs.IStubElementType;
 
 /**
  * @author VISTALL
@@ -41,8 +40,7 @@ public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWith
 		super(node);
 	}
 
-	public CSharpStubUserTypeImpl(@NotNull CSharpWithStringValueStub<CSharpUserType> stub,
-			@NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpUserType>, ?> nodeType)
+	public CSharpStubUserTypeImpl(@NotNull CSharpWithStringValueStub<CSharpUserType> stub, @NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpUserType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -59,13 +57,6 @@ public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWith
 	public DotNetTypeRef toTypeRefImpl()
 	{
 		return new CSharpUserTypeRef(getReferenceExpression());
-	}
-
-	@NotNull
-	@Override
-	public DotNetPsiSearcher.TypeResoleKind getTypeResoleKind()
-	{
-		return DotNetPsiSearcher.TypeResoleKind.UNKNOWN;
 	}
 
 	@NotNull
