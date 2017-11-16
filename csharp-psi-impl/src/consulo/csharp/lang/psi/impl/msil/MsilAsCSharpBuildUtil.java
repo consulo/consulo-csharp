@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import com.intellij.util.ArrayUtil;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -27,11 +29,9 @@ import consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightGenericConstraintBuilder;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterList;
-import consulo.dotnet.resolve.DotNetPsiSearcher;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.msil.lang.psi.MsilGenericParameter;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.msil.lang.psi.MsilUserType;
 
 /**
  * @author VISTALL
@@ -49,7 +49,7 @@ public class MsilAsCSharpBuildUtil
 		}
 
 		DotNetGenericParameter[] parameters = genericParameterList.getParameters();
-		List<CSharpGenericConstraint> list = new ArrayList<CSharpGenericConstraint>(parameters.length);
+		List<CSharpGenericConstraint> list = new ArrayList<>(parameters.length);
 		for(DotNetGenericParameter genericParameter : parameters)
 		{
 			CSharpLightGenericConstraintBuilder builder = new CSharpLightGenericConstraintBuilder(genericParameter);
@@ -59,20 +59,23 @@ public class MsilAsCSharpBuildUtil
 			MsilGenericParameter msilGenericParameter = (MsilGenericParameter) genericParameter.getOriginalElement();
 
 			boolean skipFirst = false;
-			DotNetPsiSearcher.TypeResoleKind typeKind = msilGenericParameter.getTypeKind();
-			switch(typeKind)
+			MsilUserType.Target target = msilGenericParameter.getTarget();
+			if(target != null)
 			{
-				case CLASS:
-					builder.addKeywordConstraint(CSharpTokens.CLASS_KEYWORD);
-					if(msilGenericParameter.hasDefaultConstructor())
-					{
-						builder.addKeywordConstraint(CSharpTokens.NEW_KEYWORD);
-					}
-					break;
-				case STRUCT:
-					builder.addKeywordConstraint(CSharpTokens.STRUCT_KEYWORD);
-					skipFirst = true;
-					break;
+				switch(target)
+				{
+					case CLASS:
+						builder.addKeywordConstraint(CSharpTokens.CLASS_KEYWORD);
+						if(msilGenericParameter.hasDefaultConstructor())
+						{
+							builder.addKeywordConstraint(CSharpTokens.NEW_KEYWORD);
+						}
+						break;
+					case STRUCT:
+						builder.addKeywordConstraint(CSharpTokens.STRUCT_KEYWORD);
+						skipFirst = true;
+						break;
+				}
 			}
 
 			DotNetTypeRef[] extendTypeRefs = msilGenericParameter.getExtendTypeRefs();
@@ -97,7 +100,6 @@ public class MsilAsCSharpBuildUtil
 		{
 			return null;
 		}
-		return new CSharpLightGenericConstraintList(genericParameterList.getProject(), ContainerUtil.toArray(list,
-				CSharpGenericConstraint.ARRAY_FACTORY));
+		return new CSharpLightGenericConstraintList(genericParameterList.getProject(), ContainerUtil.toArray(list, CSharpGenericConstraint.ARRAY_FACTORY));
 	}
 }
