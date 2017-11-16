@@ -17,6 +17,7 @@
 package consulo.csharp.ide.findUsage.usageType;
 
 import org.jetbrains.annotations.Nullable;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -47,12 +48,13 @@ public class CSharpUsageTypeProvider implements UsageTypeProvider
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public UsageType getUsageType(PsiElement element)
 	{
 		if(element instanceof CSharpReferenceExpression)
 		{
-			PsiElement resolve = ((CSharpReferenceExpression) element).resolve();
-			if(resolve == null)
+			PsiElement resolvedElement = ((CSharpReferenceExpression) element).resolve();
+			if(resolvedElement == null)
 			{
 				return null;
 			}
@@ -104,7 +106,7 @@ public class CSharpUsageTypeProvider implements UsageTypeProvider
 					}
 					break;
 				case ANY_MEMBER:
-					if(element instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) element).isDelegate())
+					if(resolvedElement instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) resolvedElement).isDelegate())
 					{
 						return AS_METHOD_REF;
 					}
