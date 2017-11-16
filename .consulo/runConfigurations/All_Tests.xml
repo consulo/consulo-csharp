@@ -8,7 +8,7 @@
     <option name="ALT_CONSULO_SDK_PATH" />
     <java-sdk name="1.8" />
     <consulo-sdk name="Consulo SNAPSHOT" />
-    <artifact name="plugin" />
+    <artifact name="dist" />
     <predefined_log_file id="IDEA_LOG" enabled="true" />
     <RunnerSettings RunnerId="ConsuloDebuggerRunner">
       <option name="DEBUG_PORT" value="" />
@@ -28,7 +28,6 @@
     <method>
       <option name="BuildArtifacts" enabled="true">
         <artifact name="dist" />
-        <artifact name="plugin" />
       </option>
     </method>
   </configuration>
