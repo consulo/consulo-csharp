@@ -26,6 +26,7 @@ import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpTypeOfExpressionImpl;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetType;
@@ -40,11 +41,12 @@ import com.intellij.usages.impl.rules.UsageTypeProvider;
  */
 public class CSharpUsageTypeProvider implements UsageTypeProvider
 {
-	public static final UsageType AS_METHOD_REF = new UsageType("As method reference");
+	public static final UsageType AS_METHOD_REF = new UsageType("As method reference expression");
 	public static final UsageType METHOD_CALL = new UsageType("Method call");
 	public static final UsageType ATTRIBUTE = new UsageType("Attribute");
-	public static final UsageType CLASS_IN_AS = new UsageType("Usage in 'as'");
-	public static final UsageType CLASS_IN_IS = new UsageType("Usage in 'is'");
+	public static final UsageType CLASS_IN_AS = new UsageType("Usage in 'as' expression");
+	public static final UsageType CLASS_IN_IS = new UsageType("Usage in 'is' expression");
+	public static final UsageType TYPE_OF_EXPRESSION = new UsageType("Usage in 'typeof' expression");
 
 	@Nullable
 	@Override
@@ -103,6 +105,10 @@ public class CSharpUsageTypeProvider implements UsageTypeProvider
 					else if(parent instanceof CSharpIsExpressionImpl)
 					{
 						return CLASS_IN_IS;
+					}
+					else if(parent instanceof CSharpTypeOfExpressionImpl)
+					{
+						return TYPE_OF_EXPRESSION;
 					}
 					break;
 				case ANY_MEMBER:
