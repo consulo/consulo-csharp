@@ -29,23 +29,23 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpWithStringValueStub<T extends PsiElement> extends StubBase<T>
 {
-	private StringRef myReferenceText;
+	private final String myReferenceText;
 
 	public CSharpWithStringValueStub(StubElement parent, IStubElementType elementType, StringRef referenceText)
 	{
 		super(parent, elementType);
-		myReferenceText = referenceText;
+		myReferenceText = StringRef.toString(referenceText);
 	}
 
 	public CSharpWithStringValueStub(StubElement parent, IStubElementType elementType, String referenceText)
 	{
 		super(parent, elementType);
-		myReferenceText = StringRef.fromNullableString(referenceText);
+		myReferenceText = referenceText;
 	}
 
 	@Nullable
 	public String getReferenceText()
 	{
-		return StringRef.toString(myReferenceText);
+		return myReferenceText;
 	}
 }

@@ -19,12 +19,6 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodDeclarationImpl;
-import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
-import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
@@ -33,6 +27,12 @@ import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.BitUtil;
 import com.intellij.util.io.StringRef;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.impl.source.CSharpMethodDeclarationImpl;
+import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
+import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
+import consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
 
 /**
  * @author VISTALL
@@ -62,7 +62,7 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 	@Override
 	public CSharpMethodDeclStub createStub(@NotNull CSharpMethodDeclaration methodDeclaration, StubElement stubElement)
 	{
-		StringRef parentQName = StringRef.fromNullableString(methodDeclaration.getPresentableParentQName());
+		String parentQName = methodDeclaration.getPresentableParentQName();
 		int otherModifierMask = CSharpMethodDeclStub.getOtherModifierMask(methodDeclaration);
 		int operatorIndex = CSharpMethodDeclStub.getOperatorIndex(methodDeclaration);
 		return new CSharpMethodDeclStub(stubElement, parentQName, otherModifierMask, operatorIndex);
@@ -83,7 +83,7 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 		StringRef qname = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readInt();
 		int operatorIndex = stubInputStream.readInt();
-		return new CSharpMethodDeclStub(stubElement, qname, otherModifierMask, operatorIndex);
+		return new CSharpMethodDeclStub(stubElement, StringRef.toString(qname), otherModifierMask, operatorIndex);
 	}
 
 	@Override
@@ -101,8 +101,7 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 				{
 					String parentQName = stub.getParentQName();
 
-					DotNetNamespaceStubUtil.indexStub(indexSink, CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX,
-							CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX, parentQName, name);
+					DotNetNamespaceStubUtil.indexStub(indexSink, CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX, parentQName, name);
 				}
 			}
 

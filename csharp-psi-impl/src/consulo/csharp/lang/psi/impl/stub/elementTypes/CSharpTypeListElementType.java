@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import com.intellij.util.ArrayUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpUserType;
@@ -67,16 +68,16 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 	public CSharpTypeListStub createStub(@NotNull DotNetTypeList dotNetTypeList, StubElement stubElement)
 	{
 		DotNetType[] types = dotNetTypeList.getTypes();
-		List<StringRef> typeRefs = new ArrayList<StringRef>(types.length);
+		List<String> typeRefs = new ArrayList<>(types.length);
 		for(DotNetType type : types)
 		{
 			if(type instanceof CSharpUserType)
 			{
-				ContainerUtil.addIfNotNull(typeRefs, StringRef.fromString(((CSharpUserType) type).getReferenceExpression().getReferenceName()));
+				ContainerUtil.addIfNotNull(typeRefs, ((CSharpUserType) type).getReferenceExpression().getReferenceName());
 			}
 		}
 
-		return new CSharpTypeListStub(stubElement, this, ContainerUtil.toArray(typeRefs, StringRef.EMPTY_ARRAY));
+		return new CSharpTypeListStub(stubElement, this, ArrayUtil.toStringArray(typeRefs));
 	}
 
 	@Override
@@ -95,10 +96,10 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 	public CSharpTypeListStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		byte value = stubInputStream.readByte();
-		StringRef[] refs = new StringRef[value];
+		String[] refs = new String[value];
 		for(int i = 0; i < value; i++)
 		{
-			refs[i] = stubInputStream.readName();
+			refs[i] = StringRef.toString(stubInputStream.readName());
 		}
 		return new CSharpTypeListStub(stubElement, this, refs);
 	}

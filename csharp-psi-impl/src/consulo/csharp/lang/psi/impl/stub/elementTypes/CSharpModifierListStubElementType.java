@@ -19,6 +19,7 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpStubModifierListImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpModifierListStub;
 import consulo.dotnet.psi.DotNetModifierList;
@@ -52,6 +53,7 @@ public class CSharpModifierListStubElementType extends CSharpAbstractStubElement
 		return new CSharpStubModifierListImpl(stub, this);
 	}
 
+	@RequiredReadAction
 	@Override
 	public CSharpModifierListStub createStub(@NotNull DotNetModifierList modifierList, StubElement stubElement)
 	{

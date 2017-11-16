@@ -17,11 +17,10 @@
 package consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.Nullable;
-import consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.io.StringRef;
+import consulo.dotnet.psi.DotNetNamedElement;
 
 /**
  * @author VISTALL
@@ -29,10 +28,10 @@ import com.intellij.util.io.StringRef;
  */
 public class MemberStub<T extends DotNetNamedElement> extends StubBase<T>
 {
-	private final StringRef myParentQName;
+	private final String myParentQName;
 	private final int myOtherModifierMask;
 
-	public MemberStub(StubElement parent, IStubElementType elementType, @Nullable StringRef namespaceQName, int otherModifierMask)
+	public MemberStub(StubElement parent, IStubElementType elementType, @Nullable String namespaceQName, int otherModifierMask)
 	{
 		super(parent, elementType);
 		myParentQName = namespaceQName;
@@ -42,7 +41,7 @@ public class MemberStub<T extends DotNetNamedElement> extends StubBase<T>
 	@Nullable
 	public String getParentQName()
 	{
-		return StringRef.toString(myParentQName);
+		return myParentQName;
 	}
 
 	public int getOtherModifierMask()

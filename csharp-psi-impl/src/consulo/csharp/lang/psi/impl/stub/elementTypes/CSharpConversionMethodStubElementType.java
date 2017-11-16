@@ -19,20 +19,20 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.impl.source.CSharpConversionMethodDeclarationImpl;
-import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.source.CSharpConversionMethodDeclarationImpl;
+import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 
 /**
  * @author VISTALL
  * @since 09.01.14
  */
-public class CSharpConversionMethodStubElementType extends CSharpAbstractStubElementType<CSharpMethodDeclStub,
-		CSharpConversionMethodDeclarationImpl>
+public class CSharpConversionMethodStubElementType extends CSharpAbstractStubElementType<CSharpMethodDeclStub, CSharpConversionMethodDeclarationImpl>
 {
 	public CSharpConversionMethodStubElementType()
 	{
@@ -52,10 +52,11 @@ public class CSharpConversionMethodStubElementType extends CSharpAbstractStubEle
 		return new CSharpConversionMethodDeclarationImpl(cSharpTypeStub);
 	}
 
+	@RequiredReadAction
 	@Override
 	public CSharpMethodDeclStub createStub(@NotNull CSharpConversionMethodDeclarationImpl methodDeclaration, StubElement stubElement)
 	{
-		StringRef qname = StringRef.fromNullableString(methodDeclaration.getPresentableParentQName());
+		String qname = methodDeclaration.getPresentableParentQName();
 		return new CSharpMethodDeclStub(stubElement, this, qname, 0, -1);
 	}
 
@@ -70,6 +71,6 @@ public class CSharpConversionMethodStubElementType extends CSharpAbstractStubEle
 	public CSharpMethodDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef qname = stubInputStream.readName();
-		return new CSharpMethodDeclStub(stubElement, this, qname, 0, -1);
+		return new CSharpMethodDeclStub(stubElement, this, StringRef.toString(qname), 0, -1);
 	}
 }

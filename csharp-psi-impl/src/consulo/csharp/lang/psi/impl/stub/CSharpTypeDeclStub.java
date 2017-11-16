@@ -17,12 +17,11 @@
 package consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.util.BitUtil;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.BitUtil;
-import com.intellij.util.io.StringRef;
 
 /**
  * @author VISTALL
@@ -59,9 +58,9 @@ public class CSharpTypeDeclStub extends MemberStub<CSharpTypeDeclaration>
 		return mask;
 	}
 
-	private StringRef myVmQName;
+	private final String myVmQName;
 
-	public CSharpTypeDeclStub(StubElement parent, @Nullable StringRef parentQName, StringRef vmQName, int otherMask)
+	public CSharpTypeDeclStub(StubElement parent, @Nullable String parentQName, String vmQName, int otherMask)
 	{
 		super(parent, CSharpStubElements.TYPE_DECLARATION, parentQName, otherMask);
 		myVmQName = vmQName;
@@ -69,7 +68,7 @@ public class CSharpTypeDeclStub extends MemberStub<CSharpTypeDeclaration>
 
 	public String getVmQName()
 	{
-		return StringRef.toString(myVmQName);
+		return myVmQName;
 	}
 
 	public boolean isInterface()

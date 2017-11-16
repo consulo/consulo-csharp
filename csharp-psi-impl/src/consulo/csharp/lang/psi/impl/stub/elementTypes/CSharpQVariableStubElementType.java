@@ -20,30 +20,31 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetVariable;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
+import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.dotnet.psi.DotNetVariable;
 
 /**
  * @author VISTALL
  * @since 07.01.14.
  */
-public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & DotNetQualifiedElement> extends
-		CSharpAbstractStubElementType<CSharpVariableDeclStub<P>, P>
+public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & DotNetQualifiedElement> extends CSharpAbstractStubElementType<CSharpVariableDeclStub<P>, P>
 {
 	public CSharpQVariableStubElementType(@NotNull @NonNls String debugName)
 	{
 		super(debugName);
 	}
 
+	@RequiredReadAction
 	@Override
 	public CSharpVariableDeclStub<P> createStub(@NotNull P declaration, StubElement stubElement)
 	{
-		StringRef namespaceQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
+		String namespaceQName = declaration.getPresentableParentQName();
 		int otherModifierMask = CSharpVariableDeclStub.getOtherModifierMask(declaration);
 		return new CSharpVariableDeclStub<P>(stubElement, this, namespaceQName, otherModifierMask);
 	}
@@ -61,6 +62,6 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	{
 		StringRef parentQName = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readVarInt();
-		return new CSharpVariableDeclStub<P>(stubElement, this,  parentQName, otherModifierMask);
+		return new CSharpVariableDeclStub<P>(stubElement, this, StringRef.toString(parentQName), otherModifierMask);
 	}
 }

@@ -20,12 +20,6 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImpl;
-import consulo.csharp.lang.psi.impl.stub.CSharpTypeDeclStub;
-import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
@@ -34,6 +28,12 @@ import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.BitUtil;
 import com.intellij.util.io.StringRef;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImpl;
+import consulo.csharp.lang.psi.impl.stub.CSharpTypeDeclStub;
+import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
+import consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
 
 /**
  * @author VISTALL
@@ -63,8 +63,8 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 	@Override
 	public CSharpTypeDeclStub createStub(@NotNull CSharpTypeDeclaration typeDeclaration, StubElement stubElement)
 	{
-		StringRef parentQName = StringRef.fromNullableString(typeDeclaration.getPresentableParentQName());
-		StringRef vmQName = StringRef.fromNullableString(typeDeclaration.getVmQName());
+		String parentQName = typeDeclaration.getPresentableParentQName();
+		String vmQName = typeDeclaration.getVmQName();
 		int otherModifierMask = CSharpTypeDeclStub.getOtherModifiers(typeDeclaration);
 		return new CSharpTypeDeclStub(stubElement, parentQName, vmQName, otherModifierMask);
 	}
@@ -84,7 +84,7 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 		StringRef parentQName = stubInputStream.readName();
 		StringRef vmQName = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readInt();
-		return new CSharpTypeDeclStub(stubElement, parentQName, vmQName, otherModifierMask);
+		return new CSharpTypeDeclStub(stubElement, StringRef.toString(parentQName), StringRef.toString(vmQName), otherModifierMask);
 	}
 
 	@Override
@@ -99,13 +99,11 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 			String parentQName = stub.getParentQName();
 			if(!stub.isNested())
 			{
-				DotNetNamespaceStubUtil.indexStub(indexSink, CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX,
-						CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX, parentQName, name);
+				DotNetNamespaceStubUtil.indexStub(indexSink, CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX, parentQName, name);
 
 				if(BitUtil.isSet(stub.getOtherModifierMask(), CSharpTypeDeclStub.HAVE_EXTENSIONS))
 				{
-					indexSink.occurrence(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, DotNetNamespaceStubUtil.getIndexableNamespace
-							(parentQName));
+					indexSink.occurrence(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, DotNetNamespaceStubUtil.getIndexableNamespace(parentQName));
 				}
 			}
 

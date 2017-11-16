@@ -17,15 +17,14 @@
 package consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.util.BitUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpStubParameterImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpStubVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpStubVariableImplUtil;
 import consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpAbstractStubElementType;
 import consulo.dotnet.psi.DotNetVariable;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.BitUtil;
-import com.intellij.util.io.StringRef;
 
 /**
  * @author VISTALL
@@ -37,10 +36,7 @@ public class CSharpVariableDeclStub<V extends DotNetVariable> extends MemberStub
 	public static final int MULTIPLE_DECLARATION_MASK = 1 << 1;
 	public static final int OPTIONAL = 1 << 2;
 
-	public CSharpVariableDeclStub(StubElement parent,
-			CSharpAbstractStubElementType<?, ?> elementType,
-			@Nullable StringRef namespaceQName,
-			int flags)
+	public CSharpVariableDeclStub(StubElement parent, CSharpAbstractStubElementType<?, ?> elementType, @Nullable String namespaceQName, int flags)
 	{
 		super(parent, elementType, namespaceQName, flags);
 	}

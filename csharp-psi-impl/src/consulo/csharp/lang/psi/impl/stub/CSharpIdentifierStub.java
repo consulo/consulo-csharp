@@ -17,11 +17,11 @@
 package consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpIdentifier;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
+import consulo.csharp.lang.psi.CSharpIdentifier;
 
 /**
  * @author VISTALL
@@ -29,21 +29,21 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpIdentifierStub extends StubBase<CSharpIdentifier>
 {
-	private final StringRef myValue;
+	private final String myValue;
 
 	public CSharpIdentifierStub(StubElement parent, IStubElementType elementType, @Nullable StringRef value)
+	{
+		this(parent, elementType, StringRef.toString(value));
+	}
+
+	public CSharpIdentifierStub(final StubElement parent, final IStubElementType elementType, @Nullable final String value)
 	{
 		super(parent, elementType);
 		myValue = value;
 	}
 
-	public CSharpIdentifierStub(final StubElement parent, final IStubElementType elementType, @Nullable final String value)
-	{
-		this(parent, elementType, StringRef.fromString(value));
-	}
-
 	public String getValue()
 	{
-		return StringRef.toString(myValue);
+		return myValue;
 	}
 }

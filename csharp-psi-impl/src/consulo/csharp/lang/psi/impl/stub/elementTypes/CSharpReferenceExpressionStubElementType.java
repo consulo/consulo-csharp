@@ -19,6 +19,7 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.impl.source.CSharpStubReferenceExpressionImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpReferenceExpressionStub;
@@ -53,6 +54,7 @@ public class CSharpReferenceExpressionStubElementType extends CSharpAbstractStub
 		return new CSharpStubReferenceExpressionImpl(stub, this);
 	}
 
+	@RequiredReadAction
 	@Override
 	public CSharpReferenceExpressionStub createStub(@NotNull CSharpReferenceExpression psi, StubElement parentStub)
 	{
@@ -80,6 +82,6 @@ public class CSharpReferenceExpressionStubElementType extends CSharpAbstractStub
 		int kind = dataStream.readVarInt();
 		int memberAccessType = dataStream.readVarInt();
 		boolean global = dataStream.readBoolean();
-		return new CSharpReferenceExpressionStub(parentStub, this, referenceText, kind, memberAccessType, global);
+		return new CSharpReferenceExpressionStub(parentStub, this, StringRef.toString(referenceText), kind, memberAccessType, global);
 	}
 }

@@ -17,11 +17,10 @@
 package consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.dotnet.psi.DotNetTypeList;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.io.StringRef;
+import consulo.dotnet.psi.DotNetTypeList;
 
 /**
  * @author VISTALL
@@ -29,9 +28,9 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpTypeListStub extends StubBase<DotNetTypeList>
 {
-	private final StringRef[] myReferences;
+	private final String[] myReferences;
 
-	public CSharpTypeListStub(StubElement parent, IStubElementType elementType, StringRef[] references)
+	public CSharpTypeListStub(StubElement parent, IStubElementType elementType, String[] references)
 	{
 		super(parent, elementType);
 		myReferences = references;
@@ -40,12 +39,6 @@ public class CSharpTypeListStub extends StubBase<DotNetTypeList>
 	@NotNull
 	public String[] geShortReferences()
 	{
-		String[] ar = new String[myReferences.length];
-		for(int i = 0; i < myReferences.length; i++)
-		{
-			StringRef reference = myReferences[i];
-			ar[i] = StringRef.toString(reference);
-		}
-		return ar;
+		return myReferences;
 	}
 }

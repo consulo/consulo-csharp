@@ -19,6 +19,7 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpConstructorDeclarationImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import com.intellij.lang.ASTNode;
@@ -51,10 +52,11 @@ public class CSharpConstructorStubElementType extends CSharpAbstractStubElementT
 		return new CSharpConstructorDeclarationImpl(cSharpTypeStub, this);
 	}
 
+	@RequiredReadAction
 	@Override
 	public CSharpMethodDeclStub createStub(@NotNull CSharpConstructorDeclarationImpl methodDeclaration, StubElement stubElement)
 	{
-		StringRef qname = StringRef.fromNullableString(methodDeclaration.getPresentableParentQName());
+		String qname = methodDeclaration.getPresentableParentQName();
 		int otherModifierMask = CSharpMethodDeclStub.getOtherModifierMask(methodDeclaration);
 		return new CSharpMethodDeclStub(stubElement, this, qname, otherModifierMask, -1);
 	}
@@ -72,6 +74,6 @@ public class CSharpConstructorStubElementType extends CSharpAbstractStubElementT
 	{
 		StringRef qname = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readVarInt();
-		return new CSharpMethodDeclStub(stubElement, this, qname, otherModifierMask, -1);
+		return new CSharpMethodDeclStub(stubElement, this, StringRef.toString(qname), otherModifierMask, -1);
 	}
 }

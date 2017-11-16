@@ -18,16 +18,15 @@ package consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.util.ArrayUtil;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.io.StringRef;
 
 /**
  * @author VISTALL
@@ -41,20 +40,13 @@ public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration>
 
 	private final int myOperatorIndex;
 
-	public CSharpMethodDeclStub(StubElement parent,
-			@Nullable StringRef qname,
-			int otherModifierMask,
-			int operatorIndex)
+	public CSharpMethodDeclStub(StubElement parent, @Nullable String qname, int otherModifierMask, int operatorIndex)
 	{
-		super(parent, CSharpStubElements.METHOD_DECLARATION,  qname, otherModifierMask);
+		super(parent, CSharpStubElements.METHOD_DECLARATION, qname, otherModifierMask);
 		myOperatorIndex = operatorIndex;
 	}
 
-	public CSharpMethodDeclStub(StubElement parent,
-			IStubElementType elementType,
-			StringRef qname,
-			int otherModifierMask,
-			int operatorIndex)
+	public CSharpMethodDeclStub(StubElement parent, IStubElementType elementType, String qname, int otherModifierMask, int operatorIndex)
 	{
 		super(parent, elementType, qname, otherModifierMask);
 		myOperatorIndex = operatorIndex;

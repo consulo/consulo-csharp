@@ -17,10 +17,9 @@
 package consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.stubs.StubElement;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpStubElements;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.io.StringRef;
 
 /**
  * @author VISTALL
@@ -28,7 +27,7 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpIndexMethodDeclStub extends MemberStub<CSharpIndexMethodDeclaration>
 {
-	public CSharpIndexMethodDeclStub(StubElement parent, @Nullable StringRef qname)
+	public CSharpIndexMethodDeclStub(StubElement parent, @Nullable String qname)
 	{
 		super(parent, CSharpStubElements.INDEX_METHOD_DECLARATION, qname, 0);
 	}

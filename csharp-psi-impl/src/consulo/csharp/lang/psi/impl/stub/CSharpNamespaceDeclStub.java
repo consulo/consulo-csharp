@@ -17,11 +17,11 @@
 package consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.impl.source.CSharpNamespaceDeclarationImpl;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
+import consulo.csharp.lang.psi.impl.source.CSharpNamespaceDeclarationImpl;
 
 /**
  * @author VISTALL
@@ -29,21 +29,23 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpNamespaceDeclStub extends StubBase<CSharpNamespaceDeclarationImpl>
 {
-	private final StringRef myReferenceTextRef;
+	private final String myReferenceTextRef;
 
 	public CSharpNamespaceDeclStub(StubElement parent, IStubElementType elementType, @Nullable StringRef referenceTextRef)
+	{
+		super(parent, elementType);
+		myReferenceTextRef = StringRef.toString(referenceTextRef);
+	}
+
+	public CSharpNamespaceDeclStub(final StubElement parent, final IStubElementType elementType, @Nullable final String referenceTextRef)
 	{
 		super(parent, elementType);
 		myReferenceTextRef = referenceTextRef;
 	}
 
-	public CSharpNamespaceDeclStub(final StubElement parent, final IStubElementType elementType, @Nullable final String referenceTextRef)
-	{
-		this(parent, elementType, StringRef.fromString(referenceTextRef));
-	}
-
+	@Nullable
 	public String getReferenceTextRef()
 	{
-		return StringRef.toString(myReferenceTextRef);
+		return myReferenceTextRef;
 	}
 }

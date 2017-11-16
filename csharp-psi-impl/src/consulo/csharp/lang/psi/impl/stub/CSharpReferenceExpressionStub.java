@@ -17,12 +17,10 @@
 package consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.io.StringRef;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
 
 /**
  * @author VISTALL
@@ -30,37 +28,18 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpReferenceExpressionStub extends StubBase<CSharpReferenceExpression>
 {
-	private StringRef myReferenceText;
-	private int myKindIndex;
-	private int myMemberAccessTypeIndex;
-	private boolean myGlobal;
+	private final String myReferenceText;
+	private final int myKindIndex;
+	private final int myMemberAccessTypeIndex;
+	private final boolean myGlobal;
 
-	public CSharpReferenceExpressionStub(StubElement parent,
-			IStubElementType elementType,
-			String referenceText,
-			int kindIndex,
-			int memberAccessType,
-			boolean global)
+	public CSharpReferenceExpressionStub(StubElement parent, IStubElementType elementType, String referenceText, int kindIndex, int memberAccessType, boolean global)
 	{
 		super(parent, elementType);
 		myGlobal = global;
-		myReferenceText = StringRef.fromNullableString(referenceText);
-		myKindIndex = kindIndex;
-		myMemberAccessTypeIndex = memberAccessType;
-	}
-
-	public CSharpReferenceExpressionStub(StubElement parent,
-			IStubElementType elementType,
-			StringRef referenceText,
-			int kindIndex,
-			int memberAccessType,
-			boolean global)
-	{
-		super(parent, elementType);
 		myReferenceText = referenceText;
 		myKindIndex = kindIndex;
 		myMemberAccessTypeIndex = memberAccessType;
-		myGlobal = global;
 	}
 
 	public boolean isGlobal()
@@ -70,7 +49,7 @@ public class CSharpReferenceExpressionStub extends StubBase<CSharpReferenceExpre
 
 	public String getReferenceText()
 	{
-		return StringRef.toString(myReferenceText);
+		return myReferenceText;
 	}
 
 	public int getKindIndex()

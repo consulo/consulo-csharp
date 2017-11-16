@@ -19,15 +19,15 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.impl.source.CSharpIndexMethodDeclarationImpl;
-import consulo.csharp.lang.psi.impl.stub.CSharpIndexMethodDeclStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
+import consulo.csharp.lang.psi.impl.source.CSharpIndexMethodDeclarationImpl;
+import consulo.csharp.lang.psi.impl.stub.CSharpIndexMethodDeclStub;
 
 /**
  * @author VISTALL
@@ -57,7 +57,7 @@ public class CSharpIndexMethodStubElementType extends CSharpAbstractStubElementT
 	@Override
 	public CSharpIndexMethodDeclStub createStub(@NotNull CSharpIndexMethodDeclaration declaration, StubElement stubElement)
 	{
-		StringRef parentQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
+		String parentQName = declaration.getPresentableParentQName();
 		return new CSharpIndexMethodDeclStub(stubElement, parentQName);
 	}
 
@@ -72,6 +72,6 @@ public class CSharpIndexMethodStubElementType extends CSharpAbstractStubElementT
 	public CSharpIndexMethodDeclStub deserialize(@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
 		StringRef qname = inputStream.readName();
-		return new CSharpIndexMethodDeclStub(stubElement, qname);
+		return new CSharpIndexMethodDeclStub(stubElement, StringRef.toString(qname));
 	}
 }
