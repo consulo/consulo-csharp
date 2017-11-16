@@ -166,7 +166,7 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	@RequiredReadAction
 	public String getReferenceText()
 	{
-		CSharpNamespaceDeclStub stub = getStub();
+		CSharpNamespaceDeclStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.getReferenceTextRef();

@@ -59,7 +59,7 @@ public class CSharpStubArrayTypeImpl extends CSharpStubTypeElementImpl<CSharpWit
 	@Override
 	public int getDimensions()
 	{
-		CSharpWithIntValueStub<CSharpArrayType> stub = getStub();
+		CSharpWithIntValueStub<CSharpArrayType> stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.getValue();

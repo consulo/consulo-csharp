@@ -76,6 +76,7 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 		return CSharpStubVariableImplUtil.getConstantKeywordElement(this);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetExpression getInitializer()
@@ -87,7 +88,7 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	@Override
 	public boolean isConstant()
 	{
-		CSharpVariableDeclStub<DotNetFieldDeclaration> stub = getStub();
+		CSharpVariableDeclStub<DotNetFieldDeclaration> stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.isConstant();

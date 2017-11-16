@@ -54,7 +54,7 @@ public class CSharpStubIdentifierImpl extends CSharpStubElementImpl<CSharpIdenti
 	@Override
 	public String getValue()
 	{
-		CSharpIdentifierStub stub = getStub();
+		CSharpIdentifierStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.getValue();

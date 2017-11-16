@@ -52,7 +52,7 @@ public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpWit
 	@Override
 	public DotNetGenericParameter resolve()
 	{
-		CSharpWithStringValueStub<CSharpGenericConstraint> stub = getStub();
+		CSharpWithStringValueStub<CSharpGenericConstraint> stub = getGreenStub();
 		if(stub != null)
 		{
 			DotNetGenericParameterListOwner parentOfType = getStubOrPsiParentOfType(DotNetGenericParameterListOwner.class);

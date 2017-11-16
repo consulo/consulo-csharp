@@ -128,10 +128,11 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 				PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT));
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isInterface()
 	{
-		CSharpTypeDeclStub stub = getStub();
+		CSharpTypeDeclStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.isInterface();
@@ -139,10 +140,11 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 		return findChildByType(CSharpTokens.INTERFACE_KEYWORD) != null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isStruct()
 	{
-		CSharpTypeDeclStub stub = getStub();
+		CSharpTypeDeclStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.isStruct();
@@ -150,10 +152,11 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 		return findChildByType(CSharpTokens.STRUCT_KEYWORD) != null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isEnum()
 	{
-		CSharpTypeDeclStub stub = getStub();
+		CSharpTypeDeclStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.isEnum();
@@ -161,6 +164,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 		return findChildByType(CSharpTokens.ENUM_KEYWORD) != null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isNested()
 	{
@@ -190,6 +194,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 		return CSharpTypeDeclarationImplUtil.isEquivalentTo(this, another);
 	}
 
+	@RequiredReadAction
 	@Override
 	public DotNetTypeList getExtendList()
 	{

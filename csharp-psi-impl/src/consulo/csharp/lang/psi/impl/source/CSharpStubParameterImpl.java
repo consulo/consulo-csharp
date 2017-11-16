@@ -126,7 +126,7 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 	{
 		if(modifier == CSharpModifier.OPTIONAL)
 		{
-			final CSharpVariableDeclStub<DotNetParameter> stub = getStub();
+			final CSharpVariableDeclStub<DotNetParameter> stub = getGreenStub();
 			if(stub != null)
 			{
 				return stub.isOptional();

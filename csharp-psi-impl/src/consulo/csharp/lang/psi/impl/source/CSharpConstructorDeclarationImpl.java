@@ -82,7 +82,7 @@ public class CSharpConstructorDeclarationImpl extends CSharpLikeMethodDeclaratio
 	@Override
 	public boolean isDeConstructor()
 	{
-		CSharpMethodDeclStub stub = getStub();
+		CSharpMethodDeclStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.DE_CONSTRUCTOR_MASK);

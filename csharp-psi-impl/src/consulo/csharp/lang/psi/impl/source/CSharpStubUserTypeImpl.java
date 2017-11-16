@@ -63,7 +63,7 @@ public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWith
 	@Override
 	public String getReferenceText()
 	{
-		CSharpWithStringValueStub<CSharpUserType> stub = getStub();
+		CSharpWithStringValueStub<CSharpUserType> stub = getGreenStub();
 		if(stub != null)
 		{
 			//noinspection ConstantConditions

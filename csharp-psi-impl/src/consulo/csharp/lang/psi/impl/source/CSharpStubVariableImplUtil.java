@@ -99,7 +99,7 @@ public class CSharpStubVariableImplUtil
 				int i = ArrayUtil.find(stubVariables, variable);
 				if(i <= 0)
 				{
-					CSharpStubVariableImplUtil.LOGGER.error("Variable dont have type but dont second");
+					LOGGER.error("Variable dont have type but dont second");
 					return null;
 				}
 
@@ -110,7 +110,7 @@ public class CSharpStubVariableImplUtil
 				CSharpStubVariableImpl<?> prevVariable = PsiTreeUtil.getPrevSiblingOfType(variable, variable.getClass());
 				if(prevVariable == null)
 				{
-					CSharpStubVariableImplUtil.LOGGER.error("Variable dont have type but dont second");
+					LOGGER.error("Variable dont have type but dont second");
 					return null;
 				}
 				return prevVariable;

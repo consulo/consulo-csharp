@@ -53,7 +53,7 @@ public class CSharpGenericConstraintKeywordValueImpl extends CSharpStubElementIm
 	@Override
 	public IElementType getKeywordElementType()
 	{
-		CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> stub = getStub();
+		CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> stub = getGreenStub();
 		if(stub != null)
 		{
 			return KEYWORDS_AS_ARRAY[stub.getValue()];

@@ -114,7 +114,7 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 	@Override
 	public String getPresentableParentQName()
 	{
-		S stub = getStub();
+		S stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.getParentQName();

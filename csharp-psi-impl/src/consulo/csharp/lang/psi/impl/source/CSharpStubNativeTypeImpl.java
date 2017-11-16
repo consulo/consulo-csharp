@@ -56,7 +56,7 @@ public class CSharpStubNativeTypeImpl extends CSharpStubTypeElementImpl<CSharpWi
 	@NotNull
 	public IElementType getTypeElementType()
 	{
-		CSharpWithIntValueStub<CSharpNativeType> stub = getStub();
+		CSharpWithIntValueStub<CSharpNativeType> stub = getGreenStub();
 		if(stub != null)
 		{
 			return CSharpTokenSets.NATIVE_TYPES_AS_ARRAY[stub.getValue()];

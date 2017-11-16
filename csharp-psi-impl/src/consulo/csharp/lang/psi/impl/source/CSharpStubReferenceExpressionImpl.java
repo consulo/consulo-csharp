@@ -102,7 +102,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@RequiredReadAction
 	public String getReferenceNameWithAt()
 	{
-		CSharpReferenceExpressionStub stub = getStub();
+		CSharpReferenceExpressionStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.getReferenceText();
@@ -118,6 +118,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return this;
 	}
 
+	@NotNull
 	@Override
 	@RequiredReadAction
 	public TextRange getRangeInElement()
@@ -170,7 +171,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@NotNull
 	public ResolveToKind kind()
 	{
-		CSharpReferenceExpressionStub stub = getStub();
+		CSharpReferenceExpressionStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.getKind();
@@ -248,7 +249,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public boolean isGlobalElement()
 	{
-		CSharpReferenceExpressionStub stub = getStub();
+		CSharpReferenceExpressionStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.isGlobal();
@@ -270,7 +271,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public AccessType getMemberAccessType()
 	{
-		CSharpReferenceExpressionStub stub = getStub();
+		CSharpReferenceExpressionStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.getMemberAccessType();

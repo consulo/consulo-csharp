@@ -65,7 +65,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 	@Nullable
 	public String getReferenceText()
 	{
-		CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub = getStub();
+		CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.getReferenceText();

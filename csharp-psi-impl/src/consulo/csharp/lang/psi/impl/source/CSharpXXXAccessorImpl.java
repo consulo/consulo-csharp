@@ -203,7 +203,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	@Override
 	public Kind getAccessorKind()
 	{
-		CSharpXXXAccessorStub stub = getStub();
+		CSharpXXXAccessorStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.getAccessorType();

@@ -55,7 +55,7 @@ public class CSharpStubAttributeListImpl extends CSharpStubElementImpl<CSharpAtt
 	@Override
 	public DotNetAttributeTargetType getTargetType()
 	{
-		CSharpAttributeListStub stub = getStub();
+		CSharpAttributeListStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.getTarget();

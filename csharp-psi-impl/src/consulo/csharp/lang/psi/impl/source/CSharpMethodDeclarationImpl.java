@@ -91,7 +91,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	@Override
 	public boolean isDelegate()
 	{
-		CSharpMethodDeclStub stub = getStub();
+		CSharpMethodDeclStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.DELEGATE_MASK);
@@ -103,7 +103,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	@Override
 	public boolean isOperator()
 	{
-		CSharpMethodDeclStub stub = getStub();
+		CSharpMethodDeclStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.getOperator() != null;
@@ -114,7 +114,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	@Override
 	public boolean isExtension()
 	{
-		CSharpMethodDeclStub stub = getStub();
+		CSharpMethodDeclStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.EXTENSION_MASK);
@@ -127,7 +127,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	@Override
 	public IElementType getOperatorElementType()
 	{
-		CSharpMethodDeclStub stub = getStub();
+		CSharpMethodDeclStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return  stub.getOperator();
