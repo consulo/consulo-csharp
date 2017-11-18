@@ -19,7 +19,6 @@ package consulo.csharp.lang.parser;
 import gnu.trove.THashSet;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +56,7 @@ public class ModifierSet
 	@NotNull
 	public ModifierSet setAllowShortObjectInitializer()
 	{
-		ModifierSet set = ModifierSet.create(mySet == null ? Collections.emptySet() : new THashSet<>(mySet));
+		ModifierSet set = new ModifierSet(mySet == null ? null : new THashSet<>(mySet));
 		set.myAllowShortObjectInitializer = true;
 		return set;
 	}
