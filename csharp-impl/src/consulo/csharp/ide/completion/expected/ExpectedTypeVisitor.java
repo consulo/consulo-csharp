@@ -16,10 +16,10 @@
 
 package consulo.csharp.ide.completion.expected;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -53,19 +53,16 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 	public static List<ExpectedTypeInfo> findExpectedTypeRefs(@NotNull PsiElement psiElement)
 	{
 		PsiElement parent = psiElement.getParent();
+		if(parent == null)
+		{
+			return Collections.emptyList();
+		}
 
 		ExpectedTypeVisitor expectedTypeVisitor = new ExpectedTypeVisitor(psiElement);
 
 		parent.accept(expectedTypeVisitor);
 
-		return ContainerUtil.filter(expectedTypeVisitor.getExpectedTypeInfos(), new Condition<ExpectedTypeInfo>()
-		{
-			@Override
-			public boolean value(ExpectedTypeInfo expectedTypeInfo)
-			{
-				return expectedTypeInfo.getTypeRef() != DotNetTypeRef.ERROR_TYPE;
-			}
-		});
+		return ContainerUtil.filter(expectedTypeVisitor.getExpectedTypeInfos(), it -> it.getTypeRef() != DotNetTypeRef.ERROR_TYPE);
 	}
 
 	private List<ExpectedTypeInfo> myExpectedTypeInfos = new SmartList<ExpectedTypeInfo>();
