@@ -25,7 +25,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.light.LightElement;
-import com.intellij.util.ObjectUtil;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 
@@ -70,7 +69,16 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 	@Override
 	public PsiElement getParent()
 	{
-		return ObjectUtil.notNull(myParent, myOriginal.getParent());
+		if(myParent != null)
+		{
+			return myParent;
+		}
+		PsiElement parent = myOriginal.getParent();
+		if(parent != null)
+		{
+			return parent;
+		}
+		return null;
 	}
 
 	@NotNull
