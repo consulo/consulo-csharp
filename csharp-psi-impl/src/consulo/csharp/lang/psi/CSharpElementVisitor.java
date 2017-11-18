@@ -660,4 +660,9 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(continuation);
 	}
+
+	public void visitShortObjectInitializerExpression(CSharpShortObjectInitializerExpressionImpl expression)
+	{
+		visitElement(expression);
+	}
 }

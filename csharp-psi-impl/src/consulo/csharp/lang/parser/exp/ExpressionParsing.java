@@ -721,6 +721,14 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		builder.disableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
 
+		if(tokenType == LBRACE && modifierSet.isAllowShortObjectInitializer())
+		{
+			PsiBuilder.Marker mark = builder.mark();
+			parseNamedFieldOrPropertySetBlock(builder, modifierSet);
+			mark.done(SHORT_OBJECT_INITIALIZER_EXPRESSION);
+			return mark;
+		}
+
 		// if not coloncolon drop
 		if(tokenType == CSharpSoftTokens.GLOBAL_KEYWORD && builder.lookAhead(1) != CSharpTokens.COLONCOLON)
 		{
@@ -1698,7 +1706,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			if(expect(builder, EQ, "'=' expected"))
 			{
-				if(parse(builder, set) == null)
+				if(parse(builder, set.setAllowShortObjectInitializer()) == null)
 				{
 					builder.error("Expression expected");
 				}

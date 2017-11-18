@@ -35,7 +35,7 @@ public class ModifierSet
 	@NotNull
 	public static ModifierSet create(IElementType... set)
 	{
-		return set.length == 0 ? EMPTY : new ModifierSet(new THashSet<IElementType>(Arrays.asList(set)));
+		return set.length == 0 ? EMPTY : new ModifierSet(new THashSet<>(Arrays.asList(set)));
 	}
 
 	@NotNull
@@ -46,15 +46,30 @@ public class ModifierSet
 
 	private Set<IElementType> mySet;
 
+	private boolean myAllowShortObjectInitializer;
+
 	private ModifierSet(Set<IElementType> set)
 	{
 		mySet = set;
 	}
 
 	@NotNull
+	public ModifierSet setAllowShortObjectInitializer()
+	{
+		ModifierSet set = ModifierSet.create(new THashSet<>(mySet));
+		set.myAllowShortObjectInitializer = true;
+		return set;
+	}
+
+	public boolean isAllowShortObjectInitializer()
+	{
+		return myAllowShortObjectInitializer;
+	}
+
+	@NotNull
 	public ModifierSet add(IElementType e)
 	{
-		Set<IElementType> elementTypes = mySet == null ? new THashSet<IElementType>() : new THashSet<IElementType>(mySet);
+		Set<IElementType> elementTypes = mySet == null ? new THashSet<>() : new THashSet<>(mySet);
 		elementTypes.add(e);
 		return create(elementTypes);
 	}
@@ -67,7 +82,7 @@ public class ModifierSet
 			return EMPTY;
 		}
 
-		Set<IElementType> elementTypes = new THashSet<IElementType>(mySet);
+		Set<IElementType> elementTypes = new THashSet<>(mySet);
 		elementTypes.remove(e);
 		return create(elementTypes);
 	}

@@ -18,10 +18,17 @@ package consulo.csharp.lang.psi.impl.source.resolve.handlers;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.Processor;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import consulo.csharp.lang.psi.CSharpFieldOrPropertySetBlock;
 import consulo.csharp.lang.psi.CSharpNewExpression;
 import consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
+import consulo.csharp.lang.psi.impl.source.CSharpShortObjectInitializerExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -29,11 +36,6 @@ import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
@@ -50,20 +52,34 @@ public class FieldOrPropertyKindProcessor implements KindProcessor
 	{
 		PsiElement element = options.getElement();
 
-		DotNetTypeRef resolvedTypeRef;
-		CSharpCallArgumentListOwner callArgumentListOwner = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
+		DotNetTypeRef resolvedTypeRef = null;
 
-		if(callArgumentListOwner instanceof CSharpNewExpression)
+		CSharpFieldOrPropertySetBlock block = PsiTreeUtil.getParentOfType(element, CSharpFieldOrPropertySetBlock.class);
+		if(block != null)
 		{
-			resolvedTypeRef = ((CSharpNewExpression) callArgumentListOwner).toTypeRef(false);
+			PsiElement parent = block.getParent();
+			if(parent instanceof CSharpShortObjectInitializerExpressionImpl)
+			{
+				resolvedTypeRef = ((CSharpShortObjectInitializerExpressionImpl) parent).toTypeRef(true);
+			}
 		}
-		else if(callArgumentListOwner instanceof DotNetAttribute)
+
+		if(resolvedTypeRef == null)
 		{
-			resolvedTypeRef = ((DotNetAttribute) callArgumentListOwner).toTypeRef();
-		}
-		else
-		{
-			throw new IllegalArgumentException(callArgumentListOwner == null ? "null" : callArgumentListOwner.getClass().getName());
+			CSharpCallArgumentListOwner callArgumentListOwner = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
+
+			if(callArgumentListOwner instanceof CSharpNewExpression)
+			{
+				resolvedTypeRef = ((CSharpNewExpression) callArgumentListOwner).toTypeRef(false);
+			}
+			else if(callArgumentListOwner instanceof DotNetAttribute)
+			{
+				resolvedTypeRef = ((DotNetAttribute) callArgumentListOwner).toTypeRef();
+			}
+			else
+			{
+				resolvedTypeRef = DotNetTypeRef.ERROR_TYPE;
+			}
 		}
 
 		if(resolvedTypeRef == DotNetTypeRef.ERROR_TYPE)
