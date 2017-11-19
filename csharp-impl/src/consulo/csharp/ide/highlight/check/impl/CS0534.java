@@ -17,19 +17,10 @@
 package consulo.csharp.ide.highlight.check.impl;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.ide.highlight.CSharpHighlightContext;
-import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.codeInsight.generation.ImplementMethodsHandler;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
@@ -37,7 +28,17 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.SmartList;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.highlight.CSharpHighlightContext;
+import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
 
 /**
  * @author VISTALL
@@ -74,6 +75,7 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
 		}
 
 		@Override
+		@RequiredDispatchThread
 		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			new ImplementMethodsHandler().invoke(project, editor, file);
@@ -85,7 +87,7 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpTypeDeclaration element)
 	{
-		if(element.isInterface() || element.hasModifier(DotNetModifier.ABSTRACT))
+		if(element.isInterface())
 		{
 			return null;
 		}
@@ -94,12 +96,34 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
 		{
 			return null;
 		}
-		Collection<DotNetModifierListOwner> psiElements = OverrideUtil.collectMembersWithModifier(element, DotNetGenericExtractor.EMPTY, CSharpModifier.ABSTRACT);
-		if(!psiElements.isEmpty())
+
+		Collection<DotNetModifierListOwner> abstractElements = OverrideUtil.collectMembersWithModifier(element, DotNetGenericExtractor.EMPTY, CSharpModifier.ABSTRACT);
+		if(!abstractElements.isEmpty())
 		{
-			DotNetModifierListOwner firstItem = ContainerUtil.getFirstItem(psiElements);
-			assert firstItem != null;
-			CompilerCheckBuilder compilerCheckBuilder = null;
+			List<DotNetModifierListOwner> targets = new SmartList<>();
+
+			boolean isAbstract = element.hasModifier(CSharpModifier.ABSTRACT);
+
+			for(DotNetModifierListOwner abstractElement : abstractElements)
+			{
+				if(abstractElement.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
+				{
+					targets.add(abstractElement);
+				}
+				else if(!isAbstract)
+				{
+					targets.add(abstractElement);
+				}
+			}
+
+			if(targets.isEmpty())
+			{
+				return null;
+			}
+
+			DotNetModifierListOwner firstItem = targets.get(0);
+
+			CompilerCheckBuilder compilerCheckBuilder;
 
 			if(firstItem.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
 			{
