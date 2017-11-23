@@ -79,10 +79,17 @@ public class CSharpModifierListImplUtil
 		}
 	};
 
+	private static final EnumSet<CSharpModifier> emptySet = EnumSet.noneOf(CSharpModifier.class);
+
 	@NotNull
 	@RequiredReadAction
 	public static EnumSet<CSharpModifier> getModifiersCached(@NotNull CSharpModifierList modifierList)
 	{
+		if(!modifierList.isValid())
+		{
+			return emptySet;
+		}
+
 		return CachedValuesManager.getCachedValue(modifierList, () ->
 		{
 			Set<CSharpModifier> modifiers = new THashSet<>();
@@ -93,7 +100,7 @@ public class CSharpModifierListImplUtil
 					modifiers.add(modifier);
 				}
 			}
-			return CachedValueProvider.Result.create(modifiers.isEmpty() ? EnumSet.noneOf(CSharpModifier.class) : EnumSet.copyOf(modifiers), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+			return CachedValueProvider.Result.create(modifiers.isEmpty() ? emptySet : EnumSet.copyOf(modifiers), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
 		});
 	}
 
