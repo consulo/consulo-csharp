@@ -43,6 +43,11 @@ public class CS0236 extends CompilerCheck<CSharpReferenceExpression>
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpReferenceExpression element)
 	{
+		if(element.kind() == CSharpReferenceExpression.ResolveToKind.FIELD_OR_PROPERTY)
+		{
+			return null;
+		}
+
 		CSharpFieldDeclaration fieldDeclaration = PsiTreeUtil.getParentOfType(element, CSharpFieldDeclaration.class);
 		if(fieldDeclaration == null)
 		{
