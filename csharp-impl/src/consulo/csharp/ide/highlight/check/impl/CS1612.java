@@ -69,12 +69,14 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 {
 	public static class IntroduceTempVariableFix extends BaseIntentionAction
 	{
-		private SmartPsiElementPointer<DotNetExpression> myQualifierPointer;
-		private SmartPsiElementPointer<CSharpFieldDeclaration> myFieldPointer;
-		private SmartPsiElementPointer<DotNetExpression> myValueExpression;
+		private final SmartPsiElementPointer<DotNetExpression> myQualifierPointer;
+		private final SmartPsiElementPointer<CSharpFieldDeclaration> myFieldPointer;
+		private final SmartPsiElementPointer<DotNetExpression> myValueExpression;
+		private final String myOperatorText;
 
-		public IntroduceTempVariableFix(DotNetExpression qualifier, CSharpFieldDeclaration field, DotNetExpression rightExpression)
+		public IntroduceTempVariableFix(DotNetExpression qualifier, CSharpFieldDeclaration field, DotNetExpression rightExpression, String operatorText)
 		{
+			myOperatorText = operatorText;
 			SmartPointerManager manager = SmartPointerManager.getInstance(qualifier.getProject());
 
 			myQualifierPointer = manager.createSmartPsiElementPointer(qualifier);
@@ -180,7 +182,7 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 			builder.append(CSharpTypeRefPresentationUtil.buildShortText(targetSet.toTypeRef(true), element)).append(" ").append(varName).append(" = ");
 			builder.append("new ").append(CSharpTypeRefPresentationUtil.buildShortText(targetSet.toTypeRef(true), element)).append("();\n");
 
-			builder.append(varName).append(".").append(element.getName()).append(" = ").append(value.getText()).append(";\n");
+			builder.append(varName).append(".").append(element.getName()).append(" ").append(myOperatorText).append(" ").append(value.getText()).append(";\n");
 
 			builder.append(left.getText()).append(" = ").append(varName).append(";");
 
@@ -241,6 +243,8 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 			return null;
 		}
 
+		String operatorText = element.getOperatorElement().getText();
+
 		if(leftExpression instanceof CSharpReferenceExpression)
 		{
 			PsiElement targetField = ((CSharpReferenceExpression) leftExpression).resolve();
@@ -276,7 +280,8 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 						PsiElement qualifierNext = ((CSharpReferenceExpression) qualifier).resolve();
 						if(qualifierNext instanceof CSharpPropertyDeclaration)
 						{
-							return newBuilder(qualifier, formatElement(qualifierNext)).addQuickFix(new IntroduceTempVariableFix(qualifier, (CSharpFieldDeclaration) targetField, rightExpression));
+							return newBuilder(qualifier, formatElement(qualifierNext)).addQuickFix(new IntroduceTempVariableFix(qualifier, (CSharpFieldDeclaration) targetField, rightExpression,
+									operatorText));
 						}
 					}
 				}
@@ -287,6 +292,6 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 			}
 
 		}
-		return super.checkImpl(languageVersion, highlightContext, element);
+		return null;
 	}
 }
