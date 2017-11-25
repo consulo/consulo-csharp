@@ -74,7 +74,7 @@ public class CSharpPsiUtilImpl
 
 		if(!(nameIdentifier instanceof CSharpIdentifier))
 		{
-			LOGGER.error("NameIdentifier is 'CSharpIdentifier' element. Owner: " + element.getClass().getName());
+			LOGGER.error("NameIdentifier is not 'CSharpIdentifier' element. Owner: " + element.getClass().getName());
 			return nameIdentifier.getText();
 		}
 
