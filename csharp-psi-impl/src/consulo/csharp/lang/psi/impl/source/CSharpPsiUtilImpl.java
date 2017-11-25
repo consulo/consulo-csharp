@@ -19,6 +19,7 @@ package consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.FileViewProvider;
@@ -40,6 +41,8 @@ import consulo.dotnet.psi.DotNetNamespaceDeclaration;
  */
 public class CSharpPsiUtilImpl
 {
+	private static final Logger LOGGER = Logger.getInstance(CSharpPsiUtilImpl.class);
+
 	public static boolean isTypeLikeElement(@NotNull PsiElement element)
 	{
 		return element instanceof CSharpTypeDeclaration || CSharpMethodUtil.isDelegate(element);
@@ -63,12 +66,19 @@ public class CSharpPsiUtilImpl
 	@RequiredReadAction
 	public static String getNameWithAt(@NotNull PsiNameIdentifierOwner element)
 	{
-		CSharpIdentifier nameIdentifier = (CSharpIdentifier) element.getNameIdentifier();
+		PsiElement nameIdentifier = element.getNameIdentifier();
 		if(nameIdentifier == null)
 		{
 			return null;
 		}
-		String value = nameIdentifier.getValue();
+
+		if(!(nameIdentifier instanceof CSharpIdentifier))
+		{
+			LOGGER.error("NameIdentifier is 'CSharpIdentifier' element. Owner: " + element.getClass().getName());
+			return nameIdentifier.getText();
+		}
+
+		String value = ((CSharpIdentifier) nameIdentifier).getValue();
 		if(value == null)
 		{
 			return null;
