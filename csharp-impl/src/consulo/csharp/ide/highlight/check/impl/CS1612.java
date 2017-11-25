@@ -264,14 +264,17 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 					DotNetExpression nextQualifier = ((CSharpReferenceExpression) qualifier).getQualifier();
 					if(nextQualifier != null)
 					{
-						if(nextQualifier instanceof CSharpReferenceExpression && (((CSharpReferenceExpression) nextQualifier).kind() == CSharpReferenceExpression.ResolveToKind.THIS || (
-								(CSharpReferenceExpression) nextQualifier).kind() == CSharpReferenceExpression.ResolveToKind.BASE))
+						if(nextQualifier instanceof CSharpReferenceExpression)
 						{
-							return null;
+							if((((CSharpReferenceExpression) nextQualifier).kind() == CSharpReferenceExpression.ResolveToKind.THIS || ((CSharpReferenceExpression) nextQualifier).kind() ==
+									CSharpReferenceExpression.ResolveToKind.BASE))
+							{
+								return null;
+							}
 						}
 
 						PsiElement qualifierNext = ((CSharpReferenceExpression) qualifier).resolve();
-						if(qualifierNext != null)
+						if(qualifierNext instanceof CSharpPropertyDeclaration)
 						{
 							return newBuilder(qualifier, formatElement(qualifierNext)).addQuickFix(new IntroduceTempVariableFix(qualifier, (CSharpFieldDeclaration) targetField, rightExpression));
 						}

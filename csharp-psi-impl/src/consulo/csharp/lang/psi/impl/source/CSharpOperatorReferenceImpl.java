@@ -18,15 +18,14 @@ package consulo.csharp.lang.psi.impl.source;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.google.common.collect.ImmutableMap;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
@@ -159,23 +158,20 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			DotNetTypes.System.UInt64,
 	};
 
-	private static final Map<IElementType, IElementType> ourAssignmentOperatorMap = new HashMap<IElementType, IElementType>()
-	{
-		{
-			put(CSharpTokens.MULEQ, CSharpTokens.MUL);
-			put(CSharpTokens.PERCEQ, CSharpTokens.PERC);
-			put(CSharpTokens.PLUSEQ, CSharpTokens.PLUS);
-			put(CSharpTokens.MINUSEQ, CSharpTokens.MINUS);
-			put(CSharpTokens.DIVEQ, CSharpTokens.DIV);
-			put(CSharpTokens.GTEQ, CSharpTokens.GT);
-			put(CSharpTokens.LTEQ, CSharpTokens.LT);
-			put(CSharpTokens.GTGTEQ, CSharpTokens.GTGT);
-			put(CSharpTokens.LTLTEQ, CSharpTokens.LTLT);
-			put(CSharpTokens.ANDEQ, CSharpTokens.AND);
-			put(CSharpTokens.OREQ, CSharpTokens.OR);
-			put(CSharpTokens.XOREQ, CSharpTokens.XOR);
-		}
-	};
+	public static final ImmutableMap<IElementType, IElementType> ourAssignmentOperatorMap = ImmutableMap.<IElementType, IElementType>builder()
+			.put(CSharpTokens.MULEQ, CSharpTokens.MUL)
+			.put(CSharpTokens.PERCEQ, CSharpTokens.PERC)
+			.put(CSharpTokens.PLUSEQ, CSharpTokens.PLUS)
+			.put(CSharpTokens.MINUSEQ, CSharpTokens.MINUS)
+			.put(CSharpTokens.DIVEQ, CSharpTokens.DIV)
+			.put(CSharpTokens.GTEQ, CSharpTokens.GT)
+			.put(CSharpTokens.LTEQ, CSharpTokens.LT)
+			.put(CSharpTokens.GTGTEQ, CSharpTokens.GTGT)
+			.put(CSharpTokens.LTLTEQ, CSharpTokens.LTLT)
+			.put(CSharpTokens.ANDEQ, CSharpTokens.AND)
+			.put(CSharpTokens.OREQ, CSharpTokens.OR)
+			.put(CSharpTokens.XOREQ, CSharpTokens.XOR)
+			.build();
 
 	public CSharpOperatorReferenceImpl(@NotNull ASTNode node)
 	{
