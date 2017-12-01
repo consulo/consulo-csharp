@@ -139,14 +139,14 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 			DotNetTypeDeclaration forceTarget = resolveTargetElement(element, myParent);
 			if(forceTarget == null)
 			{
-				return 0;
+				return parentContext == CSharpContextUtil.ContextType.INSTANCE ? 10 : 5;
 			}
 
 			// region Some code
 			ResolveResult[] resolveResults = myParent.tryResolveFromQualifier(forceTarget);
 			if(resolveResults.length == 0)
 			{
-				return 0;
+				return parentContext == CSharpContextUtil.ContextType.INSTANCE ? 10 : 5;
 			}
 
 			for(ResolveResult result : resolveResults)
