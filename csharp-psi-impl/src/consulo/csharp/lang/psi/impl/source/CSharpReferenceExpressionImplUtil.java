@@ -1033,6 +1033,13 @@ public class CSharpReferenceExpressionImplUtil
 
 			if(temp instanceof DotNetType)
 			{
+				PsiElement parent = temp.getParent();
+				if(parent instanceof CSharpTypeDefStatement)
+				{
+					targetToWalkChildren = last = parent.getParent();
+					break;
+				}
+
 				DotNetStatement statement = PsiTreeUtil.getParentOfType(temp, DotNetStatement.class);
 				if(statement == null)
 				{
