@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.doc.CSharpDocUtil;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
@@ -54,8 +55,14 @@ public class CS0305 extends CompilerCheck<CSharpReferenceExpression>
 			case BASE_CONSTRUCTOR:
 				return null;
 		}
+
 		PsiElement resolvedElement = referenceExpression.resolve();
 		if(resolvedElement == null)
+		{
+			return null;
+		}
+
+		if(CSharpDocUtil.isInsideDoc(referenceExpression))
 		{
 			return null;
 		}
