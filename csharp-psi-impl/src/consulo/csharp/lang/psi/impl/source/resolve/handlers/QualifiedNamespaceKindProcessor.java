@@ -19,7 +19,6 @@ package consulo.csharp.lang.psi.impl.source.resolve.handlers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -27,6 +26,7 @@ import com.intellij.psi.ResolveState;
 import com.intellij.util.Processor;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
@@ -53,7 +53,7 @@ public class QualifiedNamespaceKindProcessor implements KindProcessor
 	{
 		PsiElement element = options.getElement();
 
-		String qName = StringUtil.strip(element.getText(), CharFilter.NOT_WHITESPACE_FILTER);
+		String qName = StringUtil.strip(element.getText(), CSharpReferenceExpression.DEFAULT_REF_FILTER);
 
 		DotNetNamespaceAsElement namespace = null;
 
@@ -110,7 +110,7 @@ public class QualifiedNamespaceKindProcessor implements KindProcessor
 		String qualifiedText = "";
 		if(qualifier != null)
 		{
-			qualifiedText = StringUtil.strip(qualifier.getText(), CharFilter.NOT_WHITESPACE_FILTER);
+			qualifiedText = StringUtil.strip(qualifier.getText(), CSharpReferenceExpression.DEFAULT_REF_FILTER);
 		}
 
 		namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(qualifiedText, element.getResolveScope());

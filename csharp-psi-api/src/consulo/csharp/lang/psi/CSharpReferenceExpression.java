@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPolyVariantReference;
 import consulo.annotations.Immutable;
@@ -77,6 +78,8 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		@Immutable
 		public static final AccessType[] VALUES = values();
 	}
+
+	CharFilter DEFAULT_REF_FILTER = ch -> !Character.isWhitespace(ch) && ch != '@';
 
 	@Nullable
 	@Override

@@ -19,7 +19,6 @@ package consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValueProvider;
@@ -28,6 +27,7 @@ import com.intellij.psi.util.PsiModificationTracker;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
@@ -93,7 +93,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 			return null;
 		}
 
-		final String qName = StringUtil.strip(referenceText, CharFilter.NOT_WHITESPACE_FILTER);
+		final String qName = StringUtil.strip(referenceText, CSharpReferenceExpression.DEFAULT_REF_FILTER);
 
 		PsiElement parent = getParent();
 		DotNetPsiSearcher psiSearcher = DotNetPsiSearcher.getInstance(getProject());
