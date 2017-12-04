@@ -18,12 +18,6 @@ package consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.ide.highlight.CSharpHighlightContext;
-import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.CSharpContextUtil;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -32,9 +26,17 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
+import consulo.csharp.ide.highlight.CSharpHighlightContext;
+import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.doc.psi.CSharpDocRoot;
+import consulo.csharp.lang.psi.CSharpContextUtil;
+import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 
@@ -134,6 +136,12 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 		{
 			return null;
 		}
+
+		if(PsiTreeUtil.getParentOfType(element, CSharpDocRoot.class) != null)
+		{
+			return null;
+		}
+
 		CSharpContextUtil.ContextType parentContextType = CSharpContextUtil.getParentContextTypeForReference(element);
 
 		CSharpContextUtil.ContextType contextForResolved = CSharpContextUtil.getContextForResolved(resolvedElement);
