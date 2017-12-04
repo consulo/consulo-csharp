@@ -26,13 +26,12 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.doc.psi.CSharpDocRoot;
+import consulo.csharp.lang.doc.CSharpDocUtil;
 import consulo.csharp.lang.psi.CSharpContextUtil;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
@@ -137,7 +136,7 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 			return null;
 		}
 
-		if(PsiTreeUtil.getParentOfType(element, CSharpDocRoot.class) != null)
+		if(CSharpDocUtil.isInsideDoc(element))
 		{
 			return null;
 		}
