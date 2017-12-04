@@ -38,6 +38,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.LocalSearchScope;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.ObjectUtil;
@@ -101,23 +104,31 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	@Nullable
 	public static CSharpCompositeTypeDeclaration findCompositeType(@NotNull CSharpTypeDeclaration parent)
 	{
-		String vmQName = parent.getVmQName();
+		Object cachedValue = CachedValuesManager.getCachedValue(parent, () -> CachedValueProvider.Result.create(findCompositeTypeImpl(parent), PsiModificationTracker
+				.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT));
+		return cachedValue == ObjectUtil.NULL ? null : (CSharpCompositeTypeDeclaration) cachedValue;
+	}
+
+	@RequiredReadAction
+	private static Object findCompositeTypeImpl(@Deprecated CSharpTypeDeclaration typeDeclaration)
+	{
+		String vmQName = typeDeclaration.getVmQName();
 		assert vmQName != null;
-		DotNetTypeDeclaration[] types = CSharpPsiSearcher.getInstance(parent.getProject()).findTypes(vmQName, parent.getResolveScope());
+		DotNetTypeDeclaration[] types = CSharpPsiSearcher.getInstance(typeDeclaration.getProject()).findTypes(vmQName, typeDeclaration.getResolveScope());
 
 		for(DotNetTypeDeclaration type : types)
 		{
 			if(type instanceof CSharpCompositeTypeDeclaration)
 			{
 				CSharpTypeDeclaration[] typeDeclarations = ((CSharpCompositeTypeDeclaration) type).getTypeDeclarations();
-				if(ArrayUtil.contains(parent, typeDeclarations))
+				if(ArrayUtil.contains(typeDeclaration, typeDeclarations))
 				{
-					return (CSharpCompositeTypeDeclaration) type;
+					return type;
 				}
 			}
 		}
 
-		return null;
+		return ObjectUtil.NULL;
 	}
 
 	@NotNull

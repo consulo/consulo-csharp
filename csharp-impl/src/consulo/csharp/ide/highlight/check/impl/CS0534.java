@@ -35,6 +35,7 @@ import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifierListOwner;
@@ -102,7 +103,7 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
 		{
 			List<DotNetModifierListOwner> targets = new SmartList<>();
 
-			boolean isAbstract = element.hasModifier(CSharpModifier.ABSTRACT);
+			boolean isAbstract = CSharpCompositeTypeDeclaration.selectCompositeOrSelfType(element).hasModifier(CSharpModifier.ABSTRACT);
 
 			for(DotNetModifierListOwner abstractElement : abstractElements)
 			{
