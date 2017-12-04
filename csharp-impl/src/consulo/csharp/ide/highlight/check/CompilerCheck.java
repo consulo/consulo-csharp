@@ -27,7 +27,6 @@ import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.util.NullableFactory;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -57,8 +56,11 @@ import consulo.util.SandboxUtil;
  */
 public abstract class CompilerCheck<T extends PsiElement>
 {
-	public static interface HighlightInfoFactory extends NullableFactory<HighlightInfo>
+	public static interface HighlightInfoFactory
 	{
+		@Nullable
+		public abstract HighlightInfo create(boolean insideDoc);
+
 		@NotNull
 		default List<IntentionAction> getQuickFixes()
 		{
@@ -138,9 +140,9 @@ public abstract class CompilerCheck<T extends PsiElement>
 
 		@Nullable
 		@Override
-		public HighlightInfo create()
+		public HighlightInfo create(boolean insideDoc)
 		{
-			HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(getHighlightInfoType());
+			HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(insideDoc ? HighlightInfoType.WEAK_WARNING : getHighlightInfoType());
 			builder = builder.descriptionAndTooltip(getText());
 			builder = builder.range(getTextRange());
 

@@ -30,8 +30,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
+import consulo.csharp.lang.doc.CSharpDocUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpFile;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.msil.representation.MsilFileRepresentationVirtualFile;
@@ -53,6 +55,8 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 		ProgressIndicatorProvider.checkCanceled();
 		if(element instanceof DotNetElement)
 		{
+			boolean insideDoc = element instanceof CSharpReferenceExpression && CSharpDocUtil.isInsideDoc(element);
+
 			CSharpLanguageVersion languageVersion = myHighlightContext.getLanguageVersion();
 
 			for(CSharpCompilerChecks classEntry : CSharpCompilerChecks.VALUES)
@@ -73,7 +77,7 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 					}
 					for(CompilerCheck.HighlightInfoFactory result : results)
 					{
-						HighlightInfo highlightInfo = result.create();
+						HighlightInfo highlightInfo = result.create(insideDoc);
 						if(highlightInfo != null)
 						{
 							myHighlightInfoHolder.add(highlightInfo);

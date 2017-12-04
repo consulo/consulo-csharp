@@ -48,7 +48,7 @@ public class CC0003 extends CompilerCheck<CSharpIndexAccessExpressionImpl>
 		{
 			return Collections.emptyList();
 		}
-		List<PsiElement> ranges = new ArrayList<PsiElement>(2);
+		List<PsiElement> ranges = new ArrayList<>(2);
 		CSharpCallArgumentList parameterList = expression.getParameterList();
 		if(parameterList != null)
 		{

@@ -41,7 +41,7 @@ public class CC0004 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 	@Override
 	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpMethodCallExpressionImpl element)
 	{
-		List<PsiElement> list = new SmartList<PsiElement>();
+		List<PsiElement> list = new SmartList<>();
 		if(CC0001.isCalleInsideCalle(element))
 		{
 			DotNetExpression callExpression = element.getCallExpression();

@@ -62,7 +62,7 @@ public class CSharpDocReferenceInspection extends LocalInspectionTool
 
 				for(CompilerCheck.HighlightInfoFactory factory : factories)
 				{
-					HighlightInfo highlightInfo = factory.create();
+					HighlightInfo highlightInfo = factory.create(true);
 					if(highlightInfo == null)
 					{
 						continue;

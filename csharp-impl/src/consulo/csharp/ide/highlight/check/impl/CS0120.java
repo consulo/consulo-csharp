@@ -31,7 +31,6 @@ import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.doc.CSharpDocUtil;
 import consulo.csharp.lang.psi.CSharpContextUtil;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
@@ -132,11 +131,6 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 
 		PsiElement resolvedElement = element.resolve();
 		if(!(resolvedElement instanceof DotNetModifierListOwner))
-		{
-			return null;
-		}
-
-		if(CSharpDocUtil.isInsideDoc(element))
 		{
 			return null;
 		}

@@ -111,6 +111,8 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		}
 		ResolveResult[] resolveResults = ResolveResult.EMPTY_ARRAY;
 
+		boolean insideDoc = CSharpDocUtil.isInsideDoc(callElement);
+
 		if(callElement instanceof PsiPolyVariantReference)
 		{
 			resolveResults = ((PsiPolyVariantReference) callElement).multiResolve(false);
@@ -133,9 +135,9 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 					{
 						@Nullable
 						@Override
-						public HighlightInfo create()
+						public HighlightInfo create(boolean insideDoc)
 						{
-							HighlightInfo highlightInfo = super.create();
+							HighlightInfo highlightInfo = super.create(insideDoc);
 							if(highlightInfo != null)
 							{
 								PsiReference reference = null;
@@ -160,14 +162,14 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 							return highlightInfo;
 						}
 					};
-					result.setHighlightInfoType(HighlightInfoType.WRONG_REF);
+					result.setHighlightInfoType(insideDoc ? HighlightInfoType.WEAK_WARNING : HighlightInfoType.WRONG_REF);
 
 					String unresolvedText = getUnresolvedText(callElement, range);
 					if(isCalleInsideCalle(callElement))
 					{
 						result.setText("Expression cant be invoked");
 						// remap to error, due we want make all exp red
-						result.setHighlightInfoType(HighlightInfoType.ERROR);
+						result.setHighlightInfoType(insideDoc ? HighlightInfoType.WEAK_WARNING : HighlightInfoType.ERROR);
 					}
 					else
 					{
@@ -180,13 +182,13 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 			}
 			else
 			{
-				final HighlightInfo highlightInfo = createHighlightInfo(callElement, resolveResults[0]);
+				final HighlightInfo highlightInfo = createHighlightInfo(callElement, resolveResults[0], insideDoc);
 				if(highlightInfo == null)
 				{
 					return list;
 				}
 
-				list.add(() -> highlightInfo);
+				list.add((it) -> highlightInfo);
 			}
 		}
 		return list;
@@ -250,7 +252,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 
 	@Nullable
 	@RequiredReadAction
-	public static HighlightInfo createHighlightInfo(@NotNull PsiElement element, @NotNull ResolveResult resolveResult)
+	public static HighlightInfo createHighlightInfo(@NotNull PsiElement element, @NotNull ResolveResult resolveResult, boolean insideDoc)
 	{
 		if(!(resolveResult instanceof MethodResolveResult))
 		{
@@ -371,7 +373,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 				parameterList = callOwner;
 			}
 
-			HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR);
+			HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(insideDoc ? HighlightInfoType.WEAK_WARNING : HighlightInfoType.ERROR);
 			builder = builder.description("");
 			builder = builder.escapedToolTip(tooltipBuilder.toString());
 			builder = builder.range(parameterList);
