@@ -18,9 +18,6 @@ package consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.CSharpCfsLanguageVersion;
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.doc.psi.CSharpDocElements;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageParserDefinitions;
@@ -33,6 +30,9 @@ import com.intellij.psi.impl.source.tree.LazyParseablePsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.ILazyParseableElementType;
 import consulo.csharp.cfs.lang.CfsLanguage;
+import consulo.csharp.lang.CSharpCfsLanguageVersion;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.doc.psi.CSharpDocElements;
 import consulo.lang.LanguageVersion;
 
 /**
@@ -51,8 +51,7 @@ public interface CSharpTokensImpl extends CSharpTokens
 			final Project project = psi.getProject();
 			final Language languageForParser = getLanguageForParser(psi);
 			final LanguageVersion languageVersion = CSharpCfsLanguageVersion.getInstance();
-			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion,
-					chameleon.getChars());
+			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
 			final PsiParser parser = LanguageParserDefinitions.INSTANCE.forLanguage(languageForParser).createParser(languageVersion);
 			return parser.parse(this, builder, languageVersion).getFirstChildNode();
 		}

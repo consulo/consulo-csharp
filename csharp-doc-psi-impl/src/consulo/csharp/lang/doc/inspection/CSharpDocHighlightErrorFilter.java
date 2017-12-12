@@ -17,10 +17,10 @@
 package consulo.csharp.lang.doc.inspection;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.doc.CSharpDocLanguage;
 import com.intellij.codeInsight.highlighting.HighlightErrorFilter;
 import com.intellij.psi.PsiErrorElement;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.doc.CSharpDocUtil;
 
 /**
  * @author VISTALL
@@ -32,7 +32,6 @@ public class CSharpDocHighlightErrorFilter extends HighlightErrorFilter
 	@RequiredReadAction
 	public boolean shouldHighlightErrorElement(@NotNull PsiErrorElement element)
 	{
-		// dont highlight all elements as error inside docs
-		return element.getLanguage() != CSharpDocLanguage.INSTANCE;
+		return !CSharpDocUtil.isInsideDoc(element);
 	}
 }

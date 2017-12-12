@@ -143,6 +143,7 @@
 		<copyright.updater filetype="C#" implementationClass="consulo.csharp.ide.copyright.CSharpUpdateCopyrightsProvider"/>
 		<highlightVisitor implementation="consulo.csharp.ide.highlight.CSharpHighlightVisitor"/>
 		<highlightVisitor implementation="consulo.csharp.ide.highlight.check.CSharpCompilerCheckVisitor"/>
+		<highlightErrorFilter implementation="consulo.csharp.lang.doc.inspection.CSharpDocHighlightErrorFilter" />
 		<iconDescriptorUpdater implementation="consulo.csharp.lang.CSharpIconDescriptorUpdater"/>
 		<treeStructureProvider implementation="consulo.csharp.ide.projectView.CSharpProjectViewProvider"/>
 		<applicationConfigurable id="editor.preferences.import.csharp"

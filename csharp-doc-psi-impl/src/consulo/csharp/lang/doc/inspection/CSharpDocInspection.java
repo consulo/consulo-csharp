@@ -19,10 +19,6 @@ package consulo.csharp.lang.doc.inspection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.doc.CSharpDocLanguage;
-import consulo.csharp.lang.doc.psi.CSharpDocAttribute;
-import consulo.csharp.lang.doc.psi.CSharpDocElementVisitor;
-import consulo.csharp.lang.doc.psi.CSharpDocTag;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -31,6 +27,9 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.doc.psi.CSharpDocAttribute;
+import consulo.csharp.lang.doc.psi.CSharpDocElementVisitor;
+import consulo.csharp.lang.doc.psi.CSharpDocTag;
 
 /**
  * @author VISTALL
@@ -48,10 +47,6 @@ public class CSharpDocInspection extends LocalInspectionTool
 			@RequiredReadAction
 			public void visitErrorElement(PsiErrorElement element)
 			{
-				if(element.getLanguage() != CSharpDocLanguage.INSTANCE)
-				{
-					return;
-				}
 				int textLength = element.getTextLength();
 				if(textLength == 0)
 				{
