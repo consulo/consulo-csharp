@@ -32,6 +32,7 @@ import com.intellij.psi.tree.TokenSet;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.doc.CSharpDocLanguage;
+import consulo.csharp.lang.doc.lexer.CSharpReferenceLexer;
 import consulo.csharp.lang.doc.lexer.DeprecatedCSharpDocLexer;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.SharedParsingHelpers;
@@ -186,9 +187,10 @@ public interface CSharpDocElements
 		@Override
 		protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)
 		{
-			final Project project = psi.getProject();
-			final Language languageForParser = getLanguageForParser(psi);
-			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageForParser.getVersions()[0], chameleon.getChars());
+			Project project = psi.getProject();
+			Language languageForParser = getLanguageForParser(psi);
+			CSharpReferenceLexer lexer = new CSharpReferenceLexer();
+			PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, languageForParser, languageForParser.getVersions()[0], chameleon.getChars());
 			return myParser.parse(this, builder, languageForParser.getVersions()[0]).getFirstChildNode();
 		}
 
