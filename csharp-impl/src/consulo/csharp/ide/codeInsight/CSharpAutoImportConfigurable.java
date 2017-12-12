@@ -16,35 +16,34 @@
 
 package consulo.csharp.ide.codeInsight;
 
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.application.ApplicationBundle;
-import com.intellij.openapi.options.BeanConfigurable;
 import com.intellij.openapi.options.Configurable;
+import consulo.options.SimpleConfigurableByProperties;
+import consulo.ui.CheckBox;
+import consulo.ui.Component;
+import consulo.ui.RequiredUIAccess;
+import consulo.ui.VerticalLayout;
 
 /**
  * @author VISTALL
  * @since 01.01.14.
  */
-public class CSharpAutoImportConfigurable extends BeanConfigurable<CSharpCodeInsightSettings> implements Configurable
+public class CSharpAutoImportConfigurable extends SimpleConfigurableByProperties implements Configurable
 {
-	public CSharpAutoImportConfigurable()
-	{
-		super(CSharpCodeInsightSettings.getInstance());
-		checkBox("OPTIMIZE_IMPORTS_ON_THE_FLY", ApplicationBundle.message("checkbox.optimize.imports.on.the.fly"));
-	}
-
-	@Nls
+	@RequiredUIAccess
+	@NotNull
 	@Override
-	public String getDisplayName()
+	protected Component createLayout(PropertyBuilder propertyBuilder)
 	{
-		return null;
-	}
+		VerticalLayout verticalLayout = VerticalLayout.create();
 
-	@Nullable
-	@Override
-	public String getHelpTopic()
-	{
-		return null;
+		CSharpCodeInsightSettings settings = CSharpCodeInsightSettings.getInstance();
+
+		CheckBox optimizeImportOnTheFlyBox = CheckBox.create(ApplicationBundle.message("checkbox.optimize.imports.on.the.fly"));
+		verticalLayout.add(optimizeImportOnTheFlyBox);
+		propertyBuilder.add(optimizeImportOnTheFlyBox, () -> settings.OPTIMIZE_IMPORTS_ON_THE_FLY, value -> settings.OPTIMIZE_IMPORTS_ON_THE_FLY = value);
+
+		return verticalLayout;
 	}
 }

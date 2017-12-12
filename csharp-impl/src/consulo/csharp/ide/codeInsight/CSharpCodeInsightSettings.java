@@ -16,31 +16,20 @@
 
 package consulo.csharp.ide.codeInsight;
 
-import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.util.xmlb.XmlSerializationException;
-import com.intellij.util.xmlb.XmlSerializer;
+import com.intellij.util.xmlb.XmlSerializerUtil;
 
 /**
  * @author VISTALL
  * @since 01.01.14.
  */
-@State(
-		name = "CSharpCodeInsightSettings",
-		storages = {
-				@Storage(
-						file = StoragePathMacros.APP_CONFIG + "/editor.codeinsight.xml")
-		})
-public class CSharpCodeInsightSettings implements PersistentStateComponent<Element>
+@State(name = "CSharpCodeInsightSettings", storages = @Storage("editor.codeinsight.xml"))
+public class CSharpCodeInsightSettings implements PersistentStateComponent<CSharpCodeInsightSettings>
 {
-	private static final Logger LOGGER = Logger.getInstance(CSharpCodeInsightSettings.class);
-
 	@NotNull
 	public static CSharpCodeInsightSettings getInstance()
 	{
@@ -50,30 +39,14 @@ public class CSharpCodeInsightSettings implements PersistentStateComponent<Eleme
 	public boolean OPTIMIZE_IMPORTS_ON_THE_FLY = true;
 
 	@Override
-	public void loadState(final Element state)
+	public void loadState(final CSharpCodeInsightSettings state)
 	{
-		try
-		{
-			XmlSerializer.deserializeInto(this, state);
-		}
-		catch(XmlSerializationException e)
-		{
-			CSharpCodeInsightSettings.LOGGER.info(e);
-		}
+		XmlSerializerUtil.copyBean(state, this);
 	}
 
 	@Override
-	public Element getState()
+	public CSharpCodeInsightSettings getState()
 	{
-		Element element = new Element("state");
-		try
-		{
-			XmlSerializer.serializeInto(this, element);
-		}
-		catch(XmlSerializationException e)
-		{
-			CSharpCodeInsightSettings.LOGGER.info(e);
-		}
-		return element;
+		return this;
 	}
 }
