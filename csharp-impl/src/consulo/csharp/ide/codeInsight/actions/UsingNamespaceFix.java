@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +33,7 @@ import com.intellij.codeInspection.HintAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Conditions;
@@ -44,7 +46,6 @@ import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.Processors;
-import com.intellij.util.containers.ArrayListSet;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
@@ -195,7 +196,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		{
 			return Collections.emptySet();
 		}
-		Set<NamespaceReference> resultSet = new ArrayListSet<NamespaceReference>();
+		Set<NamespaceReference> resultSet = new LinkedHashSet<>();
 		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR || ref.getQualifier() == null)
 		{
 			collectAvailableNamespaces(ref, resultSet, referenceName);
@@ -213,6 +214,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		return resultSet;
 	}
 
+	@RequiredReadAction
 	private static void collectAvailableNamespaces(final CSharpReferenceExpression ref, Set<NamespaceReference> set, String referenceName)
 	{
 		if(ref.getQualifier() != null)
@@ -251,6 +253,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		List<DotNetTypeDeclaration> collection = new ArrayList<>();
 
 		GlobalSearchScopeFilter filter = new GlobalSearchScopeFilter(ref.getResolveScope());
+
 		DotNetShortNameSearcher.getInstance(ref.getProject()).collectTypes(refName, ref.getResolveScope(), filter, Processors.cancelableCollectProcessor(collection));
 
 		return collection;
@@ -279,6 +282,8 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 		for(DotNetLikeMethodDeclaration it : list)
 		{
+			ProgressManager.checkCanceled();
+
 			DotNetLikeMethodDeclaration method = null;
 
 			if(it instanceof MsilMethodEntry)
@@ -349,6 +354,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		}
 	}
 
+	@RequiredReadAction
 	private static <T extends DotNetQualifiedElement> void collect(Set<NamespaceReference> result, Collection<T> element, Condition<T> condition)
 	{
 		for(T type : element)
@@ -359,10 +365,13 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 				continue;
 			}
 
+			ProgressManager.checkCanceled();
+
 			if(!condition.value(type))
 			{
 				continue;
 			}
+
 			result.add(new NamespaceReference(presentableParentQName, null));
 		}
 	}
