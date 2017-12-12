@@ -27,6 +27,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.doc.CSharpDocUtil;
 import consulo.csharp.lang.doc.psi.CSharpDocAttribute;
 import consulo.csharp.lang.doc.psi.CSharpDocElementVisitor;
 import consulo.csharp.lang.doc.psi.CSharpDocTag;
@@ -47,6 +48,11 @@ public class CSharpDocInspection extends LocalInspectionTool
 			@RequiredReadAction
 			public void visitErrorElement(PsiErrorElement element)
 			{
+				if(!CSharpDocUtil.isInsideDoc(element))
+				{
+					return;
+				}
+
 				int textLength = element.getTextLength();
 				if(textLength == 0)
 				{
