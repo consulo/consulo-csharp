@@ -16,6 +16,8 @@
 
 package consulo.csharp.ide.actions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,12 +29,15 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.util.QualifiedName;
 import com.intellij.testFramework.LightVirtualFile;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.roots.ContentEntryFileListener;
@@ -122,8 +127,35 @@ public class CSharpCreateFromTemplateHandler extends DefaultCreateFromTemplateHa
 		String namespace = null;
 		if(extension != null)
 		{
-			namespace = extension.getNamespaceGeneratePolicy().calculateNamespace(directory);
+			namespace = formatNamespace(extension.getNamespaceGeneratePolicy().calculateNamespace(directory));
 		}
 		props.put("NAMESPACE_NAME", namespace);
+	}
+
+	@Nullable
+	private static String formatNamespace(@Nullable String original)
+	{
+		if(StringUtil.isEmpty(original))
+		{
+			return null;
+		}
+
+		QualifiedName qualifiedName = QualifiedName.fromDottedString(original);
+
+		List<String> components = qualifiedName.getComponents();
+
+		List<String> newComponents = new ArrayList<>(components.size());
+		for(String component : components)
+		{
+			if(CSharpNameSuggesterUtil.isKeyword(component))
+			{
+				newComponents.add("@" + component);
+			}
+			else
+			{
+				newComponents.add(component);
+			}
+		}
+		return String.join(".", newComponents);
 	}
 }
