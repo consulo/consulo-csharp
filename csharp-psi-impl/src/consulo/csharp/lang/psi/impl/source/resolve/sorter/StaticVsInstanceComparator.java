@@ -25,6 +25,7 @@ import consulo.csharp.lang.psi.CSharpContextUtil;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -122,6 +123,12 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 		if(element == null)
 		{
 			return -100;
+		}
+
+		// type alias have max priority
+		if(element instanceof CSharpTypeDefStatement)
+		{
+			return Integer.MAX_VALUE;
 		}
 
 		if(myParent != null)
