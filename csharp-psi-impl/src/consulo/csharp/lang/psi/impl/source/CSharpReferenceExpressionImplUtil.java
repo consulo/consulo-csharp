@@ -28,6 +28,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Couple;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
@@ -41,6 +42,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.ParameterizedCachedValue;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
@@ -104,7 +106,9 @@ public class CSharpReferenceExpressionImplUtil
 
 	public static final TokenSet ourAccessTokens = TokenSet.create(CSharpTokens.ARROW, CSharpTokens.DOT, CSharpTokens.PLUS, CSharpTokens.COLONCOLON, CSharpTokens.NULLABE_CALL);
 
-	private static KindProcessor[] ourProcessors = new KindProcessor[ResolveToKind.VALUES.length];
+	private static final KindProcessor[] ourProcessors = new KindProcessor[ResolveToKind.VALUES.length];
+
+	private static final Key<ParameterizedCachedValue<ResolveResult[], PsiElement>> ourFromQualifierKey = Key.create("ourFromQualifierKey");
 
 	static
 	{
@@ -658,6 +662,22 @@ public class CSharpReferenceExpressionImplUtil
 	@NotNull
 	@RequiredReadAction
 	public static ResolveResult[] tryResolveFromQualifier(@NotNull CSharpReferenceExpressionEx referenceExpressionEx, @NotNull PsiElement qualifierElement)
+	{
+		if(!referenceExpressionEx.isValid())
+		{
+			return ResolveResult.EMPTY_ARRAY;
+		}
+
+		return CachedValuesManager.getManager(referenceExpressionEx.getProject()).getParameterizedCachedValue(referenceExpressionEx, ourFromQualifierKey, param ->
+		{
+			ResolveResult[] resolveResults = tryResolveFromQualifierImpl(referenceExpressionEx, param);
+			return CachedValueProvider.Result.create(resolveResults, PsiModificationTracker.MODIFICATION_COUNT);
+		}, false, qualifierElement);
+	}
+
+	@NotNull
+	@RequiredReadAction
+	private static ResolveResult[] tryResolveFromQualifierImpl(@NotNull CSharpReferenceExpressionEx referenceExpressionEx, @NotNull PsiElement qualifierElement)
 	{
 		ResolveToKind kind = referenceExpressionEx.kind();
 		return buildSelectorAndMultiResolve(kind, findCallArgumentListOwner(kind, referenceExpressionEx), referenceExpressionEx, qualifierElement, false);
