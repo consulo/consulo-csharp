@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
   - Copyright 2013-2017 consulo.io
   -
@@ -20,7 +21,7 @@
 
 	<parent>
 		<groupId>consulo</groupId>
-		<artifactId>arch.managment</artifactId>
+		<artifactId>arch.ide-provided</artifactId>
 		<version>2-SNAPSHOT</version>
 		<relativePath/>
 	</parent>
@@ -37,19 +38,16 @@
 	</repositories>
 
 	<groupId>consulo.plugin</groupId>
-	<artifactId>consulo.csharp.parent</artifactId>
+	<artifactId>consulo.csharp-csharp.api</artifactId>
 	<version>2-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 
-	<modules>
-		<module>csharp-api</module>
-		<module>csharp-psi-api</module>
-		<module>csharp-psi-impl</module>
-		<module>csharp-doc-psi-api</module>
-		<module>csharp-doc-psi-impl</module>
-		<module>csharp-composite-formatting-string-api</module>
-		<module>csharp-composite-formatting-string-impl</module>
-
-		<module>csharp-impl</module>
-	</modules>
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>consulo.dotnet</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 </project>

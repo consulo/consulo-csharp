@@ -1,0 +1,342 @@
+<!--
+  - Copyright 2013-2017 consulo.io
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  - http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -->
+
+<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
+	<id>consulo.csharp</id>
+	<name>C#</name>
+	<category>Custom Languages</category>
+	<version>SNAPSHOT</version>
+	<vendor>consulo.io</vendor>
+	<resource-bundle>messages.CSharpBundle</resource-bundle>
+	<depends>consulo.dotnet</depends>
+	<depends>com.intellij.xml</depends>
+	<depends config-file="CSharpSpellchecker.xml" optional="true">com.intellij.spellchecker</depends>
+	<depends config-file="microsoft-csharp.xml" optional="true">consulo.dotnet.microsoft</depends>
+	<depends config-file="mono-csharp.xml" optional="true">consulo.dotnet.mono</depends>
+
+	<xi:include href="/META-INF/CSharpInspections.xml" xpointer="xpointer(/idea-plugin/*)">
+		<xi:fallback/>
+	</xi:include>
+
+	<xi:include href="/META-INF/CSharpIntentions.xml" xpointer="xpointer(/idea-plugin/*)">
+		<xi:fallback/>
+	</xi:include>
+	<xi:include href="/META-INF/CSharpCfs.xml" xpointer="xpointer(/idea-plugin/*)">
+		<xi:fallback/>
+	</xi:include>
+
+	<actions>
+		<action id="CSharp.File" class="consulo.csharp.ide.actions.CSharpCreateFileAction">
+			<add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewClass"/>
+		</action>
+
+		<action id="CSharp.Internal.OpenTypeFromVariable" class="consulo.csharp.ide.actions.internal.OpenTypeFromVariableAction" internal="true">
+			<add-to-group group-id="Internal"/>
+		</action>
+		<group id="CSharp.GenerateActions">
+			<action id="CSharp.GenerateReadOnlyProperty" class="consulo.csharp.ide.actions.generate.GenerateReadOnlyPropertyAction"/>
+			<action id="CSharp.GenerateProperty" class="consulo.csharp.ide.actions.generate.GeneratePropertyAction"/>
+			<action id="CSharp.GenerateConstructor" class="consulo.csharp.ide.actions.generate.GenerateConstructorAction"/>
+
+			<add-to-group group-id="GenerateGroup" anchor="first"/>
+		</group>
+	</actions>
+
+	<project-components>
+		<component>
+			<implementation-class>consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent</implementation-class>
+		</component>
+	</project-components>
+
+	<extensionPoints>
+		<extensionPoint name="additionalMemberProvider"
+						interface="consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider"/>
+		<extensionPoint name="compilerProvider"
+						interface="consulo.csharp.compiler.CSharpCompilerProvider"/>
+		<extensionPoint name="toNativeElementTransformer"
+						interface="consulo.csharp.lang.psi.ToNativeElementTransformer"/>
+		<extensionPoint name="memberAddByCompletionContributor"
+						interface="consulo.csharp.ide.completion.CSharpMemberAddByCompletionContributor"/>
+	</extensionPoints>
+
+	<extensions defaultExtensionNs="consulo.csharp">
+		<!-- roslyn compiler bundle always available-->
+		<compilerProvider implementation="consulo.csharp.compiler.impl.RoslynCompilerProvider" order="last"/>
+
+		<additionalMemberProvider
+				implementation="consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.StructOrGenericParameterConstructorProvider"/>
+		<additionalMemberProvider
+				implementation="consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.OperatorsProvider"/>
+		<additionalMemberProvider
+				implementation="consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.ConversionMethodsProvider"/>
+
+		<toNativeElementTransformer implementation="consulo.csharp.lang.psi.impl.msil.transformer.MsilToNativeElementTransformer"/>
+
+		<memberAddByCompletionContributor implementation="consulo.csharp.ide.completion.CSharpOverrideOrImplementCompletionContributor"/>
+	</extensions>
+
+	<extensions defaultExtensionNs="consulo.dotnet">
+		<debuggerSourceLineResolver language="C#" implementationClass="consulo.csharp.ide.debugger.CSharpDebuggerSourceLineResolver"/>
+		<debuggerProvider implementation="consulo.csharp.ide.debugger.CSharpDebuggerProvider"/>
+
+		<allTypesSearch implementation="consulo.csharp.lang.psi.impl.search.CSharpAllTypesSearchExecutor"/>
+		<directTypeInheritorsSearch implementation="consulo.csharp.lang.psi.impl.search.CSharpDirectTypeInheritorsSearcherExecutor"/>
+		<psiSearcher implementation="consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
+		<shortNameSearcher implementation="consulo.csharp.lang.psi.impl.resolve.CSharpShortNameSearcher"/>
+		<stubIndexer implementation="consulo.csharp.lang.psi.impl.stub.CSharpMsilStubIndexer"/>
+
+		<msilFileRepresentation implementation="consulo.csharp.ide.msil.representation.CSharpMsilFileRepresentationProvider"/>
+		<injectionByAttributeHelper implementation="consulo.csharp.lang.CSharpMultiHostInjectorByAttributeHelper"/>
+
+		<documentationResolver implementation="consulo.csharp.lang.doc.CSharpCommentDocumentationResolver"/>
+	</extensions>
+
+	<extensions defaultExtensionNs="com.intellij">
+		<internalFileTemplate name="CSharpClass"/>
+		<internalFileTemplate name="CSharpInterface"/>
+		<internalFileTemplate name="CSharpEnum"/>
+		<internalFileTemplate name="CSharpAttribute"/>
+		<internalFileTemplate name="CSharpStruct"/>
+		<internalFileTemplate name="CSharpFile"/>
+		<internalFileTemplate name="CSharpAssemblyFile"/>
+
+		<createFromTemplateHandler implementation="consulo.csharp.ide.actions.CSharpCreateFromTemplateHandler"/>
+
+		<additionalTextAttributes scheme="Darcula" file="/colorScheme/CSharpDarcula.xml"/>
+		<additionalTextAttributes scheme="Default" file="/colorScheme/CSharpDefault.xml"/>
+		<additionalTextAttributes scheme="Consulo Light" file="/colorScheme/CSharpDefault.xml"/>
+
+		<eapDescriptor implementation="consulo.csharp.ide.assemblyInfo.CSharpAssemblyFileEditorProvider$EapDescriptor"/>
+
+		<applicationService serviceInterface="consulo.csharp.lang.doc.psi.CSharpDocElementFactory" serviceImplementation="consulo.csharp.lang.doc.psi.impl.CSharpDocElementFactoryImpl"/>
+		<applicationService serviceInterface="consulo.csharp.lang.CSharpCfsElementTypeFactory" serviceImplementation="consulo.csharp.lang.doc.psi.impl.CSharpCfsElementTypeFactoryImpl"/>
+		<applicationService serviceInterface="consulo.csharp.lang.CSharpLanguageVersionHelper" serviceImplementation="consulo.csharp.lang.CSharpLanguageVersionHelperImpl"/>
+		<applicationService serviceImplementation="consulo.csharp.lang.doc.validation.CSharpDocTagManager"/>
+		<applicationService serviceInterface="consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings" serviceImplementation="consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings"/>
+
+		<projectService serviceImplementation="consulo.csharp.lang.psi.impl.partial.CSharpPartialElementManager"/>
+
+		<fileTypeFactory implementation="consulo.csharp.lang.CSharpFileTypeFactory"/>
+
+		<codeInsight.implementMethod language="C#" implementationClass="consulo.csharp.ide.actions.generate.GenerateImplementMemberHandler"/>
+		<codeInsight.overrideMethod language="C#" implementationClass="consulo.csharp.ide.actions.generate.GenerateOverrideMemberHandler"/>
+		<codeInsight.gotoSuper language="C#" implementationClass="consulo.csharp.ide.actions.navigate.GotoSuperMethodHandler"/>
+		<typeDeclarationProvider implementation="consulo.csharp.ide.actions.navigate.GotoTypeDeclarationProvider"/>
+		<projectService serviceImplementation="consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
+		<syntaxHighlighter key="C#" implementationClass="consulo.csharp.ide.highlight.CSharpSyntaxHighlighter"/>
+		<syntaxHighlighter key="C#Preprocesssor" implementationClass="consulo.csharp.ide.highlight.CSharpPreprocessorSyntaxHighlighter"/>
+		<copyright.updater filetype="C#" implementationClass="consulo.csharp.ide.copyright.CSharpUpdateCopyrightsProvider"/>
+		<highlightVisitor implementation="consulo.csharp.ide.highlight.CSharpHighlightVisitor"/>
+		<highlightVisitor implementation="consulo.csharp.ide.highlight.check.CSharpCompilerCheckVisitor"/>
+		<highlightErrorFilter implementation="consulo.csharp.lang.doc.inspection.CSharpDocHighlightErrorFilter"/>
+		<iconDescriptorUpdater implementation="consulo.csharp.lang.CSharpIconDescriptorUpdater"/>
+		<treeStructureProvider implementation="consulo.csharp.ide.projectView.CSharpProjectViewProvider"/>
+		<applicationConfigurable id="editor.preferences.import.csharp"
+								 parentId="editor.preferences.import"
+								 displayName="C#"
+								 instance="consulo.csharp.ide.codeInsight.CSharpAutoImportConfigurable"/>
+		<stubElementTypeHolder class="consulo.csharp.lang.psi.CSharpStubElements"/>
+		<codeInsight.lineMarkerProvider language="C#" implementationClass="consulo.csharp.ide.CSharpLineMarkerProvider"/>
+		<codeInsight.parameterNameHints language="C#" implementationClass="consulo.csharp.ide.codeInsight.hits.CSharpParameterHintsProvider"/>
+
+		<fileStructureGroupRuleProvider implementation="consulo.csharp.ide.findUsage.groupingRule.CSharpTypeGroupRuleProvider"/>
+		<fileStructureGroupRuleProvider implementation="consulo.csharp.ide.findUsage.groupingRule.CSharpCodeBlockOwnerGroupRuleProvider"/>
+		<usageTypeProvider implementation="consulo.csharp.ide.findUsage.usageType.CSharpUsageTypeProvider"/>
+		<lang.findUsagesProvider language="C#" implementationClass="consulo.csharp.ide.findUsage.CSharpFindUsagesProvider"/>
+		<lang.findUsagesProvider language="C#Preprocessor" implementationClass="consulo.csharp.ide.findUsage.CSharpFindUsagesProvider"/>
+		<findUsagesHandlerFactory implementation="consulo.csharp.ide.findUsage.CSharpFindUsageHandlerFactory"/>
+
+		<codeInsight.unresolvedReferenceQuickFixProvider
+				implementation="consulo.csharp.ide.codeInsight.CSharpUnresolvedReferenceQuickFixProvider"/>
+
+		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpMemberNameCompletionContributor"/>
+		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpSuggestInstanceCompletionContributor"/>
+		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpCompletionContributor"/>
+
+		<weigher key="proximity" implementationClass="consulo.csharp.ide.completion.weigher.CSharpObsoleteProximityWeigher" id="csharpObsoleteWeighter"/>
+		<weigher key="proximity" implementationClass="consulo.csharp.ide.completion.weigher.CSharpByGenericParameterWeigher" id="csharpByGenericParameterWeigher"/>
+
+		<weigher key="completion" implementationClass="consulo.csharp.ide.completion.weigher.CSharpInheritCompletionWeighter" order="before stats, before csharpKindSorter"/>
+
+		<completion.confidence language="C#" implementationClass="com.intellij.codeInsight.completion.SkipAutopopupInStrings"/>
+
+		<completion.contributor language="C#Doc"
+								implementationClass="consulo.csharp.lang.doc.ide.competion.CSharpDocCompletionContributor"/>
+
+		<lookup.charFilter implementation="consulo.csharp.ide.completion.CSharpCompletionCharFilter"/>
+
+		<lang.smartEnterProcessor language="C#"
+								  implementationClass="consulo.csharp.ide.completion.smartEnter.CSharpSmartEnterProcessor"/>
+		<enterHandlerDelegate implementation="consulo.csharp.ide.editor.CSharpEnterInDocLineCommentHandler"/>
+
+		<referenceImporter implementation="consulo.csharp.ide.codeInsight.CSharpReferenceImporter"/>
+
+		<typedHandler implementation="consulo.csharp.ide.completion.CSharpTypedHandler" id="csharp"/>
+		<typedHandler implementation="consulo.csharp.lang.doc.ide.codeInsight.editorActions.CSharpDocGtTypedHandler" id="csharpdoc"/>
+
+		<statementUpDownMover implementation="consulo.csharp.ide.codeInsight.moveUpDown.CSharpStatementMover" id="csharp-statement"/>
+		<statementUpDownMover implementation="consulo.csharp.ide.codeInsight.moveUpDown.CSharpDeclarationMover" id="csharp-declaration"/>
+
+		<renamePsiElementProcessor implementation="consulo.csharp.ide.refactoring.rename.CSharpTypeRenamePsiElementProcessor"/>
+		<renamePsiElementProcessor implementation="consulo.csharp.ide.refactoring.rename.CSharpOverrideElementProcessor"/>
+
+		<renameHandler implementation="consulo.csharp.ide.refactoring.rename.inplace.CSharpMemberInplaceRenameHandler"/>
+		<renameHandler implementation="consulo.csharp.ide.refactoring.rename.inplace.CSharpVariableInplaceRenamerHandler"/>
+
+		<nameSuggestionProvider implementation="consulo.csharp.ide.refactoring.rename.CSharpNameSuggestionProvider" order="last"/>
+
+		<elementDescriptionProvider implementation="consulo.csharp.ide.refactoring.rename.CSharpElementDescriptionProvider"/>
+
+		<extendWordSelectionHandler implementation="consulo.csharp.ide.codeInsight.editorActions.CSharpExtendWordSelectionHandler"/>
+
+		<basicWordSelectionFilter implementation="consulo.csharp.ide.codeInsight.editorActions.CSharpWordSelectionFilter"/>
+
+		<gotoClassContributor implementation="consulo.csharp.ide.navigation.CSharpTypeNameContributor"/>
+		<gotoSymbolContributor implementation="consulo.csharp.ide.navigation.CSharpSymbolNameContributor"/>
+		<gotoDeclarationHandler implementation="consulo.csharp.ide.navigation.CSharpGotoDeclarationHandler"/>
+
+		<qualifiedNameProvider implementation="consulo.csharp.ide.CSharpQualifiedNameProvider"/>
+
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpTypeDeclaration"
+								  implementationClass="consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
+
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpFieldDeclaration"
+								  implementationClass="consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
+
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl"
+								  implementationClass="consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
+
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpPropertyDeclaration"
+								  implementationClass="consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
+
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpEventDeclaration"
+								  implementationClass="consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
+
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpMethodDeclaration"
+								  implementationClass="consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpConstructorDeclaration"
+								  implementationClass="consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.impl.source.CSharpConversionMethodDeclarationImpl"
+								  implementationClass="consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpIndexMethodDeclaration"
+								  implementationClass="consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
+
+		<lang.elementManipulator forClass="consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl"
+								 implementationClass="consulo.csharp.lang.psi.impl.manipulator.CSharpConstantExpressionElementManipulator"/>
+
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.TypeIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.TypeByQNameIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.TypeByVmQNameIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.TypeWithExtensionMethodsIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.MethodIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.DelegateMethodIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.MemberByNamespaceQNameIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.MemberByAllNamespaceQNameIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.FieldIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.PropertyIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.EventIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.ExtendsListIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex"/>
+
+		<lang.surroundDescriptor language="C#" implementationClass="consulo.csharp.ide.surroundWith.CSharpExpressionSurroundDescriptor"/>
+
+		<vetoRenameCondition implementation="consulo.csharp.ide.refactoring.rename.CSharpVetoRenameCondition"/>
+
+		<problemFileHighlightFilter implementation="consulo.csharp.ide.codeInsight.problems.CSharpFileProblemHighlightFilter"/>
+		<problemHighlightFilter implementation="consulo.csharp.ide.codeInsight.problems.CSharpProblemHighlightFilter"/>
+		<highlightErrorFilter implementation="consulo.csharp.lang.doc.inspection.CSharpDocHighlightErrorFilter"/>
+		<editorHighlighterProvider filetype="C#" implementationClass="consulo.csharp.ide.highlight.CSharpEditorHighlighterProvider"/>
+
+		<codeInsight.parameterInfo language="C#" implementationClass="consulo.csharp.ide.parameterInfo.CSharpParameterInfoHandler"/>
+		<codeInsight.parameterInfo language="C#" implementationClass="consulo.csharp.ide.parameterInfo.CSharpGenericParameterInfoHandler"/>
+		<codeInsight.template.postfixTemplateProvider language="C#"
+													  implementationClass="consulo.csharp.ide.codeInsight.template.postfix.CSharpPostfixTemplateProvider"/>
+
+		<referencesSearch implementation="consulo.csharp.ide.findUsage.referenceSearch.AdditionalReferenceSearch"/>
+		<referencesSearch implementation="consulo.csharp.ide.findUsage.referenceSearch.CSharpConstructorPlusTypeReferenceSearch"/>
+		<referencesSearch implementation="consulo.csharp.ide.findUsage.referenceSearch.CSharpImplementedReferenceSearch"/>
+
+		<definitionsScopedSearch implementation="consulo.csharp.ide.navigation.CSharpMethodImplementationsSearcher"/>
+		<definitionsScopedSearch implementation="consulo.csharp.ide.navigation.CSharpTypeImplementationSearcher"/>
+
+		<bundleLiveTemplateSet path="liveTemplates/output"/>
+		<bundleLiveTemplateSet path="liveTemplates/main"/>
+		<bundleLiveTemplateSet path="liveTemplates/foreach"/>
+		<bundleLiveTemplateSet path="liveTemplates/linq"/>
+
+		<liveTemplateContext implementation="consulo.csharp.ide.liveTemplates.context.CSharpStatementContextType"/>
+		<liveTemplateContext implementation="consulo.csharp.ide.liveTemplates.context.CSharpClassBodyContextType"/>
+		<liveTemplateContext implementation="consulo.csharp.ide.liveTemplates.context.CSharpExpressionContextType"/>
+		<liveTemplateMacro implementation="consulo.csharp.ide.liveTemplates.macro.SuggestVariableNameMacro"/>
+		<liveTemplateMacro implementation="consulo.csharp.ide.liveTemplates.macro.TypeMacro"/>
+		<liveTemplateMacro implementation="consulo.csharp.ide.liveTemplates.macro.SuggestIndexVariableNameMacro"/>
+		<liveTemplateMacro implementation="consulo.csharp.ide.liveTemplates.macro.ArrayVariableMacro"/>
+		<liveTemplateMacro implementation="consulo.csharp.ide.liveTemplates.macro.IListVariableMacro"/>
+		<liveTemplateMacro implementation="consulo.csharp.ide.liveTemplates.macro.ForeachVariableMacro"/>
+		<liveTemplateMacro implementation="consulo.csharp.ide.liveTemplates.macro.ForeachComponentTypeMacro"/>
+
+		<codeStyleSettingsProvider implementation="consulo.csharp.ide.codeStyle.CSharpCodeStyleSettingsProvider"/>
+		<codeStyleSettingsProvider implementation="consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettingsProvider"/>
+		<langCodeStyleSettingsProvider implementation="consulo.csharp.ide.codeStyle.CSharpLanguageCodeStyleSettingsProvider"/>
+
+		<readWriteAccessDetector implementation="consulo.csharp.ide.codeInsight.highlighting.CSharpReadWriteAccessDetector"/>
+		<quoteHandler fileType="C#" className="consulo.csharp.ide.CSharpQuoteHandler"/>
+		<colorSettingsPage implementation="consulo.csharp.ide.highlight.CSharpColorSettingsPage"/>
+		<fileEditorProvider implementation="consulo.csharp.ide.assemblyInfo.CSharpAssemblyFileEditorProvider"/>
+		<psi.treeChangePreprocessor implementation="consulo.csharp.lang.psi.impl.CSharpPsiTreeChangePreprocessor"/>
+		<lang.psiStructureViewFactory language="C#" implementationClass="consulo.csharp.ide.structureView.CSharpStructureViewFactory"/>
+		<lang.formatter language="C#" implementationClass="consulo.csharp.lang.formatter.CSharpFormattingModelBuilder"/>
+		<lang.commenter language="C#" implementationClass="consulo.csharp.lang.CSharpCommenter"/>
+		<lang.namesValidator language="C#" implementationClass="consulo.csharp.lang.CSharpNamesValidator"/>
+		<lang.braceMatcher language="C#" implementationClass="consulo.csharp.lang.CSharpPairedBraceMatcher"/>
+		<lang.importOptimizer language="C#" implementationClass="consulo.csharp.lang.CSharpImportOptimizer"/>
+		<lang.foldingBuilder language="C#" implementationClass="consulo.csharp.lang.CSharpFoldingBuilder"/>
+		<lang.foldingBuilder language="C#Doc" implementationClass="consulo.csharp.lang.CSharpDocFoldingBuilder"/>
+		<lang.syntaxHighlighterFactory language="C#" implementationClass="consulo.csharp.ide.highlight.CSharpSyntaxHighlighterFactory"/>
+		<lang.refactoringSupport language="C#" implementationClass="consulo.csharp.ide.refactoring.CSharpRefactoringSupportProvider"/>
+		<refactoring.changeSignatureUsageProcessor
+				implementation="consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureUsageProcessor"/>
+		<inlineActionHandler implementation="consulo.csharp.ide.refactoring.inlineAction.CSharpLocalVariableInlineActionHandler"/>
+		<lang.parserDefinition language="C#" implementationClass="consulo.csharp.lang.CSharpParserDefinition"/>
+		<lang.parserDefinition language="C#Doc" implementationClass="consulo.csharp.lang.doc.CSharpDocParserDefinition"/>
+		<lang.parserDefinition language="C#Preprocessor" implementationClass="consulo.csharp.lang.CSharpPreprocessorParserDefinition"/>
+		<lang.versionResolver language="C#" implementationClass="consulo.csharp.lang.CSharpLanguageVersionResolver"/>
+		<lang.documentationProvider language="C#" implementationClass="consulo.csharp.ide.documentation.CSharpDocumentationProvider"/>
+		<lang.braceMatcher language="C#Doc" implementationClass="consulo.csharp.lang.doc.CSharpDocBraceMatcher"/>
+		<psi.referenceContributor language="C#" implementation="consulo.csharp.ide.resolve.CSharpPsiReferenceContributor"/>
+		<refactoring.moveHandler implementation="consulo.csharp.ide.refactoring.move.CSharpMoveHandlerDelegate"/>
+		<refactoring.copyHandler implementation="consulo.csharp.ide.refactoring.copy.CSharpCopyClassHandlerDelegate"/>
+
+		<highlightUsagesHandlerFactory implementation="consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightUsagesHandlerFactory"/>
+		<highlightUsagesHandlerFactory implementation="consulo.csharp.ide.highlight.CSharpHighlightUsagesHandlerFactory"/>
+		<newModuleBuilder implementation="consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder"/>
+
+		<eapDescriptor implementation="consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent$EapDescriptor"/>
+		<eapDescriptor implementation="consulo.csharp.ide.highlight.check.impl.CS0030$CS0030TypeCast"/>
+
+		<xdebugger.lineBreakpointTypeResolver filetype="C#"
+											  implementationClass="consulo.dotnet.debugger.breakpoint.DotNetLineBreakpointTypeResolver"
+											  id="csharp"/>
+
+		<smartPointerAnchorProvider implementation="consulo.csharp.lang.psi.impl.CSharpAnchorProvider"/>
+
+		<idIndexer filetype="C#" implementationClass="consulo.csharp.ide.idCache.CSharpIdIndexer"/>
+		<todoIndexer filetype="C#" implementationClass="consulo.csharp.ide.idCache.CSharpTodoIndexer"/>
+
+		<breadcrumbsInfoProvider implementation="consulo.csharp.ide.breadcrumbs.CSharpBreadcrumbsProvider"/>
+	</extensions>
+</idea-plugin>

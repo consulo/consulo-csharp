@@ -42,7 +42,7 @@ public class CSharpFileType extends LanguageFileType implements TemplateLanguage
 
 	@NotNull
 	@Override
-	public String getName()
+	public String getId()
 	{
 		return "C#";
 	}
