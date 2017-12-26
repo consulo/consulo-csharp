@@ -1,8 +1,10 @@
 <component name="libraryTable">
   <library name="consulo-plugin: consulo.dotnet.microsoft">
     <binaries>
-      <root url="jar://$PROJECT_DIR$/dep/consulo.dotnet.microsoft/lib/microsoft-dotnet.jar!/" />
-      <root url="jar://$PROJECT_DIR$/dep/consulo.dotnet.microsoft/lib/mssdw-java-client.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dep/consulo.dotnet.microsoft/lib/mssdw-java-client-2-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dep/consulo.dotnet.microsoft/lib/consulo.dotnet.microsoft-2-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dep/consulo.dotnet.microsoft/lib/consulo.dotnet.microsoft-dotnet-impl-2-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dep/consulo.dotnet.microsoft/lib/consulo.dotnet.microsoft-debugger-impl-2-SNAPSHOT.jar!/" />
     </binaries>
   </library>
 </component>
