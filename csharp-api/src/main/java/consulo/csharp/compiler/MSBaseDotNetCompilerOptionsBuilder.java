@@ -36,6 +36,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.StandardFileSystems;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
+import consulo.application.ApplicationProperties;
 import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.dotnet.DotNetTarget;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
@@ -44,7 +45,6 @@ import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import consulo.dotnet.compiler.DotNetCompilerUtil;
 import consulo.dotnet.compiler.DotNetMacroUtil;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
-import consulo.util.SandboxUtil;
 
 /**
  * @author VISTALL
@@ -62,8 +62,8 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 	@Nullable
 	private String myExecutable;
 
-	private final List<String> myArguments = new ArrayList<String>();
-	private final List<String> myProgramArguments = new ArrayList<String>();
+	private final List<String> myArguments = new ArrayList<>();
+	private final List<String> myProgramArguments = new ArrayList<>();
 
 	public MSBaseDotNetCompilerOptionsBuilder addArgument(@NotNull String arg)
 	{
@@ -112,7 +112,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 				int codeLine = Integer.parseInt(matcher.group(2));
 				int codeColumn = Integer.parseInt(matcher.group(3));
 				String message = matcher.group(6);
-				if(SandboxUtil.isInsideSandbox())
+				if(ApplicationProperties.isInSandbox())
 				{
 					message += "(" + matcher.group(5) + ")";
 				}

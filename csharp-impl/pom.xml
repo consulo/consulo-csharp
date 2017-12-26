@@ -58,6 +58,8 @@
 						<dependency>com.intellij.xml</dependency>
 						<dependency>com.intellij.spellchecker</dependency>
 						<dependency>consulo.dotnet</dependency>
+						<dependency>consulo.dotnet.mono</dependency>
+						<dependency>consulo.dotnet.microsoft</dependency>
 					</dependencies>
 					<packaging>
 						<skip>${dev.mode}</skip>
@@ -104,12 +106,32 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>consulo.csharp-csharp.base.impl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>consulo.csharp-csharp-composite.formatting.string.api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>consulo.csharp-csharp-composite.formatting.string.impl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>consulo.csharp-csharp.spellchecker</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>consulo.csharp-csharp.microsoft</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>consulo.csharp-csharp.mono</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

@@ -19,11 +19,11 @@ package consulo.csharp.compiler;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.module.extension.CSharpModuleExtension;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkTable;
 import com.intellij.openapi.projectRoots.SdkType;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.module.extension.ModuleInheritableNamedPointer;

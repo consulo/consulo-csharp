@@ -56,8 +56,7 @@ import consulo.roots.ModuleRootLayer;
  * @author VISTALL
  * @since 15.12.13.
  */
-public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtension<T>> extends BaseCSharpSimpleModuleExtension<T> implements
-		DotNetModuleLangExtension<T>, CSharpModuleExtension<T>
+public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtension<T>> extends BaseCSharpSimpleModuleExtension<T> implements DotNetModuleLangExtension<T>, CSharpModuleExtension<T>
 {
 	protected boolean myOptimizeCode;
 	protected CSharpPlatform myPlatform = CSharpPlatform.ANY_CPU;
@@ -114,7 +113,8 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		GlobalSearchScope moduleScope = getModule().getModuleScope();
 		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, getProject(), moduleScope);
 
-		loop:for(CSharpAttributeList attributeList : attributeLists)
+		loop:
+		for(CSharpAttributeList attributeList : attributeLists)
 		{
 			for(CSharpAttribute attribute : attributeList.getAttributes())
 			{
@@ -173,11 +173,8 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	@Override
 	public boolean isModifiedImpl(@NotNull T mutableModuleExtension)
 	{
-		return super.isModifiedImpl(mutableModuleExtension) ||
-				myOptimizeCode != mutableModuleExtension.myOptimizeCode ||
-				myPlatform != mutableModuleExtension.myPlatform ||
-				!myCustomCompilerSdkPointer.equals(mutableModuleExtension.myCustomCompilerSdkPointer) ||
-				!Comparing.equal(myCompilerTarget, mutableModuleExtension.myCompilerTarget);
+		return super.isModifiedImpl(mutableModuleExtension) || myOptimizeCode != mutableModuleExtension.myOptimizeCode || myPlatform != mutableModuleExtension.myPlatform ||
+				!myCustomCompilerSdkPointer.equals(mutableModuleExtension.myCustomCompilerSdkPointer) || !Comparing.equal(myCompilerTarget, mutableModuleExtension.myCompilerTarget);
 	}
 
 	@RequiredReadAction
