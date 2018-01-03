@@ -59,4 +59,6 @@ public interface CSharpPreprocesorTokens extends TokenType
 	IElementType RPAR = new IElementType("RPAR =", CSharpPreprocessorLanguage.INSTANCE);
 
 	IElementType EXCL = new IElementType("EXCL", CSharpPreprocessorLanguage.INSTANCE);
+
+	IElementType LINE_COMMENT = new IElementType("LINE_COMMENT", CSharpPreprocessorLanguage.INSTANCE);
 }

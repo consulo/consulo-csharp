@@ -27,6 +27,7 @@ import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import consulo.csharp.lang.lexer._CSharpMacroLexer;
 import consulo.csharp.lang.parser.CSharpPreprocessorParser;
+import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.lang.LanguageVersion;
 
@@ -70,7 +71,7 @@ public class CSharpPreprocessorParserDefinition implements ParserDefinition
 	@Override
 	public TokenSet getCommentTokens(@NotNull LanguageVersion languageVersion)
 	{
-		return TokenSet.EMPTY;
+		return TokenSet.create(CSharpPreprocesorTokens.LINE_COMMENT);
 	}
 
 	@NotNull

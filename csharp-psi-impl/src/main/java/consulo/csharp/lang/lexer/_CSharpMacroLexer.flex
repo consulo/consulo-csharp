@@ -23,6 +23,8 @@ WHITE_SPACE=[ \n\r\t\f]+
 
 IDENTIFIER=[:jletter:] [:jletterdigit:]*
 
+SINGLE_LINE_COMMENT="/""/"[^\r\n]*
+
 MACRO_START="#"
 MACRO_DEFINE={MACRO_START}"define"
 MACRO_UNDEF={MACRO_START}"undef"
@@ -39,6 +41,8 @@ MACRO_PRAGMA={MACRO_START}"pragma"
 
 <MACRO_ENTERED>
 {
+	{SINGLE_LINE_COMMENT} { return CSharpPreprocesorTokens.LINE_COMMENT; }
+
 	{IDENTIFIER}         { return CSharpPreprocesorTokens.IDENTIFIER; }
 
 	{WHITE_SPACE}        { return CSharpPreprocesorTokens.WHITE_SPACE; }
@@ -48,6 +52,8 @@ MACRO_PRAGMA={MACRO_START}"pragma"
 
 <MACRO_EXPRESSION>
 {
+	{SINGLE_LINE_COMMENT} { return CSharpPreprocesorTokens.LINE_COMMENT; }
+
 	"("                  { return CSharpPreprocesorTokens.LPAR; }
 
 	")"                  { return CSharpPreprocesorTokens.RPAR; }
@@ -67,6 +73,8 @@ MACRO_PRAGMA={MACRO_START}"pragma"
 
 <YYINITIAL>
 {
+	{SINGLE_LINE_COMMENT} { return CSharpPreprocesorTokens.LINE_COMMENT; }
+
 	{MACRO_IF}           { yybegin(MACRO_EXPRESSION); return CSharpPreprocesorTokens.MACRO_IF_KEYWORD; }
 
 	{MACRO_ELIF}         { yybegin(MACRO_EXPRESSION); return CSharpPreprocesorTokens.MACRO_ELIF_KEYWORD; }

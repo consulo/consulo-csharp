@@ -110,7 +110,7 @@ public class PreprocessorLightParser
 						state = State.DIRECTIVE;
 						directive = Directive.ELSE;
 					}
-					else if(elementType != CSharpPreprocesorTokens.WHITE_SPACE)
+					if(elementType != CSharpPreprocesorTokens.WHITE_SPACE && elementType != CSharpPreprocesorTokens.LINE_COMMENT)
 					{
 						break loop;
 					}
@@ -141,7 +141,7 @@ public class PreprocessorLightParser
 					}
 					break;
 				default:
-					if(elementType != CSharpPreprocesorTokens.WHITE_SPACE)
+					if(elementType != CSharpPreprocesorTokens.WHITE_SPACE && elementType != CSharpPreprocesorTokens.LINE_COMMENT)
 					{
 						break loop;
 					}

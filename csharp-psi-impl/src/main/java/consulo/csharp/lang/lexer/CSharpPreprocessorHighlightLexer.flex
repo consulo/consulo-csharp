@@ -25,6 +25,8 @@ WHITE_SPACE=[ \n\r\t\f]+
 MACRO_WHITE_SPACE=[ \t\f]+
 MACRO_NEW_LINE=\r\n|\n|\r
 
+SINGLE_LINE_COMMENT="/""/"[^\r\n]*
+
 MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 MACRO_DEFINE={MACRO_START}"define"
 MACRO_UNDEF={MACRO_START}"undef"
@@ -39,6 +41,8 @@ MACRO_PRAGMA={MACRO_START}"pragma"
 
 <YYINITIAL>
 {
+	{SINGLE_LINE_COMMENT} { return CSharpPreprocesorTokens.LINE_COMMENT; }
+
 	{MACRO_IF}           { return CSharpPreprocesorTokens.MACRO_IF_KEYWORD; }
 
 	{MACRO_ELIF}         { return CSharpPreprocesorTokens.MACRO_ELIF_KEYWORD; }
