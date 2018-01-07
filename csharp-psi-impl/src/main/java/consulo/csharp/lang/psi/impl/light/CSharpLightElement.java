@@ -46,12 +46,12 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 	}
 
 	@Override
-	public boolean isEquivalentTo(PsiElement another)
+	public boolean isEquivalentTo(@Nullable PsiElement another)
 	{
-		PsiElement ori1 = another.getOriginalElement();
+		PsiElement ori1 = another == null ? null : another.getOriginalElement();
 		PsiElement ori2 = getOriginalElement();
 
-		if(ori1.isEquivalentTo(ori2))
+		if(ori1 != null && ori1.isEquivalentTo(ori2))
 		{
 			return true;
 		}
