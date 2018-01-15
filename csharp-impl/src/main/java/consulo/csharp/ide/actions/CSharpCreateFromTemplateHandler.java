@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.ide.actions.CreateFileFromTemplateAction;
 import com.intellij.ide.fileTemplates.DefaultCreateFromTemplateHandler;
 import com.intellij.ide.fileTemplates.FileTemplate;
 import com.intellij.openapi.fileTypes.FileType;
@@ -40,7 +41,6 @@ import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import consulo.roots.ContentEntryFileListener;
 
 /**
  * @author VISTALL
@@ -73,15 +73,7 @@ public class CSharpCreateFromTemplateHandler extends DefaultCreateFromTemplateHa
 				return LocalFileSystem.getInstance();
 			}
 		};
-		for(ContentEntryFileListener.PossibleModuleForFileResolver o : ContentEntryFileListener.PossibleModuleForFileResolver.EP_NAME.getExtensions())
-		{
-			Module resolve = o.resolve(directory.getProject(), l);
-			if(resolve != null)
-			{
-				return resolve;
-			}
-		}
-		return null;
+		return CreateFileFromTemplateAction.ModuleResolver.EP_NAME.composite().resolveModule(directory, CSharpFileType.INSTANCE);
 	}
 
 	@Override
