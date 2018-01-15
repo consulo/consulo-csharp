@@ -25,19 +25,17 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
-import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IdeView;
+import com.intellij.ide.actions.CreateFileFromTemplateAction;
 import com.intellij.ide.actions.CreateFileFromTemplateDialog;
-import com.intellij.ide.actions.CreateFromTemplateAction;
 import com.intellij.ide.fileTemplates.FileTemplate;
 import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.ide.fileTemplates.FileTemplateUtil;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
@@ -49,6 +47,9 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
+import consulo.csharp.lang.CSharpFileType;
+import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.ide.IconDescriptor;
 import consulo.psi.PsiPackage;
@@ -58,7 +59,7 @@ import consulo.psi.PsiPackageManager;
  * @author VISTALL
  * @since 15.12.13.
  */
-public class CSharpCreateFileAction extends CreateFromTemplateAction<PsiFile>
+public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 {
 	public CSharpCreateFileAction()
 	{
@@ -132,7 +133,7 @@ public class CSharpCreateFileAction extends CreateFromTemplateAction<PsiFile>
 		FileTemplate template = FileTemplateManager.getInstance(dir.getProject()).getInternalTemplate(templateName);
 		try
 		{
-			Map<String, Object> map = new HashMap<String, Object>();
+			Map<String, Object> map = new HashMap<>();
 			map.put("psiDirectory", dir);
 
 			return (PsiFile) FileTemplateUtil.createFromTemplate(template, name, map, dir, getClass().getClassLoader());
@@ -144,11 +145,18 @@ public class CSharpCreateFileAction extends CreateFromTemplateAction<PsiFile>
 		}
 	}
 
+	@Nullable
+	@Override
+	protected FileType getFileTypeForModuleResolve()
+	{
+		return CSharpFileType.INSTANCE;
+	}
+
 	@Override
 	@RequiredDispatchThread
 	protected void buildDialog(Project project, PsiDirectory psiDirectory, CreateFileFromTemplateDialog.Builder builder)
 	{
-		Set<String> used = new HashSet<String>();
+		Set<String> used = new HashSet<>();
 		addKind(builder, used, "Class", new IconDescriptor(AllIcons.Nodes.Class).toIcon(), "CSharpClass");
 		addKind(builder, used, "Interface", new IconDescriptor(AllIcons.Nodes.Interface).toIcon(), "CSharpInterface");
 		addKind(builder, used, "Enum", new IconDescriptor(AllIcons.Nodes.Enum).toIcon(), "CSharpEnum");
