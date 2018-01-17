@@ -42,9 +42,10 @@ public class CSharpBreadcrumbsProvider implements BreadcrumbsProvider
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean acceptElement(@NotNull PsiElement psiElement)
 	{
-		return psiElement instanceof DotNetQualifiedElement || psiElement instanceof CSharpAnonymousMethodExpression;
+		return psiElement instanceof DotNetQualifiedElement && ((DotNetQualifiedElement) psiElement).getName() != null|| psiElement instanceof CSharpAnonymousMethodExpression;
 	}
 
 	@NotNull
