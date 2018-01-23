@@ -187,8 +187,8 @@
 		<typedHandler implementation="consulo.csharp.ide.completion.CSharpTypedHandler" id="csharp"/>
 		<typedHandler implementation="consulo.csharp.lang.doc.ide.codeInsight.editorActions.CSharpDocGtTypedHandler" id="csharpdoc"/>
 
-		<statementUpDownMover implementation="consulo.csharp.ide.codeInsight.moveUpDown.CSharpStatementMover" id="csharp-statement"/>
-		<statementUpDownMover implementation="consulo.csharp.ide.codeInsight.moveUpDown.CSharpDeclarationMover" id="csharp-declaration"/>
+		<!--<statementUpDownMover implementation="consulo.csharp.ide.codeInsight.moveUpDown.CSharpStatementMover" id="csharp-statement"/>
+		<statementUpDownMover implementation="consulo.csharp.ide.codeInsight.moveUpDown.CSharpDeclarationMover" id="csharp-declaration"/>--> 
 
 		<renamePsiElementProcessor implementation="consulo.csharp.ide.refactoring.rename.CSharpTypeRenamePsiElementProcessor"/>
 		<renamePsiElementProcessor implementation="consulo.csharp.ide.refactoring.rename.CSharpOverrideElementProcessor"/>
