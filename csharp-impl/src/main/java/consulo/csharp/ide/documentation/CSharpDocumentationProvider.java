@@ -16,6 +16,7 @@
 
 package consulo.csharp.ide.documentation;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.emonic.base.codehierarchy.CodeHierarchyHelper;
@@ -43,6 +44,7 @@ import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import consulo.dotnet.documentation.DotNetDocumentationCache;
@@ -262,11 +264,38 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		IDocumentation documentation = DotNetDocumentationCache.getInstance().findDocumentation(element);
 		if(documentation == null)
 		{
+			documentation = tryToFindFromOverrideParent(element);
+		}
+
+		if(documentation == null)
+		{
 			return null;
 		}
 		return CodeHierarchyHelper.getFormText(documentation);
 	}
 
+	@RequiredReadAction
+	private IDocumentation tryToFindFromOverrideParent(PsiElement element)
+	{
+		if(!(element instanceof DotNetVirtualImplementOwner))
+		{
+			return null;
+		}
+
+		Collection<DotNetVirtualImplementOwner> members = OverrideUtil.collectOverridingMembers((DotNetVirtualImplementOwner) element);
+
+		for(DotNetVirtualImplementOwner owner : members)
+		{
+			IDocumentation documentation = DotNetDocumentationCache.getInstance().findDocumentation(owner);
+			if(documentation != null)
+			{
+				return documentation;
+			}
+		}
+		return null;
+	}
+
+	@RequiredReadAction
 	private static void appendTypeDeclarationType(DotNetTypeDeclaration psiElement, StringBuilder builder)
 	{
 		if(psiElement.isInterface())
