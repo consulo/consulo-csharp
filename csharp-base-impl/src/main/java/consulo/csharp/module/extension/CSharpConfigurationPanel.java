@@ -34,13 +34,11 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkType;
-import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.roots.ui.configuration.ProjectStructureConfigurable;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.VerticalFlowLayout;
-import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.ColoredListCellRendererWrapper;
 import com.intellij.ui.DocumentAdapter;
@@ -206,14 +204,7 @@ public class CSharpConfigurationPanel extends JPanel
 
 		final ProjectSdksModel projectSdksModel = ProjectStructureConfigurable.getInstance(ext.getProject()).getProjectSdksModel();
 
-		final SdkComboBox compilerComboBox = new SdkComboBox(projectSdksModel, new Condition<SdkTypeId>()
-		{
-			@Override
-			public boolean value(SdkTypeId sdkTypeId)
-			{
-				return compilerBundleTypes.contains(sdkTypeId);
-			}
-		}, null, "Auto Select", AllIcons.Actions.FindPlain);
+		final SdkComboBox compilerComboBox = new SdkComboBox(projectSdksModel, compilerBundleTypes::contains, null, "Auto Select", AllIcons.Actions.FindPlain);
 
 		for(CSharpCompilerProvider provider : extensions)
 		{
