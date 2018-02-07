@@ -39,6 +39,7 @@ import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
@@ -56,7 +57,8 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 		Constant(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
 		DeConstructor,
 		InterfaceMember(CSharpModifier.NEW),
-		GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
+		GenericParameter(CSharpModifier.IN, CSharpModifier.OUT, CSharpModifier.PARAMS, CSharpModifier.THIS),
+		Parameter(CSharpModifier.REF, CSharpModifier.OUT),
 		NamespaceEnum(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
 		NestedEnum(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.PRIVATE, CSharpModifier.INTERNAL),
 		NamespaceType(CSharpModifier.STATIC, CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED),
@@ -116,7 +118,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 
 				if(list.isEmpty())
 				{
-					list = new ArrayList<CompilerCheckBuilder>(2);
+					list = new ArrayList<>(2);
 				}
 
 				list.add(newBuilder(modifierElement, modifier.getPresentableText()).addQuickFix(new RemoveModifierFix(modifier, element)));
@@ -178,6 +180,11 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 			{
 				return anEnum ? Owners.NestedEnum : Owners.NestedType;
 			}
+		}
+
+		if(owner instanceof DotNetParameter)
+		{
+			return Owners.Parameter;
 		}
 		return Owners.Unknown;
 	}
