@@ -54,11 +54,6 @@ public class PreprocessorLightParser
 		WARNING
 	}
 
-	public static void main(String[] args)
-	{
-		System.out.println(parse("#pragma warning disable 3131,31"));
-	}
-
 	@Nullable
 	public static PreprocessorDirective parse(String text)
 	{
@@ -116,7 +111,7 @@ public class PreprocessorLightParser
 						state = State.DIRECTIVE;
 						directive = Directive.ELSE;
 					}
-					if(elementType != CSharpPreprocesorTokens.WHITE_SPACE && elementType != CSharpPreprocesorTokens.LINE_COMMENT)
+					else if(elementType != CSharpPreprocesorTokens.WHITE_SPACE && elementType != CSharpPreprocesorTokens.LINE_COMMENT)
 					{
 						break loop;
 					}
