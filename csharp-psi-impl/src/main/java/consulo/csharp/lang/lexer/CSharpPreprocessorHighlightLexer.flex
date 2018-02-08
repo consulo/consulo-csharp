@@ -37,6 +37,7 @@ MACRO_ENDREGION={MACRO_START}"endregion"
 MACRO_ELSE={MACRO_START}"else"
 MACRO_ELIF={MACRO_START}"elif"
 MACRO_PRAGMA={MACRO_START}"pragma"
+MACRO_WARNING={MACRO_START}"warning"
 %%
 
 <YYINITIAL>
@@ -59,7 +60,9 @@ MACRO_PRAGMA={MACRO_START}"pragma"
 
 	{MACRO_ENDREGION}    { return CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD; }
 
-	{MACRO_PRAGMA}       { return CSharpPreprocesorTokens.MACRO_PRAGMA; }
+	{MACRO_PRAGMA}       { return CSharpPreprocesorTokens.PRAGMA_KEYWORD; }
+
+	{MACRO_WARNING}      { return CSharpPreprocesorTokens.WARNING_KEYWORD; }
 
 	"("                  { return CSharpPreprocesorTokens.LPAR; }
 

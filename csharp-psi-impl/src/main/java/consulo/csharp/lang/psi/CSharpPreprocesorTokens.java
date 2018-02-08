@@ -28,7 +28,7 @@ public interface CSharpPreprocesorTokens extends TokenType
 {
 	IElementType MACRO_IF_KEYWORD = new IElementType("MACRO_IF_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType MACRO_PRAGMA = new IElementType("MACRO_PRAGMA", CSharpPreprocessorLanguage.INSTANCE);
+	IElementType PRAGMA_KEYWORD = new IElementType("PRAGMA_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
 	IElementType MACRO_ELSE_KEYWORD = new IElementType("MACRO_IF_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
@@ -43,6 +43,8 @@ public interface CSharpPreprocesorTokens extends TokenType
 	IElementType MACRO_DEFINE_KEYWORD = new IElementType("MACRO_DEFINE_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
 	IElementType MACRO_UNDEF_KEYWORD = new IElementType("MACRO_UNDEF_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
+
+	IElementType WARNING_KEYWORD = new IElementType("WARNING_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
 	IElementType ILLEGAL_KEYWORD = new IElementType("ILLEGAL_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 

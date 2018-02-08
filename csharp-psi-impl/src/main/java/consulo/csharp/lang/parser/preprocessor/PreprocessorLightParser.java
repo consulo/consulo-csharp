@@ -50,7 +50,8 @@ public class PreprocessorLightParser
 		ENDIF,
 		REGION,
 		ENDREGION,
-		PRAGMA
+		PRAGMA,
+		WARNING
 	}
 
 	public static void main(String[] args)
@@ -85,10 +86,15 @@ public class PreprocessorLightParser
 						state = State.DIRECTIVE;
 						directive = elementType == CSharpPreprocesorTokens.MACRO_IF_KEYWORD ? Directive.IF : Directive.ELIF;
 					}
-					else if(elementType == CSharpPreprocesorTokens.MACRO_PRAGMA)
+					else if(elementType == CSharpPreprocesorTokens.PRAGMA_KEYWORD)
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.PRAGMA;
+					}
+					else if(elementType == CSharpPreprocesorTokens.WARNING_KEYWORD)
+					{
+						state = State.DIRECTIVE;
+						directive = Directive.WARNING;
 					}
 					else if(elementType == CSharpPreprocesorTokens.MACRO_ENDIF_KEYWORD)
 					{
@@ -134,6 +140,7 @@ public class PreprocessorLightParser
 						case IF:
 						case REGION:
 						case PRAGMA:
+						case WARNING:
 							value += lexer.getTokenText();
 							break;
 						default:

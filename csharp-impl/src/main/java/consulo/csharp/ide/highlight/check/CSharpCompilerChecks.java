@@ -110,6 +110,7 @@ public enum CSharpCompilerChecks
 	CS1004(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // duplicate modifier check
 	CS1008(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // eum type can be only byte,sbyte,short,ushort,int,uint,long,ulong
 	CS1021(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // too big number
+	CS1030(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // check for #warning
 	CS1100(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only set to first parameter
 	CS1105(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only in method with static modifier
 	CS1106(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only in type with static modifier and no generic
