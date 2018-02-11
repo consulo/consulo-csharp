@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeInspection.unnecessaryCast;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -37,9 +38,9 @@ import com.intellij.psi.PsiElementVisitor;
  */
 public class UnnecessaryCastInspection extends LocalInspectionTool
 {
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, boolean isOnTheFly, @NotNull LocalInspectionToolSession session)
+	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session)
 	{
 		return new CSharpElementVisitor()
 		{

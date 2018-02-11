@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.stub;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
@@ -36,7 +36,7 @@ public class CSharpTypeListStub extends StubBase<DotNetTypeList>
 		myReferences = references;
 	}
 
-	@NotNull
+	@Nonnull
 	public String[] geShortReferences()
 	{
 		return myReferences;

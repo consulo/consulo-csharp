@@ -16,9 +16,9 @@
 
 package consulo.csharp.lang;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.DumbService;
@@ -53,7 +53,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 {
 	@Override
 	@RequiredReadAction
-	public void updateIcon(@NotNull IconDescriptor iconDescriptor, @NotNull PsiElement element, int flags)
+	public void updateIcon(@Nonnull IconDescriptor iconDescriptor, @Nonnull PsiElement element, int flags)
 	{
 		if(element instanceof DotNetNamespaceAsElement)
 		{

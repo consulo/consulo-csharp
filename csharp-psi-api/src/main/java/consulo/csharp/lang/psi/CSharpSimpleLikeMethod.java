@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -31,7 +32,7 @@ public interface CSharpSimpleLikeMethod
 
 	public static ArrayFactory<CSharpSimpleLikeMethod> ARRAY_FACTORY = new ArrayFactory<CSharpSimpleLikeMethod>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public CSharpSimpleLikeMethod[] create(int count)
 		{
@@ -39,11 +40,11 @@ public interface CSharpSimpleLikeMethod
 		}
 	};
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	CSharpSimpleParameterInfo[] getParameterInfos();
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	DotNetTypeRef getReturnTypeRef();
 }

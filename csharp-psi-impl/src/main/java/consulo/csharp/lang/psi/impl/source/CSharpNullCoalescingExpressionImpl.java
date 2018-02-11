@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
@@ -32,18 +33,18 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpNullCoalescingExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpNullCoalescingExpressionImpl(@NotNull ASTNode node)
+	public CSharpNullCoalescingExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitNullCoalescingExpression(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public DotNetExpression getCondition()
 	{
@@ -69,7 +70,7 @@ public class CSharpNullCoalescingExpressionImpl extends CSharpExpressionImpl imp
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)

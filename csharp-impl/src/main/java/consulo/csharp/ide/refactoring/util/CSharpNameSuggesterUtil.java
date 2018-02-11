@@ -28,8 +28,8 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
@@ -71,14 +71,14 @@ public class CSharpNameSuggesterUtil
 	{
 	}
 
-	private static String deleteNonLetterFromString(@NotNull final String string)
+	private static String deleteNonLetterFromString(@Nonnull final String string)
 	{
 		Pattern pattern = Pattern.compile("[^a-zA-Z_]+");
 		Matcher matcher = pattern.matcher(string);
 		return matcher.replaceAll("_");
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static Collection<String> getSuggestedVariableNames(final DotNetVariable variable)
 	{
@@ -145,16 +145,16 @@ public class CSharpNameSuggesterUtil
 		});
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static Set<String> getSuggestedNames(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	public static Set<String> getSuggestedNames(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		return getSuggestedNames(typeRef, scope, Collections.emptySet());
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static Set<String> getSuggestedNames(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @NotNull Set<String> alreadyUsedNames)
+	public static Set<String> getSuggestedNames(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope, @Nonnull Set<String> alreadyUsedNames)
 	{
 		Collection<String> candidates = new LinkedHashSet<>();
 
@@ -211,16 +211,16 @@ public class CSharpNameSuggesterUtil
 		return new TreeSet<>(result);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static Collection<String> getSuggestedNames(final DotNetExpression expression)
 	{
 		return getSuggestedNames(expression, null, null);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	private static Set<String> getSuggestedNames(@NotNull DotNetExpression expression, @Nullable Collection<String> additionalUsedNames, @Nullable PsiElement toSkip)
+	private static Set<String> getSuggestedNames(@Nonnull DotNetExpression expression, @Nullable Collection<String> additionalUsedNames, @Nullable PsiElement toSkip)
 	{
 		Set<String> candidates = new LinkedHashSet<>();
 
@@ -323,7 +323,7 @@ public class CSharpNameSuggesterUtil
 		return wantOnlyThisTokens(TokenSet.create(CSharpTokens.IDENTIFIER), text);
 	}
 
-	private static boolean wantOnlyThisTokens(@NotNull TokenSet tokenSet, @NotNull CharSequence text)
+	private static boolean wantOnlyThisTokens(@Nonnull TokenSet tokenSet, @Nonnull CharSequence text)
 	{
 		try
 		{
@@ -342,8 +342,8 @@ public class CSharpNameSuggesterUtil
 		}
 	}
 
-	@NotNull
-	public static Collection<String> generateNames(@NotNull String name)
+	@Nonnull
+	public static Collection<String> generateNames(@Nonnull String name)
 	{
 		if(name.length() > 2 && name.charAt(0) == 'I' && Character.isUpperCase(name.charAt(1)))
 		{

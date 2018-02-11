@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.impl.source.CSharpStubParameterListImpl;
 import consulo.dotnet.psi.DotNetParameterList;
 import com.intellij.lang.ASTNode;
@@ -33,15 +33,15 @@ public class CSharpParameterListStubElementType extends CSharpEmptyStubElementTy
 		super("PARAMETER_LIST");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public DotNetParameterList createElement(@NotNull ASTNode astNode)
+	public DotNetParameterList createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpStubParameterListImpl(astNode);
 	}
 
 	@Override
-	public DotNetParameterList createPsi(@NotNull EmptyStub<DotNetParameterList> cSharpParameterListStub)
+	public DotNetParameterList createPsi(@Nonnull EmptyStub<DotNetParameterList> cSharpParameterListStub)
 	{
 		return new CSharpStubParameterListImpl(cSharpParameterListStub);
 	}

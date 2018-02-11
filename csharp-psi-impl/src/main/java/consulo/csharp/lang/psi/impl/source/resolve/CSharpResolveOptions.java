@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import consulo.csharp.lang.psi.CSharpContextUtil;
 import consulo.csharp.lang.psi.CSharpQualifiedNonReference;
@@ -31,17 +31,17 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpResolveOptions
 {
-	@NotNull
+	@Nonnull
 	public static CSharpResolveOptions build()
 	{
 		return new CSharpResolveOptions();
 	}
 
-	@NotNull
+	@Nonnull
 	private CSharpReferenceExpression.ResolveToKind myKind;
 	@Nullable
 	private CSharpResolveSelector mySelector;
-	@NotNull
+	@Nonnull
 	private PsiElement myElement;
 	@Nullable
 	private CSharpCallArgumentListOwner myCallArgumentListOwner;
@@ -56,9 +56,9 @@ public class CSharpResolveOptions
 	{
 	}
 
-	public CSharpResolveOptions(@NotNull CSharpReferenceExpression.ResolveToKind kind,
+	public CSharpResolveOptions(@Nonnull CSharpReferenceExpression.ResolveToKind kind,
 			@Nullable CSharpResolveSelector selector,
-			@NotNull PsiElement element,
+			@Nonnull PsiElement element,
 			@Nullable CSharpCallArgumentListOwner callArgumentListOwner,
 			final boolean completion,
 			boolean resolveFromParent)
@@ -72,43 +72,43 @@ public class CSharpResolveOptions
 		myResolveFromParent = resolveFromParent;
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpResolveOptions completion()
 	{
 		myCompletion = true;
 		return this;
 	}
 
-	@NotNull
-	public CSharpResolveOptions completion(@NotNull CSharpContextUtil.ContextType contextType)
+	@Nonnull
+	public CSharpResolveOptions completion(@Nonnull CSharpContextUtil.ContextType contextType)
 	{
 		myCompletion = true;
 		myCompletionContextType = contextType;
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpResolveOptions resolveFromParent()
 	{
 		myResolveFromParent = true;
 		return this;
 	}
 
-	@NotNull
-	public CSharpResolveOptions element(@NotNull PsiElement element)
+	@Nonnull
+	public CSharpResolveOptions element(@Nonnull PsiElement element)
 	{
 		myElement = element;
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpResolveOptions kind(CSharpReferenceExpression.ResolveToKind kind)
 	{
 		myKind = kind;
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpReferenceExpression.ResolveToKind getKind()
 	{
 		return myKind;
@@ -120,7 +120,7 @@ public class CSharpResolveOptions
 		return mySelector;
 	}
 
-	@NotNull
+	@Nonnull
 	public PsiElement getElement()
 	{
 		return myElement;

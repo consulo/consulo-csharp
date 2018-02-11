@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.Language;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -36,9 +37,9 @@ import consulo.lang.LanguageVersionResolver;
 public class CSharpLanguageVersionResolver implements LanguageVersionResolver
 {
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public LanguageVersion getLanguageVersion(@NotNull Language language, @Nullable PsiElement element)
+	public LanguageVersion getLanguageVersion(@Nonnull Language language, @Nullable PsiElement element)
 	{
 		if(element == null)
 		{
@@ -57,10 +58,10 @@ public class CSharpLanguageVersionResolver implements LanguageVersionResolver
 		return CSharpLanguageVersionHelper.getInstance().getWrapper(extension.getLanguageVersion());
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	@Override
-	public LanguageVersion getLanguageVersion(@NotNull Language language, @Nullable Project project, @Nullable VirtualFile virtualFile)
+	public LanguageVersion getLanguageVersion(@Nonnull Language language, @Nullable Project project, @Nullable VirtualFile virtualFile)
 	{
 		if(project == null || virtualFile == null)
 		{

@@ -18,8 +18,8 @@ package consulo.csharp.lang.doc;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import com.intellij.codeInsight.highlighting.XmlAwareBraceMatcher;
 import com.intellij.lang.BracePair;
@@ -118,7 +118,7 @@ public class CSharpDocBraceMatcher implements XmlAwareBraceMatcher, PairedBraceM
 	}
 
 	@Override
-	public boolean isPairedBracesAllowedBeforeType(@NotNull final IElementType lbraceType, @Nullable final IElementType contextType)
+	public boolean isPairedBracesAllowedBeforeType(@Nonnull final IElementType lbraceType, @Nullable final IElementType contextType)
 	{
 		return true;
 	}
@@ -256,7 +256,7 @@ public class CSharpDocBraceMatcher implements XmlAwareBraceMatcher, PairedBraceM
 	}
 
 	@Override
-	public IElementType getOppositeBraceTokenType(@NotNull final IElementType type)
+	public IElementType getOppositeBraceTokenType(@Nonnull final IElementType type)
 	{
 		PairedBraceMatcher matcher = LanguageBraceMatching.INSTANCE.forLanguage(type.getLanguage());
 		if(matcher != null)

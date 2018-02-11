@@ -19,7 +19,8 @@ package consulo.csharp.ide.debugger.expressionEvaluator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.application.ReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -47,7 +48,7 @@ public class MethodEvaluator extends Evaluator
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetThrowValueException
+	public void evaluate(@Nonnull CSharpEvaluateContext context) throws DotNetThrowValueException
 	{
 		List<DotNetValueProxy> values = new ArrayList<DotNetValueProxy>(myParameterTypes.size());
 		for(int i = 0; i < myParameterTypes.size(); i++)

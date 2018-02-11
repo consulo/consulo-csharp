@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.Trinity;
@@ -62,14 +62,14 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef getInnerParamsParameterTypeRef()
 	{
 		return myInnerParamsParameterTypeRefValue.getValue();
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef getParamsParameterTypeRef()
 	{
 		return myParamsParameterTypeRefValue.getValue();
@@ -96,7 +96,7 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 	}
 
 	@Override
-	public DotNetParameter getParameterByName(@NotNull String name)
+	public DotNetParameter getParameterByName(@Nonnull String name)
 	{
 		for(DotNetParameter parameter : myParameters)
 		{
@@ -108,15 +108,15 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	@Override
-	public Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(@NotNull DotNetParameter parameter)
+	public Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(@Nonnull DotNetParameter parameter)
 	{
 		return Trinity.create(parameter.getName(), parameter.toTypeRef(true), parameter.hasModifier(CSharpModifier.OPTIONAL));
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{

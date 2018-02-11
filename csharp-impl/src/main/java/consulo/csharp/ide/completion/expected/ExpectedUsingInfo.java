@@ -22,8 +22,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -56,7 +56,7 @@ public class ExpectedUsingInfo
 {
 	@RequiredReadAction
 	@Nullable
-	public static ExpectedUsingInfo calculateFrom(@NotNull PsiElement element)
+	public static ExpectedUsingInfo calculateFrom(@Nonnull PsiElement element)
 	{
 		Set<PsiElement> elements = new LinkedHashSet<>();
 
@@ -140,13 +140,13 @@ public class ExpectedUsingInfo
 
 	private final Set<PsiElement> myElements;
 
-	public ExpectedUsingInfo(@NotNull Set<PsiElement> elements)
+	public ExpectedUsingInfo(@Nonnull Set<PsiElement> elements)
 	{
 		myElements = elements;
 	}
 
 	@RequiredWriteAction
-	public void insertUsingBefore(@NotNull PsiElement element)
+	public void insertUsingBefore(@Nonnull PsiElement element)
 	{
 		boolean useLanguageDataTypes = CSharpCodeGenerationSettings.getInstance(element.getProject()).USE_LANGUAGE_DATA_TYPES;
 
@@ -194,7 +194,7 @@ public class ExpectedUsingInfo
 		{
 			@Override
 			@RequiredReadAction
-			public boolean execute(@NotNull PsiElement psiElement, ResolveState resolveState)
+			public boolean execute(@Nonnull PsiElement psiElement, ResolveState resolveState)
 			{
 				if(psiElement instanceof CSharpUsingTypeStatement)
 				{

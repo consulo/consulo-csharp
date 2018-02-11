@@ -18,7 +18,7 @@ package consulo.csharp.lang.doc.ide.competion;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.doc.psi.CSharpDocAttribute;
 import consulo.csharp.lang.doc.psi.CSharpDocTagImpl;
 import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
@@ -48,7 +48,7 @@ public class CSharpDocCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				PsiElement parent = parameters.getPosition().getParent();
 				if(parent instanceof CSharpDocTagImpl)

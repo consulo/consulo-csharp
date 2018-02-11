@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.parser.decl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.ModifierSet;
 import consulo.csharp.lang.parser.SharedParsingHelpers;
@@ -41,7 +41,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 	// { (
 	private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR, THIS_KEYWORD);
 
-	public static void parseAll(@NotNull CSharpBuilderWrapper builder, boolean root, boolean isEnum)
+	public static void parseAll(@Nonnull CSharpBuilderWrapper builder, boolean root, boolean isEnum)
 	{
 		if(isEnum)
 		{
@@ -88,13 +88,13 @@ public class DeclarationParsing extends SharedParsingHelpers
 		}
 	}
 
-	private static void parse(@NotNull CSharpBuilderWrapper builder, boolean root)
+	private static void parse(@Nonnull CSharpBuilderWrapper builder, boolean root)
 	{
 		PsiBuilder.Marker marker = builder.mark();
 
 		Pair<PsiBuilder.Marker, ModifierSet> modifierListPair = parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, ModifierSet>>()
 		{
-			@NotNull
+			@Nonnull
 			@Override
 			public Pair<PsiBuilder.Marker, ModifierSet> fun(CSharpBuilderWrapper builderWrapper)
 			{

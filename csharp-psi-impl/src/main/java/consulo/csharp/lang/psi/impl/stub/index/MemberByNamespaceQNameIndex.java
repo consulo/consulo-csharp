@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.stub.index;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexExtension;
@@ -33,7 +33,7 @@ public class MemberByNamespaceQNameIndex extends StringStubIndexExtension<DotNet
 		return StubIndexExtension.EP_NAME.findExtension(MemberByNamespaceQNameIndex.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public StubIndexKey<String, DotNetQualifiedElement> getKey()
 	{

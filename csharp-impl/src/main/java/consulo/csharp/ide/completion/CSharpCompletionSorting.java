@@ -22,8 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionSorter;
@@ -93,7 +94,7 @@ public class CSharpCompletionSorting
 		@Nullable
 		@Override
 		@RequiredReadAction
-		public Type weigh(@NotNull LookupElement element)
+		public Type weigh(@Nonnull LookupElement element)
 		{
 			Type type = element.getUserData(ourForceType);
 			if(type != null)
@@ -165,7 +166,7 @@ public class CSharpCompletionSorting
 		@Nullable
 		@Override
 		@RequiredReadAction
-		public Comparable weigh(@NotNull LookupElement element)
+		public Comparable weigh(@Nonnull LookupElement element)
 		{
 			if(myExpectedNames.isEmpty())
 			{
@@ -199,10 +200,10 @@ public class CSharpCompletionSorting
 			myExpectedTypes = expectedTypes;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		@RequiredReadAction
-		public Comparable weigh(@NotNull LookupElement element)
+		public Comparable weigh(@Nonnull LookupElement element)
 		{
 			final String name = getName(element);
 
@@ -237,10 +238,10 @@ public class CSharpCompletionSorting
 			super("notImportedSorter");
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		@RequiredReadAction
-		public Comparable weigh(@NotNull LookupElement element)
+		public Comparable weigh(@Nonnull LookupElement element)
 		{
 			Boolean data = element.getUserData(CSharpNoVariantsDelegator.NOT_IMPORTED);
 			return data != Boolean.TRUE;

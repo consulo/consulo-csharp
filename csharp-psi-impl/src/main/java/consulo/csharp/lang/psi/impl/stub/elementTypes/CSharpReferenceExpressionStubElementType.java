@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.impl.source.CSharpStubReferenceExpressionImpl;
@@ -41,22 +42,22 @@ public class CSharpReferenceExpressionStubElementType extends CSharpAbstractStub
 		super("REFERENCE_NAME");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElement createElement(@NotNull ASTNode astNode)
+	public PsiElement createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpStubReferenceExpressionImpl(astNode);
 	}
 
 	@Override
-	public CSharpReferenceExpression createPsi(@NotNull CSharpReferenceExpressionStub stub)
+	public CSharpReferenceExpression createPsi(@Nonnull CSharpReferenceExpressionStub stub)
 	{
 		return new CSharpStubReferenceExpressionImpl(stub, this);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpReferenceExpressionStub createStub(@NotNull CSharpReferenceExpression psi, StubElement parentStub)
+	public CSharpReferenceExpressionStub createStub(@Nonnull CSharpReferenceExpression psi, StubElement parentStub)
 	{
 		String referenceName = psi.getReferenceNameWithAt();
 		CSharpReferenceExpression.ResolveToKind kind = psi.kind();
@@ -66,7 +67,7 @@ public class CSharpReferenceExpressionStubElementType extends CSharpAbstractStub
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpReferenceExpressionStub stub, @NotNull StubOutputStream dataStream) throws IOException
+	public void serialize(@Nonnull CSharpReferenceExpressionStub stub, @Nonnull StubOutputStream dataStream) throws IOException
 	{
 		dataStream.writeName(stub.getReferenceText());
 		dataStream.writeVarInt(stub.getKindIndex());
@@ -74,9 +75,9 @@ public class CSharpReferenceExpressionStubElementType extends CSharpAbstractStub
 		dataStream.writeBoolean(stub.isGlobal());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpReferenceExpressionStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException
+	public CSharpReferenceExpressionStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException
 	{
 		StringRef referenceText = dataStream.readName();
 		int kind = dataStream.readVarInt();

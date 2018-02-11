@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.ide.debugger.CSharpStaticValueProxy;
 
@@ -33,7 +33,7 @@ public class StaticObjectEvaluator extends Evaluator
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context)
+	public void evaluate(@Nonnull CSharpEvaluateContext context)
 	{
 		context.pull(CSharpStaticValueProxy.INSTANCE, null);
 	}

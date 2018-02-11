@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -34,7 +35,7 @@ public class CS0132 extends CompilerCheck<CSharpConstructorDeclaration>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpConstructorDeclaration element)
+	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpConstructorDeclaration element)
 	{
 		if(element.hasModifier(CSharpModifier.STATIC) && element.getParameters().length > 0)
 		{

@@ -18,9 +18,10 @@ package consulo.csharp.lang.doc;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.emonic.base.documentation.IDocumentation;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -36,7 +37,7 @@ public class CSharpCommentDocumentationResolver implements DotNetDocumentationRe
 {
 	@Nullable
 	@Override
-	public IDocumentation resolveDocumentation(@NotNull List<VirtualFile> virtualFile, @NotNull PsiElement element)
+	public IDocumentation resolveDocumentation(@Nonnull List<VirtualFile> virtualFile, @Nonnull PsiElement element)
 	{
 		if(!(element instanceof DotNetQualifiedElement))
 		{

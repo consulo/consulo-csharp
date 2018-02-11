@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
@@ -40,7 +41,7 @@ public class CSharpTupleTypeRef extends DotNetTypeRefWithCachedResult
 	private DotNetTypeRef[] myTypeRefs;
 	private PsiNameIdentifierOwner[] myVariables;
 
-	public CSharpTupleTypeRef(PsiElement scope, DotNetTypeRef[] typeRefs, @NotNull PsiNameIdentifierOwner[] variables)
+	public CSharpTupleTypeRef(PsiElement scope, DotNetTypeRef[] typeRefs, @Nonnull PsiNameIdentifierOwner[] variables)
 	{
 		super(scope.getProject());
 		myScope = scope;
@@ -49,7 +50,7 @@ public class CSharpTupleTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -64,7 +65,7 @@ public class CSharpTupleTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{

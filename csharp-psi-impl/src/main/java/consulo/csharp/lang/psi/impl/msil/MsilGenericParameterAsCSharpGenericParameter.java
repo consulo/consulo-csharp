@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
@@ -44,7 +46,7 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 	private final NotNullLazyValue<DotNetTypeRef[]> myExtendTypeRefsValue;
 
 	@RequiredReadAction
-	public MsilGenericParameterAsCSharpGenericParameter(@NotNull PsiElement parent, DotNetGenericParameter msilElement)
+	public MsilGenericParameterAsCSharpGenericParameter(@Nonnull PsiElement parent, DotNetGenericParameter msilElement)
 	{
 		super(parent, msilElement);
 		myExtendTypeRefsValue = NotNullLazyValue.createValue(() -> CSharpGenericConstraintUtil.getExtendTypes(this));
@@ -52,7 +54,7 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		modifier = CSharpModifier.as(modifier);
 		if(modifier == CSharpModifier.IN)
@@ -92,7 +94,7 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericParameter(this);
 	}
@@ -113,7 +115,7 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		return null;
 	}
@@ -125,7 +127,7 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
@@ -133,7 +135,7 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{

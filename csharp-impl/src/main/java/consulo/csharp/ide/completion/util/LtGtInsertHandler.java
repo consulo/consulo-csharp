@@ -15,7 +15,8 @@
  */
 package consulo.csharp.ide.completion.util;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
+
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;

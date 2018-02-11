@@ -19,7 +19,7 @@ package consulo.csharp.lang.evaluator;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.openapi.util.Couple;
 import com.intellij.psi.tree.IElementType;

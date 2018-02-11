@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -53,7 +54,7 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 			setText("Remove code block");
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -61,13 +62,13 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 		}
 
 		@Override
-		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			return myPointer.getElement() != null;
 		}
 
 		@Override
-		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			DotNetCodeBlockOwner element = myPointer.getElement();
 			if(element == null)
@@ -88,7 +89,7 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpMethodDeclaration element)
+	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpMethodDeclaration element)
 	{
 		PsiElement nameIdentifier = element.getNameIdentifier();
 		if(nameIdentifier == null)

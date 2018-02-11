@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.stub.CSharpDummyDeclStub;
 import com.intellij.lang.ASTNode;
@@ -33,12 +33,12 @@ public class CSharpDummyDeclarationImpl extends CSharpStubMemberImpl<CSharpDummy
 {
 	public static final String DUMMY = "<dummy>";
 
-	public CSharpDummyDeclarationImpl(@NotNull ASTNode node)
+	public CSharpDummyDeclarationImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpDummyDeclarationImpl(@NotNull CSharpDummyDeclStub stub, @NotNull IStubElementType<? extends CSharpDummyDeclStub, ?> nodeType)
+	public CSharpDummyDeclarationImpl(@Nonnull CSharpDummyDeclStub stub, @Nonnull IStubElementType<? extends CSharpDummyDeclStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -59,7 +59,7 @@ public class CSharpDummyDeclarationImpl extends CSharpStubMemberImpl<CSharpDummy
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitDummyDeclaration(this);
 	}

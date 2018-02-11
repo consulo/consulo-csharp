@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -54,7 +55,7 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 {
 	@RequiredReadAction
 	@Override
-	public void processAdditionalMembers(@NotNull DotNetElement element, @NotNull DotNetGenericExtractor extractor, @NotNull Consumer<PsiElement> consumer)
+	public void processAdditionalMembers(@Nonnull DotNetElement element, @Nonnull DotNetGenericExtractor extractor, @Nonnull Consumer<PsiElement> consumer)
 	{
 		if(element instanceof CSharpTypeDeclaration)
 		{
@@ -93,7 +94,7 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Target getTarget()
 	{
@@ -126,14 +127,14 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	private DotNetElement[] buildNullableOperators(@NotNull Project project,
-			@NotNull GlobalSearchScope resolveScope,
-			@NotNull DotNetTypeRef selfTypeRef,
-			@NotNull CSharpTypeDeclaration typeDeclaration,
-			@NotNull DotNetGenericExtractor extractor,
-			@NotNull Consumer<PsiElement> consumer)
+	private DotNetElement[] buildNullableOperators(@Nonnull Project project,
+			@Nonnull GlobalSearchScope resolveScope,
+			@Nonnull DotNetTypeRef selfTypeRef,
+			@Nonnull CSharpTypeDeclaration typeDeclaration,
+			@Nonnull DotNetGenericExtractor extractor,
+			@Nonnull Consumer<PsiElement> consumer)
 	{
 		DotNetGenericParameter[] genericParameters = typeDeclaration.getGenericParameters();
 		if(genericParameters.length == 0)
@@ -168,12 +169,12 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 		return ContainerUtil.toArray(elements, DotNetElement.ARRAY_FACTORY);
 	}
 
-	private static void buildOperators(@NotNull Project project,
-			@NotNull GlobalSearchScope resolveScope,
-			@NotNull DotNetTypeRef selfTypeRef,
-			@NotNull DotNetElement parent,
-			@NotNull Collection<OperatorStubsLoader.Operator> operators,
-			@NotNull Consumer<PsiElement> consumer)
+	private static void buildOperators(@Nonnull Project project,
+			@Nonnull GlobalSearchScope resolveScope,
+			@Nonnull DotNetTypeRef selfTypeRef,
+			@Nonnull DotNetElement parent,
+			@Nonnull Collection<OperatorStubsLoader.Operator> operators,
+			@Nonnull Consumer<PsiElement> consumer)
 	{
 		if(operators.isEmpty())
 		{

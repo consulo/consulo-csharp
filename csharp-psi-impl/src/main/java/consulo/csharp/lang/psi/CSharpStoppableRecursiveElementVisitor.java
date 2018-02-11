@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 
@@ -55,7 +56,7 @@ public class CSharpStoppableRecursiveElementVisitor<T> extends CSharpRecursiveEl
 		return myValue;
 	}
 
-	public void stopWalk(@NotNull T value)
+	public void stopWalk(@Nonnull T value)
 	{
 		myValue = value;
 	}

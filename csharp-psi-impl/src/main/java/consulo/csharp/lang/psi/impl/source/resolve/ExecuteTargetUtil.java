@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.source.resolve;
 
 import java.util.EnumSet;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.KeyWithDefaultValue;
 import com.intellij.psi.PsiElement;
@@ -39,7 +40,7 @@ public class ExecuteTargetUtil
 		}
 	};
 
-	public static boolean isMyElement(@NotNull PsiScopeProcessor psiScopeProcessor, @NotNull PsiElement element)
+	public static boolean isMyElement(@Nonnull PsiScopeProcessor psiScopeProcessor, @Nonnull PsiElement element)
 	{
 		EnumSet<ExecuteTarget> hint = psiScopeProcessor.getHint(EXECUTE_TARGETS);
 		if(hint == null)
@@ -74,7 +75,7 @@ public class ExecuteTargetUtil
 		return result;
 	}
 
-	public static boolean canProcess(@NotNull PsiScopeProcessor psiScopeProcessor, @NotNull ExecuteTarget... executeTargets)
+	public static boolean canProcess(@Nonnull PsiScopeProcessor psiScopeProcessor, @Nonnull ExecuteTarget... executeTargets)
 	{
 		EnumSet<ExecuteTarget> hint = psiScopeProcessor.getHint(EXECUTE_TARGETS);
 		if(hint == null)

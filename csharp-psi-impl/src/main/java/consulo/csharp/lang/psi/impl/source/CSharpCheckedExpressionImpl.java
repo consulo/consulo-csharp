@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.ASTNode;
@@ -31,7 +31,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpCheckedExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpCheckedExpressionImpl(@NotNull ASTNode node)
+	public CSharpCheckedExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -42,13 +42,13 @@ public class CSharpCheckedExpressionImpl extends CSharpExpressionImpl implements
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitCheckedExpression(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{

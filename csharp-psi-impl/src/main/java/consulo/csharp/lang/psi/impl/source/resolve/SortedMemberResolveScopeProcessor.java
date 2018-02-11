@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi.impl.source.resolve;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.CommonProcessors;
@@ -35,9 +35,9 @@ public class SortedMemberResolveScopeProcessor extends MemberResolveScopeProcess
 	private final Processor<ResolveResult> myOriginalProcessor;
 	private Comparator<ResolveResult> myComparator;
 
-	public SortedMemberResolveScopeProcessor(@NotNull CSharpResolveOptions options,
-			@NotNull Processor<ResolveResult> resultProcessor,
-			@NotNull Comparator<ResolveResult> comparator,
+	public SortedMemberResolveScopeProcessor(@Nonnull CSharpResolveOptions options,
+			@Nonnull Processor<ResolveResult> resultProcessor,
+			@Nonnull Comparator<ResolveResult> comparator,
 			ExecuteTarget[] targets)
 	{
 		super(options, CommonProcessors.<ResolveResult>alwaysTrue(), targets);

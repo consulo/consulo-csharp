@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
@@ -54,7 +55,7 @@ public class CSharpLikeMethodDeclarationImplUtil
 		NOT_FOUND
 	}
 
-	public static boolean isEquivalentTo(@NotNull PsiElement o1, @Nullable PsiElement o2)
+	public static boolean isEquivalentTo(@Nonnull PsiElement o1, @Nullable PsiElement o2)
 	{
 		if(o2 == null)
 		{
@@ -70,9 +71,9 @@ public class CSharpLikeMethodDeclarationImplUtil
 		return originalElement1 == originalElement2;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static Pair<ResolveVirtualImplementResult, PsiElement> resolveVirtualImplementation(@NotNull DotNetVirtualImplementOwner owner, @NotNull PsiElement scope)
+	public static Pair<ResolveVirtualImplementResult, PsiElement> resolveVirtualImplementation(@Nonnull DotNetVirtualImplementOwner owner, @Nonnull PsiElement scope)
 	{
 		DotNetType typeForImplement = owner.getTypeForImplement();
 		if(typeForImplement == null)
@@ -103,9 +104,9 @@ public class CSharpLikeMethodDeclarationImplUtil
 		return Pair.<ResolveVirtualImplementResult, PsiElement>create(ResolveVirtualImplementResult.NOT_FOUND, null);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static CSharpSimpleParameterInfo[] getParametersInfos(@NotNull DotNetParameterListOwner parameterListOwner)
+	public static CSharpSimpleParameterInfo[] getParametersInfos(@Nonnull DotNetParameterListOwner parameterListOwner)
 	{
 		DotNetParameter[] parameters = parameterListOwner.getParameters();
 
@@ -118,11 +119,11 @@ public class CSharpLikeMethodDeclarationImplUtil
 		return parameterInfos;
 	}
 
-	public static boolean processDeclarations(@NotNull DotNetLikeMethodDeclaration methodDeclaration,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
+	public static boolean processDeclarations(@Nonnull DotNetLikeMethodDeclaration methodDeclaration,
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
 			PsiElement lastParent,
-			@NotNull PsiElement place)
+			@Nonnull PsiElement place)
 	{
 		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.GENERIC_PARAMETER))
 		{

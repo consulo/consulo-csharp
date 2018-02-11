@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -39,18 +40,18 @@ import consulo.dotnet.psi.DotNetModifier;
  */
 public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpModifierList
 {
-	public CSharpModifierListImpl(@NotNull ASTNode node)
+	public CSharpModifierListImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitModifierList(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
@@ -68,18 +69,18 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpM
 	}
 
 	@Override
-	public void addModifier(@NotNull DotNetModifier modifier)
+	public void addModifier(@Nonnull DotNetModifier modifier)
 	{
 		CSharpModifierListImplUtil.addModifier(this, modifier);
 	}
 
 	@Override
-	public void removeModifier(@NotNull DotNetModifier modifier)
+	public void removeModifier(@Nonnull DotNetModifier modifier)
 	{
 		CSharpModifierListImplUtil.removeModifier(this, modifier);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpModifier[] getModifiers()
 	{
@@ -87,13 +88,13 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpM
 	}
 
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return CSharpModifierListImplUtil.getModifiersCached(this).contains(CSharpModifier.as(modifier));
 	}
 
 	@Override
-	public boolean hasModifierInTree(@NotNull DotNetModifier modifier)
+	public boolean hasModifierInTree(@Nonnull DotNetModifier modifier)
 	{
 		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
 		return findChildByType(iElementType) != null;
@@ -107,15 +108,15 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpM
 		return findChildByType(iElementType);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public List<PsiElement> getModifierElements(@NotNull DotNetModifier modifier)
+	public List<PsiElement> getModifierElements(@Nonnull DotNetModifier modifier)
 	{
 		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
 		return findChildrenByType(iElementType);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpAttributeList[] getAttributeLists()
 	{

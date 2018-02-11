@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.codeInsight.problems;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpFile;
 import com.intellij.codeInsight.daemon.ProblemHighlightFilter;
 import com.intellij.psi.PsiCodeFragment;
@@ -29,7 +29,7 @@ import com.intellij.psi.PsiFile;
 public class CSharpProblemHighlightFilter extends ProblemHighlightFilter
 {
 	@Override
-	public boolean shouldHighlight(@NotNull PsiFile psiFile)
+	public boolean shouldHighlight(@Nonnull PsiFile psiFile)
 	{
 		if(psiFile instanceof CSharpFile)
 		{

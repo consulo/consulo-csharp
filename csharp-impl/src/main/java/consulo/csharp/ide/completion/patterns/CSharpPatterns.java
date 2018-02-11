@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.completion.patterns;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.patterns.PatternCondition;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.patterns.StandardPatterns;
@@ -45,13 +46,13 @@ import consulo.dotnet.psi.DotNetType;
  */
 public class CSharpPatterns
 {
-	@NotNull
+	@Nonnull
 	public static PsiElementPattern.Capture<PsiElement> expressionStart()
 	{
 		return StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class).with(new PatternCondition<PsiElement>("error validator")
 		{
 			@Override
-			public boolean accepts(@NotNull PsiElement element, ProcessingContext processingContext)
+			public boolean accepts(@Nonnull PsiElement element, ProcessingContext processingContext)
 			{
 				CSharpReferenceExpression expression = PsiTreeUtil.getParentOfType(element, CSharpReferenceExpression.class);
 				assert expression != null;
@@ -80,14 +81,14 @@ public class CSharpPatterns
 		});
 	}
 
-	@NotNull
+	@Nonnull
 	public static PsiElementPattern.Capture<PsiElement> statementStart()
 	{
 		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).with(new PatternCondition<PsiElement>("statement-validator")
 		{
 			@Override
 			@RequiredReadAction
-			public boolean accepts(@NotNull PsiElement element, ProcessingContext processingContext)
+			public boolean accepts(@Nonnull PsiElement element, ProcessingContext processingContext)
 			{
 				PsiElement parent = element.getParent();
 				PsiElement parent2 = parent == null ? null : parent.getParent();
@@ -175,7 +176,7 @@ public class CSharpPatterns
 		}); */
 	}
 
-	@NotNull
+	@Nonnull
 	public static PsiElementPattern.Capture<PsiElement> fieldStart()
 	{
 		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).withSuperParent(3, CSharpFieldDeclaration.class);

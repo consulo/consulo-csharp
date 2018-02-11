@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
@@ -34,7 +35,7 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarationWithImplType<CSharpMethodDeclaration> implements CSharpMethodDeclaration
 {
-	public CSharpLightMethodDeclaration(@NotNull CSharpMethodDeclaration declaration)
+	public CSharpLightMethodDeclaration(@Nonnull CSharpMethodDeclaration declaration)
 	{
 		this(declaration, declaration.getParameterList());
 	}
@@ -79,7 +80,7 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitMethodDeclaration(this);
 	}
@@ -91,7 +92,7 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{

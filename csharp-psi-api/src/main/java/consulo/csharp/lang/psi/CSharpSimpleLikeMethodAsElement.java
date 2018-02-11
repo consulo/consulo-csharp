@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetElement;
@@ -32,7 +33,7 @@ public interface CSharpSimpleLikeMethodAsElement extends DotNetElement, CSharpSi
 {
 	@Override
 	@RequiredReadAction
-	boolean hasModifier(@NotNull DotNetModifier modifier);
+	boolean hasModifier(@Nonnull DotNetModifier modifier);
 
 	@Nullable
 	PsiElement getCodeBlock();

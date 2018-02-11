@@ -19,8 +19,9 @@ package consulo.csharp.lang.psi.impl.source.resolve.extensionResolver;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
@@ -71,10 +72,10 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 
 	private ExtensionQualifierAsCallArgumentWrapper myArgumentWrapper;
 
-	public ExtensionResolveScopeProcessor(@NotNull DotNetTypeRef qualifierTypeRef,
-			@NotNull CSharpReferenceExpression expression,
+	public ExtensionResolveScopeProcessor(@Nonnull DotNetTypeRef qualifierTypeRef,
+			@Nonnull CSharpReferenceExpression expression,
 			boolean completion,
-			@NotNull StubScopeProcessor processor,
+			@Nonnull StubScopeProcessor processor,
 			@Nullable CSharpCallArgumentListOwner callArgumentListOwner)
 	{
 		myQualifierTypeRef = qualifierTypeRef;
@@ -87,7 +88,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 
 	@RequiredReadAction
 	@Override
-	public boolean execute(@NotNull final PsiElement element, ResolveState state)
+	public boolean execute(@Nonnull final PsiElement element, ResolveState state)
 	{
 		if(myCompletion)
 		{
@@ -175,13 +176,13 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 		return true;
 	}
 
-	private boolean isCompletionCopy(@NotNull PsiElement element)
+	private boolean isCompletionCopy(@Nonnull PsiElement element)
 	{
 		PsiFile containingFile = element.getContainingFile();
 		return containingFile != null && containingFile.getViewProvider().getVirtualFile() instanceof LightVirtualFile;
 	}
 
-	private boolean isAlreadyAdded(@NotNull CSharpMethodDeclaration methodDeclaration)
+	private boolean isAlreadyAdded(@Nonnull CSharpMethodDeclaration methodDeclaration)
 	{
 		for(CSharpMethodDeclaration resolvedElement : myResolvedElements)
 		{
@@ -193,7 +194,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public GenericInferenceUtil.GenericInferenceResult inferenceGenericExtractor(CSharpMethodDeclaration methodDeclaration)
 	{
@@ -241,7 +242,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 		myProcessor.pushResultExternally(new CSharpResolveResult(element, true));
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private DotNetTypeRef getFirstTypeRefOrParameter(DotNetParameterListOwner owner, DotNetGenericExtractor extractor)
 	{
@@ -253,7 +254,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 
 	@RequiredReadAction
 	private static CSharpMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration,
-			@NotNull GenericInferenceUtil.GenericInferenceResult inferenceResult,
+			@Nonnull GenericInferenceUtil.GenericInferenceResult inferenceResult,
 			@Nullable PsiElement providerElement)
 	{
 		DotNetParameterList parameterList = methodDeclaration.getParameterList();

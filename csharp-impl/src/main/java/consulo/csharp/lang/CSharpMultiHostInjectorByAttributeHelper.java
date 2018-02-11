@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.TextRange;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
@@ -35,7 +35,7 @@ public class CSharpMultiHostInjectorByAttributeHelper implements MultiHostInject
 {
 	@Nullable
 	@Override
-	public String getLanguageId(@NotNull DotNetAttribute attribute)
+	public String getLanguageId(@Nonnull DotNetAttribute attribute)
 	{
 		if(!(attribute instanceof CSharpAttribute))
 		{
@@ -52,7 +52,7 @@ public class CSharpMultiHostInjectorByAttributeHelper implements MultiHostInject
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public TextRange getTextRangeForInject(@NotNull DotNetExpression expression)
+	public TextRange getTextRangeForInject(@Nonnull DotNetExpression expression)
 	{
 		if(expression instanceof CSharpConstantExpressionImpl)
 		{

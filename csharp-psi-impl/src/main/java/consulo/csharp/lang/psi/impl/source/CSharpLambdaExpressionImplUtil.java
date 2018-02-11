@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi.impl.source;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
@@ -50,7 +50,7 @@ import consulo.dotnet.util.ArrayUtil2;
  */
 public class CSharpLambdaExpressionImplUtil
 {
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static DotNetTypeRef resolveTypeForParameter(CSharpLambdaExpressionImpl target, int parameterIndex)
 	{

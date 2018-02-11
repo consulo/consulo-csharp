@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpAnonymFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -31,7 +31,7 @@ import consulo.dotnet.psi.DotNetExpression;
  */
 public class CSharpAnonymFieldOrPropertySetImpl extends CSharpElementImpl implements CSharpAnonymFieldOrPropertySet
 {
-	public CSharpAnonymFieldOrPropertySetImpl(@NotNull ASTNode node)
+	public CSharpAnonymFieldOrPropertySetImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -49,19 +49,19 @@ public class CSharpAnonymFieldOrPropertySetImpl extends CSharpElementImpl implem
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitFieldOrPropertySet(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getNameElement()
 	{
 		return getFirstChild();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetExpression getValueExpression()
 	{

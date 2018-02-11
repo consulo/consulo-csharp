@@ -16,9 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.LocalSearchScope;
@@ -49,19 +50,19 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 
 	public static ArrayFactory<CSharpLambdaParameterImpl> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpLambdaParameterImpl[count];
 
-	public CSharpLambdaParameterImpl(@NotNull ASTNode node)
+	public CSharpLambdaParameterImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitLambdaParameter(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{
@@ -78,7 +79,7 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	private DotNetTypeRef toTypeRefImpl0(boolean resolveFromInitializer)
 	{
 		DotNetType type = getType();
@@ -103,7 +104,7 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 		return findChildByClass(DotNetType.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private DotNetTypeRef resolveTypeForParameter()
 	{
@@ -121,13 +122,13 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, s);
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public SearchScope getUseScope()
 	{

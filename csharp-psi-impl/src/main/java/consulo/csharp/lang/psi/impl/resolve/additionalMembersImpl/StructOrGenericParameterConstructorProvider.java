@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -45,9 +46,9 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 {
 	@RequiredReadAction
 	@Override
-	public void processAdditionalMembers(@NotNull DotNetElement element,
-			@NotNull DotNetGenericExtractor extractor,
-			@NotNull Consumer<PsiElement> consumer)
+	public void processAdditionalMembers(@Nonnull DotNetElement element,
+			@Nonnull DotNetGenericExtractor extractor,
+			@Nonnull Consumer<PsiElement> consumer)
 	{
 		if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isStruct())
 		{
@@ -97,7 +98,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Target getTarget()
 	{
@@ -105,10 +106,10 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 	}
 
 	@RequiredReadAction
-	private static void buildDefaultConstructor(@NotNull DotNetNamedElement element,
-			@NotNull CSharpModifier modifier,
-			@NotNull DotNetGenericExtractor extractor,
-			@NotNull Consumer<PsiElement> consumer)
+	private static void buildDefaultConstructor(@Nonnull DotNetNamedElement element,
+			@Nonnull CSharpModifier modifier,
+			@Nonnull DotNetGenericExtractor extractor,
+			@Nonnull Consumer<PsiElement> consumer)
 	{
 		String name = element.getName();
 		if(name == null)

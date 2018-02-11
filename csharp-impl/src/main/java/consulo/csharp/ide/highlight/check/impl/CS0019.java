@@ -19,8 +19,8 @@ package consulo.csharp.ide.highlight.check.impl;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -66,7 +66,7 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl>
 			setText("Replace by 'Equals()' call");
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -74,14 +74,14 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl>
 		}
 
 		@Override
-		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			return myElementPointer.getElement() != null;
 		}
 
 		@Override
 		@RequiredWriteAction
-		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			CSharpBinaryExpressionImpl element = myElementPointer.getElement();
 			if(element == null)
@@ -136,7 +136,7 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpBinaryExpressionImpl element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpBinaryExpressionImpl element)
 	{
 		CSharpOperatorReferenceImpl operatorElement = element.getOperatorElement();
 		IElementType operatorElementType = operatorElement.getOperatorElementType();

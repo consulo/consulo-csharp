@@ -19,7 +19,8 @@ package consulo.csharp.ide.actions.generate;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
@@ -40,7 +41,7 @@ import com.intellij.psi.PsiElement;
  */
 public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideMemberHandler
 {
-	@NotNull
+	@Nonnull
 	@Override
 	public String getTitle()
 	{
@@ -49,7 +50,7 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 
 	@RequiredReadAction
 	@Override
-	public void appendAdditionalModifiers(@NotNull StringBuilder builder, @NotNull PsiElement item)
+	public void appendAdditionalModifiers(@Nonnull StringBuilder builder, @Nonnull PsiElement item)
 	{
 		CSharpModifier requiredOverrideModifier = OverrideUtil.getRequiredOverrideModifier((DotNetModifierListOwner) item);
 		if(requiredOverrideModifier != null)
@@ -60,13 +61,13 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 
 	@RequiredReadAction
 	@Override
-	public void appendReturnStatement(@NotNull StringBuilder builder, @NotNull PsiElement item)
+	public void appendReturnStatement(@Nonnull StringBuilder builder, @Nonnull PsiElement item)
 	{
 		generateReturn(builder, item);
 	}
 
 	@RequiredReadAction
-	public static void generateReturn(@NotNull StringBuilder builder, @NotNull PsiElement item)
+	public static void generateReturn(@Nonnull StringBuilder builder, @Nonnull PsiElement item)
 	{
 		if(item instanceof CSharpMethodDeclaration)
 		{
@@ -91,7 +92,7 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 	}
 
 	@RequiredReadAction
-	private static void generateReturnForTypeRef(@NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement item)
+	private static void generateReturnForTypeRef(@Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement item)
 	{
 		String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(typeRef, item);
 		if(defaultValueForType != null)
@@ -101,9 +102,9 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public Collection<DotNetModifierListOwner> getItems(@NotNull CSharpTypeDeclaration typeDeclaration)
+	public Collection<DotNetModifierListOwner> getItems(@Nonnull CSharpTypeDeclaration typeDeclaration)
 	{
 		if(typeDeclaration.isInterface())
 		{

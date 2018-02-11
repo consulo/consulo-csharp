@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpStubElements;
@@ -36,18 +36,18 @@ import consulo.dotnet.psi.DotNetType;
  */
 public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<DotNetFieldDeclaration>> implements CSharpFieldDeclaration
 {
-	public CSharpFieldDeclarationImpl(@NotNull ASTNode node)
+	public CSharpFieldDeclarationImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpFieldDeclarationImpl(@NotNull CSharpVariableDeclStub<DotNetFieldDeclaration> stub)
+	public CSharpFieldDeclarationImpl(@Nonnull CSharpVariableDeclStub<DotNetFieldDeclaration> stub)
 	{
 		super(stub, CSharpStubElements.FIELD_DECLARATION);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitFieldDeclaration(this);
 	}

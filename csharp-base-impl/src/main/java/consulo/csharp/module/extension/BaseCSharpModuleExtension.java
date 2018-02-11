@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.jdom.Element;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -63,26 +65,26 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	protected String myCompilerTarget;
 	protected CSharpCustomCompilerSdkPointer myCustomCompilerSdkPointer;
 
-	public BaseCSharpModuleExtension(@NotNull String id, @NotNull ModuleRootLayer layer)
+	public BaseCSharpModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer layer)
 	{
 		super(id, layer);
 		myCustomCompilerSdkPointer = new CSharpCustomCompilerSdkPointer(layer, id);
 	}
 
 	@Override
-	public void setCompilerExecutable(@NotNull DotNetCompilerOptionsBuilder builder, @NotNull VirtualFile executable)
+	public void setCompilerExecutable(@Nonnull DotNetCompilerOptionsBuilder builder, @Nonnull VirtualFile executable)
 	{
 		((MSBaseDotNetCompilerOptionsBuilder) builder).setExecutable(executable.getPath());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public MutableModuleInheritableNamedPointer<Sdk> getCustomCompilerSdkPointer()
 	{
 		return myCustomCompilerSdkPointer;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public PsiElement[] getEntryPointElements()
@@ -147,7 +149,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpPlatform getPlatform()
 	{
@@ -160,7 +162,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		return myOptimizeCode;
 	}
 
-	public void setPlatform(@NotNull CSharpPlatform platform)
+	public void setPlatform(@Nonnull CSharpPlatform platform)
 	{
 		myPlatform = platform;
 	}
@@ -171,7 +173,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	}
 
 	@Override
-	public boolean isModifiedImpl(@NotNull T mutableModuleExtension)
+	public boolean isModifiedImpl(@Nonnull T mutableModuleExtension)
 	{
 		return super.isModifiedImpl(mutableModuleExtension) || myOptimizeCode != mutableModuleExtension.myOptimizeCode || myPlatform != mutableModuleExtension.myPlatform ||
 				!myCustomCompilerSdkPointer.equals(mutableModuleExtension.myCustomCompilerSdkPointer) || !Comparing.equal(myCompilerTarget, mutableModuleExtension.myCompilerTarget);
@@ -179,7 +181,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 
 	@RequiredReadAction
 	@Override
-	protected void loadStateImpl(@NotNull Element element)
+	protected void loadStateImpl(@Nonnull Element element)
 	{
 		super.loadStateImpl(element);
 
@@ -190,7 +192,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	}
 
 	@Override
-	protected void getStateImpl(@NotNull Element element)
+	protected void getStateImpl(@Nonnull Element element)
 	{
 		super.getStateImpl(element);
 
@@ -204,7 +206,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	}
 
 	@Override
-	public void commit(@NotNull T mutableModuleExtension)
+	public void commit(@Nonnull T mutableModuleExtension)
 	{
 		super.commit(mutableModuleExtension);
 

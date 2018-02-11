@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi.impl.msil;
 import java.util.List;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.NullableLazyValue;
@@ -109,13 +109,13 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitIndexMethodDeclaration(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
@@ -145,7 +145,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
 	{
 		return null;
 	}
@@ -156,7 +156,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return getPresentableQName();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetXXXAccessor[] getAccessors()
 	{
@@ -164,7 +164,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetType getReturnType()
 	{
@@ -172,14 +172,14 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
 		return myReturnTypeRefValue.getValue();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -188,7 +188,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return myModifierList.hasModifier(modifier);
 	}
@@ -201,7 +201,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return myModifierList;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
@@ -215,7 +215,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
@@ -236,7 +236,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
@@ -256,7 +256,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return myTypeForImplementValue.getValue();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{

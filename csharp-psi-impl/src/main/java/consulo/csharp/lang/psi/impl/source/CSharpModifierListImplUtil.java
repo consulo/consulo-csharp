@@ -23,7 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.PsiWhiteSpace;
@@ -81,9 +82,9 @@ public class CSharpModifierListImplUtil
 
 	private static final EnumSet<CSharpModifier> emptySet = EnumSet.noneOf(CSharpModifier.class);
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static EnumSet<CSharpModifier> getModifiersCached(@NotNull CSharpModifierList modifierList)
+	public static EnumSet<CSharpModifier> getModifiersCached(@Nonnull CSharpModifierList modifierList)
 	{
 		if(!modifierList.isValid())
 		{
@@ -105,7 +106,7 @@ public class CSharpModifierListImplUtil
 	}
 
 	@RequiredReadAction
-	public static boolean hasModifier(@NotNull CSharpModifierList modifierList, @NotNull DotNetModifier modifier)
+	public static boolean hasModifier(@Nonnull CSharpModifierList modifierList, @Nonnull DotNetModifier modifier)
 	{
 		if(modifierList.hasModifierInTree(modifier))
 		{
@@ -210,9 +211,9 @@ public class CSharpModifierListImplUtil
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	private static CSharpAccessModifier findModifier(@NotNull CSharpModifierList list, CSharpModifier skipModifier)
+	private static CSharpAccessModifier findModifier(@Nonnull CSharpModifierList list, CSharpModifier skipModifier)
 	{
 		loop:
 		for(CSharpAccessModifier value : CSharpAccessModifier.VALUES)
@@ -240,7 +241,7 @@ public class CSharpModifierListImplUtil
 	}
 
 	@RequiredReadAction
-	public static void addModifier(@NotNull CSharpModifierList modifierList, @NotNull DotNetModifier modifier)
+	public static void addModifier(@Nonnull CSharpModifierList modifierList, @Nonnull DotNetModifier modifier)
 	{
 		PsiElement anchor = modifierList.getLastChild();
 
@@ -251,7 +252,7 @@ public class CSharpModifierListImplUtil
 		modifierList.addAfter(PsiParserFacade.SERVICE.getInstance(modifierList.getProject()).createWhiteSpaceFromText(" "), psiElement);
 	}
 
-	public static void removeModifier(@NotNull CSharpModifierList modifierList, @NotNull DotNetModifier modifier)
+	public static void removeModifier(@Nonnull CSharpModifierList modifierList, @Nonnull DotNetModifier modifier)
 	{
 		CSharpModifier as = CSharpModifier.as(modifier);
 		PsiElement modifierElement = modifierList.getModifierElement(as);

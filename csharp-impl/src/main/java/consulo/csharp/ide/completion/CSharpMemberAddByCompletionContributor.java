@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.completion;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -51,7 +51,7 @@ public interface CSharpMemberAddByCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				CSharpFieldDeclaration currentElement = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpFieldDeclaration.class);
 				assert currentElement != null;
@@ -98,5 +98,5 @@ public interface CSharpMemberAddByCompletionContributor
 	}
 
 	@RequiredReadAction
-	void processCompletion(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull Consumer<LookupElement> result, @NotNull CSharpTypeDeclaration typeDeclaration);
+	void processCompletion(@Nonnull CompletionParameters parameters, @Nonnull ProcessingContext context, @Nonnull Consumer<LookupElement> result, @Nonnull CSharpTypeDeclaration typeDeclaration);
 }

@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -33,18 +35,18 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CSharpNamedCallArgumentImpl extends CSharpElementImpl implements CSharpNamedCallArgument
 {
-	public CSharpNamedCallArgumentImpl(@NotNull ASTNode node)
+	public CSharpNamedCallArgumentImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitNamedCallArgument(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpReferenceExpression getArgumentNameReference()
 	{
@@ -60,7 +62,7 @@ public class CSharpNamedCallArgumentImpl extends CSharpElementImpl implements CS
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getName()
 	{
 		CSharpReferenceExpression argumentNameReference = getArgumentNameReference();
@@ -68,7 +70,7 @@ public class CSharpNamedCallArgumentImpl extends CSharpElementImpl implements CS
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		return getArgumentNameReference().handleElementRename(name);
 	}

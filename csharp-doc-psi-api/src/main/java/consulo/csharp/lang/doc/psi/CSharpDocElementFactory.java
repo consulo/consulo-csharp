@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.doc.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.psi.tree.IElementType;
 
@@ -32,6 +33,6 @@ public interface CSharpDocElementFactory
 		return factory.getDocRootElementType();
 	}
 
-	@NotNull
+	@Nonnull
 	IElementType getDocRootElementType();
 }

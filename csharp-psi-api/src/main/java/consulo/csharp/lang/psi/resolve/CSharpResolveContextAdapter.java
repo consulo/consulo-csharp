@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.DeprecationInfo;
 
@@ -28,7 +28,7 @@ import consulo.annotations.DeprecationInfo;
 @DeprecationInfo("Use CSharpResolveContext")
 public class CSharpResolveContextAdapter implements CSharpResolveContext
 {
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getElement()
 	{

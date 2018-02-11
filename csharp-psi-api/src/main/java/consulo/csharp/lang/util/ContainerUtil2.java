@@ -22,8 +22,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -32,9 +33,9 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class ContainerUtil2
 {
-	@NotNull
+	@Nonnull
 	@Contract(pure = true)
-	public static <T> Collection<T> concat(@NotNull final List<Collection<? extends T>> collections)
+	public static <T> Collection<T> concat(@Nonnull final List<Collection<? extends T>> collections)
 	{
 		int size = 0;
 		for(Collection<? extends T> each : collections)
@@ -52,7 +53,7 @@ public class ContainerUtil2
 		final int finalSize = size;
 		return new AbstractCollection<T>()
 		{
-			@NotNull
+			@Nonnull
 			@Override
 			public Iterator<T> iterator()
 			{
@@ -67,10 +68,10 @@ public class ContainerUtil2
 		};
 	}
 
-	@NotNull
+	@Nonnull
 	@Contract(pure = true)
 	@SafeVarargs
-	public static <T> Collection<T> concat(@NotNull final Collection<? extends T>... collections)
+	public static <T> Collection<T> concat(@Nonnull final Collection<? extends T>... collections)
 	{
 		int size = 0;
 		for(Collection<? extends T> each : collections)
@@ -87,7 +88,7 @@ public class ContainerUtil2
 		final int finalSize = size;
 		return new AbstractCollection<T>()
 		{
-			@NotNull
+			@Nonnull
 			@Override
 			public Iterator<T> iterator()
 			{

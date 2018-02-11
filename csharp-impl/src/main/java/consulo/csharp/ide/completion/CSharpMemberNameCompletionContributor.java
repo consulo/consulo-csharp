@@ -18,7 +18,8 @@ package consulo.csharp.ide.completion;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -56,7 +57,7 @@ public class CSharpMemberNameCompletionContributor extends CompletionContributor
 		{
 			@Override
 			@RequiredReadAction
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				PsiElement position = parameters.getPosition();
 				CSharpIdentifier identifier = PsiTreeUtil.getParentOfType(position, CSharpIdentifier.class);

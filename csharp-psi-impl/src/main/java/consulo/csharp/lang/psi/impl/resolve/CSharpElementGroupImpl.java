@@ -18,8 +18,9 @@ package consulo.csharp.lang.psi.impl.resolve;
 
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.pom.Navigatable;
@@ -45,7 +46,7 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 	private final Object myKey;
 	private final Collection<T> myElements;
 
-	public CSharpElementGroupImpl(@NotNull Project project, @NotNull Object key, Collection<T> elements)
+	public CSharpElementGroupImpl(@Nonnull Project project, @Nonnull Object key, Collection<T> elements)
 	{
 		super(PsiManager.getInstance(project), CSharpLanguage.INSTANCE);
 		myKey = key;
@@ -53,7 +54,7 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
 	{
 		for(T element : myElements)
 		{
@@ -67,7 +68,7 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -79,7 +80,7 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		for(T element : myElements)
 		{
@@ -91,7 +92,7 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Collection<T> getElements()
 	{
@@ -99,7 +100,7 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 	}
 
 	@Override
-	public boolean process(@NotNull Processor<? super T> processor)
+	public boolean process(@Nonnull Processor<? super T> processor)
 	{
 		for(T element : myElements)
 		{
@@ -133,7 +134,7 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public Object getKey()
 	{
 		return myKey;

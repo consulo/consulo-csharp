@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.project.Project;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.resolve.DotNetRefTypeRef;
@@ -39,7 +40,7 @@ public class CSharpRefTypeRef extends DotNetTypeRefWithCachedResult implements D
 	private final Type myType;
 	private DotNetTypeRef myTypeRef;
 
-	public CSharpRefTypeRef(Project project, @NotNull Type type, @NotNull DotNetTypeRef typeRef)
+	public CSharpRefTypeRef(Project project, @Nonnull Type type, @Nonnull DotNetTypeRef typeRef)
 	{
 		super(project);
 		myType = type;
@@ -52,7 +53,7 @@ public class CSharpRefTypeRef extends DotNetTypeRefWithCachedResult implements D
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -60,14 +61,14 @@ public class CSharpRefTypeRef extends DotNetTypeRefWithCachedResult implements D
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{
 		return myType.name() + " " + myTypeRef.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getInnerTypeRef()
 	{

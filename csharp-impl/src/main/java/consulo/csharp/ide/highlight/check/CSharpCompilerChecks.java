@@ -20,7 +20,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -172,7 +172,7 @@ public enum CSharpCompilerChecks
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public List<? extends CompilerCheck.HighlightInfoFactory> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, PsiElement element)
 	{
@@ -199,13 +199,13 @@ public enum CSharpCompilerChecks
 	{
 		return myType != HighlightInfoType.ERROR;
 	}
-	@NotNull
+	@Nonnull
 	public CSharpLanguageVersion getLanguageVersion()
 	{
 		return myLanguageVersion;
 	}
 
-	@NotNull
+	@Nonnull
 	public Class<?> getTargetClass()
 	{
 		return myTargetClass;

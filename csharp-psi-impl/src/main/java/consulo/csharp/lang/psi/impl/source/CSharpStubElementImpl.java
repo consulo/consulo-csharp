@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.util.ArrayUtil2;
@@ -40,22 +40,22 @@ import com.intellij.psi.tree.TokenSet;
  */
 public abstract class CSharpStubElementImpl<S extends StubElement> extends StubBasedPsiElementBase<S> implements StubBasedPsiElement<S>
 {
-	public CSharpStubElementImpl(@NotNull ASTNode node)
+	public CSharpStubElementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Nullable
 	@SuppressWarnings("unchecked")
-	public <T> T getStubOrPsiChildByIndex(@NotNull TokenSet set, int index)
+	public <T> T getStubOrPsiChildByIndex(@Nonnull TokenSet set, int index)
 	{
 		PsiElement[] children = getStubOrPsiChildren(set, PsiElement.ARRAY_FACTORY);
 		return (T) ArrayUtil2.safeGet(children, index);
 	}
 
-	@NotNull
+	@Nonnull
 	@SuppressWarnings("unchecked")
-	public <T> T getRequiredStubOrPsiChildByIndex(@NotNull TokenSet set, int index)
+	public <T> T getRequiredStubOrPsiChildByIndex(@Nonnull TokenSet set, int index)
 	{
 		T element = getStubOrPsiChildByIndex(set, index);
 		if(element == null)
@@ -67,7 +67,7 @@ public abstract class CSharpStubElementImpl<S extends StubElement> extends StubB
 	}
 
 	@Override
-	public void deleteChildInternal(@NotNull ASTNode child)
+	public void deleteChildInternal(@Nonnull ASTNode child)
 	{
 		PsiFile containingFile = getContainingFile();
 		DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElementNoNameCheck((CSharpFileImpl) containingFile);
@@ -87,13 +87,13 @@ public abstract class CSharpStubElementImpl<S extends StubElement> extends StubB
 		return ItemPresentationProviders.getItemPresentation(this);
 	}
 
-	public CSharpStubElementImpl(@NotNull S stub, @NotNull IStubElementType<? extends S, ?> nodeType)
+	public CSharpStubElementImpl(@Nonnull S stub, @Nonnull IStubElementType<? extends S, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@Nonnull PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{
@@ -111,5 +111,5 @@ public abstract class CSharpStubElementImpl<S extends StubElement> extends StubB
 		return getClass().getSimpleName() + " [" + getNode().getElementType() + "]";
 	}
 
-	public abstract void accept(@NotNull CSharpElementVisitor visitor);
+	public abstract void accept(@Nonnull CSharpElementVisitor visitor);
 }

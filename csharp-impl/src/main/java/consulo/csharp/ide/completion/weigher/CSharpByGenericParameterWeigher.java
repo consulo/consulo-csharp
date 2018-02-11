@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.completion.weigher;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.ProximityLocation;
 import com.intellij.psi.util.proximity.ProximityWeigher;
@@ -30,7 +30,7 @@ import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 public class CSharpByGenericParameterWeigher extends ProximityWeigher
 {
 	@Override
-	public Comparable weigh(@NotNull PsiElement psiElement, @NotNull ProximityLocation proximityLocation)
+	public Comparable weigh(@Nonnull PsiElement psiElement, @Nonnull ProximityLocation proximityLocation)
 	{
 		if(psiElement instanceof DotNetGenericParameterListOwner && psiElement.getLanguage() == CSharpLanguage.INSTANCE)
 		{

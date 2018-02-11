@@ -23,7 +23,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.folding.CodeFoldingSettings;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.CustomFoldingBuilder;
@@ -57,7 +58,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 {
 	@RequiredReadAction
 	@Override
-	protected void buildLanguageFoldRegions(@NotNull final List<FoldingDescriptor> descriptors, @NotNull PsiElement root, @NotNull Document document, boolean quick)
+	protected void buildLanguageFoldRegions(@Nonnull final List<FoldingDescriptor> descriptors, @Nonnull PsiElement root, @Nonnull Document document, boolean quick)
 	{
 		final Deque<PsiElement> regions = new ArrayDeque<>();
 		final Set<CSharpUsingListChild> processedUsingStatements = new LinkedHashSet<>();
@@ -129,7 +130,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 
 			@Override
 			@RequiredReadAction
-			public void visitUsingChild(@NotNull CSharpUsingListChild child)
+			public void visitUsingChild(@Nonnull CSharpUsingListChild child)
 			{
 				super.visitUsingChild(child);
 
@@ -219,7 +220,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 
 	@Override
 	@RequiredReadAction
-	protected String getLanguagePlaceholderText(@NotNull ASTNode node, @NotNull TextRange range)
+	protected String getLanguagePlaceholderText(@Nonnull ASTNode node, @Nonnull TextRange range)
 	{
 		PsiElement psi = node.getPsi();
 		if(psi instanceof CSharpUsingListChild)
@@ -301,7 +302,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 	}
 
 	@Override
-	protected boolean isRegionCollapsedByDefault(@NotNull ASTNode node)
+	protected boolean isRegionCollapsedByDefault(@Nonnull ASTNode node)
 	{
 		PsiElement psi = node.getPsi();
 		if(psi instanceof CSharpUsingListChild)

@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -34,19 +35,19 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpPointerTypeImpl extends CSharpTypeElementImpl implements DotNetPointerType
 {
-	public CSharpPointerTypeImpl(@NotNull ASTNode node)
+	public CSharpPointerTypeImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitPointerType(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
@@ -65,7 +66,7 @@ public class CSharpPointerTypeImpl extends CSharpTypeElementImpl implements DotN
 		return findChildByClass(DotNetType.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getAsterisk()
 	{

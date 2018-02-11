@@ -18,7 +18,8 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
@@ -56,9 +57,9 @@ public class CreateUnresolvedFieldFix extends CreateUnresolvedElementFix
 		super(expression);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElement getElementForAfterAdd(@NotNull DotNetNamedElement[] elements, @NotNull CSharpBodyWithBraces targetForGenerate)
+	public PsiElement getElementForAfterAdd(@Nonnull DotNetNamedElement[] elements, @Nonnull CSharpBodyWithBraces targetForGenerate)
 	{
 		PsiElement last = targetForGenerate.getLeftBrace();
 		for(DotNetNamedElement element : elements)
@@ -148,7 +149,7 @@ public class CreateUnresolvedFieldFix extends CreateUnresolvedElementFix
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText()
 	{
@@ -157,7 +158,7 @@ public class CreateUnresolvedFieldFix extends CreateUnresolvedElementFix
 
 	@RequiredReadAction
 	@Override
-	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @NotNull PsiFile file, @NotNull Template template)
+	public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @Nonnull PsiFile file, @Nonnull Template template)
 	{
 		template.addTextSegment("public ");
 

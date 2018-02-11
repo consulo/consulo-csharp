@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.refactoring.changeSignature;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpIdentifier;
@@ -92,13 +92,13 @@ public class CSharpChangeSignatureHandler implements ChangeSignatureHandler
 
 	@Override
 	public void invoke(
-			@NotNull Project project, Editor editor, PsiFile file, DataContext dataContext)
+			@Nonnull Project project, Editor editor, PsiFile file, DataContext dataContext)
 	{
 	}
 
 	@Override
 	public void invoke(
-			@NotNull Project project, @NotNull PsiElement[] elements, @Nullable DataContext dataContext)
+			@Nonnull Project project, @Nonnull PsiElement[] elements, @Nullable DataContext dataContext)
 	{
 		PsiElement element = elements[0];
 		if(!(element instanceof DotNetLikeMethodDeclaration))

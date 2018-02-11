@@ -18,7 +18,7 @@ package consulo.csharp.lang.psi.impl.source;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetExpression;
@@ -31,7 +31,7 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpNewArrayLengthImpl extends CSharpElementImpl
 {
-	public CSharpNewArrayLengthImpl(@NotNull ASTNode node)
+	public CSharpNewArrayLengthImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -42,14 +42,14 @@ public class CSharpNewArrayLengthImpl extends CSharpElementImpl
 		return elements.size();
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetExpression[] getDimensionValues()
 	{
 		return findChildrenByClass(DotNetExpression.class);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitNewArrayLength(this);
 	}

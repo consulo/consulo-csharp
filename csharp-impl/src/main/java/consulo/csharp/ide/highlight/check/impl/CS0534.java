@@ -19,8 +19,8 @@ package consulo.csharp.ide.highlight.check.impl;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.generation.ImplementMethodsHandler;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
@@ -49,14 +49,14 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
 {
 	public static class ImplementMembersQuickFix extends BaseIntentionAction
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public String getText()
 		{
 			return "Implement members";
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -64,7 +64,7 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
 		}
 
 		@Override
-		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			return true;
 		}
@@ -77,7 +77,7 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
 
 		@Override
 		@RequiredDispatchThread
-		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			new ImplementMethodsHandler().invoke(project, editor, file);
 		}
@@ -86,7 +86,7 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpTypeDeclaration element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpTypeDeclaration element)
 	{
 		if(element.isInterface())
 		{

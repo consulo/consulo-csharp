@@ -20,8 +20,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.text.StringUtil;
@@ -60,14 +60,14 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 
 	private Set<String> myUsingNamespaceChildren = new LinkedHashSet<>();
 
-	public CSharpFragmentFileImpl(@NotNull IElementType elementType, IElementType contentElementType, @NotNull FileViewProvider provider, @Nullable PsiElement context)
+	public CSharpFragmentFileImpl(@Nonnull IElementType elementType, IElementType contentElementType, @Nonnull FileViewProvider provider, @Nullable PsiElement context)
 	{
 		super(elementType, contentElementType, provider);
 		myContext = context;
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public Language getLanguage()
 	{
@@ -84,7 +84,7 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 		return super.getContext();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public FileType getFileType()
 	{
@@ -92,7 +92,7 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor psiElementVisitor)
+	public void accept(@Nonnull PsiElementVisitor psiElementVisitor)
 	{
 		psiElementVisitor.visitFile(this);
 	}
@@ -116,7 +116,7 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 		return mySearchScope;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetQualifiedElement[] getMembers()
 	{
@@ -125,7 +125,7 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 
 	@RequiredReadAction
 	@Override
-	public void addUsingChild(@NotNull CSharpUsingListChild child)
+	public void addUsingChild(@Nonnull CSharpUsingListChild child)
 	{
 		if(myContext == null)
 		{
@@ -143,7 +143,7 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpUsingListChild[] getUsingStatements()
 	{

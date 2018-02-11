@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
@@ -45,7 +45,7 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRefWithCachedR
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -55,7 +55,7 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRefWithCachedR
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)
+	public DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another, PsiElement scope)
 	{
 		DotNetTypeRef anotherTypeRef = CSharpConstantTypeRef.testNumberConstant(myExpression, getPrefix(), another, scope);
 		if(anotherTypeRef != null)
@@ -71,14 +71,14 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRefWithCachedR
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{
 		return myDelegate.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	protected String getPrefix()
 	{

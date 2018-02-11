@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpStubElements;
@@ -40,13 +41,13 @@ import consulo.dotnet.psi.DotNetQualifiedElement;
  */
 public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 {
-	public CSharpFileImpl(@NotNull FileViewProvider viewProvider)
+	public CSharpFileImpl(@Nonnull FileViewProvider viewProvider)
 	{
 		super(viewProvider, CSharpLanguage.INSTANCE);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public CSharpUsingListChild[] getUsingStatements()
 	{
@@ -73,7 +74,7 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@Nonnull PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{
@@ -85,14 +86,14 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public FileType getFileType()
 	{
 		return CSharpFileType.INSTANCE;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetQualifiedElement[] getMembers()
 	{

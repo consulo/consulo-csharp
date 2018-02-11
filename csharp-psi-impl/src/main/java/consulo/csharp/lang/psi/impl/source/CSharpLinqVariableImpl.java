@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
@@ -47,7 +49,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 	private static final CSharpTypeRefCacher<CSharpLinqVariableImpl> ourCacheSystem = new CSharpTypeRefCacher<CSharpLinqVariableImpl>(true)
 	{
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
 		protected DotNetTypeRef toTypeRefImpl(CSharpLinqVariableImpl element, boolean resolveFromParentOrInitializer)
 		{
@@ -60,13 +62,13 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		}
 	};
 
-	public CSharpLinqVariableImpl(@NotNull ASTNode node)
+	public CSharpLinqVariableImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqVariable(this);
 	}
@@ -87,14 +89,14 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolve)
 	{
 		return ourCacheSystem.toTypeRef(this, resolve);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private DotNetTypeRef resolveTypeRef()
 	{
@@ -194,7 +196,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return false;
 	}
@@ -225,7 +227,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, name);
 		return this;

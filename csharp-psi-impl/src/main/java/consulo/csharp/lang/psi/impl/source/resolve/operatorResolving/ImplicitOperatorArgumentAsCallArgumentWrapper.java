@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.operatorResolving;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.impl.light.CSharpLightExpression;
@@ -52,7 +52,7 @@ public class ImplicitOperatorArgumentAsCallArgumentWrapper extends LightElement 
 
 	private LightExpression myExpression;
 
-	public ImplicitOperatorArgumentAsCallArgumentWrapper(@NotNull DotNetExpression originalExpression, @NotNull DotNetTypeRef implicitTypeRef)
+	public ImplicitOperatorArgumentAsCallArgumentWrapper(@Nonnull DotNetExpression originalExpression, @Nonnull DotNetTypeRef implicitTypeRef)
 	{
 		super(PsiManager.getInstance(originalExpression.getProject()), CSharpLanguage.INSTANCE);
 		myExpression = new LightExpression(getManager(), implicitTypeRef, originalExpression);

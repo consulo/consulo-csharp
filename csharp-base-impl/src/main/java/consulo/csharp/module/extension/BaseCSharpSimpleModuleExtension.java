@@ -16,9 +16,11 @@
 
 package consulo.csharp.module.extension;
 
+import javax.annotation.Nonnull;
+
 import org.jdom.Element;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
@@ -39,20 +41,20 @@ public class BaseCSharpSimpleModuleExtension<T extends BaseCSharpSimpleModuleExt
 	protected final CSharpLanguageVersionPointer myLanguageVersionPointer;
 	protected boolean myAllowUnsafeCode;
 
-	public BaseCSharpSimpleModuleExtension(@NotNull String id, @NotNull ModuleRootLayer layer)
+	public BaseCSharpSimpleModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer layer)
 	{
 		super(id, layer);
 		myLanguageVersionPointer = new CSharpLanguageVersionPointer(layer, id);
 	}
 
 	@Override
-	public boolean isSupportedLanguageVersion(@NotNull CSharpLanguageVersion languageVersion)
+	public boolean isSupportedLanguageVersion(@Nonnull CSharpLanguageVersion languageVersion)
 	{
 		// for default we support all language versions
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public PsiElement[] getEntryPointElements()
@@ -68,7 +70,7 @@ public class BaseCSharpSimpleModuleExtension<T extends BaseCSharpSimpleModuleExt
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder() throws DotNetCompileFailedException
 	{
@@ -81,7 +83,7 @@ public class BaseCSharpSimpleModuleExtension<T extends BaseCSharpSimpleModuleExt
 		return myAllowUnsafeCode;
 	}
 
-	public void setLanguageVersion(@NotNull CSharpLanguageVersion languageVersion)
+	public void setLanguageVersion(@Nonnull CSharpLanguageVersion languageVersion)
 	{
 		myLanguageVersionPointer.set(null, languageVersion);
 	}
@@ -91,7 +93,7 @@ public class BaseCSharpSimpleModuleExtension<T extends BaseCSharpSimpleModuleExt
 		myAllowUnsafeCode = value;
 	}
 
-	public boolean isModifiedImpl(@NotNull T mutableModuleExtension)
+	public boolean isModifiedImpl(@Nonnull T mutableModuleExtension)
 	{
 		return myIsEnabled != mutableModuleExtension.isEnabled() ||
 				myAllowUnsafeCode != mutableModuleExtension.myAllowUnsafeCode ||
@@ -105,21 +107,21 @@ public class BaseCSharpSimpleModuleExtension<T extends BaseCSharpSimpleModuleExt
 
 	@RequiredReadAction
 	@Override
-	protected void loadStateImpl(@NotNull Element element)
+	protected void loadStateImpl(@Nonnull Element element)
 	{
 		myAllowUnsafeCode = Boolean.valueOf(element.getAttributeValue("unsafe-code", "false"));
 		myLanguageVersionPointer.fromXml(element);
 	}
 
 	@Override
-	protected void getStateImpl(@NotNull Element element)
+	protected void getStateImpl(@Nonnull Element element)
 	{
 		element.setAttribute("unsafe-code", Boolean.toString(myAllowUnsafeCode));
 		myLanguageVersionPointer.toXml(element);
 	}
 
 	@Override
-	public void commit(@NotNull T mutableModuleExtension)
+	public void commit(@Nonnull T mutableModuleExtension)
 	{
 		super.commit(mutableModuleExtension);
 
@@ -127,14 +129,14 @@ public class BaseCSharpSimpleModuleExtension<T extends BaseCSharpSimpleModuleExt
 		myLanguageVersionPointer.set(mutableModuleExtension.myLanguageVersionPointer);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpLanguageVersion getLanguageVersion()
 	{
 		return myLanguageVersionPointer.get();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public LanguageFileType getFileType()
 	{

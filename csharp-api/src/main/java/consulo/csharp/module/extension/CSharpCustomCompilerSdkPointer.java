@@ -16,7 +16,8 @@
 
 package consulo.csharp.module.extension;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -33,14 +34,14 @@ public class CSharpCustomCompilerSdkPointer extends ModuleInheritableNamedPointe
 {
 	private final String myExtensionId;
 
-	public CSharpCustomCompilerSdkPointer(@NotNull ModuleRootLayer layer, @NotNull String id)
+	public CSharpCustomCompilerSdkPointer(@Nonnull ModuleRootLayer layer, @Nonnull String id)
 	{
 		super(layer, "custom-compiler-sdk");
 		myExtensionId = id;
 	}
 
 	@Override
-	public String getItemNameFromModule(@NotNull Module module)
+	public String getItemNameFromModule(@Nonnull Module module)
 	{
 		final CSharpModuleExtension<?> extension = (CSharpModuleExtension) ModuleUtilCore.getExtension(module, myExtensionId);
 		if(extension != null)
@@ -51,7 +52,7 @@ public class CSharpCustomCompilerSdkPointer extends ModuleInheritableNamedPointe
 	}
 
 	@Override
-	public Sdk getItemFromModule(@NotNull Module module)
+	public Sdk getItemFromModule(@Nonnull Module module)
 	{
 		final CSharpModuleExtension<?> extension = (CSharpModuleExtension) ModuleUtilCore.getExtension(module, myExtensionId);
 		if(extension != null)
@@ -61,9 +62,9 @@ public class CSharpCustomCompilerSdkPointer extends ModuleInheritableNamedPointe
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public NamedPointer<Sdk> getPointer(@NotNull ModuleRootLayer layer, @NotNull String name)
+	public NamedPointer<Sdk> getPointer(@Nonnull ModuleRootLayer layer, @Nonnull String name)
 	{
 		return SdkUtil.createPointer(name);
 	}

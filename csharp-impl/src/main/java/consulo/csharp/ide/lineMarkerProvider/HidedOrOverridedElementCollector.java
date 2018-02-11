@@ -19,9 +19,9 @@ package consulo.csharp.ide.lineMarkerProvider;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.CSharpIcons;
@@ -85,7 +85,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @NotNull Consumer<LineMarkerInfo> consumer)
+	public void collect(PsiElement psiElement, @Nonnull Consumer<LineMarkerInfo> consumer)
 	{
 		DotNetVirtualImplementOwner virtualImplementOwner = CSharpLineMarkerUtil.findElementForLineMarker(psiElement);
 		if(virtualImplementOwner != null)

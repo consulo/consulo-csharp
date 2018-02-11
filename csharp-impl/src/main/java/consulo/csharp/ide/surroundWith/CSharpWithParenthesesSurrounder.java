@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.surroundWith;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.dotnet.psi.DotNetExpression;
 import com.intellij.lang.surroundWith.Surrounder;
@@ -40,7 +41,7 @@ public class CSharpWithParenthesesSurrounder implements Surrounder
 	}
 
 	@Override
-	public boolean isApplicable(@NotNull PsiElement[] elements)
+	public boolean isApplicable(@Nonnull PsiElement[] elements)
 	{
 		return true;
 	}
@@ -48,7 +49,7 @@ public class CSharpWithParenthesesSurrounder implements Surrounder
 	@Nullable
 	@Override
 	public TextRange surroundElements(
-			@NotNull Project project, @NotNull Editor editor, @NotNull PsiElement[] elements) throws IncorrectOperationException
+			@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiElement[] elements) throws IncorrectOperationException
 	{
 		DotNetExpression oldExpression = (DotNetExpression) elements[0];
 

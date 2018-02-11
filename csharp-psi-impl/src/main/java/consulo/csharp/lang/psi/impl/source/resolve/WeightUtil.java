@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi.impl.source.resolve;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -38,7 +38,7 @@ public class WeightUtil
 	public static final Comparator<MethodResolveResult> ourComparator = (o1, o2) -> o2.getCalcResult().getWeight() - o1.getCalcResult().getWeight();
 
 	@RequiredReadAction
-	public static void sortAndProcess(@NotNull List<MethodResolveResult> list, @NotNull Processor<ResolveResult> processor, @NotNull PsiElement place)
+	public static void sortAndProcess(@Nonnull List<MethodResolveResult> list, @Nonnull Processor<ResolveResult> processor, @Nonnull PsiElement place)
 	{
 		if(list.isEmpty())
 		{

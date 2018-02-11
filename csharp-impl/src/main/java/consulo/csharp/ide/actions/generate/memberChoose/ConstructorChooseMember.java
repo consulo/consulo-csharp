@@ -21,8 +21,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.generation.ClassMember;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -162,7 +162,7 @@ public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetCons
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String getPresentationText()
 	{

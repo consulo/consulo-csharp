@@ -16,10 +16,10 @@
 
 package consulo.csharp.ide.findUsage.groupingRule;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.lang.findUsages.LanguageFindUsages;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.navigation.NavigationItemFileStatus;
@@ -64,7 +64,7 @@ public class CSharpBaseGroupingRule<T extends PsiElement> implements UsageGroup,
 		return IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY | Iconable.ICON_FLAG_READ_STATUS);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText(@Nullable UsageView usageView)
 	{

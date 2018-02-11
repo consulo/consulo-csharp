@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.injection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.ProperTextRange;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.LiteralTextEscaper;
@@ -31,7 +31,7 @@ import com.intellij.psi.PsiLanguageInjectionHost;
  */
 public class CSharpStringLiteralEscaper<T extends PsiLanguageInjectionHost> extends LiteralTextEscaper<T>
 {
-	public static boolean parseStringCharacters(@NotNull String chars, @NotNull StringBuilder outChars, @Nullable int[] sourceOffsets)
+	public static boolean parseStringCharacters(@Nonnull String chars, @Nonnull StringBuilder outChars, @Nullable int[] sourceOffsets)
 	{
 		assert sourceOffsets == null || sourceOffsets.length == chars.length() + 1;
 		if(chars.indexOf('\\') < 0)
@@ -188,13 +188,13 @@ public class CSharpStringLiteralEscaper<T extends PsiLanguageInjectionHost> exte
 
 	private int[] myOutSourceOffsets;
 
-	public CSharpStringLiteralEscaper(@NotNull T host)
+	public CSharpStringLiteralEscaper(@Nonnull T host)
 	{
 		super(host);
 	}
 
 	@Override
-	public boolean decode(@NotNull final TextRange rangeInsideHost, @NotNull StringBuilder outChars)
+	public boolean decode(@Nonnull final TextRange rangeInsideHost, @Nonnull StringBuilder outChars)
 	{
 		ProperTextRange.assertProperRange(rangeInsideHost);
 		String subText = rangeInsideHost.substring(myHost.getText());
@@ -203,7 +203,7 @@ public class CSharpStringLiteralEscaper<T extends PsiLanguageInjectionHost> exte
 	}
 
 	@Override
-	public int getOffsetInHost(int offsetInDecoded, @NotNull final TextRange rangeInsideHost)
+	public int getOffsetInHost(int offsetInDecoded, @Nonnull final TextRange rangeInsideHost)
 	{
 		int result = offsetInDecoded < myOutSourceOffsets.length ? myOutSourceOffsets[offsetInDecoded] : -1;
 		if(result == -1)

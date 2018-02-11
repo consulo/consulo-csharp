@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
 
@@ -26,18 +26,18 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpArrayInitializerImpl extends CSharpElementImpl
 {
-	public CSharpArrayInitializerImpl(@NotNull ASTNode node)
+	public CSharpArrayInitializerImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitArrayInitializerExpression(this);
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpArrayInitializerValue[] getValues()
 	{
 		return findChildrenByClass(CSharpArrayInitializerValue.class);

@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiComment;
@@ -92,7 +92,7 @@ public class UsefulPsiTreeUtil
 	}
 
 	@Nullable
-	public static List<PsiElement> getPathToParentOfType(@Nullable PsiElement element, @NotNull Class<? extends PsiElement> aClass)
+	public static List<PsiElement> getPathToParentOfType(@Nullable PsiElement element, @Nonnull Class<? extends PsiElement> aClass)
 	{
 		if(element == null)
 		{
@@ -117,7 +117,7 @@ public class UsefulPsiTreeUtil
 	}
 
 	@Nullable
-	public static PsiElement getNextSiblingSkippingWhiteSpacesAndComments(@NotNull PsiElement sibling)
+	public static PsiElement getNextSiblingSkippingWhiteSpacesAndComments(@Nonnull PsiElement sibling)
 	{
 		return getSiblingSkippingCondition(sibling, PsiElement::getNextSibling, UsefulPsiTreeUtil::isWhitespaceOrComment, true
 		);
@@ -180,7 +180,7 @@ public class UsefulPsiTreeUtil
 
 	@Nullable
 	public static <T extends PsiElement> T[] getChildrenOfType(@Nullable PsiElement element,
-			@NotNull Class<T> aClass,
+			@Nonnull Class<T> aClass,
 			@Nullable PsiElement lastParent)
 	{
 		if(element == null)
@@ -208,7 +208,7 @@ public class UsefulPsiTreeUtil
 		return result == null ? null : ArrayUtil.toObjectArray(result, aClass);
 	}
 
-	public static boolean isAncestor(@NotNull PsiElement element, List<PsiElement> children, boolean strict)
+	public static boolean isAncestor(@Nonnull PsiElement element, List<PsiElement> children, boolean strict)
 	{
 		for(PsiElement child : children)
 		{

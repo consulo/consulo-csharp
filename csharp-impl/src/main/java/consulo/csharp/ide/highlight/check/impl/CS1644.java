@@ -19,8 +19,8 @@ package consulo.csharp.ide.highlight.check.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
@@ -78,7 +78,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 
 		@Override
 		@RequiredWriteAction
-		public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException
 		{
 			CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);
 			if(extension == null || !extension.isSupportedLanguageVersion(myLanguageVersion))
@@ -99,13 +99,13 @@ public class CS1644 extends CompilerCheck<PsiElement>
 
 		@Override
 		@RequiredDispatchThread
-		public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
 		{
 			CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);
 			return extension != null && extension.isSupportedLanguageVersion(myLanguageVersion) && extension.getLanguageVersion().ordinal() < myLanguageVersion.ordinal();
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -375,7 +375,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull PsiElement element)
+	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull PsiElement element)
 	{
 		for(Feature feature : myFeatures)
 		{

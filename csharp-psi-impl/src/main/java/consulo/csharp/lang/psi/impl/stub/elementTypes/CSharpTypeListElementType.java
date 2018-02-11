@@ -20,8 +20,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.util.ArrayUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpStubElements;
@@ -45,27 +46,27 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSharpTypeListStub, DotNetTypeList>
 {
-	public CSharpTypeListElementType(@NotNull @NonNls String debugName)
+	public CSharpTypeListElementType(@Nonnull @NonNls String debugName)
 	{
 		super(debugName);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public DotNetTypeList createElement(@NotNull ASTNode astNode)
+	public DotNetTypeList createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpStubTypeListImpl(astNode);
 	}
 
 	@Override
-	public DotNetTypeList createPsi(@NotNull CSharpTypeListStub cSharpTypeListStub)
+	public DotNetTypeList createPsi(@Nonnull CSharpTypeListStub cSharpTypeListStub)
 	{
 		return new CSharpStubTypeListImpl(cSharpTypeListStub, this);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpTypeListStub createStub(@NotNull DotNetTypeList dotNetTypeList, StubElement stubElement)
+	public CSharpTypeListStub createStub(@Nonnull DotNetTypeList dotNetTypeList, StubElement stubElement)
 	{
 		DotNetType[] types = dotNetTypeList.getTypes();
 		List<String> typeRefs = new ArrayList<>(types.length);
@@ -81,7 +82,7 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpTypeListStub cSharpTypeListStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpTypeListStub cSharpTypeListStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		String[] references = cSharpTypeListStub.geShortReferences();
 		stubOutputStream.writeByte(references.length);
@@ -91,9 +92,9 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpTypeListStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpTypeListStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		byte value = stubInputStream.readByte();
 		String[] refs = new String[value];
@@ -105,7 +106,7 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpTypeListStub cSharpTypeListStub, @NotNull IndexSink indexSink)
+	public void indexStub(@Nonnull CSharpTypeListStub cSharpTypeListStub, @Nonnull IndexSink indexSink)
 	{
 		if(cSharpTypeListStub.getStubType() == CSharpStubElements.EXTENDS_LIST)
 		{

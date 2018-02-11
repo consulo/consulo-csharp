@@ -19,7 +19,8 @@ package consulo.csharp.ide.actions.generate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
@@ -48,7 +49,7 @@ public class GeneratePropertyAction extends CSharpGenerateAction
 
 	@Override
 	@RequiredReadAction
-	protected boolean isValidForFile(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
+	protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file)
 	{
 		CSharpTypeDeclaration typeDeclaration = findTypeDeclaration(editor, file);
 

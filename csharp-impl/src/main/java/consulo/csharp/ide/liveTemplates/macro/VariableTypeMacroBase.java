@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.liveTemplates.macro;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpLookupElementBuilder;
 import consulo.dotnet.psi.DotNetVariable;
@@ -45,7 +46,7 @@ public abstract class VariableTypeMacroBase extends Macro
 
 	@Override
 	@RequiredReadAction
-	public LookupElement[] calculateLookupItems(@NotNull Expression[] params, final ExpressionContext context)
+	public LookupElement[] calculateLookupItems(@Nonnull Expression[] params, final ExpressionContext context)
 	{
 		final PsiElement[] vars = getVariables(params, context);
 		if(vars == null || vars.length < 2)
@@ -56,7 +57,7 @@ public abstract class VariableTypeMacroBase extends Macro
 	}
 
 	@Override
-	public Result calculateResult(@NotNull Expression[] params, ExpressionContext context)
+	public Result calculateResult(@Nonnull Expression[] params, ExpressionContext context)
 	{
 		final PsiElement[] vars = getVariables(params, context);
 		if(vars == null || vars.length == 0)
@@ -79,7 +80,7 @@ public abstract class VariableTypeMacroBase extends Macro
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getDefaultValue()
 	{
 		return "a";

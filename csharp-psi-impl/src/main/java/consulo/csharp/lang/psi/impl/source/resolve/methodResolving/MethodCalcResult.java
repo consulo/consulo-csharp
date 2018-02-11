@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi.impl.source.resolve.methodResolving;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import com.intellij.openapi.util.UserDataHolderBase;
@@ -43,13 +43,13 @@ public class MethodCalcResult extends UserDataHolderBase
 		myArguments = arguments;
 	}
 
-	@NotNull
+	@Nonnull
 	public MethodCalcResult dupNoResult(int weight)
 	{
 		return new MethodCalcResult(false, getWeight() + weight, getArguments());
 	}
 
-	@NotNull
+	@Nonnull
 	public MethodCalcResult dupWithResult(int weight)
 	{
 		return new MethodCalcResult(myValid, getWeight() + weight, getArguments());

@@ -16,7 +16,8 @@
 
 package consulo.csharp.module;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -33,14 +34,14 @@ public class CSharpLanguageVersionPointer extends ModuleInheritableNamedPointerI
 {
 	private final String myExtensionId;
 
-	public CSharpLanguageVersionPointer(@NotNull ModuleRootLayer layer, @NotNull String id)
+	public CSharpLanguageVersionPointer(@Nonnull ModuleRootLayer layer, @Nonnull String id)
 	{
 		super(layer, "language-version");
 		myExtensionId = id;
 	}
 
 	@Override
-	public String getItemNameFromModule(@NotNull Module module)
+	public String getItemNameFromModule(@Nonnull Module module)
 	{
 		final CSharpSimpleModuleExtension extension = (CSharpSimpleModuleExtension) ModuleUtilCore.getExtension(module, myExtensionId);
 		if(extension != null)
@@ -51,7 +52,7 @@ public class CSharpLanguageVersionPointer extends ModuleInheritableNamedPointerI
 	}
 
 	@Override
-	public CSharpLanguageVersion getItemFromModule(@NotNull Module module)
+	public CSharpLanguageVersion getItemFromModule(@Nonnull Module module)
 	{
 		final CSharpSimpleModuleExtension extension = (CSharpSimpleModuleExtension) ModuleUtilCore.getExtension(module, myExtensionId);
 		if(extension != null)
@@ -61,9 +62,9 @@ public class CSharpLanguageVersionPointer extends ModuleInheritableNamedPointerI
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public NamedPointer<CSharpLanguageVersion> getPointer(@NotNull ModuleRootLayer layer, @NotNull String name)
+	public NamedPointer<CSharpLanguageVersion> getPointer(@Nonnull ModuleRootLayer layer, @Nonnull String name)
 	{
 		return CSharpLanguageVersion.valueOf(name);
 	}

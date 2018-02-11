@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.liveTemplates.context;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.dotnet.psi.DotNetExpression;
@@ -38,7 +39,7 @@ public class CSharpExpressionContextType extends TemplateContextType
 
 	@Override
 	@RequiredReadAction
-	public boolean isInContext(@NotNull PsiFile file, int offset)
+	public boolean isInContext(@Nonnull PsiFile file, int offset)
 	{
 		PsiElement elementAt = file.findElementAt(offset);
 

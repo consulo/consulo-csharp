@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
@@ -30,6 +31,6 @@ public interface CSharpGenericConstraintTypeValue extends CSharpGenericConstrain
 	@Nullable
 	DotNetType getType();
 
-	@NotNull
+	@Nonnull
 	DotNetTypeRef toTypeRef();
 }

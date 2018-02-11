@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpGenericParameterImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpGenericParameterStub;
@@ -39,34 +40,34 @@ public class CSharpGenericParameterStubElementType extends CSharpAbstractStubEle
 		super("GENERIC_PARAMETER");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public DotNetGenericParameter createElement(@NotNull ASTNode astNode)
+	public DotNetGenericParameter createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpGenericParameterImpl(astNode);
 	}
 
 	@Override
-	public DotNetGenericParameter createPsi(@NotNull CSharpGenericParameterStub cSharpGenericParameterStub)
+	public DotNetGenericParameter createPsi(@Nonnull CSharpGenericParameterStub cSharpGenericParameterStub)
 	{
 		return new CSharpGenericParameterImpl(cSharpGenericParameterStub);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpGenericParameterStub createStub(@NotNull DotNetGenericParameter genericParameter, StubElement stubElement)
+	public CSharpGenericParameterStub createStub(@Nonnull DotNetGenericParameter genericParameter, StubElement stubElement)
 	{
 		return new CSharpGenericParameterStub(stubElement);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpGenericParameterStub cSharpGenericParameterStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpGenericParameterStub cSharpGenericParameterStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpGenericParameterStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpGenericParameterStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		return new CSharpGenericParameterStub(stubElement);
 	}

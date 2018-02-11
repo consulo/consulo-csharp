@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.runtime;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 
 /**
@@ -28,7 +28,7 @@ class UnknownAssemblyModule implements AssemblyModule
 	static final UnknownAssemblyModule INSTANCE = new UnknownAssemblyModule();
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -37,13 +37,13 @@ class UnknownAssemblyModule implements AssemblyModule
 
 	@RequiredReadAction
 	@Override
-	public boolean isAllowedAssembly(@NotNull String assemblyName)
+	public boolean isAllowedAssembly(@Nonnull String assemblyName)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean equals(@NotNull AssemblyModule module)
+	public boolean equals(@Nonnull AssemblyModule module)
 	{
 		return module instanceof UnknownAssemblyModule;
 	}

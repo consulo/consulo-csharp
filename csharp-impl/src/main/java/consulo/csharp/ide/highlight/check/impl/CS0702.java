@@ -20,8 +20,8 @@ import gnu.trove.THashMap;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -62,14 +62,14 @@ public class CS0702 extends CompilerCheck<CSharpGenericConstraintTypeValue>
 			myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
 			return "C#";
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getText()
 		{
@@ -77,13 +77,13 @@ public class CS0702 extends CompilerCheck<CSharpGenericConstraintTypeValue>
 		}
 
 		@Override
-		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			return myPointer.getElement() != null;
 		}
 
 		@Override
-		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			CSharpGenericConstraintTypeValue element = myPointer.getElement();
 			if(element == null)
@@ -112,7 +112,7 @@ public class CS0702 extends CompilerCheck<CSharpGenericConstraintTypeValue>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpGenericConstraintTypeValue element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpGenericConstraintTypeValue element)
 	{
 		DotNetTypeRef typeRef = element.toTypeRef();
 		Pair<String, DotNetTypeDeclaration> pair = CSharpTypeUtil.resolveTypeElement(typeRef);

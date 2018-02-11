@@ -18,8 +18,8 @@ package consulo.csharp;
 
 import java.io.File;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ContentEntry;
@@ -57,12 +57,12 @@ public class CSharpMockModuleDescriptor implements TestModuleDescriptor
 	}
 
 	@Override
-	public void configureSdk(@NotNull Consumer<Sdk> consumer)
+	public void configureSdk(@Nonnull Consumer<Sdk> consumer)
 	{
 	}
 
 	@Override
-	public void configureModule(@NotNull Module module, @NotNull ModifiableRootModel modifiableRootModel, @NotNull ContentEntry contentEntry)
+	public void configureModule(@Nonnull Module module, @Nonnull ModifiableRootModel modifiableRootModel, @Nonnull ContentEntry contentEntry)
 	{
 		DotNetSimpleMutableModuleExtension<?> extension = modifiableRootModel.getExtensionWithoutCheck("mono-dotnet");
 		assert extension != null;

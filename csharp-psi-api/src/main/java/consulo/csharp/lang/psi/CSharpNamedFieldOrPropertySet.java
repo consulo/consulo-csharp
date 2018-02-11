@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiNameIdentifierOwner;
 
 /**
@@ -26,6 +27,6 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 public interface CSharpNamedFieldOrPropertySet extends CSharpFieldOrPropertySet, PsiNameIdentifierOwner
 {
 	@Override
-	@NotNull
+	@Nonnull
 	CSharpReferenceExpression getNameElement();
 }

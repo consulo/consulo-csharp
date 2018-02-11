@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -31,32 +32,32 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpUserTypeImpl extends CSharpTypeElementImpl implements CSharpUserType
 {
-	public CSharpUserTypeImpl(@NotNull ASTNode node)
+	public CSharpUserTypeImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitUserType(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
 		return new CSharpUserTypeRef(getReferenceExpression());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getReferenceText()
 	{
 		return getReferenceExpression().getText();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpReferenceExpression getReferenceExpression()
 	{

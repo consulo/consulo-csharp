@@ -18,8 +18,9 @@ package consulo.csharp.ide.completion.weigher;
 
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementWeigher;
 import com.intellij.psi.PsiElement;
@@ -42,7 +43,7 @@ public class CSharpRecursiveGuardWeigher extends LookupElementWeigher
 
 	@Nullable
 	@Override
-	public Integer weigh(@NotNull LookupElement element)
+	public Integer weigh(@Nonnull LookupElement element)
 	{
 		PsiElement psiElement = element.getPsiElement();
 		if(psiElement == null)

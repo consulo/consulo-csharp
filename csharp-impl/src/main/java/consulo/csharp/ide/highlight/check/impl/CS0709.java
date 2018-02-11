@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -39,7 +40,7 @@ public class CS0709 extends CompilerCheck<DotNetType>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull DotNetType element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetType element)
 	{
 		PsiElement parent = element.getParent();
 		if(parent instanceof DotNetTypeList && PsiUtilCore.getElementType(parent) == CSharpElements.EXTENDS_LIST)

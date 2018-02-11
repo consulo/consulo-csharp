@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.parser;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
@@ -30,9 +31,9 @@ import consulo.lang.LanguageVersion;
  */
 public class CSharpPreprocessorParser implements PsiParser
 {
-	@NotNull
+	@Nonnull
 	@Override
-	public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
+	public ASTNode parse(@Nonnull IElementType elementType, @Nonnull PsiBuilder builder, @Nonnull LanguageVersion languageVersion)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 

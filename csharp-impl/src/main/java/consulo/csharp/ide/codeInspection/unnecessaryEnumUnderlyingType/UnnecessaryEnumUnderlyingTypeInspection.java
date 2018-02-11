@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.codeInspection.unnecessaryEnumUnderlyingType;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
 import com.intellij.codeInspection.ProblemHighlightType;
@@ -44,12 +45,12 @@ public class UnnecessaryEnumUnderlyingTypeInspection extends LocalInspectionTool
 {
 	private static class RemoveFix extends LocalQuickFixOnPsiElement
 	{
-		protected RemoveFix(@NotNull PsiElement element)
+		protected RemoveFix(@Nonnull PsiElement element)
 		{
 			super(element);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getText()
 		{
@@ -57,13 +58,13 @@ public class UnnecessaryEnumUnderlyingTypeInspection extends LocalInspectionTool
 		}
 
 		@Override
-		public void invoke(@NotNull Project project, @NotNull PsiFile psiFile, @NotNull PsiElement psiElement, @NotNull PsiElement psiElement1)
+		public void invoke(@Nonnull Project project, @Nonnull PsiFile psiFile, @Nonnull PsiElement psiElement, @Nonnull PsiElement psiElement1)
 		{
 			psiElement.delete();
 		}
 
 		@Nls
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -71,9 +72,9 @@ public class UnnecessaryEnumUnderlyingTypeInspection extends LocalInspectionTool
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder, boolean isOnTheFly)
+	public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly)
 	{
 		return new CSharpElementVisitor()
 		{

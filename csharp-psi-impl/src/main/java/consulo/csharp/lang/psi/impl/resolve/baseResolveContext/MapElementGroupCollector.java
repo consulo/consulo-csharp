@@ -20,8 +20,8 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.AtomicNullableLazyValue;
 import com.intellij.psi.PsiElement;
@@ -84,12 +84,12 @@ public abstract class MapElementGroupCollector<K, E extends PsiElement> extends 
 		}
 	};
 
-	public MapElementGroupCollector(@NotNull CSharpAdditionalMemberProvider.Target target, @NotNull CSharpBaseResolveContext<?> context)
+	public MapElementGroupCollector(@Nonnull CSharpAdditionalMemberProvider.Target target, @Nonnull CSharpBaseResolveContext<?> context)
 	{
 		super(target, context);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	@SuppressWarnings("unchecked")
 	private MultiMap<K, E> calcElements()

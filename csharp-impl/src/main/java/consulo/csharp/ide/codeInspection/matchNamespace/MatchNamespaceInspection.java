@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeInspection.matchNamespace;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalInspectionToolSession;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -35,10 +36,10 @@ public class MatchNamespaceInspection extends LocalInspectionTool
 {
 	private static final Key<MatchNamespaceVisitor> KEY = Key.create("UnusedSymbolVisitor");
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
-	public PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder, boolean isOnTheFly, @NotNull LocalInspectionToolSession session)
+	public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session)
 	{
 		if(!(holder.getFile() instanceof CSharpFile))
 		{
@@ -60,7 +61,7 @@ public class MatchNamespaceInspection extends LocalInspectionTool
 	}
 
 	@Override
-	public void inspectionFinished(@NotNull LocalInspectionToolSession session, @NotNull ProblemsHolder problemsHolder)
+	public void inspectionFinished(@Nonnull LocalInspectionToolSession session, @Nonnull ProblemsHolder problemsHolder)
 	{
 		MatchNamespaceVisitor visitor = session.getUserData(KEY);
 		if(visitor == null)

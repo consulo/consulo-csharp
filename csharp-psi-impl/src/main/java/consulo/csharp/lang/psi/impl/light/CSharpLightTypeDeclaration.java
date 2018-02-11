@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
@@ -83,7 +85,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 		return myOriginal.getGenericConstraintList();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
@@ -91,7 +93,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitTypeDeclaration(this);
 	}
@@ -127,7 +129,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 		return myOriginal.getExtendList();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef[] getExtendTypeRefs()
@@ -144,7 +146,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 
 	@RequiredReadAction
 	@Override
-	public boolean isInheritor(@NotNull String s, boolean b)
+	public boolean isInheritor(@Nonnull String s, boolean b)
 	{
 		return myOriginal.isInheritor(s, b);
 	}
@@ -184,7 +186,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 		return myOriginal.getGenericParameterList();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
@@ -197,7 +199,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 		return myOriginal.getGenericParametersCount();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetNamedElement[] getMembers()
@@ -207,7 +209,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier dotNetModifier)
+	public boolean hasModifier(@Nonnull DotNetModifier dotNetModifier)
 	{
 		return myOriginal.hasModifier(dotNetModifier);
 	}
@@ -244,7 +246,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		return myOriginal.setName(name);
 	}

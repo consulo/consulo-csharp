@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.ide.actions.QualifiedNameProvider;
 import com.intellij.openapi.editor.Editor;

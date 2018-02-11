@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredDispatchThread;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetExpression;
@@ -29,17 +30,17 @@ import com.intellij.BundleBase;
  */
 public class CastNArgumentToTypeRefFix extends CastExpressionToTypeRef
 {
-	@NotNull
+	@Nonnull
 	private final String myParameterName;
 
-	public CastNArgumentToTypeRefFix(@NotNull DotNetExpression expression, @NotNull DotNetTypeRef expectedTypeRef, @NotNull String parameterName)
+	public CastNArgumentToTypeRefFix(@Nonnull DotNetExpression expression, @Nonnull DotNetTypeRef expectedTypeRef, @Nonnull String parameterName)
 	{
 		super(expression, expectedTypeRef);
 		myParameterName = parameterName;
 	}
 
 	@RequiredDispatchThread
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText()
 	{

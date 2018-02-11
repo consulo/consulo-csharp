@@ -1,6 +1,7 @@
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import consulo.annotations.RequiredReadAction;
@@ -11,9 +12,9 @@ import consulo.annotations.RequiredReadAction;
  */
 public interface CSharpReferenceWithValidation extends PsiReference
 {
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	default String getErrorMessage(@NotNull PsiElement element)
+	default String getErrorMessage(@Nonnull PsiElement element)
 	{
 		return "Not resolved";
 	}

@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -31,19 +32,19 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpSizeOfExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpSizeOfExpressionImpl(@NotNull ASTNode node)
+	public CSharpSizeOfExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitSizeOfExpression(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{

@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.extensionResolver;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.impl.light.CSharpLightExpression;

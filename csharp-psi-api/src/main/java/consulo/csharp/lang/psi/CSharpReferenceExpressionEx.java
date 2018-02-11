@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
@@ -28,19 +29,19 @@ import com.intellij.psi.ResolveResult;
  */
 public interface CSharpReferenceExpressionEx extends CSharpReferenceExpression
 {
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent);
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent);
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent);
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	ResolveResult[] tryResolveFromQualifier(@NotNull PsiElement element);
+	ResolveResult[] tryResolveFromQualifier(@Nonnull PsiElement element);
 }

@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.IStubElementType;
 import consulo.annotations.RequiredReadAction;
@@ -35,31 +36,31 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStringValueStub<CSharpUserType>> implements CSharpUserType
 {
-	public CSharpStubUserTypeImpl(@NotNull ASTNode node)
+	public CSharpStubUserTypeImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubUserTypeImpl(@NotNull CSharpWithStringValueStub<CSharpUserType> stub, @NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpUserType>, ?> nodeType)
+	public CSharpStubUserTypeImpl(@Nonnull CSharpWithStringValueStub<CSharpUserType> stub, @Nonnull IStubElementType<? extends CSharpWithStringValueStub<CSharpUserType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitUserType(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
 		return new CSharpUserTypeRef(getReferenceExpression());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getReferenceText()
 	{
@@ -73,7 +74,7 @@ public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWith
 		return referenceExpression.getText();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpReferenceExpression getReferenceExpression()
 	{

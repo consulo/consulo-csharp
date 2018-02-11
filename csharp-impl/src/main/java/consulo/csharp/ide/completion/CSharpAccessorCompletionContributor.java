@@ -18,8 +18,9 @@ package consulo.csharp.ide.completion;
 
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -61,7 +62,7 @@ class CSharpAccessorCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet)
+			public void addCompletions(@Nonnull CompletionParameters completionParameters, ProcessingContext processingContext, @Nonnull CompletionResultSet resultSet)
 			{
 				PsiElement position = completionParameters.getPosition();
 				final CSharpXXXAccessorOwner accessorOwner = PsiTreeUtil.getParentOfType(position, CSharpXXXAccessorOwner.class);

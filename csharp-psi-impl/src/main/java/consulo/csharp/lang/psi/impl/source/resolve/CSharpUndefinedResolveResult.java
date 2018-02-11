@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 

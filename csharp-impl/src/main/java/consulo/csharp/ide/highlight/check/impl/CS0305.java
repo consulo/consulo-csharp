@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -38,7 +39,7 @@ public class CS0305 extends CompilerCheck<CSharpReferenceExpression>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpReferenceExpression referenceExpression)
+	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpReferenceExpression referenceExpression)
 	{
 		if(referenceExpression.getParent() instanceof CSharpMethodCallExpressionImpl)
 		{

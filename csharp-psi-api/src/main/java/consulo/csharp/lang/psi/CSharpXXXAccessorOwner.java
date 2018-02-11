@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetXXXAccessor;
@@ -28,6 +29,6 @@ import consulo.dotnet.psi.DotNetAccessorOwner;
  */
 public interface CSharpXXXAccessorOwner extends DotNetElement, CSharpBodyWithBraces, DotNetModifierListOwner, DotNetAccessorOwner
 {
-	@NotNull
+	@Nonnull
 	DotNetXXXAccessor[] getAccessors();
 }

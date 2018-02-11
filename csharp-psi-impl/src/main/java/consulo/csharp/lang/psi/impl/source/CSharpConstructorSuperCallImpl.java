@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -34,13 +34,13 @@ import consulo.dotnet.psi.DotNetExpression;
  */
 public class CSharpConstructorSuperCallImpl extends CSharpElementImpl implements CSharpConstructorSuperCall
 {
-	public CSharpConstructorSuperCallImpl(@NotNull ASTNode node)
+	public CSharpConstructorSuperCallImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitConstructorSuperCall(this);
 	}
@@ -60,20 +60,20 @@ public class CSharpConstructorSuperCallImpl extends CSharpElementImpl implements
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public CSharpReferenceExpression getExpression()
 	{
 		return findNotNullChildByClass(CSharpReferenceExpression.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
 		return getExpression().multiResolve(incompleteCode);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -81,7 +81,7 @@ public class CSharpConstructorSuperCallImpl extends CSharpElementImpl implements
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{

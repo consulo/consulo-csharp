@@ -18,8 +18,8 @@ package consulo.csharp.ide.debugger.expressionEvaluator;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.application.ReadAction;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
@@ -54,9 +54,9 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 		myElement = element;
 	}
 
-	protected abstract boolean isMyMirror(@NotNull DotNetFieldOrPropertyProxy mirror);
+	protected abstract boolean isMyMirror(@Nonnull DotNetFieldOrPropertyProxy mirror);
 
-	protected abstract boolean invoke(@NotNull M mirror, @NotNull CSharpEvaluateContext context, @Nullable DotNetValueProxy popValue) throws DotNetThrowValueException, DotNetNotSuspendedException;
+	protected abstract boolean invoke(@Nonnull M mirror, @Nonnull CSharpEvaluateContext context, @Nullable DotNetValueProxy popValue) throws DotNetThrowValueException, DotNetNotSuspendedException;
 
 	@Nullable
 	@RequiredReadAction
@@ -66,7 +66,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetThrowValueException, DotNetNotSuspendedException
+	public void evaluate(@Nonnull CSharpEvaluateContext context) throws DotNetThrowValueException, DotNetNotSuspendedException
 	{
 		DotNetValueProxy popValue = context.popValue();
 		if(popValue == null)
@@ -147,10 +147,10 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 	}
 
 	@SuppressWarnings("unchecked")
-	private boolean invokeFieldOrProperty(@NotNull CSharpEvaluateContext context,
-			@NotNull String name,
-			@NotNull DotNetValueProxy popValue,
-			@NotNull DotNetTypeProxy typeMirror) throws DotNetThrowValueException, DotNetNotSuspendedException
+	private boolean invokeFieldOrProperty(@Nonnull CSharpEvaluateContext context,
+			@Nonnull String name,
+			@Nonnull DotNetValueProxy popValue,
+			@Nonnull DotNetTypeProxy typeMirror) throws DotNetThrowValueException, DotNetNotSuspendedException
 	{
 		DotNetFieldOrPropertyProxy[] fieldOrPropertyMirrors = DotNetDebuggerSearchUtil.getFieldAndProperties(typeMirror, true);
 		for(DotNetFieldOrPropertyProxy fieldOrPropertyMirror : fieldOrPropertyMirrors)

@@ -18,7 +18,8 @@ package consulo.csharp.ide.actions.internal;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
@@ -44,7 +45,7 @@ public class OpenTypeFromVariableAction extends AnAction
 {
 	@RequiredDispatchThread
 	@Override
-	public void actionPerformed(@NotNull AnActionEvent e)
+	public void actionPerformed(@Nonnull AnActionEvent e)
 	{
 		PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
 		if(!(psiElement instanceof DotNetVariable))

@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -33,7 +35,7 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CSharpNamedFieldOrPropertySetImpl extends CSharpElementImpl implements CSharpNamedFieldOrPropertySet
 {
-	public CSharpNamedFieldOrPropertySetImpl(@NotNull ASTNode node)
+	public CSharpNamedFieldOrPropertySetImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -47,18 +49,18 @@ public class CSharpNamedFieldOrPropertySetImpl extends CSharpElementImpl impleme
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		return null;
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitNamedFieldOrPropertySet(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpReferenceExpression getNameElement()
 	{

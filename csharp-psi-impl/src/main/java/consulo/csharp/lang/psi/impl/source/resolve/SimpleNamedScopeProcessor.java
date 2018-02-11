@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.resolve.CSharpNamedResolveSelector;
@@ -36,7 +37,7 @@ public class SimpleNamedScopeProcessor extends StubScopeProcessor
 	private Processor<ResolveResult> myCompletionProcessor;
 	private boolean myCompletion;
 
-	public SimpleNamedScopeProcessor(@NotNull final StubScopeProcessor completionProcessor, boolean completion, ExecuteTarget... targets)
+	public SimpleNamedScopeProcessor(@Nonnull final StubScopeProcessor completionProcessor, boolean completion, ExecuteTarget... targets)
 	{
 		this(resolveResult ->
 		{
@@ -45,7 +46,7 @@ public class SimpleNamedScopeProcessor extends StubScopeProcessor
 		}, completion, targets);
 	}
 
-	public SimpleNamedScopeProcessor(@NotNull Processor<ResolveResult> completionProcessor, boolean completion, ExecuteTarget... targets)
+	public SimpleNamedScopeProcessor(@Nonnull Processor<ResolveResult> completionProcessor, boolean completion, ExecuteTarget... targets)
 	{
 		myCompletionProcessor = completionProcessor;
 		myCompletion = completion;
@@ -54,7 +55,7 @@ public class SimpleNamedScopeProcessor extends StubScopeProcessor
 
 	@RequiredReadAction
 	@Override
-	public boolean execute(@NotNull PsiElement element, ResolveState state)
+	public boolean execute(@Nonnull PsiElement element, ResolveState state)
 	{
 		if(!(element instanceof PsiNamedElement) || !ExecuteTargetUtil.isMyElement(this, element))
 		{

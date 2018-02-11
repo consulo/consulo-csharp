@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
@@ -46,7 +48,7 @@ public class CSharpStubTupleVariableImpl extends CSharpStubElementImpl<CSharpVar
 			(false)
 	{
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
 		protected DotNetTypeRef toTypeRefImpl(CSharpStubTupleVariableImpl element, boolean resolveFromParentOrInitializer)
 		{
@@ -55,19 +57,19 @@ public class CSharpStubTupleVariableImpl extends CSharpStubElementImpl<CSharpVar
 		}
 	};
 
-	public CSharpStubTupleVariableImpl(@NotNull ASTNode node)
+	public CSharpStubTupleVariableImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubTupleVariableImpl(@NotNull CSharpVariableDeclStub<?> stub,
-			@NotNull IStubElementType<? extends CSharpVariableDeclStub<?>, ?> nodeType)
+	public CSharpStubTupleVariableImpl(@Nonnull CSharpVariableDeclStub<?> stub,
+			@Nonnull IStubElementType<? extends CSharpVariableDeclStub<?>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitTupleVariable(this);
 	}
@@ -104,7 +106,7 @@ public class CSharpStubTupleVariableImpl extends CSharpStubElementImpl<CSharpVar
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -143,7 +145,7 @@ public class CSharpStubTupleVariableImpl extends CSharpStubElementImpl<CSharpVar
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, s);
 		return this;
@@ -151,7 +153,7 @@ public class CSharpStubTupleVariableImpl extends CSharpStubElementImpl<CSharpVar
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier dotNetModifier)
+	public boolean hasModifier(@Nonnull DotNetModifier dotNetModifier)
 	{
 		return false;
 	}

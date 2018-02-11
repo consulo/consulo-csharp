@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredDispatchThread;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -40,16 +41,16 @@ import com.intellij.util.IncorrectOperationException;
 public class ChangeVariableToTypeRefFix extends BaseIntentionAction
 {
 	private final SmartPsiElementPointer<DotNetVariable> myVariablePointer;
-	@NotNull
+	@Nonnull
 	private final DotNetTypeRef myToTypeRef;
 
-	public ChangeVariableToTypeRefFix(@NotNull DotNetVariable element, @NotNull DotNetTypeRef toTypeRef)
+	public ChangeVariableToTypeRefFix(@Nonnull DotNetVariable element, @Nonnull DotNetTypeRef toTypeRef)
 	{
 		myVariablePointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
 		myToTypeRef = toTypeRef;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText()
 	{
@@ -62,7 +63,7 @@ public class ChangeVariableToTypeRefFix extends BaseIntentionAction
 				(myToTypeRef, element));
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{
@@ -70,14 +71,14 @@ public class ChangeVariableToTypeRefFix extends BaseIntentionAction
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		return myVariablePointer.getElement() != null;
 	}
 
 	@Override
 	@RequiredDispatchThread
-	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
 

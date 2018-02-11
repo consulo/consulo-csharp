@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -33,15 +34,15 @@ import com.intellij.psi.PsiElement;
 public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResult
 {
 	private DotNetTypeDeclaration myElement;
-	@NotNull
+	@Nonnull
 	private final DotNetGenericExtractor myExtractor;
 
-	public CSharpTypeRefByTypeDeclaration(@NotNull DotNetTypeDeclaration element)
+	public CSharpTypeRefByTypeDeclaration(@Nonnull DotNetTypeDeclaration element)
 	{
 		this(element, DotNetGenericExtractor.EMPTY);
 	}
 
-	public CSharpTypeRefByTypeDeclaration(@NotNull DotNetTypeDeclaration element, @NotNull DotNetGenericExtractor extractor)
+	public CSharpTypeRefByTypeDeclaration(@Nonnull DotNetTypeDeclaration element, @Nonnull DotNetGenericExtractor extractor)
 	{
 		super(element.getProject());
 		myElement = element;
@@ -49,7 +50,7 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResul
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -62,7 +63,7 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResul
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{

@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
@@ -33,25 +33,25 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpAwaitExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpAwaitExpressionImpl(@NotNull ASTNode node)
+	public CSharpAwaitExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	public PsiElement getAwaitKeywordElement()
 	{
 		return findNotNullChildByType(CSharpSoftTokens.AWAIT_KEYWORD);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitAwaitExpression(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean b)
 	{

@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetAttributeUtil;
@@ -31,7 +31,7 @@ import com.intellij.psi.PsiElement;
 public class CSharpAttributeUtil extends DotNetAttributeUtil
 {
 	@Nullable
-	public static <T> T findSingleAttributeValue(@NotNull PsiElement owner, @NotNull String qName, @NotNull Class<T> clazz)
+	public static <T> T findSingleAttributeValue(@Nonnull PsiElement owner, @Nonnull String qName, @Nonnull Class<T> clazz)
 	{
 		DotNetAttribute attribute = findAttribute(owner, qName);
 		if(!(attribute instanceof CSharpAttribute))

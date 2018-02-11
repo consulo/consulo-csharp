@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpXXXAccessorImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpXXXAccessorStub;
@@ -39,36 +40,36 @@ public class CSharpXXXAccessorStubElementType extends CSharpAbstractStubElementT
 		super("XXX_ACCESSOR");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpXXXAccessorImpl createElement(@NotNull ASTNode astNode)
+	public CSharpXXXAccessorImpl createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpXXXAccessorImpl(astNode);
 	}
 
 	@Override
-	public CSharpXXXAccessorImpl createPsi(@NotNull CSharpXXXAccessorStub cSharpXXXAccessorStub)
+	public CSharpXXXAccessorImpl createPsi(@Nonnull CSharpXXXAccessorStub cSharpXXXAccessorStub)
 	{
 		return new CSharpXXXAccessorImpl(cSharpXXXAccessorStub);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpXXXAccessorStub createStub(@NotNull DotNetXXXAccessor accessor, StubElement stubElement)
+	public CSharpXXXAccessorStub createStub(@Nonnull DotNetXXXAccessor accessor, StubElement stubElement)
 	{
 		int otherModifiers = CSharpXXXAccessorStub.getOtherModifiers(accessor);
 		return new CSharpXXXAccessorStub(stubElement, otherModifiers);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpXXXAccessorStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpXXXAccessorStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeInt(stub.getOtherModifierMask());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpXXXAccessorStub deserialize(@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
+	public CSharpXXXAccessorStub deserialize(@Nonnull StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
 		int otherModifiers = inputStream.readInt();
 		return new CSharpXXXAccessorStub(stubElement, otherModifiers);

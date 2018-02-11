@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.assemblyInfo;
 
+import javax.annotation.Nonnull;
+
 import org.jdom.Element;
-import org.jetbrains.annotations.NotNull;
 import consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import com.intellij.openapi.application.ApplicationManager;
@@ -41,14 +42,14 @@ public class CSharpAssemblyFileEditorProvider implements FileEditorProvider
 {
 	public static class EapDescriptor extends EarlyAccessProgramDescriptor
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public String getName()
 		{
 			return "AssemblyInfo.cs UI Editor";
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getDescription()
 		{
@@ -57,7 +58,7 @@ public class CSharpAssemblyFileEditorProvider implements FileEditorProvider
 	}
 
 	@Override
-	public boolean accept(@NotNull final Project project, @NotNull final VirtualFile virtualFile)
+	public boolean accept(@Nonnull final Project project, @Nonnull final VirtualFile virtualFile)
 	{
 		if(!EarlyAccessProgramManager.getInstance().getState(EapDescriptor.class))
 		{
@@ -74,40 +75,40 @@ public class CSharpAssemblyFileEditorProvider implements FileEditorProvider
 		return virtualFile.getName().equals(CSharpAssemblyConstants.FileName) && file instanceof CSharpFileImpl;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public FileEditor createEditor(@NotNull Project project, @NotNull VirtualFile virtualFile)
+	public FileEditor createEditor(@Nonnull Project project, @Nonnull VirtualFile virtualFile)
 	{
 		return new CSharpAssemblyFileEditor(project, virtualFile);
 	}
 
 	@Override
-	public void disposeEditor(@NotNull FileEditor fileEditor)
+	public void disposeEditor(@Nonnull FileEditor fileEditor)
 	{
 
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public FileEditorState readState(@NotNull Element element, @NotNull Project project, @NotNull VirtualFile virtualFile)
+	public FileEditorState readState(@Nonnull Element element, @Nonnull Project project, @Nonnull VirtualFile virtualFile)
 	{
 		return FileEditorState.INSTANCE;
 	}
 
 	@Override
-	public void writeState(@NotNull FileEditorState fileEditorState, @NotNull Project project, @NotNull Element element)
+	public void writeState(@Nonnull FileEditorState fileEditorState, @Nonnull Project project, @Nonnull Element element)
 	{
 
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getEditorTypeId()
 	{
 		return "csharp.assembly.editor";
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public FileEditorPolicy getPolicy()
 	{

@@ -18,7 +18,8 @@ package consulo.csharp.ide.codeInsight.template.postfix;
 
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplate;
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateProvider;
 import com.intellij.openapi.editor.Editor;
@@ -38,7 +39,7 @@ public class CSharpPostfixTemplateProvider implements PostfixTemplateProvider
 		}
 	};
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Set<PostfixTemplate> getTemplates()
 	{
@@ -52,20 +53,20 @@ public class CSharpPostfixTemplateProvider implements PostfixTemplateProvider
 	}
 
 	@Override
-	public void preExpand(@NotNull PsiFile file, @NotNull Editor editor)
+	public void preExpand(@Nonnull PsiFile file, @Nonnull Editor editor)
 	{
 
 	}
 
 	@Override
-	public void afterExpand(@NotNull PsiFile file, @NotNull Editor editor)
+	public void afterExpand(@Nonnull PsiFile file, @Nonnull Editor editor)
 	{
 
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiFile preCheck(@NotNull final PsiFile copyFile, @NotNull Editor realEditor, int currentOffset)
+	public PsiFile preCheck(@Nonnull final PsiFile copyFile, @Nonnull Editor realEditor, int currentOffset)
 	{
 		return copyFile;
 	}

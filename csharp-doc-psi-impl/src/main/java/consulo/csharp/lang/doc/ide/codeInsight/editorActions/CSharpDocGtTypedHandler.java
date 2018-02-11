@@ -17,8 +17,8 @@ package consulo.csharp.lang.doc.ide.codeInsight.editorActions;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.diagnostic.Logger;
 import consulo.csharp.lang.doc.CSharpDocUtil;
 import consulo.csharp.lang.doc.psi.CSharpDocAttributeValue;
@@ -62,7 +62,7 @@ public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 	{
 		@Override
 		@Nullable
-		public ASTNode findChild(@NotNull ASTNode parent)
+		public ASTNode findChild(@Nonnull ASTNode parent)
 		{
 			final PsiElement element = getEndTagNameElement((CSharpDocTagImpl) parent.getPsi());
 			return element == null ? null : element.getNode();
@@ -340,7 +340,7 @@ public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 	}
 
 	@Nullable
-	public static PsiElement getEndTagNameElement(@NotNull CSharpDocTagImpl tag)
+	public static PsiElement getEndTagNameElement(@Nonnull CSharpDocTagImpl tag)
 	{
 		final ASTNode node = tag.getNode();
 		if(node == null)

@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
@@ -51,7 +51,7 @@ public class CSharpLightMethodDeclarationBuilder extends CSharpLightLikeMethodDe
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitMethodDeclaration(this);
 	}
@@ -97,7 +97,7 @@ public class CSharpLightMethodDeclarationBuilder extends CSharpLightLikeMethodDe
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
@@ -111,7 +111,7 @@ public class CSharpLightMethodDeclarationBuilder extends CSharpLightLikeMethodDe
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
@@ -128,14 +128,14 @@ public class CSharpLightMethodDeclarationBuilder extends CSharpLightLikeMethodDe
 		return super.getName();
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpLightMethodDeclarationBuilder setOperator(@Nullable IElementType elementType)
 	{
 		myOperatorElementType = elementType;
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpLightMethodDeclarationBuilder addGenericConstraint(CSharpGenericConstraint genericConstraint)
 	{
 		if(myGenericConstraints.isEmpty())

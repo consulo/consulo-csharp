@@ -18,7 +18,8 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
@@ -42,7 +43,7 @@ public class CreateUnresolvedPropertyFix extends CreateUnresolvedFieldFix
 		super(expression);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText()
 	{
@@ -51,10 +52,10 @@ public class CreateUnresolvedPropertyFix extends CreateUnresolvedFieldFix
 
 	@RequiredReadAction
 	@Override
-	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context,
+	public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context,
 			CSharpContextUtil.ContextType contextType,
-			@NotNull PsiFile file,
-			@NotNull Template template)
+			@Nonnull PsiFile file,
+			@Nonnull Template template)
 	{
 		template.addTextSegment("public ");
 

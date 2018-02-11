@@ -23,8 +23,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.openapi.compiler.CompilerMessageCategory;
 import com.intellij.openapi.diagnostic.Logger;
@@ -65,13 +66,13 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 	private final List<String> myArguments = new ArrayList<>();
 	private final List<String> myProgramArguments = new ArrayList<>();
 
-	public MSBaseDotNetCompilerOptionsBuilder addArgument(@NotNull String arg)
+	public MSBaseDotNetCompilerOptionsBuilder addArgument(@Nonnull String arg)
 	{
 		myArguments.add(arg + "\n");
 		return this;
 	}
 
-	public MSBaseDotNetCompilerOptionsBuilder addProgramArgument(@NotNull String arg)
+	public MSBaseDotNetCompilerOptionsBuilder addProgramArgument(@Nonnull String arg)
 	{
 		myProgramArguments.add(arg);
 		return this;
@@ -123,10 +124,10 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 	}
 
 	@Override
-	@NotNull
-	public GeneralCommandLine createCommandLine(@NotNull Module module,
-			@NotNull VirtualFile[] results,
-			@NotNull DotNetModuleExtension<?> extension) throws Exception
+	@Nonnull
+	public GeneralCommandLine createCommandLine(@Nonnull Module module,
+			@Nonnull VirtualFile[] results,
+			@Nonnull DotNetModuleExtension<?> extension) throws Exception
 	{
 		if(myExecutable == null)
 		{
@@ -252,12 +253,12 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		return myExecutable;
 	}
 
-	public void setExecutable(@NotNull String executable)
+	public void setExecutable(@Nonnull String executable)
 	{
 		myExecutable = executable;
 	}
 
-	public void setExecutableFromSdk(@NotNull Sdk sdk, @NotNull String executableFromSdk)
+	public void setExecutableFromSdk(@Nonnull Sdk sdk, @Nonnull String executableFromSdk)
 	{
 		myExecutable = sdk.getHomePath() + File.separatorChar + executableFromSdk;
 	}

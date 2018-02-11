@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.ToNativeElementTransformers;
 import com.intellij.psi.PsiElement;
@@ -30,7 +30,7 @@ public class CSharpTransformer implements NotNullFunction<PsiElement, PsiElement
 {
 	public static final CSharpTransformer INSTANCE = new CSharpTransformer();
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public PsiElement fun(PsiElement element)

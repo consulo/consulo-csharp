@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.dotnet.psi.DotNetExpression;
 
 /**
@@ -25,7 +26,7 @@ import consulo.dotnet.psi.DotNetExpression;
  */
 public interface CSharpAnonymFieldOrPropertySet extends CSharpFieldOrPropertySet
 {
-	@NotNull
+	@Nonnull
 	@Override
 	DotNetExpression getValueExpression();
 }

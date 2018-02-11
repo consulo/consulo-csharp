@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.refactoring.rename;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.ElementDescriptionLocation;
 import com.intellij.psi.ElementDescriptionProvider;
 import com.intellij.psi.PsiElement;
@@ -34,7 +34,7 @@ public class CSharpElementDescriptionProvider implements ElementDescriptionProvi
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public String getElementDescription(@NotNull PsiElement element, @NotNull ElementDescriptionLocation location)
+	public String getElementDescription(@Nonnull PsiElement element, @Nonnull ElementDescriptionLocation location)
 	{
 		if(location == UsageViewShortNameLocation.INSTANCE && element instanceof CSharpNamedElement)
 		{

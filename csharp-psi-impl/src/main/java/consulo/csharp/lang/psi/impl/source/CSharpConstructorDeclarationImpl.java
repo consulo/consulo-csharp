@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpConstructorSuperCall;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -39,12 +39,12 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpConstructorDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpMethodDeclStub> implements CSharpConstructorDeclaration
 {
-	public CSharpConstructorDeclarationImpl(@NotNull ASTNode node)
+	public CSharpConstructorDeclarationImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpConstructorDeclarationImpl(@NotNull CSharpMethodDeclStub stub, @NotNull IStubElementType<? extends CSharpMethodDeclStub,
+	public CSharpConstructorDeclarationImpl(@Nonnull CSharpMethodDeclStub stub, @Nonnull IStubElementType<? extends CSharpMethodDeclStub,
 			?> nodeType)
 	{
 		super(stub, nodeType);
@@ -58,7 +58,7 @@ public class CSharpConstructorDeclarationImpl extends CSharpLikeMethodDeclaratio
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -66,7 +66,7 @@ public class CSharpConstructorDeclarationImpl extends CSharpLikeMethodDeclaratio
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitConstructorDeclaration(this);
 	}

@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.AddModifierFix;
@@ -47,7 +48,7 @@ public class CS1676 extends CompilerCheck<CSharpLambdaParameter>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpLambdaParameter element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpLambdaParameter element)
 	{
 		CSharpLambdaExpressionImpl lambdaExpression = PsiTreeUtil.getParentOfType(element, CSharpLambdaExpressionImpl.class);
 		if(lambdaExpression == null)

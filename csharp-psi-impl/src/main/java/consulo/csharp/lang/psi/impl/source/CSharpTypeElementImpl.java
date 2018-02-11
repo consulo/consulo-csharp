@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.lang.psi.impl.DotNetTypeRefCacheUtil;
 import consulo.dotnet.psi.DotNetType;
@@ -34,7 +35,7 @@ public abstract class CSharpTypeElementImpl extends CSharpElementImpl implements
 	{
 		public static final Resolver INSTANCE = new Resolver();
 
-		@NotNull
+		@Nonnull
 		@Override
 		@RequiredReadAction
 		public DotNetTypeRef fun(CSharpTypeElementImpl typeElement)
@@ -43,17 +44,17 @@ public abstract class CSharpTypeElementImpl extends CSharpElementImpl implements
 		}
 	}
 
-	public CSharpTypeElementImpl(@NotNull ASTNode node)
+	public CSharpTypeElementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	protected abstract DotNetTypeRef toTypeRefImpl();
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public final DotNetTypeRef toTypeRef()
 	{

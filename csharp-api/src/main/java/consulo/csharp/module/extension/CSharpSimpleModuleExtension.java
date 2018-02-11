@@ -16,7 +16,8 @@
 
 package consulo.csharp.module.extension;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.module.extension.ModuleExtension;
 
 /**
@@ -27,8 +28,8 @@ public interface CSharpSimpleModuleExtension<T extends ModuleExtension<T>> exten
 {
 	boolean isAllowUnsafeCode();
 
-	@NotNull
+	@Nonnull
 	CSharpLanguageVersion getLanguageVersion();
 
-	boolean isSupportedLanguageVersion(@NotNull CSharpLanguageVersion languageVersion);
+	boolean isSupportedLanguageVersion(@Nonnull CSharpLanguageVersion languageVersion);
 }

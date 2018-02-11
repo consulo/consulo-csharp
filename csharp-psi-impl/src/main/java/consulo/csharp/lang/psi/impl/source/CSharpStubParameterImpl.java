@@ -16,9 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -47,18 +48,18 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariableDeclStub<DotNetParameter>> implements DotNetParameter, CSharpNamedElement
 {
-	public CSharpStubParameterImpl(@NotNull ASTNode node)
+	public CSharpStubParameterImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubParameterImpl(@NotNull CSharpVariableDeclStub<DotNetParameter> stub)
+	public CSharpStubParameterImpl(@Nonnull CSharpVariableDeclStub<DotNetParameter> stub)
 	{
 		super(stub, CSharpStubElements.PARAMETER);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitParameter(this);
 	}
@@ -79,7 +80,7 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -97,7 +98,7 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetType getType()
 	{
@@ -122,7 +123,7 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		if(modifier == CSharpModifier.OPTIONAL)
 		{
@@ -170,7 +171,7 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, s);
 		return this;

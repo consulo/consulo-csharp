@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpLambdaParameter;
 import consulo.csharp.lang.psi.CSharpLambdaParameterList;
@@ -29,26 +30,26 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpLambdaParameterListImpl extends CSharpElementImpl implements CSharpLambdaParameterList
 {
-	public CSharpLambdaParameterListImpl(@NotNull ASTNode node)
+	public CSharpLambdaParameterListImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitLambdaParameterList(this);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public CSharpLambdaParameter[] getParameters()
 	{
 		return findChildrenByClass(CSharpLambdaParameter.class);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
 		CSharpLambdaParameter[] parameters = getParameters();

@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -54,7 +54,7 @@ public class CSharpResolveResult implements ResolveResult
 		myValid = validResult;
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpResolveResult setProvider(@Nullable PsiElement element)
 	{
 		myProviderElement = element;
@@ -73,7 +73,7 @@ public class CSharpResolveResult implements ResolveResult
 	}
 
 	@RequiredReadAction
-	public void setAssignable(@NotNull PsiElement place)
+	public void setAssignable(@Nonnull PsiElement place)
 	{
 		if(myAssignable != null)
 		{

@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.completion.expected;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
@@ -30,13 +30,13 @@ public class ExpectedTypeInfo
 	private final DotNetTypeRef myTypeRef;
 	private final PsiElement myTypeProvider;
 
-	public ExpectedTypeInfo(@NotNull DotNetTypeRef typeRef, @Nullable PsiElement typeProvider)
+	public ExpectedTypeInfo(@Nonnull DotNetTypeRef typeRef, @Nullable PsiElement typeProvider)
 	{
 		myTypeRef = typeRef;
 		myTypeProvider = typeProvider;
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef getTypeRef()
 	{
 		return myTypeRef;

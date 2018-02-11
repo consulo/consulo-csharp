@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpContextUtil;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -38,17 +39,17 @@ import com.intellij.util.Processor;
  */
 public class CompletionResolveScopeProcessor extends StubScopeProcessor
 {
-	@NotNull
+	@Nonnull
 	private final GlobalSearchScope myScope;
-	@NotNull
+	@Nonnull
 	private final PsiElement myPlace;
-	@NotNull
+	@Nonnull
 	private CSharpContextUtil.ContextType myContextType;
-	@NotNull
+	@Nonnull
 	private Processor<ResolveResult> myProcessor;
 
 	@RequiredReadAction
-	public CompletionResolveScopeProcessor(@NotNull CSharpResolveOptions options, @NotNull Processor<ResolveResult> processor, @NotNull ExecuteTarget[] targets)
+	public CompletionResolveScopeProcessor(@Nonnull CSharpResolveOptions options, @Nonnull Processor<ResolveResult> processor, @Nonnull ExecuteTarget[] targets)
 	{
 		myProcessor = processor;
 		myPlace = options.getElement();
@@ -67,14 +68,14 @@ public class CompletionResolveScopeProcessor extends StubScopeProcessor
 	}
 
 	@Override
-	public void pushResultExternally(@NotNull ResolveResult resolveResult)
+	public void pushResultExternally(@Nonnull ResolveResult resolveResult)
 	{
 		myProcessor.process(resolveResult);
 	}
 
 	@Override
 	@RequiredReadAction
-	public boolean execute(@NotNull PsiElement element, ResolveState state)
+	public boolean execute(@Nonnull PsiElement element, ResolveState state)
 	{
 		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
 		assert extractor != null;
@@ -94,7 +95,7 @@ public class CompletionResolveScopeProcessor extends StubScopeProcessor
 	}
 
 	@RequiredReadAction
-	private void processElement(@NotNull PsiElement element)
+	private void processElement(@Nonnull PsiElement element)
 	{
 		if(element instanceof DotNetModifierListOwner && !CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) element, myPlace))
 		{

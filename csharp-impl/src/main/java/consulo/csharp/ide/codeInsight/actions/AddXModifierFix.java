@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
@@ -45,7 +46,7 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException
 	{
 		DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
 		if(owner == null || !owner.isWritable())
@@ -79,7 +80,7 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 
 	@Override
 	@RequiredDispatchThread
-	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
 	{
 		DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
 		return owner != null && !hasModifiers(owner) && isAllow(owner, myModifiers) && owner.isWritable();
@@ -98,7 +99,7 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText()
 	{
@@ -112,7 +113,7 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 		}, " ");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{

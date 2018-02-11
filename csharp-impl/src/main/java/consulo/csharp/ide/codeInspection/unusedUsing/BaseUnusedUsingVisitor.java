@@ -18,8 +18,8 @@ package consulo.csharp.ide.codeInspection.unusedUsing;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -121,7 +121,7 @@ public abstract class BaseUnusedUsingVisitor extends CSharpElementVisitor
 		}
 	}
 
-	private void putState(@NotNull ResolveResult firstValidResult, @Nullable PsiElement element)
+	private void putState(@Nonnull ResolveResult firstValidResult, @Nullable PsiElement element)
 	{
 		if(element == null)
 		{
@@ -140,12 +140,12 @@ public abstract class BaseUnusedUsingVisitor extends CSharpElementVisitor
 		}
 	}
 
-	protected boolean isProcessed(@NotNull CSharpUsingListChild element)
+	protected boolean isProcessed(@Nonnull CSharpUsingListChild element)
 	{
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	protected abstract Collection<? extends CSharpUsingListChild> getStatements();
 
 	protected abstract void putElement(CSharpUsingListChild child, PsiElement targetElement);

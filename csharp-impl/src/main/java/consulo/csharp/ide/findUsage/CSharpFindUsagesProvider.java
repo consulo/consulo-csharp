@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.findUsage;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.navigation.ItemPresentation;
@@ -54,21 +55,21 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 	}
 
 	@Override
-	public boolean canFindUsagesFor(@NotNull PsiElement element)
+	public boolean canFindUsagesFor(@Nonnull PsiElement element)
 	{
 		return element instanceof DotNetNamedElement || element instanceof CSharpPreprocessorVariable;
 	}
 
 	@Nullable
 	@Override
-	public String getHelpId(@NotNull PsiElement element)
+	public String getHelpId(@Nonnull PsiElement element)
 	{
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public String getType(@NotNull PsiElement element)
+	public String getType(@Nonnull PsiElement element)
 	{
 		if(element instanceof CSharpTypeDeclaration)
 		{
@@ -149,9 +150,9 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		return "getType " + element.getNode().getElementType();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public String getDescriptiveName(@NotNull PsiElement element)
+	public String getDescriptiveName(@Nonnull PsiElement element)
 	{
 		if(element instanceof CSharpPreprocessorVariable)
 		{
@@ -169,10 +170,10 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		return "getDescriptiveName " + element.getNode().getElementType();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
-	public String getNodeText(@NotNull PsiElement element, boolean useFullName)
+	public String getNodeText(@Nonnull PsiElement element, boolean useFullName)
 	{
 		if(element instanceof CSharpPreprocessorVariable)
 		{

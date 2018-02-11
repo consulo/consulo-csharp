@@ -18,8 +18,8 @@ package consulo.csharp.ide.liveTemplates.macro;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
@@ -58,7 +58,7 @@ public class ForeachComponentTypeMacro extends Macro
 		return "csharpForeachComponentType(VARIABLE)";
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getDefaultValue()
 	{
@@ -68,7 +68,7 @@ public class ForeachComponentTypeMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public Result calculateQuickResult(@NotNull Expression[] params, ExpressionContext context)
+	public Result calculateQuickResult(@Nonnull Expression[] params, ExpressionContext context)
 	{
 		return calculateResult(params, context);
 	}
@@ -76,7 +76,7 @@ public class ForeachComponentTypeMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public LookupElement[] calculateLookupItems(@NotNull Expression[] params, ExpressionContext context)
+	public LookupElement[] calculateLookupItems(@Nonnull Expression[] params, ExpressionContext context)
 	{
 		Result result = calculateResult(params, context);
 		if(result == null)
@@ -96,7 +96,7 @@ public class ForeachComponentTypeMacro extends Macro
 	@Override
 	@RequiredReadAction
 	public Result calculateResult(
-			@NotNull Expression[] params, ExpressionContext context)
+			@Nonnull Expression[] params, ExpressionContext context)
 	{
 		if(params.length != 1)
 		{

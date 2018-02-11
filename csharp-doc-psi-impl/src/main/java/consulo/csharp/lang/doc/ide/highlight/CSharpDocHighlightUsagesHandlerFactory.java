@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.doc.ide.highlight;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.doc.psi.CSharpDocTagImpl;
 import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase;

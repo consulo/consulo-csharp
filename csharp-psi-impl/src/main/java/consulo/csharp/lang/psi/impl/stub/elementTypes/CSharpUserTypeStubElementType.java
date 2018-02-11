@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.csharp.lang.psi.impl.source.CSharpStubUserTypeImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
@@ -41,36 +42,36 @@ public class CSharpUserTypeStubElementType extends CSharpAbstractStubElementType
 		super("USER_TYPE");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElement createElement(@NotNull ASTNode astNode)
+	public PsiElement createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpStubUserTypeImpl(astNode);
 	}
 
 	@Override
-	public CSharpUserType createPsi(@NotNull CSharpWithStringValueStub<CSharpUserType> stub)
+	public CSharpUserType createPsi(@Nonnull CSharpWithStringValueStub<CSharpUserType> stub)
 	{
 		return new CSharpStubUserTypeImpl(stub, this);
 	}
 
 	@Override
-	public CSharpWithStringValueStub<CSharpUserType> createStub(@NotNull CSharpUserType cSharpUserType, StubElement stubElement)
+	public CSharpWithStringValueStub<CSharpUserType> createStub(@Nonnull CSharpUserType cSharpUserType, StubElement stubElement)
 	{
 
 		return new CSharpWithStringValueStub<CSharpUserType>(stubElement, this, cSharpUserType.getReferenceText());
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpWithStringValueStub<CSharpUserType> stub,
-			@NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpWithStringValueStub<CSharpUserType> stub,
+			@Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getReferenceText());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpWithStringValueStub<CSharpUserType> deserialize(@NotNull StubInputStream stubInputStream,
+	public CSharpWithStringValueStub<CSharpUserType> deserialize(@Nonnull StubInputStream stubInputStream,
 			StubElement stubElement) throws IOException
 	{
 		StringRef ref = stubInputStream.readName();

@@ -20,8 +20,8 @@ import gnu.trove.THashMap;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -53,13 +53,13 @@ public class CSharpAttributeListImpl extends CSharpElementImpl implements CSharp
 		}
 	};
 
-	public CSharpAttributeListImpl(@NotNull ASTNode node)
+	public CSharpAttributeListImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitAttributeList(this);
 	}
@@ -83,7 +83,7 @@ public class CSharpAttributeListImpl extends CSharpElementImpl implements CSharp
 		return ourMap.get(elementType);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpAttribute[] getAttributes()
 	{

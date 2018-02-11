@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import consulo.csharp.CSharpIcons;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.fileTypes.TemplateLanguageFileType;
@@ -40,21 +40,21 @@ public class CSharpFileType extends LanguageFileType implements TemplateLanguage
 		super(CSharpLanguage.INSTANCE);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getId()
 	{
 		return "C#";
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getDescription()
 	{
 		return "C# files";
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getDefaultExtension()
 	{

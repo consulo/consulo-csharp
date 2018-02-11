@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi.impl.resolve;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.UserDataHolder;
@@ -107,7 +107,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)
+	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@Nonnull IElementType type, boolean deep)
 	{
 		List<CSharpElementGroup<CSharpMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpMethodDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
@@ -124,7 +124,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull CSharpCastType castType, boolean deep)
+	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@Nonnull CSharpCastType castType, boolean deep)
 	{
 		List<CSharpElementGroup<CSharpConversionMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpConversionMethodDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
@@ -141,7 +141,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
+	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@Nonnull String name)
 	{
 		List<CSharpElementGroup<CSharpMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpMethodDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
@@ -157,7 +157,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@RequiredReadAction
 	@Override
-	public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
+	public boolean processExtensionMethodGroups(@Nonnull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
 		for(CSharpResolveContext context : myContexts)
 		{
@@ -170,9 +170,9 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public Collection<PsiElement> findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
+	public Collection<PsiElement> findByName(@Nonnull String name, boolean deep, @Nonnull UserDataHolder holder)
 	{
 		List<Collection<? extends PsiElement>> list = new SmartList<>();
 		for(CSharpResolveContext context : myContexts)
@@ -185,7 +185,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@RequiredReadAction
 	@Override
-	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
+	public boolean processElements(@Nonnull Processor<PsiElement> processor, boolean deep)
 	{
 		for(CSharpResolveContext context : myContexts)
 		{
@@ -199,14 +199,14 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getElement()
 	{
 		throw new IllegalArgumentException("Composite context");
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpResolveContext[] getContexts()
 	{
 		return myContexts;

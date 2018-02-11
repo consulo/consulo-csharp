@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpStubModifierListImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpModifierListStub;
@@ -40,36 +41,36 @@ public class CSharpModifierListStubElementType extends CSharpAbstractStubElement
 		super("MODIFIER_LIST");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElement createElement(@NotNull ASTNode astNode)
+	public PsiElement createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpStubModifierListImpl(astNode);
 	}
 
 	@Override
-	public DotNetModifierList createPsi(@NotNull CSharpModifierListStub stub)
+	public DotNetModifierList createPsi(@Nonnull CSharpModifierListStub stub)
 	{
 		return new CSharpStubModifierListImpl(stub, this);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpModifierListStub createStub(@NotNull DotNetModifierList modifierList, StubElement stubElement)
+	public CSharpModifierListStub createStub(@Nonnull DotNetModifierList modifierList, StubElement stubElement)
 	{
 		int modifierMask = CSharpModifierListStub.getModifierMask(modifierList);
 		return new CSharpModifierListStub(stubElement, this, modifierMask);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpModifierListStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpModifierListStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeInt(stub.getModifierMask());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpModifierListStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpModifierListStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int modifierMask = stubInputStream.readInt();
 		return new CSharpModifierListStub(stubElement, this, modifierMask);

@@ -4,8 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.codeInsight.hints.InlayInfo;
 import com.intellij.codeInsight.hints.InlayParameterHintsProvider;
 import com.intellij.codeInsight.hints.MethodInfo;
@@ -54,10 +55,10 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 			"*.TryParse(*, *)"
 	};
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
-	public List<InlayInfo> getParameterHints(@NotNull PsiElement psiElement)
+	public List<InlayInfo> getParameterHints(@Nonnull PsiElement psiElement)
 	{
 		if(psiElement instanceof CSharpExpressionWithOperatorImpl || psiElement instanceof CSharpOperatorReferenceImpl)
 		{
@@ -105,7 +106,7 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 	}
 
 	@RequiredReadAction
-	private static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments, @NotNull PsiElement callable, @NotNull PsiElement scope)
+	private static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull PsiElement callable, @Nonnull PsiElement scope)
 	{
 		if(callable instanceof DotNetVariable)
 		{
@@ -127,7 +128,7 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public MethodInfo getMethodInfo(@NotNull PsiElement call)
+	public MethodInfo getMethodInfo(@Nonnull PsiElement call)
 	{
 		PsiElement callable;
 		if(call instanceof CSharpCallArgumentListOwner)
@@ -175,7 +176,7 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 		return new MethodInfo(name, paramNames);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Set<String> getDefaultBlackList()
 	{

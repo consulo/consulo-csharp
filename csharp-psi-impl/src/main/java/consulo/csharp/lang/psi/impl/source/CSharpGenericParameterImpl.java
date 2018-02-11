@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValueProvider;
@@ -40,18 +40,18 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGenericParameterStub> implements CSharpGenericParameter
 {
-	public CSharpGenericParameterImpl(@NotNull ASTNode node)
+	public CSharpGenericParameterImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpGenericParameterImpl(@NotNull CSharpGenericParameterStub stub)
+	public CSharpGenericParameterImpl(@Nonnull CSharpGenericParameterStub stub)
 	{
 		super(stub, CSharpStubElements.GENERIC_PARAMETER);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericParameter(this);
 	}
@@ -68,7 +68,7 @@ public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGener
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
@@ -81,7 +81,7 @@ public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGener
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{

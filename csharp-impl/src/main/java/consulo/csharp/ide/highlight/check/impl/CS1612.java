@@ -18,10 +18,10 @@ package consulo.csharp.ide.highlight.check.impl;
 
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.SwingUtilities;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.daemon.impl.IdentifierHighlighterPass;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.ide.DataManager;
@@ -84,14 +84,14 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 			myValueExpression = manager.createSmartPsiElementPointer(rightExpression);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
 			return "C#";
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getText()
 		{
@@ -100,7 +100,7 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 
 		@Override
 		@RequiredDispatchThread
-		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			CSharpFieldDeclaration element = myFieldPointer.getElement();
 
@@ -152,7 +152,7 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 
 		@Override
 		@RequiredDispatchThread
-		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			CSharpFieldDeclaration element = myFieldPointer.getElement();
 
@@ -233,7 +233,7 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpAssignmentExpressionImpl element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpAssignmentExpressionImpl element)
 	{
 		DotNetExpression leftExpression = element.getLeftExpression();
 

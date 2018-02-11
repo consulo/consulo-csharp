@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
 import consulo.dotnet.psi.DotNetStatement;
@@ -27,13 +27,13 @@ import consulo.dotnet.psi.DotNetStatement;
  */
 public class CSharpBreakStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpBreakStatementImpl(@NotNull ASTNode node)
+	public CSharpBreakStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitBreakStatement(this);
 	}

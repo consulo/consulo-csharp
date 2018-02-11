@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.stub;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.BitUtil;
 import consulo.annotations.RequiredReadAction;

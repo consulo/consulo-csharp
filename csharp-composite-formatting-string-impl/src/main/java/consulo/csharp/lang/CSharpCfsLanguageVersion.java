@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.cfs.lang.BaseExpressionCfsLanguageVersion;
 import consulo.csharp.cfs.lang.CfsLanguage;
@@ -29,7 +30,7 @@ import consulo.csharp.lang.psi.impl.source.injection.CSharpInjectExpressionEleme
  */
 public class CSharpCfsLanguageVersion extends BaseExpressionCfsLanguageVersion
 {
-	@NotNull
+	@Nonnull
 	public static CSharpCfsLanguageVersion getInstance()
 	{
 		return CfsLanguage.INSTANCE.findVersionByClass(CSharpCfsLanguageVersion.class);

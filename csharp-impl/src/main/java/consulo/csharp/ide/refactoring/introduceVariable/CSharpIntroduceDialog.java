@@ -27,8 +27,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.dotnet.psi.DotNetExpression;
 import com.intellij.openapi.project.Project;
@@ -51,7 +51,7 @@ public class CSharpIntroduceDialog extends DialogWrapper {
   private final int myOccurrencesCount;
   private final DotNetExpression myExpression;
 
-  public CSharpIntroduceDialog(@NotNull final Project project, @NotNull final String caption, final CSharpIntroduceOperation operation) {
+  public CSharpIntroduceDialog(@Nonnull final Project project, @Nonnull final String caption, final CSharpIntroduceOperation operation) {
     super(project, true);
     myOccurrencesCount = operation.getOccurrences().size();
     myProject = project;

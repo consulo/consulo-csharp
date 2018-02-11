@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
 import consulo.annotations.RequiredReadAction;
@@ -43,7 +44,7 @@ public class LocalVariableEvaluator extends LocalVariableOrParameterEvaluator<CS
 	}
 
 	@Override
-	protected boolean tryEvaluateFromStackFrame(@NotNull CSharpEvaluateContext context, DotNetStackFrameProxy frame, DotNetMethodProxy method)
+	protected boolean tryEvaluateFromStackFrame(@Nonnull CSharpEvaluateContext context, DotNetStackFrameProxy frame, DotNetMethodProxy method)
 	{
 		DotNetLocalVariableProxy[] locals = method.getLocalVariables(frame);
 

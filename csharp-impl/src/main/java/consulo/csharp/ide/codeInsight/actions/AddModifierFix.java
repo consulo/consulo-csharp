@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
@@ -38,12 +38,12 @@ public class AddModifierFix extends BaseModifierFix
 	}
 
 	@Override
-	public boolean isValidCondition(@NotNull DotNetModifierList modifierList, @NotNull DotNetModifier modifier)
+	public boolean isValidCondition(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier)
 	{
 		return !modifierList.hasModifier(modifier);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getActionName()
 	{
@@ -51,7 +51,7 @@ public class AddModifierFix extends BaseModifierFix
 	}
 
 	@Override
-	public void doAction(@NotNull DotNetModifierList modifierList, @NotNull DotNetModifier modifier)
+	public void doAction(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier)
 	{
 		modifierList.addModifier(modifier);
 	}

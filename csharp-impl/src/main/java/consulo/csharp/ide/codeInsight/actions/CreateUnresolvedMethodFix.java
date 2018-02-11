@@ -18,8 +18,9 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.codeInsight.template.Template;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -52,7 +53,7 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 		super(expression);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getTemplateText()
 	{
@@ -105,7 +106,7 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 
 	@RequiredReadAction
 	@Override
-	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @NotNull PsiFile file, @NotNull Template template)
+	public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @Nonnull PsiFile file, @Nonnull Template template)
 	{
 		boolean forInterface = context.getTargetForGenerate() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) context.getTargetForGenerate()).isInterface();
 
@@ -151,8 +152,8 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 		}
 	}
 
-	@NotNull
-	static CSharpAccessModifier calcModifier(@NotNull CreateUnresolvedElementFixContext context)
+	@Nonnull
+	static CSharpAccessModifier calcModifier(@Nonnull CreateUnresolvedElementFixContext context)
 	{
 		final CSharpTypeDeclaration thisType = PsiTreeUtil.getParentOfType(context.getExpression(), CSharpTypeDeclaration.class);
 		if(thisType == null)

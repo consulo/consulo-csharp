@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpGenericConstraintValue;
@@ -38,13 +39,13 @@ import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpGenericConstraint>> implements
 		CSharpGenericConstraint
 {
-	public CSharpGenericConstraintImpl(@NotNull ASTNode node)
+	public CSharpGenericConstraintImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpGenericConstraintImpl(@NotNull CSharpWithStringValueStub<CSharpGenericConstraint> stub,
-			@NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpGenericConstraint>, ?> nodeType)
+	public CSharpGenericConstraintImpl(@Nonnull CSharpWithStringValueStub<CSharpGenericConstraint> stub,
+			@Nonnull IStubElementType<? extends CSharpWithStringValueStub<CSharpGenericConstraint>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -93,7 +94,7 @@ public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpWit
 		return findChildByClass(CSharpReferenceExpression.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpGenericConstraintValue[] getGenericConstraintValues()
 	{
@@ -101,7 +102,7 @@ public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpWit
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericConstraint(this);
 	}

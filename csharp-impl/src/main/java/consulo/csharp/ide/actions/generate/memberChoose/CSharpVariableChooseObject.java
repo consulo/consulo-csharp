@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.actions.generate.memberChoose;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
@@ -43,7 +44,7 @@ public class CSharpVariableChooseObject extends CSharpMemberChooseObject<DotNetV
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String getPresentationText()
 	{

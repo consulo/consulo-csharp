@@ -18,8 +18,9 @@ package consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.util.containers.ContainerUtil;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -32,8 +33,8 @@ import consulo.dotnet.util.ArrayUtil2;
  */
 public class CSharpGenericExtractor implements DotNetGenericExtractor
 {
-	@NotNull
-	public static DotNetGenericExtractor create(@NotNull Map<DotNetGenericParameter, DotNetTypeRef> map)
+	@Nonnull
+	public static DotNetGenericExtractor create(@Nonnull Map<DotNetGenericParameter, DotNetTypeRef> map)
 	{
 		if(map.isEmpty())
 		{
@@ -42,8 +43,8 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 		return new CSharpGenericExtractor(map);
 	}
 
-	@NotNull
-	public static DotNetGenericExtractor create(@NotNull DotNetGenericParameter[] genericParameters, @NotNull DotNetTypeRef[] arguments)
+	@Nonnull
+	public static DotNetGenericExtractor create(@Nonnull DotNetGenericParameter[] genericParameters, @Nonnull DotNetTypeRef[] arguments)
 	{
 		if(genericParameters.length == 0 || genericParameters.length != arguments.length)
 		{
@@ -69,7 +70,7 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 
 	@Nullable
 	@Override
-	public DotNetTypeRef extract(@NotNull DotNetGenericParameter parameter)
+	public DotNetTypeRef extract(@Nonnull DotNetGenericParameter parameter)
 	{
 		int index = -1;
 		for(int i = 0; i < myGenericParameters.length; i++)

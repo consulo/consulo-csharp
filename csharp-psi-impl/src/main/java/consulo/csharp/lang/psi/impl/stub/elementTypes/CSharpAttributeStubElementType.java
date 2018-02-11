@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.impl.source.CSharpStubAttributeImpl;
@@ -41,21 +42,21 @@ public class CSharpAttributeStubElementType extends CSharpAbstractStubElementTyp
 		super("ATTRIBUTE");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElement createElement(@NotNull ASTNode astNode)
+	public PsiElement createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpStubAttributeImpl(astNode);
 	}
 
 	@Override
-	public CSharpAttribute createPsi(@NotNull CSharpWithStringValueStub<CSharpAttribute> stub)
+	public CSharpAttribute createPsi(@Nonnull CSharpWithStringValueStub<CSharpAttribute> stub)
 	{
 		return new CSharpStubAttributeImpl(stub, this);
 	}
 
 	@Override
-	public CSharpWithStringValueStub<CSharpAttribute> createStub(@NotNull CSharpAttribute attribute, StubElement stubElement)
+	public CSharpWithStringValueStub<CSharpAttribute> createStub(@Nonnull CSharpAttribute attribute, StubElement stubElement)
 	{
 		CSharpReferenceExpression referenceExpression = attribute.getReferenceExpression();
 		String referenceText = referenceExpression == null ? null : referenceExpression.getText();
@@ -63,14 +64,14 @@ public class CSharpAttributeStubElementType extends CSharpAbstractStubElementTyp
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpWithStringValueStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpWithStringValueStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getReferenceText());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpWithStringValueStub<CSharpAttribute> deserialize(@NotNull StubInputStream stubInputStream,
+	public CSharpWithStringValueStub<CSharpAttribute> deserialize(@Nonnull StubInputStream stubInputStream,
 			StubElement stubElement) throws IOException
 	{
 		StringRef referenceText = stubInputStream.readName();

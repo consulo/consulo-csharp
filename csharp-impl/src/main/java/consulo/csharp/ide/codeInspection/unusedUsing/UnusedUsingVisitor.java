@@ -20,7 +20,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
@@ -43,7 +44,7 @@ public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 
 	@Override
 	@RequiredReadAction
-	public void visitUsingChild(@NotNull CSharpUsingListChild child)
+	public void visitUsingChild(@Nonnull CSharpUsingListChild child)
 	{
 		if(myUsingContext.containsKey(child))
 		{
@@ -63,7 +64,7 @@ public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 		myUsingContext.put(child, defaultState);
 	}
 
-	@NotNull
+	@Nonnull
 	public Map<CSharpUsingListChild, Boolean> getUsingContext()
 	{
 		return myUsingContext;
@@ -112,7 +113,7 @@ public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected Collection<? extends CSharpUsingListChild> getStatements()
 	{
@@ -120,7 +121,7 @@ public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 	}
 
 	@Override
-	protected boolean isProcessed(@NotNull CSharpUsingListChild element)
+	protected boolean isProcessed(@Nonnull CSharpUsingListChild element)
 	{
 		return myUsingContext.get(element) == Boolean.TRUE;
 	}

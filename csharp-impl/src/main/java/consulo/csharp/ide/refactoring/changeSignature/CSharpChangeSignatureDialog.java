@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -35,8 +36,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.csharp.ide.highlight.check.impl.CS1547;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpFileType;
@@ -119,7 +119,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 
 		return new ChangeSignatureProcessorBase(getProject(), changeInfo)
 		{
-			@NotNull
+			@Nonnull
 			@Override
 			protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages)
 			{
@@ -388,7 +388,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 		return letters * Toolkit.getDefaultToolkit().getFontMetrics(font).stringWidth("W");
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetLikeMethodDeclaration getMethodDeclaration()
 	{
 		return myMethod.getMethod();
@@ -462,13 +462,13 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	}
 
 	@RequiredReadAction
-	private String typeText(@NotNull DotNetTypeRef typeRef)
+	private String typeText(@Nonnull DotNetTypeRef typeRef)
 	{
 		return CSharpTypeRefPresentationUtil.buildShortText(typeRef, myDefaultValueContext);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	@RequiredDispatchThread
 	public List<CSharpParameterInfo> getParameters()
 	{

@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
 import consulo.dotnet.psi.DotNetExpression;
@@ -28,7 +29,7 @@ import consulo.dotnet.psi.DotNetStatement;
  */
 public class CSharpExpressionStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpExpressionStatementImpl(@NotNull ASTNode node)
+	public CSharpExpressionStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -39,7 +40,7 @@ public class CSharpExpressionStatementImpl extends CSharpElementImpl implements 
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitExpressionStatement(this);
 	}

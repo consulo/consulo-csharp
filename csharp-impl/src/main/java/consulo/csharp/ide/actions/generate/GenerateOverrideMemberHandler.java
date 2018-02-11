@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -44,7 +45,7 @@ import com.intellij.psi.PsiElement;
  */
 public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMemberHandler
 {
-	@NotNull
+	@Nonnull
 	@Override
 	public String getTitle()
 	{
@@ -53,7 +54,7 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 
 	@RequiredReadAction
 	@Override
-	public void appendAdditionalModifiers(@NotNull StringBuilder builder, @NotNull PsiElement item)
+	public void appendAdditionalModifiers(@Nonnull StringBuilder builder, @Nonnull PsiElement item)
 	{
 		CSharpModifier requiredOverrideModifier = OverrideUtil.getRequiredOverrideModifier((DotNetModifierListOwner) item);
 		if(requiredOverrideModifier != null)
@@ -64,13 +65,13 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 
 	@RequiredReadAction
 	@Override
-	public void appendReturnStatement(@NotNull StringBuilder builder, @NotNull PsiElement item)
+	public void appendReturnStatement(@Nonnull StringBuilder builder, @Nonnull PsiElement item)
 	{
 		generateReturn(builder, item);
 	}
 
 	@RequiredReadAction
-	public static void generateReturn(@NotNull StringBuilder builder, @NotNull PsiElement item)
+	public static void generateReturn(@Nonnull StringBuilder builder, @Nonnull PsiElement item)
 	{
 		if(item instanceof CSharpMethodDeclaration)
 		{
@@ -101,9 +102,9 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public Collection<PsiElement> getItems(@NotNull CSharpTypeDeclaration typeDeclaration)
+	public Collection<PsiElement> getItems(@Nonnull CSharpTypeDeclaration typeDeclaration)
 	{
 		Collection<PsiElement> allMembers = OverrideUtil.getAllMembers(typeDeclaration, typeDeclaration.getResolveScope(), DotNetGenericExtractor.EMPTY, false, true);
 

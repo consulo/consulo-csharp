@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -40,7 +40,7 @@ public class GenericParameterContext
 		myCount = count;
 	}
 
-	@NotNull
+	@Nonnull
 	public GenericParameterContext gemmate()
 	{
 		return new GenericParameterContext(this);

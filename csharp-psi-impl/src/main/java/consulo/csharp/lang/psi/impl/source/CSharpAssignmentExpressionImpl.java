@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -31,12 +32,12 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpAssignmentExpressionImpl extends CSharpExpressionWithOperatorImpl implements DotNetExpression
 {
-	public CSharpAssignmentExpressionImpl(@NotNull ASTNode node)
+	public CSharpAssignmentExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public DotNetExpression getLeftExpression()
 	{
@@ -61,13 +62,13 @@ public class CSharpAssignmentExpressionImpl extends CSharpExpressionWithOperator
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitAssignmentExpression(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{

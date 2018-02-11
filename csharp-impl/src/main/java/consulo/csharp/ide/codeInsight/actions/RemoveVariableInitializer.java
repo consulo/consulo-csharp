@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.lang.ASTNode;
@@ -46,7 +47,7 @@ public class RemoveVariableInitializer extends BaseIntentionAction
 		setText(variable instanceof DotNetParameter ? "Remove initializer" : "Remove default value");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{
@@ -54,7 +55,7 @@ public class RemoveVariableInitializer extends BaseIntentionAction
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		DotNetVariable element = myPointer.getElement();
 		return element != null && element.getInitializer() != null;
@@ -62,7 +63,7 @@ public class RemoveVariableInitializer extends BaseIntentionAction
 
 	@Override
 	@RequiredWriteAction
-	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		DotNetVariable element = myPointer.getElement();
 		if(element == null)

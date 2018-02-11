@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.liveTemplates.expression;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import com.intellij.codeInsight.lookup.LookupElement;

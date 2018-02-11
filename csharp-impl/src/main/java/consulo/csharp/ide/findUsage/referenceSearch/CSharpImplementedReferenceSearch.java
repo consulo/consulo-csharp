@@ -19,7 +19,7 @@ package consulo.csharp.ide.findUsage.referenceSearch;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetModifier;
@@ -39,7 +39,7 @@ import com.intellij.util.Processor;
 public class CSharpImplementedReferenceSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>
 {
 	@Override
-	public void processQuery(@NotNull ReferencesSearch.SearchParameters queryParameters, @NotNull Processor<PsiReference> consumer)
+	public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<PsiReference> consumer)
 	{
 		final PsiElement elementToSearch = queryParameters.getElementToSearch();
 		if(elementToSearch instanceof CSharpMethodDeclaration)

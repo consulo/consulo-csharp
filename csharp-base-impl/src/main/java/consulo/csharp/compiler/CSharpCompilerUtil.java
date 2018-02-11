@@ -18,7 +18,7 @@ package consulo.csharp.compiler;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkTable;
 import com.intellij.openapi.projectRoots.SdkType;
@@ -36,7 +36,7 @@ public class CSharpCompilerUtil
 {
 	public static final String COMPILER_NAME = "csc.exe";
 
-	public static void setupCompiler(@NotNull DotNetModuleExtension<?> netExtension,
+	public static void setupCompiler(@Nonnull DotNetModuleExtension<?> netExtension,
 			CSharpModuleExtension<?> csharpExtension,
 			MSBaseDotNetCompilerOptionsBuilder builder) throws DotNetCompileFailedException
 	{

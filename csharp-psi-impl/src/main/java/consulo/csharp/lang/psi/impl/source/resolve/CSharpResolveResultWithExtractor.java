@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -27,8 +27,8 @@ import com.intellij.psi.ResolveResult;
  */
 public class CSharpResolveResultWithExtractor extends CSharpResolveResult
 {
-	@NotNull
-	public static CSharpResolveResultWithExtractor withExtractor(@NotNull ResolveResult resolveResult, @NotNull DotNetGenericExtractor extractor)
+	@Nonnull
+	public static CSharpResolveResultWithExtractor withExtractor(@Nonnull ResolveResult resolveResult, @Nonnull DotNetGenericExtractor extractor)
 	{
 		PsiElement providerElement = null;
 		if(resolveResult instanceof CSharpResolveResult)
@@ -40,16 +40,16 @@ public class CSharpResolveResultWithExtractor extends CSharpResolveResult
 		return withExtractor;
 	}
 
-	@NotNull
+	@Nonnull
 	private final DotNetGenericExtractor myExtractor;
 
-	public CSharpResolveResultWithExtractor(@NotNull PsiElement element, @NotNull DotNetGenericExtractor extractor)
+	public CSharpResolveResultWithExtractor(@Nonnull PsiElement element, @Nonnull DotNetGenericExtractor extractor)
 	{
 		super(element);
 		myExtractor = extractor;
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetGenericExtractor getExtractor()
 	{
 		return myExtractor;

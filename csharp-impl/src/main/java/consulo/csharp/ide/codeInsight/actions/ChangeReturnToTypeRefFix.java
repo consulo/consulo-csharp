@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -40,16 +41,16 @@ import com.intellij.util.IncorrectOperationException;
 public class ChangeReturnToTypeRefFix extends BaseIntentionAction
 {
 	private final SmartPsiElementPointer<DotNetLikeMethodDeclaration> myMethodPointer;
-	@NotNull
+	@Nonnull
 	private final DotNetTypeRef myToTypeRef;
 
-	public ChangeReturnToTypeRefFix(@NotNull DotNetLikeMethodDeclaration element, @NotNull DotNetTypeRef toTypeRef)
+	public ChangeReturnToTypeRefFix(@Nonnull DotNetLikeMethodDeclaration element, @Nonnull DotNetTypeRef toTypeRef)
 	{
 		myMethodPointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
 		myToTypeRef = toTypeRef;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText()
 	{
@@ -62,7 +63,7 @@ public class ChangeReturnToTypeRefFix extends BaseIntentionAction
 				(myToTypeRef, element));
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{
@@ -70,14 +71,14 @@ public class ChangeReturnToTypeRefFix extends BaseIntentionAction
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		return myMethodPointer.getElement() != null;
 	}
 
 	@Override
 	@RequiredReadAction
-	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
 

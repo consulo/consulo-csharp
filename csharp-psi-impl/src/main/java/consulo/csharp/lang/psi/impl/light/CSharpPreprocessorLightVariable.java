@@ -17,8 +17,8 @@
 package consulo.csharp.lang.psi.impl.light;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ui.configuration.ProjectSettingsService;
 import com.intellij.openapi.util.Comparing;
@@ -44,7 +44,7 @@ public class CSharpPreprocessorLightVariable extends LightElement implements CSh
 	private final PsiElement myTarget;
 	private final String myName;
 
-	public CSharpPreprocessorLightVariable(@Nullable Module module, @NotNull PsiElement target, @NotNull String name)
+	public CSharpPreprocessorLightVariable(@Nullable Module module, @Nonnull PsiElement target, @Nonnull String name)
 	{
 		super(PsiManager.getInstance(target.getProject()), CSharpPreprocessorLanguage.INSTANCE);
 		myModule = module;
@@ -125,7 +125,7 @@ public class CSharpPreprocessorLightVariable extends LightElement implements CSh
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		return null;
 	}

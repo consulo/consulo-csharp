@@ -19,8 +19,9 @@ package consulo.csharp.lang.psi.impl.source;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -46,12 +47,12 @@ public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSh
 	private static final TokenSet ourOpenSet = TokenSet.create(CSharpTokens.LPAR, CSharpTokens.LBRACKET);
 	private static final TokenSet ourCloseSet = TokenSet.create(CSharpTokens.RPAR, CSharpTokens.RBRACKET);
 
-	public CSharpCallArgumentListImpl(@NotNull ASTNode node)
+	public CSharpCallArgumentListImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiReference[] getReferences()
 	{
@@ -73,7 +74,7 @@ public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSh
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpCallArgument[] getArguments()
 	{
@@ -81,7 +82,7 @@ public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSh
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public DotNetExpression[] getExpressions()
 	{
 		CSharpCallArgument[] arguments = getArguments();
@@ -102,12 +103,12 @@ public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSh
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitMethodCallParameterList(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpFieldOrPropertySet[] getSets()
 	{

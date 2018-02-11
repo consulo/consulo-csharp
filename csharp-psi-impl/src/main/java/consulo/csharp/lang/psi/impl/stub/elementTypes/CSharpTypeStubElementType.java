@@ -18,8 +18,9 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
@@ -46,22 +47,22 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 		super("TYPE_DECLARATION");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpTypeDeclaration createElement(@NotNull ASTNode astNode)
+	public CSharpTypeDeclaration createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpTypeDeclarationImpl(astNode);
 	}
 
 	@Override
-	public CSharpTypeDeclaration createPsi(@NotNull CSharpTypeDeclStub stub)
+	public CSharpTypeDeclaration createPsi(@Nonnull CSharpTypeDeclStub stub)
 	{
 		return new CSharpTypeDeclarationImpl(stub);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpTypeDeclStub createStub(@NotNull CSharpTypeDeclaration typeDeclaration, StubElement stubElement)
+	public CSharpTypeDeclStub createStub(@Nonnull CSharpTypeDeclaration typeDeclaration, StubElement stubElement)
 	{
 		String parentQName = typeDeclaration.getPresentableParentQName();
 		String vmQName = typeDeclaration.getVmQName();
@@ -70,16 +71,16 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpTypeDeclStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpTypeDeclStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getParentQName());
 		stubOutputStream.writeName(stub.getVmQName());
 		stubOutputStream.writeInt(stub.getOtherModifierMask());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpTypeDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpTypeDeclStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef parentQName = stubInputStream.readName();
 		StringRef vmQName = stubInputStream.readName();
@@ -89,7 +90,7 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 
 	@Override
 	@RequiredReadAction
-	public void indexStub(@NotNull CSharpTypeDeclStub stub, @NotNull IndexSink indexSink)
+	public void indexStub(@Nonnull CSharpTypeDeclStub stub, @Nonnull IndexSink indexSink)
 	{
 		String name = getName(stub);
 		if(!StringUtil.isEmpty(name))
@@ -113,8 +114,8 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 		}
 	}
 
-	@NotNull
-	public static String getNameWithNamespaceForIndexing(@Nullable String namespace, @NotNull String name)
+	@Nonnull
+	public static String getNameWithNamespaceForIndexing(@Nullable String namespace, @Nonnull String name)
 	{
 		if(StringUtil.isEmpty(namespace))
 		{

@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -39,36 +40,36 @@ public class CSharpConversionMethodStubElementType extends CSharpAbstractStubEle
 		super("CONVERSION_METHOD_DECLARATION");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpConversionMethodDeclarationImpl createElement(@NotNull ASTNode astNode)
+	public CSharpConversionMethodDeclarationImpl createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpConversionMethodDeclarationImpl(astNode);
 	}
 
 	@Override
-	public CSharpConversionMethodDeclarationImpl createPsi(@NotNull CSharpMethodDeclStub cSharpTypeStub)
+	public CSharpConversionMethodDeclarationImpl createPsi(@Nonnull CSharpMethodDeclStub cSharpTypeStub)
 	{
 		return new CSharpConversionMethodDeclarationImpl(cSharpTypeStub);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpMethodDeclStub createStub(@NotNull CSharpConversionMethodDeclarationImpl methodDeclaration, StubElement stubElement)
+	public CSharpMethodDeclStub createStub(@Nonnull CSharpConversionMethodDeclarationImpl methodDeclaration, StubElement stubElement)
 	{
 		String qname = methodDeclaration.getPresentableParentQName();
 		return new CSharpMethodDeclStub(stubElement, this, qname, 0, -1);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpMethodDeclStub cSharpTypeStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpMethodDeclStub cSharpTypeStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(cSharpTypeStub.getParentQName());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpMethodDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpMethodDeclStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef qname = stubInputStream.readName();
 		return new CSharpMethodDeclStub(stubElement, this, StringRef.toString(qname), 0, -1);

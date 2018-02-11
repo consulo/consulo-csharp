@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetElement;
@@ -33,7 +33,7 @@ public interface CSharpFieldOrPropertySet extends DotNetElement
 
 	public static ArrayFactory<CSharpFieldOrPropertySet> ARRAY_FACTORY = new ArrayFactory<CSharpFieldOrPropertySet>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public CSharpFieldOrPropertySet[] create(int count)
 		{
@@ -44,7 +44,7 @@ public interface CSharpFieldOrPropertySet extends DotNetElement
 	@Nullable
 	String getName();
 
-	@NotNull
+	@Nonnull
 	PsiElement getNameElement();
 
 	@Nullable

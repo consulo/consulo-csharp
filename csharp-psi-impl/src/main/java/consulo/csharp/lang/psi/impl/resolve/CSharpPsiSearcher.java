@@ -21,7 +21,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
@@ -45,8 +46,8 @@ import consulo.dotnet.resolve.impl.IndexBasedDotNetPsiSearcher;
  */
 public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 {
-	@NotNull
-	public static CSharpPsiSearcher getInstance(@NotNull Project project)
+	@Nonnull
+	public static CSharpPsiSearcher getInstance(@Nonnull Project project)
 	{
 		return ServiceManager.getService(project, CSharpPsiSearcher.class);
 	}
@@ -56,21 +57,21 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 		super(project);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	protected DotNetNamespaceAsElement createNamespace(@NotNull String indexKey, @NotNull String qName)
+	protected DotNetNamespaceAsElement createNamespace(@Nonnull String indexKey, @Nonnull String qName)
 	{
 		return new CSharpNamespaceAsElementImpl(myProject, indexKey, qName, this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public StubIndexKey<String, DotNetQualifiedElement> getElementByQNameIndexKey()
 	{
 		return CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public StubIndexKey<String, DotNetQualifiedElement> getNamespaceIndexKey()
 	{
@@ -78,9 +79,9 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public Collection<? extends DotNetTypeDeclaration> findTypesImpl(@NotNull String vmQName, @NotNull GlobalSearchScope scope)
+	public Collection<? extends DotNetTypeDeclaration> findTypesImpl(@Nonnull String vmQName, @Nonnull GlobalSearchScope scope)
 	{
 		if(DumbService.isDumb(myProject))
 		{

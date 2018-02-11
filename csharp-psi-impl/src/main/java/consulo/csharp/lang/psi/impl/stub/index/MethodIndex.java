@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.stub.index;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexExtension;
@@ -33,7 +34,7 @@ public class MethodIndex extends StringStubIndexExtension<DotNetLikeMethodDeclar
 		return StubIndexExtension.EP_NAME.findExtension(MethodIndex.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public StubIndexKey<String, DotNetLikeMethodDeclaration> getKey()
 	{

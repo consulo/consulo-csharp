@@ -19,7 +19,8 @@ package consulo.csharp.lang.psi.impl.resolve;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
@@ -34,7 +35,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
 public class CSharpGenericParameterResolveContext extends CSharpBaseResolveContext<DotNetGenericParameter>
 {
 	@RequiredReadAction
-	public CSharpGenericParameterResolveContext(@NotNull DotNetGenericParameter element)
+	public CSharpGenericParameterResolveContext(@Nonnull DotNetGenericParameter element)
 	{
 		super(element, DotNetGenericExtractor.EMPTY, null);
 	}
@@ -46,7 +47,7 @@ public class CSharpGenericParameterResolveContext extends CSharpBaseResolveConte
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected List<DotNetTypeRef> getExtendTypeRefs()
 	{

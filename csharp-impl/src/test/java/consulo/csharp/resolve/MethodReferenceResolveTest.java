@@ -16,7 +16,8 @@
 
 package consulo.csharp.resolve;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.CSharpMockModuleDescriptor;
 import com.intellij.psi.ResolveResult;
 import com.intellij.testFramework.TestModuleDescriptor;
@@ -62,14 +63,14 @@ public class MethodReferenceResolveTest extends ResolvingTestCase
 	{
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected TestModuleDescriptor createTestModuleDescriptor()
 	{
 		return new CSharpMockModuleDescriptor();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected Function<ResolveResult, String> createReferenceResultBuilder()
 	{

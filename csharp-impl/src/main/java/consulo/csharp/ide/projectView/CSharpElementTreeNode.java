@@ -21,7 +21,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
+
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;

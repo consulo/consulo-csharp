@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.psi.tree.IElementType;
@@ -38,7 +39,7 @@ public class PrefixOperatorEvaluator extends Evaluator
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context)
+	public void evaluate(@Nonnull CSharpEvaluateContext context)
 	{
 		DotNetValueProxy popValue = context.popValue();
 		if(popValue == null)

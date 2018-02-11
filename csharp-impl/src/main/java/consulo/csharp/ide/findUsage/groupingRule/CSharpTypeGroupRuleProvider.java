@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.findUsage.groupingRule;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -42,7 +42,7 @@ public class CSharpTypeGroupRuleProvider implements FileStructureGroupRuleProvid
 		{
 			@Nullable
 			@Override
-			public UsageGroup groupUsage(@NotNull Usage usage)
+			public UsageGroup groupUsage(@Nonnull Usage usage)
 			{
 				if(!(usage instanceof PsiElementUsage))
 				{

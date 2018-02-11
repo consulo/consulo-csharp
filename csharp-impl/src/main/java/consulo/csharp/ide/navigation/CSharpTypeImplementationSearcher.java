@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.navigation;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
@@ -32,7 +33,7 @@ import com.intellij.util.QueryExecutor;
 public class CSharpTypeImplementationSearcher implements QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters>
 {
 	@Override
-	public boolean execute(@NotNull DefinitionsScopedSearch.SearchParameters queryParameters, @NotNull final Processor<PsiElement> consumer)
+	public boolean execute(@Nonnull DefinitionsScopedSearch.SearchParameters queryParameters, @Nonnull final Processor<PsiElement> consumer)
 	{
 		final PsiElement element = queryParameters.getElement();
 		if(element instanceof DotNetTypeDeclaration)

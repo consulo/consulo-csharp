@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.codeInsight;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.application.ApplicationBundle;
 import com.intellij.openapi.options.Configurable;
 import consulo.options.SimpleConfigurableByProperties;
@@ -32,7 +32,7 @@ import consulo.ui.VerticalLayout;
 public class CSharpAutoImportConfigurable extends SimpleConfigurableByProperties implements Configurable
 {
 	@RequiredUIAccess
-	@NotNull
+	@Nonnull
 	@Override
 	protected Component createLayout(PropertyBuilder propertyBuilder)
 	{

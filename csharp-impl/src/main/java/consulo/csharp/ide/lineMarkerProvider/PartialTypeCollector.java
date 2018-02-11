@@ -18,8 +18,9 @@ package consulo.csharp.ide.lineMarkerProvider;
 
 import java.awt.event.MouseEvent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
@@ -81,7 +82,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @NotNull Consumer<LineMarkerInfo> consumer)
+	public void collect(PsiElement psiElement, @Nonnull Consumer<LineMarkerInfo> consumer)
 	{
 		CSharpTypeDeclaration parent = CSharpLineMarkerUtil.getNameIdentifierAs(psiElement, CSharpTypeDeclaration.class);
 		if(parent != null)

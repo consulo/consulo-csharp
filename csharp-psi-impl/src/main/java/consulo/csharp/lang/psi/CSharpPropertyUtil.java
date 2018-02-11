@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
@@ -30,7 +30,7 @@ import com.intellij.psi.PsiElement;
 public class CSharpPropertyUtil
 {
 	@RequiredReadAction
-	public static boolean isAutoProperty(@NotNull PsiElement element)
+	public static boolean isAutoProperty(@Nonnull PsiElement element)
 	{
 		if(element instanceof CSharpPropertyDeclaration)
 		{

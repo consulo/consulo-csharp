@@ -22,7 +22,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
@@ -79,7 +80,7 @@ public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static Set<DotNetVirtualImplementOwner> getAllElements(PsiElement element)
 	{
@@ -93,7 +94,7 @@ public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 
 	@Override
 	@RequiredReadAction
-	public boolean canProcessElement(@NotNull PsiElement element)
+	public boolean canProcessElement(@Nonnull PsiElement element)
 	{
 		return OverrideUtil.isAllowForOverride(element);
 	}

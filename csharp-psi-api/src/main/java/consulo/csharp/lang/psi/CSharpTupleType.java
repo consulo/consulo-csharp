@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.dotnet.psi.DotNetType;
 
 /**
@@ -25,6 +26,6 @@ import consulo.dotnet.psi.DotNetType;
  */
 public interface CSharpTupleType extends DotNetType
 {
-	@NotNull
+	@Nonnull
 	CSharpTupleVariable[] getVariables();
 }

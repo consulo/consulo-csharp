@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.resolve;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -44,14 +45,14 @@ public class CSharpShortNameSearcher extends DotNetShortNameSearcher
 	}
 
 	@Override
-	public void collectTypeNames(@NotNull Processor<String> processor, @NotNull GlobalSearchScope searchScope, @Nullable IdFilter filter)
+	public void collectTypeNames(@Nonnull Processor<String> processor, @Nonnull GlobalSearchScope searchScope, @Nullable IdFilter filter)
 	{
 		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.TYPE_INDEX, processor, searchScope, filter);
 		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.DELEGATE_METHOD_BY_NAME_INDEX, processor, searchScope, filter);
 	}
 
 	@Override
-	public void collectTypes(@NotNull String s, @NotNull GlobalSearchScope searchScope, @Nullable IdFilter filter, @NotNull final Processor<DotNetTypeDeclaration> processor)
+	public void collectTypes(@Nonnull String s, @Nonnull GlobalSearchScope searchScope, @Nullable IdFilter filter, @Nonnull final Processor<DotNetTypeDeclaration> processor)
 	{
 		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_INDEX, s, myProject, searchScope, filter, CSharpTypeDeclaration.class, processor);
 

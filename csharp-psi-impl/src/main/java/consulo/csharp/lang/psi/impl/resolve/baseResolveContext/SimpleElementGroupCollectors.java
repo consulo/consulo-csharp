@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.resolve.baseResolveContext;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
@@ -34,14 +35,14 @@ public class SimpleElementGroupCollectors
 {
 	public static class Constructor extends SimpleElementGroupCollector<CSharpConstructorDeclaration>
 	{
-		public Constructor(@NotNull CSharpBaseResolveContext<?> context)
+		public Constructor(@Nonnull CSharpBaseResolveContext<?> context)
 		{
 			super(MsilHelper.CONSTRUCTOR_NAME, CSharpAdditionalMemberProvider.Target.CONSTRUCTOR, context);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
-		protected CSharpElementVisitor createVisitor(@NotNull final Consumer<CSharpConstructorDeclaration> consumer)
+		protected CSharpElementVisitor createVisitor(@Nonnull final Consumer<CSharpConstructorDeclaration> consumer)
 		{
 			return new CSharpElementVisitor()
 			{
@@ -59,12 +60,12 @@ public class SimpleElementGroupCollectors
 
 	public static class DeConstructor extends SimpleElementGroupCollector<CSharpConstructorDeclaration>
 	{
-		public DeConstructor(@NotNull CSharpBaseResolveContext<?> context)
+		public DeConstructor(@Nonnull CSharpBaseResolveContext<?> context)
 		{
 			super("~" + MsilHelper.CONSTRUCTOR_NAME, CSharpAdditionalMemberProvider.Target.DE_CONSTRUCTOR, context);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public DotNetGenericExtractor getExtractor()
 		{
@@ -72,9 +73,9 @@ public class SimpleElementGroupCollectors
 			return DotNetGenericExtractor.EMPTY;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
-		protected CSharpElementVisitor createVisitor(@NotNull final Consumer<CSharpConstructorDeclaration> consumer)
+		protected CSharpElementVisitor createVisitor(@Nonnull final Consumer<CSharpConstructorDeclaration> consumer)
 		{
 			return new CSharpElementVisitor()
 			{
@@ -92,14 +93,14 @@ public class SimpleElementGroupCollectors
 
 	public static class IndexMethod extends SimpleElementGroupCollector<CSharpIndexMethodDeclaration>
 	{
-		public IndexMethod(@NotNull CSharpBaseResolveContext<?> context)
+		public IndexMethod(@Nonnull CSharpBaseResolveContext<?> context)
 		{
 			super("[]", CSharpAdditionalMemberProvider.Target.INDEX_METHOD, context);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
-		protected CSharpElementVisitor createVisitor(@NotNull final Consumer<CSharpIndexMethodDeclaration> consumer)
+		protected CSharpElementVisitor createVisitor(@Nonnull final Consumer<CSharpIndexMethodDeclaration> consumer)
 		{
 			return new CSharpElementVisitor()
 			{

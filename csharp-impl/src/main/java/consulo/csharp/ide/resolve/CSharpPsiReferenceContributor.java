@@ -19,7 +19,7 @@ package consulo.csharp.ide.resolve;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
 import consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
@@ -45,10 +45,10 @@ public class CSharpPsiReferenceContributor extends PsiReferenceContributor
 	{
 		psiReferenceRegistrar.registerReferenceProvider(StandardPatterns.psiElement(CSharpCallArgumentList.class).withParent(CSharpIndexAccessExpressionImpl.class), new PsiReferenceProvider()
 		{
-			@NotNull
+			@Nonnull
 			@Override
 			@RequiredReadAction
-			public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext processingContext)
+			public PsiReference[] getReferencesByElement(@Nonnull PsiElement element, @Nonnull ProcessingContext processingContext)
 			{
 				CSharpIndexAccessExpressionImpl parent = (CSharpIndexAccessExpressionImpl) element.getParent();
 				PsiElement callable = parent.resolveToCallable();

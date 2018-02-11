@@ -17,7 +17,7 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.ASTNode;
@@ -35,24 +35,24 @@ import consulo.dotnet.psi.DotNetStatement;
  */
 public class CSharpLabeledStatementImpl extends CSharpElementImpl implements DotNetStatement, PsiNameIdentifierOwner, DotNetNamedElement
 {
-	public CSharpLabeledStatementImpl(@NotNull ASTNode node)
+	public CSharpLabeledStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetStatement[] getStatements()
 	{
 		return findChildrenByClass(DotNetStatement.class);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitLabeledStatement(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getNameIdentifier()
 	{
@@ -67,13 +67,13 @@ public class CSharpLabeledStatementImpl extends CSharpElementImpl implements Dot
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
 	{
 		return null;
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement
 			place)
 	{
 		for(DotNetStatement statement : getStatements())

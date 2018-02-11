@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi.impl.msil;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
@@ -73,7 +73,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		});
 	}
 
-	public static DotNetXXXAccessor[] buildAccessors(@NotNull PsiElement parent, @NotNull List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	public static DotNetXXXAccessor[] buildAccessors(@Nonnull PsiElement parent, @Nonnull List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
 		List<DotNetXXXAccessor> accessors = new ArrayList<DotNetXXXAccessor>(2);
 
@@ -84,7 +84,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		return ContainerUtil.toArray(accessors, DotNetXXXAccessor.ARRAY_FACTORY);
 	}
 
-	@NotNull
+	@Nonnull
 	public static CSharpModifier[] getAdditionalModifiers(PsiElement parent, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
 		PsiElement maybeTypeParent = parent.getParent();
@@ -138,7 +138,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitPropertyDeclaration(this);
 	}
@@ -163,14 +163,14 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetXXXAccessor[] getAccessors()
 	{
 		return myAccessors;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -200,7 +200,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		return myTypeForImplementValue.getValue();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{

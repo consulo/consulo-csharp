@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.dotnet.psi.DotNetFile;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 
@@ -26,7 +26,7 @@ import consulo.dotnet.psi.DotNetQualifiedElement;
  */
 public interface CSharpFile extends DotNetFile, CSharpUsingListOwner
 {
-	@NotNull
+	@Nonnull
 	@Override
 	DotNetQualifiedElement[] getMembers();
 }

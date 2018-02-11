@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
@@ -61,7 +61,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 {
 	private final NotNullLazyValue<SimpleElementGroupCollectors.IndexMethod> myIndexMethodCollectorValue = new NotNullLazyValue<SimpleElementGroupCollectors.IndexMethod>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected SimpleElementGroupCollectors.IndexMethod compute()
 		{
@@ -71,7 +71,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 	private final NotNullLazyValue<SimpleElementGroupCollectors.Constructor> myConstructorCollectorValue = new NotNullLazyValue<SimpleElementGroupCollectors.Constructor>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected SimpleElementGroupCollectors.Constructor compute()
 		{
@@ -81,7 +81,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 	private final NotNullLazyValue<SimpleElementGroupCollectors.DeConstructor> myDeConstructorCollectorValue = new NotNullLazyValue<SimpleElementGroupCollectors.DeConstructor>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected SimpleElementGroupCollectors.DeConstructor compute()
 		{
@@ -91,7 +91,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 	private final NotNullLazyValue<MapElementGroupCollectors.ConversionMethod> myConversionMethodCollectorValue = new NotNullLazyValue<MapElementGroupCollectors.ConversionMethod>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected MapElementGroupCollectors.ConversionMethod compute()
 		{
@@ -101,7 +101,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 	private final NotNullLazyValue<MapElementGroupCollectors.OperatorMethod> myOperatorMethodCollectorValue = new NotNullLazyValue<MapElementGroupCollectors.OperatorMethod>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected MapElementGroupCollectors.OperatorMethod compute()
 		{
@@ -111,7 +111,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 	private final NotNullLazyValue<MapElementGroupCollectors.Other> myOtherCollectorValue = new NotNullLazyValue<MapElementGroupCollectors.Other>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected MapElementGroupCollectors.Other compute()
 		{
@@ -119,15 +119,15 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		}
 	};
 
-	@NotNull
+	@Nonnull
 	protected final T myElement;
-	@NotNull
+	@Nonnull
 	protected final DotNetGenericExtractor myExtractor;
 	@Nullable
 	private Set<PsiElement> myRecursiveGuardSet;
 
 	@RequiredReadAction
-	public CSharpBaseResolveContext(@NotNull T element, @NotNull DotNetGenericExtractor extractor, @Nullable Set<PsiElement> recursiveGuardSet)
+	public CSharpBaseResolveContext(@Nonnull T element, @Nonnull DotNetGenericExtractor extractor, @Nullable Set<PsiElement> recursiveGuardSet)
 	{
 		myElement = element;
 		myExtractor = extractor;
@@ -136,11 +136,11 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 	public abstract void acceptChildren(CSharpElementVisitor visitor);
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	protected abstract List<DotNetTypeRef> getExtendTypeRefs();
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private CSharpResolveContext getSuperContext()
 	{
@@ -152,7 +152,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		return getSuperContextImpl(alreadyProcessedItem);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private CSharpResolveContext getSuperContextImpl(Set<PsiElement> alreadyProcessedItem)
 	{
@@ -226,7 +226,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)
+	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@Nonnull IElementType type, boolean deep)
 	{
 		Map<IElementType, CSharpElementGroup<CSharpMethodDeclaration>> map = myOperatorMethodCollectorValue.getValue().toMap();
 		if(map == null)
@@ -254,7 +254,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull CSharpCastType castType, boolean deep)
+	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@Nonnull CSharpCastType castType, boolean deep)
 	{
 		Map<CSharpCastType, CSharpElementGroup<CSharpConversionMethodDeclaration>> map = myConversionMethodCollectorValue.getValue().toMap();
 		if(map == null)
@@ -282,7 +282,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
+	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@Nonnull String name)
 	{
 		Map<String, CSharpElementGroup<PsiElement>> map = myOtherCollectorValue.getValue().toMap();
 		if(map == null)
@@ -319,7 +319,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 	@RequiredReadAction
 	@Override
-	public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
+	public boolean processExtensionMethodGroups(@Nonnull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
 		Map<String, CSharpElementGroup<PsiElement>> map = myOtherCollectorValue.getValue().toMap();
 		if(map == null)
@@ -346,8 +346,8 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 	@RequiredReadAction
 	@Override
-	@NotNull
-	public Collection<PsiElement> findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
+	@Nonnull
+	public Collection<PsiElement> findByName(@Nonnull String name, boolean deep, @Nonnull UserDataHolder holder)
 	{
 		Map<String, CSharpElementGroup<PsiElement>> map = myOtherCollectorValue.getValue().toMap();
 
@@ -378,7 +378,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 	@RequiredReadAction
 	@Override
-	public boolean processElements(@NotNull final Processor<PsiElement> processor, boolean deep)
+	public boolean processElements(@Nonnull final Processor<PsiElement> processor, boolean deep)
 	{
 		if(processElementsImpl(processor))
 		{
@@ -391,21 +391,21 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	}
 
 	@RequiredReadAction
-	public boolean processElementsImpl(@NotNull Processor<PsiElement> processor)
+	public boolean processElementsImpl(@Nonnull Processor<PsiElement> processor)
 	{
 		Map<String, CSharpElementGroup<PsiElement>> map = myOtherCollectorValue.getValue().toMap();
 
 		return map == null || ContainerUtil.process(map.values(), processor);
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetGenericExtractor getExtractor()
 	{
 		return myExtractor;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public T getElement()
 	{
 		return myElement;

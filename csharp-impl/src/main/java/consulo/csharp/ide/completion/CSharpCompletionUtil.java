@@ -19,8 +19,8 @@ package consulo.csharp.ide.completion;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -93,12 +93,12 @@ public class CSharpCompletionUtil
 		return false;
 	}
 
-	public static boolean isTypeLikeElementWithNamespace(@NotNull PsiElement element)
+	public static boolean isTypeLikeElementWithNamespace(@Nonnull PsiElement element)
 	{
 		return CSharpPsiUtilImpl.isTypeLikeElement(element) || element instanceof DotNetNamespaceAsElement;
 	}
 
-	@NotNull
+	@Nonnull
 	public static String textOfKeyword(IElementType elementType)
 	{
 		String firstElement = ourCache.get(elementType);
@@ -106,8 +106,8 @@ public class CSharpCompletionUtil
 		return firstElement;
 	}
 
-	public static void tokenSetToLookup(@NotNull CompletionResultSet resultSet,
-			@NotNull TokenSet tokenSet,
+	public static void tokenSetToLookup(@Nonnull CompletionResultSet resultSet,
+			@Nonnull TokenSet tokenSet,
 			@Nullable NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement> decorator,
 			@Nullable Condition<IElementType> condition)
 	{
@@ -117,8 +117,8 @@ public class CSharpCompletionUtil
 		}
 	}
 
-	public static void elementToLookup(@NotNull CompletionResultSet resultSet,
-			@NotNull IElementType elementType,
+	public static void elementToLookup(@Nonnull CompletionResultSet resultSet,
+			@Nonnull IElementType elementType,
 			@Nullable NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement> decorator,
 			@Nullable Condition<IElementType> condition)
 	{

@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -38,7 +38,7 @@ public class CS4009 extends CompilerCheck<CSharpMethodDeclaration>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpMethodDeclaration element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpMethodDeclaration element)
 	{
 		DotNetModifierList modifierList = element.getModifierList();
 		if(modifierList == null)

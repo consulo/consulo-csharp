@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
@@ -30,7 +31,7 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpSwitchStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpSwitchStatementImpl(@NotNull ASTNode node)
+	public CSharpSwitchStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -43,7 +44,7 @@ public class CSharpSwitchStatementImpl extends CSharpElementImpl implements DotN
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitSwitchStatement(this);
 	}

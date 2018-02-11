@@ -15,8 +15,8 @@
  */
 package consulo.csharp.lang.doc.parser;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.doc.psi.CSharpDocElements;
 import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
@@ -256,7 +256,7 @@ public class CSharpDocParsing
 		return tt == CSharpDocTokenType.XML_COMMENT_START;
 	}
 
-	@NotNull
+	@Nonnull
 	private PsiBuilder.Marker startText(@Nullable PsiBuilder.Marker xmlText)
 	{
 		if(xmlText == null)

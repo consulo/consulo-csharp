@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.actions.generate.memberChoose;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -33,7 +34,7 @@ public class ClassChooseObject extends CSharpMemberChooseObject<DotNetTypeDeclar
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String getPresentationText()
 	{

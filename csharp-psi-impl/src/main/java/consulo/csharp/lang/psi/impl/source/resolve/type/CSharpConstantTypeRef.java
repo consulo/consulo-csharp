@@ -18,8 +18,9 @@ package consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import java.math.BigInteger;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.joou.UByte;
 import org.joou.UInteger;
 import org.joou.ULong;
@@ -42,7 +43,7 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 {
-	public CSharpConstantTypeRef(CSharpConstantExpressionImpl element, @NotNull DotNetTypeRef defaultTypeRef)
+	public CSharpConstantTypeRef(CSharpConstantExpressionImpl element, @Nonnull DotNetTypeRef defaultTypeRef)
 	{
 		super(element, defaultTypeRef);
 	}
@@ -61,10 +62,10 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetTypeRef testNumberConstant(@NotNull CSharpConstantExpressionImpl expression,
-			@NotNull String prefix,
-			@NotNull DotNetTypeRef another,
-			@NotNull PsiElement scope)
+	public static DotNetTypeRef testNumberConstant(@Nonnull CSharpConstantExpressionImpl expression,
+			@Nonnull String prefix,
+			@Nonnull DotNetTypeRef another,
+			@Nonnull PsiElement scope)
 	{
 		if(isNumberLiteral(expression))
 		{
@@ -105,7 +106,7 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetTypeRef testNumber(@Nullable Object value, @NotNull String qName, @NotNull DotNetTypeRef another, @NotNull PsiElement scope)
+	public static DotNetTypeRef testNumber(@Nullable Object value, @Nonnull String qName, @Nonnull DotNetTypeRef another, @Nonnull PsiElement scope)
 	{
 		if(value instanceof Number)
 		{
@@ -177,12 +178,12 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 		return null;
 	}
 
-	private static boolean testInteger(@NotNull String leftTypeQName, String qName, @NotNull Number value, long min, long max)
+	private static boolean testInteger(@Nonnull String leftTypeQName, String qName, @Nonnull Number value, long min, long max)
 	{
 		return testBigInteger(leftTypeQName, qName, value, BigInteger.valueOf(min), BigInteger.valueOf(max));
 	}
 
-	private static boolean testBigInteger(@NotNull String leftTypeQName, String qName, @NotNull Number value, BigInteger min, BigInteger max)
+	private static boolean testBigInteger(@Nonnull String leftTypeQName, String qName, @Nonnull Number value, BigInteger min, BigInteger max)
 	{
 		if(!(leftTypeQName.equals(qName)))
 		{
@@ -200,7 +201,7 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 		return toMax <= 0 && toMin >= 0;
 	}
 
-	private static boolean testDouble(@NotNull String leftTypeQName, String qName, @NotNull Number value, double min, double max)
+	private static boolean testDouble(@Nonnull String leftTypeQName, String qName, @Nonnull Number value, double min, double max)
 	{
 		if(!(leftTypeQName.equals(qName)))
 		{

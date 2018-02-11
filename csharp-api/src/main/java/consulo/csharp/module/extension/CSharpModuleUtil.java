@@ -16,8 +16,8 @@
 
 package consulo.csharp.module.extension;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
@@ -28,7 +28,7 @@ import consulo.annotations.RequiredReadAction;
  */
 public class CSharpModuleUtil
 {
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static CSharpLanguageVersion findLanguageVersion(@Nullable PsiElement element)
 	{

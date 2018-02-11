@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -35,32 +36,32 @@ import consulo.dotnet.psi.DotNetVariable;
  */
 public class CSharpFixedStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpStatementAsStatementOwner
 {
-	public CSharpFixedStatementImpl(@NotNull ASTNode node)
+	public CSharpFixedStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitFixedStatement(this);
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetVariable[] getVariables()
 	{
 		return findChildrenByClass(DotNetVariable.class);
 	}
 
-	@NotNull
+	@Nonnull
 	public PsiElement getFixedElement()
 	{
 		return findNotNullChildByType(CSharpTokens.FIXED_KEYWORD);
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
-			@NotNull PsiElement place)
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent,
+			@Nonnull PsiElement place)
 	{
 		if(lastParent == null || !PsiTreeUtil.isAncestor(this, lastParent, false))
 		{

@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -57,7 +57,7 @@ public class CS1614 extends CompilerCheck<CSharpAttribute>
 			setText("Use '" + typeDeclaration.getPresentableQName() + "'");
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -65,13 +65,13 @@ public class CS1614 extends CompilerCheck<CSharpAttribute>
 		}
 
 		@Override
-		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			return myPointer.getElement() != null;
 		}
 
 		@Override
-		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			CSharpReferenceExpressionEx element = myPointer.getElement();
 			if(element == null)
@@ -122,7 +122,7 @@ public class CS1614 extends CompilerCheck<CSharpAttribute>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpAttribute element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpAttribute element)
 	{
 		CSharpReferenceExpressionEx referenceExpression = (CSharpReferenceExpressionEx) element.getReferenceExpression();
 		if(referenceExpression == null)

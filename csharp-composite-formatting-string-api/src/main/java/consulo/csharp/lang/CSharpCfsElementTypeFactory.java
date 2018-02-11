@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.psi.tree.IElementType;
 
@@ -26,13 +27,13 @@ import com.intellij.psi.tree.IElementType;
  */
 public interface CSharpCfsElementTypeFactory
 {
-	@NotNull
+	@Nonnull
 	static IElementType create()
 	{
 		CSharpCfsElementTypeFactory factory = ServiceManager.getService(CSharpCfsElementTypeFactory.class);
 		return factory.getInterpolationStringElementType();
 	}
 
-	@NotNull
+	@Nonnull
 	IElementType getInterpolationStringElementType();
 }

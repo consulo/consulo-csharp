@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.stub.index;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.dotnet.psi.DotNetPropertyDeclaration;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexExtension;
@@ -33,7 +34,7 @@ public class PropertyIndex extends StringStubIndexExtension<DotNetPropertyDeclar
 		return StubIndexExtension.EP_NAME.findExtension(PropertyIndex.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public StubIndexKey<String, DotNetPropertyDeclaration> getKey()
 	{

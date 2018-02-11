@@ -19,8 +19,9 @@ package consulo.csharp.ide.refactoring.changeSignature;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -57,9 +58,9 @@ import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
  */
 public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsageProcessor
 {
-	@NotNull
+	@Nonnull
 	@Override
-	public UsageInfo[] findUsages(@NotNull final ChangeInfo info)
+	public UsageInfo[] findUsages(@Nonnull final ChangeInfo info)
 	{
 		if(!(info instanceof CSharpChangeInfo))
 		{
@@ -88,16 +89,16 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 		return list.toArray(UsageInfo.EMPTY_ARRAY);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public MultiMap<PsiElement, String> findConflicts(@NotNull ChangeInfo info, Ref<UsageInfo[]> refUsages)
+	public MultiMap<PsiElement, String> findConflicts(@Nonnull ChangeInfo info, Ref<UsageInfo[]> refUsages)
 	{
 		return MultiMap.emptyInstance();
 	}
 
 	@Override
 	@RequiredReadAction
-	public boolean processUsage(@NotNull ChangeInfo changeInfo, @NotNull UsageInfo usageInfo, boolean beforeMethodChange, @NotNull UsageInfo[] usages)
+	public boolean processUsage(@Nonnull ChangeInfo changeInfo, @Nonnull UsageInfo usageInfo, boolean beforeMethodChange, @Nonnull UsageInfo[] usages)
 	{
 		if(!(changeInfo instanceof CSharpChangeInfo))
 		{
@@ -161,7 +162,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 
 	@Override
 	@RequiredReadAction
-	public boolean processPrimaryMethod(@NotNull ChangeInfo changeInfo)
+	public boolean processPrimaryMethod(@Nonnull ChangeInfo changeInfo)
 	{
 		if(!(changeInfo instanceof CSharpChangeInfo))
 		{
@@ -277,16 +278,16 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 	}
 
 	@Override
-	public boolean shouldPreviewUsages(@NotNull ChangeInfo changeInfo, @NotNull UsageInfo[] usages)
+	public boolean shouldPreviewUsages(@Nonnull ChangeInfo changeInfo, @Nonnull UsageInfo[] usages)
 	{
 		return false;
 	}
 
 	@Override
-	public void registerConflictResolvers(@NotNull List<ResolveSnapshotProvider.ResolveSnapshot> snapshots,
-			@NotNull ResolveSnapshotProvider resolveSnapshotProvider,
-			@NotNull UsageInfo[] usages,
-			@NotNull ChangeInfo changeInfo)
+	public void registerConflictResolvers(@Nonnull List<ResolveSnapshotProvider.ResolveSnapshot> snapshots,
+			@Nonnull ResolveSnapshotProvider resolveSnapshotProvider,
+			@Nonnull UsageInfo[] usages,
+			@Nonnull ChangeInfo changeInfo)
 	{
 
 	}

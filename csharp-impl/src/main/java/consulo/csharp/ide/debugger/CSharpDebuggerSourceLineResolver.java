@@ -19,7 +19,8 @@ package consulo.csharp.ide.debugger;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
@@ -34,9 +35,9 @@ import consulo.dotnet.debugger.DotNetDefaultDebuggerSourceLineResolver;
 public class CSharpDebuggerSourceLineResolver extends DotNetDefaultDebuggerSourceLineResolver
 {
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public Set<PsiElement> getAllExecutableChildren(@NotNull PsiElement root)
+	public Set<PsiElement> getAllExecutableChildren(@Nonnull PsiElement root)
 	{
 		final Set<PsiElement> lambdas = new LinkedHashSet<>();
 		root.accept(new CSharpRecursiveElementVisitor()

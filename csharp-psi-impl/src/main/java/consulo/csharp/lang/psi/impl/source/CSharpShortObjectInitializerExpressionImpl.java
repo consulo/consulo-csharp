@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
@@ -35,7 +36,7 @@ public class CSharpShortObjectInitializerExpressionImpl extends CSharpExpression
 {
 	private final ThreadLocal<Boolean> myTypeRefProcessing = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
-	public CSharpShortObjectInitializerExpressionImpl(@NotNull ASTNode node)
+	public CSharpShortObjectInitializerExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -47,7 +48,7 @@ public class CSharpShortObjectInitializerExpressionImpl extends CSharpExpression
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -78,7 +79,7 @@ public class CSharpShortObjectInitializerExpressionImpl extends CSharpExpression
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitShortObjectInitializerExpression(this);
 	}

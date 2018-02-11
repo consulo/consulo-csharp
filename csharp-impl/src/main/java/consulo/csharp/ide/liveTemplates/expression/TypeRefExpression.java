@@ -19,7 +19,7 @@ package consulo.csharp.ide.liveTemplates.expression;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.resolve.DotNetTypeRef;

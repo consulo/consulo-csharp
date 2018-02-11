@@ -18,8 +18,8 @@ package consulo.csharp.lang.psi.impl.resolve;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
@@ -46,7 +46,7 @@ public class CSharpUsingNamespaceOrTypeResolveContext extends CSharpResolveConte
 
 	private NotNullLazyValue<CSharpResolveContext> myContextValue = new NotNullLazyValue<CSharpResolveContext>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		@RequiredReadAction
 		protected CSharpResolveContext compute()
@@ -74,12 +74,12 @@ public class CSharpUsingNamespaceOrTypeResolveContext extends CSharpResolveConte
 		}
 	};
 
-	public CSharpUsingNamespaceOrTypeResolveContext(@NotNull CSharpUsingListChild usingListChild)
+	public CSharpUsingNamespaceOrTypeResolveContext(@Nonnull CSharpUsingListChild usingListChild)
 	{
 		myUsingListChild = usingListChild;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getElement()
 	{
@@ -89,29 +89,29 @@ public class CSharpUsingNamespaceOrTypeResolveContext extends CSharpResolveConte
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
+	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@Nonnull String name)
 	{
 		return myContextValue.getValue().findExtensionMethodGroupByName(name);
 	}
 
 	@RequiredReadAction
 	@Override
-	public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
+	public boolean processExtensionMethodGroups(@Nonnull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
 		return myContextValue.getValue().processExtensionMethodGroups(processor);
 	}
 
 	@RequiredReadAction
 	@Override
-	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
+	public boolean processElements(@Nonnull Processor<PsiElement> processor, boolean deep)
 	{
 		return myContextValue.getValue().processElements(processor, deep);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public Collection<PsiElement> findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
+	public Collection<PsiElement> findByName(@Nonnull String name, boolean deep, @Nonnull UserDataHolder holder)
 	{
 		return myContextValue.getValue().findByName(name, deep, holder);
 	}

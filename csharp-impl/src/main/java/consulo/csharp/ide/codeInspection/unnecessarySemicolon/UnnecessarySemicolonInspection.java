@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeInspection.unnecessarySemicolon;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
@@ -37,12 +38,12 @@ public class UnnecessarySemicolonInspection extends LocalInspectionTool
 {
 	private static class RemoveSemicolonFix extends LocalQuickFixOnPsiElement
 	{
-		private RemoveSemicolonFix(@NotNull PsiElement element)
+		private RemoveSemicolonFix(@Nonnull PsiElement element)
 		{
 			super(element);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getText()
 		{
@@ -50,12 +51,12 @@ public class UnnecessarySemicolonInspection extends LocalInspectionTool
 		}
 
 		@Override
-		public void invoke(@NotNull Project project, @NotNull PsiFile file, @NotNull PsiElement startElement, @NotNull PsiElement endElement)
+		public void invoke(@Nonnull Project project, @Nonnull PsiFile file, @Nonnull PsiElement startElement, @Nonnull PsiElement endElement)
 		{
 			startElement.delete();
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -63,9 +64,9 @@ public class UnnecessarySemicolonInspection extends LocalInspectionTool
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, boolean isOnTheFly)
+	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)
 	{
 		return new CSharpElementVisitor()
 		{

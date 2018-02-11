@@ -19,7 +19,7 @@ package consulo.csharp.ide.msil.representation.builder;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;

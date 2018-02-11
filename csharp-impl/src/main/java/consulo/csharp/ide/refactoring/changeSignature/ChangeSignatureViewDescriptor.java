@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.refactoring.changeSignature;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.RefactoringBundle;
@@ -45,7 +45,7 @@ public class ChangeSignatureViewDescriptor implements UsageViewDescriptor
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiElement[] getElements()
 	{
 		return new PsiElement[]{myMethod};

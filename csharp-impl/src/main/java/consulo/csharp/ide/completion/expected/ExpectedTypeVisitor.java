@@ -19,7 +19,8 @@ package consulo.csharp.ide.completion.expected;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -49,8 +50,8 @@ import consulo.dotnet.util.ArrayUtil2;
 public class ExpectedTypeVisitor extends CSharpElementVisitor
 {
 	public static final Key<List<ExpectedTypeInfo>> EXPECTED_TYPE_INFOS = Key.create("ExpectedTypeInfo");
-	@NotNull
-	public static List<ExpectedTypeInfo> findExpectedTypeRefs(@NotNull PsiElement psiElement)
+	@Nonnull
+	public static List<ExpectedTypeInfo> findExpectedTypeRefs(@Nonnull PsiElement psiElement)
 	{
 		PsiElement parent = psiElement.getParent();
 		if(parent == null)

@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.doc.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageParserDefinitions;
@@ -41,14 +41,14 @@ import consulo.lang.LanguageVersion;
  */
 public class CSharpCfsElementTypeFactoryImpl implements CSharpCfsElementTypeFactory
 {
-	@NotNull
+	@Nonnull
 	@Override
 	public IElementType getInterpolationStringElementType()
 	{
 		return new ILazyParseableElementType("INTERPOLATION_STRING_LITERAL", CSharpLanguage.INSTANCE)
 		{
 			@Override
-			protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)
+			protected ASTNode doParseContents(@Nonnull final ASTNode chameleon, @Nonnull final PsiElement psi)
 			{
 				final Project project = psi.getProject();
 				final Language languageForParser = getLanguageForParser(psi);

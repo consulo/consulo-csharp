@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.projectView;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetAttributeUtil;
 import com.intellij.ide.projectView.ViewSettings;
@@ -64,7 +65,7 @@ public abstract class CSharpAbstractElementTreeNode<T extends PsiElement> extend
 	}
 
 	@Override
-	public boolean contains(@NotNull VirtualFile file)
+	public boolean contains(@Nonnull VirtualFile file)
 	{
 		T value = getValue();
 		return value != null && value.isValid() && PsiUtilCore.getVirtualFile(value) == file;

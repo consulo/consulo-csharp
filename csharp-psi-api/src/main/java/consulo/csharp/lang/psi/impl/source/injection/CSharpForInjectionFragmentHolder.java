@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.injection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import com.intellij.psi.impl.source.tree.LazyParseablePsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -29,13 +30,13 @@ public class CSharpForInjectionFragmentHolder extends LazyParseablePsiElement
 {
 	private final CSharpReferenceExpression.ResolveToKind myKind;
 
-	public CSharpForInjectionFragmentHolder(@NotNull IElementType type, CharSequence buffer, CSharpReferenceExpression.ResolveToKind kind)
+	public CSharpForInjectionFragmentHolder(@Nonnull IElementType type, CharSequence buffer, CSharpReferenceExpression.ResolveToKind kind)
 	{
 		super(type, buffer);
 		myKind = kind;
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpReferenceExpression.ResolveToKind getKind()
 	{
 		return myKind;

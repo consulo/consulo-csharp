@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.project.Project;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
@@ -44,7 +44,7 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 		}
 
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
 		public String toString()
 		{
@@ -52,7 +52,7 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 		}
 
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
 		protected DotNetTypeResolveResult resolveResult()
 		{
@@ -62,7 +62,7 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 		@RequiredReadAction
 		@Nullable
 		@Override
-		public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)
+		public DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another, PsiElement scope)
 		{
 			if(another instanceof DotNetArrayTypeRef)
 			{
@@ -78,25 +78,25 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 		}
 	}
 
-	public CSharpImplicitArrayInitializationExpressionImpl(@NotNull ASTNode node)
+	public CSharpImplicitArrayInitializationExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitImplicitArrayInitializationExpression(this);
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetExpression[] getExpressions()
 	{
 		return findChildrenByClass(DotNetExpression.class);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{

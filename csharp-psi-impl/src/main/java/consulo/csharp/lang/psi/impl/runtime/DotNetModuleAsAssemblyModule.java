@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.runtime;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -53,7 +54,7 @@ class DotNetModuleAsAssemblyModule implements AssemblyModule
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -62,7 +63,7 @@ class DotNetModuleAsAssemblyModule implements AssemblyModule
 
 	@RequiredReadAction
 	@Override
-	public boolean isAllowedAssembly(@NotNull String assemblyName)
+	public boolean isAllowedAssembly(@Nonnull String assemblyName)
 	{
 		VirtualFile archiveRootForLocalFile = ArchiveVfsUtil.getArchiveRootForLocalFile(myModuleFile);
 		if(archiveRootForLocalFile == null)
@@ -112,7 +113,7 @@ class DotNetModuleAsAssemblyModule implements AssemblyModule
 	}
 
 	@Override
-	public boolean equals(@NotNull AssemblyModule module)
+	public boolean equals(@Nonnull AssemblyModule module)
 	{
 		return module instanceof DotNetModuleAsAssemblyModule && myModuleFile.equals(((DotNetModuleAsAssemblyModule) module).myModuleFile);
 	}

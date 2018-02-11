@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTokensImpl;
 import com.intellij.lang.CodeDocumentationAwareCommenter;

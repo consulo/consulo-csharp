@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.fragment;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
@@ -47,9 +48,9 @@ public class CSharpFragmentFactory
 {
 	private static final PsiParser ourExpressionParser = new PsiParser()
 	{
-		@NotNull
+		@Nonnull
 		@Override
-		public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
+		public ASTNode parse(@Nonnull IElementType elementType, @Nonnull PsiBuilder builder, @Nonnull LanguageVersion languageVersion)
 		{
 			PsiBuilder.Marker mark = builder.mark();
 			ExpressionParsing.parse(new CSharpBuilderWrapper(builder, languageVersion), ModifierSet.EMPTY);
@@ -65,9 +66,9 @@ public class CSharpFragmentFactory
 
 	private static final PsiParser ourTypeParser = new PsiParser()
 	{
-		@NotNull
+		@Nonnull
 		@Override
-		public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
+		public ASTNode parse(@Nonnull IElementType elementType, @Nonnull PsiBuilder builder, @Nonnull LanguageVersion languageVersion)
 		{
 			PsiBuilder.Marker mark = builder.mark();
 			SharedParsingHelpers.parseType(new CSharpBuilderWrapper(builder, languageVersion), SharedParsingHelpers.VAR_SUPPORT);
@@ -84,7 +85,7 @@ public class CSharpFragmentFactory
 	private static final IFileElementType ourExpressionFileElementType = new IFileElementType("CSHARP_EXPRESSION_FRAGMENT_FILE", CSharpLanguage.INSTANCE)
 	{
 		@Override
-		protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)
+		protected ASTNode doParseContents(@Nonnull final ASTNode chameleon, @Nonnull final PsiElement psi)
 		{
 			final Project project = psi.getProject();
 			final Language languageForParser = getLanguageForParser(psi);
@@ -100,7 +101,7 @@ public class CSharpFragmentFactory
 	private static final IFileElementType ourTypeFileElementType = new IFileElementType("CSHARP_TYPE_FRAGMENT_FILE", CSharpLanguage.INSTANCE)
 	{
 		@Override
-		protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)
+		protected ASTNode doParseContents(@Nonnull final ASTNode chameleon, @Nonnull final PsiElement psi)
 		{
 			final Project project = psi.getProject();
 			final Language languageForParser = getLanguageForParser(psi);
@@ -113,15 +114,15 @@ public class CSharpFragmentFactory
 		}
 	};
 
-	@NotNull
+	@Nonnull
 	public static CSharpFragmentFileImpl createExpressionFragment(Project project, String text, @Nullable final PsiElement context)
 	{
 		LightVirtualFile virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
 		SingleRootFileViewProvider viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, true)
 		{
-			@NotNull
+			@Nonnull
 			@Override
-			public SingleRootFileViewProvider createCopy(@NotNull final VirtualFile copy)
+			public SingleRootFileViewProvider createCopy(@Nonnull final VirtualFile copy)
 			{
 				SingleRootFileViewProvider provider = new SingleRootFileViewProvider(getManager(), copy, false);
 				CSharpFragmentFileImpl psiFile = new CSharpFragmentFileImpl(ourExpressionFileElementType, ourExpressionFileElementType, provider, context);
@@ -136,7 +137,7 @@ public class CSharpFragmentFactory
 		return file;
 	}
 
-	@NotNull
+	@Nonnull
 	public static CSharpFragmentFileImpl createTypeFragment(Project project, String text, @Nullable final PsiElement context)
 	{
 		LightVirtualFile virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());

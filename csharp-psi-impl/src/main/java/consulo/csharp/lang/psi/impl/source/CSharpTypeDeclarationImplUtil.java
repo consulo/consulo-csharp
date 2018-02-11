@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransform;
@@ -43,7 +43,7 @@ import com.intellij.util.ArrayUtil;
 public class CSharpTypeDeclarationImplUtil
 {
 	@RequiredReadAction
-	public static boolean isInheritOrSelf(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @NotNull String... vmQNames)
+	public static boolean isInheritOrSelf(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope, @Nonnull String... vmQNames)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		PsiElement typeResolveResultElement = typeResolveResult.getElement();
@@ -92,12 +92,12 @@ public class CSharpTypeDeclarationImplUtil
 	}
 
 	@RequiredReadAction
-	public static boolean isEquivalentTo(@NotNull DotNetTypeDeclaration thisType, @Nullable PsiElement another)
+	public static boolean isEquivalentTo(@Nonnull DotNetTypeDeclaration thisType, @Nullable PsiElement another)
 	{
 		return another instanceof DotNetTypeDeclaration && Comparing.equal(thisType.getVmQName(), ((DotNetTypeDeclaration) another).getVmQName());
 	}
 
-	public static boolean hasExtensions(@NotNull DotNetTypeDeclaration typeDeclaration)
+	public static boolean hasExtensions(@Nonnull DotNetTypeDeclaration typeDeclaration)
 	{
 		for(DotNetNamedElement qualifiedElement : typeDeclaration.getMembers())
 		{
@@ -110,8 +110,8 @@ public class CSharpTypeDeclarationImplUtil
 	}
 
 	@RequiredReadAction
-	@NotNull
-	public static DotNetTypeRef[] getExtendTypeRefs(@NotNull DotNetTypeDeclaration typeDeclaration)
+	@Nonnull
+	public static DotNetTypeRef[] getExtendTypeRefs(@Nonnull DotNetTypeDeclaration typeDeclaration)
 	{
 		DotNetTypeRef[] typeRefs = DotNetTypeRef.EMPTY_ARRAY;
 		DotNetTypeList extendList = typeDeclaration.getExtendList();
@@ -134,7 +134,7 @@ public class CSharpTypeDeclarationImplUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> resolveBaseType(@NotNull DotNetTypeDeclaration typeDeclaration, @NotNull PsiElement scope)
+	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> resolveBaseType(@Nonnull DotNetTypeDeclaration typeDeclaration, @Nonnull PsiElement scope)
 	{
 		typeDeclaration = CSharpCompositeTypeDeclaration.selectCompositeOrSelfType(typeDeclaration);
 
@@ -166,7 +166,7 @@ public class CSharpTypeDeclarationImplUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static String getDefaultSuperType(@NotNull DotNetTypeDeclaration typeDeclaration)
+	public static String getDefaultSuperType(@Nonnull DotNetTypeDeclaration typeDeclaration)
 	{
 		String vmQName = typeDeclaration.getVmQName();
 		if(Comparing.equal(vmQName, DotNetTypes.System.Object))

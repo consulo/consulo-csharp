@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -66,7 +67,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	private final int myDimensions;
 
 	@RequiredReadAction
-	public CSharpArrayTypeRef(@NotNull PsiElement scope, @NotNull DotNetTypeRef innerTypeRef, int dimensions)
+	public CSharpArrayTypeRef(@Nonnull PsiElement scope, @Nonnull DotNetTypeRef innerTypeRef, int dimensions)
 	{
 		super(scope.getProject());
 		myScope = scope;
@@ -75,7 +76,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -124,7 +125,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{
@@ -140,7 +141,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef getInnerTypeRef()
 	{
 		return myInnerTypeRef;

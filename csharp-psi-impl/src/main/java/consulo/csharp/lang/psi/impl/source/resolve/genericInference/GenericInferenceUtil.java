@@ -22,8 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Key;
@@ -69,7 +70,7 @@ public class GenericInferenceUtil
 		private boolean mySuccess;
 		private DotNetGenericExtractor myExtractor;
 
-		public GenericInferenceResult(boolean success, @NotNull DotNetGenericExtractor extractor)
+		public GenericInferenceResult(boolean success, @Nonnull DotNetGenericExtractor extractor)
 		{
 			mySuccess = success;
 			myExtractor = extractor;
@@ -80,7 +81,7 @@ public class GenericInferenceUtil
 			return mySuccess;
 		}
 
-		@NotNull
+		@Nonnull
 		public DotNetGenericExtractor getExtractor()
 		{
 			return myExtractor;
@@ -91,20 +92,20 @@ public class GenericInferenceUtil
 	{
 		private final Map<PsiElement, DotNetTypeRef> myData = new HashMap<>();
 
-		public InferenceSessionData append(@NotNull PsiElement element, @NotNull DotNetTypeRef typeRef)
+		public InferenceSessionData append(@Nonnull PsiElement element, @Nonnull DotNetTypeRef typeRef)
 		{
 			myData.put(element, typeRef);
 			return this;
 		}
 
-		public boolean finish(@NotNull PsiElement element)
+		public boolean finish(@Nonnull PsiElement element)
 		{
 			myData.remove(element);
 			return myData.isEmpty();
 		}
 
 		@Nullable
-		public DotNetTypeRef getTypeRef(@NotNull PsiElement element)
+		public DotNetTypeRef getTypeRef(@Nonnull PsiElement element)
 		{
 			return myData.get(element);
 		}
@@ -127,11 +128,11 @@ public class GenericInferenceUtil
 		return inferenceSessionData != null && inferenceSessionData.myData.containsKey(element);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static GenericInferenceResult inferenceGenericExtractor(@NotNull PsiElement referenceElement,
-			@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
-			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
+	public static GenericInferenceResult inferenceGenericExtractor(@Nonnull PsiElement referenceElement,
+			@Nonnull CSharpCallArgumentListOwner callArgumentListOwner,
+			@Nonnull DotNetLikeMethodDeclaration methodDeclaration)
 	{
 		CSharpCallArgument[] arguments = callArgumentListOwner.getCallArguments();
 
@@ -143,12 +144,12 @@ public class GenericInferenceUtil
 		return inferenceGenericExtractor(arguments, typeArgumentListRef, callArgumentListOwner, methodDeclaration);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static GenericInferenceResult inferenceGenericExtractor(@NotNull CSharpCallArgument[] callArguments,
-			@NotNull DotNetTypeRef[] typeArgumentListRefs,
-			@NotNull PsiElement scope,
-			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
+	public static GenericInferenceResult inferenceGenericExtractor(@Nonnull CSharpCallArgument[] callArguments,
+			@Nonnull DotNetTypeRef[] typeArgumentListRefs,
+			@Nonnull PsiElement scope,
+			@Nonnull DotNetLikeMethodDeclaration methodDeclaration)
 	{
 		DotNetGenericParameter[] genericParameters = methodDeclaration.getGenericParameters();
 		if(genericParameters.length == 0 || typeArgumentListRefs.length > 0)
@@ -329,10 +330,10 @@ public class GenericInferenceUtil
 	}
 
 	@RequiredReadAction
-	private static void pushTypeArgumentsDeep(@NotNull List<Couple<DotNetTypeResolveResult>> levels,
-			@NotNull DotNetGenericParameter[] expressionGenericParameters,
-			@NotNull DotNetGenericExtractor expressionExtractor,
-			@NotNull DotNetGenericExtractor parameterExtractor)
+	private static void pushTypeArgumentsDeep(@Nonnull List<Couple<DotNetTypeResolveResult>> levels,
+			@Nonnull DotNetGenericParameter[] expressionGenericParameters,
+			@Nonnull DotNetGenericExtractor expressionExtractor,
+			@Nonnull DotNetGenericExtractor parameterExtractor)
 	{
 		for(DotNetGenericParameter expressionGenericParameter : expressionGenericParameters)
 		{
@@ -392,12 +393,12 @@ public class GenericInferenceUtil
 		return -1;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	private static DotNetTypeRef unwrapPossibleGenericTypeRefs(@NotNull NCallArgument nCallArgument,
-			@NotNull DotNetTypeRef parameterTypeRef,
-			@NotNull Map<DotNetGenericParameter, DotNetTypeRef> map,
-			@NotNull PsiElement scope)
+	private static DotNetTypeRef unwrapPossibleGenericTypeRefs(@Nonnull NCallArgument nCallArgument,
+			@Nonnull DotNetTypeRef parameterTypeRef,
+			@Nonnull Map<DotNetGenericParameter, DotNetTypeRef> map,
+			@Nonnull PsiElement scope)
 	{
 		DotNetTypeRef expressionTypeRef = nCallArgument.getTypeRef();
 

@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.msil.transformer;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -41,7 +41,7 @@ public class MsilToNativeElementTransformer implements ToNativeElementTransforme
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public PsiElement transform(@NotNull PsiElement element)
+	public PsiElement transform(@Nonnull PsiElement element)
 	{
 		if(element instanceof MsilClassEntry)
 		{
@@ -72,8 +72,8 @@ public class MsilToNativeElementTransformer implements ToNativeElementTransforme
 		return null;
 	}
 
-	@NotNull
-	public static MsilClassEntry findRootClassEntry(@NotNull MsilClassEntry element)
+	@Nonnull
+	public static MsilClassEntry findRootClassEntry(@Nonnull MsilClassEntry element)
 	{
 		PsiFile containingFile = element.getContainingFile();
 		if(!(containingFile instanceof MsilFile))
@@ -105,7 +105,7 @@ public class MsilToNativeElementTransformer implements ToNativeElementTransforme
 
 
 	@Nullable
-	public static PsiElement findElementByOriginal(@NotNull PsiElement wrappedElement, @NotNull PsiElement originalTarget)
+	public static PsiElement findElementByOriginal(@Nonnull PsiElement wrappedElement, @Nonnull PsiElement originalTarget)
 	{
 		PsiElement originalElement = wrappedElement.getOriginalElement();
 

@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.light.builder;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.openapi.project.Project;
@@ -52,7 +53,7 @@ public abstract class CSharpLightElementBuilder<T extends CSharpLightElementBuil
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@Nonnull PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{
@@ -64,7 +65,7 @@ public abstract class CSharpLightElementBuilder<T extends CSharpLightElementBuil
 		}
 	}
 
-	public abstract void accept(@NotNull CSharpElementVisitor visitor);
+	public abstract void accept(@Nonnull CSharpElementVisitor visitor);
 
 	@Override
 	public PsiFile getContainingFile()

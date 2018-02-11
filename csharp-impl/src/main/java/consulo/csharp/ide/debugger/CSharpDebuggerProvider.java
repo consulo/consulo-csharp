@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -70,19 +70,19 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 {
 	private static final Logger LOGGER = Logger.getInstance(CSharpDebuggerProvider.class);
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiFile createExpressionCodeFragment(@NotNull Project project, @NotNull PsiElement sourcePosition, @NotNull String text, boolean isPhysical)
+	public PsiFile createExpressionCodeFragment(@Nonnull Project project, @Nonnull PsiElement sourcePosition, @Nonnull String text, boolean isPhysical)
 	{
 		return CSharpFragmentFactory.createExpressionFragment(project, text, sourcePosition);
 	}
 
 	@Override
-	public void evaluate(@NotNull DotNetStackFrameProxy frame,
-			@NotNull DotNetDebugContext debuggerContext,
-			@NotNull String expression,
+	public void evaluate(@Nonnull DotNetStackFrameProxy frame,
+			@Nonnull DotNetDebugContext debuggerContext,
+			@Nonnull String expression,
 			@Nullable PsiElement elementAt,
-			@NotNull XDebuggerEvaluator.XEvaluationCallback callback,
+			@Nonnull XDebuggerEvaluator.XEvaluationCallback callback,
 			@Nullable XSourcePosition sourcePosition)
 	{
 		if(elementAt == null)
@@ -179,11 +179,11 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 	}
 
 	@Override
-	public void evaluate(@NotNull DotNetStackFrameProxy frame,
-			@NotNull DotNetDebugContext debuggerContext,
-			@NotNull DotNetReferenceExpression referenceExpression,
-			@NotNull Set<Object> visitedVariables,
-			@NotNull Consumer<XNamedValue> consumer)
+	public void evaluate(@Nonnull DotNetStackFrameProxy frame,
+			@Nonnull DotNetDebugContext debuggerContext,
+			@Nonnull DotNetReferenceExpression referenceExpression,
+			@Nonnull Set<Object> visitedVariables,
+			@Nonnull Consumer<XNamedValue> consumer)
 	{
 		try
 		{
@@ -247,7 +247,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 	}
 
 	@Override
-	public boolean isSupported(@NotNull PsiFile psiFile)
+	public boolean isSupported(@Nonnull PsiFile psiFile)
 	{
 		return psiFile.getFileType() == CSharpFileType.INSTANCE;
 	}

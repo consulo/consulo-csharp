@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -39,7 +40,7 @@ import com.intellij.psi.PsiElement;
 public class CSharpNullableTypeUtil
 {
 	@RequiredReadAction
-	public static boolean containsNullableCalls(@NotNull CSharpQualifiedNonReference expression)
+	public static boolean containsNullableCalls(@Nonnull CSharpQualifiedNonReference expression)
 	{
 		if(expression instanceof CSharpReferenceExpression)
 		{
@@ -60,9 +61,9 @@ public class CSharpNullableTypeUtil
 		return qualifier instanceof CSharpQualifiedNonReference && containsNullableCalls((CSharpQualifiedNonReference) qualifier);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef boxIfNeed(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	public static DotNetTypeRef boxIfNeed(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		if(typeResolveResult.isNullable())
@@ -72,16 +73,16 @@ public class CSharpNullableTypeUtil
 		return new CSharpGenericWrapperTypeRef(scope.getProject(), new CSharpTypeRefByQName(scope, DotNetTypes.System.Nullable$1), typeRef);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef box(@NotNull PsiElement scope, @NotNull DotNetTypeRef typeRef)
+	public static DotNetTypeRef box(@Nonnull PsiElement scope, @Nonnull DotNetTypeRef typeRef)
 	{
 		return new CSharpGenericWrapperTypeRef(scope.getProject(), new CSharpTypeRefByQName(scope, DotNetTypes.System.Nullable$1), typeRef);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef unbox(@NotNull DotNetTypeRef typeRef)
+	public static DotNetTypeRef unbox(@Nonnull DotNetTypeRef typeRef)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		PsiElement element = typeResolveResult.getElement();

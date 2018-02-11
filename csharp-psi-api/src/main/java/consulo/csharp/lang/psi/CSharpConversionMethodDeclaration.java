@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -34,7 +34,7 @@ public interface CSharpConversionMethodDeclaration extends DotNetLikeMethodDecla
 	 */
 	boolean isImplicit();
 
-	@NotNull
+	@Nonnull
 	DotNetTypeRef getConversionTypeRef();
 
 	@Nullable

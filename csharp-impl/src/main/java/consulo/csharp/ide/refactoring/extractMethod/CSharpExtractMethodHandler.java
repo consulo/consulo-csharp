@@ -19,9 +19,11 @@ package consulo.csharp.ide.refactoring.extractMethod;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
@@ -89,13 +91,13 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 	private static final DotNetStatement[] EMPTY_ARRAY = new DotNetStatement[0];
 
 	@Override
-	public void invoke(@NotNull Project project, @NotNull PsiElement[] elements, DataContext dataContext)
+	public void invoke(@Nonnull Project project, @Nonnull PsiElement[] elements, DataContext dataContext)
 	{
 	}
 
 	@Override
 	@RequiredDispatchThread
-	public void invoke(@NotNull final Project project, final Editor editor, final PsiFile file, DataContext dataContext)
+	public void invoke(@Nonnull final Project project, final Editor editor, final PsiFile file, DataContext dataContext)
 	{
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
 
@@ -293,7 +295,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 	}
 
 	@RequiredReadAction
-	public static CharSequence buildText(@NotNull DotNetLikeMethodDeclaration methodDeclaration, DotNetStatement[] statements, @NotNull String statementsText)
+	public static CharSequence buildText(@Nonnull DotNetLikeMethodDeclaration methodDeclaration, DotNetStatement[] statements, @Nonnull String statementsText)
 	{
 		List<StubBlock> stubBlocks = CSharpStubBuilderVisitor.buildBlocks(methodDeclaration, false);
 		StringBuilder builder = (StringBuilder) StubBlockUtil.buildText(stubBlocks);
@@ -364,7 +366,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 
 	@Nullable
 	@Contract("null, _ -> null")
-	public static <T extends PsiElement> T getTopmostParentOfType(@Nullable PsiElement element, @NotNull Class<T> aClass)
+	public static <T extends PsiElement> T getTopmostParentOfType(@Nullable PsiElement element, @Nonnull Class<T> aClass)
 	{
 		T answer = PsiTreeUtil.getParentOfType(element, aClass);
 

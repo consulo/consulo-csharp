@@ -22,8 +22,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageParserDefinitions;
@@ -71,9 +72,9 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	{
 		return new DefaultStubBuilder()
 		{
-			@NotNull
+			@Nonnull
 			@Override
-			protected StubElement createStubForFile(@NotNull PsiFile file)
+			protected StubElement createStubForFile(@Nonnull PsiFile file)
 			{
 				if(file instanceof CSharpFileImpl)
 				{
@@ -86,7 +87,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 
 	@RequiredReadAction
 	@Override
-	protected ASTNode doParseContents(@NotNull ASTNode chameleon, @NotNull PsiElement psi)
+	protected ASTNode doParseContents(@Nonnull ASTNode chameleon, @Nonnull PsiElement psi)
 	{
 		final Project project = psi.getProject();
 		final Language languageForParser = getLanguageForParser(psi);
@@ -129,7 +130,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 
 	@Nullable
 	@RequiredReadAction
-	private static List<String> findVariables(@NotNull VirtualFile virtualFile, @NotNull Project project)
+	private static List<String> findVariables(@Nonnull VirtualFile virtualFile, @Nonnull Project project)
 	{
 		Module module = ModuleUtilCore.findModuleForFile(virtualFile, project);
 		if(module == null)
@@ -144,9 +145,9 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpFileStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException
+	public CSharpFileStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException
 	{
 		return new CSharpFileStub(null);
 	}
@@ -157,7 +158,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 		return 93;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getExternalId()
 	{

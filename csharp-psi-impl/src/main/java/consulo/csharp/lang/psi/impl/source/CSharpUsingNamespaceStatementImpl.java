@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -42,18 +42,18 @@ import consulo.dotnet.resolve.DotNetPsiSearcher;
  */
 public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpUsingNamespaceStatement>> implements CSharpUsingNamespaceStatement
 {
-	public CSharpUsingNamespaceStatementImpl(@NotNull ASTNode node)
+	public CSharpUsingNamespaceStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpUsingNamespaceStatementImpl(@NotNull CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub)
+	public CSharpUsingNamespaceStatementImpl(@Nonnull CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub)
 	{
 		super(stub, CSharpStubElements.USING_NAMESPACE_STATEMENT);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getUsingKeywordElement()
 	{
@@ -117,7 +117,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitUsingNamespaceStatement(this);
 	}

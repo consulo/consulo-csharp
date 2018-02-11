@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
@@ -28,13 +29,13 @@ public class StubElementResolveResult extends CSharpResolveResult
 {
 	private final DotNetTypeRef myTypeRef;
 
-	public StubElementResolveResult(@NotNull PsiElement element, boolean validResult, @NotNull DotNetTypeRef typeRef)
+	public StubElementResolveResult(@Nonnull PsiElement element, boolean validResult, @Nonnull DotNetTypeRef typeRef)
 	{
 		super(element, validResult);
 		myTypeRef = typeRef;
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef getTypeRef()
 	{
 		return myTypeRef;

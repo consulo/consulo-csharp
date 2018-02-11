@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
@@ -40,19 +40,19 @@ import com.intellij.psi.stubs.IStubElementType;
  */
 public class CSharpStubAttributeImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpAttribute>> implements CSharpAttribute
 {
-	public CSharpStubAttributeImpl(@NotNull ASTNode node)
+	public CSharpStubAttributeImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubAttributeImpl(@NotNull CSharpWithStringValueStub<CSharpAttribute> stub,
-			@NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpAttribute>, ?> nodeType)
+	public CSharpStubAttributeImpl(@Nonnull CSharpWithStringValueStub<CSharpAttribute> stub,
+			@Nonnull IStubElementType<? extends CSharpWithStringValueStub<CSharpAttribute>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitAttribute(this);
 	}
@@ -75,7 +75,7 @@ public class CSharpStubAttributeImpl extends CSharpStubElementImpl<CSharpWithStr
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{
@@ -95,14 +95,14 @@ public class CSharpStubAttributeImpl extends CSharpStubElementImpl<CSharpWithStr
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public DotNetExpression[] getParameterExpressions()
 	{
 		CSharpCallArgumentList parameterList = getParameterList();
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
@@ -123,7 +123,7 @@ public class CSharpStubAttributeImpl extends CSharpStubElementImpl<CSharpWithStr
 		return ref.resolve();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{

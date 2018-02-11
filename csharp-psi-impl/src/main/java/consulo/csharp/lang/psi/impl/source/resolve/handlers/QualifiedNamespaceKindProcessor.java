@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.handlers;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -46,10 +47,10 @@ public class QualifiedNamespaceKindProcessor implements KindProcessor
 {
 	@RequiredReadAction
 	@Override
-	public void process(@NotNull CSharpResolveOptions options,
-			@NotNull DotNetGenericExtractor defaultExtractor,
+	public void process(@Nonnull CSharpResolveOptions options,
+			@Nonnull DotNetGenericExtractor defaultExtractor,
 			@Nullable PsiElement forceQualifierElement,
-			@NotNull final Processor<ResolveResult> processor)
+			@Nonnull final Processor<ResolveResult> processor)
 	{
 		PsiElement element = options.getElement();
 
@@ -104,7 +105,7 @@ public class QualifiedNamespaceKindProcessor implements KindProcessor
 	}
 
 	@RequiredReadAction
-	private void processDefaultCompletion(@NotNull Processor<ResolveResult> processor, PsiElement element, PsiElement qualifier)
+	private void processDefaultCompletion(@Nonnull Processor<ResolveResult> processor, PsiElement element, PsiElement qualifier)
 	{
 		DotNetNamespaceAsElement namespace;
 		String qualifiedText = "";
@@ -124,13 +125,13 @@ public class QualifiedNamespaceKindProcessor implements KindProcessor
 	}
 
 	@RequiredReadAction
-	private void processNamespaceChildren(@NotNull final Processor<ResolveResult> processor, PsiElement element, DotNetNamespaceAsElement namespace)
+	private void processNamespaceChildren(@Nonnull final Processor<ResolveResult> processor, PsiElement element, DotNetNamespaceAsElement namespace)
 	{
 		StubScopeProcessor scopeProcessor = new StubScopeProcessor()
 		{
 			@RequiredReadAction
 			@Override
-			public boolean execute(@NotNull PsiElement element, ResolveState state)
+			public boolean execute(@Nonnull PsiElement element, ResolveState state)
 			{
 				ProgressManager.checkCanceled();
 

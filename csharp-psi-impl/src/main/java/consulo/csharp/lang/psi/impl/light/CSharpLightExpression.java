@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -31,13 +32,13 @@ public class CSharpLightExpression extends LightElement implements DotNetExpress
 {
 	private final DotNetTypeRef myTypeRef;
 
-	public CSharpLightExpression(@NotNull PsiManager manager, @NotNull DotNetTypeRef typeRef)
+	public CSharpLightExpression(@Nonnull PsiManager manager, @Nonnull DotNetTypeRef typeRef)
 	{
 		super(manager, CSharpLanguage.INSTANCE);
 		myTypeRef = typeRef;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean b)
 	{

@@ -18,8 +18,8 @@ package consulo.csharp.lang.psi;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
@@ -36,7 +36,7 @@ import com.intellij.util.containers.ContainerUtil;
 public class CSharpGenericConstraintUtil
 {
 	@RequiredReadAction
-	public static DotNetTypeRef[] getExtendTypes(@NotNull DotNetGenericParameter parameter)
+	public static DotNetTypeRef[] getExtendTypes(@Nonnull DotNetGenericParameter parameter)
 	{
 		CSharpGenericConstraint genericConstraint = findGenericConstraint(parameter);
 		if(genericConstraint == null)
@@ -73,7 +73,7 @@ public class CSharpGenericConstraintUtil
 	}
 
 	@Nullable
-	public static CSharpGenericConstraint findGenericConstraint(@NotNull DotNetGenericParameter element)
+	public static CSharpGenericConstraint findGenericConstraint(@Nonnull DotNetGenericParameter element)
 	{
 		PsiElement firstParent = element.getParent();
 		if(firstParent == null)
@@ -89,7 +89,7 @@ public class CSharpGenericConstraintUtil
 	}
 
 	@Nullable
-	public static CSharpGenericConstraint forParameter(@NotNull CSharpGenericConstraintOwner owner, @NotNull DotNetGenericParameter parameter)
+	public static CSharpGenericConstraint forParameter(@Nonnull CSharpGenericConstraintOwner owner, @Nonnull DotNetGenericParameter parameter)
 	{
 		for(CSharpGenericConstraint constraint : owner.getGenericConstraints())
 		{

@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi;
 
 import java.util.Locale;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import consulo.annotations.Immutable;
 import consulo.annotations.RequiredReadAction;
@@ -32,7 +33,7 @@ public enum CSharpAccessModifier
 {
 	NONE()
 			{
-				@NotNull
+				@Nonnull
 				@Override
 				public String getPresentableText()
 				{
@@ -56,9 +57,9 @@ public enum CSharpAccessModifier
 		myModifiers = modifiers;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static CSharpAccessModifier findModifier(@NotNull DotNetModifierListOwner owner)
+	public static CSharpAccessModifier findModifier(@Nonnull DotNetModifierListOwner owner)
 	{
 		loop: for(CSharpAccessModifier value : VALUES)
 		{
@@ -79,9 +80,9 @@ public enum CSharpAccessModifier
 		return NONE;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static CSharpAccessModifier findModifierOrDefault(@NotNull DotNetModifierListOwner owner)
+	public static CSharpAccessModifier findModifierOrDefault(@Nonnull DotNetModifierListOwner owner)
 	{
 		final CSharpAccessModifier modifier = findModifier(owner);
 		if(modifier == NONE)
@@ -101,14 +102,14 @@ public enum CSharpAccessModifier
 	}
 
 
-	@NotNull
+	@Nonnull
 	@Immutable
 	public CSharpModifier[] getModifiers()
 	{
 		return myModifiers;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getPresentableText()
 	{
 		return name().toLowerCase(Locale.US).replace("_", " ");

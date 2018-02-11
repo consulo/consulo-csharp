@@ -20,8 +20,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.AtomicNullableLazyValue;
 import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
@@ -64,13 +64,13 @@ public abstract class SimpleElementGroupCollector<E extends PsiElement> extends 
 
 	protected final Object myKey;
 
-	public SimpleElementGroupCollector(@NotNull Object key, @NotNull CSharpAdditionalMemberProvider.Target target, @NotNull CSharpBaseResolveContext<?> context)
+	public SimpleElementGroupCollector(@Nonnull Object key, @Nonnull CSharpAdditionalMemberProvider.Target target, @Nonnull CSharpBaseResolveContext<?> context)
 	{
 		super(target, context);
 		myKey = key;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	@SuppressWarnings("unchecked")
 	private Collection<E> calcElements()

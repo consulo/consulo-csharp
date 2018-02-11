@@ -18,8 +18,8 @@ package consulo.csharp.lang.psi.impl.source.resolve.util;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -51,7 +51,7 @@ public class CSharpSearchUtil
 {
 	@Nullable
 	@RequiredReadAction
-	public static DotNetPropertyDeclaration findPropertyByName(@NotNull final String name, @Nullable String parentQName, @NotNull DotNetTypeRef typeRef)
+	public static DotNetPropertyDeclaration findPropertyByName(@Nonnull final String name, @Nullable String parentQName, @Nonnull DotNetTypeRef typeRef)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		PsiElement resolvedElement = typeResolveResult.getElement();
@@ -65,7 +65,7 @@ public class CSharpSearchUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetPropertyDeclaration findPropertyByName(@NotNull final String name, @NotNull PsiElement owner, @Nullable String parentQName, @NotNull DotNetGenericExtractor extractor)
+	public static DotNetPropertyDeclaration findPropertyByName(@Nonnull final String name, @Nonnull PsiElement owner, @Nullable String parentQName, @Nonnull DotNetGenericExtractor extractor)
 	{
 		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
 		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner, psiElementProcessor, new ExecuteTarget[]{ExecuteTarget.PROPERTY},
@@ -88,7 +88,7 @@ public class CSharpSearchUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name, @Nullable String parentQName, @NotNull DotNetTypeRef typeRef, int parameterSize)
+	public static DotNetMethodDeclaration findMethodByName(@Nonnull final String name, @Nullable String parentQName, @Nonnull DotNetTypeRef typeRef, int parameterSize)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		PsiElement resolvedElement = typeResolveResult.getElement();
@@ -101,10 +101,10 @@ public class CSharpSearchUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name,
-			@NotNull PsiElement owner,
+	public static DotNetMethodDeclaration findMethodByName(@Nonnull final String name,
+			@Nonnull PsiElement owner,
 			@Nullable String parentQName,
-			@NotNull DotNetGenericExtractor extractor,
+			@Nonnull DotNetGenericExtractor extractor,
 			final int parameterSize)
 	{
 		//TODO [VISTALL] some hack until we dont make override more powerfull
@@ -156,7 +156,7 @@ public class CSharpSearchUtil
 		return null;
 	}
 
-	private static boolean isMyElement(@NotNull PsiElement element, @Nullable String parentQName)
+	private static boolean isMyElement(@Nonnull PsiElement element, @Nullable String parentQName)
 	{
 		if(parentQName == null)
 		{

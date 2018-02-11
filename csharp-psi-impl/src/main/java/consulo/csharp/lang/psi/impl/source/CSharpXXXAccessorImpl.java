@@ -18,8 +18,8 @@ package consulo.csharp.lang.psi.impl.source;
 
 import java.util.Locale;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
@@ -49,19 +49,19 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccessorStub> implements DotNetXXXAccessor, CSharpSimpleLikeMethodAsElement
 {
-	public CSharpXXXAccessorImpl(@NotNull ASTNode node)
+	public CSharpXXXAccessorImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpXXXAccessorImpl(@NotNull CSharpXXXAccessorStub stub)
+	public CSharpXXXAccessorImpl(@Nonnull CSharpXXXAccessorStub stub)
 	{
 		super(stub, CSharpStubElements.XXX_ACCESSOR);
 	}
 
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
@@ -69,7 +69,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -91,14 +91,14 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		DotNetModifierList modifierList = getModifierList();
 		return modifierList != null && modifierList.hasModifier(modifier);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getNameIdentifier()
 	{
@@ -117,7 +117,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		return accessorKind.name().toLowerCase(Locale.US);
 	}
 
-	@NotNull
+	@Nonnull
 	private Pair<DotNetTypeRef, DotNetQualifiedElement> getTypeRefOfParent()
 	{
 		CSharpXXXAccessorOwner element = PsiTreeUtil.getParentOfType(this, CSharpXXXAccessorOwner.class);
@@ -143,10 +143,10 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
 			PsiElement lastParent,
-			@NotNull PsiElement place)
+			@Nonnull PsiElement place)
 	{
 		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER))
 		{
@@ -180,7 +180,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitXXXAccessor(this);
 	}

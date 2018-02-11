@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.DotNetTypes;
@@ -34,7 +34,7 @@ public class MethodGenerateUtil
 {
 	@Nullable
 	@RequiredReadAction
-	public static String getDefaultValueForType(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	public static String getDefaultValueForType(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 

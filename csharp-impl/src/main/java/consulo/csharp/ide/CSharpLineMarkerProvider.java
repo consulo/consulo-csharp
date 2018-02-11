@@ -19,8 +19,9 @@ package consulo.csharp.ide;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.lineMarkerProvider.HidedOrOverridedElementCollector;
 import consulo.csharp.ide.lineMarkerProvider.HidingOrOverridingElementCollector;
@@ -79,7 +80,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public LineMarkerInfo getLineMarkerInfo(@NotNull PsiElement element)
+	public LineMarkerInfo getLineMarkerInfo(@Nonnull PsiElement element)
 	{
 		if(myDaemonCodeAnalyzerSettings.SHOW_METHOD_SEPARATORS && (element instanceof DotNetQualifiedElement))
 		{
@@ -129,7 +130,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 
 	@RequiredReadAction
 	@Override
-	public void collectSlowLineMarkers(@NotNull List<PsiElement> elements, @NotNull final Collection<LineMarkerInfo> lineMarkerInfos)
+	public void collectSlowLineMarkers(@Nonnull List<PsiElement> elements, @Nonnull final Collection<LineMarkerInfo> lineMarkerInfos)
 	{
 		ApplicationManager.getApplication().assertReadAccessAllowed();
 

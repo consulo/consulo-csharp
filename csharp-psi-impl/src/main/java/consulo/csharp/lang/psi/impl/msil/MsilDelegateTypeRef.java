@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.ToNativeElementTransformers;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -67,7 +68,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRefWithCachedResult
 			return ToNativeElementTransformers.transform(myElement);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public DotNetGenericExtractor getGenericExtractor()
 		{
@@ -84,7 +85,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRefWithCachedResult
 
 	private NotNullLazyValue<DotNetTypeResolveResult> myResultValue = new NotNullLazyValue<DotNetTypeResolveResult>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		@RequiredReadAction
 		protected DotNetTypeResolveResult compute()
@@ -181,14 +182,14 @@ public class MsilDelegateTypeRef extends DotNetTypeRefWithCachedResult
 
 	private DotNetTypeRef myTypeRef;
 
-	public MsilDelegateTypeRef(@NotNull PsiElement scope, @NotNull DotNetTypeRef typeRef)
+	public MsilDelegateTypeRef(@Nonnull PsiElement scope, @Nonnull DotNetTypeRef typeRef)
 	{
 		super(scope.getProject());
 		myTypeRef = typeRef;
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -196,7 +197,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{

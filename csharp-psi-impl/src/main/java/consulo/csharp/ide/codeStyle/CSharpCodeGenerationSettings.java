@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeStyle;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
@@ -28,8 +29,8 @@ import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
  */
 public class CSharpCodeGenerationSettings extends CustomCodeStyleSettings
 {
-	@NotNull
-	public static CSharpCodeGenerationSettings getInstance(@NotNull Project project)
+	@Nonnull
+	public static CSharpCodeGenerationSettings getInstance(@Nonnull Project project)
 	{
 		CodeStyleSettingsManager codeStyleSettingsManager = CodeStyleSettingsManager.getInstance(project);
 		return codeStyleSettingsManager.getCurrentSettings().getCustomSettings(CSharpCodeGenerationSettings.class);

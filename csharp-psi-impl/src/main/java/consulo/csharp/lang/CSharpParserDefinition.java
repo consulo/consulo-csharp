@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
@@ -33,14 +34,14 @@ import consulo.lang.LanguageVersionableParserDefinition;
  */
 public class CSharpParserDefinition extends LanguageVersionableParserDefinition
 {
-	@NotNull
+	@Nonnull
 	@Override
 	public IFileElementType getFileNodeType()
 	{
 		return CSharpStubElements.FILE;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement createElement(ASTNode astNode)
 	{
@@ -53,7 +54,7 @@ public class CSharpParserDefinition extends LanguageVersionableParserDefinition
 		return new CSharpFileImpl(fileViewProvider);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode astNode, ASTNode astNode2)
 	{

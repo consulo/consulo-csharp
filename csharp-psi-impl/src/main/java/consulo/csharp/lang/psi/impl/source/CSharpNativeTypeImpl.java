@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNativeType;
@@ -32,26 +33,26 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpNativeTypeImpl extends CSharpTypeElementImpl implements CSharpNativeType
 {
-	public CSharpNativeTypeImpl(@NotNull ASTNode node)
+	public CSharpNativeTypeImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitNativeType(this);
 	}
 
 	@RequiredReadAction
 	@Override
-	@NotNull
+	@Nonnull
 	public IElementType getTypeElementType()
 	{
 		return getTypeElement().getNode().getElementType();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl()
@@ -60,7 +61,7 @@ public class CSharpNativeTypeImpl extends CSharpTypeElementImpl implements CShar
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getTypeElement()
 	{

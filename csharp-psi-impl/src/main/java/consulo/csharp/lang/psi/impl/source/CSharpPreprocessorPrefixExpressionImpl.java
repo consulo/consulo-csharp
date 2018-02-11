@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import com.intellij.lang.ASTNode;
 
@@ -26,13 +27,13 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpPreprocessorPrefixExpressionImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorExpression
 {
-	public CSharpPreprocessorPrefixExpressionImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorPrefixExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitPrefixExpression(this);
 	}

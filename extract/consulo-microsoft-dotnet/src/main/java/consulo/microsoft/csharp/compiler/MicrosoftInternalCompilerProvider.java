@@ -16,10 +16,10 @@
 
 package consulo.microsoft.csharp.compiler;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.csharp.compiler.BaseInternalCompilerProvider;
 import consulo.csharp.compiler.CSharpCompilerUtil;
 import consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
@@ -48,9 +48,9 @@ public class MicrosoftInternalCompilerProvider extends BaseInternalCompilerProvi
 	}
 
 	@Override
-	public void setupCompiler(@NotNull DotNetModuleExtension<?> netExtension,
-			@NotNull CSharpModuleExtension<?> csharpExtension,
-			@NotNull MSBaseDotNetCompilerOptionsBuilder builder,
+	public void setupCompiler(@Nonnull DotNetModuleExtension<?> netExtension,
+			@Nonnull CSharpModuleExtension<?> csharpExtension,
+			@Nonnull MSBaseDotNetCompilerOptionsBuilder builder,
 			@Nullable VirtualFile compilerSdkHome) throws DotNetCompileFailedException
 	{
 		VirtualFile sdkHome = netExtension.getSdk() == null ? null : netExtension.getSdk().getHomeDirectory();

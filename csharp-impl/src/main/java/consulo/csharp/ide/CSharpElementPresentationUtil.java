@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.BitUtil;
 import com.intellij.util.Function;
@@ -49,16 +50,16 @@ public class CSharpElementPresentationUtil
 	public static final int PROPERTY_SCALA_LIKE_FULL = SCALA_FORMAT | WITH_VIRTUAL_IMPL_TYPE;
 	public static final int METHOD_SCALA_LIKE_FULL = SCALA_FORMAT | METHOD_WITH_RETURN_TYPE | METHOD_PARAMETER_NAME | WITH_VIRTUAL_IMPL_TYPE;
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static String formatField(@NotNull DotNetFieldDeclaration fieldDeclaration)
+	public static String formatField(@Nonnull DotNetFieldDeclaration fieldDeclaration)
 	{
 		return formatField(fieldDeclaration, 0);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static String formatField(@NotNull DotNetFieldDeclaration fieldDeclaration, int flags)
+	public static String formatField(@Nonnull DotNetFieldDeclaration fieldDeclaration, int flags)
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append(fieldDeclaration.getName());
@@ -67,9 +68,9 @@ public class CSharpElementPresentationUtil
 		return builder.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static String formatProperty(@NotNull DotNetPropertyDeclaration propertyDeclaration, int flags)
+	public static String formatProperty(@Nonnull DotNetPropertyDeclaration propertyDeclaration, int flags)
 	{
 		StringBuilder builder = new StringBuilder();
 
@@ -100,9 +101,9 @@ public class CSharpElementPresentationUtil
 		return builder.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static String formatMethod(@NotNull DotNetLikeMethodDeclaration methodDeclaration, int flags)
+	public static String formatMethod(@Nonnull DotNetLikeMethodDeclaration methodDeclaration, int flags)
 	{
 		StringBuilder builder = new StringBuilder();
 
@@ -147,7 +148,7 @@ public class CSharpElementPresentationUtil
 	}
 
 	@RequiredReadAction
-	public static void formatParameters(@NotNull DotNetLikeMethodDeclaration methodDeclaration, @NotNull StringBuilder builder, final int flags)
+	public static void formatParameters(@Nonnull DotNetLikeMethodDeclaration methodDeclaration, @Nonnull StringBuilder builder, final int flags)
 	{
 		boolean indexMethod = methodDeclaration instanceof CSharpIndexMethodDeclaration;
 
@@ -204,7 +205,7 @@ public class CSharpElementPresentationUtil
 		return CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD;
 	}
 
-	public static void formatTypeGenericParameters(@NotNull DotNetGenericParameter[] parameters, @NotNull StringBuilder builder)
+	public static void formatTypeGenericParameters(@Nonnull DotNetGenericParameter[] parameters, @Nonnull StringBuilder builder)
 	{
 		if(parameters.length > 0)
 		{
@@ -222,9 +223,9 @@ public class CSharpElementPresentationUtil
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static String formatGenericParameters(@NotNull final DotNetGenericParameterListOwner owner, @NotNull final DotNetGenericExtractor extractor)
+	public static String formatGenericParameters(@Nonnull final DotNetGenericParameterListOwner owner, @Nonnull final DotNetGenericExtractor extractor)
 	{
 		DotNetGenericParameter[] genericParameters = owner.getGenericParameters();
 		if(genericParameters.length == 0)

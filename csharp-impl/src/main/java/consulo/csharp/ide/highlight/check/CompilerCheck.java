@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.intention.IntentionAction;
@@ -61,7 +61,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 		@Nullable
 		public abstract HighlightInfo create(boolean insideDoc);
 
-		@NotNull
+		@Nonnull
 		default List<IntentionAction> getQuickFixes()
 		{
 			return Collections.emptyList();
@@ -132,7 +132,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 		}
 
 		@Override
-		@NotNull
+		@Nonnull
 		public List<IntentionAction> getQuickFixes()
 		{
 			return myQuickFixes;
@@ -155,9 +155,9 @@ public abstract class CompilerCheck<T extends PsiElement>
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public List<? extends HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull T element)
+	public List<? extends HighlightInfoFactory> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull T element)
 	{
 		HighlightInfoFactory check = checkImpl(languageVersion, highlightContext, element);
 		if(check == null)
@@ -169,35 +169,35 @@ public abstract class CompilerCheck<T extends PsiElement>
 
 	@Nullable
 	@RequiredReadAction
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull T element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull T element)
 	{
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public CompilerCheckBuilder newBuilder(@NotNull PsiElement range, String... args)
+	public CompilerCheckBuilder newBuilder(@Nonnull PsiElement range, String... args)
 	{
 		return newBuilderImpl(getClass(), range, args);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public CompilerCheckBuilder newBuilder(@NotNull TextRange range, String... args)
+	public CompilerCheckBuilder newBuilder(@Nonnull TextRange range, String... args)
 	{
 		return newBuilderImpl(getClass(), range, args);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static CompilerCheckBuilder newBuilderImpl(@NotNull Class<?> clazz, @NotNull PsiElement range, String... args)
+	public static CompilerCheckBuilder newBuilderImpl(@Nonnull Class<?> clazz, @Nonnull PsiElement range, String... args)
 	{
 		return newBuilderImpl(clazz, range.getTextRange(), args);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static CompilerCheckBuilder newBuilderImpl(@NotNull Class<?> clazz, @NotNull TextRange range, String... args)
+	public static CompilerCheckBuilder newBuilderImpl(@Nonnull Class<?> clazz, @Nonnull TextRange range, String... args)
 	{
 		CompilerCheckBuilder result = new CompilerCheckBuilder();
 		result.setText(message(clazz, args));
@@ -205,8 +205,8 @@ public abstract class CompilerCheck<T extends PsiElement>
 		return result;
 	}
 
-	@NotNull
-	public static String message(@NotNull Class<?> aClass, String... args)
+	@Nonnull
+	public static String message(@Nonnull Class<?> aClass, String... args)
 	{
 		String id = aClass.getSimpleName();
 		String message = CSharpErrorBundle.message(id, args);
@@ -217,7 +217,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 		return message;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static PsiElement getNameIdentifier(PsiElement element)
 	{
@@ -290,7 +290,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 	}
 
 	@RequiredReadAction
-	public static String formatTypeRef(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	public static String formatTypeRef(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		return CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(typeRef, scope);
 	}

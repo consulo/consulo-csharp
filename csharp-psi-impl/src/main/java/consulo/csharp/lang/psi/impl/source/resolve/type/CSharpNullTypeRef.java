@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import consulo.dotnet.DotNetTypes;
@@ -39,20 +40,20 @@ public class CSharpNullTypeRef extends DotNetTypeRefWithCachedResult
 	private GlobalSearchScope myScope;
 
 	@RequiredReadAction
-	public CSharpNullTypeRef(@NotNull PsiElement element)
+	public CSharpNullTypeRef(@Nonnull PsiElement element)
 	{
 		this(element.getProject(), element.getResolveScope());
 	}
 
 	@RequiredReadAction
-	public CSharpNullTypeRef(@NotNull Project project, @NotNull GlobalSearchScope scope)
+	public CSharpNullTypeRef(@Nonnull Project project, @Nonnull GlobalSearchScope scope)
 	{
 		super(project);
 		myScope = scope;
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -65,7 +66,7 @@ public class CSharpNullTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{

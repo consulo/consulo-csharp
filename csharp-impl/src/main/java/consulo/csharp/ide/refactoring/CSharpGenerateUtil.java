@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.refactoring;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import consulo.csharp.lang.psi.CSharpTokens;
 
@@ -26,7 +26,7 @@ import consulo.csharp.lang.psi.CSharpTokens;
  */
 public class CSharpGenerateUtil
 {
-	public static void normalizeBraces(@NotNull CSharpBodyWithBraces targetForGenerate)
+	public static void normalizeBraces(@Nonnull CSharpBodyWithBraces targetForGenerate)
 	{
 		if(targetForGenerate.getLeftBrace() == null)
 		{

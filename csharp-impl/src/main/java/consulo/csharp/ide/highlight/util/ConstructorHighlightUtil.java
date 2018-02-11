@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.highlight.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.quickFix.RenameQuickFix;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
@@ -37,7 +37,7 @@ public class ConstructorHighlightUtil
 {
 	@Nullable
 	@RequiredReadAction
-	public static HighlightInfo checkConstructorDeclaration(@NotNull CSharpConstructorDeclaration declaration)
+	public static HighlightInfo checkConstructorDeclaration(@Nonnull CSharpConstructorDeclaration declaration)
 	{
 		PsiElement nameIdentifier = declaration.getNameIdentifier();
 

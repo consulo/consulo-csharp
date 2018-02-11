@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -33,20 +34,20 @@ public interface ParameterResolveContext<T>
 	T getParameterByIndex(int i);
 
 	@Nullable
-	T getParameterByName(@NotNull String name);
+	T getParameterByName(@Nonnull String name);
 
 	int getParametersSize();
 
 	@Nullable
 	DotNetParameter getParamsParameter();
 
-	@NotNull
+	@Nonnull
 	T[] getParameters();
 
-	@NotNull
+	@Nonnull
 	DotNetTypeRef getParamsParameterTypeRef();
 
-	@NotNull
+	@Nonnull
 	DotNetTypeRef getInnerParamsParameterTypeRef();
 
 	boolean isResolveFromParentTypeRef();
@@ -57,7 +58,7 @@ public interface ParameterResolveContext<T>
 	 * 2. TypeRef
 	 * 3. Optional flag
 	 */
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(@NotNull T parameter);
+	Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(@Nonnull T parameter);
 }

@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetParameter;
@@ -44,7 +44,7 @@ public class CSharpLightParameter extends CSharpLightVariable<DotNetParameter> i
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -52,7 +52,7 @@ public class CSharpLightParameter extends CSharpLightVariable<DotNetParameter> i
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitParameter(this);
 	}

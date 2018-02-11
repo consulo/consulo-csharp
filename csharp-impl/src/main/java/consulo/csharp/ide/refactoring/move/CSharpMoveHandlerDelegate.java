@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;

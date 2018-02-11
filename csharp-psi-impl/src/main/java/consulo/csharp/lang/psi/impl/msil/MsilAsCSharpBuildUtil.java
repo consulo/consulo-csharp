@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi.impl.msil;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;

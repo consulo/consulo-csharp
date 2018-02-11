@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi.impl.source;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
@@ -55,7 +55,7 @@ import consulo.dotnet.resolve.DotNetTypeRefUtil;
  */
 public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements CSharpAnonymousMethodExpression
 {
-	public CSharpLambdaExpressionImpl(@NotNull ASTNode node)
+	public CSharpLambdaExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -69,13 +69,13 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return getModifierList().hasModifier(modifier);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetModifierList getModifierList()
 	{
@@ -95,7 +95,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 		return findChildByClass(DotNetStatement.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public PsiElement getDArrow()
 	{
@@ -103,7 +103,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitLambdaExpression(this);
 	}
@@ -114,7 +114,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 		return findChildByClass(CSharpLambdaParameterList.class);
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpLambdaParameter[] getParameters()
 	{
 		CSharpLambdaParameterList parameterList = getParameterList();
@@ -122,7 +122,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
 	{
 		for(CSharpLambdaParameter parameter : getParameters())
 		{
@@ -135,7 +135,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -147,7 +147,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 		return new CSharpLambdaTypeRef(this, null, getParameterInfos(resolveFromParent), resolveFromParent ? getReturnTypeRef() : DotNetTypeRef.AUTO_TYPE);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefForInference()
 	{
@@ -160,7 +160,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 		return new CSharpLambdaTypeRef(this, null, getParameterInfos(true), returnType);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private DotNetTypeRef findPossibleReturnTypeRef()
 	{
@@ -237,14 +237,14 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
 		return getParameterInfos(false);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public CSharpSimpleParameterInfo[] getParameterInfos(boolean resolveFromParent)
 	{
@@ -259,7 +259,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{

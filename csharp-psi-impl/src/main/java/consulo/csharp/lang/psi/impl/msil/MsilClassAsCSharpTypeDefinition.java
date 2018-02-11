@@ -23,9 +23,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.NullableLazyValue;
@@ -64,7 +66,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 {
 	private NotNullLazyValue<DotNetNamedElement[]> myMembersValue = new NotNullLazyValue<DotNetNamedElement[]>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		@RequiredDispatchThread
 		protected DotNetNamedElement[] compute()
@@ -235,7 +237,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	private Boolean myIsInterface;
 
 	@RequiredReadAction
-	public MsilClassAsCSharpTypeDefinition(@Nullable PsiElement parent, MsilClassEntry classEntry, @NotNull GenericParameterContext genericParameterContext)
+	public MsilClassAsCSharpTypeDefinition(@Nullable PsiElement parent, MsilClassEntry classEntry, @Nonnull GenericParameterContext genericParameterContext)
 	{
 		super(parent, classEntry);
 		myGenericParameterContext = genericParameterContext;
@@ -267,7 +269,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitTypeDeclaration(this);
 	}
@@ -320,7 +322,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return myGenericConstraintListValue.getValue();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
@@ -372,7 +374,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
@@ -381,12 +383,12 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 
 	@RequiredReadAction
 	@Override
-	public boolean isInheritor(@NotNull String other, boolean deep)
+	public boolean isInheritor(@Nonnull String other, boolean deep)
 	{
 		return DotNetInheritUtil.isInheritor(this, other, deep);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	@Override
 	public DotNetTypeRef getTypeRefForEnumConstants()
@@ -401,7 +403,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return myGenericParameterList;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
@@ -415,7 +417,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -424,7 +426,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return myModifierList.hasModifier(modifier);
 	}
@@ -481,7 +483,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
 	{
 		return null;
 	}

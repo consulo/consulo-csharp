@@ -21,10 +21,10 @@ import gnu.trove.THashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -104,7 +104,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				CSharpReferenceExpressionEx parent = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 				if(parent.getQualifier() != null || parent.kind() != CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
@@ -278,7 +278,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				CSharpReferenceExpression expression = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpReferenceExpression.class);
 
@@ -376,7 +376,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				PsiElement position = parameters.getPosition();
 				CSharpNewExpressionImpl newExpression = PsiTreeUtil.getParentOfType(position, CSharpNewExpressionImpl.class);
@@ -426,7 +426,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 
 			@Nullable
 			@RequiredReadAction
-			private Icon getIconForInnerTypeRef(@NotNull CSharpArrayTypeRef typeRef, @NotNull PsiElement scope)
+			private Icon getIconForInnerTypeRef(@Nonnull CSharpArrayTypeRef typeRef, @Nonnull PsiElement scope)
 			{
 				DotNetTypeRef innerTypeRef = typeRef.getInnerTypeRef();
 				if(innerTypeRef instanceof CSharpArrayTypeRef)
@@ -446,7 +446,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 
 			@Nullable
 			@RequiredReadAction
-			private Icon getIconForInnerTypeRef(DotNetTypeRef innerTypeRef, @NotNull PsiElement scope)
+			private Icon getIconForInnerTypeRef(DotNetTypeRef innerTypeRef, @Nonnull PsiElement scope)
 			{
 				PsiElement element = innerTypeRef.resolve().getElement();
 				if(element != null)

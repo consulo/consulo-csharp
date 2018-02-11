@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.completion.smartEnter;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpModifier;
@@ -46,14 +47,14 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 	public interface Fixer
 	{
 		@RequiredReadAction
-		boolean process(@NotNull Editor editor, @NotNull PsiFile psiFile);
+		boolean process(@Nonnull Editor editor, @Nonnull PsiFile psiFile);
 	}
 
 	public class VariableSemicolonFixer implements Fixer
 	{
 		@RequiredReadAction
 		@Override
-		public boolean process(@NotNull Editor editor, @NotNull PsiFile psiFile)
+		public boolean process(@Nonnull Editor editor, @Nonnull PsiFile psiFile)
 		{
 			PsiElement statementAtCaret = getStatementAtCaret(editor, psiFile);
 			DotNetVariable variable = PsiTreeUtil.getParentOfType(statementAtCaret, DotNetVariable.class);
@@ -84,7 +85,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 	{
 		@RequiredReadAction
 		@Override
-		public boolean process(@NotNull Editor editor, @NotNull PsiFile psiFile)
+		public boolean process(@Nonnull Editor editor, @Nonnull PsiFile psiFile)
 		{
 			PsiElement statementAtCaret = getStatementAtCaret(editor, psiFile);
 
@@ -131,7 +132,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 
 	@Override
 	@RequiredReadAction
-	public boolean process(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile psiFile)
+	public boolean process(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile psiFile)
 	{
 		for(Fixer fixer : myFixers)
 		{
@@ -144,7 +145,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 	}
 
 	@RequiredReadAction
-	private void insertStringAtEndWithReformat(@NotNull String text, @NotNull PsiElement anchor, @NotNull Editor editor, int moveOffset, boolean commit)
+	private void insertStringAtEndWithReformat(@Nonnull String text, @Nonnull PsiElement anchor, @Nonnull Editor editor, int moveOffset, boolean commit)
 	{
 		PsiFile containingFile = anchor.getContainingFile();
 

@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeInspection.unnecessaryModifier;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -37,9 +38,9 @@ import com.intellij.psi.PsiElementVisitor;
  */
 public class UnnecessaryModifierInspection extends LocalInspectionTool
 {
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, boolean isOnTheFly)
+	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)
 	{
 		return new CSharpElementVisitor()
 		{

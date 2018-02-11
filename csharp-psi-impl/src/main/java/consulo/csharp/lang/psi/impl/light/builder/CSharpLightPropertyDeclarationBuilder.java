@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.light.builder;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -101,13 +101,13 @@ public class CSharpLightPropertyDeclarationBuilder extends CSharpLightVariableBu
 		return super.getName();
 	}
 
-	public void withNameIdentifier(@NotNull PsiElement element)
+	public void withNameIdentifier(@Nonnull PsiElement element)
 	{
 		myNameIdentifier = element;
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitPropertyDeclaration(this);
 	}
@@ -126,7 +126,7 @@ public class CSharpLightPropertyDeclarationBuilder extends CSharpLightVariableBu
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetXXXAccessor[] getAccessors()
 	{
@@ -134,7 +134,7 @@ public class CSharpLightPropertyDeclarationBuilder extends CSharpLightVariableBu
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -148,7 +148,7 @@ public class CSharpLightPropertyDeclarationBuilder extends CSharpLightVariableBu
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{

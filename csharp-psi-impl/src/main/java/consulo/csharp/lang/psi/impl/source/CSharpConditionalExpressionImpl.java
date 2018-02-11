@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -33,13 +33,13 @@ import consulo.dotnet.util.ArrayUtil2;
  */
 public class CSharpConditionalExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpConditionalExpressionImpl(@NotNull ASTNode node)
+	public CSharpConditionalExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitConditionalExpression(this);
 	}
@@ -49,7 +49,7 @@ public class CSharpConditionalExpressionImpl extends CSharpExpressionImpl implem
 		return findChildrenByClass(DotNetExpression.class);
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetExpression getCondition()
 	{
 		return ArrayUtil2.safeGet(getExpressions(), 0);
@@ -68,7 +68,7 @@ public class CSharpConditionalExpressionImpl extends CSharpExpressionImpl implem
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{

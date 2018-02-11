@@ -18,7 +18,8 @@ package consulo.csharp.ide.codeInspection.languageKeywordUsage;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.ide.completion.CSharpCompletionUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -52,13 +53,13 @@ public class LanguageKeywordUsageInspection extends LocalInspectionTool
 	{
 		private IElementType myKeywordElementType;
 
-		public ReplaceByKeywordFix(@NotNull PsiElement element, IElementType keywordElementType)
+		public ReplaceByKeywordFix(@Nonnull PsiElement element, IElementType keywordElementType)
 		{
 			super(element);
 			myKeywordElementType = keywordElementType;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getText()
 		{
@@ -66,7 +67,7 @@ public class LanguageKeywordUsageInspection extends LocalInspectionTool
 		}
 
 		@Override
-		public void invoke(@NotNull final Project project, @NotNull PsiFile file, @NotNull final PsiElement startElement, @NotNull PsiElement endElement)
+		public void invoke(@Nonnull final Project project, @Nonnull PsiFile file, @Nonnull final PsiElement startElement, @Nonnull PsiElement endElement)
 		{
 			new WriteCommandAction.Simple<Object>(project, file)
 			{
@@ -98,7 +99,7 @@ public class LanguageKeywordUsageInspection extends LocalInspectionTool
 			}.execute();
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -151,9 +152,9 @@ public class LanguageKeywordUsageInspection extends LocalInspectionTool
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder, boolean isOnTheFly)
+	public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly)
 	{
 		CSharpCodeGenerationSettings settings = CSharpCodeGenerationSettings.getInstance(holder.getProject());
 		if(!settings.USE_LANGUAGE_DATA_TYPES)

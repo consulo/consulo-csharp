@@ -18,7 +18,7 @@ package consulo.csharp.ide.actions.generate.memberChoose;
 
 import java.util.Locale;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
@@ -46,7 +46,7 @@ public class XXXAccessorOwnerChooseMember extends ImplementMemberChooseObject<CS
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredDispatchThread
 	public String getPresentationText()

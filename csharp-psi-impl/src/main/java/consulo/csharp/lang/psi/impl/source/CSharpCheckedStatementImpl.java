@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.ASTNode;
@@ -28,7 +28,7 @@ import consulo.dotnet.psi.DotNetStatement;
  */
 public class CSharpCheckedStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpCheckedStatementImpl(@NotNull ASTNode node)
+	public CSharpCheckedStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -39,7 +39,7 @@ public class CSharpCheckedStatementImpl extends CSharpElementImpl implements Dot
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitCheckedStatement(this);
 	}

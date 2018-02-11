@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
@@ -31,18 +32,18 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  */
 public class CSharpLocalVariableDeclarationStatementImpl extends CSharpElementImpl implements CSharpLocalVariableDeclarationStatement
 {
-	public CSharpLocalVariableDeclarationStatementImpl(@NotNull ASTNode node)
+	public CSharpLocalVariableDeclarationStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitLocalVariableDeclarationStatement(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpLocalVariable[] getVariables()
 	{
@@ -50,7 +51,7 @@ public class CSharpLocalVariableDeclarationStatementImpl extends CSharpElementIm
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement
 			place)
 	{
 		for(CSharpLocalVariable variable : getVariables())

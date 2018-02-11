@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.application.ReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
@@ -40,7 +41,7 @@ public class IsExpressionEvaluator extends Evaluator
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context)
+	public void evaluate(@Nonnull CSharpEvaluateContext context)
 	{
 		DotNetValueProxy pop = context.popValue();
 

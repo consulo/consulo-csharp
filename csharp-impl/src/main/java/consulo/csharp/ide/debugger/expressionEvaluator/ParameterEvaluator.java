@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.dotnet.psi.DotNetParameter;
@@ -34,14 +35,14 @@ public class ParameterEvaluator extends LocalVariableOrParameterEvaluator<DotNet
 	private int myIndex;
 
 	@RequiredReadAction
-	public ParameterEvaluator(@NotNull DotNetParameter parameter)
+	public ParameterEvaluator(@Nonnull DotNetParameter parameter)
 	{
 		super(parameter);
 		myIndex = parameter.getIndex();
 	}
 
 	@Override
-	protected boolean tryEvaluateFromStackFrame(@NotNull CSharpEvaluateContext context, DotNetStackFrameProxy frame, DotNetMethodProxy method)
+	protected boolean tryEvaluateFromStackFrame(@Nonnull CSharpEvaluateContext context, DotNetStackFrameProxy frame, DotNetMethodProxy method)
 	{
 		DotNetMethodParameterProxy methodParameterMirror = method.getParameters()[myIndex];
 

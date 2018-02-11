@@ -21,7 +21,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInspection.unusedUsing.BaseUnusedUsingVisitor;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
@@ -49,7 +50,7 @@ public class CSharpUsingHighlightUsagesHandler extends HighlightUsagesHandlerBas
 			myListChild = listChild;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		protected Collection<? extends CSharpUsingListChild> getStatements()
 		{

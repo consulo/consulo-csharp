@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.doc.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageParserDefinitions;
@@ -61,7 +61,7 @@ public interface CSharpDocElements
 	{
 		@Override
 		@RequiredReadAction
-		protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)
+		protected ASTNode doParseContents(@Nonnull final ASTNode chameleon, @Nonnull final PsiElement psi)
 		{
 			final Project project = psi.getProject();
 			CSharpDocLanguage docLanguage = CSharpDocLanguage.INSTANCE;
@@ -185,7 +185,7 @@ public interface CSharpDocElements
 		}
 
 		@Override
-		protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)
+		protected ASTNode doParseContents(@Nonnull final ASTNode chameleon, @Nonnull final PsiElement psi)
 		{
 			Project project = psi.getProject();
 			Language languageForParser = getLanguageForParser(psi);

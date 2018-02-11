@@ -20,8 +20,9 @@ import gnu.trove.THashMap;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -45,10 +46,10 @@ public class ThisKindProcessor implements KindProcessor
 {
 	@RequiredReadAction
 	@Override
-	public void process(@NotNull CSharpResolveOptions options,
-			@NotNull DotNetGenericExtractor defaultExtractor,
+	public void process(@Nonnull CSharpResolveOptions options,
+			@Nonnull DotNetGenericExtractor defaultExtractor,
 			@Nullable PsiElement forceQualifierElement,
-			@NotNull Processor<ResolveResult> processor)
+			@Nonnull Processor<ResolveResult> processor)
 	{
 		DotNetTypeDeclaration thisTypeDeclaration = PsiTreeUtil.getContextOfType(options.getElement(), DotNetTypeDeclaration.class);
 		if(thisTypeDeclaration != null)

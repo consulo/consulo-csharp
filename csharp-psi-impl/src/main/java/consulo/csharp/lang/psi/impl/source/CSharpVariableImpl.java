@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
@@ -35,7 +36,7 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 	private static final CSharpTypeRefCacher<CSharpVariableImpl> ourCacheSystem = new CSharpTypeRefCacher<CSharpVariableImpl>(true)
 	{
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
 		protected DotNetTypeRef toTypeRefImpl(CSharpVariableImpl element, boolean resolveFromParentOrInitializer)
 		{
@@ -45,7 +46,7 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 
 	private final ThreadLocal<Boolean> myTypeRefProcessing = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
-	public CSharpVariableImpl(@NotNull ASTNode node)
+	public CSharpVariableImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -59,7 +60,7 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -67,7 +68,7 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{
 		DotNetType type = getType();

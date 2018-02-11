@@ -19,9 +19,11 @@ package consulo.csharp.ide.highlight.check.impl;
 import java.util.Arrays;
 import java.util.Optional;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -63,11 +65,11 @@ public class CS1729 extends CompilerCheck<DotNetQualifiedElement>
 
 		@Override
 		@RequiredDispatchThread
-		public void invoke(@NotNull Project project,
-				@NotNull PsiFile psiFile,
+		public void invoke(@Nonnull Project project,
+				@Nonnull PsiFile psiFile,
 				@Nullable(value = "is null when called from inspection") Editor editor,
-				@NotNull PsiElement psiElement,
-				@NotNull PsiElement psiElement1)
+				@Nonnull PsiElement psiElement,
+				@Nonnull PsiElement psiElement1)
 		{
 			myHandler.invoke(project, editor, psiFile);
 		}
@@ -78,7 +80,7 @@ public class CS1729 extends CompilerCheck<DotNetQualifiedElement>
 			return myHandler.startInWriteAction();
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getText()
 		{
@@ -86,7 +88,7 @@ public class CS1729 extends CompilerCheck<DotNetQualifiedElement>
 		}
 
 		@Nls
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -97,7 +99,7 @@ public class CS1729 extends CompilerCheck<DotNetQualifiedElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull DotNetQualifiedElement t)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetQualifiedElement t)
 	{
 		if(t instanceof CSharpConstructorDeclaration)
 		{

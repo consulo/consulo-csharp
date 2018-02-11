@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
+
 import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetStringValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;

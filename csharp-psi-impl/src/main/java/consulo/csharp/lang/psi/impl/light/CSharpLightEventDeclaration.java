@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpEventDeclaration;
@@ -44,7 +44,7 @@ public class CSharpLightEventDeclaration extends CSharpLightVariable<CSharpEvent
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -52,19 +52,19 @@ public class CSharpLightEventDeclaration extends CSharpLightVariable<CSharpEvent
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitEventDeclaration(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetXXXAccessor[] getAccessors()
 	{
 		return myOriginal.getAccessors();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -106,7 +106,7 @@ public class CSharpLightEventDeclaration extends CSharpLightVariable<CSharpEvent
 		return myOriginal.getTypeForImplement();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{

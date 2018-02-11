@@ -20,6 +20,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTree;
@@ -28,8 +29,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorLocation;
@@ -90,7 +90,7 @@ public class CSharpAssemblyFileEditor extends UserDataHolderBase implements File
 		myBlocks.add(new CSharpSimpleStringAssemblyBlock("File Version", DotNetTypes.System.Reflection.AssemblyFileVersionAttribute));
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public JComponent getComponent()
 	{
@@ -155,22 +155,22 @@ public class CSharpAssemblyFileEditor extends UserDataHolderBase implements File
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{
 		return "Assembly Info Editor";
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public FileEditorState getState(@NotNull FileEditorStateLevel fileEditorStateLevel)
+	public FileEditorState getState(@Nonnull FileEditorStateLevel fileEditorStateLevel)
 	{
 		return FileEditorState.INSTANCE;
 	}
 
 	@Override
-	public void setState(@NotNull FileEditorState fileEditorState)
+	public void setState(@Nonnull FileEditorState fileEditorState)
 	{
 
 	}
@@ -200,13 +200,13 @@ public class CSharpAssemblyFileEditor extends UserDataHolderBase implements File
 	}
 
 	@Override
-	public void addPropertyChangeListener(@NotNull PropertyChangeListener propertyChangeListener)
+	public void addPropertyChangeListener(@Nonnull PropertyChangeListener propertyChangeListener)
 	{
 
 	}
 
 	@Override
-	public void removePropertyChangeListener(@NotNull PropertyChangeListener propertyChangeListener)
+	public void removePropertyChangeListener(@Nonnull PropertyChangeListener propertyChangeListener)
 	{
 
 	}

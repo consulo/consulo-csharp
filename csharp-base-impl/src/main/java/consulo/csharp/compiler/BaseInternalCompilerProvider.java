@@ -16,10 +16,11 @@
 
 package consulo.csharp.compiler;
 
+import javax.annotation.Nullable;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.module.extension.CSharpModuleExtension;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkType;
@@ -39,19 +40,19 @@ public abstract class BaseInternalCompilerProvider extends CSharpCompilerProvide
 
 	@Nullable
 	@Override
-	public SdkType getBundleType(@NotNull DotNetSimpleModuleExtension<?> moduleExtension)
+	public SdkType getBundleType(@Nonnull DotNetSimpleModuleExtension<?> moduleExtension)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean isSelected(@NotNull DotNetSimpleModuleExtension<?> moduleExtension, @NotNull String name, @Nullable Sdk sdk)
+	public boolean isSelected(@Nonnull DotNetSimpleModuleExtension<?> moduleExtension, @Nonnull String name, @Nullable Sdk sdk)
 	{
 		return moduleExtension.getId().equals(getExtensionId()) && name.equals(CSharpModuleExtension.INTERNAL_SDK_KEY);
 	}
 
 	@Override
-	public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, @NotNull SdkComboBox comboBox)
+	public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, @Nonnull SdkComboBox comboBox)
 	{
 		if(extension == null)
 		{

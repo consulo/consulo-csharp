@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
@@ -69,9 +69,9 @@ import consulo.ide.IconDescriptorUpdaters;
  */
 public class CSharpLookupElementBuilder
 {
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static LookupElement[] buildToLookupElements(@NotNull PsiElement[] arguments)
+	public static LookupElement[] buildToLookupElements(@Nonnull PsiElement[] arguments)
 	{
 		if(arguments.length == 0)
 		{
@@ -90,7 +90,7 @@ public class CSharpLookupElementBuilder
 	@RequiredReadAction
 	public static LookupElement buildLookupElementWithContextType(final PsiElement element,
 			@Nullable final CSharpTypeDeclaration contextType,
-			@NotNull DotNetGenericExtractor extractor,
+			@Nonnull DotNetGenericExtractor extractor,
 			@Nullable PsiElement expression)
 	{
 		LookupElementBuilder builder = createLookupElementBuilder(element, extractor, expression);
@@ -118,7 +118,7 @@ public class CSharpLookupElementBuilder
 	}
 
 	@RequiredReadAction
-	public static LookupElementBuilder createLookupElementBuilder(@NotNull final PsiElement element, @NotNull DotNetGenericExtractor extractor, @Nullable final PsiElement completionParent)
+	public static LookupElementBuilder createLookupElementBuilder(@Nonnull final PsiElement element, @Nonnull DotNetGenericExtractor extractor, @Nullable final PsiElement completionParent)
 	{
 		LookupElementBuilder builder = null;
 		if(element instanceof CSharpMethodDeclaration)
@@ -441,7 +441,7 @@ public class CSharpLookupElementBuilder
 	}
 
 	@RequiredReadAction
-	private static <E extends DotNetGenericParameterListOwner & DotNetQualifiedElement> LookupElementBuilder buildTypeLikeElement(@NotNull E element, @NotNull DotNetGenericExtractor extractor)
+	private static <E extends DotNetGenericParameterListOwner & DotNetQualifiedElement> LookupElementBuilder buildTypeLikeElement(@Nonnull E element, @Nonnull DotNetGenericExtractor extractor)
 	{
 		String genericText = CSharpElementPresentationUtil.formatGenericParameters(element, extractor);
 
@@ -482,7 +482,7 @@ public class CSharpLookupElementBuilder
 	}
 
 	@RequiredReadAction
-	private static boolean needAddThisPrefix(@NotNull DotNetVariable variable, @Nullable PsiElement parentCompletion)
+	private static boolean needAddThisPrefix(@Nonnull DotNetVariable variable, @Nullable PsiElement parentCompletion)
 	{
 		if(parentCompletion == null || variable.hasModifier(CSharpModifier.STATIC))
 		{

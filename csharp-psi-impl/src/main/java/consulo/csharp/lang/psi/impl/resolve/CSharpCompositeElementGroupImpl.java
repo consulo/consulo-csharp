@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import com.intellij.openapi.project.Project;
@@ -40,23 +41,23 @@ import com.intellij.util.Processor;
  */
 public class CSharpCompositeElementGroupImpl<T extends PsiElement> extends LightElement implements CSharpElementGroup<T>
 {
-	@NotNull
+	@Nonnull
 	private final List<CSharpElementGroup<T>> myGroups;
 
-	public CSharpCompositeElementGroupImpl(@NotNull Project project, @NotNull List<CSharpElementGroup<T>> groups)
+	public CSharpCompositeElementGroupImpl(@Nonnull Project project, @Nonnull List<CSharpElementGroup<T>> groups)
 	{
 		super(PsiManager.getInstance(project), CSharpLanguage.INSTANCE);
 		myGroups = groups;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getName()
 	{
 		return myGroups.get(0).getName();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Object getKey()
 	{
@@ -64,7 +65,7 @@ public class CSharpCompositeElementGroupImpl<T extends PsiElement> extends Light
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		for(CSharpElementGroup<T> group : myGroups)
 		{
@@ -104,10 +105,10 @@ public class CSharpCompositeElementGroupImpl<T extends PsiElement> extends Light
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
 			PsiElement lastParent,
-			@NotNull PsiElement place)
+			@Nonnull PsiElement place)
 	{
 		for(CSharpElementGroup<T> element : myGroups)
 		{
@@ -120,7 +121,7 @@ public class CSharpCompositeElementGroupImpl<T extends PsiElement> extends Light
 	}
 
 
-	@NotNull
+	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")
 	public Collection<T> getElements()
@@ -134,7 +135,7 @@ public class CSharpCompositeElementGroupImpl<T extends PsiElement> extends Light
 	}
 
 	@Override
-	public boolean process(@NotNull Processor<? super T> processor)
+	public boolean process(@Nonnull Processor<? super T> processor)
 	{
 		for(CSharpElementGroup<T> group : myGroups)
 		{

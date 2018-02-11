@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
@@ -37,9 +39,9 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNe
 	private final PsiElement myParent;
 	private final MsilModifierListToCSharpModifierList myModifierList;
 
-	public MsilXXXAccessorAsCSharpXXXAccessor(@NotNull PsiElement parent,
-			@NotNull DotNetXXXAccessor original,
-			@NotNull MsilMethodEntry resolvedMethod)
+	public MsilXXXAccessorAsCSharpXXXAccessor(@Nonnull PsiElement parent,
+			@Nonnull DotNetXXXAccessor original,
+			@Nonnull MsilMethodEntry resolvedMethod)
 	{
 		super(parent, original);
 		myParent = parent;
@@ -59,7 +61,7 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNe
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitXXXAccessor(this);
 	}
@@ -87,7 +89,7 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNe
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return myModifierList.hasModifier(modifier);
 	}
@@ -115,7 +117,7 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNe
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		return null;
 	}

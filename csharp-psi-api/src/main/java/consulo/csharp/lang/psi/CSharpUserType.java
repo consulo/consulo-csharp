@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.dotnet.psi.DotNetUserType;
 
 /**
@@ -26,6 +26,6 @@ import consulo.dotnet.psi.DotNetUserType;
 public interface CSharpUserType extends DotNetUserType
 {
 	@Override
-	@NotNull
+	@Nonnull
 	CSharpReferenceExpression getReferenceExpression();
 }

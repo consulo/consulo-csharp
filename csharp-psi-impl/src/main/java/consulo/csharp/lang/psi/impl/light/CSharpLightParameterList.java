@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetParameterList;
@@ -38,7 +38,7 @@ public class CSharpLightParameterList extends CSharpLightElement<PsiElement> imp
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitParameterList(this);
 	}
@@ -49,14 +49,14 @@ public class CSharpLightParameterList extends CSharpLightElement<PsiElement> imp
 		return myParameters.length;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
 		return myParameters;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{

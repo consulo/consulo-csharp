@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
@@ -52,14 +52,14 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 {
 	public static class AllowUnsafeCodeFix extends BaseIntentionAction
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public String getText()
 		{
 			return "Allow unsafe code";
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -68,7 +68,7 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 
 		@Override
 		@RequiredDispatchThread
-		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(file, CSharpSimpleModuleExtension.class);
 			return extension != null && !extension.isAllowUnsafeCode();
@@ -76,7 +76,7 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 
 		@Override
 		@RequiredWriteAction
-		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(file);
 			if(moduleForPsiElement == null)
@@ -100,7 +100,7 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull DotNetElement element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetElement element)
 	{
 		PsiElement targetElement = getElement(element);
 		if(targetElement == null)

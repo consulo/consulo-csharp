@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.light.builder;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.dotnet.psi.DotNetQualifiedElement;
@@ -93,13 +93,13 @@ public class CSharpLightFieldDeclarationBuilder extends CSharpLightVariableBuild
 		return super.getName();
 	}
 
-	public void withNameIdentifier(@NotNull PsiElement element)
+	public void withNameIdentifier(@Nonnull PsiElement element)
 	{
 		myNameIdentifier = element;
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitFieldDeclaration(this);
 	}

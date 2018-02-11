@@ -18,7 +18,7 @@ package consulo.csharp.lang.psi.impl.stub;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
@@ -39,7 +39,7 @@ import consulo.msil.lang.psi.impl.elementType.stub.MsilStubIndexer;
 public class CSharpMsilStubIndexer extends MsilStubIndexer
 {
 	@Override
-	public void indexClass(@NotNull MsilClassEntryStub stub, @NotNull IndexSink indexSink)
+	public void indexClass(@Nonnull MsilClassEntryStub stub, @Nonnull IndexSink indexSink)
 	{
 		String name = stub.getName();
 		if(StringUtil.isEmpty(name))
@@ -67,7 +67,7 @@ public class CSharpMsilStubIndexer extends MsilStubIndexer
 	}
 
 	@Override
-	public void indexMethod(@NotNull MsilMethodEntryStub stub, @NotNull IndexSink indexSink)
+	public void indexMethod(@Nonnull MsilMethodEntryStub stub, @Nonnull IndexSink indexSink)
 	{
 		List<StubElement> childrenStubs = stub.getChildrenStubs();
 		for(StubElement childrenStub : childrenStubs)

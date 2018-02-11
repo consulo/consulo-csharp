@@ -16,10 +16,10 @@
 
 package consulo.csharp.ide.debugger;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.Ref;
 import com.intellij.xdebugger.frame.XValueModifier;
@@ -37,13 +37,13 @@ public class CSharpWatcherNode extends DotNetAbstractVariableValueNode
 {
 	private DotNetValueProxy myValue;
 
-	public CSharpWatcherNode(@NotNull DotNetDebugContext debuggerContext, @NotNull String name, @NotNull DotNetStackFrameProxy frameProxy, @NotNull DotNetValueProxy value)
+	public CSharpWatcherNode(@Nonnull DotNetDebugContext debuggerContext, @Nonnull String name, @Nonnull DotNetStackFrameProxy frameProxy, @Nonnull DotNetValueProxy value)
 	{
 		super(debuggerContext, name, frameProxy);
 		myValue = value;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Icon getIconForVariable(@Nullable Ref<DotNetValueProxy> alreadyCalledValue)
 	{
@@ -65,7 +65,7 @@ public class CSharpWatcherNode extends DotNetAbstractVariableValueNode
 	}
 
 	@Override
-	public void setValueForVariableImpl(@NotNull DotNetValueProxy value)
+	public void setValueForVariableImpl(@Nonnull DotNetValueProxy value)
 	{
 
 	}

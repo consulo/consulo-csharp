@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.stub;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.tree.IElementType;
@@ -63,13 +63,13 @@ public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration>
 		return myOperatorIndex == -1 ? null : CSharpTokenSets.OVERLOADING_OPERATORS_AS_ARRAY[myOperatorIndex];
 	}
 
-	public static int getOperatorIndex(@NotNull CSharpMethodDeclaration methodDeclaration)
+	public static int getOperatorIndex(@Nonnull CSharpMethodDeclaration methodDeclaration)
 	{
 		IElementType operatorElementType = methodDeclaration.getOperatorElementType();
 		return operatorElementType == null ? -1 : ArrayUtil.indexOf(CSharpTokenSets.OVERLOADING_OPERATORS_AS_ARRAY, operatorElementType);
 	}
 
-	public static int getOtherModifierMask(@NotNull DotNetLikeMethodDeclaration methodDeclaration)
+	public static int getOtherModifierMask(@Nonnull DotNetLikeMethodDeclaration methodDeclaration)
 	{
 		int i = 0;
 		if(methodDeclaration instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) methodDeclaration).isDelegate())

@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import com.intellij.lang.ASTNode;
@@ -35,13 +36,13 @@ import consulo.dotnet.psi.DotNetStatement;
  */
 public class CSharpForeachStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpStatementAsStatementOwner
 {
-	public CSharpForeachStatementImpl(@NotNull ASTNode node)
+	public CSharpForeachStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitForeachStatement(this);
 	}
@@ -59,8 +60,8 @@ public class CSharpForeachStatementImpl extends CSharpElementImpl implements Dot
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
-			@NotNull PsiElement place)
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent,
+			@Nonnull PsiElement place)
 	{
 		if(lastParent == null || !PsiTreeUtil.isAncestor(this, lastParent, false))
 		{

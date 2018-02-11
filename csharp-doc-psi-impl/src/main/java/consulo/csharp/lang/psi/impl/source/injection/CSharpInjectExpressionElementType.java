@@ -17,8 +17,9 @@
 package consulo.csharp.lang.psi.impl.source.injection;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.PsiBuilder;
@@ -55,14 +56,14 @@ public class CSharpInjectExpressionElementType extends ILazyParseableElementType
 
 	private final CSharpReferenceExpression.ResolveToKind myResolveToKind;
 
-	public CSharpInjectExpressionElementType(@NotNull @NonNls String debugName, @Nullable Language language, @NotNull CSharpReferenceExpression.ResolveToKind resolveToKind)
+	public CSharpInjectExpressionElementType(@Nonnull @NonNls String debugName, @Nullable Language language, @Nonnull CSharpReferenceExpression.ResolveToKind resolveToKind)
 	{
 		super(debugName, language);
 		myResolveToKind = resolveToKind;
 	}
 
 	@Override
-	protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)
+	protected ASTNode doParseContents(@Nonnull final ASTNode chameleon, @Nonnull final PsiElement psi)
 	{
 		final Project project = psi.getProject();
 		final Language languageForParser = getLanguageForParser(psi);

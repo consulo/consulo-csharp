@@ -22,7 +22,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
@@ -47,7 +48,7 @@ import com.intellij.util.QueryExecutor;
 public class CSharpAllTypesSearchExecutor implements QueryExecutor<DotNetTypeDeclaration, AllTypesSearch.SearchParameters>
 {
 	@Override
-	public boolean execute(@NotNull final AllTypesSearch.SearchParameters queryParameters, @NotNull final Processor<DotNetTypeDeclaration>
+	public boolean execute(@Nonnull final AllTypesSearch.SearchParameters queryParameters, @Nonnull final Processor<DotNetTypeDeclaration>
 			consumer)
 	{
 		SearchScope scope = queryParameters.getScope();

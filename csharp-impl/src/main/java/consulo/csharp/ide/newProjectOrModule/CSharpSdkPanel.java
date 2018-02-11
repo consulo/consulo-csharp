@@ -19,12 +19,13 @@ package consulo.csharp.ide.newProjectOrModule;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.ComboBox;
@@ -56,7 +57,7 @@ public class CSharpSdkPanel extends JPanel
 		myTargetComboBox.setRenderer(new ColoredListCellRenderer<DotNetTarget>()
 		{
 			@Override
-			protected void customizeCellRenderer(@NotNull JList<? extends DotNetTarget> jList, DotNetTarget target, int i, boolean b, boolean b1)
+			protected void customizeCellRenderer(@Nonnull JList<? extends DotNetTarget> jList, DotNetTarget target, int i, boolean b, boolean b1)
 			{
 				append(target.getDescription());
 			}
@@ -83,15 +84,15 @@ public class CSharpSdkPanel extends JPanel
 		add(LabeledComponent.left(myComboBox, ".NET SDK"));
 	}
 
-	@NotNull
-	public CSharpSdkPanel disableTargetComboBox(@NotNull DotNetTarget target)
+	@Nonnull
+	public CSharpSdkPanel disableTargetComboBox(@Nonnull DotNetTarget target)
 	{
 		myTargetComboBox.setSelectedItem(target);
 		myTargetComponent.setVisible(false);
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetTarget getTarget()
 	{
 		return (DotNetTarget) myTargetComboBox.getSelectedItem();

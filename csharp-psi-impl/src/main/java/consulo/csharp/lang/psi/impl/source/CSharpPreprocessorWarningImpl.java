@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import consulo.dotnet.psi.DotNetElement;
@@ -27,13 +28,13 @@ import consulo.dotnet.psi.DotNetElement;
  */
 public class CSharpPreprocessorWarningImpl extends CSharpPreprocessorElementImpl implements DotNetElement
 {
-	public CSharpPreprocessorWarningImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorWarningImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitWarning(this);
 	}

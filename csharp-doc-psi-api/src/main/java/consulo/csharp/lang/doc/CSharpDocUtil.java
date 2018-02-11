@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.doc;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
@@ -27,7 +27,7 @@ import consulo.csharp.lang.doc.psi.CSharpDocRoot;
  */
 public class CSharpDocUtil
 {
-	public static boolean isInsideDoc(@NotNull PsiElement e)
+	public static boolean isInsideDoc(@Nonnull PsiElement e)
 	{
 		return PsiTreeUtil.getParentOfType(e, CSharpDocRoot.class) != null;
 	}

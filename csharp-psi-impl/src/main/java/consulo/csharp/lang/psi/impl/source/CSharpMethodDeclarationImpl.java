@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
@@ -44,18 +45,18 @@ import com.intellij.util.BitUtil;
  */
 public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpMethodDeclStub> implements CSharpMethodDeclaration
 {
-	public CSharpMethodDeclarationImpl(@NotNull ASTNode node)
+	public CSharpMethodDeclarationImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpMethodDeclarationImpl(@NotNull CSharpMethodDeclStub stub, @NotNull IStubElementType<? extends CSharpMethodDeclStub, ?> nodeType)
+	public CSharpMethodDeclarationImpl(@Nonnull CSharpMethodDeclStub stub, @Nonnull IStubElementType<? extends CSharpMethodDeclStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitMethodDeclaration(this);
 	}
@@ -149,7 +150,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 		return getStubOrPsiChild(CSharpStubElements.GENERIC_CONSTRAINT_LIST);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
@@ -164,7 +165,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 1);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{

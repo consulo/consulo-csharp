@@ -19,7 +19,8 @@ package consulo.csharp.ide.highlight.check.impl;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -66,7 +67,7 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 			setText("Wrap with '" + myType + "'");
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -74,13 +75,13 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 		}
 
 		@Override
-		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			return myPointer.getElement() != null;
 		}
 
 		@Override
-		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			DotNetExpression element = myPointer.getElement();
 			if(element == null)
@@ -95,9 +96,9 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpMethodCallExpressionImpl element)
+	public List<CompilerCheckBuilder> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpMethodCallExpressionImpl element)
 	{
 		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(element.multiResolve(true));
 		if(!(resolveResult instanceof MethodResolveResult))

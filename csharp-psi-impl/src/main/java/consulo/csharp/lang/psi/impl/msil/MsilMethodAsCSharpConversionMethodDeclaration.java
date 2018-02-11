@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
@@ -50,13 +51,13 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitConversionMethodDeclaration(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -80,7 +81,7 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getConversionTypeRef()
 	{

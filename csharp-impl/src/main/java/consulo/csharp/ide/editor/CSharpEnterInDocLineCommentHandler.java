@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.editor;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.editorActions.enter.EnterHandlerDelegateAdapter;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Document;
@@ -39,11 +40,11 @@ public class CSharpEnterInDocLineCommentHandler extends EnterHandlerDelegateAdap
 
 	@Override
 	@RequiredDispatchThread
-	public Result preprocessEnter(@NotNull final PsiFile file,
-			@NotNull final Editor editor,
-			@NotNull final Ref<Integer> caretOffsetRef,
-			@NotNull final Ref<Integer> caretAdvance,
-			@NotNull final DataContext dataContext,
+	public Result preprocessEnter(@Nonnull final PsiFile file,
+			@Nonnull final Editor editor,
+			@Nonnull final Ref<Integer> caretOffsetRef,
+			@Nonnull final Ref<Integer> caretAdvance,
+			@Nonnull final DataContext dataContext,
 			final EditorActionHandler originalHandler)
 	{
 		final int caretOffset = caretOffsetRef.get();

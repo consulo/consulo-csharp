@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -47,14 +47,14 @@ import consulo.msil.lang.psi.MsilCustomAttribute;
  */
 public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 {
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static List<StubBlock> buildBlocks(PsiElement qualifiedElement)
 	{
 		return buildBlocks(qualifiedElement, true);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static List<StubBlock> buildBlocks(PsiElement qualifiedElement, boolean compiled)
 	{
@@ -348,7 +348,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@RequiredReadAction
-	public static void appendTypeRef(@NotNull final PsiElement scope, @NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef)
+	public static void appendTypeRef(@Nonnull final PsiElement scope, @Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef)
 	{
 		CSharpTypeRefPresentationUtil.appendTypeRef(scope, builder, typeRef, CSharpTypeRefPresentationUtil.QUALIFIED_NAME | CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 	}

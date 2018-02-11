@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import consulo.csharp.lang.psi.impl.source.CSharpUsingNamespaceStatementImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
@@ -40,21 +41,21 @@ public class CSharpUsingNamespaceStatementStubElementType extends
 		super("USING_NAMESPACE_STATEMENT");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpUsingNamespaceStatement createElement(@NotNull ASTNode astNode)
+	public CSharpUsingNamespaceStatement createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpUsingNamespaceStatementImpl(astNode);
 	}
 
 	@Override
-	public CSharpUsingNamespaceStatement createPsi(@NotNull CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub)
+	public CSharpUsingNamespaceStatement createPsi(@Nonnull CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub)
 	{
 		return new CSharpUsingNamespaceStatementImpl(stub);
 	}
 
 	@Override
-	public CSharpWithStringValueStub<CSharpUsingNamespaceStatement> createStub(@NotNull CSharpUsingNamespaceStatement statement,
+	public CSharpWithStringValueStub<CSharpUsingNamespaceStatement> createStub(@Nonnull CSharpUsingNamespaceStatement statement,
 			StubElement stubElement)
 	{
 		String referenceText = statement.getReferenceText();
@@ -62,15 +63,15 @@ public class CSharpUsingNamespaceStatementStubElementType extends
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub,
-			@NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub,
+			@Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getReferenceText());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpWithStringValueStub<CSharpUsingNamespaceStatement> deserialize(@NotNull StubInputStream stubInputStream,
+	public CSharpWithStringValueStub<CSharpUsingNamespaceStatement> deserialize(@Nonnull StubInputStream stubInputStream,
 			StubElement stubElement) throws IOException
 	{
 		StringRef referenceText = stubInputStream.readName();

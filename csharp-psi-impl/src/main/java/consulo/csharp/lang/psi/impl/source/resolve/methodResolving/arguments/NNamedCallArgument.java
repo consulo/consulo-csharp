@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
@@ -29,7 +29,7 @@ public class NNamedCallArgument extends NCallArgument
 {
 	private String myName;
 
-	public NNamedCallArgument(@NotNull DotNetTypeRef typeRef, @Nullable CSharpCallArgument callArgument, @Nullable Object parameter, @Nullable String name)
+	public NNamedCallArgument(@Nonnull DotNetTypeRef typeRef, @Nullable CSharpCallArgument callArgument, @Nullable Object parameter, @Nullable String name)
 	{
 		super(typeRef, callArgument, parameter);
 		myName = name;

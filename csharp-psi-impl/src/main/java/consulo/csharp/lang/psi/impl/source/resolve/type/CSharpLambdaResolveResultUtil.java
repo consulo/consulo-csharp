@@ -16,9 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
@@ -49,9 +50,9 @@ public class CSharpLambdaResolveResultUtil
 		return element != null ? element.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE) : null;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static CSharpTypeDeclaration createTypeFromDelegate(@NotNull CSharpMethodDeclaration declaration, @NotNull DotNetGenericExtractor extractor)
+	public static CSharpTypeDeclaration createTypeFromDelegate(@Nonnull CSharpMethodDeclaration declaration, @Nonnull DotNetGenericExtractor extractor)
 	{
 		Project project = declaration.getProject();
 

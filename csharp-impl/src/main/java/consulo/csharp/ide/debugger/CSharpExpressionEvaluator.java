@@ -19,8 +19,9 @@ package consulo.csharp.ide.debugger;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
@@ -319,7 +320,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 		throw new UnsupportedOperationException("expression is not supported");
 	}
 
-	@NotNull
+	@Nonnull
 	private static String getMethodName(IElementType elementType, String originalName)
 	{
 		if(elementType == CSharpTokens.EQEQ || elementType == CSharpTokens.NTEQ)
@@ -330,7 +331,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 	}
 
 	@RequiredReadAction
-	private void pushMethodEvaluator(PsiElement scope, CSharpMethodDeclaration methodDeclaration, CSharpTypeDeclaration typeDeclaration, @NotNull String referenceName)
+	private void pushMethodEvaluator(PsiElement scope, CSharpMethodDeclaration methodDeclaration, CSharpTypeDeclaration typeDeclaration, @Nonnull String referenceName)
 	{
 		DotNetTypeRef[] parameterTypeRefs = methodDeclaration.getParameterTypeRefs();
 		List<DotNetTypeDeclaration> parameterTypes = new ArrayList<DotNetTypeDeclaration>();
@@ -382,7 +383,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public List<Evaluator> getEvaluators()
 	{
 		return myEvaluators;

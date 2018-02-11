@@ -19,7 +19,8 @@ package consulo.csharp.ide.highlight.check.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
@@ -46,16 +47,16 @@ import consulo.dotnet.psi.DotNetQualifiedElement;
 public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 {
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpTypeDeclaration element)
+	public List<CompilerCheckBuilder> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpTypeDeclaration element)
 	{
 		return doCheck(this, element);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static List<CompilerCheckBuilder> doCheck(@NotNull CompilerCheck<? extends DotNetMemberOwner> compilerCheck, @NotNull DotNetMemberOwner t)
+	public static List<CompilerCheckBuilder> doCheck(@Nonnull CompilerCheck<? extends DotNetMemberOwner> compilerCheck, @Nonnull DotNetMemberOwner t)
 	{
 		List<CompilerCheckBuilder> results = new SmartList<>();
 

@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpArrayType;
 import consulo.csharp.lang.psi.impl.source.CSharpStubArrayTypeImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
@@ -39,34 +40,34 @@ public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementTyp
 		super("ARRAY_TYPE");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElement createElement(@NotNull ASTNode astNode)
+	public PsiElement createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpStubArrayTypeImpl(astNode);
 	}
 
 	@Override
-	public CSharpArrayType createPsi(@NotNull CSharpWithIntValueStub<CSharpArrayType> stub)
+	public CSharpArrayType createPsi(@Nonnull CSharpWithIntValueStub<CSharpArrayType> stub)
 	{
 		return new CSharpStubArrayTypeImpl(stub, this);
 	}
 
 	@Override
-	public CSharpWithIntValueStub<CSharpArrayType> createStub(@NotNull CSharpArrayType cSharpArrayType, StubElement stubElement)
+	public CSharpWithIntValueStub<CSharpArrayType> createStub(@Nonnull CSharpArrayType cSharpArrayType, StubElement stubElement)
 	{
 		return new CSharpWithIntValueStub<CSharpArrayType>(stubElement, this, cSharpArrayType.getDimensions());
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpWithIntValueStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpWithIntValueStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeVarInt(stub.getValue());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpWithIntValueStub<CSharpArrayType> deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpWithIntValueStub<CSharpArrayType> deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int i = stubInputStream.readVarInt();
 		return new CSharpWithIntValueStub<CSharpArrayType>(stubElement, this, i);

@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.lang.LanguageVersion;
 
@@ -45,23 +46,23 @@ public class CSharpLanguageVersionHelperImpl extends CSharpLanguageVersionHelper
 		assert myHighest != null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public LanguageVersion getHighestVersion()
 	{
 		return myHighest;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public LanguageVersion[] getVersions()
 	{
 		return myWrappers;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public LanguageVersion getWrapper(@NotNull CSharpLanguageVersion version)
+	public LanguageVersion getWrapper(@Nonnull CSharpLanguageVersion version)
 	{
 		return myWrappers[version.ordinal()];
 	}

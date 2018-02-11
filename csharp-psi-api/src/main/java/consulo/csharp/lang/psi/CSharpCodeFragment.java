@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import com.intellij.psi.PsiElement;
 
@@ -31,5 +32,5 @@ public interface CSharpCodeFragment extends PsiElement
 	PsiElement getScopeElement();
 
 	@RequiredReadAction
-	void addUsingChild(@NotNull CSharpUsingListChild child);
+	void addUsingChild(@Nonnull CSharpUsingListChild child);
 }

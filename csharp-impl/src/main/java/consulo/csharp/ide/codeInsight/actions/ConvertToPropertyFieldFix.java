@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
@@ -48,7 +48,7 @@ public class ConvertToPropertyFieldFix extends PsiElementBaseIntentionAction
 
 	@Override
 	@RequiredWriteAction
-	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException
 	{
 		DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
 		if(!(owner instanceof CSharpFieldDeclaration))
@@ -93,13 +93,13 @@ public class ConvertToPropertyFieldFix extends PsiElementBaseIntentionAction
 
 	@Override
 	@RequiredDispatchThread
-	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
 	{
 		DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
 		return owner != null && owner instanceof CSharpFieldDeclaration && owner.isWritable();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{

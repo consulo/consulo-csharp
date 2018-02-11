@@ -21,9 +21,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.CastNArgumentToTypeRefFix;
 import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedConstructorFix;
@@ -81,9 +83,9 @@ import com.intellij.xml.util.XmlStringUtil;
 public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 {
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpReferenceExpression expression)
+	public List<HighlightInfoFactory> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpReferenceExpression expression)
 	{
 		PsiElement referenceElement = expression.getReferenceElement();
 		if(referenceElement == null || expression.isSoft() || CSharpDocUtil.isInsideDoc(expression))
@@ -101,9 +103,9 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		return checkReference(expression, Arrays.asList(referenceElement));
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static List<HighlightInfoFactory> checkReference(@NotNull final PsiElement callElement, @NotNull List<? extends PsiElement> ranges)
+	public static List<HighlightInfoFactory> checkReference(@Nonnull final PsiElement callElement, @Nonnull List<? extends PsiElement> ranges)
 	{
 		if(ranges.isEmpty())
 		{
@@ -209,7 +211,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 	}
 
 	@RequiredReadAction
-	private static String getUnresolvedText(@NotNull PsiElement element, @NotNull PsiElement range)
+	private static String getUnresolvedText(@Nonnull PsiElement element, @Nonnull PsiElement range)
 	{
 		CSharpCallArgumentListOwner callOwner = findCallOwner(element);
 		if(callOwner != null)
@@ -252,7 +254,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 
 	@Nullable
 	@RequiredReadAction
-	public static HighlightInfo createHighlightInfo(@NotNull PsiElement element, @NotNull ResolveResult resolveResult, boolean insideDoc)
+	public static HighlightInfo createHighlightInfo(@Nonnull PsiElement element, @Nonnull ResolveResult resolveResult, boolean insideDoc)
 	{
 		if(!(resolveResult instanceof MethodResolveResult))
 		{
@@ -388,7 +390,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		return null;
 	}
 
-	private static void registerQuickFixes(@NotNull CSharpCallArgumentListOwner element, PsiElement resolveElement, List<NCallArgument> arguments, HighlightInfo highlightInfo)
+	private static void registerQuickFixes(@Nonnull CSharpCallArgumentListOwner element, PsiElement resolveElement, List<NCallArgument> arguments, HighlightInfo highlightInfo)
 	{
 		DotNetExpression callExpression = element instanceof CSharpMethodCallExpressionImpl ? ((CSharpMethodCallExpressionImpl) element).getCallExpression() : null;
 		if(callExpression instanceof CSharpReferenceExpression)
@@ -434,7 +436,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 	}
 
 	@RequiredReadAction
-	private static void appendType(@NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	private static void appendType(@Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{

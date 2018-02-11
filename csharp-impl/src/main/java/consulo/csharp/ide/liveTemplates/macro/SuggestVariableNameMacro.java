@@ -21,8 +21,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.template.Expression;
@@ -66,7 +66,7 @@ public class SuggestVariableNameMacro extends Macro
 		return "suggestVariableName variable";
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getDefaultValue()
 	{
@@ -76,7 +76,7 @@ public class SuggestVariableNameMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredDispatchThread
-	public Result calculateQuickResult(@NotNull Expression[] params, ExpressionContext context)
+	public Result calculateQuickResult(@Nonnull Expression[] params, ExpressionContext context)
 	{
 		return calculateResult(params, context);
 	}
@@ -84,7 +84,7 @@ public class SuggestVariableNameMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredDispatchThread
-	public LookupElement[] calculateLookupItems(@NotNull Expression[] params, ExpressionContext context)
+	public LookupElement[] calculateLookupItems(@Nonnull Expression[] params, ExpressionContext context)
 	{
 		Collection<String> suggestedVariableNames = getSuggestedVariableNames(context);
 
@@ -99,13 +99,13 @@ public class SuggestVariableNameMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredDispatchThread
-	public Result calculateResult(@NotNull Expression[] params, ExpressionContext context)
+	public Result calculateResult(@Nonnull Expression[] params, ExpressionContext context)
 	{
 		Collection<String> suggestedVariableNames = getSuggestedVariableNames(context);
 		return new TextResult(ContainerUtil.getFirstItem(suggestedVariableNames, "it"));
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredDispatchThread
 	private Collection<String> getSuggestedVariableNames(ExpressionContext context)
 	{

@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi.impl.light.builder;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.dotnet.psi.DotNetAttribute;
@@ -46,18 +46,18 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 	}
 
 	@Override
-	public void addModifier(@NotNull DotNetModifier modifier)
+	public void addModifier(@Nonnull DotNetModifier modifier)
 	{
 		myModifiers.add(CSharpModifier.as(modifier));
 	}
 
 	@Override
-	public void removeModifier(@NotNull DotNetModifier modifier)
+	public void removeModifier(@Nonnull DotNetModifier modifier)
 	{
 		myModifiers.remove(CSharpModifier.as(modifier));
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetModifier[] getModifiers()
 	{
@@ -65,7 +65,7 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
@@ -73,13 +73,13 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 	}
 
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return myModifiers.contains(CSharpModifier.as(modifier));
 	}
 
 	@Override
-	public boolean hasModifierInTree(@NotNull DotNetModifier modifier)
+	public boolean hasModifierInTree(@Nonnull DotNetModifier modifier)
 	{
 		return myModifiers.contains(CSharpModifier.as(modifier));
 	}
@@ -91,9 +91,9 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public List<PsiElement> getModifierElements(@NotNull DotNetModifier modifier)
+	public List<PsiElement> getModifierElements(@Nonnull DotNetModifier modifier)
 	{
 		return Collections.emptyList();
 	}

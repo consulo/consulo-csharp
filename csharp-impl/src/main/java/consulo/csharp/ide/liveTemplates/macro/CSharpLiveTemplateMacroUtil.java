@@ -19,7 +19,7 @@ package consulo.csharp.ide.liveTemplates.macro;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.AsPsiElementProcessor;
@@ -40,7 +40,7 @@ import com.intellij.psi.ResolveState;
  */
 public class CSharpLiveTemplateMacroUtil
 {
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static List<DotNetVariable> resolveAllVariables(PsiElement scope)
 	{

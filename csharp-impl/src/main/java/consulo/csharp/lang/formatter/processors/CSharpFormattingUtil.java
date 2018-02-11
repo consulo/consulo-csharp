@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.formatter.processors;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
@@ -75,7 +76,7 @@ public class CSharpFormattingUtil
 		return false;
 	}
 
-	public static boolean isAutoAccessorOwner(@NotNull PsiElement element)
+	public static boolean isAutoAccessorOwner(@Nonnull PsiElement element)
 	{
 		if(element instanceof CSharpXXXAccessorOwner)
 		{

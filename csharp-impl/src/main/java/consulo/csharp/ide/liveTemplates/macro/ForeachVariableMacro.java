@@ -18,7 +18,7 @@ package consulo.csharp.ide.liveTemplates.macro;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.impl.DotNetTypes2;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import consulo.dotnet.psi.DotNetVariable;

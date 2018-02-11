@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import com.intellij.lang.ASTNode;
@@ -33,15 +33,15 @@ public class CSharpTypeDefStubElementType extends CSharpEmptyStubElementType<CSh
 		super("TYPE_DEF");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpTypeDefStatement createElement(@NotNull ASTNode astNode)
+	public CSharpTypeDefStatement createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpTypeDefStatementImpl(astNode);
 	}
 
 	@Override
-	public CSharpTypeDefStatement createPsi(@NotNull EmptyStub<CSharpTypeDefStatement> stub)
+	public CSharpTypeDefStatement createPsi(@Nonnull EmptyStub<CSharpTypeDefStatement> stub)
 	{
 		return new CSharpTypeDefStatementImpl(stub);
 	}

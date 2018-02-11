@@ -19,8 +19,9 @@ import gnu.trove.THashSet;
 
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetMethodDeclaration;
 import consulo.dotnet.psi.DotNetQualifiedElement;
@@ -75,13 +76,13 @@ class InheritorsHolder implements Consumer<LookupElement>
 		throw new UnsupportedOperationException(psiClass.getClass().toString());
 	}
 
-	public boolean alreadyProcessed(@NotNull LookupElement element)
+	public boolean alreadyProcessed(@Nonnull LookupElement element)
 	{
 		final Object object = element.getObject();
 		return object instanceof DotNetQualifiedElement && alreadyProcessed((DotNetQualifiedElement) object);
 	}
 
-	public boolean alreadyProcessed(@NotNull DotNetQualifiedElement object)
+	public boolean alreadyProcessed(@Nonnull DotNetQualifiedElement object)
 	{
 		final String name = getVmQName(object);
 		return name == null || myAddedTypeLikes.contains(name);

@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.formatter.processors;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import consulo.csharp.lang.formatter.CSharpFormattingBlock;
@@ -186,7 +186,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	public Indent getChildIndent()
 	{
 		IElementType elementType = myBlock.getNode().getElementType();

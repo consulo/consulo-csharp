@@ -17,7 +17,7 @@
 package consulo.csharp.lang.psi.impl.light.builder;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -44,7 +44,7 @@ public abstract class CSharpLightNamedElementBuilder<T extends CSharpLightNamedE
 	}
 
 	@SuppressWarnings("unchecked")
-	public T withName(@NotNull String name)
+	public T withName(@Nonnull String name)
 	{
 		myName = name;
 		return (T)this;
@@ -57,7 +57,7 @@ public abstract class CSharpLightNamedElementBuilder<T extends CSharpLightNamedE
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
 	{
 		return null;
 	}

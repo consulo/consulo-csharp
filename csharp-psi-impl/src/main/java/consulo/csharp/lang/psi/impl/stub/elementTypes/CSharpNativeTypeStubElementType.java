@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpNativeType;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.impl.source.CSharpStubNativeTypeImpl;
@@ -41,21 +42,21 @@ public class CSharpNativeTypeStubElementType extends CSharpAbstractStubElementTy
 		super("NATIVE_TYPE");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElement createElement(@NotNull ASTNode astNode)
+	public PsiElement createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpStubNativeTypeImpl(astNode);
 	}
 
 	@Override
-	public CSharpNativeType createPsi(@NotNull CSharpWithIntValueStub<CSharpNativeType> stub)
+	public CSharpNativeType createPsi(@Nonnull CSharpWithIntValueStub<CSharpNativeType> stub)
 	{
 		return new CSharpStubNativeTypeImpl(stub, this);
 	}
 
 	@Override
-	public CSharpWithIntValueStub<CSharpNativeType> createStub(@NotNull CSharpNativeType cSharpNativeType, StubElement stubElement)
+	public CSharpWithIntValueStub<CSharpNativeType> createStub(@Nonnull CSharpNativeType cSharpNativeType, StubElement stubElement)
 	{
 		int index = ArrayUtil.indexOf(CSharpTokenSets.NATIVE_TYPES_AS_ARRAY, cSharpNativeType.getTypeElementType());
 		assert index != -1;
@@ -63,14 +64,14 @@ public class CSharpNativeTypeStubElementType extends CSharpAbstractStubElementTy
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpWithIntValueStub<CSharpNativeType> stub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpWithIntValueStub<CSharpNativeType> stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeVarInt(stub.getValue());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpWithIntValueStub<CSharpNativeType> deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpWithIntValueStub<CSharpNativeType> deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int index = stubInputStream.readVarInt();
 		return new CSharpWithIntValueStub<CSharpNativeType>(stubElement, this, index);

@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.completion.item;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.completion.CSharpCompletionSorting;
@@ -44,7 +45,7 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpTypeLikeLookupElement extends LookupElementDecorator<LookupElement>
 {
-	@NotNull
+	@Nonnull
 	public static CSharpTypeLikeLookupElement create(LookupElement delegate, DotNetGenericExtractor extractor, PsiElement expression)
 	{
 		CSharpNewExpression newExpression = null;
@@ -148,13 +149,13 @@ public class CSharpTypeLikeLookupElement extends LookupElementDecorator<LookupEl
 		return getOriginal().hashCode();
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetGenericExtractor getExtractor()
 	{
 		return myExtractor;
 	}
 
-	@NotNull
+	@Nonnull
 	private DotNetQualifiedElement getOriginal()
 	{
 		LookupElement delegate = getDelegate();

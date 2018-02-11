@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -47,7 +47,7 @@ public class CSharpPairedBraceMatcher implements PairedBraceMatcher
 	}
 
 	@Override
-	public boolean isPairedBracesAllowedBeforeType(@NotNull IElementType elementType, @Nullable IElementType contextElement)
+	public boolean isPairedBracesAllowedBeforeType(@Nonnull IElementType elementType, @Nullable IElementType contextElement)
 	{
 		return contextElement != null && (
 				CSharpTokenSets.WHITE_SPACE == contextElement ||

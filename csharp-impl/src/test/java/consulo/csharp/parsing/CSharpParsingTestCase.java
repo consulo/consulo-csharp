@@ -18,8 +18,9 @@ package consulo.csharp.parsing;
 
 import java.lang.reflect.Method;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import consulo.csharp.lang.CSharpLanguageVersionHelper;
 import consulo.lang.LanguageVersion;
 import com.intellij.openapi.fileTypes.FileType;
@@ -31,7 +32,7 @@ import consulo.testFramework.ParsingTestCase;
  */
 public abstract class CSharpParsingTestCase extends ParsingTestCase
 {
-	public CSharpParsingTestCase(@NonNls @NotNull String dataPath)
+	public CSharpParsingTestCase(@NonNls @Nonnull String dataPath)
 	{
 		super("/csharp-impl/testData/" + dataPath + "/", "cs");
 	}
@@ -42,9 +43,9 @@ public abstract class CSharpParsingTestCase extends ParsingTestCase
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public LanguageVersion resolveLanguageVersion(@NotNull FileType fileType)
+	public LanguageVersion resolveLanguageVersion(@Nonnull FileType fileType)
 	{
 		String name = getName();
 		try

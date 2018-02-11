@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.LocalSearchScope;
@@ -48,13 +50,13 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpParameterImpl extends CSharpElementImpl implements DotNetParameter, CSharpNamedElement
 {
-	public CSharpParameterImpl(@NotNull ASTNode node)
+	public CSharpParameterImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitParameter(this);
 	}
@@ -75,7 +77,7 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -93,7 +95,7 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetType getType()
 	{
@@ -118,7 +120,7 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		if(modifier == CSharpModifier.OPTIONAL)
 		{
@@ -160,13 +162,13 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 
 	@Override
 	@RequiredReadAction
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, s);
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public SearchScope getUseScope()
 	{

@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetNativeType;
 import com.intellij.psi.tree.IElementType;
@@ -27,7 +28,7 @@ import com.intellij.psi.tree.IElementType;
  */
 public interface CSharpNativeType extends DotNetNativeType
 {
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	IElementType getTypeElementType();
 }

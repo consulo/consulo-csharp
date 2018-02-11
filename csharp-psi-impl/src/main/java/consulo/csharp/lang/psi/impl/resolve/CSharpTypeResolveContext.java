@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
@@ -39,7 +40,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
 public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTypeDeclaration>
 {
 	@RequiredReadAction
-	public CSharpTypeResolveContext(@NotNull CSharpTypeDeclaration element, @NotNull DotNetGenericExtractor genericExtractor, @Nullable Set<PsiElement> recursiveGuardSet)
+	public CSharpTypeResolveContext(@Nonnull CSharpTypeDeclaration element, @Nonnull DotNetGenericExtractor genericExtractor, @Nullable Set<PsiElement> recursiveGuardSet)
 	{
 		super(element, genericExtractor, recursiveGuardSet);
 	}
@@ -56,7 +57,7 @@ public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTyp
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected List<DotNetTypeRef> getExtendTypeRefs()
 	{

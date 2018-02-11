@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.parser.exp;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.ModifierSet;
 import consulo.csharp.lang.parser.SharedParsingHelpers;

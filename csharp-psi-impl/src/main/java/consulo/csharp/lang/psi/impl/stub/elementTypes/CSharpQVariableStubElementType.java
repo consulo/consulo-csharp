@@ -18,8 +18,9 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
@@ -35,14 +36,14 @@ import consulo.dotnet.psi.DotNetVariable;
  */
 public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & DotNetQualifiedElement> extends CSharpAbstractStubElementType<CSharpVariableDeclStub<P>, P>
 {
-	public CSharpQVariableStubElementType(@NotNull @NonNls String debugName)
+	public CSharpQVariableStubElementType(@Nonnull @NonNls String debugName)
 	{
 		super(debugName);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpVariableDeclStub<P> createStub(@NotNull P declaration, StubElement stubElement)
+	public CSharpVariableDeclStub<P> createStub(@Nonnull P declaration, StubElement stubElement)
 	{
 		String namespaceQName = declaration.getPresentableParentQName();
 		int otherModifierMask = CSharpVariableDeclStub.getOtherModifierMask(declaration);
@@ -50,15 +51,15 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpVariableDeclStub<P> variableStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpVariableDeclStub<P> variableStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(variableStub.getParentQName());
 		stubOutputStream.writeVarInt(variableStub.getOtherModifierMask());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpVariableDeclStub<P> deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpVariableDeclStub<P> deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef parentQName = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readVarInt();

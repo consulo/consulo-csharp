@@ -17,8 +17,9 @@
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.impl.stub.CSharpIdentifierStub;
@@ -36,12 +37,12 @@ import consulo.psi.tree.IElementTypeAsPsiFactory;
 public abstract class CSharpAbstractStubElementType<S extends StubElement, P extends PsiElement> extends IStubElementType<S,
 		P> implements IElementTypeAsPsiFactory
 {
-	public CSharpAbstractStubElementType(@NotNull @NonNls String debugName)
+	public CSharpAbstractStubElementType(@Nonnull @NonNls String debugName)
 	{
 		super(debugName, CSharpLanguage.INSTANCE);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getExternalId()
 	{
@@ -61,7 +62,7 @@ public abstract class CSharpAbstractStubElementType<S extends StubElement, P ext
 	}
 
 	@Override
-	public void indexStub(@NotNull S s, @NotNull IndexSink indexSink)
+	public void indexStub(@Nonnull S s, @Nonnull IndexSink indexSink)
 	{
 
 	}

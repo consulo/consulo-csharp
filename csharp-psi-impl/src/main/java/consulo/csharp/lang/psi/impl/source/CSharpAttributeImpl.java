@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
@@ -37,13 +38,13 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttribute
 {
-	public CSharpAttributeImpl(@NotNull ASTNode node)
+	public CSharpAttributeImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitAttribute(this);
 	}
@@ -66,7 +67,7 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttr
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{
@@ -86,14 +87,14 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttr
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public DotNetExpression[] getParameterExpressions()
 	{
 		CSharpCallArgumentList parameterList = getParameterList();
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
@@ -114,7 +115,7 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttr
 		return ref.resolve();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{

@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import consulo.dotnet.psi.DotNetExpression;
@@ -78,7 +80,7 @@ public class MsilVarargParameterAsCSharpParameter extends LightElement implement
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean b)
 	{
@@ -100,7 +102,7 @@ public class MsilVarargParameterAsCSharpParameter extends LightElement implement
 	}
 
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return false;
 	}
@@ -126,7 +128,7 @@ public class MsilVarargParameterAsCSharpParameter extends LightElement implement
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		return null;
 	}

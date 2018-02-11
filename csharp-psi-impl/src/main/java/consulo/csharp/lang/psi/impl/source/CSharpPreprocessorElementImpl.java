@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
@@ -31,12 +32,12 @@ import com.intellij.psi.search.GlobalSearchScope;
  */
 public abstract class CSharpPreprocessorElementImpl extends ASTWrapperPsiElement
 {
-	public CSharpPreprocessorElementImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorElementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public GlobalSearchScope getResolveScope()
 	{
@@ -50,7 +51,7 @@ public abstract class CSharpPreprocessorElementImpl extends ASTWrapperPsiElement
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@Nonnull PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpMacroElementVisitor)
 		{
@@ -62,6 +63,6 @@ public abstract class CSharpPreprocessorElementImpl extends ASTWrapperPsiElement
 		}
 	}
 
-	public abstract void accept(@NotNull CSharpMacroElementVisitor visitor);
+	public abstract void accept(@Nonnull CSharpMacroElementVisitor visitor);
 }
 

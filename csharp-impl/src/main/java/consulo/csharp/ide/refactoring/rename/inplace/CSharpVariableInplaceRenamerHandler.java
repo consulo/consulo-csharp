@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.refactoring.rename.inplace;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -45,7 +46,7 @@ public class CSharpVariableInplaceRenamerHandler extends VariableInplaceRenameHa
 
 	@Nullable
 	@Override
-	protected VariableInplaceRenamer createRenamer(@NotNull PsiElement elementToRename, Editor editor)
+	protected VariableInplaceRenamer createRenamer(@Nonnull PsiElement elementToRename, Editor editor)
 	{
 		return new CSharpVariableInplaceRenamer((PsiNamedElement) elementToRename, editor);
 	}

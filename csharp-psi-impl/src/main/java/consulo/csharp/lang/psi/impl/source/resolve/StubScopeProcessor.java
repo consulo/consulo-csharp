@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolderBase;
@@ -32,21 +32,21 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  */
 public class StubScopeProcessor extends UserDataHolderBase implements PsiScopeProcessor
 {
-	public void pushResultExternally(@NotNull ResolveResult resolveResult)
+	public void pushResultExternally(@Nonnull ResolveResult resolveResult)
 	{
 
 	}
 
 	@Override
 	@RequiredReadAction
-	public boolean execute(@NotNull PsiElement element, ResolveState state)
+	public boolean execute(@Nonnull PsiElement element, ResolveState state)
 	{
 		return false;
 	}
 
 	@Nullable
 	@Override
-	public <T> T getHint(@NotNull Key<T> tKey)
+	public <T> T getHint(@Nonnull Key<T> tKey)
 	{
 		return getUserData(tKey);
 	}

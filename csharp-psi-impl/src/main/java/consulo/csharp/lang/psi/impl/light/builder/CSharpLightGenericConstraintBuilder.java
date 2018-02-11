@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpGenericConstraintValue;
@@ -48,7 +49,7 @@ public class CSharpLightGenericConstraintBuilder extends CSharpLightElementBuild
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericConstraint(this);
 	}
@@ -66,7 +67,7 @@ public class CSharpLightGenericConstraintBuilder extends CSharpLightElementBuild
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpGenericConstraintValue[] getGenericConstraintValues()
 	{
@@ -78,7 +79,7 @@ public class CSharpLightGenericConstraintBuilder extends CSharpLightElementBuild
 		return myConstraintValues.isEmpty();
 	}
 
-	public void addKeywordConstraint(@NotNull IElementType elementType)
+	public void addKeywordConstraint(@Nonnull IElementType elementType)
 	{
 		if(myConstraintValues.isEmpty())
 		{
@@ -87,7 +88,7 @@ public class CSharpLightGenericConstraintBuilder extends CSharpLightElementBuild
 		myConstraintValues.add(new CSharpLightGenericConstraintKeywordValueBuilder(getProject(), elementType));
 	}
 
-	public void addTypeConstraint(@NotNull DotNetTypeRef typeRef)
+	public void addTypeConstraint(@Nonnull DotNetTypeRef typeRef)
 	{
 		if(myConstraintValues.isEmpty())
 		{

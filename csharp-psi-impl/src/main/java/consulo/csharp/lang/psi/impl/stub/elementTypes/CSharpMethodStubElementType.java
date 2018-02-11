@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
@@ -45,22 +46,22 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 		super("METHOD_DECLARATION");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpMethodDeclaration createElement(@NotNull ASTNode astNode)
+	public CSharpMethodDeclaration createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpMethodDeclarationImpl(astNode);
 	}
 
 	@Override
-	public CSharpMethodDeclaration createPsi(@NotNull CSharpMethodDeclStub cSharpTypeStub)
+	public CSharpMethodDeclaration createPsi(@Nonnull CSharpMethodDeclStub cSharpTypeStub)
 	{
 		return new CSharpMethodDeclarationImpl(cSharpTypeStub, this);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpMethodDeclStub createStub(@NotNull CSharpMethodDeclaration methodDeclaration, StubElement stubElement)
+	public CSharpMethodDeclStub createStub(@Nonnull CSharpMethodDeclaration methodDeclaration, StubElement stubElement)
 	{
 		String parentQName = methodDeclaration.getPresentableParentQName();
 		int otherModifierMask = CSharpMethodDeclStub.getOtherModifierMask(methodDeclaration);
@@ -69,16 +70,16 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpMethodDeclStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpMethodDeclStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getParentQName());
 		stubOutputStream.writeInt(stub.getOtherModifierMask());
 		stubOutputStream.writeInt(stub.getOperatorIndex());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpMethodDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpMethodDeclStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef qname = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readInt();
@@ -88,7 +89,7 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 
 	@Override
 	@RequiredReadAction
-	public void indexStub(@NotNull CSharpMethodDeclStub stub, @NotNull IndexSink indexSink)
+	public void indexStub(@Nonnull CSharpMethodDeclStub stub, @Nonnull IndexSink indexSink)
 	{
 		String name = getName(stub);
 		if(!StringUtil.isEmpty(name))

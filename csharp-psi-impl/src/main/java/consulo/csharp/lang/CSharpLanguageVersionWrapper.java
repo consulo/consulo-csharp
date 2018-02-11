@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.PsiParser;
 import com.intellij.lexer.Lexer;
 import com.intellij.psi.tree.TokenSet;
@@ -41,35 +42,35 @@ public class CSharpLanguageVersionWrapper extends LanguageVersion implements Lan
 		myLanguageVersion = languageVersion;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiParser createParser()
 	{
 		return new CSharpParser();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Lexer createLexer()
 	{
 		return new CSharpLexer();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public TokenSet getCommentTokens()
 	{
 		return CSharpTokenSets.COMMENTS;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public TokenSet getStringLiteralElements()
 	{
 		return CSharpTokenSets.LITERALS;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public TokenSet getWhitespaceTokens()
 	{

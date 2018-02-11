@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
 import consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
@@ -32,24 +33,24 @@ import com.intellij.psi.tree.IElementType;
 public class CSharpGenericConstraintKeywordValueImpl extends CSharpStubElementImpl<CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue>>
 		implements CSharpGenericConstraintKeywordValue
 {
-	public CSharpGenericConstraintKeywordValueImpl(@NotNull ASTNode node)
+	public CSharpGenericConstraintKeywordValueImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpGenericConstraintKeywordValueImpl(@NotNull CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> stub,
-			@NotNull IStubElementType<? extends CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue>, ?> nodeType)
+	public CSharpGenericConstraintKeywordValueImpl(@Nonnull CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> stub,
+			@Nonnull IStubElementType<? extends CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericConstraintKeywordValue(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public IElementType getKeywordElementType()
 	{

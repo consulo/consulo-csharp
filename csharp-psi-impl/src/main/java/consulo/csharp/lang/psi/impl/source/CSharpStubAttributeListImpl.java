@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -34,19 +35,19 @@ import com.intellij.psi.stubs.IStubElementType;
  */
 public class CSharpStubAttributeListImpl extends CSharpStubElementImpl<CSharpAttributeListStub> implements CSharpAttributeList
 {
-	public CSharpStubAttributeListImpl(@NotNull ASTNode node)
+	public CSharpStubAttributeListImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubAttributeListImpl(@NotNull CSharpAttributeListStub stub,
-			@NotNull IStubElementType<? extends CSharpAttributeListStub, ?> nodeType)
+	public CSharpStubAttributeListImpl(@Nonnull CSharpAttributeListStub stub,
+			@Nonnull IStubElementType<? extends CSharpAttributeListStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitAttributeList(this);
 	}
@@ -63,7 +64,7 @@ public class CSharpStubAttributeListImpl extends CSharpStubElementImpl<CSharpAtt
 		return CSharpAttributeListImpl.getAttributeType(findChildByType(CSharpTokenSets.ATTRIBUTE_TARGETS));
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpAttribute[] getAttributes()
 	{

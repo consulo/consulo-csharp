@@ -18,8 +18,8 @@ package consulo.csharp.lang.psi.impl.msil;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
@@ -66,7 +66,7 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitEventDeclaration(this);
 	}
@@ -85,14 +85,14 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetXXXAccessor[] getAccessors()
 	{
 		return myAccessors;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -128,7 +128,7 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 		return myTypeForImplementValue.getValue();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{

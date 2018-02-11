@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredDispatchThread;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -39,18 +40,18 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CastExpressionToTypeRef extends BaseIntentionAction
 {
-	@NotNull
+	@Nonnull
 	protected final SmartPsiElementPointer<DotNetExpression> myExpressionPointer;
-	@NotNull
+	@Nonnull
 	protected final DotNetTypeRef myExpectedTypeRef;
 
-	public CastExpressionToTypeRef(@NotNull DotNetExpression expression, @NotNull DotNetTypeRef expectedTypeRef)
+	public CastExpressionToTypeRef(@Nonnull DotNetExpression expression, @Nonnull DotNetTypeRef expectedTypeRef)
 	{
 		myExpressionPointer = SmartPointerManager.getInstance(expression.getProject()).createSmartPsiElementPointer(expression);
 		myExpectedTypeRef = expectedTypeRef;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredDispatchThread
 	public String getText()
@@ -63,7 +64,7 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 		return BundleBase.format("Cast to ''{0}''", CSharpTypeRefPresentationUtil.buildTextWithKeyword(myExpectedTypeRef, element));
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{
@@ -72,7 +73,7 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 
 	@Override
 	@RequiredDispatchThread
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		if(myExpectedTypeRef == DotNetTypeRef.UNKNOWN_TYPE)
 		{
@@ -93,7 +94,7 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 
 	@Override
 	@RequiredDispatchThread
-	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		DotNetExpression element = myExpressionPointer.getElement();
 		if(element == null)

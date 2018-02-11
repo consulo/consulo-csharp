@@ -20,8 +20,8 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
@@ -49,7 +49,7 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSharpNewExpression, CSharpArrayInitializerOwner
 {
-	public CSharpNewExpressionImpl(@NotNull ASTNode node)
+	public CSharpNewExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -61,13 +61,13 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitNewExpression(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -130,7 +130,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	private static DotNetTypeRef calcType(CSharpNewExpressionImpl newExpression, CSharpArrayInitializerValue[] values)
 	{
 		if(values.length == 0)
@@ -222,7 +222,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 		return expressionForResolving != null ? expressionForResolving.resolve() : null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
@@ -245,7 +245,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -253,7 +253,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{

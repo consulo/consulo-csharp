@@ -18,8 +18,8 @@ package consulo.csharp.lang.psi.impl.resolve;
 
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.util.Key;
@@ -54,18 +54,18 @@ public class CSharpResolveContextUtil
 	private static final Logger LOGGER = Logger.getInstance(CSharpResolveContextUtil.class);
 	private static final Key<CachedValue<CSharpResolveContext>> RESOLVE_CONTEXT = Key.create("resolve-context");
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static CSharpResolveContext createContext(@NotNull DotNetGenericExtractor genericExtractor, @NotNull GlobalSearchScope resolveScope, @NotNull PsiElement element)
+	public static CSharpResolveContext createContext(@Nonnull DotNetGenericExtractor genericExtractor, @Nonnull GlobalSearchScope resolveScope, @Nonnull PsiElement element)
 	{
 		return createContext(genericExtractor, resolveScope, element, null);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static CSharpResolveContext createContext(@NotNull DotNetGenericExtractor genericExtractor,
-			@NotNull GlobalSearchScope resolveScope,
-			@NotNull PsiElement element,
+	public static CSharpResolveContext createContext(@Nonnull DotNetGenericExtractor genericExtractor,
+			@Nonnull GlobalSearchScope resolveScope,
+			@Nonnull PsiElement element,
 			@Nullable Set<PsiElement> recursiveGuardSet)
 	{
 		if(element instanceof CSharpTypeDeclaration)
@@ -92,7 +92,7 @@ public class CSharpResolveContextUtil
 		{
 			return cacheSimple((DotNetGenericParameter) element, new NotNullFunction<DotNetGenericParameter, CSharpResolveContext>()
 			{
-				@NotNull
+				@Nonnull
 				@Override
 				@RequiredReadAction
 				public CSharpResolveContext fun(DotNetGenericParameter element)
@@ -104,11 +104,11 @@ public class CSharpResolveContextUtil
 		return CSharpResolveContext.EMPTY;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	private static CSharpResolveContext cacheTypeContext(@NotNull DotNetGenericExtractor genericExtractor,
+	private static CSharpResolveContext cacheTypeContext(@Nonnull DotNetGenericExtractor genericExtractor,
 			GlobalSearchScope resolveScope,
-			@NotNull CSharpTypeDeclaration typeDeclaration,
+			@Nonnull CSharpTypeDeclaration typeDeclaration,
 			@Nullable Set<PsiElement> recursiveGuardSet)
 	{
 		if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
@@ -130,10 +130,10 @@ public class CSharpResolveContextUtil
 		return cacheTypeContextImpl(genericExtractor, typeDeclaration, recursiveGuardSet);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	private static CSharpResolveContext cacheTypeContextImpl(@NotNull DotNetGenericExtractor genericExtractor,
-			@NotNull final CSharpTypeDeclaration typeDeclaration,
+	private static CSharpResolveContext cacheTypeContextImpl(@Nonnull DotNetGenericExtractor genericExtractor,
+			@Nonnull final CSharpTypeDeclaration typeDeclaration,
 			@Nullable final Set<PsiElement> recursiveGuardSet)
 	{
 		if(genericExtractor == DotNetGenericExtractor.EMPTY && recursiveGuardSet == null)
@@ -164,8 +164,8 @@ public class CSharpResolveContextUtil
 		}
 	}
 
-	@NotNull
-	private static <T extends PsiElement> CSharpResolveContext cacheSimple(@NotNull final T element, final NotNullFunction<T, CSharpResolveContext> fun)
+	@Nonnull
+	private static <T extends PsiElement> CSharpResolveContext cacheSimple(@Nonnull final T element, final NotNullFunction<T, CSharpResolveContext> fun)
 	{
 		CachedValue<CSharpResolveContext> provider = element.getUserData(RESOLVE_CONTEXT);
 		if(provider != null)

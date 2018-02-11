@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -39,7 +39,7 @@ public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>
 	private static final CSharpTypeRefCacher<CSharpStubVariableImpl> ourCacheSystem = new CSharpTypeRefCacher<CSharpStubVariableImpl>(false)
 	{
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
 		protected DotNetTypeRef toTypeRefImpl(CSharpStubVariableImpl element, boolean resolveFromParentOrInitializer)
 		{
@@ -47,12 +47,12 @@ public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>
 		}
 	};
 
-	public CSharpStubVariableImpl(@NotNull ASTNode node)
+	public CSharpStubVariableImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubVariableImpl(@NotNull S stub, @NotNull IStubElementType<? extends S, ?> nodeType)
+	public CSharpStubVariableImpl(@Nonnull S stub, @Nonnull IStubElementType<? extends S, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -101,7 +101,7 @@ public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -109,7 +109,7 @@ public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{
 		DotNetType type = getType();

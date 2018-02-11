@@ -18,7 +18,8 @@ package consulo.csharp.ide.codeInspection.unnecessaryNamedArgument;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.ide.codeInsight.actions.ConvertNamedToSimpleArgumentFix;
 import consulo.csharp.ide.highlight.check.impl.CS1738;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -47,9 +48,9 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class UnnecessaryNamedArgumentInspection extends LocalInspectionTool
 {
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, boolean isOnTheFly)
+	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)
 	{
 		return new CSharpElementVisitor()
 		{

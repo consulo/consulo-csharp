@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
@@ -31,7 +31,7 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpTypeListImpl extends CSharpElementImpl implements DotNetTypeList
 {
-	public CSharpTypeListImpl(@NotNull ASTNode node)
+	public CSharpTypeListImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -44,7 +44,7 @@ public class CSharpTypeListImpl extends CSharpElementImpl implements DotNetTypeL
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getTypeRefs()
 	{
@@ -63,7 +63,7 @@ public class CSharpTypeListImpl extends CSharpElementImpl implements DotNetTypeL
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetType[] getTypes()
 	{
@@ -71,7 +71,7 @@ public class CSharpTypeListImpl extends CSharpElementImpl implements DotNetTypeL
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitTypeList(this);
 	}

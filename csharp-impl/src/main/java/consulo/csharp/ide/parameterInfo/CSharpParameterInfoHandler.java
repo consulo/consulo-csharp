@@ -18,8 +18,8 @@ package consulo.csharp.ide.parameterInfo;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.parameterInfo.CreateParameterInfoContext;
 import com.intellij.lang.parameterInfo.ParameterInfoContext;
@@ -63,8 +63,8 @@ import consulo.dotnet.resolve.DotNetTypeResolveResult;
  */
 public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiElement, CSharpParameterInfoHandler.ItemToShow>
 {
-	@NotNull
-	public static Object item(@NotNull DotNetLikeMethodDeclaration e)
+	@Nonnull
+	public static Object item(@Nonnull DotNetLikeMethodDeclaration e)
 	{
 		return new ItemToShow((CSharpSimpleLikeMethod) e, e);
 	}
@@ -79,7 +79,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		private PsiElement myScope;
 		private boolean myValid;
 
-		public ItemToShow(@NotNull CSharpSimpleLikeMethod likeMethod, @NotNull PsiElement scope)
+		public ItemToShow(@Nonnull CSharpSimpleLikeMethod likeMethod, @Nonnull PsiElement scope)
 		{
 			myLikeMethod = likeMethod;
 			myScope = scope;
@@ -170,7 +170,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 
 	@Override
 	@RequiredReadAction
-	public void showParameterInfo(@NotNull PsiElement element, CreateParameterInfoContext context)
+	public void showParameterInfo(@Nonnull PsiElement element, CreateParameterInfoContext context)
 	{
 		ItemToShow[] itemsToShow = resolveToCallables(element, context);
 
@@ -181,7 +181,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private static ItemToShow[] resolveToCallables(PsiElement element, CreateParameterInfoContext context)
 	{
@@ -261,7 +261,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	}
 
 	@Override
-	public void updateParameterInfo(@NotNull PsiElement place, UpdateParameterInfoContext context)
+	public void updateParameterInfo(@Nonnull PsiElement place, UpdateParameterInfoContext context)
 	{
 		CSharpCallArgumentListOwner owner = resolveCallArgumentListOwner(place);
 		int parameterIndex = -1;

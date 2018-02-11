@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.navigation;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.ide.lineMarkerProvider.PartialTypeCollector;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -71,9 +72,9 @@ public class CSharpGotoDeclarationHandler implements GotoDeclarationHandlerEx
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElementListCellRenderer<PsiElement> createRender(@NotNull PsiElement[] elements)
+	public PsiElementListCellRenderer<PsiElement> createRender(@Nonnull PsiElement[] elements)
 	{
 		return new PartialTypeCollector.OurRender();
 	}

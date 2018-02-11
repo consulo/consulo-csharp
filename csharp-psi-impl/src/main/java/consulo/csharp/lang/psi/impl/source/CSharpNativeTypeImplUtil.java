@@ -20,7 +20,8 @@ import gnu.trove.THashMap;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpNativeType;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
@@ -60,9 +61,9 @@ public class CSharpNativeTypeImplUtil
 		}
 	};
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef toTypeRef(@NotNull CSharpNativeType nativeType)
+	public static DotNetTypeRef toTypeRef(@Nonnull CSharpNativeType nativeType)
 	{
 		IElementType elementType = nativeType.getTypeElementType();
 		if(elementType == CSharpSoftTokens.VAR_KEYWORD)

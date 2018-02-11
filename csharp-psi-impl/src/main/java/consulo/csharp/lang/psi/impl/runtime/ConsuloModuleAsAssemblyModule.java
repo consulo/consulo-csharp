@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.runtime;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.Comparing;
@@ -48,7 +49,7 @@ class ConsuloModuleAsAssemblyModule implements AssemblyModule
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -58,7 +59,7 @@ class ConsuloModuleAsAssemblyModule implements AssemblyModule
 
 	@RequiredReadAction
 	@Override
-	public boolean isAllowedAssembly(@NotNull String assemblyName)
+	public boolean isAllowedAssembly(@Nonnull String assemblyName)
 	{
 		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, myModule.getProject(), myModule.getModuleScope());
 
@@ -97,7 +98,7 @@ class ConsuloModuleAsAssemblyModule implements AssemblyModule
 	}
 
 	@Override
-	public boolean equals(@NotNull AssemblyModule module)
+	public boolean equals(@Nonnull AssemblyModule module)
 	{
 		return module instanceof ConsuloModuleAsAssemblyModule && myModule.equals(((ConsuloModuleAsAssemblyModule) module).myModule);
 	}

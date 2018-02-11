@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
@@ -60,7 +60,7 @@ public class CS0145 extends CompilerCheck<DotNetVariable>
 			setText("Remove 'const' keyword");
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -68,13 +68,13 @@ public class CS0145 extends CompilerCheck<DotNetVariable>
 		}
 
 		@Override
-		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			return myVariablePointer.getElement() != null;
 		}
 
 		@Override
-		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			DotNetVariable element = myVariablePointer.getElement();
 			if(element == null)
@@ -108,14 +108,14 @@ public class CS0145 extends CompilerCheck<DotNetVariable>
 			myVariablePointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
 			return "C#";
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getText()
 		{
@@ -124,14 +124,14 @@ public class CS0145 extends CompilerCheck<DotNetVariable>
 
 		@Override
 		@RequiredDispatchThread
-		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			return myVariablePointer.getElement() != null;
 		}
 
 		@Override
 		@RequiredDispatchThread
-		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			DotNetVariable element = myVariablePointer.getElement();
 			if(element == null)
@@ -174,7 +174,7 @@ public class CS0145 extends CompilerCheck<DotNetVariable>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull DotNetVariable element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetVariable element)
 	{
 		PsiElement constantKeywordElement = element.getConstantKeywordElement();
 		if(constantKeywordElement != null)

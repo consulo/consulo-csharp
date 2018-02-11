@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -58,7 +59,7 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 	private final GlobalSearchScope myResolveScope;
 	private final OverrideProcessor myOverrideProcessor;
 
-	public MemberResolveScopeProcessor(@NotNull CSharpResolveOptions options, @NotNull Processor<ResolveResult> resultProcessor, ExecuteTarget[] targets)
+	public MemberResolveScopeProcessor(@Nonnull CSharpResolveOptions options, @Nonnull Processor<ResolveResult> resultProcessor, ExecuteTarget[] targets)
 	{
 		myScopeElement = options.getElement();
 		myResolveScope = myScopeElement.getResolveScope();
@@ -67,8 +68,8 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
 
-	public MemberResolveScopeProcessor(@NotNull PsiElement scopeElement,
-			@NotNull Processor<ResolveResult> resultProcessor,
+	public MemberResolveScopeProcessor(@Nonnull PsiElement scopeElement,
+			@Nonnull Processor<ResolveResult> resultProcessor,
 			@Nullable ExecuteTarget[] targets,
 			@Nullable OverrideProcessor overrideProcessor)
 	{
@@ -80,14 +81,14 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 	}
 
 	@Override
-	public void pushResultExternally(@NotNull ResolveResult resolveResult)
+	public void pushResultExternally(@Nonnull ResolveResult resolveResult)
 	{
 		myResultProcessor.process(resolveResult);
 	}
 
 	@RequiredReadAction
 	@Override
-	public boolean execute(@NotNull PsiElement element, ResolveState state)
+	public boolean execute(@Nonnull PsiElement element, ResolveState state)
 	{
 		CSharpResolveSelector selector = state.get(CSharpResolveUtil.SELECTOR);
 		if(selector == null)

@@ -21,7 +21,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.module.Module;
@@ -50,14 +51,14 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 {
 	public static class EapDescriptor extends EarlyAccessProgramDescriptor
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public String getName()
 		{
 			return "C#: support adding external library via using fix";
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getDescription()
 		{
@@ -71,7 +72,7 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public static DotNetLibraryAnalyzerComponent getInstance(Project project)
 	{
 		return project.getComponent(DotNetLibraryAnalyzerComponent.class);
@@ -132,7 +133,7 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 		connect.subscribe(ModuleExtension.CHANGE_TOPIC, new ModuleExtensionChangeListener()
 		{
 			@Override
-			public void beforeExtensionChanged(@NotNull ModuleExtension<?> moduleExtension, @NotNull final ModuleExtension<?> moduleExtension2)
+			public void beforeExtensionChanged(@Nonnull ModuleExtension<?> moduleExtension, @Nonnull final ModuleExtension<?> moduleExtension2)
 			{
 				if(moduleExtension2 instanceof DotNetSimpleModuleExtension && moduleExtension2.isEnabled())
 				{
@@ -150,7 +151,7 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 
 	}
 
-	private void runAnalyzerFor(@NotNull final DotNetSimpleModuleExtension<?> extension)
+	private void runAnalyzerFor(@Nonnull final DotNetSimpleModuleExtension<?> extension)
 	{
 		/*new Task.Backgroundable(extension.getProject(), "Analyzing .NET libraries for module: " + extension.getModule().getName())
 		{
@@ -231,8 +232,8 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 	/**
 	 * @return couple library + namespace
 	 */
-	@NotNull
-	public Collection<NamespaceReference> get(@NotNull Module module, @NotNull String typeName)
+	@Nonnull
+	public Collection<NamespaceReference> get(@Nonnull Module module, @Nonnull String typeName)
 	{
 		/*MultiMap<String, NamespaceReference> map = myCacheMap.get(module);
 		if(map == null)
@@ -243,9 +244,9 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 		return Collections.emptyList();
 	}
 
-	@NotNull
+	@Nonnull
 	@SuppressWarnings("unchecked")
-	public Collection<NamespaceReference> getAll(@NotNull Module module)
+	public Collection<NamespaceReference> getAll(@Nonnull Module module)
 	{
 		/*MultiMap<String, NamespaceReference> map = myCacheMap.get(module);
 		if(map == null)

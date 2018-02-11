@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -53,7 +54,7 @@ public class ConvertToNormalCallFix extends PsiElementBaseIntentionAction
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException
 	{
 		final CSharpMethodCallExpressionImpl callExpression = PsiTreeUtil.getParentOfType(element, CSharpMethodCallExpressionImpl.class);
 		assert callExpression != null;
@@ -112,12 +113,12 @@ public class ConvertToNormalCallFix extends PsiElementBaseIntentionAction
 
 	@Override
 	public boolean isAvailable(
-			@NotNull Project project, Editor editor, @NotNull PsiElement element)
+			@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
 	{
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{

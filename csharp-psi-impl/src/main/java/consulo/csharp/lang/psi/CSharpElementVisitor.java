@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.psi.PsiElementVisitor;
 import consulo.csharp.lang.psi.impl.source.*;
 import consulo.dotnet.psi.DotNetGenericParameter;
@@ -91,7 +91,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitUsingChild(statement);
 	}
 
-	public void visitUsingChild(@NotNull CSharpUsingListChild child)
+	public void visitUsingChild(@Nonnull CSharpUsingListChild child)
 	{
 		visitElement(child);
 	}

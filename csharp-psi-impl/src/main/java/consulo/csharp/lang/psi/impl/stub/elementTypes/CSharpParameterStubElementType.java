@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.impl.source.CSharpStubParameterImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import consulo.dotnet.psi.DotNetParameter;
@@ -33,15 +34,15 @@ public class CSharpParameterStubElementType extends CSharpVariableStubElementTyp
 		super("PARAMETER");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public DotNetParameter createElement(@NotNull ASTNode astNode)
+	public DotNetParameter createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpStubParameterImpl(astNode);
 	}
 
 	@Override
-	public DotNetParameter createPsi(@NotNull CSharpVariableDeclStub<DotNetParameter> stub)
+	public DotNetParameter createPsi(@Nonnull CSharpVariableDeclStub<DotNetParameter> stub)
 	{
 		return new CSharpStubParameterImpl(stub);
 	}

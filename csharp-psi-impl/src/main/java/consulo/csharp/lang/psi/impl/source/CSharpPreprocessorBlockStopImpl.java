@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import com.intellij.lang.ASTNode;
@@ -30,7 +31,7 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class CSharpPreprocessorBlockStopImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpPreprocessorBlockStopImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorBlockStopImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -48,7 +49,7 @@ public class CSharpPreprocessorBlockStopImpl extends CSharpPreprocessorElementIm
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitMacroBlockStop(this);
 	}

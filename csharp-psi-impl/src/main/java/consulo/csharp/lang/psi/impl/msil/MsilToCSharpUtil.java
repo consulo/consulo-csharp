@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi.impl.msil;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -170,16 +170,16 @@ public class MsilToCSharpUtil
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static PsiElement wrap(@NotNull PsiElement element, @Nullable PsiElement parent)
+	public static PsiElement wrap(@Nonnull PsiElement element, @Nullable PsiElement parent)
 	{
 		return wrap(element, parent, new GenericParameterContext(null));
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static PsiElement wrap(@NotNull PsiElement element, @Nullable PsiElement parent, @NotNull GenericParameterContext context)
+	public static PsiElement wrap(@Nonnull PsiElement element, @Nullable PsiElement parent, @Nonnull GenericParameterContext context)
 	{
 		if(element instanceof MsilClassEntry)
 		{
@@ -223,7 +223,7 @@ public class MsilToCSharpUtil
 
 	@Nullable
 	@RequiredReadAction
-	private static CSharpMethodDeclaration wrapToDelegateMethod(@NotNull MsilClassEntry typeDeclaration, @Nullable PsiElement parent, @NotNull GenericParameterContext context)
+	private static CSharpMethodDeclaration wrapToDelegateMethod(@Nonnull MsilClassEntry typeDeclaration, @Nullable PsiElement parent, @Nonnull GenericParameterContext context)
 	{
 		if(DotNetInheritUtil.isInheritor(typeDeclaration, DotNetTypes.System.MulticastDelegate, false))
 		{
@@ -240,9 +240,9 @@ public class MsilToCSharpUtil
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef extractToCSharp(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	public static DotNetTypeRef extractToCSharp(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{

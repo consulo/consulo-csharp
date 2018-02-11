@@ -18,8 +18,9 @@ package consulo.csharp.ide.codeInsight.moveUpDown;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.codeInsight.CodeInsightUtilBase;
 import com.intellij.codeInsight.editorActions.moveUpDown.LineMover;
 import com.intellij.codeInsight.editorActions.moveUpDown.LineRange;
@@ -60,7 +61,7 @@ public class CSharpDeclarationMover extends LineMover
 
 	@RequiredReadAction
 	@Override
-	public void beforeMove(@NotNull final Editor editor, @NotNull final MoveInfo info, final boolean down)
+	public void beforeMove(@Nonnull final Editor editor, @Nonnull final MoveInfo info, final boolean down)
 	{
 		super.beforeMove(editor, info, down);
 
@@ -89,7 +90,7 @@ public class CSharpDeclarationMover extends LineMover
 
 	@Override
 	@RequiredReadAction
-	public boolean checkAvailable(@NotNull final Editor editor, @NotNull final PsiFile file, @NotNull final MoveInfo info, final boolean down)
+	public boolean checkAvailable(@Nonnull final Editor editor, @Nonnull final PsiFile file, @Nonnull final MoveInfo info, final boolean down)
 	{
 		if(!(file instanceof CSharpFile))
 		{
@@ -187,7 +188,7 @@ public class CSharpDeclarationMover extends LineMover
 	}
 
 	@RequiredReadAction
-	private static LineRange memberRange(@NotNull PsiElement member, Editor editor, LineRange lineRange)
+	private static LineRange memberRange(@Nonnull PsiElement member, Editor editor, LineRange lineRange)
 	{
 		final TextRange textRange = member.getTextRange();
 		if(editor.getDocument().getTextLength() < textRange.getEndOffset())
@@ -205,7 +206,7 @@ public class CSharpDeclarationMover extends LineMover
 	}
 
 	@RequiredReadAction
-	private static boolean isInsideDeclaration(@NotNull final PsiElement member, final int startLine, final int endLine, final LineRange lineRange, final Editor editor)
+	private static boolean isInsideDeclaration(@Nonnull final PsiElement member, final int startLine, final int endLine, final LineRange lineRange, final Editor editor)
 	{
 		// if we positioned on member start or end we'll be able to move it
 		if(startLine == lineRange.startLine || startLine == lineRange.endLine || endLine == lineRange.startLine || endLine == lineRange.endLine)

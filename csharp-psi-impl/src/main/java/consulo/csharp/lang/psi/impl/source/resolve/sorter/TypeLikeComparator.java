@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.source.resolve.sorter;
 
 import java.util.Comparator;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
@@ -35,9 +36,9 @@ import com.intellij.psi.ResolveResult;
  */
 public class TypeLikeComparator implements Comparator<ResolveResult>
 {
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static TypeLikeComparator create(@NotNull PsiElement element)
+	public static TypeLikeComparator create(@Nonnull PsiElement element)
 	{
 		return new TypeLikeComparator(CSharpReferenceExpressionImplUtil.getTypeArgumentListSize(element));
 	}

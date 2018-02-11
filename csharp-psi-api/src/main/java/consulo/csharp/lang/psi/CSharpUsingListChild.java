@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
@@ -33,7 +33,7 @@ public interface CSharpUsingListChild extends DotNetElement
 
 	public static ArrayFactory<CSharpUsingListChild> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpUsingListChild[count];
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	PsiElement getUsingKeywordElement();
 

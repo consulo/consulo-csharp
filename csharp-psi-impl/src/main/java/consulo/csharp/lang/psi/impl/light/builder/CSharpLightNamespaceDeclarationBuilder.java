@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.light.builder;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
@@ -48,7 +50,7 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitNamespaceDeclaration(this);
 	}
@@ -75,14 +77,14 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpUsingListChild[] getUsingStatements()
 	{
 		return CSharpUsingListChild.EMPTY_ARRAY;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -91,7 +93,7 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return false;
 	}
@@ -127,7 +129,7 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		return null;
 	}

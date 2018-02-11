@@ -21,10 +21,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -74,10 +74,10 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 {
 	@RequiredReadAction
 	@Override
-	public void processCompletion(@NotNull CompletionParameters parameters,
-			@NotNull ProcessingContext context,
-			@NotNull final Consumer<LookupElement> result,
-			@NotNull CSharpTypeDeclaration typeDeclaration)
+	public void processCompletion(@Nonnull CompletionParameters parameters,
+			@Nonnull ProcessingContext context,
+			@Nonnull final Consumer<LookupElement> result,
+			@Nonnull CSharpTypeDeclaration typeDeclaration)
 	{
 		Collection<DotNetModifierListOwner> overrideItems = getItemsImpl(typeDeclaration);
 		for(DotNetModifierListOwner overrideItem : overrideItems)
@@ -271,7 +271,7 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 		return lookupElementBuilder;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private static String buildAccessorTail(CSharpTypeDeclaration typeDeclaration, CSharpXXXAccessorOwner owner, boolean hide, boolean body)
 	{
@@ -317,7 +317,7 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 	}
 
 	@RequiredReadAction
-	public static void formatNameElement(@NotNull DotNetElement element, @NotNull StringBuilder builder, boolean hide)
+	public static void formatNameElement(@Nonnull DotNetElement element, @Nonnull StringBuilder builder, boolean hide)
 	{
 		if(element instanceof CSharpPropertyDeclaration)
 		{
@@ -366,9 +366,9 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static Collection<DotNetModifierListOwner> getItemsImpl(@NotNull CSharpTypeDeclaration typeDeclaration)
+	public static Collection<DotNetModifierListOwner> getItemsImpl(@Nonnull CSharpTypeDeclaration typeDeclaration)
 	{
 		Collection<PsiElement> allMembers = OverrideUtil.getAllMembers(typeDeclaration, typeDeclaration.getResolveScope(), DotNetGenericExtractor.EMPTY, false, true);
 

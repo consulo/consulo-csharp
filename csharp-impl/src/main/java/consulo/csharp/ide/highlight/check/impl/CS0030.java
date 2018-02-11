@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.ide.CSharpErrorBundle;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.CSharpHighlightKey;
@@ -49,14 +49,14 @@ public class CS0030 extends CompilerCheck<PsiElement>
 {
 	public static class CS0030TypeCast extends EarlyAccessProgramDescriptor
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public String getName()
 		{
 			return "CS0030 Type cast checks";
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getDescription()
 		{
@@ -67,7 +67,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull final CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull PsiElement element)
+	public CompilerCheckBuilder checkImpl(@Nonnull final CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull PsiElement element)
 	{
 		final Ref<CompilerCheckBuilder> ref = new Ref<CompilerCheckBuilder>();
 		element.accept(new CSharpElementVisitor()

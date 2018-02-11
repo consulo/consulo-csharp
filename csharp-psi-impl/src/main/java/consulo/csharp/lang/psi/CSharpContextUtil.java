@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
@@ -54,9 +55,9 @@ public class CSharpContextUtil
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static CSharpContextUtil.ContextType getContextForResolved(@NotNull PsiElement element)
+	public static CSharpContextUtil.ContextType getContextForResolved(@Nonnull PsiElement element)
 	{
 		if(!(element instanceof DotNetModifierListOwner))
 		{
@@ -90,9 +91,9 @@ public class CSharpContextUtil
 		return CSharpContextUtil.ContextType.INSTANCE;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static ContextType getParentContextTypeForReference(@NotNull CSharpReferenceExpression referenceExpression)
+	public static ContextType getParentContextTypeForReference(@Nonnull CSharpReferenceExpression referenceExpression)
 	{
 		PsiElement qualifier = referenceExpression.getQualifier();
 		if(qualifier == null)

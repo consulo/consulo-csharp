@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpNamedCallArgument;
@@ -44,7 +44,7 @@ public class ConvertNamedToSimpleArgumentFix extends BaseIntentionAction
 		myPointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{
@@ -52,13 +52,13 @@ public class ConvertNamedToSimpleArgumentFix extends BaseIntentionAction
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile psiFile)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile)
 	{
 		return myPointer.getElement() != null;
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
 	{
 		CSharpNamedCallArgument element = myPointer.getElement();
 		if(element == null)

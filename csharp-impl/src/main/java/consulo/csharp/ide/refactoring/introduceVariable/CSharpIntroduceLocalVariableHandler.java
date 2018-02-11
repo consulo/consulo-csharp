@@ -23,13 +23,13 @@ import java.awt.event.ItemListener;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
@@ -77,9 +77,9 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	protected Collection<String> getSuggestedNames(@NotNull DotNetExpression initializer)
+	protected Collection<String> getSuggestedNames(@Nonnull DotNetExpression initializer)
 	{
 		Collection<String> suggestedNames = super.getSuggestedNames(initializer);
 		if(initializer instanceof CSharpMethodCallExpressionImpl)
@@ -98,7 +98,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected String getDeclarationString(CSharpIntroduceOperation operation, String initExpression)
 	{
@@ -116,7 +116,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 		return builder.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected InplaceVariableIntroducer<PsiElement> createVariableIntroducer(CSharpLocalVariable target, CSharpIntroduceOperation operation, List<PsiElement> occurrences)
 	{
@@ -307,7 +307,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 	}
 
 	@RequiredReadAction
-	private static void buildVariableTypeString(@NotNull Project project, @NotNull DotNetExpression initializer, @NotNull StringBuilder builder, boolean value)
+	private static void buildVariableTypeString(@Nonnull Project project, @Nonnull DotNetExpression initializer, @Nonnull StringBuilder builder, boolean value)
 	{
 		if(value && canUseVar(initializer))
 		{
@@ -339,7 +339,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 	}
 
 	@RequiredReadAction
-	public static boolean canUseVar(@NotNull DotNetExpression initializer)
+	public static boolean canUseVar(@Nonnull DotNetExpression initializer)
 	{
 		if(!CSharpModuleUtil.findLanguageVersion(initializer).isAtLeast(CSharpLanguageVersion._3_0))
 		{

@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
@@ -38,7 +38,7 @@ public interface CSharpTypeDefStatement extends CSharpNamedElement, PsiNameIdent
 	@RequiredReadAction
 	DotNetType getType();
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	DotNetTypeRef toTypeRef();
 }

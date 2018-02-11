@@ -18,8 +18,8 @@ package consulo.csharp.lang.doc.psi;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
 import consulo.csharp.lang.doc.validation.CSharpDocTagManager;
@@ -35,7 +35,7 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class CSharpDocTagImpl extends ASTWrapperPsiElement implements CSharpDocTag
 {
-	public CSharpDocTagImpl(@NotNull ASTNode node)
+	public CSharpDocTagImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -72,14 +72,14 @@ public class CSharpDocTagImpl extends ASTWrapperPsiElement implements CSharpDocT
 		return CSharpDocTagManager.getInstance().getTag(tagName.getText());
 	}
 
-	@NotNull
+	@Nonnull
 	public List<PsiElement> getNameElements()
 	{
 		return findChildrenByType(CSharpDocTokenType.XML_NAME);
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@Nonnull PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpDocElementVisitor)
 		{

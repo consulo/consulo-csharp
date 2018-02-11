@@ -21,8 +21,8 @@ import java.util.List;
 
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -54,32 +54,32 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 {
 	public static class MarkerInfo extends MergeableLineMarkerInfo<PsiElement>
 	{
-		public MarkerInfo(@NotNull PsiElement element,
-				@NotNull TextRange textRange,
+		public MarkerInfo(@Nonnull PsiElement element,
+				@Nonnull TextRange textRange,
 				Icon icon,
 				int updatePass,
 				@Nullable Function<? super PsiElement, String> tooltipProvider,
 				@Nullable GutterIconNavigationHandler<PsiElement> navHandler,
-				@NotNull GutterIconRenderer.Alignment alignment)
+				@Nonnull GutterIconRenderer.Alignment alignment)
 		{
 			super(element, textRange, icon, updatePass, tooltipProvider, navHandler, alignment);
 		}
 
 		@Override
-		public boolean canMergeWith(@NotNull MergeableLineMarkerInfo<?> info)
+		public boolean canMergeWith(@Nonnull MergeableLineMarkerInfo<?> info)
 		{
 			return info instanceof MarkerInfo;
 		}
 
 		@Override
-		public Icon getCommonIcon(@NotNull List<MergeableLineMarkerInfo> infos)
+		public Icon getCommonIcon(@Nonnull List<MergeableLineMarkerInfo> infos)
 		{
 			return myIcon;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
-		public Function<? super PsiElement, String> getCommonTooltip(@NotNull List<MergeableLineMarkerInfo> infos)
+		public Function<? super PsiElement, String> getCommonTooltip(@Nonnull List<MergeableLineMarkerInfo> infos)
 		{
 			return new ConstantFunction<PsiElement, String>("Navigate to lambda delegate");
 		}
@@ -87,7 +87,7 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @NotNull Consumer<LineMarkerInfo> lineMarkerInfos)
+	public void collect(PsiElement psiElement, @Nonnull Consumer<LineMarkerInfo> lineMarkerInfos)
 	{
 		IElementType elementType = PsiUtilCore.getElementType(psiElement);
 		if(elementType == CSharpTokens.DARROW)

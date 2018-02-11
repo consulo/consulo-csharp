@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import consulo.csharp.lang.psi.impl.source.CSharpGenericConstraintListImpl;
 import com.intellij.lang.ASTNode;
@@ -33,15 +34,15 @@ public class CSharpGenericConstraintListStubElementType extends CSharpEmptyStubE
 		super("GENERIC_CONSTRAINT_LIST");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpGenericConstraintList createElement(@NotNull ASTNode astNode)
+	public CSharpGenericConstraintList createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpGenericConstraintListImpl(astNode);
 	}
 
 	@Override
-	public CSharpGenericConstraintList createPsi(@NotNull EmptyStub<CSharpGenericConstraintList> cSharpGenericConstraintListStub)
+	public CSharpGenericConstraintList createPsi(@Nonnull EmptyStub<CSharpGenericConstraintList> cSharpGenericConstraintListStub)
 	{
 		return new CSharpGenericConstraintListImpl(cSharpGenericConstraintListStub, this);
 	}

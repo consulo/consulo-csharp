@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -40,36 +41,36 @@ public class CSharpIndexMethodStubElementType extends CSharpAbstractStubElementT
 		super("INDEX_METHOD_DECLARATION");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpIndexMethodDeclaration createElement(@NotNull ASTNode astNode)
+	public CSharpIndexMethodDeclaration createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpIndexMethodDeclarationImpl(astNode);
 	}
 
 	@Override
-	public CSharpIndexMethodDeclaration createPsi(@NotNull CSharpIndexMethodDeclStub methodStub)
+	public CSharpIndexMethodDeclaration createPsi(@Nonnull CSharpIndexMethodDeclStub methodStub)
 	{
 		return new CSharpIndexMethodDeclarationImpl(methodStub);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpIndexMethodDeclStub createStub(@NotNull CSharpIndexMethodDeclaration declaration, StubElement stubElement)
+	public CSharpIndexMethodDeclStub createStub(@Nonnull CSharpIndexMethodDeclaration declaration, StubElement stubElement)
 	{
 		String parentQName = declaration.getPresentableParentQName();
 		return new CSharpIndexMethodDeclStub(stubElement, parentQName);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpIndexMethodDeclStub methodStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpIndexMethodDeclStub methodStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(methodStub.getParentQName());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpIndexMethodDeclStub deserialize(@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
+	public CSharpIndexMethodDeclStub deserialize(@Nonnull StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
 		StringRef qname = inputStream.readName();
 		return new CSharpIndexMethodDeclStub(stubElement, StringRef.toString(qname));

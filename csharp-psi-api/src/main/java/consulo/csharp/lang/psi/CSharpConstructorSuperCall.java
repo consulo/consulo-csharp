@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -24,6 +24,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface CSharpConstructorSuperCall extends CSharpCallArgumentListOwner
 {
-	@NotNull
+	@Nonnull
 	CSharpReferenceExpression getExpression();
 }

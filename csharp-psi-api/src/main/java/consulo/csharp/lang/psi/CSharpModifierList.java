@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetModifierList;
 
@@ -30,6 +31,6 @@ public interface CSharpModifierList extends DotNetModifierList
 
 	public static ArrayFactory<CSharpModifierList> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpModifierList[count];
 
-	@NotNull
+	@Nonnull
 	CSharpAttributeList[] getAttributeLists();
 }

@@ -18,7 +18,7 @@ package consulo.csharp.lang.doc.inspection;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -38,9 +38,9 @@ import consulo.csharp.lang.doc.psi.CSharpDocTagImpl;
  */
 public class CSharpDocInspection extends LocalInspectionTool
 {
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, boolean isOnTheFly)
+	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)
 	{
 		return new CSharpDocElementVisitor()
 		{

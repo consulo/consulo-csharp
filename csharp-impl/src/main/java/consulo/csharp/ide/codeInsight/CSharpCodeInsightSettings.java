@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.codeInsight;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
@@ -30,7 +30,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 @State(name = "CSharpCodeInsightSettings", storages = @Storage("editor.codeinsight.xml"))
 public class CSharpCodeInsightSettings implements PersistentStateComponent<CSharpCodeInsightSettings>
 {
-	@NotNull
+	@Nonnull
 	public static CSharpCodeInsightSettings getInstance()
 	{
 		return ServiceManager.getService(CSharpCodeInsightSettings.class);

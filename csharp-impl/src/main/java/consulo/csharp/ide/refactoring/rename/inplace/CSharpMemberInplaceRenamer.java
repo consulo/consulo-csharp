@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.refactoring.rename.inplace;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.TextRange;
@@ -36,7 +37,7 @@ import consulo.dotnet.psi.DotNetNamedElement;
 public class CSharpMemberInplaceRenamer extends MemberInplaceRenamer
 {
 	@RequiredReadAction
-	public CSharpMemberInplaceRenamer(@NotNull PsiNamedElement elementToRename, PsiElement substituted, Editor editor)
+	public CSharpMemberInplaceRenamer(@Nonnull PsiNamedElement elementToRename, PsiElement substituted, Editor editor)
 	{
 		super(elementToRename, substituted, editor, CSharpNamedElement.getEscapedName((DotNetNamedElement) elementToRename), CSharpNamedElement.getEscapedName((DotNetNamedElement) elementToRename));
 	}

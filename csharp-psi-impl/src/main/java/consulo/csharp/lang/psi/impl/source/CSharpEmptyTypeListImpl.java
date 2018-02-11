@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.ASTNode;
@@ -31,19 +32,19 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpEmptyTypeListImpl extends CSharpElementImpl implements DotNetTypeList
 {
-	public CSharpEmptyTypeListImpl(@NotNull ASTNode node)
+	public CSharpEmptyTypeListImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitTypeList(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetType[] getTypes()
 	{
@@ -51,7 +52,7 @@ public class CSharpEmptyTypeListImpl extends CSharpElementImpl implements DotNet
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getTypeRefs()
 	{

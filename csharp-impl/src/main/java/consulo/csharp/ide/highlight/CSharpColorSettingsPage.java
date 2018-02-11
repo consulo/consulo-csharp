@@ -20,10 +20,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.options.OptionsBundle;
@@ -125,14 +125,14 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public SyntaxHighlighter getHighlighter()
 	{
 		return new CSharpSyntaxHighlighter();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getDemoText()
 	{
@@ -146,21 +146,21 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 		return ourAdditionalTags;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public AttributesDescriptor[] getAttributeDescriptors()
 	{
 		return ourDescriptors;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public ColorDescriptor[] getColorDescriptors()
 	{
 		return new ColorDescriptor[0];
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getDisplayName()
 	{

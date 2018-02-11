@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments;
 
 import java.util.Collections;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.dotnet.psi.DotNetParameter;
@@ -31,7 +32,7 @@ import com.intellij.psi.PsiElement;
  */
 public class NEmptyParamsCallArgument extends NParamsCallArgument
 {
-	public NEmptyParamsCallArgument(@NotNull DotNetParameter parameter)
+	public NEmptyParamsCallArgument(@Nonnull DotNetParameter parameter)
 	{
 		super(Collections.<CSharpCallArgument>emptyList(), parameter);
 	}
@@ -44,12 +45,12 @@ public class NEmptyParamsCallArgument extends NParamsCallArgument
 
 	@RequiredReadAction
 	@Override
-	public int calcValid(@NotNull PsiElement scope)
+	public int calcValid(@Nonnull PsiElement scope)
 	{
 		return PARAMS;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRef()
 	{

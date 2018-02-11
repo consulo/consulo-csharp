@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpArrayType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -35,18 +36,18 @@ import com.intellij.psi.stubs.IStubElementType;
  */
 public class CSharpStubArrayTypeImpl extends CSharpStubTypeElementImpl<CSharpWithIntValueStub<CSharpArrayType>> implements CSharpArrayType
 {
-	public CSharpStubArrayTypeImpl(@NotNull ASTNode node)
+	public CSharpStubArrayTypeImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubArrayTypeImpl(@NotNull CSharpWithIntValueStub<CSharpArrayType> stub, @NotNull IStubElementType<? extends CSharpWithIntValueStub<CSharpArrayType>, ?> nodeType)
+	public CSharpStubArrayTypeImpl(@Nonnull CSharpWithIntValueStub<CSharpArrayType> stub, @Nonnull IStubElementType<? extends CSharpWithIntValueStub<CSharpArrayType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
@@ -68,13 +69,13 @@ public class CSharpStubArrayTypeImpl extends CSharpStubTypeElementImpl<CSharpWit
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitArrayType(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetType getInnerType()
 	{

@@ -20,8 +20,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.Immutable;
 
 /**
@@ -39,14 +40,14 @@ public class CSharpDocTagInfo
 		myName = name;
 	}
 
-	@NotNull
-	public CSharpDocTagInfo add(@NotNull CSharpDocAttributeInfo a)
+	@Nonnull
+	public CSharpDocTagInfo add(@Nonnull CSharpDocAttributeInfo a)
 	{
 		myAttributes.put(a.getName(), a);
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	@Immutable
 	public Collection<CSharpDocAttributeInfo> getAttributes()
 	{

@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.completion.util;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredWriteAction;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;

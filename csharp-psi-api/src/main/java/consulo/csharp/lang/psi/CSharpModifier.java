@@ -20,7 +20,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetModifier;
 
@@ -96,7 +97,7 @@ public enum CSharpModifier implements DotNetModifier
 		return name().toLowerCase(Locale.US);
 	}
 
-	@NotNull
+	@Nonnull
 	public static CSharpModifier as(DotNetModifier modifierWithMask)
 	{
 		if(modifierWithMask instanceof CSharpModifier)

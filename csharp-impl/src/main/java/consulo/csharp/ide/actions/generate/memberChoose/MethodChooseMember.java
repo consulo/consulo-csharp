@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.actions.generate.memberChoose;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairConsumer;
 import consulo.annotations.RequiredDispatchThread;
@@ -42,7 +43,7 @@ public class MethodChooseMember extends ImplementMemberChooseObject<CSharpMethod
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredDispatchThread
 	public String getPresentationText()

@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetGenericParameter;
@@ -39,7 +40,7 @@ public class CSharpTypeRefFromGenericParameter extends DotNetTypeRefWithCachedRe
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -47,7 +48,7 @@ public class CSharpTypeRefFromGenericParameter extends DotNetTypeRefWithCachedRe
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{

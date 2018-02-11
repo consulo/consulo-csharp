@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.resolve;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
@@ -32,27 +33,27 @@ public class MemberByNameSelector extends UserDataHolderBase implements CSharpNa
 {
 	private String myName;
 
-	public MemberByNameSelector(@NotNull String name)
+	public MemberByNameSelector(@Nonnull String name)
 	{
 		myName = name;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getName()
 	{
 		return myName;
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public Collection<PsiElement> doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
+	public Collection<PsiElement> doSelectElement(@Nonnull CSharpResolveContext context, boolean deep)
 	{
 		return context.findByName(myName, deep, this);
 	}
 
 	@Override
-	public boolean isNameEqual(@NotNull String name)
+	public boolean isNameEqual(@Nonnull String name)
 	{
 		return Comparing.equal(myName, name);
 	}

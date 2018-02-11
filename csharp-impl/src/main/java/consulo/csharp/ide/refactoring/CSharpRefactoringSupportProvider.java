@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.refactoring;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureHandler;
 import consulo.csharp.ide.refactoring.extractMethod.CSharpExtractMethodHandler;
@@ -99,7 +99,7 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 	}
 
 	@RequiredReadAction
-	public static boolean mayRenameInplace(@NotNull  PsiElement elementToRename, @Nullable final PsiElement nameSuggestionContext)
+	public static boolean mayRenameInplace(@Nonnull PsiElement elementToRename, @Nullable final PsiElement nameSuggestionContext)
 	{
 		if(nameSuggestionContext != null && nameSuggestionContext.getContainingFile() != elementToRename.getContainingFile())
 		{

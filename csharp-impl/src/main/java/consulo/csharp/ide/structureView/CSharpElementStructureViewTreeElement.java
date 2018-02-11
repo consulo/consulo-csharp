@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
@@ -47,7 +47,7 @@ public class CSharpElementStructureViewTreeElement extends PsiTreeElementBase<Ps
 		super(psiElement);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Collection<StructureViewTreeElement> getChildrenBase()
 	{

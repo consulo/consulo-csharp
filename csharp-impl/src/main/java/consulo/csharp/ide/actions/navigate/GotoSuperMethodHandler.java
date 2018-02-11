@@ -18,8 +18,9 @@ package consulo.csharp.ide.actions.navigate;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetModifier;
@@ -41,7 +42,7 @@ import com.intellij.util.containers.ContainerUtil;
 public class GotoSuperMethodHandler implements LanguageCodeInsightActionHandler
 {
 	@Nullable
-	public static DotNetVirtualImplementOwner findVirtualImplementOwner(@NotNull Editor editor, @NotNull PsiFile file)
+	public static DotNetVirtualImplementOwner findVirtualImplementOwner(@Nonnull Editor editor, @Nonnull PsiFile file)
 	{
 		if(file.getFileType() != CSharpFileType.INSTANCE)
 		{
@@ -63,7 +64,7 @@ public class GotoSuperMethodHandler implements LanguageCodeInsightActionHandler
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
+	public void invoke(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file)
 	{
 		DotNetVirtualImplementOwner virtualImplementOwner = findVirtualImplementOwner(editor, file);
 		if(virtualImplementOwner == null)

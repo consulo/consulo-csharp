@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.completion;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionInitializationContext;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -46,7 +47,7 @@ public class CSharpCompletionContributor extends CompletionContributor
 	}
 
 	@Override
-	public void beforeCompletion(@NotNull CompletionInitializationContext context)
+	public void beforeCompletion(@Nonnull CompletionInitializationContext context)
 	{
 		context.setDummyIdentifier(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED);
 	}

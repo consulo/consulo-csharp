@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeStyle;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.application.options.CodeStyleAbstractConfigurable;
 import com.intellij.application.options.CodeStyleAbstractPanel;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
@@ -27,7 +28,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettings;
  */
 public class CSharpCodeStyleConfigurable extends CodeStyleAbstractConfigurable
 {
-	public CSharpCodeStyleConfigurable(@NotNull CodeStyleSettings settings, CodeStyleSettings cloneSettings)
+	public CSharpCodeStyleConfigurable(@Nonnull CodeStyleSettings settings, CodeStyleSettings cloneSettings)
 	{
 		super(settings, cloneSettings, "C#");
 	}

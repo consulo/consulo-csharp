@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -51,7 +51,7 @@ public class CS0017 extends CompilerCheck<CSharpMethodDeclaration>
 		private final String myVmQName;
 
 		@RequiredReadAction
-		public SetMainTypeFix(@NotNull DotNetTypeDeclaration typeDeclaration)
+		public SetMainTypeFix(@Nonnull DotNetTypeDeclaration typeDeclaration)
 		{
 			myVmQName = typeDeclaration.getVmQName();
 			setText("Set main to '" + myVmQName + "'");
@@ -59,7 +59,7 @@ public class CS0017 extends CompilerCheck<CSharpMethodDeclaration>
 
 		@Override
 		@RequiredWriteAction
-		public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException
 		{
 			DotNetModuleExtension<?> extension = ModuleUtilCore.getExtension(element, DotNetModuleExtension.class);
 			if(extension == null || extension.getMainType() != null)
@@ -80,13 +80,13 @@ public class CS0017 extends CompilerCheck<CSharpMethodDeclaration>
 
 		@Override
 		@RequiredDispatchThread
-		public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
 		{
 			DotNetModuleExtension extension = ModuleUtilCore.getExtension(element, DotNetModuleExtension.class);
 			return extension != null && extension.getMainType() == null;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -97,7 +97,7 @@ public class CS0017 extends CompilerCheck<CSharpMethodDeclaration>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpMethodDeclaration element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpMethodDeclaration element)
 	{
 		DotNetSimpleModuleExtension<?> dotNetModuleExtension = highlightContext.getDotNetModuleExtension();
 		// simple extensions - skip

@@ -25,7 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.daemon.impl.ShowAutoImportPass;
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.intention.HighPriorityAction;
@@ -99,12 +100,12 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 	private final SmartPsiElementPointer<CSharpReferenceExpression> myRefPointer;
 
-	public UsingNamespaceFix(@NotNull CSharpReferenceExpression ref)
+	public UsingNamespaceFix(@Nonnull CSharpReferenceExpression ref)
 	{
 		myRefPointer = SmartPointerManager.getInstance(ref.getProject()).createSmartPsiElementPointer(ref);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public PopupResult doFix(Editor editor)
 	{
@@ -183,7 +184,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private static Set<NamespaceReference> collectAllAvailableNamespaces(CSharpReferenceExpression ref, CSharpReferenceExpression.ResolveToKind kind)
 	{
@@ -377,19 +378,19 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 	}
 
 	@Override
-	public boolean showHint(@NotNull Editor editor)
+	public boolean showHint(@Nonnull Editor editor)
 	{
 		return doFix(editor) == PopupResult.SHOW_HIT;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText()
 	{
 		return DotNetBundle.message("add.using");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{
@@ -397,7 +398,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile psiFile)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile)
 	{
 		CSharpReferenceExpression element = myRefPointer.getElement();
 		if(element == null)
@@ -409,7 +410,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
 	{
 
 	}

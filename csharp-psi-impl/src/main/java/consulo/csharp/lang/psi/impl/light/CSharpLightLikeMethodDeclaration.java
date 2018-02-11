@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
@@ -52,7 +54,7 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
 		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
@@ -71,14 +73,14 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 		return myParameterList;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
 		return myParameterList == null ? DotNetParameter.EMPTY_ARRAY : myParameterList.getParameters();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
@@ -106,7 +108,7 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 		return myOriginal.getGenericParameterList();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
@@ -121,7 +123,7 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return myOriginal.hasModifier(modifier);
 	}
@@ -148,7 +150,7 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
 	{
 		return myOriginal.setName(s);
 	}

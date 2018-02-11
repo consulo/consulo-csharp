@@ -22,7 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -41,9 +41,9 @@ import com.intellij.psi.PsiElement;
 public class CS0107 extends CompilerCheck<DotNetModifierListOwner>
 {
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull DotNetModifierListOwner element)
+	public List<CompilerCheckBuilder> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetModifierListOwner element)
 	{
 		DotNetModifierList modifierList = element.getModifierList();
 		if(modifierList == null)

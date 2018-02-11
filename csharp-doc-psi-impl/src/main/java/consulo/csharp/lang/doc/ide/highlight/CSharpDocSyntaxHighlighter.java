@@ -19,7 +19,7 @@ package consulo.csharp.lang.doc.ide.highlight;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.doc.lexer.CSharpDocLexer;
 import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import com.intellij.lexer.Lexer;
@@ -66,14 +66,14 @@ public class CSharpDocSyntaxHighlighter extends SyntaxHighlighterBase
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public Lexer getHighlightingLexer()
 	{
 		return new CSharpDocLexer();
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public TextAttributesKey[] getTokenHighlights(IElementType tokenType)
 	{
 		return pack(keys1.get(tokenType), keys2.get(tokenType));

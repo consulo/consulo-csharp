@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.liveTemplates.macro;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.codeInsight.template.Expression;
 import com.intellij.codeInsight.template.ExpressionContext;
 import com.intellij.codeInsight.template.Macro;
@@ -44,7 +45,7 @@ public class TypeMacro extends Macro
 
 	@Nullable
 	@Override
-	public Result calculateResult(@NotNull Expression[] params, ExpressionContext context)
+	public Result calculateResult(@Nonnull Expression[] params, ExpressionContext context)
 	{
 		return new TextResult("TYPE");
 	}

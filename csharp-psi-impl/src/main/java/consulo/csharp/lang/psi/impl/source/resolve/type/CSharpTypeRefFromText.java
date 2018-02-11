@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
@@ -42,7 +42,7 @@ public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 		myOwner = owner;
 	}
 
-	@NotNull
+	@Nonnull
 	//@Lazy
 	private DotNetType getType()
 	{
@@ -55,7 +55,7 @@ public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -63,7 +63,7 @@ public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{

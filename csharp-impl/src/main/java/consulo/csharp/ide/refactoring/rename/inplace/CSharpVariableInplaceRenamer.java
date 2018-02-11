@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.refactoring.rename.inplace;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.refactoring.rename.inplace.VariableInplaceRenamer;
@@ -31,7 +31,7 @@ import consulo.dotnet.psi.DotNetNamedElement;
 public class CSharpVariableInplaceRenamer extends VariableInplaceRenamer
 {
 	@RequiredReadAction
-	public CSharpVariableInplaceRenamer(@NotNull PsiNamedElement elementToRename, Editor editor)
+	public CSharpVariableInplaceRenamer(@Nonnull PsiNamedElement elementToRename, Editor editor)
 	{
 		super(elementToRename, editor, elementToRename.getProject(), CSharpNamedElement.getEscapedName((DotNetNamedElement) elementToRename), CSharpNamedElement.getEscapedName((DotNetNamedElement)
 				elementToRename));

@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.liveTemplates.expression.ReturnStatementExpression;
 import consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;
@@ -52,7 +53,7 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
 		myLikeMethod = likeMethod;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public String getText()
@@ -140,7 +141,7 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
 
 	@RequiredReadAction
 	@Override
-	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @NotNull PsiFile file, @NotNull Template template)
+	public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @Nonnull PsiFile file, @Nonnull Template template)
 	{
 		template.addTextSegment(CreateUnresolvedMethodFix.calcModifier(context).getPresentableText());
 		template.addTextSegment(" ");
@@ -162,7 +163,7 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
 		template.addTextSegment("}");
 	}
 
-	protected void buildParameterList(@NotNull CreateUnresolvedElementFixContext context, @NotNull PsiFile file, @NotNull Template template)
+	protected void buildParameterList(@Nonnull CreateUnresolvedElementFixContext context, @Nonnull PsiFile file, @Nonnull Template template)
 	{
 		template.addTextSegment("(");
 

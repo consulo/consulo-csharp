@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiUtilCore;
@@ -40,18 +40,18 @@ import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
  */
 public abstract class Evaluator
 {
-	public abstract void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetThrowValueException, DotNetInvalidStackFrameException,
+	public abstract void evaluate(@Nonnull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetThrowValueException, DotNetInvalidStackFrameException,
 			DotNetAbsentInformationException, DotNetNotSuspendedException;
 
 	@Nullable
-	public static DotNetValueProxy substituteStaticContext(@NotNull DotNetValueProxy proxy)
+	public static DotNetValueProxy substituteStaticContext(@Nonnull DotNetValueProxy proxy)
 	{
 		return proxy == CSharpStaticValueProxy.INSTANCE ? null : proxy;
 	}
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetTypeProxy findTypeMirror(@NotNull CSharpEvaluateContext context, @Nullable PsiElement element)
+	public static DotNetTypeProxy findTypeMirror(@Nonnull CSharpEvaluateContext context, @Nullable PsiElement element)
 	{
 		if(element instanceof CSharpTypeDeclaration)
 		{

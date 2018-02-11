@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.parameterInfo;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
@@ -119,7 +119,7 @@ public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<P
 	}
 
 	@Override
-	public void showParameterInfo(@NotNull PsiElement place, CreateParameterInfoContext context)
+	public void showParameterInfo(@Nonnull PsiElement place, CreateParameterInfoContext context)
 	{
 		DotNetGenericParameterListOwner genericParameterOwner = findGenericParameterOwner(context);
 		if(genericParameterOwner == null)
@@ -131,7 +131,7 @@ public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<P
 	}
 
 	@Override
-	public void updateParameterInfo(@NotNull PsiElement place, UpdateParameterInfoContext context)
+	public void updateParameterInfo(@Nonnull PsiElement place, UpdateParameterInfoContext context)
 	{
 		int parameterIndex = -1;
 		DotNetTypeList typeList = PsiTreeUtil.getParentOfType(place, DotNetTypeList.class, false);

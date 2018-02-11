@@ -21,12 +21,12 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.AddAccessModifierFix;
@@ -75,7 +75,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 
 	@RequiredDispatchThread
 	@Override
-	public void invoke(@NotNull final Project project, @NotNull final Editor editor, @NotNull final PsiFile file)
+	public void invoke(@Nonnull final Project project, @Nonnull final Editor editor, @Nonnull final PsiFile file)
 	{
 		final CSharpTypeDeclaration typeDeclaration = CSharpGenerateAction.findTypeDeclaration(editor, file);
 		if(typeDeclaration == null)
@@ -148,7 +148,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 		new Task.Backgroundable(project, "Searching references", true)
 		{
 			@Override
-			public void run(@NotNull ProgressIndicator indicator)
+			public void run(@Nonnull ProgressIndicator indicator)
 			{
 				new WriteCommandAction(project, "Generate property", file)
 				{
@@ -192,8 +192,8 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 		}.queue();
 	}
 
-	@NotNull
-	public static String getClearFieldName(@NotNull Project project, boolean isStatic, @NotNull String name)
+	@Nonnull
+	public static String getClearFieldName(@Nonnull Project project, boolean isStatic, @Nonnull String name)
 	{
 		CSharpCodeGenerationSettings customSettings = CSharpCodeGenerationSettings.getInstance(project);
 
@@ -218,7 +218,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 		return name;
 	}
 
-	public static String getPropertyName(@NotNull Project project, boolean isStatic, @NotNull String fieldName)
+	public static String getPropertyName(@Nonnull Project project, boolean isStatic, @Nonnull String fieldName)
 	{
 		CSharpCodeGenerationSettings customSettings = CSharpCodeGenerationSettings.getInstance(project);
 

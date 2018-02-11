@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.DotNetTypes2;
@@ -37,12 +38,12 @@ import com.intellij.psi.util.PsiTreeUtil;
  */
 public class CSharpLinqQueryBodyImpl extends CSharpElementImpl
 {
-	public CSharpLinqQueryBodyImpl(@NotNull ASTNode node)
+	public CSharpLinqQueryBodyImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public DotNetTypeRef calcTypeRef(boolean skipContinuation)
 	{
@@ -85,7 +86,7 @@ public class CSharpLinqQueryBodyImpl extends CSharpElementImpl
 		return DotNetTypeRef.ERROR_TYPE;
 	}
 
-	@NotNull
+	@Nonnull
 	private static DotNetTypeRef typeRefOrError(@Nullable DotNetExpression expression)
 	{
 		return expression == null ? DotNetTypeRef.ERROR_TYPE : expression.toTypeRef(true);
@@ -104,10 +105,10 @@ public class CSharpLinqQueryBodyImpl extends CSharpElementImpl
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
 			PsiElement lastParent,
-			@NotNull PsiElement place)
+			@Nonnull PsiElement place)
 	{
 		if(lastParent == null || !PsiTreeUtil.isAncestor(this, lastParent, false))
 		{
@@ -125,7 +126,7 @@ public class CSharpLinqQueryBodyImpl extends CSharpElementImpl
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqQueryBody(this);
 	}

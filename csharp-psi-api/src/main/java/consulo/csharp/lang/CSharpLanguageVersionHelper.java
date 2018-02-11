@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.components.ServiceManager;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.lang.LanguageVersion;
@@ -27,18 +28,18 @@ import consulo.lang.LanguageVersion;
  */
 public abstract class CSharpLanguageVersionHelper
 {
-	@NotNull
+	@Nonnull
 	public static CSharpLanguageVersionHelper getInstance()
 	{
 		return ServiceManager.getService(CSharpLanguageVersionHelper.class);
 	}
 
-	@NotNull
+	@Nonnull
 	public abstract LanguageVersion getHighestVersion();
 
-	@NotNull
+	@Nonnull
 	public abstract LanguageVersion[] getVersions();
 
-	@NotNull
-	public abstract LanguageVersion getWrapper(@NotNull CSharpLanguageVersion version);
+	@Nonnull
+	public abstract LanguageVersion getWrapper(@Nonnull CSharpLanguageVersion version);
 }

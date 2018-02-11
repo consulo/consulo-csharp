@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
@@ -32,7 +33,7 @@ public abstract class CSharpExpressionImpl extends CSharpElementImpl implements 
 	private static final CSharpTypeRefCacher<CSharpExpressionImpl> ourCacheSystem = new CSharpTypeRefCacher<CSharpExpressionImpl>(true)
 	{
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
 		protected DotNetTypeRef toTypeRefImpl(CSharpExpressionImpl element, boolean resolveFromParentOrInitializer)
 		{
@@ -40,16 +41,16 @@ public abstract class CSharpExpressionImpl extends CSharpElementImpl implements 
 		}
 	};
 
-	public CSharpExpressionImpl(@NotNull ASTNode node)
+	public CSharpExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public abstract DotNetTypeRef toTypeRefImpl(boolean resolveFromParent);
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public final DotNetTypeRef toTypeRef(boolean resolveFromParent)

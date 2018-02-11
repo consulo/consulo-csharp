@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpStubElements;
@@ -37,25 +37,25 @@ import com.intellij.psi.stubs.IStubElementType;
  */
 public class CSharpStubPointerTypeImpl extends CSharpStubTypeElementImpl<EmptyStub<DotNetPointerType>> implements DotNetPointerType
 {
-	public CSharpStubPointerTypeImpl(@NotNull ASTNode node)
+	public CSharpStubPointerTypeImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubPointerTypeImpl(@NotNull EmptyStub<DotNetPointerType> stub,
-			@NotNull IStubElementType<? extends EmptyStub<DotNetPointerType>, ?> nodeType)
+	public CSharpStubPointerTypeImpl(@Nonnull EmptyStub<DotNetPointerType> stub,
+			@Nonnull IStubElementType<? extends EmptyStub<DotNetPointerType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitPointerType(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
@@ -74,7 +74,7 @@ public class CSharpStubPointerTypeImpl extends CSharpStubTypeElementImpl<EmptySt
 		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getAsterisk()
 	{

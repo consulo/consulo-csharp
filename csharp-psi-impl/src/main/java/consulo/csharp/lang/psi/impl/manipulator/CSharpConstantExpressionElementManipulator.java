@@ -1,6 +1,7 @@
 package consulo.csharp.lang.psi.impl.manipulator;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.AbstractElementManipulator;
 import com.intellij.psi.PsiElement;
@@ -19,7 +20,7 @@ public class CSharpConstantExpressionElementManipulator extends AbstractElementM
 {
 	@Override
 	@RequiredReadAction
-	public PsiElement handleContentChange(@NotNull PsiElement element, @NotNull TextRange textRange, String s) throws IncorrectOperationException
+	public PsiElement handleContentChange(@Nonnull PsiElement element, @Nonnull TextRange textRange, String s) throws IncorrectOperationException
 	{
 		CSharpConstantExpressionImpl constantExpression = (CSharpConstantExpressionImpl) element;
 		StringBuilder builder = new StringBuilder();
@@ -44,10 +45,10 @@ public class CSharpConstantExpressionElementManipulator extends AbstractElementM
 		return constantExpression.updateText(builder.toString());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
-	public TextRange getRangeInElement(@NotNull PsiElement element)
+	public TextRange getRangeInElement(@Nonnull PsiElement element)
 	{
 		return CSharpConstantExpressionImpl.getStringValueTextRange((CSharpConstantExpressionImpl) element);
 	}

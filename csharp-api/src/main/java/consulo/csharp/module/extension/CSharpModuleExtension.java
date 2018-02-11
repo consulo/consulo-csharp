@@ -16,8 +16,9 @@
 
 package consulo.csharp.module.extension;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.compiler.CSharpPlatform;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -35,14 +36,14 @@ public interface CSharpModuleExtension<T extends ModuleExtension<T>> extends CSh
 
 	boolean isOptimizeCode();
 
-	@NotNull
+	@Nonnull
 	CSharpPlatform getPlatform();
 
 	@Nullable
 	String getCompilerTarget();
 
-	@NotNull
+	@Nonnull
 	ModuleInheritableNamedPointer<Sdk> getCustomCompilerSdkPointer();
 
-	void setCompilerExecutable(@NotNull DotNetCompilerOptionsBuilder builder, @NotNull VirtualFile executable);
+	void setCompilerExecutable(@Nonnull DotNetCompilerOptionsBuilder builder, @Nonnull VirtualFile executable);
 }

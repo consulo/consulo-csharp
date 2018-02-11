@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.light.builder;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
@@ -44,7 +45,7 @@ public class CSharpLightGenericParameterBuilder extends CSharpLightNamedElementW
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericParameter(this);
 	}
@@ -68,7 +69,7 @@ public class CSharpLightGenericParameterBuilder extends CSharpLightNamedElementW
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
@@ -81,7 +82,7 @@ public class CSharpLightGenericParameterBuilder extends CSharpLightNamedElementW
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{

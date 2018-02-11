@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredDispatchThread;
 import consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceLocalVariableHandler;
 import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
@@ -41,16 +42,16 @@ import com.intellij.util.IncorrectOperationException;
 public class IntroduceLocalVariableIntention extends BaseRefactoringIntentionAction
 {
 	@Override
-	public void invoke(@NotNull Project project,
+	public void invoke(@Nonnull Project project,
 			Editor editor,
-			@NotNull PsiElement element) throws IncorrectOperationException
+			@Nonnull PsiElement element) throws IncorrectOperationException
 	{
 		new CSharpIntroduceLocalVariableHandler().invoke(project, editor, element.getContainingFile(), null);
 	}
 
 	@Override
 	@RequiredDispatchThread
-	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement psi)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement psi)
 	{
 		CSharpExpressionStatementImpl exprStmt = PsiTreeUtil.getParentOfType(psi, CSharpExpressionStatementImpl.class);
 		if(psi instanceof SyntheticElement || exprStmt == null)
@@ -68,14 +69,14 @@ public class IntroduceLocalVariableIntention extends BaseRefactoringIntentionAct
 		return !(ref == DotNetTypeRef.ERROR_TYPE || DotNetTypeRefUtil.isVmQNameEqual(ref, expression, DotNetTypes.System.Void));
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{
 		return getText();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText()
 	{

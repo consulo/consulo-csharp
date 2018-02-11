@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.StubElement;
@@ -36,7 +36,7 @@ public class CSharpStubVariableImplUtil
 {
 	private static final Logger LOGGER = Logger.getInstance(CSharpStubVariableImplUtil.class);
 
-	public static boolean isMultipleDeclaration(@NotNull CSharpStubVariableImpl<?> variable)
+	public static boolean isMultipleDeclaration(@Nonnull CSharpStubVariableImpl<?> variable)
 	{
 		CSharpVariableDeclStub<?> stub = variable.getStub();
 		if(stub != null)
@@ -47,7 +47,7 @@ public class CSharpStubVariableImplUtil
 	}
 
 	@Nullable
-	public static DotNetType getType(@NotNull CSharpStubVariableImpl<?> variable)
+	public static DotNetType getType(@Nonnull CSharpStubVariableImpl<?> variable)
 	{
 		DotNetType type = variable.getExplicitType();
 		if(type != null)
@@ -60,7 +60,7 @@ public class CSharpStubVariableImplUtil
 	}
 
 	@Nullable
-	public static DotNetModifierList getModifierList(@NotNull CSharpStubVariableImpl<?> variable)
+	public static DotNetModifierList getModifierList(@Nonnull CSharpStubVariableImpl<?> variable)
 	{
 		DotNetModifierList list = variable.getExplicitModifierList();
 		if(list != null)
@@ -73,7 +73,7 @@ public class CSharpStubVariableImplUtil
 	}
 
 	@Nullable
-	public static PsiElement getConstantKeywordElement(@NotNull CSharpStubVariableImpl<?> variable)
+	public static PsiElement getConstantKeywordElement(@Nonnull CSharpStubVariableImpl<?> variable)
 	{
 		PsiElement keywordElement = variable.getExplicitConstantKeywordElement();
 		if(keywordElement != null)
@@ -86,7 +86,7 @@ public class CSharpStubVariableImplUtil
 	}
 
 	@Nullable
-	private static DotNetVariable getPrevVariable(@NotNull CSharpStubVariableImpl<?> variable)
+	private static DotNetVariable getPrevVariable(@Nonnull CSharpStubVariableImpl<?> variable)
 	{
 		if(isMultipleDeclaration(variable))
 		{

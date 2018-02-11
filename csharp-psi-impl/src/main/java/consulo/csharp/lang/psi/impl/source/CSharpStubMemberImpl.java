@@ -16,9 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.psi.CSharpNamedElement;
@@ -45,17 +46,17 @@ import com.intellij.util.IncorrectOperationException;
 public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSharpStubElementImpl<S> implements PsiNameIdentifierOwner,
 		DotNetModifierListOwner, DotNetQualifiedElement, ContributedReferenceHost, CSharpNamedElement
 {
-	public CSharpStubMemberImpl(@NotNull ASTNode node)
+	public CSharpStubMemberImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubMemberImpl(@NotNull S stub, @NotNull IStubElementType<? extends S, ?> nodeType)
+	public CSharpStubMemberImpl(@Nonnull S stub, @Nonnull IStubElementType<? extends S, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiReference[] getReferences()
 	{
@@ -72,14 +73,14 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 
 	@Override
 	@RequiredReadAction
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		DotNetModifierList modifierList = getModifierList();
 		return modifierList != null && modifierList.hasModifier(modifier);
 	}
 
 	@RequiredReadAction
-	public void addModifier(@NotNull DotNetModifier modifier)
+	public void addModifier(@Nonnull DotNetModifier modifier)
 	{
 		DotNetModifierList modifierList = getModifierList();
 		if(modifierList != null)
@@ -151,7 +152,7 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, s);
 		return this;

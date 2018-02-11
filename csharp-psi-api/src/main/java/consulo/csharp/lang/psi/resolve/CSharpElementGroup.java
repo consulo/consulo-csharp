@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.resolve;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.Processor;
@@ -29,15 +30,15 @@ import com.intellij.util.Processor;
  */
 public interface CSharpElementGroup<T extends PsiElement> extends PsiNamedElement
 {
-	@NotNull
+	@Nonnull
 	Collection<T> getElements();
 
-	boolean process(@NotNull Processor<? super T> processor);
+	boolean process(@Nonnull Processor<? super T> processor);
 
 	@Override
-	@NotNull
+	@Nonnull
 	String getName();
 
-	@NotNull
+	@Nonnull
 	Object getKey();
 }

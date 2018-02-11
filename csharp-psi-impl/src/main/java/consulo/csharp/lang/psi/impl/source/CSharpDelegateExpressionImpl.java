@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
@@ -45,7 +45,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implements CSharpAnonymousMethodExpression, DotNetParameterListOwner
 {
-	public CSharpDelegateExpressionImpl(@NotNull ASTNode node)
+	public CSharpDelegateExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -56,7 +56,7 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 		return findChildByClass(CSharpBlockStatementImpl.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
@@ -72,7 +72,7 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public DotNetParameter[] getParameters()
 	{
 		DotNetParameterList parameterList = getParameterList();
@@ -80,13 +80,13 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitAnonymMethodExpression(this);
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
 	{
 		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER))
 		{
@@ -101,7 +101,7 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
@@ -110,7 +110,7 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
@@ -125,7 +125,7 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -139,13 +139,13 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return getModifierList().hasModifier(modifier);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetModifierList getModifierList()
 	{

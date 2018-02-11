@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
@@ -36,22 +36,22 @@ public class CSharpEnumConstantStubElementType extends CSharpQVariableStubElemen
 		super("ENUM_CONSTANT_DECLARATION");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpEnumConstantDeclarationImpl createElement(@NotNull ASTNode astNode)
+	public CSharpEnumConstantDeclarationImpl createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpEnumConstantDeclarationImpl(astNode);
 	}
 
 	@Override
-	public CSharpEnumConstantDeclarationImpl createPsi(@NotNull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> stub)
+	public CSharpEnumConstantDeclarationImpl createPsi(@Nonnull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> stub)
 	{
 		return new CSharpEnumConstantDeclarationImpl(stub);
 	}
 
 	@Override
 	@RequiredReadAction
-	public void indexStub(@NotNull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> stub, @NotNull IndexSink indexSink)
+	public void indexStub(@Nonnull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> stub, @Nonnull IndexSink indexSink)
 	{
 		String name = getName(stub);
 		if(!StringUtil.isEmpty(name))

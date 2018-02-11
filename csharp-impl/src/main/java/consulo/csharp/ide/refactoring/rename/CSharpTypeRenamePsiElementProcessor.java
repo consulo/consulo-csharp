@@ -18,8 +18,8 @@ package consulo.csharp.ide.refactoring.rename;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
@@ -58,7 +58,7 @@ public class CSharpTypeRenamePsiElementProcessor extends RenamePsiElementProcess
 	}
 
 	@Override
-	public boolean canProcessElement(@NotNull PsiElement element)
+	public boolean canProcessElement(@Nonnull PsiElement element)
 	{
 		return element instanceof CSharpTypeDeclaration || element instanceof CSharpConstructorDeclaration;
 	}

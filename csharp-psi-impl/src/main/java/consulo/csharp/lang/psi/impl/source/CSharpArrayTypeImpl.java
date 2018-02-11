@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpArrayType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokenSets;
@@ -32,13 +33,13 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpArrayTypeImpl extends CSharpTypeElementImpl implements CSharpArrayType
 {
-	public CSharpArrayTypeImpl(@NotNull ASTNode node)
+	public CSharpArrayTypeImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
@@ -55,13 +56,13 @@ public class CSharpArrayTypeImpl extends CSharpTypeElementImpl implements CSharp
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitArrayType(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetType getInnerType()
 	{

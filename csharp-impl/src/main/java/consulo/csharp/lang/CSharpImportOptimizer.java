@@ -24,8 +24,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ImportOptimizer;
 import com.intellij.openapi.util.Pair;
@@ -62,7 +63,7 @@ public class CSharpImportOptimizer implements ImportOptimizer
 		return psiFile instanceof CSharpFile;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Runnable processFile(final PsiFile psiFile)
 	{
@@ -115,7 +116,7 @@ public class CSharpImportOptimizer implements ImportOptimizer
 				{
 					@Override
 					@RequiredReadAction
-					public void visitUsingChild(@NotNull CSharpUsingListChild child)
+					public void visitUsingChild(@Nonnull CSharpUsingListChild child)
 					{
 						super.visitUsingChild(child);
 
@@ -173,7 +174,7 @@ public class CSharpImportOptimizer implements ImportOptimizer
 	}
 
 	@RequiredReadAction
-	private static void formatAndReplace(@NotNull PsiFile file, @NotNull List<CSharpUsingListChild> children)
+	private static void formatAndReplace(@Nonnull PsiFile file, @Nonnull List<CSharpUsingListChild> children)
 	{
 		PsiElement parent = children.get(0).getParent();
 

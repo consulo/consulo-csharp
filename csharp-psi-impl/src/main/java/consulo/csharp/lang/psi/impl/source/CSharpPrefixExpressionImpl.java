@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokenSets;
@@ -44,7 +45,7 @@ public class CSharpPrefixExpressionImpl extends CSharpExpressionWithOperatorImpl
 		}
 
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
 		public String getPrefix()
 		{
@@ -58,12 +59,12 @@ public class CSharpPrefixExpressionImpl extends CSharpExpressionWithOperatorImpl
 		}
 	}
 
-	public CSharpPrefixExpressionImpl(@NotNull ASTNode node)
+	public CSharpPrefixExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
@@ -80,7 +81,7 @@ public class CSharpPrefixExpressionImpl extends CSharpExpressionWithOperatorImpl
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitPrefixExpression(this);
 	}

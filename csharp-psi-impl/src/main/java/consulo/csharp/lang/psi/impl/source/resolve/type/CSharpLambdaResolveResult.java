@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
@@ -34,7 +35,7 @@ public interface CSharpLambdaResolveResult extends DotNetTypeResolveResult, CSha
 	@RequiredReadAction
 	boolean isInheritParameters();
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	default DotNetTypeRef[] getParameterTypeRefs()
 	{

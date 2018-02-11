@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.ide.refactoring.CSharpGenerateUtil;
 import consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import consulo.csharp.lang.psi.CSharpContextUtil;
@@ -66,30 +66,30 @@ public abstract class CreateUnresolvedElementFix extends BaseIntentionAction
 	protected abstract CreateUnresolvedElementFixContext createGenerateContext();
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		return createGenerateContext() != null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public abstract String getText();
 
 	@RequiredReadAction
-	public abstract void buildTemplate(@NotNull CreateUnresolvedElementFixContext context,
+	public abstract void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context,
 			CSharpContextUtil.ContextType contextType,
-			@NotNull PsiFile file,
-			@NotNull Template template);
+			@Nonnull PsiFile file,
+			@Nonnull Template template);
 
-	@NotNull
-	public PsiElement getElementForAfterAdd(@NotNull DotNetNamedElement[] elements, @NotNull CSharpBodyWithBraces targetForGenerate)
+	@Nonnull
+	public PsiElement getElementForAfterAdd(@Nonnull DotNetNamedElement[] elements, @Nonnull CSharpBodyWithBraces targetForGenerate)
 	{
 		return ArrayUtil.getLastElement(elements);
 	}
 
 	@Override
 	@RequiredWriteAction
-	public void invoke(@NotNull Project project, final Editor editor, PsiFile file) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, final Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
 		final CreateUnresolvedElementFixContext generateContext = createGenerateContext();
@@ -144,7 +144,7 @@ public abstract class CreateUnresolvedElementFix extends BaseIntentionAction
 	}
 
 	@Nullable
-	protected static Editor openEditor(@NotNull PsiElement anchor, int offset)
+	protected static Editor openEditor(@Nonnull PsiElement anchor, int offset)
 	{
 		PsiFile containingFile = anchor.getContainingFile();
 		if(containingFile == null)
@@ -177,7 +177,7 @@ public abstract class CreateUnresolvedElementFix extends BaseIntentionAction
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{

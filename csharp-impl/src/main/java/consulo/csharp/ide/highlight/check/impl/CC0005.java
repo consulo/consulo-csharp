@@ -19,7 +19,8 @@ package consulo.csharp.ide.highlight.check.impl;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -33,9 +34,9 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 public class CC0005 extends CompilerCheck<CSharpConstructorSuperCallImpl>
 {
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpConstructorSuperCallImpl element)
+	public List<HighlightInfoFactory> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpConstructorSuperCallImpl element)
 	{
 		return CC0001.checkReference(element, Arrays.asList(element));
 	}

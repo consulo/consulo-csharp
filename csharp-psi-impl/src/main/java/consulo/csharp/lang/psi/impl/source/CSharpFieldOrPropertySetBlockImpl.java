@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpFieldOrPropertySetBlock;
@@ -28,18 +29,18 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpFieldOrPropertySetBlockImpl extends CSharpElementImpl implements CSharpFieldOrPropertySetBlock
 {
-	public CSharpFieldOrPropertySetBlockImpl(@NotNull ASTNode node)
+	public CSharpFieldOrPropertySetBlockImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitFieldOrPropertySetBlock(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpFieldOrPropertySet[] getSets()
 	{

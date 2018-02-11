@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
@@ -34,12 +34,12 @@ import com.intellij.psi.util.PsiTreeUtil;
  */
 public class CSharpLinqExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpLinqExpressionImpl(@NotNull ASTNode node)
+	public CSharpLinqExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpLinqFromClauseImpl getFromClause()
 	{
 		return findNotNullChildByClass(CSharpLinqFromClauseImpl.class);
@@ -52,16 +52,16 @@ public class CSharpLinqExpressionImpl extends CSharpExpressionImpl implements Do
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqExpression(this);
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
 			PsiElement lastParent,
-			@NotNull PsiElement place)
+			@Nonnull PsiElement place)
 	{
 		if(lastParent == null || !PsiTreeUtil.isAncestor(this, lastParent, false))
 		{
@@ -78,7 +78,7 @@ public class CSharpLinqExpressionImpl extends CSharpExpressionImpl implements Do
 		return super.processDeclarations(processor, state, lastParent, place);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)

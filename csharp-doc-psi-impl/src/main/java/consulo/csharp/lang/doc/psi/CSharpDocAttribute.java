@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.doc.psi;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
 import consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
@@ -34,13 +36,13 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CSharpDocAttribute extends ASTWrapperPsiElement implements PsiNameIdentifierOwner
 {
-	public CSharpDocAttribute(@NotNull ASTNode node)
+	public CSharpDocAttribute(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@Nonnull PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpDocElementVisitor)
 		{
@@ -87,7 +89,7 @@ public class CSharpDocAttribute extends ASTWrapperPsiElement implements PsiNameI
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		return null;
 	}

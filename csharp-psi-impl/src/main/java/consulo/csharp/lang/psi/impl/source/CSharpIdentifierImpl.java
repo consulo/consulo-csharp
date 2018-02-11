@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -31,13 +31,13 @@ import consulo.annotations.RequiredReadAction;
  */
 public class CSharpIdentifierImpl extends CSharpElementImpl implements CSharpIdentifier
 {
-	public CSharpIdentifierImpl(@NotNull ASTNode node)
+	public CSharpIdentifierImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitIdentifier(this);
 	}

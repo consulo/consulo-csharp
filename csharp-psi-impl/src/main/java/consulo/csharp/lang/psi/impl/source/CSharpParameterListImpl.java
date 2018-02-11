@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
 import consulo.dotnet.psi.DotNetParameter;
@@ -30,13 +31,13 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpParameterListImpl extends CSharpElementImpl implements DotNetParameterList
 {
-	public CSharpParameterListImpl(@NotNull ASTNode node)
+	public CSharpParameterListImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitParameterList(this);
 	}
@@ -47,14 +48,14 @@ public class CSharpParameterListImpl extends CSharpElementImpl implements DotNet
 		return DotNetPsiCountUtil.countChildrenOfType(getNode(), DotNetParameter.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
 		return findChildrenByClass(DotNetParameter.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{

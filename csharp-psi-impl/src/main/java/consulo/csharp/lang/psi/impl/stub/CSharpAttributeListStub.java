@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.stub;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.dotnet.psi.DotNetAttributeList;
 import consulo.dotnet.psi.DotNetAttributeTargetType;
 import com.intellij.psi.stubs.IStubElementType;
@@ -37,7 +37,7 @@ public class CSharpAttributeListStub extends StubBase<DotNetAttributeList>
 		myTargetIndex = targetIndex;
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetAttributeTargetType getTarget()
 	{
 		return DotNetAttributeTargetType.values()[getTargetIndex()];

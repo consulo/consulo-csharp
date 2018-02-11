@@ -18,7 +18,7 @@ package consulo.csharp.ide.assemblyInfo.blocks;
 
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpAttributeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpDummyDeclarationImpl;
 import com.intellij.psi.PsiFile;

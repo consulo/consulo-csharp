@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.stub;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
+
 import com.intellij.psi.stubs.StubElement;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpStubElements;

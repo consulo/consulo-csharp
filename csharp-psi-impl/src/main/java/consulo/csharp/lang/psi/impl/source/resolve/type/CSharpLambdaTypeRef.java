@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
@@ -58,7 +58,7 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 			return CSharpLambdaResolveResultUtil.createTypeFromDelegate(myTarget, myExtractor);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public DotNetGenericExtractor getGenericExtractor()
 		{
@@ -72,7 +72,7 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 		}
 
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
 		public CSharpSimpleParameterInfo[] getParameterInfos()
 		{
@@ -99,7 +99,7 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 		}
 
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
 		public DotNetTypeRef getReturnTypeRef()
 		{
@@ -122,26 +122,26 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 	private DotNetGenericExtractor myExtractor = DotNetGenericExtractor.EMPTY;
 
 	@RequiredReadAction
-	public CSharpLambdaTypeRef(@NotNull CSharpMethodDeclaration method)
+	public CSharpLambdaTypeRef(@Nonnull CSharpMethodDeclaration method)
 	{
 		this(method, method, method.getParameterInfos(), method.getReturnTypeRef());
 	}
 
 	@RequiredReadAction
-	public CSharpLambdaTypeRef(@NotNull PsiElement scope, @NotNull CSharpMethodDeclaration method, @NotNull DotNetGenericExtractor extractor)
+	public CSharpLambdaTypeRef(@Nonnull PsiElement scope, @Nonnull CSharpMethodDeclaration method, @Nonnull DotNetGenericExtractor extractor)
 	{
 		this(scope, method, method.getParameterInfos(), method.getReturnTypeRef());
 		myExtractor = extractor;
 	}
 
 	@RequiredReadAction
-	public CSharpLambdaTypeRef(@NotNull PsiElement scope, @Nullable CSharpMethodDeclaration target, @NotNull CSharpSimpleParameterInfo[] parameterInfos, @NotNull DotNetTypeRef returnType)
+	public CSharpLambdaTypeRef(@Nonnull PsiElement scope, @Nullable CSharpMethodDeclaration target, @Nonnull CSharpSimpleParameterInfo[] parameterInfos, @Nonnull DotNetTypeRef returnType)
 	{
 		this(scope, target, parameterInfos, returnType, false);
 	}
 
 	@RequiredReadAction
-	public CSharpLambdaTypeRef(@NotNull PsiElement scope, @Nullable CSharpMethodDeclaration target, @NotNull CSharpSimpleParameterInfo[] parameterInfos, @NotNull DotNetTypeRef returnType, boolean inheritParameters)
+	public CSharpLambdaTypeRef(@Nonnull PsiElement scope, @Nullable CSharpMethodDeclaration target, @Nonnull CSharpSimpleParameterInfo[] parameterInfos, @Nonnull DotNetTypeRef returnType, boolean inheritParameters)
 	{
 		super(scope.getProject());
 		myElement = scope;
@@ -152,7 +152,7 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{
@@ -198,7 +198,7 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{

@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -32,12 +33,12 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpIsExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpIsExpressionImpl(@NotNull ASTNode node)
+	public CSharpIsExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public DotNetTypeRef getIsTypeRef()
 	{
@@ -45,20 +46,20 @@ public class CSharpIsExpressionImpl extends CSharpExpressionImpl implements DotN
 		return type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetExpression getExpression()
 	{
 		return findNotNullChildByClass(DotNetExpression.class);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitIsExpression(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{

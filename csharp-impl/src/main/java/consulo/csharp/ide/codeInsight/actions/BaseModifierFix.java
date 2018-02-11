@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
@@ -51,14 +52,14 @@ public abstract class BaseModifierFix extends BaseIntentionAction
 		this(new DotNetModifier[]{modifier}, parent);
 	}
 
-	public abstract boolean isValidCondition(@NotNull DotNetModifierList modifierList, @NotNull DotNetModifier modifier);
+	public abstract boolean isValidCondition(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier);
 
-	@NotNull
+	@Nonnull
 	public abstract String getActionName();
 
-	public abstract void doAction(@NotNull DotNetModifierList modifierList, @NotNull DotNetModifier modifier);
+	public abstract void doAction(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier);
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText()
 	{
@@ -79,7 +80,7 @@ public abstract class BaseModifierFix extends BaseIntentionAction
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{
@@ -87,7 +88,7 @@ public abstract class BaseModifierFix extends BaseIntentionAction
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile psiFile)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile)
 	{
 		DotNetModifierList modifierList = getModifierList();
 		if(modifierList == null)
@@ -107,7 +108,7 @@ public abstract class BaseModifierFix extends BaseIntentionAction
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
 	{
 		DotNetModifierList modifierList = getModifierList();
 		if(modifierList == null)

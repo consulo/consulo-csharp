@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.psi.PsiElement;
 
 /**
@@ -38,8 +39,8 @@ public class CSharpMethodUtil
 		return element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isDelegate();
 	}
 
-	@NotNull
-	public static Result isCanInheritGeneric(@NotNull CSharpMethodDeclaration methodDeclaration)
+	@Nonnull
+	public static Result isCanInheritGeneric(@Nonnull CSharpMethodDeclaration methodDeclaration)
 	{
 		int genericParametersCount = methodDeclaration.getGenericParametersCount();
 		if(genericParametersCount == 0)

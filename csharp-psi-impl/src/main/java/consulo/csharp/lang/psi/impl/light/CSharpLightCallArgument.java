@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.dotnet.psi.DotNetExpression;
 import com.intellij.psi.impl.light.LightElement;
@@ -30,7 +30,7 @@ public class CSharpLightCallArgument extends LightElement implements CSharpCallA
 {
 	private final DotNetExpression myExpression;
 
-	public CSharpLightCallArgument(@NotNull DotNetExpression expression)
+	public CSharpLightCallArgument(@Nonnull DotNetExpression expression)
 	{
 		super(expression.getManager(), expression.getLanguage());
 		myExpression = expression;

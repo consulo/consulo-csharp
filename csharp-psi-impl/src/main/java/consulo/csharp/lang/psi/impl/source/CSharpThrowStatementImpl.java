@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
@@ -29,7 +30,7 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpThrowStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpThrowStatementImpl(@NotNull ASTNode node)
+	public CSharpThrowStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -41,7 +42,7 @@ public class CSharpThrowStatementImpl extends CSharpElementImpl implements DotNe
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitThrowStatement(this);
 	}

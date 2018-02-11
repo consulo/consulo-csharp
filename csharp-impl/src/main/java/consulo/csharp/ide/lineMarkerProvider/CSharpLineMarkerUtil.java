@@ -19,8 +19,9 @@ package consulo.csharp.ide.lineMarkerProvider;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.codeInsight.daemon.impl.PsiElementListNavigator;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.NavigatablePsiElement;
@@ -52,7 +53,7 @@ public class CSharpLineMarkerUtil
 	};
 
 	@RequiredReadAction
-	public static void openTargets(@NotNull Collection<? extends PsiElement> members, @NotNull MouseEvent mouseEvent, @NotNull String text, @NotNull final Function<PsiElement, PsiElement> map)
+	public static void openTargets(@Nonnull Collection<? extends PsiElement> members, @Nonnull MouseEvent mouseEvent, @Nonnull String text, @Nonnull final Function<PsiElement, PsiElement> map)
 	{
 		NavigatablePsiElement[] navigatablePsiElements = members.toArray(new NavigatablePsiElement[members.size()]);
 		ContainerUtil.sort(navigatablePsiElements, (o1, o2) ->
@@ -70,7 +71,7 @@ public class CSharpLineMarkerUtil
 	}
 
 	@Nullable
-	public static DotNetVirtualImplementOwner findElementForLineMarker(@NotNull PsiElement element)
+	public static DotNetVirtualImplementOwner findElementForLineMarker(@Nonnull PsiElement element)
 	{
 		PsiElement superParent = null;
 		IElementType elementType = PsiUtilCore.getElementType(element);
@@ -92,7 +93,7 @@ public class CSharpLineMarkerUtil
 
 	@Nullable
 	@SuppressWarnings("unchecked")
-	public static <T> T getNameIdentifierAs(@Nullable PsiElement element, @NotNull Class<T> clazz)
+	public static <T> T getNameIdentifierAs(@Nullable PsiElement element, @Nonnull Class<T> clazz)
 	{
 		if(element == null)
 		{
@@ -108,7 +109,7 @@ public class CSharpLineMarkerUtil
 	}
 
 	@Nullable
-	public static PsiElement getParentIfIsIdentifier(@NotNull PsiElement element)
+	public static PsiElement getParentIfIsIdentifier(@Nonnull PsiElement element)
 	{
 		IElementType elementType = PsiUtilCore.getElementType(element);
 		if(elementType == CSharpTokens.IDENTIFIER && element.getParent() instanceof CSharpIdentifier)

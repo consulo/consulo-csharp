@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.operatorResolving;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Key;
 
@@ -31,19 +32,19 @@ public class ImplicitCastInfo
 	private final DotNetTypeRef myFromTypeRef;
 	private final DotNetTypeRef myToTypeRef;
 
-	public ImplicitCastInfo(@NotNull DotNetTypeRef fromTypeRef, @NotNull DotNetTypeRef toTypeRef)
+	public ImplicitCastInfo(@Nonnull DotNetTypeRef fromTypeRef, @Nonnull DotNetTypeRef toTypeRef)
 	{
 		myFromTypeRef = fromTypeRef;
 		myToTypeRef = toTypeRef;
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef getFromTypeRef()
 	{
 		return myFromTypeRef;
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef getToTypeRef()
 	{
 		return myToTypeRef;

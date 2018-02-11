@@ -18,8 +18,8 @@ package consulo.csharp.ide.codeInspection.obsolete;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -53,9 +53,9 @@ import consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
  */
 public class ObsoleteInspection extends LocalInspectionTool
 {
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, boolean isOnTheFly)
+	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)
 	{
 		return new CSharpElementVisitor()
 		{
@@ -87,7 +87,7 @@ public class ObsoleteInspection extends LocalInspectionTool
 	}
 
 	@RequiredReadAction
-	private static void process(@NotNull ProblemsHolder holder, @Nullable PsiElement range, @NotNull PsiElement target)
+	private static void process(@Nonnull ProblemsHolder holder, @Nullable PsiElement range, @Nonnull PsiElement target)
 	{
 		if(range == null)
 		{

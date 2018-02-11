@@ -20,8 +20,8 @@ import gnu.trove.THashMap;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.Comparing;
@@ -49,7 +49,7 @@ import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
  */
 public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorExpression, PsiReference
 {
-	public CSharpPreprocessorReferenceExpressionImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorReferenceExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -61,7 +61,7 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitReferenceExpression(this);
 	}
@@ -73,7 +73,7 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 		return findNotNullChildByType(CSharpPreprocesorTokens.IDENTIFIER);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	@Override
 	public TextRange getRangeInElement()
@@ -104,7 +104,7 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String getCanonicalText()
 	{
@@ -120,7 +120,7 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException
+	public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
 	{
 		return null;
 	}
@@ -133,7 +133,7 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public Object[] getVariants()
 	{
@@ -143,7 +143,7 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 	}
 
 	@RequiredReadAction
-	protected void collect(@NotNull Processor<CSharpPreprocessorVariable> processor)
+	protected void collect(@Nonnull Processor<CSharpPreprocessorVariable> processor)
 	{
 		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(this, DotNetSimpleModuleExtension.class);
 		if(extension == null)

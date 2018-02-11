@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi.impl.source.resolve;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.Processor;
@@ -40,7 +40,7 @@ public class AsPsiElementProcessor implements Processor<ResolveResult>
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	public Set<PsiElement> getElements()
 	{
 		return myElements;

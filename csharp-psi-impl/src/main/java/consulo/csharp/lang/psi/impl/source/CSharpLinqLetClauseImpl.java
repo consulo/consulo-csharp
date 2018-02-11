@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -30,7 +30,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  */
 public class CSharpLinqLetClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqLetClauseImpl(@NotNull ASTNode node)
+	public CSharpLinqLetClauseImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -42,8 +42,8 @@ public class CSharpLinqLetClauseImpl extends CSharpElementImpl
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
-			@NotNull PsiElement place)
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent,
+			@Nonnull PsiElement place)
 	{
 		CSharpLinqVariableImpl variable = getVariable();
 		if(variable != null)
@@ -57,7 +57,7 @@ public class CSharpLinqLetClauseImpl extends CSharpElementImpl
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqLetClause(this);
 	}

@@ -20,8 +20,8 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
@@ -62,7 +62,7 @@ public class CSharpEvaluateContext
 		return myDebuggerContext;
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetStackFrameProxy getFrame()
 	{
 		return myFrame;
@@ -81,7 +81,7 @@ public class CSharpEvaluateContext
 		return myStack.pollFirst();
 	}
 
-	public void pull(@NotNull DotNetValueProxy o, @Nullable Object provider)
+	public void pull(@Nonnull DotNetValueProxy o, @Nullable Object provider)
 	{
 		myStack.addFirst(Pair.<DotNetValueProxy, Object>create(o, provider));
 	}

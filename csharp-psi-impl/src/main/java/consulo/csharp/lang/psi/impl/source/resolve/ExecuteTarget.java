@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayFactory;
 import consulo.csharp.lang.psi.*;
@@ -36,7 +37,7 @@ public enum ExecuteTarget
 	LABEL
 			{
 				@Override
-				public boolean isMyElement(@NotNull PsiElement element)
+				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof CSharpLabeledStatementImpl;
 				}
@@ -44,7 +45,7 @@ public enum ExecuteTarget
 	TYPE
 			{
 				@Override
-				public boolean isMyElement(@NotNull PsiElement element)
+				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof CSharpTypeDeclaration;
 				}
@@ -52,7 +53,7 @@ public enum ExecuteTarget
 	MEMBER
 			{
 				@Override
-				public boolean isMyElement(@NotNull PsiElement element)
+				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof DotNetQualifiedElement;
 				}
@@ -60,7 +61,7 @@ public enum ExecuteTarget
 	DELEGATE_METHOD
 			{
 				@Override
-				public boolean isMyElement(@NotNull PsiElement element)
+				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isDelegate();
 				}
@@ -68,7 +69,7 @@ public enum ExecuteTarget
 	TYPE_DEF
 			{
 				@Override
-				public boolean isMyElement(@NotNull PsiElement element)
+				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof CSharpTypeDefStatement;
 				}
@@ -76,7 +77,7 @@ public enum ExecuteTarget
 	NAMESPACE
 			{
 				@Override
-				public boolean isMyElement(@NotNull PsiElement element)
+				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof DotNetNamespaceAsElement;
 				}
@@ -84,7 +85,7 @@ public enum ExecuteTarget
 	GENERIC_PARAMETER
 			{
 				@Override
-				public boolean isMyElement(@NotNull PsiElement element)
+				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof DotNetGenericParameter;
 				}
@@ -92,7 +93,7 @@ public enum ExecuteTarget
 	FIELD
 			{
 				@Override
-				public boolean isMyElement(@NotNull PsiElement element)
+				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof CSharpFieldDeclaration;
 				}
@@ -100,7 +101,7 @@ public enum ExecuteTarget
 	PROPERTY
 			{
 				@Override
-				public boolean isMyElement(@NotNull PsiElement element)
+				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof CSharpPropertyDeclaration;
 				}
@@ -108,7 +109,7 @@ public enum ExecuteTarget
 	CONSTRUCTOR
 			{
 				@Override
-				public boolean isMyElement(@NotNull PsiElement element)
+				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof CSharpConstructorDeclaration;
 				}
@@ -116,7 +117,7 @@ public enum ExecuteTarget
 	EVENT
 			{
 				@Override
-				public boolean isMyElement(@NotNull PsiElement element)
+				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof CSharpEventDeclaration;
 				}
@@ -124,7 +125,7 @@ public enum ExecuteTarget
 	ELEMENT_GROUP
 			{
 				@Override
-				public boolean isMyElement(@NotNull PsiElement element)
+				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof CSharpElementGroup;
 				}
@@ -132,7 +133,7 @@ public enum ExecuteTarget
 	LOCAL_VARIABLE_OR_PARAMETER
 			{
 				@Override
-				public boolean isMyElement(@NotNull PsiElement element)
+				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof CSharpLocalVariable ||
 							element instanceof DotNetParameter ||
@@ -145,7 +146,7 @@ public enum ExecuteTarget
 
 	public static ArrayFactory<ExecuteTarget> ARRAY_FACTORY = new ArrayFactory<ExecuteTarget>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public ExecuteTarget[] create(int count)
 		{
@@ -153,5 +154,5 @@ public enum ExecuteTarget
 		}
 	};
 
-	public abstract boolean isMyElement(@NotNull PsiElement element);
+	public abstract boolean isMyElement(@Nonnull PsiElement element);
 }

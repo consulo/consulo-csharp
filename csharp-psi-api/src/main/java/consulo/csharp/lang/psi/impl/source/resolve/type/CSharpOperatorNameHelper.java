@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableMap;
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -61,7 +62,7 @@ public class CSharpOperatorNameHelper
 			put(CSharpTokens.PERCEQ, "%").build();
 
 	@Nullable
-	public static String getOperatorName(@NotNull IElementType elementType)
+	public static String getOperatorName(@Nonnull IElementType elementType)
 	{
 		return ourOperatorNames.get(elementType);
 	}

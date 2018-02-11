@@ -19,8 +19,8 @@ package consulo.csharp.ide.debugger.expressionEvaluator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.psi.CSharpAttributeUtil;
@@ -66,7 +66,7 @@ public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMe
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetThrowValueException, DotNetNotSuspendedException
+	public void evaluate(@Nonnull CSharpEvaluateContext context) throws DotNetThrowValueException, DotNetNotSuspendedException
 	{
 		myArgumentValues = new ArrayList<>(myParameterTypes.size());
 		for(int i = 0; i < myParameterTypes.size(); i++)
@@ -83,7 +83,7 @@ public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMe
 	}
 
 	@Override
-	protected boolean isMyMirror(@NotNull DotNetFieldOrPropertyProxy mirror)
+	protected boolean isMyMirror(@Nonnull DotNetFieldOrPropertyProxy mirror)
 	{
 		if(mirror instanceof DotNetPropertyProxy)
 		{
@@ -94,8 +94,8 @@ public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMe
 	}
 
 	@Override
-	protected boolean invoke(@NotNull DotNetPropertyProxy mirror,
-			@NotNull CSharpEvaluateContext context,
+	protected boolean invoke(@Nonnull DotNetPropertyProxy mirror,
+			@Nonnull CSharpEvaluateContext context,
 			@Nullable DotNetValueProxy popValue) throws DotNetThrowValueException, DotNetNotSuspendedException
 	{
 		assert myArgumentValues != null;

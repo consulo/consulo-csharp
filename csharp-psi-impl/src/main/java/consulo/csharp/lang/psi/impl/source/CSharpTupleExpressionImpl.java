@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -30,12 +31,12 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpTupleExpressionImpl extends CSharpExpressionImpl
 {
-	public CSharpTupleExpressionImpl(@NotNull ASTNode node)
+	public CSharpTupleExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public CSharpTupleElementImpl[] getElements()
 	{
@@ -43,7 +44,7 @@ public class CSharpTupleExpressionImpl extends CSharpExpressionImpl
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -59,7 +60,7 @@ public class CSharpTupleExpressionImpl extends CSharpExpressionImpl
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitTupleExpression(this);
 	}

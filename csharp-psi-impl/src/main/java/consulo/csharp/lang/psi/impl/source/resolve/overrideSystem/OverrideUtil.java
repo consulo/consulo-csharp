@@ -22,7 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
@@ -72,7 +73,7 @@ public class OverrideUtil
 	private static final Logger LOGGER = Logger.getInstance(OverrideUtil.class);
 
 	@RequiredReadAction
-	public static CSharpModifier getRequiredOverrideModifier(@NotNull DotNetModifierListOwner modifierListOwner)
+	public static CSharpModifier getRequiredOverrideModifier(@Nonnull DotNetModifierListOwner modifierListOwner)
 	{
 		DotNetModifierList modifierList = modifierListOwner.getModifierList();
 		if(modifierList == null)
@@ -92,11 +93,11 @@ public class OverrideUtil
 		return CSharpModifier.NEW;
 	}
 
-	@NotNull
-	public static Collection<PsiElement> filterOverrideElements(@NotNull PsiScopeProcessor processor,
-			@NotNull PsiElement scopeElement,
-			@NotNull Collection<PsiElement> psiElements,
-			@NotNull OverrideProcessor overrideProcessor)
+	@Nonnull
+	public static Collection<PsiElement> filterOverrideElements(@Nonnull PsiScopeProcessor processor,
+			@Nonnull PsiElement scopeElement,
+			@Nonnull Collection<PsiElement> psiElements,
+			@Nonnull OverrideProcessor overrideProcessor)
 	{
 		if(psiElements.size() == 0)
 		{
@@ -113,9 +114,9 @@ public class OverrideUtil
 		return filterOverrideElements(scopeElement, elements, overrideProcessor);
 	}
 
-	@NotNull
+	@Nonnull
 	@SuppressWarnings("unchecked")
-	public static List<PsiElement> filterOverrideElements(@NotNull PsiElement scopeElement, @NotNull Collection<PsiElement> elements, @NotNull OverrideProcessor overrideProcessor)
+	public static List<PsiElement> filterOverrideElements(@Nonnull PsiElement scopeElement, @Nonnull Collection<PsiElement> elements, @Nonnull OverrideProcessor overrideProcessor)
 	{
 		List<PsiElement> copyElements = new ArrayList<>(elements);
 
@@ -202,7 +203,7 @@ public class OverrideUtil
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	private static String getNameForGroup(List<PsiElement> elements)
 	{
 		assert !elements.isEmpty();
@@ -229,7 +230,7 @@ public class OverrideUtil
 	}
 
 	@RequiredReadAction
-	public static boolean isAllowForOverride(@NotNull PsiElement parent)
+	public static boolean isAllowForOverride(@Nonnull PsiElement parent)
 	{
 		if(!(parent instanceof DotNetVirtualImplementOwner))
 		{
@@ -248,7 +249,7 @@ public class OverrideUtil
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static Collection<DotNetVirtualImplementOwner> collectOverridingMembers(final DotNetVirtualImplementOwner target)
 	{
@@ -298,7 +299,7 @@ public class OverrideUtil
 		return results;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static Collection<DotNetVirtualImplementOwner> collectOverridenMembers(final DotNetVirtualImplementOwner target)
 	{
@@ -360,9 +361,9 @@ public class OverrideUtil
 		return list;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static Collection<DotNetModifierListOwner> collectMembersWithModifier(@NotNull PsiElement element, @NotNull DotNetGenericExtractor extractor, @NotNull CSharpModifier modifier)
+	public static Collection<DotNetModifierListOwner> collectMembersWithModifier(@Nonnull PsiElement element, @Nonnull DotNetGenericExtractor extractor, @Nonnull CSharpModifier modifier)
 	{
 		List<DotNetModifierListOwner> psiElements = new SmartList<>();
 		for(PsiElement psiElement : getAllMembers(element, element.getResolveScope(), extractor, false, true))
@@ -377,11 +378,11 @@ public class OverrideUtil
 		return psiElements;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static Collection<PsiElement> getAllMembers(@NotNull final PsiElement targetTypeDeclaration,
-			@NotNull GlobalSearchScope scope,
-			@NotNull DotNetGenericExtractor extractor,
+	public static Collection<PsiElement> getAllMembers(@Nonnull final PsiElement targetTypeDeclaration,
+			@Nonnull GlobalSearchScope scope,
+			@Nonnull DotNetGenericExtractor extractor,
 			boolean completion,
 			boolean overrideTool)
 	{

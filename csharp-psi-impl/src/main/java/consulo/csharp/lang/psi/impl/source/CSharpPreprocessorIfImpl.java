@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import com.intellij.lang.ASTNode;
 
@@ -27,7 +27,7 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpPreprocessorIfImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpPreprocessorIfImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorIfImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -39,7 +39,7 @@ public class CSharpPreprocessorIfImpl extends CSharpPreprocessorElementImpl
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitMacroIf(this);
 	}

@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.dotnet.psi.DotNetParameter;
@@ -32,10 +32,10 @@ import com.intellij.openapi.util.Trinity;
  */
 public class SimpleParameterResolveContext implements ParameterResolveContext<CSharpSimpleParameterInfo>
 {
-	@NotNull
+	@Nonnull
 	private final CSharpSimpleParameterInfo[] myParameterInfos;
 
-	public SimpleParameterResolveContext(@NotNull CSharpSimpleParameterInfo[] parameterInfos)
+	public SimpleParameterResolveContext(@Nonnull CSharpSimpleParameterInfo[] parameterInfos)
 	{
 		myParameterInfos = parameterInfos;
 	}
@@ -49,7 +49,7 @@ public class SimpleParameterResolveContext implements ParameterResolveContext<CS
 
 	@Nullable
 	@Override
-	public CSharpSimpleParameterInfo getParameterByName(@NotNull String name)
+	public CSharpSimpleParameterInfo getParameterByName(@Nonnull String name)
 	{
 		for(CSharpSimpleParameterInfo parameterInfo : myParameterInfos)
 		{
@@ -74,21 +74,21 @@ public class SimpleParameterResolveContext implements ParameterResolveContext<CS
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameters()
 	{
 		return myParameterInfos;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getParamsParameterTypeRef()
 	{
 		return DotNetTypeRef.ERROR_TYPE;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getInnerParamsParameterTypeRef()
 	{
@@ -102,9 +102,9 @@ public class SimpleParameterResolveContext implements ParameterResolveContext<CS
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(@NotNull CSharpSimpleParameterInfo parameter)
+	public Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(@Nonnull CSharpSimpleParameterInfo parameter)
 	{
 		return Trinity.create(parameter.getNotNullName(), parameter.getTypeRef(), parameter.isOptional());
 	}

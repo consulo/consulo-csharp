@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -39,12 +39,12 @@ public class CS0168 extends CompilerCheck<CSharpLocalVariable>
 {
 	public static final class DeleteLocalVariable extends LocalQuickFixAndIntentionActionOnPsiElement
 	{
-		public DeleteLocalVariable(@NotNull PsiElement element)
+		public DeleteLocalVariable(@Nonnull PsiElement element)
 		{
 			super(element);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getText()
 		{
@@ -52,16 +52,16 @@ public class CS0168 extends CompilerCheck<CSharpLocalVariable>
 		}
 
 		@Override
-		public void invoke(@NotNull Project project,
-				@NotNull PsiFile psiFile,
+		public void invoke(@Nonnull Project project,
+				@Nonnull PsiFile psiFile,
 				@Nullable(value = "is null when called from inspection") Editor editor,
-				@NotNull PsiElement psiElement,
-				@NotNull PsiElement psiElement1)
+				@Nonnull PsiElement psiElement,
+				@Nonnull PsiElement psiElement1)
 		{
 			psiElement.delete();
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -72,7 +72,7 @@ public class CS0168 extends CompilerCheck<CSharpLocalVariable>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpLocalVariable element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpLocalVariable element)
 	{
 		if(element.getInitializer() != null)
 		{
@@ -93,7 +93,7 @@ public class CS0168 extends CompilerCheck<CSharpLocalVariable>
 	}
 
 	@RequiredReadAction
-	static boolean isUnused(@NotNull CSharpLocalVariable element)
+	static boolean isUnused(@Nonnull CSharpLocalVariable element)
 	{
 		PsiElement nameIdentifier = element.getNameIdentifier();
 		if(nameIdentifier == null)

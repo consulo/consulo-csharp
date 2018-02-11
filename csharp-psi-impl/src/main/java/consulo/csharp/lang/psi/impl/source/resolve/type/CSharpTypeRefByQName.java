@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -35,12 +36,12 @@ import consulo.dotnet.resolve.DotNetTypeResolveResult;
  */
 public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
 {
-	@NotNull
+	@Nonnull
 	private final GlobalSearchScope mySearchScope;
-	@NotNull
+	@Nonnull
 	private final String myQualifiedName;
 
-	public CSharpTypeRefByQName(@NotNull Project project, @NotNull GlobalSearchScope searchScope, @NotNull String qualifiedName)
+	public CSharpTypeRefByQName(@Nonnull Project project, @Nonnull GlobalSearchScope searchScope, @Nonnull String qualifiedName)
 	{
 		super(project);
 		mySearchScope = searchScope;
@@ -48,13 +49,13 @@ public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	public CSharpTypeRefByQName(@NotNull PsiElement scope, @NotNull String qualifiedName)
+	public CSharpTypeRefByQName(@Nonnull PsiElement scope, @Nonnull String qualifiedName)
 	{
 		this(scope.getProject(), scope.getResolveScope(), qualifiedName);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -74,7 +75,7 @@ public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{

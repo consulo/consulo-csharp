@@ -19,7 +19,8 @@ package consulo.csharp.lang.psi.resolve;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
@@ -46,10 +47,10 @@ public class AttributeByNameSelector implements CSharpResolveSelector
 		myNameWithAt = nameWithAt;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
-	public Collection<PsiElement> doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
+	public Collection<PsiElement> doSelectElement(@Nonnull CSharpResolveContext context, boolean deep)
 	{
 		if(myNameWithAt.isEmpty())
 		{

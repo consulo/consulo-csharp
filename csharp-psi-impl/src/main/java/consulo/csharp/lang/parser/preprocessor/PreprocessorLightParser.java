@@ -21,7 +21,8 @@ import gnu.trove.THashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.lexer._CSharpMacroLexer;

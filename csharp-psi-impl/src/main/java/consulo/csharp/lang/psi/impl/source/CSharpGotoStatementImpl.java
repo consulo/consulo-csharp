@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.ASTNode;
@@ -34,7 +35,7 @@ public class CSharpGotoStatementImpl extends CSharpElementImpl implements DotNet
 {
 	private static final TokenSet ourCaseOrDefaultSet = TokenSet.create(CSharpTokens.DEFAULT_KEYWORD, CSharpTokens.CASE_KEYWORD);
 
-	public CSharpGotoStatementImpl(@NotNull ASTNode node)
+	public CSharpGotoStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -53,7 +54,7 @@ public class CSharpGotoStatementImpl extends CSharpElementImpl implements DotNet
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitGotoStatement(this);
 	}

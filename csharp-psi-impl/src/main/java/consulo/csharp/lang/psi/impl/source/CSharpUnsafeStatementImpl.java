@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetStatement;
@@ -29,19 +29,19 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpUnsafeStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpUnsafeStatementImpl(@NotNull ASTNode node)
+	public CSharpUnsafeStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	public PsiElement getUnsafeElement()
 	{
 		return findNotNullChildByType(CSharpTokens.UNSAFE_KEYWORD);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitUnsafeStatement(this);
 	}

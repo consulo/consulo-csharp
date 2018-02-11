@@ -21,8 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.io.FileUtil;
@@ -62,22 +63,22 @@ public class CSharpMsilFileRepresentationProvider implements MsilFileRepresentat
 {
 	@Nullable
 	@Override
-	public String getRepresentFileName(@NotNull MsilFile msilFile)
+	public String getRepresentFileName(@Nonnull MsilFile msilFile)
 	{
 		return FileUtil.getNameWithoutExtension(msilFile.getName()) + CSharpFileType.DOT_EXTENSION;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public FileType getFileType()
 	{
 		return CSharpFileType.INSTANCE;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
-	public PsiFile transform(String fileName, @NotNull final MsilFile msilFile)
+	public PsiFile transform(String fileName, @Nonnull final MsilFile msilFile)
 	{
 		List<StubBlock> list = new ArrayList<>();
 
@@ -178,9 +179,9 @@ public class CSharpMsilFileRepresentationProvider implements MsilFileRepresentat
 		return file;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public CharSequence buildContent(String fileName, @NotNull final MsilFile msilFile)
+	public CharSequence buildContent(String fileName, @Nonnull final MsilFile msilFile)
 	{
 		List<StubBlock> list = new ArrayList<>();
 

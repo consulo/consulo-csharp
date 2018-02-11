@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.CachedValueProvider;
@@ -50,14 +51,14 @@ public class CSharpPragmaContext
 		private int endOffset = -1;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static CSharpPragmaContext get(PsiFile file)
 	{
 		return CachedValuesManager.getCachedValue(file, () -> CachedValueProvider.Result.create(build(file), PsiModificationTracker.MODIFICATION_COUNT));
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private static CSharpPragmaContext build(PsiFile file)
 	{

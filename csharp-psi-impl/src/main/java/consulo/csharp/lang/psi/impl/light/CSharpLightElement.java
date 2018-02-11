@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.pom.Navigatable;
@@ -60,7 +61,7 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 	}
 
 	@SuppressWarnings("unchecked")
-	public S withParent(@NotNull PsiElement parent)
+	public S withParent(@Nonnull PsiElement parent)
 	{
 		myParent = parent;
 		return (S) this;
@@ -81,7 +82,7 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getNavigationElement()
 	{
@@ -133,7 +134,7 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 	}
 
 	@Override
-	public final void accept(@NotNull PsiElementVisitor visitor)
+	public final void accept(@Nonnull PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{
@@ -145,7 +146,7 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 		}
 	}
 
-	public abstract void accept(@NotNull CSharpElementVisitor visitor);
+	public abstract void accept(@Nonnull CSharpElementVisitor visitor);
 
 	@Override
 	public String toString()

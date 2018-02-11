@@ -18,7 +18,7 @@ package consulo.csharp.ide.presentation;
 
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProvider;
 import com.intellij.navigation.NavigationItem;

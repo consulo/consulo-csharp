@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -48,7 +49,7 @@ import consulo.dotnet.resolve.DotNetTypeResolveResult;
  */
 public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl implements DotNetExpression, CSharpCallArgumentListOwner
 {
-	public CSharpMethodCallExpressionImpl(@NotNull ASTNode node)
+	public CSharpMethodCallExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -61,7 +62,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	@Deprecated
 	@DeprecationInfo("Use #getCallArguments() due we can have named arguments")
 	public DotNetExpression[] getParameterExpressions()
@@ -70,7 +71,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
@@ -78,14 +79,14 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 		return parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetExpression getCallExpression()
 	{
 		return findNotNullChildByClass(DotNetExpression.class);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitMethodCallExpression(this);
 	}
@@ -118,7 +119,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public ResolveResult[] multiResolve(boolean incompleteCode)
@@ -149,7 +150,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)

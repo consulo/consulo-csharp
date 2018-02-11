@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.DeprecationInfo;
 import consulo.dotnet.psi.DotNetCallArgumentListOwner;
 import consulo.dotnet.psi.DotNetExpression;
@@ -34,12 +35,12 @@ public interface CSharpCallArgumentListOwner extends DotNetCallArgumentListOwner
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	@Deprecated
 	@DeprecationInfo("Use #getCallArguments() due we can have named arguments")
 	DotNetExpression[] getParameterExpressions();
 
-	@NotNull
+	@Nonnull
 	CSharpCallArgument[] getCallArguments();
 
 	@Override

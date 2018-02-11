@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.codeStyle;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.CSharpLanguage;
 import com.intellij.lang.Language;
 import com.intellij.openapi.options.Configurable;
@@ -45,7 +45,7 @@ public class CSharpCodeStyleSettingsProvider extends CodeStyleSettingsProvider
 		return new CSharpCodeStyleSettings(settings);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Configurable createSettingsPage(CodeStyleSettings settings, CodeStyleSettings originalSettings)
 	{

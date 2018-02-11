@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -30,7 +31,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  */
 public class CSharpLinqIntoClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqIntoClauseImpl(@NotNull ASTNode node)
+	public CSharpLinqIntoClauseImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -42,10 +43,10 @@ public class CSharpLinqIntoClauseImpl extends CSharpElementImpl
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
 			PsiElement lastParent,
-			@NotNull PsiElement place)
+			@Nonnull PsiElement place)
 	{
 		CSharpLinqVariableImpl variable = getVariable();
 		if(variable != null)
@@ -59,7 +60,7 @@ public class CSharpLinqIntoClauseImpl extends CSharpElementImpl
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqIntroClause(this);
 	}

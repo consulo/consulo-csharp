@@ -16,7 +16,8 @@
 
 package consulo.csharp.module.extension;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.CSharpBundle;
 import consulo.util.pointers.Named;
 import consulo.util.pointers.NamedPointer;
@@ -37,12 +38,12 @@ public enum CSharpLanguageVersion implements Named, NamedPointer<CSharpLanguageV
 
 	public static final CSharpLanguageVersion HIGHEST = _7_0;
 
-	public boolean isAtLeast(@NotNull CSharpLanguageVersion languageVersion)
+	public boolean isAtLeast(@Nonnull CSharpLanguageVersion languageVersion)
 	{
 		return ordinal() >= languageVersion.ordinal();
 	}
 
-	@NotNull
+	@Nonnull
 	public String getPresentableName()
 	{
 		String name = name();
@@ -51,20 +52,20 @@ public enum CSharpLanguageVersion implements Named, NamedPointer<CSharpLanguageV
 		return name;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getDescription()
 	{
 		return CSharpBundle.message("csharp.version." + name());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpLanguageVersion get()
 	{
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{

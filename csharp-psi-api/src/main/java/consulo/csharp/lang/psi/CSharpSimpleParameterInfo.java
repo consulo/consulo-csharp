@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
@@ -34,7 +34,7 @@ public class CSharpSimpleParameterInfo
 
 	public static ArrayFactory<CSharpSimpleParameterInfo> ARRAY_FACTORY = new ArrayFactory<CSharpSimpleParameterInfo>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public CSharpSimpleParameterInfo[] create(int count)
 		{
@@ -42,8 +42,8 @@ public class CSharpSimpleParameterInfo
 		}
 	};
 
-	@NotNull
-	public static DotNetTypeRef[] toTypeRefs(@NotNull CSharpSimpleParameterInfo[] parameterInfos)
+	@Nonnull
+	public static DotNetTypeRef[] toTypeRefs(@Nonnull CSharpSimpleParameterInfo[] parameterInfos)
 	{
 		if(parameterInfos.length == 0)
 		{
@@ -67,7 +67,7 @@ public class CSharpSimpleParameterInfo
 	private boolean myOptional;
 
 	@RequiredReadAction
-	public CSharpSimpleParameterInfo(int index, @NotNull DotNetParameter parameter, @NotNull DotNetTypeRef typeRef)
+	public CSharpSimpleParameterInfo(int index, @Nonnull DotNetParameter parameter, @Nonnull DotNetTypeRef typeRef)
 	{
 		myIndex = index;
 		myName = parameter.getName();
@@ -77,7 +77,7 @@ public class CSharpSimpleParameterInfo
 	}
 
 	@RequiredReadAction
-	public CSharpSimpleParameterInfo(int index, @Nullable String name, @Nullable PsiElement element, @NotNull DotNetTypeRef typeRef)
+	public CSharpSimpleParameterInfo(int index, @Nullable String name, @Nullable PsiElement element, @Nonnull DotNetTypeRef typeRef)
 	{
 		myIndex = index;
 		myName = name;
@@ -107,13 +107,13 @@ public class CSharpSimpleParameterInfo
 		return myName;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getNotNullName()
 	{
 		return myName == null ? "p" + myIndex : myName;
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef getTypeRef()
 	{
 		return myTypeRef;

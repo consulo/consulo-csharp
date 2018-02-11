@@ -18,8 +18,8 @@ package consulo.csharp.ide.refactoring.util;
 
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveState;
@@ -31,14 +31,14 @@ public class ComponentNameScopeProcessor extends BaseScopeProcessor
 	@Nullable
 	private PsiElement myToSkip;
 
-	public ComponentNameScopeProcessor(@NotNull Set<PsiNamedElement> result, @Nullable PsiElement toSkip)
+	public ComponentNameScopeProcessor(@Nonnull Set<PsiNamedElement> result, @Nullable PsiElement toSkip)
 	{
 		myResult = result;
 		myToSkip = toSkip;
 	}
 
 	@Override
-	public boolean execute(@NotNull PsiElement element, ResolveState state)
+	public boolean execute(@Nonnull PsiElement element, ResolveState state)
 	{
 		if(element.isEquivalentTo(myToSkip))
 		{

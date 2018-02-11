@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.refactoring.rename.inplace;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.codeInsight.lookup.LookupManager;
 import com.intellij.lang.LanguageRefactoringSupport;
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
@@ -52,9 +52,9 @@ public class CSharpMemberInplaceRenameHandler extends MemberInplaceRenameHandler
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	protected MemberInplaceRenamer createMemberRenamer(@NotNull PsiElement element, PsiNameIdentifierOwner elementToRename, Editor editor)
+	protected MemberInplaceRenamer createMemberRenamer(@Nonnull PsiElement element, PsiNameIdentifierOwner elementToRename, Editor editor)
 	{
 		return new CSharpMemberInplaceRenamer(elementToRename, element, editor);
 	}

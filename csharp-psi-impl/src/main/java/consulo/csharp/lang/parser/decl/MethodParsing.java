@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.parser.decl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.ModifierSet;
 import consulo.csharp.lang.parser.exp.ExpressionParsing;
@@ -44,7 +45,7 @@ public class MethodParsing extends MemberWithBodyParsing
 		CONVERSION_METHOD
 	}
 
-	public static void parseMethodStartAtType(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker, @NotNull ModifierSet set)
+	public static void parseMethodStartAtType(@Nonnull CSharpBuilderWrapper builder, @Nonnull PsiBuilder.Marker marker, @Nonnull ModifierSet set)
 	{
 		TypeInfo typeInfo = parseType(builder, STUB_SUPPORT);
 		if(typeInfo != null)
@@ -58,11 +59,11 @@ public class MethodParsing extends MemberWithBodyParsing
 		}
 	}
 
-	public static void parseMethodStartAfterType(@NotNull CSharpBuilderWrapper builder,
-			@NotNull PsiBuilder.Marker marker,
+	public static void parseMethodStartAfterType(@Nonnull CSharpBuilderWrapper builder,
+			@Nonnull PsiBuilder.Marker marker,
 			@Nullable TypeInfo typeInfo,
-			@NotNull Target target,
-			@NotNull ModifierSet set)
+			@Nonnull Target target,
+			@Nonnull ModifierSet set)
 	{
 		if(target == Target.CONSTRUCTOR || target == Target.DECONSTRUCTOR)
 		{
@@ -106,7 +107,7 @@ public class MethodParsing extends MemberWithBodyParsing
 		parseMethodStartAfterName(builder, marker, target, set);
 	}
 
-	public static void parseMethodStartAfterName(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker, @NotNull Target target, @NotNull ModifierSet set)
+	public static void parseMethodStartAfterName(@Nonnull CSharpBuilderWrapper builder, @Nonnull PsiBuilder.Marker marker, @Nonnull Target target, @Nonnull ModifierSet set)
 	{
 		GenericParameterParsing.parseList(builder);
 

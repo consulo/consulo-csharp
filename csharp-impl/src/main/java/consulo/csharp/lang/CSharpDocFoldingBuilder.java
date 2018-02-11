@@ -1,7 +1,8 @@
 package consulo.csharp.lang;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.codeInsight.folding.CodeFoldingSettings;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
@@ -20,9 +21,9 @@ import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 public class CSharpDocFoldingBuilder extends FoldingBuilderEx
 {
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public FoldingDescriptor[] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick)
+	public FoldingDescriptor[] buildFoldRegions(@Nonnull PsiElement root, @Nonnull Document document, boolean quick)
 	{
 		// build by CSharpFoldingBuilder
 		return FoldingDescriptor.EMPTY;
@@ -31,7 +32,7 @@ public class CSharpDocFoldingBuilder extends FoldingBuilderEx
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public String getPlaceholderText(@NotNull ASTNode node)
+	public String getPlaceholderText(@Nonnull ASTNode node)
 	{
 		PsiElement psi = node.getPsi();
 		if(psi instanceof CSharpDocRoot)
@@ -50,7 +51,7 @@ public class CSharpDocFoldingBuilder extends FoldingBuilderEx
 
 	@RequiredReadAction
 	@Override
-	public boolean isCollapsedByDefault(@NotNull ASTNode node)
+	public boolean isCollapsedByDefault(@Nonnull ASTNode node)
 	{
 		return CodeFoldingSettings.getInstance().COLLAPSE_DOC_COMMENTS;
 	}

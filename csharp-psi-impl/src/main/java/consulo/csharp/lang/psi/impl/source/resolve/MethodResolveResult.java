@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.ArrayFactory;
@@ -33,8 +33,8 @@ public class MethodResolveResult extends CSharpResolveResult
 
 	public static ArrayFactory<MethodResolveResult> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new MethodResolveResult[count];
 
-	@NotNull
-	public static MethodResolveResult createResult(@NotNull MethodCalcResult calcResult, @Nullable PsiElement element, @Nullable ResolveResult resolveResult)
+	@Nonnull
+	public static MethodResolveResult createResult(@Nonnull MethodCalcResult calcResult, @Nullable PsiElement element, @Nullable ResolveResult resolveResult)
 	{
 		PsiElement providerElement = element == null ? null : element.getUserData(FORCE_PROVIDER_ELEMENT);
 		if(providerElement == null && resolveResult instanceof CSharpResolveResult)
@@ -50,12 +50,12 @@ public class MethodResolveResult extends CSharpResolveResult
 		return methodResolveResult;
 	}
 
-	@NotNull
+	@Nonnull
 	private final MethodCalcResult myCalcResult;
 
 	private boolean myUnknown;
 
-	private MethodResolveResult(@Nullable PsiElement element, @NotNull MethodCalcResult calcResult)
+	private MethodResolveResult(@Nullable PsiElement element, @Nonnull MethodCalcResult calcResult)
 	{
 		super(element, calcResult.isValidResult());
 		myCalcResult = calcResult;
@@ -66,7 +66,7 @@ public class MethodResolveResult extends CSharpResolveResult
 		return myUnknown;
 	}
 
-	@NotNull
+	@Nonnull
 	public MethodCalcResult getCalcResult()
 	{
 		return myCalcResult;

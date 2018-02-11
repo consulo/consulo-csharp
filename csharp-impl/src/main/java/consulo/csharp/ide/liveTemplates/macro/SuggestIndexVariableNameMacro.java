@@ -18,8 +18,9 @@ package consulo.csharp.ide.liveTemplates.macro;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredDispatchThread;
 import consulo.csharp.ide.lineMarkerProvider.CSharpLineMarkerUtil;
 import consulo.dotnet.psi.DotNetVariable;
@@ -40,7 +41,7 @@ import com.intellij.psi.PsiFile;
 public class SuggestIndexVariableNameMacro extends Macro
 {
 	@Override
-	@NotNull
+	@Nonnull
 	public String getDefaultValue()
 	{
 		return "i";
@@ -61,7 +62,7 @@ public class SuggestIndexVariableNameMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredDispatchThread
-	public Result calculateResult(@NotNull Expression[] params, ExpressionContext context)
+	public Result calculateResult(@Nonnull Expression[] params, ExpressionContext context)
 	{
 		final Project project = context.getProject();
 		final int offset = context.getStartOffset();

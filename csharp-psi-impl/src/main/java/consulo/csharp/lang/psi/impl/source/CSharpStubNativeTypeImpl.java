@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNativeType;
@@ -34,26 +35,26 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpStubNativeTypeImpl extends CSharpStubTypeElementImpl<CSharpWithIntValueStub<CSharpNativeType>> implements CSharpNativeType
 {
-	public CSharpStubNativeTypeImpl(@NotNull ASTNode node)
+	public CSharpStubNativeTypeImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubNativeTypeImpl(@NotNull CSharpWithIntValueStub<CSharpNativeType> stub,
-			@NotNull IStubElementType<? extends CSharpWithIntValueStub<CSharpNativeType>, ?> nodeType)
+	public CSharpStubNativeTypeImpl(@Nonnull CSharpWithIntValueStub<CSharpNativeType> stub,
+			@Nonnull IStubElementType<? extends CSharpWithIntValueStub<CSharpNativeType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitNativeType(this);
 	}
 
 	@RequiredReadAction
 	@Override
-	@NotNull
+	@Nonnull
 	public IElementType getTypeElementType()
 	{
 		CSharpWithIntValueStub<CSharpNativeType> stub = getGreenStub();
@@ -65,14 +66,14 @@ public class CSharpStubNativeTypeImpl extends CSharpStubTypeElementImpl<CSharpWi
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
 		return CSharpNativeTypeImplUtil.toTypeRef(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getTypeElement()
 	{

@@ -19,7 +19,8 @@ package consulo.csharp.ide.highlight.check.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -38,9 +39,9 @@ import com.intellij.psi.PsiElement;
 public class CS0441 extends CompilerCheck<DotNetTypeDeclaration>
 {
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public List<? extends HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull DotNetTypeDeclaration element)
+	public List<? extends HighlightInfoFactory> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetTypeDeclaration element)
 	{
 		DotNetModifierList modifierList = element.getModifierList();
 		if(modifierList == null)

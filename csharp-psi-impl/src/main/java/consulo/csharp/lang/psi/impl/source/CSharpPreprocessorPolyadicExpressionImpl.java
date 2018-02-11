@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import com.intellij.lang.ASTNode;
 
@@ -26,13 +26,13 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpPreprocessorPolyadicExpressionImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorExpression
 {
-	public CSharpPreprocessorPolyadicExpressionImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorPolyadicExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitPolyadicExpression(this);
 	}

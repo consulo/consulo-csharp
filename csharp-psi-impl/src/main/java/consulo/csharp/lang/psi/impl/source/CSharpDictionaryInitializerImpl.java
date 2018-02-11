@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -43,13 +43,13 @@ import consulo.dotnet.resolve.DotNetTypeResolveResult;
  */
 public class CSharpDictionaryInitializerImpl extends CSharpElementImpl implements CSharpCallArgumentList, CSharpCallArgumentListOwner
 {
-	public CSharpDictionaryInitializerImpl(@NotNull ASTNode node)
+	public CSharpDictionaryInitializerImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitDictionaryInitializer(this);
 	}
@@ -66,7 +66,7 @@ public class CSharpDictionaryInitializerImpl extends CSharpElementImpl implement
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -86,7 +86,7 @@ public class CSharpDictionaryInitializerImpl extends CSharpElementImpl implement
 		return CSharpResolveUtil.findFirstValidElement(resolveResults);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public ResolveResult[] multiResolve(boolean b)
@@ -117,7 +117,7 @@ public class CSharpDictionaryInitializerImpl extends CSharpElementImpl implement
 		return ResolveResult.EMPTY_ARRAY;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
@@ -147,21 +147,21 @@ public class CSharpDictionaryInitializerImpl extends CSharpElementImpl implement
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpCallArgument[] getArguments()
 	{
 		return findChildrenByClass(CSharpCallArgument.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpFieldOrPropertySet[] getSets()
 	{
 		return CSharpFieldOrPropertySet.EMPTY_ARRAY;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetExpression[] getExpressions()
 	{

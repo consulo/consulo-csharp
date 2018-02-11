@@ -21,10 +21,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IdeView;
 import com.intellij.ide.actions.CreateFileFromTemplateAction;
@@ -185,7 +185,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 		builder.setTitle("Create New File");
 	}
 
-	private static void addKind(CreateFileFromTemplateDialog.Builder builder, @NotNull Set<String> used, @NotNull String kind, @Nullable Icon icon, @NotNull String templateName)
+	private static void addKind(CreateFileFromTemplateDialog.Builder builder, @Nonnull Set<String> used, @Nonnull String kind, @Nullable Icon icon, @Nonnull String templateName)
 	{
 		used.add(kind);
 
@@ -218,7 +218,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 		VfsUtil.visitChildrenRecursively(moduleDir, new VirtualFileVisitor<Object>()
 		{
 			@Override
-			public boolean visitFile(@NotNull VirtualFile file)
+			public boolean visitFile(@Nonnull VirtualFile file)
 			{
 				if(file.getName().equals(CSharpAssemblyConstants.FileName))
 				{

@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiCodeFragment;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -29,7 +30,7 @@ public class CSharpFileWithScopeImpl extends CSharpFileImpl implements PsiCodeFr
 {
 	private GlobalSearchScope myScope;
 
-	public CSharpFileWithScopeImpl(@NotNull FileViewProvider viewProvider)
+	public CSharpFileWithScopeImpl(@Nonnull FileViewProvider viewProvider)
 	{
 		super(viewProvider);
 	}

@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.formatter;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.formatting.Block;
 import com.intellij.formatting.DelegatingFormattingModelBuilder;
 import com.intellij.formatting.FormattingModel;
@@ -41,7 +42,7 @@ public class CSharpFormattingModelBuilder implements DelegatingFormattingModelBu
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public FormattingModel createModel(PsiElement element, CodeStyleSettings settings)
 	{

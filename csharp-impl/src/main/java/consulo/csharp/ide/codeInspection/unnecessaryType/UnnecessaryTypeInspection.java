@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeInspection.unnecessaryType;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.ChangeVariableToTypeRefFix;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -43,9 +44,9 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
  */
 public class UnnecessaryTypeInspection extends LocalInspectionTool
 {
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, boolean isOnTheFly, @NotNull LocalInspectionToolSession session)
+	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session)
 	{
 		CSharpLanguageVersion languageVersion = CSharpModuleUtil.findLanguageVersion(holder.getFile());
 		if(!languageVersion.isAtLeast(CSharpLanguageVersion._3_0))

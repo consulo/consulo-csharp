@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.light.builder;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
@@ -36,14 +36,14 @@ public class CSharpLightUsingNamespaceStatementBuilder extends LightElement impl
 	private DotNetNamespaceAsElement myElement;
 	private GlobalSearchScope myResolveScope;
 
-	public CSharpLightUsingNamespaceStatementBuilder(@NotNull DotNetNamespaceAsElement element, GlobalSearchScope resolveScope)
+	public CSharpLightUsingNamespaceStatementBuilder(@Nonnull DotNetNamespaceAsElement element, GlobalSearchScope resolveScope)
 	{
 		super(element.getManager(), CSharpLanguage.INSTANCE);
 		myElement = element;
 		myResolveScope = resolveScope;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public GlobalSearchScope getResolveScope()
 	{
@@ -74,7 +74,7 @@ public class CSharpLightUsingNamespaceStatementBuilder extends LightElement impl
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getUsingKeywordElement()
 	{

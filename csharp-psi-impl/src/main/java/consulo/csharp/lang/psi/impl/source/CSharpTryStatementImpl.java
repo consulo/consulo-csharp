@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetStatement;
 import com.intellij.lang.ASTNode;
@@ -28,18 +28,18 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpTryStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpTryStatementImpl(@NotNull ASTNode node)
+	public CSharpTryStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitTryStatement(this);
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpCatchStatementImpl[] getCatchStatements()
 	{
 		return findChildrenByClass(CSharpCatchStatementImpl.class);

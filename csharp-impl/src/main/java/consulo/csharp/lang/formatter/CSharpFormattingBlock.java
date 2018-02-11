@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.formatting.ASTBlock;
 import com.intellij.formatting.Alignment;
 import com.intellij.formatting.Block;
@@ -66,7 +66,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 	private List<ASTNode> myAdditionalNodes = Collections.emptyList();
 	private CSharpFormattingBlock myParent;
 
-	public CSharpFormattingBlock(@NotNull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment, @NotNull CodeStyleSettings settings)
+	public CSharpFormattingBlock(@Nonnull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment, @Nonnull CodeStyleSettings settings)
 	{
 		super(node, wrap, alignment);
 		mySettings = settings;
@@ -80,7 +80,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 
 	@Nullable
 	@Override
-	public Spacing getSpacing(@Nullable Block child1, @NotNull Block child2)
+	public Spacing getSpacing(@Nullable Block child1, @Nonnull Block child2)
 	{
 		if((!(child1 instanceof ASTBlock) || !(child2 instanceof ASTBlock)))
 		{
@@ -95,7 +95,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 		return getNode().getFirstChildNode() == null || getNode().getElementType() == NON_ACTIVE_SYMBOL;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public TextRange getTextRange()
 	{
@@ -274,7 +274,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 		myParent = (CSharpFormattingBlock) newParent;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public IElementType getElementType()
 	{

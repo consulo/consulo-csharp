@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.SuggestedNameInfo;
 import com.intellij.refactoring.rename.NameSuggestionProvider;

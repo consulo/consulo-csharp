@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.lineMarkerProvider;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.psi.PsiElement;
@@ -29,5 +29,5 @@ import com.intellij.util.Consumer;
 public interface LineMarkerCollector
 {
 	@RequiredReadAction
-	void collect(PsiElement psiElement, @NotNull Consumer<LineMarkerInfo> lineMarkerInfos);
+	void collect(PsiElement psiElement, @Nonnull Consumer<LineMarkerInfo> lineMarkerInfos);
 }

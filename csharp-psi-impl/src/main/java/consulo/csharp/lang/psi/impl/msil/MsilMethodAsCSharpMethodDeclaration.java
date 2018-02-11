@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi.impl.msil;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
@@ -96,7 +96,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	private final MsilClassEntry myDelegate;
 
 	@RequiredReadAction
-	public MsilMethodAsCSharpMethodDeclaration(PsiElement parent, @Nullable MsilClassEntry declaration, @NotNull GenericParameterContext genericParameterContext, @NotNull MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpMethodDeclaration(PsiElement parent, @Nullable MsilClassEntry declaration, @Nonnull GenericParameterContext genericParameterContext, @Nonnull MsilMethodEntry methodEntry)
 	{
 		super(parent, CSharpModifier.EMPTY_ARRAY, methodEntry);
 		myDelegate = declaration;
@@ -117,7 +117,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitMethodDeclaration(this);
 	}
@@ -152,7 +152,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		return myGenericConstraintListValue.getValue();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
@@ -207,7 +207,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		return myTypeForImplementValue.getValue();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef getTypeRefForImplement()

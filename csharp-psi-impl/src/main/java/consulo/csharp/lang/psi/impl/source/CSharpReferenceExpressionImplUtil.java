@@ -22,8 +22,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Comparing;
@@ -93,9 +93,9 @@ public class CSharpReferenceExpressionImplUtil
 		public static final OurResolver INSTANCE = new OurResolver();
 
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
-		public ResolveResult[] resolve(@NotNull CSharpReferenceExpressionEx ref, boolean resolveFromParent)
+		public ResolveResult[] resolve(@Nonnull CSharpReferenceExpressionEx ref, boolean resolveFromParent)
 		{
 			return ref.multiResolveImpl(ref.kind(), resolveFromParent);
 		}
@@ -186,7 +186,7 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	public static ResolveResult[] multiResolve(CSharpReferenceExpressionEx expression, final boolean incompleteCode, final boolean resolveFromParent)
 	{
 		if(!expression.isValid())
@@ -216,7 +216,7 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	@RequiredReadAction
-	private static boolean isReferenceTo(@NotNull ResolveResult resolveResult, PsiElement element)
+	private static boolean isReferenceTo(@Nonnull ResolveResult resolveResult, PsiElement element)
 	{
 		PsiElement psiElement = resolveResult.getElement();
 		if(element instanceof DotNetNamespaceAsElement && psiElement instanceof DotNetNamespaceAsElement)
@@ -264,9 +264,9 @@ public class CSharpReferenceExpressionImplUtil
 		return p;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef toTypeRef(@NotNull CSharpReferenceExpressionEx referenceExpressionEx, boolean resolveFromParent)
+	public static DotNetTypeRef toTypeRef(@Nonnull CSharpReferenceExpressionEx referenceExpressionEx, boolean resolveFromParent)
 	{
 		ResolveResult[] resolveResults = referenceExpressionEx.multiResolve(false, resolveFromParent);
 		if(resolveResults.length == 0)
@@ -293,9 +293,9 @@ public class CSharpReferenceExpressionImplUtil
 		return typeRef;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef toTypeRefWithoutCaching(@NotNull CSharpReferenceExpressionEx referenceExpressionEx, @NotNull ResolveToKind kind, boolean resolveFromParent)
+	public static DotNetTypeRef toTypeRefWithoutCaching(@Nonnull CSharpReferenceExpressionEx referenceExpressionEx, @Nonnull ResolveToKind kind, boolean resolveFromParent)
 	{
 		ResolveResult[] resolveResults = referenceExpressionEx.multiResolveImpl(kind, resolveFromParent);
 		if(resolveResults.length == 0)
@@ -327,7 +327,7 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	@RequiredReadAction
-	public static TextRange getRangeInElement(@NotNull CSharpReferenceExpression referenceExpression)
+	public static TextRange getRangeInElement(@Nonnull CSharpReferenceExpression referenceExpression)
 	{
 		PsiElement referenceElement = referenceExpression.getReferenceElement();
 		if(referenceElement == null)
@@ -339,16 +339,16 @@ public class CSharpReferenceExpressionImplUtil
 		return new TextRange(startOffset, referenceElement.getTextLength() + startOffset);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static ResolveToKind kind(@NotNull CSharpReferenceExpression referenceExpression)
+	public static ResolveToKind kind(@Nonnull CSharpReferenceExpression referenceExpression)
 	{
 		return CachedValuesManager.getCachedValue(referenceExpression, () -> CachedValueProvider.Result.create(kindImpl(referenceExpression), PsiModificationTracker.MODIFICATION_COUNT));
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	private static ResolveToKind kindImpl(@NotNull CSharpReferenceExpression referenceExpression)
+	private static ResolveToKind kindImpl(@Nonnull CSharpReferenceExpression referenceExpression)
 	{
 		if(referenceExpression.isGlobalElement())
 		{
@@ -518,7 +518,7 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	@Nullable
-	public static PsiElement resolveByTypeKind(@NotNull DotNetReferenceExpression referenceExpression, boolean attributeSuffix)
+	public static PsiElement resolveByTypeKind(@Nonnull DotNetReferenceExpression referenceExpression, boolean attributeSuffix)
 	{
 		assert referenceExpression instanceof CSharpReferenceExpressionEx;
 		ResolveToKind kind = ResolveToKind.TYPE_LIKE;
@@ -534,7 +534,7 @@ public class CSharpReferenceExpressionImplUtil
 		return resultWithWeights[0].getElement();
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static ResolveResult[] multiResolveImpl(ResolveToKind kind, final CSharpCallArgumentListOwner callArgumentListOwner, final CSharpQualifiedNonReference element, boolean resolveFromParent)
 	{
@@ -573,21 +573,21 @@ public class CSharpReferenceExpressionImplUtil
 		return resolveResults;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static ResolveResult[] buildSelectorAndMultiResolve(@NotNull ResolveToKind kind,
+	public static ResolveResult[] buildSelectorAndMultiResolve(@Nonnull ResolveToKind kind,
 			@Nullable final CSharpCallArgumentListOwner callArgumentListOwner,
-			@NotNull final CSharpQualifiedNonReference element,
+			@Nonnull final CSharpQualifiedNonReference element,
 			boolean resolveFromParent)
 	{
 		return buildSelectorAndMultiResolve(kind, callArgumentListOwner, element, null, resolveFromParent);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static ResolveResult[] buildSelectorAndMultiResolve(@NotNull ResolveToKind kind,
+	public static ResolveResult[] buildSelectorAndMultiResolve(@Nonnull ResolveToKind kind,
 			@Nullable final CSharpCallArgumentListOwner callArgumentListOwner,
-			@NotNull final CSharpQualifiedNonReference element,
+			@Nonnull final CSharpQualifiedNonReference element,
 			@Nullable final PsiElement forceQualifierElement,
 			boolean resolveFromParent)
 	{
@@ -641,16 +641,16 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	@RequiredReadAction
-	public static void collectResults(@NotNull CSharpResolveOptions options, @NotNull Processor<ResolveResult> processor)
+	public static void collectResults(@Nonnull CSharpResolveOptions options, @Nonnull Processor<ResolveResult> processor)
 	{
 		collectResults(options, DotNetGenericExtractor.EMPTY, null, processor);
 	}
 
 	@RequiredReadAction
-	public static void collectResults(@NotNull CSharpResolveOptions options,
-			@NotNull DotNetGenericExtractor defaultExtractor,
+	public static void collectResults(@Nonnull CSharpResolveOptions options,
+			@Nonnull DotNetGenericExtractor defaultExtractor,
 			@Nullable PsiElement forceQualifierElement,
-			@NotNull final Processor<ResolveResult> processor)
+			@Nonnull final Processor<ResolveResult> processor)
 	{
 		final ResolveToKind kind = options.getKind();
 
@@ -659,9 +659,9 @@ public class CSharpReferenceExpressionImplUtil
 		kindProcessor.process(options, defaultExtractor, forceQualifierElement, processor);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static ResolveResult[] tryResolveFromQualifier(@NotNull CSharpReferenceExpressionEx referenceExpressionEx, @NotNull PsiElement qualifierElement)
+	public static ResolveResult[] tryResolveFromQualifier(@Nonnull CSharpReferenceExpressionEx referenceExpressionEx, @Nonnull PsiElement qualifierElement)
 	{
 		if(!referenceExpressionEx.isValid())
 		{
@@ -675,22 +675,22 @@ public class CSharpReferenceExpressionImplUtil
 		}, false, qualifierElement);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	private static ResolveResult[] tryResolveFromQualifierImpl(@NotNull CSharpReferenceExpressionEx referenceExpressionEx, @NotNull PsiElement qualifierElement)
+	private static ResolveResult[] tryResolveFromQualifierImpl(@Nonnull CSharpReferenceExpressionEx referenceExpressionEx, @Nonnull PsiElement qualifierElement)
 	{
 		ResolveToKind kind = referenceExpressionEx.kind();
 		return buildSelectorAndMultiResolve(kind, findCallArgumentListOwner(kind, referenceExpressionEx), referenceExpressionEx, qualifierElement, false);
 	}
 
 	@RequiredReadAction
-	public static void processAnyMember(@NotNull CSharpResolveOptions options,
-			@NotNull DotNetGenericExtractor defaultExtractor,
+	public static void processAnyMember(@Nonnull CSharpResolveOptions options,
+			@Nonnull DotNetGenericExtractor defaultExtractor,
 			@Nullable PsiElement forceQualifierElement,
-			@NotNull Processor<ResolveResult> processor)
+			@Nonnull Processor<ResolveResult> processor)
 	{
 		PsiElement qualifier = options.getQualifier();
-		@NotNull PsiElement element = options.getElement();
+		@Nonnull PsiElement element = options.getElement();
 		ResolveToKind kind = options.getKind();
 		CSharpCallArgumentListOwner callArgumentListOwner = options.getCallArgumentListOwner();
 		CSharpResolveSelector selector = options.getSelector();
@@ -950,9 +950,9 @@ public class CSharpReferenceExpressionImplUtil
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static StubScopeProcessor createMemberProcessor(@NotNull CSharpResolveOptions options, @NotNull Processor<ResolveResult> resultProcessor)
+	public static StubScopeProcessor createMemberProcessor(@Nonnull CSharpResolveOptions options, @Nonnull Processor<ResolveResult> resultProcessor)
 	{
 		ResolveToKind kind = options.getKind();
 		PsiElement element = options.getElement();
@@ -1039,7 +1039,7 @@ public class CSharpReferenceExpressionImplUtil
 	/**
 	 * @return couple of psieelement, first is the last element for walk, second is the stub member for walk
 	 */
-	@NotNull
+	@Nonnull
 	public static Couple<PsiElement> getResolveLayers(final PsiElement element, boolean strict)
 	{
 		PsiElement last = null;
@@ -1135,7 +1135,7 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	@RequiredReadAction
-	public static boolean isSoft(@NotNull CSharpReferenceExpression referenceExpression)
+	public static boolean isSoft(@Nonnull CSharpReferenceExpression referenceExpression)
 	{
 		ResolveToKind kind = referenceExpression.kind();
 		switch(kind)
@@ -1156,16 +1156,16 @@ public class CSharpReferenceExpressionImplUtil
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static DotNetTypeRef toTypeRef(@Nullable PsiElement resolve)
 	{
 		return toTypeRef(resolve, DotNetGenericExtractor.EMPTY);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef toTypeRef(@NotNull ResolveResult resolveResult)
+	public static DotNetTypeRef toTypeRef(@Nonnull ResolveResult resolveResult)
 	{
 		PsiElement element = resolveResult.getElement();
 		DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
@@ -1176,9 +1176,9 @@ public class CSharpReferenceExpressionImplUtil
 		return toTypeRef(element, extractor);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef toTypeRef(@Nullable PsiElement resolvedElement, @NotNull DotNetGenericExtractor extractor)
+	public static DotNetTypeRef toTypeRef(@Nullable PsiElement resolvedElement, @Nonnull DotNetGenericExtractor extractor)
 	{
 		if(resolvedElement instanceof DotNetNamespaceAsElement)
 		{

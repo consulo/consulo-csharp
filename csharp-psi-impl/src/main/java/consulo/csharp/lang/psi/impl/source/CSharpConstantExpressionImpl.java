@@ -18,8 +18,8 @@ package consulo.csharp.lang.psi.impl.source;
 
 import java.math.BigInteger;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
@@ -51,19 +51,19 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implements DotNetConstantExpression, PsiLanguageInjectionHost, ContributedReferenceHost
 {
-	public CSharpConstantExpressionImpl(@NotNull ASTNode node)
+	public CSharpConstantExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitConstantExpression(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -165,7 +165,7 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 
 	@Nullable
 	@RequiredReadAction
-	public Object getValue(@NotNull String prefix)
+	public Object getValue(@Nonnull String prefix)
 	{
 		PsiElement byType = getFirstChild();
 		assert byType != null;
@@ -240,7 +240,7 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 		return getValue("");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public IElementType getLiteralType()
@@ -258,7 +258,7 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 		return elementType != CSharpTokens.CHARACTER_LITERAL && CSharpTokenSets.STRINGS.contains(elementType);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public PsiReference[] getReferences()
@@ -268,14 +268,14 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 
 	@Override
 	@RequiredReadAction
-	public PsiLanguageInjectionHost updateText(@NotNull String s)
+	public PsiLanguageInjectionHost updateText(@Nonnull String s)
 	{
 		LeafPsiElement first = (LeafPsiElement) getFirstChild();
 		first.replaceWithText(s);
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper()
@@ -293,8 +293,8 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 	}
 
 	@RequiredReadAction
-	@NotNull
-	public static TextRange getStringValueTextRange(@NotNull CSharpConstantExpressionImpl expression)
+	@Nonnull
+	public static TextRange getStringValueTextRange(@Nonnull CSharpConstantExpressionImpl expression)
 	{
 		IElementType literalType = expression.getLiteralType();
 		if(literalType == CSharpTokens.VERBATIM_STRING_LITERAL || literalType == CSharpTokenSets.INTERPOLATION_STRING_LITERAL)

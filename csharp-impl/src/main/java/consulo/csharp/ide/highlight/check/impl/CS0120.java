@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -53,7 +53,7 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 			myReferenceExpressionPointer = SmartPointerManager.getInstance(referenceExpressionEx.getProject()).createSmartPsiElementPointer(referenceExpressionEx);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		@RequiredReadAction
 		public String getText()
@@ -72,7 +72,7 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 			return "Replace qualifier by '" + formatElement(resolvedElement.getParent()) + "'";
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -81,7 +81,7 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 
 		@Override
 		@RequiredReadAction
-		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			CSharpReferenceExpressionEx element = myReferenceExpressionPointer.getElement();
 			return element != null && element.resolve() != null && element.getQualifier() != null;
@@ -89,7 +89,7 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 
 		@Override
 		@RequiredWriteAction
-		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			CSharpReferenceExpressionEx element = myReferenceExpressionPointer.getElement();
 			if(element == null)
@@ -121,7 +121,7 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpReferenceExpressionEx element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpReferenceExpressionEx element)
 	{
 		PsiElement referenceElement = element.getReferenceElement();
 		if(referenceElement == null)

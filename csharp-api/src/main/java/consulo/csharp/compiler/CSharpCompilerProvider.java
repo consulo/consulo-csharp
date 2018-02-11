@@ -16,8 +16,8 @@
 
 package consulo.csharp.compiler;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.module.extension.CSharpModuleExtension;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -38,15 +38,15 @@ public abstract class CSharpCompilerProvider
 	public static final ExtensionPointName<CSharpCompilerProvider> EP_NAME = ExtensionPointName.create("consulo.csharp.compilerProvider");
 
 	@Nullable
-	public abstract SdkType getBundleType(@NotNull DotNetSimpleModuleExtension<?> moduleExtension);
+	public abstract SdkType getBundleType(@Nonnull DotNetSimpleModuleExtension<?> moduleExtension);
 
-	public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, @NotNull SdkComboBox comboBox)
+	public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, @Nonnull SdkComboBox comboBox)
 	{
 	}
 
-	public abstract void setupCompiler(@NotNull DotNetModuleExtension<?> netExtension,
-			@NotNull CSharpModuleExtension<?> csharpExtension,
-			@NotNull MSBaseDotNetCompilerOptionsBuilder builder,
+	public abstract void setupCompiler(@Nonnull DotNetModuleExtension<?> netExtension,
+			@Nonnull CSharpModuleExtension<?> csharpExtension,
+			@Nonnull MSBaseDotNetCompilerOptionsBuilder builder,
 			@Nullable VirtualFile compilerSdkHome) throws DotNetCompileFailedException;
 
 	protected final void setExecutable(CSharpModuleExtension cSharpModuleExtension, DotNetCompilerOptionsBuilder builder, @Nullable VirtualFile executable) throws DotNetCompileFailedException
@@ -59,7 +59,7 @@ public abstract class CSharpCompilerProvider
 		cSharpModuleExtension.setCompilerExecutable(builder, executable);
 	}
 
-	public boolean isSelected(@NotNull DotNetSimpleModuleExtension<?> moduleExtension, @NotNull String name, @Nullable Sdk sdk)
+	public boolean isSelected(@Nonnull DotNetSimpleModuleExtension<?> moduleExtension, @Nonnull String name, @Nullable Sdk sdk)
 	{
 		return sdk != null && getBundleType(moduleExtension) == sdk.getSdkType();
 	}

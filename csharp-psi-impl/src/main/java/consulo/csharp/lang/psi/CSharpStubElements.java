@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.impl.source.CSharpStubNullableTypeImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpStubPointerTypeImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpUsingTypeStatementImpl;
@@ -54,14 +55,14 @@ public interface CSharpStubElements
 			("USING_TYPE_STATEMENT")
 	{
 		@Override
-		public CSharpUsingTypeStatement createPsi(@NotNull EmptyStub<CSharpUsingTypeStatement> stub)
+		public CSharpUsingTypeStatement createPsi(@Nonnull EmptyStub<CSharpUsingTypeStatement> stub)
 		{
 			return new CSharpUsingTypeStatementImpl(stub, this);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
-		public PsiElement createElement(@NotNull ASTNode astNode)
+		public PsiElement createElement(@Nonnull ASTNode astNode)
 		{
 			return new CSharpUsingTypeStatementImpl(astNode);
 		}
@@ -82,15 +83,15 @@ public interface CSharpStubElements
 
 	CSharpEmptyStubElementType<CSharpNullableType> NULLABLE_TYPE = new CSharpEmptyStubElementType<CSharpNullableType>("NULLABLE_TYPE")
 	{
-		@NotNull
+		@Nonnull
 		@Override
-		public PsiElement createElement(@NotNull ASTNode astNode)
+		public PsiElement createElement(@Nonnull ASTNode astNode)
 		{
 			return new CSharpStubNullableTypeImpl(astNode);
 		}
 
 		@Override
-		public CSharpStubNullableTypeImpl createPsi(@NotNull EmptyStub<CSharpNullableType> stub)
+		public CSharpStubNullableTypeImpl createPsi(@Nonnull EmptyStub<CSharpNullableType> stub)
 		{
 			return new CSharpStubNullableTypeImpl(stub, this);
 		}
@@ -98,15 +99,15 @@ public interface CSharpStubElements
 
 	CSharpEmptyStubElementType<DotNetPointerType> POINTER_TYPE = new CSharpEmptyStubElementType<DotNetPointerType>("POINTER_TYPE")
 	{
-		@NotNull
+		@Nonnull
 		@Override
-		public PsiElement createElement(@NotNull ASTNode astNode)
+		public PsiElement createElement(@Nonnull ASTNode astNode)
 		{
 			return new CSharpStubPointerTypeImpl(astNode);
 		}
 
 		@Override
-		public CSharpStubPointerTypeImpl createPsi(@NotNull EmptyStub<DotNetPointerType> stub)
+		public CSharpStubPointerTypeImpl createPsi(@Nonnull EmptyStub<DotNetPointerType> stub)
 		{
 			return new CSharpStubPointerTypeImpl(stub, this);
 		}

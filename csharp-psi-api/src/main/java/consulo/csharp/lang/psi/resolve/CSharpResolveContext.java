@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi.resolve;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -68,45 +68,45 @@ public interface CSharpResolveContext
 
 	@Nullable
 	@RequiredReadAction
-	default CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)
+	default CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@Nonnull IElementType type, boolean deep)
 	{
 		return null;
 	}
 
 	@Nullable
 	@RequiredReadAction
-	default CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull CSharpCastType castType, boolean deep)
+	default CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@Nonnull CSharpCastType castType, boolean deep)
 	{
 		return null;
 	}
 
 	@Nullable
 	@RequiredReadAction
-	default CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
+	default CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@Nonnull String name)
 	{
 		return null;
 	}
 
 	@RequiredReadAction
-	default boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
+	default boolean processExtensionMethodGroups(@Nonnull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
 		return true;
 	}
 
 	@RequiredReadAction
-	@NotNull
-	default Collection<PsiElement> findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
+	@Nonnull
+	default Collection<PsiElement> findByName(@Nonnull String name, boolean deep, @Nonnull UserDataHolder holder)
 	{
 		return Collections.emptySet();
 	}
 
 	@RequiredReadAction
-	default boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
+	default boolean processElements(@Nonnull Processor<PsiElement> processor, boolean deep)
 	{
 		return true;
 	}
 
 
-	@NotNull
+	@Nonnull
 	PsiElement getElement();
 }

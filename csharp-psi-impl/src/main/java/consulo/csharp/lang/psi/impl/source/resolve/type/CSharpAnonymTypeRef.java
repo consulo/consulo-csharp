@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAnonymFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
@@ -77,7 +78,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -85,7 +86,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{
@@ -104,7 +105,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 		return builder.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private DotNetTypeDeclaration createTypeDeclaration()
 	{

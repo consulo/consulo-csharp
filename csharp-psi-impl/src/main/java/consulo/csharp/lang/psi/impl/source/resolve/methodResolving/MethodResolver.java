@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi.impl.source.resolve.methodResolving;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Trinity;
@@ -52,8 +52,8 @@ import consulo.dotnet.util.ArrayUtil2;
  */
 public class MethodResolver
 {
-	@NotNull
-	private static List<NCallArgument> buildCallArguments(@NotNull DotNetTypeRef[] callArgumentTypeRefs, @NotNull DotNetTypeRef[] parameterTypeRefs)
+	@Nonnull
+	private static List<NCallArgument> buildCallArguments(@Nonnull DotNetTypeRef[] callArgumentTypeRefs, @Nonnull DotNetTypeRef[] parameterTypeRefs)
 	{
 		List<NCallArgument> list = new ArrayList<>(callArgumentTypeRefs.length);
 
@@ -67,33 +67,33 @@ public class MethodResolver
 		return list;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments, @NotNull CSharpSimpleParameterInfo[] parameterInfos, @NotNull PsiElement scope)
+	public static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull CSharpSimpleParameterInfo[] parameterInfos, @Nonnull PsiElement scope)
 	{
 		return buildCallArguments(callArguments, scope, new SimpleParameterResolveContext(parameterInfos));
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments,
-			@NotNull DotNetParameterListOwner parameterListOwner,
-			@NotNull PsiElement scope,
+	public static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments,
+			@Nonnull DotNetParameterListOwner parameterListOwner,
+			@Nonnull PsiElement scope,
 			boolean resolveFromParent)
 	{
 		return buildCallArguments(callArguments, scope, new MethodParameterResolveContext(parameterListOwner, scope, resolveFromParent));
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments, @NotNull DotNetParameterListOwner parameterListOwner, @NotNull PsiElement scope)
+	public static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope)
 	{
 		return buildCallArguments(callArguments, parameterListOwner, scope, false);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	private static <T> List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments, @NotNull PsiElement scope, @NotNull ParameterResolveContext<T> context)
+	private static <T> List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull PsiElement scope, @Nonnull ParameterResolveContext<T> context)
 	{
 		List<NCallArgument> list = new ArrayList<>(context.getParametersSize());
 
@@ -278,48 +278,48 @@ public class MethodResolver
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static MethodCalcResult calc(@NotNull CSharpCallArgument[] callArguments, @NotNull DotNetParameterListOwner parameterListOwner, @NotNull PsiElement scope, boolean resolveFromParent)
+	public static MethodCalcResult calc(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope, boolean resolveFromParent)
 	{
 		List<NCallArgument> list = buildCallArguments(callArguments, parameterListOwner, scope, resolveFromParent);
 		return calc(list, scope);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static MethodCalcResult calc(@NotNull CSharpCallArgument[] callArguments, @NotNull DotNetParameterListOwner parameterListOwner, @NotNull PsiElement scope)
+	public static MethodCalcResult calc(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope)
 	{
 		return calc(callArguments, parameterListOwner, scope, false);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static MethodCalcResult calc(@NotNull CSharpCallArgumentListOwner callArgumentListOwner, @NotNull CSharpSimpleParameterInfo[] p, @NotNull PsiElement scope)
+	public static MethodCalcResult calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull CSharpSimpleParameterInfo[] p, @Nonnull PsiElement scope)
 	{
 		List<NCallArgument> list = buildCallArguments(callArgumentListOwner.getCallArguments(), scope, new SimpleParameterResolveContext(p));
 		return calc(list, scope);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static MethodCalcResult calc(@NotNull DotNetTypeRef[] expressionTypeRefs, @NotNull DotNetTypeRef[] parameterTypeRefs, @NotNull PsiElement scope)
+	public static MethodCalcResult calc(@Nonnull DotNetTypeRef[] expressionTypeRefs, @Nonnull DotNetTypeRef[] parameterTypeRefs, @Nonnull PsiElement scope)
 	{
 		List<NCallArgument> list = buildCallArguments(expressionTypeRefs, parameterTypeRefs);
 		return calc(list, scope);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static MethodCalcResult calc(@NotNull CSharpCallArgumentListOwner callArgumentListOwner, @NotNull DotNetParameterListOwner parameterListOwner, @NotNull PsiElement scope)
+	public static MethodCalcResult calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope)
 	{
 		List<NCallArgument> list = buildCallArguments(callArgumentListOwner.getCallArguments(), parameterListOwner, scope);
 		return calc(list, scope);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static MethodCalcResult calc(@NotNull List<NCallArgument> arguments, @NotNull PsiElement scope)
+	public static MethodCalcResult calc(@Nonnull List<NCallArgument> arguments, @Nonnull PsiElement scope)
 	{
 		int weight = 0;
 		boolean valid = true;

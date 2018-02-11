@@ -18,7 +18,8 @@ package consulo.csharp.ide.codeInsight;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.UsingNamespaceFix;
 import consulo.csharp.lang.CSharpLanguage;
@@ -39,7 +40,7 @@ public class CSharpReferenceImporter implements ReferenceImporter
 {
 	@Override
 	@RequiredReadAction
-	public boolean autoImportReferenceAtCursor(@NotNull Editor editor, @NotNull PsiFile file)
+	public boolean autoImportReferenceAtCursor(@Nonnull Editor editor, @Nonnull PsiFile file)
 	{
 		if(!file.getViewProvider().getLanguages().contains(CSharpLanguage.INSTANCE))
 		{
@@ -69,7 +70,7 @@ public class CSharpReferenceImporter implements ReferenceImporter
 
 	@Override
 	@RequiredReadAction
-	public boolean autoImportReferenceAt(@NotNull Editor editor, @NotNull PsiFile file, int offset)
+	public boolean autoImportReferenceAt(@Nonnull Editor editor, @Nonnull PsiFile file, int offset)
 	{
 		if(!file.getViewProvider().getLanguages().contains(CSharpLanguage.INSTANCE))
 		{

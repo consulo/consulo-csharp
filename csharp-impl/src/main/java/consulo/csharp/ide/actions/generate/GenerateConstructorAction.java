@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.actions.generate;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
@@ -33,7 +33,7 @@ public class GenerateConstructorAction extends CSharpGenerateAction
 	}
 
 	@Override
-	protected boolean isValidForFile(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
+	protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file)
 	{
 		return findTypeDeclaration(editor, file) != null;
 	}

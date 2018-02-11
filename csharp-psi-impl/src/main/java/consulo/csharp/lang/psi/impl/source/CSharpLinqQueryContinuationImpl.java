@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
@@ -31,12 +31,12 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  */
 public class CSharpLinqQueryContinuationImpl extends CSharpElementImpl
 {
-	public CSharpLinqQueryContinuationImpl(@NotNull ASTNode node)
+	public CSharpLinqQueryContinuationImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public CSharpLinqIntoClauseImpl getIntoClause()
 	{
@@ -50,14 +50,14 @@ public class CSharpLinqQueryContinuationImpl extends CSharpElementImpl
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqQueryContinuation(this);
 	}
 
 	@Override
 	@RequiredReadAction
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
 	{
 		CSharpLinqIntoClauseImpl intoClause = getIntoClause();
 		return intoClause.processDeclarations(processor, state, lastParent, place);

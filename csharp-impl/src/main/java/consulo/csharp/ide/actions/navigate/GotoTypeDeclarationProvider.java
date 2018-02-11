@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.actions.navigate;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpMethodUtil;
@@ -38,7 +38,7 @@ public class GotoTypeDeclarationProvider extends TypeDeclarationProvider
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public PsiElement[] getSymbolTypeDeclarations(@NotNull PsiElement symbol, Editor editor, int offset)
+	public PsiElement[] getSymbolTypeDeclarations(@Nonnull PsiElement symbol, Editor editor, int offset)
 	{
 		if(symbol.getLanguage() != CSharpLanguage.INSTANCE)
 		{

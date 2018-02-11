@@ -16,13 +16,13 @@
 
 package consulo.csharp.ide.codeStyle;
 
+import javax.annotation.Nullable;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.application.options.codeStyle.CommenterForm;
 import com.intellij.openapi.application.ApplicationBundle;
 import com.intellij.openapi.options.Configurable;

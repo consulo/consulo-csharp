@@ -18,8 +18,8 @@ package consulo.csharp.lang.formatter;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UserDataHolderBase;
@@ -63,7 +63,7 @@ public class CSharpDisabledBlock extends UserDataHolderBase implements ASTNode, 
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public CharSequence getChars()
 	{
@@ -90,7 +90,7 @@ public class CSharpDisabledBlock extends UserDataHolderBase implements ASTNode, 
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public TextRange getTextRange()
 	{
@@ -136,39 +136,39 @@ public class CSharpDisabledBlock extends UserDataHolderBase implements ASTNode, 
 	}
 
 	@Override
-	public void addChild(@NotNull ASTNode child)
+	public void addChild(@Nonnull ASTNode child)
 	{
 		throw new UnsupportedOperationException();
 
 	}
 
 	@Override
-	public void addChild(@NotNull ASTNode child, @Nullable ASTNode anchorBefore)
+	public void addChild(@Nonnull ASTNode child, @Nullable ASTNode anchorBefore)
 	{
 		throw new UnsupportedOperationException();
 
 	}
 
 	@Override
-	public void addLeaf(@NotNull IElementType leafType, CharSequence leafText, @Nullable ASTNode anchorBefore)
+	public void addLeaf(@Nonnull IElementType leafType, CharSequence leafText, @Nullable ASTNode anchorBefore)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void removeChild(@NotNull ASTNode child)
+	public void removeChild(@Nonnull ASTNode child)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void removeRange(@NotNull ASTNode firstNodeToRemove, ASTNode firstNodeToKeep)
+	public void removeRange(@Nonnull ASTNode firstNodeToRemove, ASTNode firstNodeToKeep)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void replaceChild(@NotNull ASTNode oldChild, @NotNull ASTNode newChild)
+	public void replaceChild(@Nonnull ASTNode oldChild, @Nonnull ASTNode newChild)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -214,14 +214,14 @@ public class CSharpDisabledBlock extends UserDataHolderBase implements ASTNode, 
 
 	@Nullable
 	@Override
-	public ASTNode findChildByType(@NotNull TokenSet typesSet)
+	public ASTNode findChildByType(@Nonnull TokenSet typesSet)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Nullable
 	@Override
-	public ASTNode findChildByType(@NotNull TokenSet typesSet, @Nullable ASTNode anchor)
+	public ASTNode findChildByType(@Nonnull TokenSet typesSet, @Nullable ASTNode anchor)
 	{
 		throw new UnsupportedOperationException();
 	}

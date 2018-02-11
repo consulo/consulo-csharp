@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.doc.inspection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.codeInsight.highlighting.HighlightErrorFilter;
 import com.intellij.psi.PsiErrorElement;
 import consulo.annotations.RequiredReadAction;
@@ -30,7 +30,7 @@ public class CSharpDocHighlightErrorFilter extends HighlightErrorFilter
 {
 	@Override
 	@RequiredReadAction
-	public boolean shouldHighlightErrorElement(@NotNull PsiErrorElement element)
+	public boolean shouldHighlightErrorElement(@Nonnull PsiErrorElement element)
 	{
 		return !CSharpDocUtil.isInsideDoc(element);
 	}

@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetParameterList;
@@ -34,7 +35,7 @@ public abstract class CSharpLightLikeMethodDeclarationWithImplType<S extends Dot
 	private DotNetTypeRef myReturnTypeRef = DotNetTypeRef.ERROR_TYPE;
 	private DotNetTypeRef myTypeRefForImplement = DotNetTypeRef.ERROR_TYPE;
 
-	public CSharpLightLikeMethodDeclarationWithImplType(@NotNull S declaration)
+	public CSharpLightLikeMethodDeclarationWithImplType(@Nonnull S declaration)
 	{
 		this(declaration, declaration.getParameterList());
 	}
@@ -46,21 +47,21 @@ public abstract class CSharpLightLikeMethodDeclarationWithImplType<S extends Dot
 		myTypeRefForImplement = original.getTypeRefForImplement();
 	}
 
-	@NotNull
-	public CSharpLightLikeMethodDeclarationWithImplType<S> withTypeRefForImplement(@NotNull DotNetTypeRef type)
+	@Nonnull
+	public CSharpLightLikeMethodDeclarationWithImplType<S> withTypeRefForImplement(@Nonnull DotNetTypeRef type)
 	{
 		myTypeRefForImplement = type;
 		return this;
 	}
 
-	@NotNull
-	public CSharpLightLikeMethodDeclarationWithImplType<S> withReturnTypeRef(@NotNull DotNetTypeRef type)
+	@Nonnull
+	public CSharpLightLikeMethodDeclarationWithImplType<S> withReturnTypeRef(@Nonnull DotNetTypeRef type)
 	{
 		myReturnTypeRef = type;
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
@@ -68,7 +69,7 @@ public abstract class CSharpLightLikeMethodDeclarationWithImplType<S extends Dot
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{

@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetType;
 import com.intellij.psi.PsiElement;
@@ -32,7 +33,7 @@ public interface CSharpNullableType extends DotNetType
 	@RequiredReadAction
 	DotNetType getInnerType();
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	PsiElement getQuestElement();
 }

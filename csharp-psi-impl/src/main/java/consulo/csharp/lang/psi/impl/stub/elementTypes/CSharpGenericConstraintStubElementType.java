@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.impl.source.CSharpGenericConstraintImpl;
@@ -41,21 +42,21 @@ public class CSharpGenericConstraintStubElementType extends CSharpAbstractStubEl
 		super("GENERIC_CONSTRAINT");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpGenericConstraint createElement(@NotNull ASTNode astNode)
+	public CSharpGenericConstraint createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpGenericConstraintImpl(astNode);
 	}
 
 	@Override
-	public CSharpGenericConstraint createPsi(@NotNull CSharpWithStringValueStub<CSharpGenericConstraint> stub)
+	public CSharpGenericConstraint createPsi(@Nonnull CSharpWithStringValueStub<CSharpGenericConstraint> stub)
 	{
 		return new CSharpGenericConstraintImpl(stub, this);
 	}
 
 	@Override
-	public CSharpWithStringValueStub<CSharpGenericConstraint> createStub(@NotNull CSharpGenericConstraint constraint, StubElement stubElement)
+	public CSharpWithStringValueStub<CSharpGenericConstraint> createStub(@Nonnull CSharpGenericConstraint constraint, StubElement stubElement)
 	{
 		CSharpReferenceExpression genericParameterReference = constraint.getGenericParameterReference();
 		String text = genericParameterReference == null ? null : genericParameterReference.getText();
@@ -63,15 +64,15 @@ public class CSharpGenericConstraintStubElementType extends CSharpAbstractStubEl
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpWithStringValueStub<CSharpGenericConstraint> stub,
-			@NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpWithStringValueStub<CSharpGenericConstraint> stub,
+			@Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getReferenceText());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpWithStringValueStub<CSharpGenericConstraint> deserialize(@NotNull StubInputStream inputStream,
+	public CSharpWithStringValueStub<CSharpGenericConstraint> deserialize(@Nonnull StubInputStream inputStream,
 			StubElement stubElement) throws IOException
 	{
 		StringRef text = inputStream.readName();

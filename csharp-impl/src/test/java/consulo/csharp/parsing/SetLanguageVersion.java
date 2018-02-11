@@ -19,7 +19,7 @@ package consulo.csharp.parsing;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 
 /**
@@ -29,6 +29,6 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SetLanguageVersion
 {
-	@NotNull
+	@Nonnull
 	CSharpLanguageVersion version() default CSharpLanguageVersion._1_0;
 }

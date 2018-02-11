@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
@@ -26,9 +27,9 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public interface CSharpLambdaParameterList extends DotNetElement
 {
-	@NotNull
+	@Nonnull
 	CSharpLambdaParameter[] getParameters();
 
-	@NotNull
+	@Nonnull
 	DotNetTypeRef[] getParameterTypeRefs();
 }

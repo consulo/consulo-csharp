@@ -16,7 +16,7 @@
 
 package consulo.csharp;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.psi.PsiElement;
@@ -55,7 +55,7 @@ public class VmQNameTest extends OneFileAtProjectTestCase
 	}
 
 	@RequiredReadAction
-	private void assertEqualVmQName(@NotNull String vmQName, @NotNull String vmName) throws Exception
+	private void assertEqualVmQName(@Nonnull String vmQName, @Nonnull String vmName) throws Exception
 	{
 		String name = getTestName(false);
 		String text = loadFile(name + "." + myExtension);

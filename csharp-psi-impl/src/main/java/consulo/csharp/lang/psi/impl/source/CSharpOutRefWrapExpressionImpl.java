@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -36,19 +37,19 @@ public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl impleme
 {
 	private static final TokenSet ourStartTypes = TokenSet.create(CSharpTokens.OUT_KEYWORD, CSharpTokens.REF_KEYWORD);
 
-	public CSharpOutRefWrapExpressionImpl(@NotNull ASTNode node)
+	public CSharpOutRefWrapExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitOurRefWrapExpression(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -68,7 +69,7 @@ public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl impleme
 		return new CSharpRefTypeRef(getProject(), type, typeRef);
 	}
 
-	@NotNull
+	@Nonnull
 	public PsiElement getStartElement()
 	{
 		return findNotNullChildByFilter(ourStartTypes);

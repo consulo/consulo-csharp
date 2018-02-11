@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -45,7 +46,7 @@ public class CS0304 extends CompilerCheck<CSharpNewExpression>
 
 	@RequiredReadAction
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpNewExpression element)
+	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpNewExpression element)
 	{
 		PsiElement resolvedNewElement = element.toTypeRef(false).resolve().getElement();
 		if(resolvedNewElement instanceof DotNetGenericParameter)

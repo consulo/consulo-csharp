@@ -23,8 +23,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableMap;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
@@ -95,10 +96,10 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	{
 		private static final OurResolver INSTANCE = new OurResolver();
 
-		@NotNull
+		@Nonnull
 		@Override
 		@RequiredReadAction
-		public ResolveResult[] resolve(@NotNull CSharpOperatorReferenceImpl reference, boolean incompleteCode)
+		public ResolveResult[] resolve(@Nonnull CSharpOperatorReferenceImpl reference, boolean incompleteCode)
 		{
 			if(!incompleteCode)
 			{
@@ -120,7 +121,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			}
 		}
 
-		@NotNull
+		@Nonnull
 		@RequiredReadAction
 		private ResolveResult[] multiResolveImpl(CSharpOperatorReferenceImpl reference)
 		{
@@ -173,7 +174,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			.put(CSharpTokens.XOREQ, CSharpTokens.XOR)
 			.build();
 
-	public CSharpOperatorReferenceImpl(@NotNull ASTNode node)
+	public CSharpOperatorReferenceImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -185,7 +186,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitOperatorReference(this);
 	}
@@ -197,7 +198,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public TextRange getRangeInElement()
@@ -206,14 +207,14 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return new TextRange(0, operator.getTextLength());
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public PsiElement getOperatorElement()
 	{
 		return findNotNullChildByFilter(ourMergeSet);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public IElementType getOperatorElementType()
 	{
@@ -349,7 +350,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	}
 
 	@RequiredReadAction
-	private void processImplicitCasts(DotNetTypeRef expressionTypeRef, PsiElement parent, @NotNull Consumer<DotNetTypeRef> consumer)
+	private void processImplicitCasts(DotNetTypeRef expressionTypeRef, PsiElement parent, @Nonnull Consumer<DotNetTypeRef> consumer)
 	{
 		for(DotNetExpression dotNetExpression : ((CSharpExpressionWithOperatorImpl) parent).getParameterExpressions())
 		{
@@ -362,7 +363,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public DotNetTypeRef resolveToTypeRef()
 	{
@@ -394,10 +395,10 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	}
 
 	@RequiredReadAction
-	public void resolveUserDefinedOperators(@NotNull IElementType elementType,
-			@NotNull DotNetTypeRef originalTypeRef,
-			@NotNull DotNetTypeRef typeRef,
-			@NotNull Set<MethodResolveResult> last,
+	public void resolveUserDefinedOperators(@Nonnull IElementType elementType,
+			@Nonnull DotNetTypeRef originalTypeRef,
+			@Nonnull DotNetTypeRef typeRef,
+			@Nonnull Set<MethodResolveResult> last,
 			@Nullable DotNetExpression implicitExpression)
 	{
 		Set<PsiElement> psiElements = resolveElements(elementType, typeRef);
@@ -423,7 +424,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 	@Nullable
 	@RequiredReadAction
-	private Set<PsiElement> resolveElements(@NotNull IElementType elementType, @NotNull DotNetTypeRef typeRef)
+	private Set<PsiElement> resolveElements(@Nonnull IElementType elementType, @Nonnull DotNetTypeRef typeRef)
 	{
 		if(typeRef instanceof DotNetPointerTypeRef)
 		{
@@ -466,7 +467,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	private PsiElement buildOperatorForPointer(IElementType operatorElementType, DotNetTypeRef leftTypeRef, String typeVmQName)
 	{
 		Project project = getProject();
@@ -478,7 +479,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return builder;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public String getCanonicalText()
@@ -497,7 +498,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException
+	public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
 	{
 		return null;
 	}
@@ -516,7 +517,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return resolve() == this;
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef[] getTypeRefs()
 	{
 		DotNetExpression[] parameterExpressions = getParameterExpressions();
@@ -545,14 +546,14 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
 		return ResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, false, incompleteCode);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -564,14 +565,14 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return DotNetExpression.EMPTY_ARRAY;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
 		return getCallArguments(null, null, null);
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpCallArgument[] getCallArguments(DotNetTypeRef originalTypeRef, DotNetExpression wrapExpression, DotNetTypeRef toTypeRef)
 	{
 		DotNetExpression[] parameterExpressions = getParameterExpressions();

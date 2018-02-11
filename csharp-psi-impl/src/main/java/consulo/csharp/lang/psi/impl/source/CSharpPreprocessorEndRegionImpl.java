@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 
@@ -26,13 +27,13 @@ import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
  */
 public class CSharpPreprocessorEndRegionImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpPreprocessorEndRegionImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorEndRegionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitEndRegionDirective(this);
 	}

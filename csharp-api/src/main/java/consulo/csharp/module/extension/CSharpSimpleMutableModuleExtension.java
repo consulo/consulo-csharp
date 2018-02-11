@@ -16,7 +16,8 @@
 
 package consulo.csharp.module.extension;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.module.extension.MutableModuleExtension;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;
 
@@ -28,7 +29,7 @@ public interface CSharpSimpleMutableModuleExtension<T extends CSharpSimpleModule
 {
 	MutableModuleInheritableNamedPointer<CSharpLanguageVersion> getLanguageVersionPointer();
 
-	void setLanguageVersion(@NotNull CSharpLanguageVersion version);
+	void setLanguageVersion(@Nonnull CSharpLanguageVersion version);
 
 	void setAllowUnsafeCode(boolean value);
 }

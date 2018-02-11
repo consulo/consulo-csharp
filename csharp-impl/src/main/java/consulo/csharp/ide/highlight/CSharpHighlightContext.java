@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.highlight;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.UserDataHolderBase;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -77,12 +77,12 @@ public class CSharpHighlightContext extends UserDataHolderBase
 
 	private PsiFile myFile;
 
-	public CSharpHighlightContext(@NotNull PsiFile file)
+	public CSharpHighlightContext(@Nonnull PsiFile file)
 	{
 		myFile = file;
 	}
 
-	@NotNull
+	@Nonnull
 	public PsiFile getFile()
 	{
 		return myFile;
@@ -109,7 +109,7 @@ public class CSharpHighlightContext extends UserDataHolderBase
 		return myCSharpModuleExtensionValue.getValue();
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public CSharpLanguageVersion getLanguageVersion()
 	{

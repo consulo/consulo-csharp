@@ -25,8 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -103,7 +104,7 @@ class CSharpExpressionCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				final CSharpReferenceExpressionEx parent = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 				if(parent.getQualifier() == null && (parent.kind() == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER || parent.kind() == CSharpReferenceExpression.ResolveToKind
@@ -188,7 +189,7 @@ class CSharpExpressionCompletionContributor
 		{
 			@Override
 			@RequiredReadAction
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				List<ExpectedTypeInfo> expectedTypeInfos = CSharpInheritCompletionWeighter.getExpectedTypeInfosForExpression(parameters, context);
 
@@ -226,7 +227,7 @@ class CSharpExpressionCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) parameters.getPosition().getParent();
 				if(referenceExpression.getQualifier() != null)
@@ -312,7 +313,7 @@ class CSharpExpressionCompletionContributor
 		{
 			@Override
 			@RequiredReadAction
-			public void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull final CompletionResultSet result)
+			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull final CompletionResultSet result)
 			{
 				final CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 				CSharpReferenceExpression.ResolveToKind kind = expression.kind();
@@ -481,7 +482,7 @@ class CSharpExpressionCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				if(isCorrectPosition(parameters.getPosition()))
 				{
@@ -517,7 +518,7 @@ class CSharpExpressionCompletionContributor
 		{
 			@Override
 			@RequiredReadAction
-			public void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull final CompletionResultSet result)
+			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull final CompletionResultSet result)
 			{
 				final CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 
@@ -585,7 +586,7 @@ class CSharpExpressionCompletionContributor
 
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull final CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet)
+			public void addCompletions(@Nonnull final CompletionParameters completionParameters, ProcessingContext processingContext, @Nonnull CompletionResultSet completionResultSet)
 			{
 				CSharpCodeGenerationSettings codeGenerationSettings = CSharpCodeGenerationSettings.getInstance(completionParameters.getPosition().getProject());
 				if(!codeGenerationSettings.USE_LANGUAGE_DATA_TYPES)
@@ -732,7 +733,7 @@ class CSharpExpressionCompletionContributor
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private static LookupElement buildForMethodReference(final CSharpMethodDeclaration methodDeclaration, CSharpTypeDeclaration contextType, final CSharpReferenceExpressionEx expression)
 	{

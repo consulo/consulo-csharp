@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.codeInsight.problems;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
@@ -36,7 +37,7 @@ import com.intellij.openapi.vfs.VirtualFile;
  */
 public class CSharpLocationUtil
 {
-	public static boolean isValidLocation(@NotNull Project project, @Nullable VirtualFile virtualFile)
+	public static boolean isValidLocation(@Nonnull Project project, @Nullable VirtualFile virtualFile)
 	{
 		if(virtualFile == null || virtualFile.getFileType() != CSharpFileType.INSTANCE)
 		{

@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
@@ -40,11 +41,11 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class NParamsCallArgument extends NCallArgument
 {
-	@NotNull
+	@Nonnull
 	private final List<CSharpCallArgument> myCallArguments;
 	private final NotNullLazyValue<DotNetTypeRef> myTypeRefValue;
 
-	public NParamsCallArgument(@NotNull List<CSharpCallArgument> callArguments, @Nullable DotNetParameter parameter)
+	public NParamsCallArgument(@Nonnull List<CSharpCallArgument> callArguments, @Nullable DotNetParameter parameter)
 	{
 		super(DotNetTypeRef.ERROR_TYPE, null, parameter);
 		myCallArguments = callArguments;
@@ -68,7 +69,7 @@ public class NParamsCallArgument extends NCallArgument
 
 	@Override
 	@RequiredReadAction
-	public int calcValid(@NotNull PsiElement scope)
+	public int calcValid(@Nonnull PsiElement scope)
 	{
 		DotNetTypeRef parameterTypeRef = getParameterTypeRef();
 		int newVal = FAIL;
@@ -97,14 +98,14 @@ public class NParamsCallArgument extends NCallArgument
 		return myValid;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRef()
 	{
 		return myTypeRefValue.getValue();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Collection<CSharpCallArgument> getCallArguments()
 	{

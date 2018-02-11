@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
@@ -46,7 +47,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 {
 	private static final Logger LOGGER = Logger.getInstance(CSharpReferenceExpressionImpl.class);
 
-	public CSharpReferenceExpressionImpl(@NotNull ASTNode node)
+	public CSharpReferenceExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -66,7 +67,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitReferenceExpression(this);
 	}
@@ -110,7 +111,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 		return CSharpReferenceExpressionImplUtil.getRangeInElement(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public ResolveResult[] multiResolve(final boolean incompleteCode)
@@ -120,7 +121,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 
 	@RequiredReadAction
 	@Override
-	@NotNull
+	@Nonnull
 	public ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent)
 	{
 		return CSharpReferenceExpressionImplUtil.multiResolve(this, incompleteCode, resolveFromParent);
@@ -128,16 +129,16 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 
 	@RequiredReadAction
 	@Override
-	@NotNull
+	@Nonnull
 	public ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent)
 	{
 		return CSharpReferenceExpressionImplUtil.multiResolveImpl(kind, CSharpReferenceExpressionImplUtil.findCallArgumentListOwner(kind, this), this, resolveFromParent);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public ResolveResult[] tryResolveFromQualifier(@NotNull PsiElement element)
+	public ResolveResult[] tryResolveFromQualifier(@Nonnull PsiElement element)
 	{
 		return CSharpReferenceExpressionImplUtil.tryResolveFromQualifier(this, element);
 	}
@@ -152,7 +153,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 
 	@RequiredReadAction
 	@Override
-	@NotNull
+	@Nonnull
 	public ResolveToKind kind()
 	{
 		return CSharpReferenceExpressionImplUtil.kind(this);
@@ -167,7 +168,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getTypeArgumentListRefs()
 	{
@@ -175,7 +176,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 		return typeArgumentList == null ? DotNetTypeRef.EMPTY_ARRAY : typeArgumentList.getTypeRefs();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public String getCanonicalText()
@@ -195,7 +196,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 	}
 
 	@Override
-	public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException
+	public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
 	{
 		return this;
 	}
@@ -230,7 +231,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 		return findChildByType(CSharpReferenceExpressionImplUtil.ourAccessTokens);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public AccessType getMemberAccessType()
@@ -260,7 +261,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 		return AccessType.DOT;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
@@ -270,7 +271,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 
 	@RequiredReadAction
 	@Override
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent)
 	{
 		return CSharpReferenceExpressionImplUtil.toTypeRefWithoutCaching(this, kind, resolveFromParent);

@@ -26,8 +26,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.impl.PsiBuilderAdapter;
 import com.intellij.psi.tree.IElementType;
@@ -69,7 +69,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 	{
 		Deque<Boolean> ifDirectives = new ArrayDeque<>();
 
-		public PreprocessorState(@NotNull Boolean initialValue)
+		public PreprocessorState(@Nonnull Boolean initialValue)
 		{
 			ifDirectives.add(initialValue);
 		}
@@ -107,7 +107,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		putUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES, variables == null ? Collections.<String>emptySet() : variables);
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpLanguageVersion getVersion()
 	{
 		if(myLanguageVersion instanceof CSharpLanguageVersionWrapper)
@@ -117,17 +117,17 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		throw new UnsupportedOperationException(myLanguageVersion.toString());
 	}
 
-	public void enableSoftKeywords(@NotNull TokenSet tokenSet)
+	public void enableSoftKeywords(@Nonnull TokenSet tokenSet)
 	{
 		mySoftSet = TokenSet.orSet(mySoftSet, tokenSet);
 	}
 
-	public void disableSoftKeywords(@NotNull TokenSet tokenSet)
+	public void disableSoftKeywords(@Nonnull TokenSet tokenSet)
 	{
 		mySoftSet = TokenSet.andNot(mySoftSet, tokenSet);
 	}
 
-	public boolean enableSoftKeyword(@NotNull IElementType elementType)
+	public boolean enableSoftKeyword(@Nonnull IElementType elementType)
 	{
 		if(mySoftSet.contains(elementType))
 		{
@@ -137,7 +137,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		return true;
 	}
 
-	public void disableSoftKeyword(@NotNull IElementType elementType)
+	public void disableSoftKeyword(@Nonnull IElementType elementType)
 	{
 		mySoftSet = TokenSet.andNot(mySoftSet, TokenSet.create(elementType));
 	}

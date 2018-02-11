@@ -19,8 +19,9 @@ package consulo.csharp.lang.psi.impl.msil.typeParsing;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.util.Ref;
@@ -41,7 +42,7 @@ public class SomeTypeParser
 {
 	private static final Logger LOGGER = Logger.getInstance(SomeTypeParser.class);
 
-	@NotNull
+	@Nonnull
 	public static DotNetTypeRef toDotNetTypeRef(String text, String nameFromBytecode, PsiElement scope)
 	{
 		SomeType someType = parseType(text, nameFromBytecode);
@@ -53,7 +54,7 @@ public class SomeTypeParser
 		return convert(someType, scope);
 	}
 
-	public static DotNetTypeRef convert(@NotNull SomeType type, @NotNull final PsiElement scope)
+	public static DotNetTypeRef convert(@Nonnull SomeType type, @Nonnull final PsiElement scope)
 	{
 		final Ref<DotNetTypeRef> typeRefRef = new Ref<>();
 		type.accept(new SomeTypeVisitor()

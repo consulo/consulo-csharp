@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
@@ -52,18 +52,18 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDeclStub> implements CSharpTypeDeclaration
 {
-	public CSharpTypeDeclarationImpl(@NotNull ASTNode node)
+	public CSharpTypeDeclarationImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpTypeDeclarationImpl(@NotNull CSharpTypeDeclStub stub)
+	public CSharpTypeDeclarationImpl(@Nonnull CSharpTypeDeclStub stub)
 	{
 		super(stub, CSharpStubElements.TYPE_DECLARATION);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitTypeDeclaration(this);
 	}
@@ -89,7 +89,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 		return getStubOrPsiChild(CSharpStubElements.GENERIC_PARAMETER_LIST);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
@@ -120,7 +120,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetQualifiedElement[] getMembers()
 	{
@@ -173,7 +173,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
 	{
 		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.GENERIC_PARAMETER))
 		{
@@ -202,7 +202,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
@@ -221,12 +221,12 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 
 	@RequiredReadAction
 	@Override
-	public boolean isInheritor(@NotNull String other, boolean deep)
+	public boolean isInheritor(@Nonnull String other, boolean deep)
 	{
 		return DotNetInheritUtil.isInheritor(this, other, deep);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	@Override
 	public DotNetTypeRef getTypeRefForEnumConstants()
@@ -261,7 +261,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 		return getStubOrPsiChild(CSharpStubElements.GENERIC_CONSTRAINT_LIST);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{

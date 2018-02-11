@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpNamespaceDeclarationImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpNamespaceDeclStub;
@@ -40,35 +41,35 @@ public class CSharpNamespaceStubElementType extends CSharpAbstractStubElementTyp
 	}
 
 	@Override
-	public CSharpNamespaceDeclarationImpl createPsi(@NotNull CSharpNamespaceDeclStub cSharpNamespaceStub)
+	public CSharpNamespaceDeclarationImpl createPsi(@Nonnull CSharpNamespaceDeclStub cSharpNamespaceStub)
 	{
 		return new CSharpNamespaceDeclarationImpl(cSharpNamespaceStub);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpNamespaceDeclarationImpl createElement(@NotNull ASTNode astNode)
+	public CSharpNamespaceDeclarationImpl createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpNamespaceDeclarationImpl(astNode);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpNamespaceDeclStub createStub(@NotNull CSharpNamespaceDeclarationImpl declaration, StubElement stubElement)
+	public CSharpNamespaceDeclStub createStub(@Nonnull CSharpNamespaceDeclarationImpl declaration, StubElement stubElement)
 	{
 		String referenceText = declaration.getReferenceText();
 		return new CSharpNamespaceDeclStub(stubElement, this, referenceText);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpNamespaceDeclStub namespaceStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpNamespaceDeclStub namespaceStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(namespaceStub.getReferenceTextRef());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpNamespaceDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpNamespaceDeclStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef referenceTextRef = stubInputStream.readName();
 		return new CSharpNamespaceDeclStub(stubElement, this, referenceTextRef);

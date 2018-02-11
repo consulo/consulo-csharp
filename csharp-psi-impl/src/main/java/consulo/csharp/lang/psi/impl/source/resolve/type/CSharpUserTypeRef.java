@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
@@ -58,7 +59,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 			return myElement;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public DotNetGenericExtractor getGenericExtractor()
 		{
@@ -82,7 +83,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		private final PsiElement myScope;
 
 		@RequiredReadAction
-		public LambdaResult(@NotNull PsiElement scope, @NotNull CSharpMethodDeclaration element, @NotNull DotNetGenericExtractor extractor)
+		public LambdaResult(@Nonnull PsiElement scope, @Nonnull CSharpMethodDeclaration element, @Nonnull DotNetGenericExtractor extractor)
 		{
 			super(element, extractor);
 			myScope = scope;
@@ -106,7 +107,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 			myReturnTypRefValue = NotNullLazyValue.createValue(() -> GenericUnwrapTool.exchangeTypeRef(myElement.getReturnTypeRef(), getGenericExtractor(), scope));
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		@RequiredReadAction
 		public CSharpSimpleParameterInfo[] getParameterInfos()
@@ -122,7 +123,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		}
 
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
 		public DotNetTypeRef getReturnTypeRef()
 		{
@@ -143,7 +144,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 			return true;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public CSharpMethodDeclaration getTarget()
 		{
@@ -153,14 +154,14 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 
 	protected final CSharpReferenceExpression myReferenceExpression;
 
-	public CSharpUserTypeRef(@NotNull CSharpReferenceExpression referenceExpression)
+	public CSharpUserTypeRef(@Nonnull CSharpReferenceExpression referenceExpression)
 	{
 		super(referenceExpression.getProject());
 		myReferenceExpression = referenceExpression;
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{
@@ -186,7 +187,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		return builder.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeResolveResult resolveResult()
@@ -204,13 +205,13 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		return new Result<>(resolve, createExtractor(resolve));
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpReferenceExpression getReferenceExpression()
 	{
 		return myReferenceExpression;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private DotNetGenericExtractor createExtractor(PsiElement resolved)
 	{
@@ -230,7 +231,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		return DotNetGenericExtractor.EMPTY;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public String getReferenceText()
 	{

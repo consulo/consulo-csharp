@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
@@ -48,7 +49,7 @@ public class CSharpModifierListStub extends StubBase<DotNetModifierList>
 		return myModifierMask;
 	}
 
-	public static int getModifierMask(@NotNull DotNetModifierList list)
+	public static int getModifierMask(@Nonnull DotNetModifierList list)
 	{
 		int val = 0;
 		for(CSharpModifier modifier : CSharpModifier.values())
@@ -61,7 +62,7 @@ public class CSharpModifierListStub extends StubBase<DotNetModifierList>
 		return val;
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpModifier[] getModifiers()
 	{
 		List<CSharpModifier> list = new SmartList<>();

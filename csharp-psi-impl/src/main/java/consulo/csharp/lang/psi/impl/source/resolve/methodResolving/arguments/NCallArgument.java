@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
@@ -56,7 +56,7 @@ public class NCallArgument extends UserDataHolderBase
 
 	protected int myValid = NOT_CALCULATED;
 
-	public NCallArgument(@NotNull DotNetTypeRef typeRef, @Nullable CSharpCallArgument callArgument, @Nullable Object parameterObject)
+	public NCallArgument(@Nonnull DotNetTypeRef typeRef, @Nullable CSharpCallArgument callArgument, @Nullable Object parameterObject)
 	{
 		myTypeRef = typeRef;
 		myCallArgument = callArgument;
@@ -73,7 +73,7 @@ public class NCallArgument extends UserDataHolderBase
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public Collection<CSharpCallArgument> getCallArguments()
 	{
 		if(myCallArgument == null)
@@ -83,7 +83,7 @@ public class NCallArgument extends UserDataHolderBase
 		return Collections.singletonList(myCallArgument);
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef getTypeRef()
 	{
 		return myTypeRef;
@@ -117,7 +117,7 @@ public class NCallArgument extends UserDataHolderBase
 	}
 
 	@RequiredReadAction
-	public int calcValid(@NotNull PsiElement scope)
+	public int calcValid(@Nonnull PsiElement scope)
 	{
 		DotNetTypeRef parameterTypeRef = getParameterTypeRef();
 		int newVal = FAIL;

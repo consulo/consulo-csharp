@@ -18,8 +18,9 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import consulo.annotations.RequiredReadAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.EmptyStub;
@@ -33,27 +34,27 @@ import com.intellij.psi.stubs.StubOutputStream;
  */
 public abstract class CSharpEmptyStubElementType<T extends PsiElement> extends CSharpAbstractStubElementType<EmptyStub<T>, T>
 {
-	public CSharpEmptyStubElementType(@NotNull @NonNls String debugName)
+	public CSharpEmptyStubElementType(@Nonnull @NonNls String debugName)
 	{
 		super(debugName);
 	}
 
 	@RequiredReadAction
 	@Override
-	public EmptyStub<T> createStub(@NotNull T type, StubElement stubElement)
+	public EmptyStub<T> createStub(@Nonnull T type, StubElement stubElement)
 	{
 		return new EmptyStub<T>(stubElement, this);
 	}
 
 	@Override
-	public void serialize(@NotNull EmptyStub cSharpEmptyStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull EmptyStub cSharpEmptyStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public EmptyStub<T> deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public EmptyStub<T> deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		return new EmptyStub<T>(stubElement, this);
 	}

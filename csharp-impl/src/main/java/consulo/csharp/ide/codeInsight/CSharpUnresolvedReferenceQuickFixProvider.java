@@ -18,7 +18,8 @@ package consulo.csharp.ide.codeInsight;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedEventFix;
 import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedFieldFix;
@@ -76,7 +77,7 @@ public class CSharpUnresolvedReferenceQuickFixProvider extends UnresolvedReferen
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Class<CSharpReferenceExpression> getReferenceClass()
 	{

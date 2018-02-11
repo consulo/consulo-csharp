@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
@@ -39,12 +39,12 @@ import consulo.dotnet.resolve.DotNetTypeRef;
 public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpMethodDeclStub> implements
 		CSharpConversionMethodDeclaration, CSharpSimpleLikeMethodAsElement
 {
-	public CSharpConversionMethodDeclarationImpl(@NotNull ASTNode node)
+	public CSharpConversionMethodDeclarationImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpConversionMethodDeclarationImpl(@NotNull CSharpMethodDeclStub stub)
+	public CSharpConversionMethodDeclarationImpl(@Nonnull CSharpMethodDeclStub stub)
 	{
 		super(stub, CSharpStubElements.CONVERSION_METHOD_DECLARATION);
 	}
@@ -84,7 +84,7 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDecla
 		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 1);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getConversionTypeRef()
 	{
@@ -107,7 +107,7 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDecla
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitConversionMethodDeclaration(this);
 	}

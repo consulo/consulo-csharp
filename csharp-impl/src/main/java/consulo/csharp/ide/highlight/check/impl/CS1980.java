@@ -19,8 +19,8 @@ package consulo.csharp.ide.highlight.check.impl;
 import java.util.Collections;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -44,7 +44,7 @@ public class CS1980 extends CompilerCheck<CSharpNativeType>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpNativeType element)
+	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpNativeType element)
 	{
 		PsiElement typeElement = element.getTypeElement();
 		if(element.getTypeElementType() == CSharpTokens.DYNAMIC_KEYWORD)
@@ -68,7 +68,7 @@ public class CS1980 extends CompilerCheck<CSharpNativeType>
 	}
 
 	@RequiredReadAction
-	private boolean noRuntimeType(@NotNull CSharpNativeType element)
+	private boolean noRuntimeType(@Nonnull CSharpNativeType element)
 	{
 		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(element.getProject()).findType(ourCheckType, element.getResolveScope());
 		if(type == null)

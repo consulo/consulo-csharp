@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import consulo.csharp.lang.psi.impl.stub.index.EventIndex;
 import consulo.csharp.lang.psi.impl.stub.index.FieldIndex;
@@ -48,7 +49,7 @@ import com.intellij.util.indexing.IdFilter;
  */
 public class CSharpSymbolNameContributor implements ChooseByNameContributorEx
 {
-	@NotNull
+	@Nonnull
 	@Override
 	public String[] getNames(Project project, boolean includeNonProjectItems)
 	{
@@ -64,7 +65,7 @@ public class CSharpSymbolNameContributor implements ChooseByNameContributorEx
 		return ArrayUtil.toStringArray(list);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public NavigationItem[] getItemsByName(String name, final String pattern, Project project, boolean includeNonProjectItems)
 	{
@@ -82,7 +83,7 @@ public class CSharpSymbolNameContributor implements ChooseByNameContributorEx
 	}
 
 	@Override
-	public void processNames(@NotNull Processor<String> stringProcessor, @NotNull GlobalSearchScope searchScope, @Nullable IdFilter idFilter)
+	public void processNames(@Nonnull Processor<String> stringProcessor, @Nonnull GlobalSearchScope searchScope, @Nullable IdFilter idFilter)
 	{
 		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.METHOD_INDEX, stringProcessor, searchScope, idFilter);
 		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.EVENT_INDEX, stringProcessor, searchScope, idFilter);
@@ -92,7 +93,7 @@ public class CSharpSymbolNameContributor implements ChooseByNameContributorEx
 
 	@Override
 	public void processElementsWithName(
-			@NotNull String name, @NotNull Processor<NavigationItem> navigationItemProcessor, @NotNull FindSymbolParameters findSymbolParameters)
+			@Nonnull String name, @Nonnull Processor<NavigationItem> navigationItemProcessor, @Nonnull FindSymbolParameters findSymbolParameters)
 	{
 		Project project = findSymbolParameters.getProject();
 		IdFilter idFilter = findSymbolParameters.getIdFilter();

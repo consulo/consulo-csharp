@@ -19,10 +19,12 @@ package consulo.csharp.ide.documentation;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.emonic.base.codehierarchy.CodeHierarchyHelper;
 import org.emonic.base.documentation.IDocumentation;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.lang.documentation.DocumentationProvider;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
@@ -427,7 +429,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 	}
 
 	@RequiredReadAction
-	private static void wrapToLink(@NotNull PsiElement resolved, StringBuilder builder, boolean qualified)
+	private static void wrapToLink(@Nonnull PsiElement resolved, StringBuilder builder, boolean qualified)
 	{
 		String parentQName = qualified ? resolved instanceof DotNetQualifiedElement ? ((DotNetQualifiedElement) resolved).getPresentableParentQName() : null : null;
 

@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.ToNativeElementTransformers;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.NotNullFunction;
@@ -35,7 +35,7 @@ public class CSharpTransform implements NotNullFunction<DotNetTypeDeclaration, D
 {
 	public static final CSharpTransform INSTANCE = new CSharpTransform();
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeDeclaration fun(DotNetTypeDeclaration typeDeclaration)

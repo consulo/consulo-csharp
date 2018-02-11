@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.ide.actions.CreateFileFromTemplateAction;
 import com.intellij.ide.fileTemplates.DefaultCreateFromTemplateHandler;
 import com.intellij.ide.fileTemplates.FileTemplate;
@@ -48,7 +48,7 @@ import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
  */
 public class CSharpCreateFromTemplateHandler extends DefaultCreateFromTemplateHandler
 {
-	@NotNull
+	@Nonnull
 	public static CSharpCreateFromTemplateHandler getInstance()
 	{
 		return EP_NAME.findExtension(CSharpCreateFromTemplateHandler.class);
@@ -66,7 +66,7 @@ public class CSharpCreateFromTemplateHandler extends DefaultCreateFromTemplateHa
 				return directory.getVirtualFile();
 			}
 
-			@NotNull
+			@Nonnull
 			@Override
 			public VirtualFileSystem getFileSystem()
 			{

@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
 
@@ -26,13 +26,13 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpLinqOrderByClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqOrderByClauseImpl(@NotNull ASTNode node)
+	public CSharpLinqOrderByClauseImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqOrderByClause(this);
 	}

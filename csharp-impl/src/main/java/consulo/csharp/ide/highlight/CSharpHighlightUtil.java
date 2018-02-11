@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.highlight;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.annotations.PropertyKey;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
@@ -52,7 +52,7 @@ public class CSharpHighlightUtil
 {
 	@Nullable
 	@RequiredReadAction
-	public static HighlightInfo highlightNamed(@NotNull HighlightInfoHolder holder, @Nullable PsiElement element, @Nullable PsiElement target, @Nullable PsiElement owner)
+	public static HighlightInfo highlightNamed(@Nonnull HighlightInfoHolder holder, @Nullable PsiElement element, @Nullable PsiElement target, @Nullable PsiElement owner)
 	{
 		if(target == null || element == null)
 		{
@@ -88,7 +88,7 @@ public class CSharpHighlightUtil
 	}
 
 	@RequiredReadAction
-	private static TextAttributesKey getDefaultTextAttributeKey(@NotNull PsiElement element, @NotNull PsiElement target)
+	private static TextAttributesKey getDefaultTextAttributeKey(@Nonnull PsiElement element, @Nonnull PsiElement target)
 	{
 		TextAttributesKey key = null;
 		if(element instanceof CSharpTypeDeclaration)

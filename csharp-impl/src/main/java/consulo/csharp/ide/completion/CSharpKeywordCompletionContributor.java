@@ -21,7 +21,8 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -88,7 +89,7 @@ class CSharpKeywordCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				PsiElement position = parameters.getPosition();
 				String trim = position.getText().replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "").trim();
@@ -113,7 +114,7 @@ class CSharpKeywordCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				CSharpFieldDeclaration fieldDeclaration = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpFieldDeclaration.class);
 				assert fieldDeclaration != null;
@@ -130,7 +131,7 @@ class CSharpKeywordCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.STATIC_KEYWORD, null, new Condition<IElementType>()
 				{
@@ -148,7 +149,7 @@ class CSharpKeywordCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, TokenSet.create(CSharpTokens.IN_KEYWORD, CSharpTokens.OUT_KEYWORD), null, new Condition<IElementType>()
 				{
@@ -175,7 +176,7 @@ class CSharpKeywordCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				PsiElement position = parameters.getPosition();
 				if(isCorrectPosition(position))
@@ -212,7 +213,7 @@ class CSharpKeywordCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				TokenSet set = TokenSet.create(CSharpTokens.CLASS_KEYWORD, CSharpTokens.STRUCT_KEYWORD);
 				CSharpCompletionUtil.tokenSetToLookup(result, set, null, null);
@@ -223,7 +224,7 @@ class CSharpKeywordCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet)
+			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext processingContext, @Nonnull CompletionResultSet completionResultSet)
 			{
 				final PsiElement position = parameters.getPosition();
 				if(position.getParent() instanceof DotNetReferenceExpression && position.getParent().getParent() instanceof DotNetUserType)

@@ -18,7 +18,8 @@ package consulo.csharp.ide.refactoring.changeSignature;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;

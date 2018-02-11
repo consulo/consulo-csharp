@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.dotnet.psi.DotNetParameter;
@@ -29,7 +30,7 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpMethodImplUtil
 {
-	public static boolean isExtensionMethod(@NotNull PsiElement element)
+	public static boolean isExtensionMethod(@Nonnull PsiElement element)
 	{
 		if(element instanceof CSharpMethodDeclaration)
 		{

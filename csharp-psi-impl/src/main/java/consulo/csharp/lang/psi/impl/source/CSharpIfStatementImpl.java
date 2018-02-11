@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.ASTNode;
@@ -32,7 +32,7 @@ import consulo.dotnet.psi.DotNetStatement;
  */
 public class CSharpIfStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpIfStatementImpl(@NotNull ASTNode node)
+	public CSharpIfStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -43,7 +43,7 @@ public class CSharpIfStatementImpl extends CSharpElementImpl implements DotNetSt
 		return findChildByClass(DotNetExpression.class);
 	}
 
-	@NotNull
+	@Nonnull
 	public PsiElement getIfKeywordElement()
 	{
 		return findNotNullChildByType(CSharpTokens.IF_KEYWORD);
@@ -98,7 +98,7 @@ public class CSharpIfStatementImpl extends CSharpElementImpl implements DotNetSt
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitIfStatement(this);
 	}

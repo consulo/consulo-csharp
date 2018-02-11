@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.text.StringUtil;
@@ -87,7 +88,7 @@ public abstract class CSharpAbstractLightAttributeBuilder extends LightElement i
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -105,7 +106,7 @@ public abstract class CSharpAbstractLightAttributeBuilder extends LightElement i
 		return ContainerUtil.toArray(list, DotNetExpression.ARRAY_FACTORY);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
@@ -128,7 +129,7 @@ public abstract class CSharpAbstractLightAttributeBuilder extends LightElement i
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{

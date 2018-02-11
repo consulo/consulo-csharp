@@ -2,7 +2,8 @@ package consulo.csharp.ide.findUsage;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.find.findUsages.FindUsagesHandler;
 import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.ui.Messages;
@@ -18,12 +19,12 @@ import consulo.dotnet.psi.DotNetVirtualImplementOwner;
  */
 public class CSharpFindUsageHandler extends FindUsagesHandler
 {
-	public CSharpFindUsageHandler(@NotNull PsiElement psiElement)
+	public CSharpFindUsageHandler(@Nonnull PsiElement psiElement)
 	{
 		super(psiElement);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public PsiElement[] getPrimaryElements()
@@ -47,7 +48,7 @@ public class CSharpFindUsageHandler extends FindUsagesHandler
 		return super.getPrimaryElements();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement[] getSecondaryElements()
 	{

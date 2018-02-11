@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi.impl.light.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.dotnet.psi.DotNetModifier;
@@ -50,15 +50,15 @@ public abstract class CSharpLightNamedElementWiModifierListBuilder<T extends CSh
 		super(element);
 	}
 
-	@NotNull
+	@Nonnull
 	public T addModifier(DotNetModifier modifier)
 	{
 		myModifiers.add(CSharpModifier.as(modifier));
 		return (T) this;
 	}
 
-	@NotNull
-	public T removeModifier(@NotNull DotNetModifier modifier)
+	@Nonnull
+	public T removeModifier(@Nonnull DotNetModifier modifier)
 	{
 		myModifiers.remove(CSharpModifier.as(modifier));
 		return (T) this;
@@ -66,7 +66,7 @@ public abstract class CSharpLightNamedElementWiModifierListBuilder<T extends CSh
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return myModifiers.contains(CSharpModifier.as(modifier));
 	}

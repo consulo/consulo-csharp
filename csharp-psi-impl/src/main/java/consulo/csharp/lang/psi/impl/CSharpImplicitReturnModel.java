@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
@@ -79,9 +79,9 @@ public enum CSharpImplicitReturnModel
 				}
 
 				@RequiredReadAction
-				@NotNull
+				@Nonnull
 				@Override
-				public DotNetTypeRef extractTypeRef(@NotNull DotNetTypeRef expectedTypeRef, @NotNull PsiElement scope)
+				public DotNetTypeRef extractTypeRef(@Nonnull DotNetTypeRef expectedTypeRef, @Nonnull PsiElement scope)
 				{
 					return expectedTypeRef;
 				}
@@ -113,16 +113,16 @@ public enum CSharpImplicitReturnModel
 		return myNoGenericTypeVmQName;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public DotNetTypeRef extractTypeRef(@NotNull DotNetTypeRef expectedTypeRef, @NotNull PsiElement scope)
+	public DotNetTypeRef extractTypeRef(@Nonnull DotNetTypeRef expectedTypeRef, @Nonnull PsiElement scope)
 	{
 		return ObjectUtil.notNull(extractTypeRefImpl(expectedTypeRef, scope), DotNetTypeRef.ERROR_TYPE);
 	}
 
 	@Nullable
 	@RequiredReadAction
-	public DotNetTypeRef extractTypeRefImpl(@NotNull DotNetTypeRef expectedTypeRef, @NotNull PsiElement scope)
+	public DotNetTypeRef extractTypeRefImpl(@Nonnull DotNetTypeRef expectedTypeRef, @Nonnull PsiElement scope)
 	{
 		Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, myGenericVmQName);
 		if(typeInSuper != null)
@@ -149,7 +149,7 @@ public enum CSharpImplicitReturnModel
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static CSharpImplicitReturnModel getImplicitReturnModel(CSharpReturnStatementImpl element, CSharpSimpleLikeMethodAsElement pseudoMethod)
 	{

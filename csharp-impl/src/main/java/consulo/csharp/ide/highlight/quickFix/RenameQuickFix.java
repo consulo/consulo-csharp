@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.highlight.quickFix;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -35,14 +36,14 @@ public class RenameQuickFix extends BaseIntentionAction
 	private final String myNewName;
 	private final SmartPsiElementPointer<PsiNamedElement> myPointer;
 
-	public RenameQuickFix(@NotNull String newName, @NotNull PsiNamedElement namedElement)
+	public RenameQuickFix(@Nonnull String newName, @Nonnull PsiNamedElement namedElement)
 	{
 		myNewName = newName;
 		myPointer = SmartPointerManager.getInstance(namedElement.getProject()).createSmartPsiElementPointer(namedElement);
 		setText("Rename '" + namedElement.getName() + "' to '" + myNewName + "'");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{
@@ -50,13 +51,13 @@ public class RenameQuickFix extends BaseIntentionAction
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		return myPointer.getElement() != null;
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		PsiNamedElement element = myPointer.getElement();
 		if(element == null)

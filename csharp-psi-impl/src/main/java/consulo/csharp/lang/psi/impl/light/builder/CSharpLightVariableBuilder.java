@@ -18,8 +18,8 @@ package consulo.csharp.lang.psi.impl.light.builder;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.SmartList;
@@ -76,7 +76,7 @@ public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBu
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -108,7 +108,7 @@ public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBu
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return myModifiers.contains(CSharpModifier.as(modifier));
 	}

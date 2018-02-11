@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
+
 import consulo.dotnet.psi.DotNetLocalVariable;
 import consulo.dotnet.psi.DotNetType;
 

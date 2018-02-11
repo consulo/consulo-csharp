@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -31,13 +32,13 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpTupleTypeImpl extends CSharpTypeElementImpl implements CSharpTupleType
 {
-	public CSharpTupleTypeImpl(@NotNull ASTNode node)
+	public CSharpTupleTypeImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeRef toTypeRefImpl()
 	{
@@ -52,12 +53,12 @@ public class CSharpTupleTypeImpl extends CSharpTypeElementImpl implements CSharp
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitTupleType(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpTupleVariable[] getVariables()
 	{

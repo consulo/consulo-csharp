@@ -24,8 +24,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NotNullLazyValue;
@@ -83,14 +84,14 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
-	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
+	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@Nonnull String name)
 	{
 		Object o = myExtensionGroups.get(name);
 		return o == ObjectUtil.NULL ? null : (CSharpElementGroup<CSharpMethodDeclaration>) o;
 	}
 
 	@RequiredReadAction
-	private CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName0(@NotNull String name)
+	private CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName0(@Nonnull String name)
 	{
 		String presentableName = DotNetNamespaceStubUtil.getIndexableNamespace(myNamespaceAsElement.getPresentableQName());
 
@@ -131,7 +132,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@RequiredReadAction
 	@Override
-	public boolean processExtensionMethodGroups(@NotNull final Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
+	public boolean processExtensionMethodGroups(@Nonnull final Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
 		for(CSharpResolveContext context : myExtensionContexts.getValue())
 		{
@@ -187,9 +188,9 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public Collection<PsiElement> findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
+	public Collection<PsiElement> findByName(@Nonnull String name, boolean deep, @Nonnull UserDataHolder holder)
 	{
 		DotNetNamespaceAsElement.ChildrenFilter filter = holder.getUserData(BaseDotNetNamespaceAsElement.FILTER);
 		if(filter == null)
@@ -202,7 +203,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@RequiredReadAction
 	@Override
-	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
+	public boolean processElements(@Nonnull Processor<PsiElement> processor, boolean deep)
 	{
 		DotNetNamespaceAsElement.ChildrenFilter filter = DotNetNamespaceAsElement.ChildrenFilter.ONLY_ELEMENTS;
 		if(StringUtil.isEmpty(myNamespaceAsElement.getPresentableQName()))
@@ -223,7 +224,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getElement()
 	{

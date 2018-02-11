@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -37,7 +38,7 @@ public class CSharpPointerTypeRef extends DotNetTypeRefWithCachedResult implemen
 	private PsiElement myScope;
 	private DotNetTypeRef myInnerTypeRef;
 
-	public CSharpPointerTypeRef(@NotNull PsiElement scope, @NotNull DotNetTypeRef innerTypeRef)
+	public CSharpPointerTypeRef(@Nonnull PsiElement scope, @Nonnull DotNetTypeRef innerTypeRef)
 	{
 		super(scope.getProject());
 		myScope = scope;
@@ -45,7 +46,7 @@ public class CSharpPointerTypeRef extends DotNetTypeRefWithCachedResult implemen
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -58,14 +59,14 @@ public class CSharpPointerTypeRef extends DotNetTypeRefWithCachedResult implemen
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{
 		return myInnerTypeRef.toString() + "*";
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getInnerTypeRef()
 	{

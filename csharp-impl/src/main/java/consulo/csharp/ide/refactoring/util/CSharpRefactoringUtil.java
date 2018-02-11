@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.UsefulPsiTreeUtil;
@@ -50,12 +50,12 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class CSharpRefactoringUtil
 {
-	public static Set<String> collectUsedNames(@NotNull PsiElement context, @Nullable PsiElement toSkip)
+	public static Set<String> collectUsedNames(@Nonnull PsiElement context, @Nullable PsiElement toSkip)
 	{
 		return new THashSet<>(ContainerUtil.map(collectUsedComponents(context, toSkip), PsiNamedElement::getName));
 	}
 
-	public static Set<PsiNamedElement> collectUsedComponents(@NotNull PsiElement context, @Nullable PsiElement toSkip)
+	public static Set<PsiNamedElement> collectUsedComponents(@Nonnull PsiElement context, @Nullable PsiElement toSkip)
 	{
 		final Set<PsiNamedElement> usedComponentNames = new THashSet<>();
 		PsiTreeUtil.treeWalkUp(new ComponentNameScopeProcessor(usedComponentNames, toSkip), context, null, new ResolveState());
@@ -63,10 +63,10 @@ public class CSharpRefactoringUtil
 	}
 
 	@Nullable
-	public static DotNetExpression getSelectedExpression(@NotNull final Project project,
-			@NotNull PsiFile file,
-			@NotNull final PsiElement element1,
-			@NotNull final PsiElement element2)
+	public static DotNetExpression getSelectedExpression(@Nonnull final Project project,
+			@Nonnull PsiFile file,
+			@Nonnull final PsiElement element1,
+			@Nonnull final PsiElement element2)
 	{
 		PsiElement parent = PsiTreeUtil.findCommonParent(element1, element2);
 		if(parent == null)
@@ -80,8 +80,8 @@ public class CSharpRefactoringUtil
 		return PsiTreeUtil.getParentOfType(parent, DotNetExpression.class);
 	}
 
-	@NotNull
-	public static List<PsiElement> getOccurrences(@NotNull final PsiElement pattern, @Nullable final PsiElement context)
+	@Nonnull
+	public static List<PsiElement> getOccurrences(@Nonnull final PsiElement pattern, @Nullable final PsiElement context)
 	{
 		if(context == null)
 		{

@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.highlight.quickFix;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
@@ -40,7 +41,7 @@ public class ReplaceTypeQuickFix extends BaseIntentionAction
 	private final SmartPsiElementPointer<DotNetType> myPointer;
 	private final String myTypeText;
 
-	public ReplaceTypeQuickFix(@NotNull DotNetType type, @NotNull DotNetTypeRef typeRef)
+	public ReplaceTypeQuickFix(@Nonnull DotNetType type, @Nonnull DotNetTypeRef typeRef)
 	{
 		myPointer = SmartPointerManager.getInstance(type.getProject()).createSmartPsiElementPointer(type);
 
@@ -48,7 +49,7 @@ public class ReplaceTypeQuickFix extends BaseIntentionAction
 		setText("Replace '" + type.getText() + "' by '" + myTypeText + "'");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{
@@ -56,13 +57,13 @@ public class ReplaceTypeQuickFix extends BaseIntentionAction
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		return myPointer.getElement() != null;
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		DotNetType element = myPointer.getElement();
 		if(element == null)

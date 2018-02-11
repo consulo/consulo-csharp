@@ -21,7 +21,7 @@ import java.util.List;
 import javax.swing.Action;
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureDialog;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
@@ -53,7 +53,7 @@ public class CSharpExtractMethodDialog extends CSharpChangeSignatureDialog
 	private Processor<DotNetLikeMethodDeclaration> myProcessor;
 
 	public CSharpExtractMethodDialog(Project project, CSharpMethodDescriptor method, boolean allowDelegation, PsiElement defaultValueContext,
-			@NotNull Processor<DotNetLikeMethodDeclaration> processor)
+			@Nonnull Processor<DotNetLikeMethodDeclaration> processor)
 	{
 		super(project, method, allowDelegation, defaultValueContext);
 		myProcessor = processor;

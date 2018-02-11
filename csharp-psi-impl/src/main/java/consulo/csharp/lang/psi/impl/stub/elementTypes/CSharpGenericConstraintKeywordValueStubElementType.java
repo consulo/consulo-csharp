@@ -18,7 +18,8 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
 import consulo.csharp.lang.psi.impl.source.CSharpGenericConstraintKeywordValueImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
@@ -41,21 +42,21 @@ public class CSharpGenericConstraintKeywordValueStubElementType extends
 		super("GENERIC_CONSTRAINT_KEYWORD_VALUE");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElement createElement(@NotNull ASTNode astNode)
+	public PsiElement createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpGenericConstraintKeywordValueImpl(astNode);
 	}
 
 	@Override
-	public CSharpGenericConstraintKeywordValue createPsi(@NotNull CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> stub)
+	public CSharpGenericConstraintKeywordValue createPsi(@Nonnull CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> stub)
 	{
 		return new CSharpGenericConstraintKeywordValueImpl(stub, this);
 	}
 
 	@Override
-	public CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> createStub(@NotNull CSharpGenericConstraintKeywordValue keywordValue,
+	public CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> createStub(@Nonnull CSharpGenericConstraintKeywordValue keywordValue,
 			StubElement stubElement)
 	{
 		int index = ArrayUtil.indexOf(CSharpGenericConstraintKeywordValue.KEYWORDS_AS_ARRAY, keywordValue.getKeywordElementType());
@@ -64,15 +65,15 @@ public class CSharpGenericConstraintKeywordValueStubElementType extends
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> stub,
-			@NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> stub,
+			@Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeVarInt(stub.getValue());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> deserialize(@NotNull StubInputStream stubInputStream,
+	public CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> deserialize(@Nonnull StubInputStream stubInputStream,
 			StubElement stubElement) throws IOException
 	{
 		int index = stubInputStream.readVarInt();

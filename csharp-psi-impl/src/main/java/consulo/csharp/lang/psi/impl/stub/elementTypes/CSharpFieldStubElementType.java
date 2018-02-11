@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpFieldDeclarationImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
@@ -37,22 +38,22 @@ public class CSharpFieldStubElementType extends CSharpQVariableStubElementType<D
 		super("FIELD_DECLARATION");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public DotNetFieldDeclaration createElement(@NotNull ASTNode astNode)
+	public DotNetFieldDeclaration createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpFieldDeclarationImpl(astNode);
 	}
 
 	@Override
-	public DotNetFieldDeclaration createPsi(@NotNull CSharpVariableDeclStub<DotNetFieldDeclaration> fieldStub)
+	public DotNetFieldDeclaration createPsi(@Nonnull CSharpVariableDeclStub<DotNetFieldDeclaration> fieldStub)
 	{
 		return new CSharpFieldDeclarationImpl(fieldStub);
 	}
 
 	@Override
 	@RequiredReadAction
-	public void indexStub(@NotNull CSharpVariableDeclStub<DotNetFieldDeclaration> stub, @NotNull IndexSink indexSink)
+	public void indexStub(@Nonnull CSharpVariableDeclStub<DotNetFieldDeclaration> stub, @Nonnull IndexSink indexSink)
 	{
 		String name = getName(stub);
 		if(!StringUtil.isEmpty(name))

@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 
@@ -34,6 +35,6 @@ public interface CSharpGenericConstraintKeywordValue extends CSharpGenericConstr
 
 	TokenSet KEYWORDS = TokenSet.create(KEYWORDS_AS_ARRAY);
 
-	@NotNull
+	@Nonnull
 	IElementType getKeywordElementType();
 }

@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.resolve;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -43,8 +44,8 @@ public interface CSharpAdditionalMemberProvider
 	}
 
 	@RequiredReadAction
-	void processAdditionalMembers(@NotNull DotNetElement element, @NotNull DotNetGenericExtractor extractor, @NotNull Consumer<PsiElement> consumer);
+	void processAdditionalMembers(@Nonnull DotNetElement element, @Nonnull DotNetGenericExtractor extractor, @Nonnull Consumer<PsiElement> consumer);
 
-	@NotNull
+	@Nonnull
 	Target getTarget();
 }

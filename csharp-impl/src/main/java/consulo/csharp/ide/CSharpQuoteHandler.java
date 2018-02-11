@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -109,7 +109,7 @@ public class CSharpQuoteHandler extends SimpleTokenSetQuoteHandler implements Ja
 	}
 
 	@Override
-	public boolean isAppropriateElementTypeForLiteral(final @NotNull IElementType tokenType)
+	public boolean isAppropriateElementTypeForLiteral(final @Nonnull IElementType tokenType)
 	{
 		return isAppropriateElementTypeForLiteralStatic(tokenType);
 	}

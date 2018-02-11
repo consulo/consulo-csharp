@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.surroundWith;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.dotnet.psi.DotNetExpression;
 import com.intellij.lang.surroundWith.SurroundDescriptor;
 import com.intellij.lang.surroundWith.Surrounder;
@@ -35,14 +36,14 @@ public class CSharpExpressionSurroundDescriptor implements SurroundDescriptor
 		new CSharpWithParenthesesSurrounder()
 	};
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Surrounder[] getSurrounders()
 	{
 		return mySurrounders;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement[] getElementsToSurround(PsiFile file, int startOffset, int endOffset)
 	{

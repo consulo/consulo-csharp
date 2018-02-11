@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -58,9 +58,9 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 		public static final OurResolver INSTANCE = new OurResolver();
 
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
-		public ResolveResult[] resolve(@NotNull CSharpIndexAccessExpressionImpl expression, boolean incompleteCode)
+		public ResolveResult[] resolve(@Nonnull CSharpIndexAccessExpressionImpl expression, boolean incompleteCode)
 		{
 			DotNetExpression qualifier = expression.getQualifier();
 			DotNetTypeRef typeRef = qualifier.toTypeRef(true);
@@ -79,18 +79,18 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 		}
 	}
 
-	public CSharpIndexAccessExpressionImpl(@NotNull ASTNode node)
+	public CSharpIndexAccessExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitIndexAccessExpression(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
@@ -109,7 +109,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public DotNetExpression getQualifier()
 	{
@@ -132,7 +132,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 		throw new UnsupportedOperationException();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -140,7 +140,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
@@ -167,7 +167,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 		return CSharpResolveUtil.findFirstValidElement(resolveResults);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public ResolveResult[] multiResolve(boolean incompleteCode)
@@ -193,7 +193,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public TextRange getRangeInElement()
 	{
@@ -209,7 +209,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String getCanonicalText()
 	{
@@ -225,7 +225,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement bindToElement(@NotNull PsiElement psiElement) throws IncorrectOperationException
+	public PsiElement bindToElement(@Nonnull PsiElement psiElement) throws IncorrectOperationException
 	{
 		return null;
 	}

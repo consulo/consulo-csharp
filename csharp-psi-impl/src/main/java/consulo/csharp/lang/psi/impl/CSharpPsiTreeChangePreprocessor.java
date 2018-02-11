@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiNameIdentifierOwner;
@@ -36,20 +36,20 @@ import consulo.dotnet.psi.DotNetStatement;
  */
 public class CSharpPsiTreeChangePreprocessor extends PsiTreeChangePreprocessorBase
 {
-	public CSharpPsiTreeChangePreprocessor(@NotNull PsiManager psiManager)
+	public CSharpPsiTreeChangePreprocessor(@Nonnull PsiManager psiManager)
 	{
 		super(psiManager);
 	}
 
 	@Override
-	protected boolean acceptsEvent(@NotNull PsiTreeChangeEventImpl event)
+	protected boolean acceptsEvent(@Nonnull PsiTreeChangeEventImpl event)
 	{
 		return event.getFile() instanceof CSharpFile;
 	}
 
 	@Override
 	@RequiredReadAction
-	protected boolean isOutOfCodeBlock(@NotNull PsiElement element)
+	protected boolean isOutOfCodeBlock(@Nonnull PsiElement element)
 	{
 		return !isInsideCodeBlock(element);
 	}

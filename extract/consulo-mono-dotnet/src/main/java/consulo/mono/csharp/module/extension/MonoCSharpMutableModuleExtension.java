@@ -16,10 +16,10 @@
 
 package consulo.mono.csharp.module.extension;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import consulo.csharp.module.extension.CSharpConfigurationPanel;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.annotations.RequiredDispatchThread;
@@ -31,7 +31,7 @@ import consulo.roots.ModuleRootLayer;
  */
 public class MonoCSharpMutableModuleExtension extends MonoCSharpModuleExtension implements CSharpMutableModuleExtension<MonoCSharpModuleExtension>
 {
-	public MonoCSharpMutableModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
+	public MonoCSharpMutableModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer module)
 	{
 		super(id, module);
 	}
@@ -39,7 +39,7 @@ public class MonoCSharpMutableModuleExtension extends MonoCSharpModuleExtension 
 	@Nullable
 	@Override
 	@RequiredDispatchThread
-	public JComponent createConfigurablePanel(@NotNull Runnable runnable)
+	public JComponent createConfigurablePanel(@Nonnull Runnable runnable)
 	{
 		return new CSharpConfigurationPanel(this);
 	}
@@ -51,7 +51,7 @@ public class MonoCSharpMutableModuleExtension extends MonoCSharpModuleExtension 
 	}
 
 	@Override
-	public boolean isModified(@NotNull MonoCSharpModuleExtension extension)
+	public boolean isModified(@Nonnull MonoCSharpModuleExtension extension)
 	{
 		return isModifiedImpl(extension);
 	}

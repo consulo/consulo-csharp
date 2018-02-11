@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
@@ -32,18 +33,18 @@ import com.intellij.psi.stubs.EmptyStub;
  */
 public class CSharpStubParameterListImpl extends CSharpStubElementImpl<EmptyStub<DotNetParameterList>> implements DotNetParameterList
 {
-	public CSharpStubParameterListImpl(@NotNull ASTNode node)
+	public CSharpStubParameterListImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubParameterListImpl(@NotNull EmptyStub<DotNetParameterList> stub)
+	public CSharpStubParameterListImpl(@Nonnull EmptyStub<DotNetParameterList> stub)
 	{
 		super(stub, CSharpStubElements.PARAMETER_LIST);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitParameterList(this);
 	}
@@ -54,14 +55,14 @@ public class CSharpStubParameterListImpl extends CSharpStubElementImpl<EmptyStub
 		return DotNetPsiCountUtil.countChildrenOfType(this, CSharpStubElements.PARAMETER);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
 		return getStubOrPsiChildren(CSharpStubElements.PARAMETER, DotNetParameter.ARRAY_FACTORY);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{

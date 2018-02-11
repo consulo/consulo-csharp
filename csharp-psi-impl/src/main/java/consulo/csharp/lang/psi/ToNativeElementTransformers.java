@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import com.intellij.psi.PsiElement;
 
@@ -26,9 +27,9 @@ import com.intellij.psi.PsiElement;
  */
 public class ToNativeElementTransformers
 {
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static PsiElement transform(@NotNull PsiElement element)
+	public static PsiElement transform(@Nonnull PsiElement element)
 	{
 		PsiElement transform = ToNativeElementTransformer.EP_NAME.composite().transform(element);
 		if(transform != null)

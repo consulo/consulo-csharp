@@ -16,7 +16,7 @@
 
 package consulo.mono.csharp.module.extension;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.compiler.CSharpCompilerUtil;
 import consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import consulo.csharp.module.extension.BaseCSharpModuleExtension;
@@ -35,13 +35,13 @@ import consulo.roots.ModuleRootLayer;
  */
 public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSharpModuleExtension>
 {
-	public MonoCSharpModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
+	public MonoCSharpModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer module)
 	{
 		super(id, module);
 	}
 
 	@Override
-	public void setCompilerExecutable(@NotNull DotNetCompilerOptionsBuilder builder, @NotNull VirtualFile executable)
+	public void setCompilerExecutable(@Nonnull DotNetCompilerOptionsBuilder builder, @Nonnull VirtualFile executable)
 	{
 		DotNetSimpleModuleExtension extension = getModuleRootLayer().getExtension(DotNetSimpleModuleExtension.class);
 		if(extension == null)
@@ -63,7 +63,7 @@ public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSh
 		msBuilder.addProgramArgument(executable.getPath());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder() throws DotNetCompileFailedException
 	{

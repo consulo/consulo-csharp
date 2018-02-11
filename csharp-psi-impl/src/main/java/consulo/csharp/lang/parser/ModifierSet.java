@@ -21,7 +21,8 @@ import gnu.trove.THashSet;
 import java.util.Arrays;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.tree.IElementType;
 
 /**
@@ -32,14 +33,14 @@ public class ModifierSet
 {
 	public static final ModifierSet EMPTY = new ModifierSet(null);
 
-	@NotNull
+	@Nonnull
 	public static ModifierSet create(IElementType... set)
 	{
 		return set.length == 0 ? EMPTY : new ModifierSet(new THashSet<>(Arrays.asList(set)));
 	}
 
-	@NotNull
-	public static ModifierSet create(@NotNull Set<IElementType> set)
+	@Nonnull
+	public static ModifierSet create(@Nonnull Set<IElementType> set)
 	{
 		return set.isEmpty() ? EMPTY : new ModifierSet(set);
 	}
@@ -53,7 +54,7 @@ public class ModifierSet
 		mySet = set;
 	}
 
-	@NotNull
+	@Nonnull
 	public ModifierSet setAllowShortObjectInitializer()
 	{
 		ModifierSet set = new ModifierSet(mySet == null ? null : new THashSet<>(mySet));
@@ -66,7 +67,7 @@ public class ModifierSet
 		return myAllowShortObjectInitializer;
 	}
 
-	@NotNull
+	@Nonnull
 	public ModifierSet add(IElementType e)
 	{
 		Set<IElementType> elementTypes = mySet == null ? new THashSet<>() : new THashSet<>(mySet);
@@ -74,7 +75,7 @@ public class ModifierSet
 		return create(elementTypes);
 	}
 
-	@NotNull
+	@Nonnull
 	public ModifierSet remove(IElementType e)
 	{
 		if(mySet == null)

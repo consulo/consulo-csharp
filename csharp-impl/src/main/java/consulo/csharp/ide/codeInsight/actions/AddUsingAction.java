@@ -18,10 +18,10 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.actions.OptimizeImportsProcessor;
 import com.intellij.codeInsight.hint.QuestionAction;
 import com.intellij.icons.AllIcons;
@@ -94,7 +94,7 @@ public class AddUsingAction implements QuestionAction
 		myElements = references;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	private PsiElement getElementForBeforeAdd()
 	{
@@ -131,7 +131,7 @@ public class AddUsingAction implements QuestionAction
 					return AllIcons.Nodes.Package;
 				}
 
-				@NotNull
+				@Nonnull
 				@Override
 				public String getTextFor(NamespaceReference value)
 				{
@@ -154,8 +154,8 @@ public class AddUsingAction implements QuestionAction
 		return true;
 	}
 
-	@NotNull
-	public static String formatMessage(@NotNull NamespaceReference couple)
+	@Nonnull
+	public static String formatMessage(@Nonnull NamespaceReference couple)
 	{
 		String libraryName = couple.getLibraryName();
 		String namespace = couple.getNamespace();
@@ -280,7 +280,7 @@ public class AddUsingAction implements QuestionAction
 	}
 
 	@RequiredReadAction
-	private static void addUsingStatementAfter(@NotNull PsiElement afterElement, @NotNull CSharpUsingNamespaceStatement newStatement)
+	private static void addUsingStatementAfter(@Nonnull PsiElement afterElement, @Nonnull CSharpUsingNamespaceStatement newStatement)
 	{
 		Project project = afterElement.getProject();
 

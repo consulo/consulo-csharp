@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.ide.util.MemberChooser;
 import com.intellij.ide.util.MemberChooserBuilder;
 import com.intellij.lang.LanguageCodeInsightActionHandler;
@@ -56,7 +57,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 {
 	@RequiredDispatchThread
 	@Override
-	public void invoke(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
+	public void invoke(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file)
 	{
 		final CSharpTypeDeclaration typeDeclaration = CSharpGenerateAction.findTypeDeclaration(editor, file);
 		if(typeDeclaration == null)
@@ -126,24 +127,24 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public abstract String getTitle();
 
 	@RequiredReadAction
-	public abstract void appendAdditionalModifiers(@NotNull StringBuilder builder, @NotNull PsiElement item);
+	public abstract void appendAdditionalModifiers(@Nonnull StringBuilder builder, @Nonnull PsiElement item);
 
 	@RequiredReadAction
-	public abstract void appendReturnStatement(@NotNull StringBuilder builder, @NotNull PsiElement item);
+	public abstract void appendReturnStatement(@Nonnull StringBuilder builder, @Nonnull PsiElement item);
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public abstract Collection<? extends PsiElement> getItems(@NotNull CSharpTypeDeclaration typeDeclaration);
+	public abstract Collection<? extends PsiElement> getItems(@Nonnull CSharpTypeDeclaration typeDeclaration);
 
 	@RequiredReadAction
-	private static void generateMember(@NotNull final CSharpTypeDeclaration typeDeclaration,
-			@NotNull final Editor editor,
-			@NotNull final PsiFile file,
-			@NotNull CSharpMemberChooseObject<?> chooseMember)
+	private static void generateMember(@Nonnull final CSharpTypeDeclaration typeDeclaration,
+			@Nonnull final Editor editor,
+			@Nonnull final PsiFile file,
+			@Nonnull CSharpMemberChooseObject<?> chooseMember)
 	{
 		String text = chooseMember.getText();
 

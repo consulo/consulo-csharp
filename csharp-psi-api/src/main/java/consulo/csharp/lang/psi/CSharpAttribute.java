@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetAttribute;
 
@@ -31,7 +32,7 @@ public interface CSharpAttribute extends DotNetAttribute, CSharpCallArgumentList
 
 	public static ArrayFactory<CSharpAttribute> ARRAY_FACTORY = new ArrayFactory<CSharpAttribute>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public CSharpAttribute[] create(int count)
 		{

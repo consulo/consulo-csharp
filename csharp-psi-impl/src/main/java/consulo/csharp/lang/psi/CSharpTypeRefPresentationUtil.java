@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
@@ -81,45 +81,45 @@ public class CSharpTypeRefPresentationUtil
 
 	public static final int QUALIFIED_NAME_WITH_KEYWORD = QUALIFIED_NAME | TYPE_KEYWORD;
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static String buildShortText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	public static String buildShortText(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
 		appendTypeRef(scope, builder, typeRef, TYPE_KEYWORD);
 		return builder.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static String buildText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	public static String buildText(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
 		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME);
 		return builder.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static String buildText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, int flags)
+	public static String buildText(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope, int flags)
 	{
 		StringBuilder builder = new StringBuilder();
 		appendTypeRef(scope, builder, typeRef, flags);
 		return builder.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static String buildTextWithKeyword(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	public static String buildTextWithKeyword(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
 		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD);
 		return builder.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static String buildTextWithKeywordAndNull(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	public static String buildTextWithKeywordAndNull(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
 		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD | NULL);
@@ -127,7 +127,7 @@ public class CSharpTypeRefPresentationUtil
 	}
 
 	@RequiredReadAction
-	public static void appendTypeRef(@NotNull final PsiElement scope, @NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef, final int flags)
+	public static void appendTypeRef(@Nonnull final PsiElement scope, @Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef, final int flags)
 	{
 		if(typeRef == DotNetTypeRef.AUTO_TYPE)
 		{

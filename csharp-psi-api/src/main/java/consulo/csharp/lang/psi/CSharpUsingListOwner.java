@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetElement;
 
@@ -26,7 +27,7 @@ import consulo.dotnet.psi.DotNetElement;
  */
 public interface CSharpUsingListOwner extends DotNetElement
 {
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	CSharpUsingListChild[] getUsingStatements();
 }

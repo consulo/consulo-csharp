@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -53,7 +53,7 @@ public class CSharpLightAttributeWithSelfTypeBuilder extends CSharpAbstractLight
 		return myType;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{

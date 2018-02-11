@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.ASTNode;
@@ -37,13 +38,13 @@ import consulo.dotnet.psi.DotNetStatement;
  */
 public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpBodyWithBraces
 {
-	public CSharpBlockStatementImpl(@NotNull ASTNode node)
+	public CSharpBlockStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitBlockStatement(this);
 	}
@@ -62,14 +63,14 @@ public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNe
 		return findChildByType(CSharpTokens.RBRACE);
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetStatement[] getStatements()
 	{
 		return findChildrenByClass(DotNetStatement.class);
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement
 			place)
 	{
 		DotNetStatement[] statements = getStatements();

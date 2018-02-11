@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpEventDeclaration;
@@ -40,7 +40,7 @@ public class CSharpAnchorProvider implements SmartPointerAnchorProvider
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public PsiElement getAnchor(@NotNull PsiElement element)
+	public PsiElement getAnchor(@Nonnull PsiElement element)
 	{
 		if(element instanceof MsilElementWrapper || !element.isPhysical())
 		{
@@ -62,7 +62,7 @@ public class CSharpAnchorProvider implements SmartPointerAnchorProvider
 
 	@Nullable
 	@Override
-	public PsiElement restoreElement(@NotNull PsiElement anchor)
+	public PsiElement restoreElement(@Nonnull PsiElement anchor)
 	{
 		return anchor.getParent();
 	}

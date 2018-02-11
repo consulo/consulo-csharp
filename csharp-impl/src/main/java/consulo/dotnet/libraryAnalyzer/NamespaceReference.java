@@ -16,8 +16,8 @@
 
 package consulo.dotnet.libraryAnalyzer;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
 * @author VISTALL
@@ -28,7 +28,7 @@ public class NamespaceReference
 	private String myNamespace;
 	private String myLibraryName;
 
-	public NamespaceReference(@NotNull String namespace, @Nullable String libraryName)
+	public NamespaceReference(@Nonnull String namespace, @Nullable String libraryName)
 	{
 		myNamespace = namespace;
 		myLibraryName = libraryName;

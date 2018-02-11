@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.codeInsight.actions.expressionActions.lambda;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -44,7 +45,7 @@ import com.intellij.util.IncorrectOperationException;
 public class DelegateToLambdaExpressionFix extends PsiElementBaseIntentionAction
 {
 	@Override
-	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException
 	{
 		CSharpDelegateExpressionImpl delegateExpression = PsiTreeUtil.getParentOfType(element, CSharpDelegateExpressionImpl.class);
 
@@ -124,7 +125,7 @@ public class DelegateToLambdaExpressionFix extends PsiElementBaseIntentionAction
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
 	{
 		ASTNode node = element.getNode();
 		if(node == null)
@@ -139,14 +140,14 @@ public class DelegateToLambdaExpressionFix extends PsiElementBaseIntentionAction
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText()
 	{
 		return "To lambda";
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{

@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.CodeInsightActionHandler;
 import com.intellij.ide.util.MemberChooser;
 import com.intellij.ide.util.MemberChooserBuilder;
@@ -69,7 +70,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 {
 	@RequiredDispatchThread
 	@Override
-	public void invoke(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
+	public void invoke(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file)
 	{
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
 
@@ -146,10 +147,10 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 	}
 
 	@RequiredReadAction
-	private static void generateConstructor(@NotNull final CSharpTypeDeclaration typeDeclaration,
-			@NotNull final Editor editor,
-			@NotNull final PsiFile file,
-			@NotNull ConstructorChooseMember chooseMember)
+	private static void generateConstructor(@Nonnull final CSharpTypeDeclaration typeDeclaration,
+			@Nonnull final Editor editor,
+			@Nonnull final PsiFile file,
+			@Nonnull ConstructorChooseMember chooseMember)
 	{
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, typeDeclaration.getResolveScope(), typeDeclaration);
 		final List<DotNetVariable> fieldOrProperties = new ArrayList<>();
@@ -228,7 +229,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	private static PsiElement getTargetForInsert(PsiFile file, Editor editor)
 	{
 		int offset = editor.getCaretModel().getOffset();

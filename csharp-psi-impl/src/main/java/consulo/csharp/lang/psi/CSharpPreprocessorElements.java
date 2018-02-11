@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageParserDefinitions;
@@ -43,7 +43,7 @@ public interface CSharpPreprocessorElements
 	IElementType PREPROCESSOR_DIRECTIVE = new ILazyParseableElementType("PREPROCESSOR_DIRECTIVE", CSharpLanguage.INSTANCE)
 	{
 		@Override
-		protected ASTNode doParseContents(@NotNull ASTNode chameleon, @NotNull PsiElement psi)
+		protected ASTNode doParseContents(@Nonnull ASTNode chameleon, @Nonnull PsiElement psi)
 		{
 			final Project project = psi.getProject();
 			final Language languageForParser = getLanguageForParser(psi);

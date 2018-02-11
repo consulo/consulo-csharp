@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.completion;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
 import com.intellij.codeStyle.CodeStyleFacade;
@@ -106,7 +107,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 
 	@Override
 	@RequiredDispatchThread
-	public Result charTyped(char c, Project project, Editor editor, @NotNull PsiFile file)
+	public Result charTyped(char c, Project project, Editor editor, @Nonnull PsiFile file)
 	{
 		if(c == '/')
 		{
@@ -161,7 +162,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 		return Result.CONTINUE;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredDispatchThread
 	private static Pair<CharSequence, Integer> buildDocComment(DotNetQualifiedElement qualifiedElement, Editor editor, int offset)
 	{

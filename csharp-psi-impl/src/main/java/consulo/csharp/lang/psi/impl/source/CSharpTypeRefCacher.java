@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValue;
@@ -44,7 +45,7 @@ public abstract class CSharpTypeRefCacher<E extends PsiElement>
 			myValue = value;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		@RequiredReadAction
 		public DotNetTypeRef fun(E e)
@@ -66,11 +67,11 @@ public abstract class CSharpTypeRefCacher<E extends PsiElement>
 		myLocal = local;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	protected abstract DotNetTypeRef toTypeRefImpl(E element, boolean resolveFromParentOrInitializer);
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRef(E element, boolean resolveFromParentOrInitializer)
 	{

@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.lang.Language;
 import consulo.lang.LanguageVersion;
 
@@ -39,7 +39,7 @@ public class CSharpLanguage extends Language
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected LanguageVersion[] findVersions()
 	{

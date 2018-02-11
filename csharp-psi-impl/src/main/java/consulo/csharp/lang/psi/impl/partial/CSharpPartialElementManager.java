@@ -19,7 +19,8 @@ package consulo.csharp.lang.psi.impl.partial;
 import java.util.Collection;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.ProjectTopics;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.components.ServiceManager;
@@ -39,8 +40,8 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
  */
 public class CSharpPartialElementManager implements Disposable
 {
-	@NotNull
-	public static CSharpPartialElementManager getInstance(@NotNull Project project)
+	@Nonnull
+	public static CSharpPartialElementManager getInstance(@Nonnull Project project)
 	{
 		return ServiceManager.getService(project, CSharpPartialElementManager.class);
 	}
@@ -48,7 +49,7 @@ public class CSharpPartialElementManager implements Disposable
 	private final Map<GlobalSearchScope, Map<String, CSharpTypeDeclaration>> myCache = ContainerUtil.createConcurrentWeakMap();
 	private final Project myProject;
 
-	public CSharpPartialElementManager(@NotNull Project project)
+	public CSharpPartialElementManager(@Nonnull Project project)
 	{
 		myProject = project;
 		project.getMessageBus().connect().subscribe(PsiManagerImpl.ANY_PSI_CHANGE_TOPIC, new AnyPsiChangeListener.Adapter()
@@ -70,8 +71,8 @@ public class CSharpPartialElementManager implements Disposable
 		});
 	}
 
-	@NotNull
-	public CSharpTypeDeclaration getOrCreateCompositeType(@NotNull final GlobalSearchScope scope, @NotNull final String vmQName, @NotNull final Collection<CSharpTypeDeclaration> typeDeclarations)
+	@Nonnull
+	public CSharpTypeDeclaration getOrCreateCompositeType(@Nonnull final GlobalSearchScope scope, @Nonnull final String vmQName, @Nonnull final Collection<CSharpTypeDeclaration> typeDeclarations)
 	{
 		Map<String, CSharpTypeDeclaration> scopeMap = ContainerUtil.getOrCreate(myCache, scope, (Factory<Map<String, CSharpTypeDeclaration>>) ContainerUtil::createConcurrentWeakValueMap);
 

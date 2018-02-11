@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpGenericConstraintList;
@@ -32,24 +33,24 @@ import com.intellij.psi.stubs.IStubElementType;
 public class CSharpGenericConstraintListImpl extends CSharpStubElementImpl<EmptyStub<CSharpGenericConstraintList>> implements
 		CSharpGenericConstraintList
 {
-	public CSharpGenericConstraintListImpl(@NotNull ASTNode node)
+	public CSharpGenericConstraintListImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpGenericConstraintListImpl(@NotNull EmptyStub<CSharpGenericConstraintList> stub,
-			@NotNull IStubElementType<? extends EmptyStub<CSharpGenericConstraintList>, ?> nodeType)
+	public CSharpGenericConstraintListImpl(@Nonnull EmptyStub<CSharpGenericConstraintList> stub,
+			@Nonnull IStubElementType<? extends EmptyStub<CSharpGenericConstraintList>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericConstraintList(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{

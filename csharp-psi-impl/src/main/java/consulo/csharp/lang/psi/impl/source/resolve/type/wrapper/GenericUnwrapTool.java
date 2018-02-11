@@ -20,8 +20,8 @@ import gnu.trove.THashMap;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ObjectUtil;
 import consulo.annotations.RequiredReadAction;
@@ -67,7 +67,7 @@ public class GenericUnwrapTool
 		@RequiredReadAction
 		DotNetTypeRef unwrap(PsiElement element);
 
-		@NotNull
+		@Nonnull
 		@RequiredReadAction
 		default DotNetGenericExtractor getExtractor()
 		{
@@ -100,7 +100,7 @@ public class GenericUnwrapTool
 		}
 
 		@RequiredReadAction
-		@NotNull
+		@Nonnull
 		@Override
 		public DotNetGenericExtractor getExtractor()
 		{
@@ -247,9 +247,9 @@ public class GenericUnwrapTool
 		return namedElement;
 	}
 
-	@NotNull
+	@Nonnull
 	@SuppressWarnings("unchecked")
-	private static <T extends DotNetNamedElement> T cast(@NotNull PsiElement target, @Nullable PsiElement parent)
+	private static <T extends DotNetNamedElement> T cast(@Nonnull PsiElement target, @Nullable PsiElement parent)
 	{
 		if(parent != null && target instanceof CSharpLightElement)
 		{
@@ -268,23 +268,23 @@ public class GenericUnwrapTool
 		copy.withTypeRefForImplement(exchangeTypeRef(original.getTypeRefForImplement(), extractor, original));
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public static DotNetTypeRef[] exchangeTypeRefs(DotNetTypeRef[] typeRefs, DotNetGenericExtractor extractor, PsiElement element)
 	{
 		return exchangeTypeRefs(typeRefs, new GenericExtractFunction(extractor), element);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef exchangeTypeRef(@NotNull DotNetTypeRef typeRef, @NotNull DotNetGenericExtractor extractor, @NotNull PsiElement scope)
+	public static DotNetTypeRef exchangeTypeRef(@Nonnull DotNetTypeRef typeRef, @Nonnull DotNetGenericExtractor extractor, @Nonnull PsiElement scope)
 	{
 		return exchangeTypeRef(typeRef, new GenericExtractFunction(extractor), scope);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef[] exchangeTypeRefs(@NotNull DotNetTypeRef[] typeRefs, @NotNull UnwrapTypeRefProcessor func, @NotNull PsiElement element)
+	public static DotNetTypeRef[] exchangeTypeRefs(@Nonnull DotNetTypeRef[] typeRefs, @Nonnull UnwrapTypeRefProcessor func, @Nonnull PsiElement element)
 	{
 		if(typeRefs.length == 0)
 		{
@@ -299,9 +299,9 @@ public class GenericUnwrapTool
 		return newTypeRefs;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef exchangeTypeRef(@NotNull DotNetTypeRef typeRef, @NotNull UnwrapTypeRefProcessor func, @NotNull PsiElement scope)
+	public static DotNetTypeRef exchangeTypeRef(@Nonnull DotNetTypeRef typeRef, @Nonnull UnwrapTypeRefProcessor func, @Nonnull PsiElement scope)
 	{
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{

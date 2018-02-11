@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -38,19 +38,19 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpArglistExpressionImpl extends CSharpExpressionImpl implements DotNetExpression, CSharpCallArgumentListOwner
 {
-	public CSharpArglistExpressionImpl(@NotNull ASTNode node)
+	public CSharpArglistExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitArglistExpression(this);
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean b)
 	{
@@ -71,7 +71,7 @@ public class CSharpArglistExpressionImpl extends CSharpExpressionImpl implements
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -86,14 +86,14 @@ public class CSharpArglistExpressionImpl extends CSharpExpressionImpl implements
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public ResolveResult[] multiResolve(boolean b)
 	{
 		return ResolveResult.EMPTY_ARRAY;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{

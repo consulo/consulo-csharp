@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -42,13 +42,13 @@ import consulo.dotnet.resolve.DotNetTypeResolveResult;
  */
 public class CSharpArrayInitializerSingleValueImpl extends CSharpElementImpl implements CSharpArrayInitializerValue, CSharpCallArgument, CSharpCallArgumentListOwner
 {
-	public CSharpArrayInitializerSingleValueImpl(@NotNull ASTNode node)
+	public CSharpArrayInitializerSingleValueImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitArrayInitializerSingleValue(this);
 	}
@@ -72,7 +72,7 @@ public class CSharpArrayInitializerSingleValueImpl extends CSharpElementImpl imp
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -91,7 +91,7 @@ public class CSharpArrayInitializerSingleValueImpl extends CSharpElementImpl imp
 		return CSharpResolveUtil.findFirstValidElement(resolveResults);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public ResolveResult[] multiResolve(boolean b)
@@ -122,7 +122,7 @@ public class CSharpArrayInitializerSingleValueImpl extends CSharpElementImpl imp
 		return ResolveResult.EMPTY_ARRAY;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{

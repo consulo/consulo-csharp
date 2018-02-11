@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.resolve.baseResolveContext;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
 import consulo.csharp.lang.psi.impl.resolve.CSharpBaseResolveContext;
@@ -36,22 +37,22 @@ public abstract class ElementGroupCollector<E extends PsiElement>
 	protected final CSharpAdditionalMemberProvider.Target myTarget;
 	protected final CSharpBaseResolveContext<?> myResolveContext;
 
-	public ElementGroupCollector(@NotNull CSharpAdditionalMemberProvider.Target target, @NotNull CSharpBaseResolveContext<?> context)
+	public ElementGroupCollector(@Nonnull CSharpAdditionalMemberProvider.Target target, @Nonnull CSharpBaseResolveContext<?> context)
 	{
 		myTarget = target;
 		myResolveContext = context;
 	}
 
-	@NotNull
-	protected abstract CSharpElementVisitor createVisitor(@NotNull Consumer<E> consumer);
+	@Nonnull
+	protected abstract CSharpElementVisitor createVisitor(@Nonnull Consumer<E> consumer);
 
-	@NotNull
+	@Nonnull
 	public Project getProject()
 	{
 		return myResolveContext.getElement().getProject();
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetGenericExtractor getExtractor()
 	{
 		return myResolveContext.getExtractor();

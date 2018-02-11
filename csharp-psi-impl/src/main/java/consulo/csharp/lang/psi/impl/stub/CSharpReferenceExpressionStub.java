@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.stub;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
@@ -62,13 +63,13 @@ public class CSharpReferenceExpressionStub extends StubBase<CSharpReferenceExpre
 		return myMemberAccessTypeIndex;
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpReferenceExpression.AccessType getMemberAccessType()
 	{
 		return CSharpReferenceExpression.AccessType.VALUES[myMemberAccessTypeIndex];
 	}
 
-	@NotNull
+	@Nonnull
 	public CSharpReferenceExpression.ResolveToKind getKind()
 	{
 		return CSharpReferenceExpression.ResolveToKind.VALUES[myKindIndex];

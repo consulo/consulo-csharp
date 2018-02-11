@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -44,25 +46,25 @@ import consulo.dotnet.psi.DotNetReferenceExpression;
  */
 public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharpNamespaceDeclStub> implements CSharpNamespaceDeclaration
 {
-	public CSharpNamespaceDeclarationImpl(@NotNull ASTNode node)
+	public CSharpNamespaceDeclarationImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpNamespaceDeclarationImpl(@NotNull CSharpNamespaceDeclStub stub)
+	public CSharpNamespaceDeclarationImpl(@Nonnull CSharpNamespaceDeclStub stub)
 	{
 		super(stub, CSharpStubElements.NAMESPACE_DECLARATION);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitNamespaceDeclaration(this);
 	}
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return false;
 	}
@@ -89,7 +91,7 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
 	{
 		return null;
 	}
@@ -109,7 +111,7 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetQualifiedElement[] getMembers()
 	{
@@ -174,7 +176,7 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 		return childByClass != null ? StringUtil.strip(childByClass.getText(), CSharpReferenceExpression.DEFAULT_REF_FILTER) : null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
 	public CSharpUsingListChild[] getUsingStatements()

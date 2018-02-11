@@ -20,7 +20,8 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.stubs.AbstractStubIndex;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
@@ -51,26 +52,26 @@ public class AttributeListIndex extends AbstractStubIndex<DotNetAttributeTargetT
 		}
 
 		@Override
-		public void save(@NotNull final DataOutput storage, @NotNull final DotNetAttributeTargetType value) throws IOException
+		public void save(@Nonnull final DataOutput storage, @Nonnull final DotNetAttributeTargetType value) throws IOException
 		{
 			storage.writeInt(value.ordinal());
 		}
 
 		@Override
-		public DotNetAttributeTargetType read(@NotNull final DataInput storage) throws IOException
+		public DotNetAttributeTargetType read(@Nonnull final DataInput storage) throws IOException
 		{
 			int i = storage.readInt();
 			return DotNetAttributeTargetType.values()[i];
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public static AttributeListIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtension(AttributeListIndex.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public StubIndexKey<DotNetAttributeTargetType, CSharpAttributeList> getKey()
 	{
@@ -83,7 +84,7 @@ public class AttributeListIndex extends AbstractStubIndex<DotNetAttributeTargetT
 		return 1;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public KeyDescriptor<DotNetAttributeTargetType> getKeyDescriptor()
 	{

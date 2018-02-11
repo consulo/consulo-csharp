@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.doc.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 
@@ -26,12 +27,12 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpDocText extends ASTWrapperPsiElement
 {
-	public CSharpDocText(@NotNull ASTNode node)
+	public CSharpDocText(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	public String getInnerText()
 	{
 		StringBuilder builder = new StringBuilder();

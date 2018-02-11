@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.formatter.processors;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;

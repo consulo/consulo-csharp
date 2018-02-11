@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.dotnet.psi.DotNetVariable;
@@ -41,13 +41,13 @@ public abstract class LocalVariableOrParameterEvaluator<T extends DotNetVariable
 	protected final String myName;
 
 	@RequiredReadAction
-	public LocalVariableOrParameterEvaluator(@NotNull T variable)
+	public LocalVariableOrParameterEvaluator(@Nonnull T variable)
 	{
 		myName = variable.getName();
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetInvalidStackFrameException, DotNetAbsentInformationException
+	public void evaluate(@Nonnull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetInvalidStackFrameException, DotNetAbsentInformationException
 	{
 		DotNetStackFrameProxy frame = context.getFrame();
 		DotNetSourceLocation sourceLocation = frame.getSourceLocation();
@@ -96,5 +96,5 @@ public abstract class LocalVariableOrParameterEvaluator<T extends DotNetVariable
 		throw new IllegalArgumentException("no variable with name '" + myName + "'");
 	}
 
-	protected abstract boolean tryEvaluateFromStackFrame(@NotNull CSharpEvaluateContext context, DotNetStackFrameProxy frame, DotNetMethodProxy method);
+	protected abstract boolean tryEvaluateFromStackFrame(@Nonnull CSharpEvaluateContext context, DotNetStackFrameProxy frame, DotNetMethodProxy method);
 }

@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import consulo.csharp.lang.psi.CSharpStubElements;
@@ -38,12 +38,12 @@ import consulo.dotnet.resolve.DotNetTypeRef;
 public class CSharpEnumConstantDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl>> implements
 		CSharpEnumConstantDeclaration
 {
-	public CSharpEnumConstantDeclarationImpl(@NotNull ASTNode node)
+	public CSharpEnumConstantDeclarationImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpEnumConstantDeclarationImpl(@NotNull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> stub)
+	public CSharpEnumConstantDeclarationImpl(@Nonnull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> stub)
 	{
 		super(stub, CSharpStubElements.ENUM_CONSTANT_DECLARATION);
 	}
@@ -56,7 +56,7 @@ public class CSharpEnumConstantDeclarationImpl extends CSharpStubVariableImpl<CS
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitEnumConstantDeclaration(this);
 	}
@@ -70,7 +70,7 @@ public class CSharpEnumConstantDeclarationImpl extends CSharpStubVariableImpl<CS
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{

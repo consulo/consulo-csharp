@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
@@ -65,13 +65,13 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	private NullableLazyValue<ExternalAttributeHolder> myAttributeHolderValue;
 
 	@RequiredReadAction
-	public MsilModifierListToCSharpModifierList(@NotNull PsiElement parent, @NotNull DotNetModifierList modifierList)
+	public MsilModifierListToCSharpModifierList(@Nonnull PsiElement parent, @Nonnull DotNetModifierList modifierList)
 	{
 		this(CSharpModifier.EMPTY_ARRAY, parent, modifierList);
 	}
 
 	@RequiredReadAction
-	public MsilModifierListToCSharpModifierList(@NotNull CSharpModifier[] additional, @NotNull PsiElement parent, @NotNull DotNetModifierList modifierList)
+	public MsilModifierListToCSharpModifierList(@Nonnull CSharpModifier[] additional, @Nonnull PsiElement parent, @Nonnull DotNetModifierList modifierList)
 	{
 		super(parent, modifierList);
 		myAdditional = additional;
@@ -95,7 +95,7 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		myAttributeHolderValue = NullableLazyValue.of(() -> ExternalAttributesUtil.findHolder(myModifierList));
 	}
 
-	public void addAdditionalAttribute(@NotNull DotNetAttribute attribute)
+	public void addAdditionalAttribute(@Nonnull DotNetAttribute attribute)
 	{
 		if(myAdditionalAttributes.isEmpty())
 		{
@@ -105,24 +105,24 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	}
 
 	@Override
-	public void addModifier(@NotNull DotNetModifier modifier)
+	public void addModifier(@Nonnull DotNetModifier modifier)
 	{
 
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitModifierList(this);
 	}
 
 	@Override
-	public void removeModifier(@NotNull DotNetModifier modifier)
+	public void removeModifier(@Nonnull DotNetModifier modifier)
 	{
 
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetModifier[] getModifiers()
 	{
@@ -139,7 +139,7 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
@@ -175,7 +175,7 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		return attributes.toArray(new DotNetAttribute[attributes.size()]);
 	}
 
-	@NotNull
+	@Nonnull
 	public List<ExternalAttributeNode> findAttributes(ExternalAttributeHolder holder)
 	{
 		return Collections.emptyList();
@@ -183,13 +183,13 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 
 	@Override
 	@RequiredReadAction
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		return CSharpModifierListImplUtil.getModifiersCached(this).contains(CSharpModifier.as(modifier));
 	}
 
 	@Override
-	public boolean hasModifierInTree(@NotNull DotNetModifier modifier)
+	public boolean hasModifierInTree(@Nonnull DotNetModifier modifier)
 	{
 		CSharpModifier cSharpModifier = CSharpModifier.as(modifier);
 		if(ArrayUtil.contains(cSharpModifier, myAdditional))
@@ -206,9 +206,9 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public List<PsiElement> getModifierElements(@NotNull DotNetModifier modifier)
+	public List<PsiElement> getModifierElements(@Nonnull DotNetModifier modifier)
 	{
 		return Collections.emptyList();
 	}
@@ -219,7 +219,7 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		return myModifierList.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpAttributeList[] getAttributeLists()
 	{

@@ -2,8 +2,9 @@ package consulo.csharp.ide.highlight.check.impl;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
@@ -24,7 +25,7 @@ public class CC0006 extends CompilerCheck<CSharpConstantExpressionImpl>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpConstantExpressionImpl element)
+	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpConstantExpressionImpl element)
 	{
 		PsiReference[] references = element.getReferences();
 		for(PsiReference reference : references)

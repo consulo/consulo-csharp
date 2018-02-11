@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -48,7 +49,7 @@ public class CSharpUndefinedLambdaResolveResult implements CSharpLambdaResolveRe
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
@@ -56,7 +57,7 @@ public class CSharpUndefinedLambdaResolveResult implements CSharpLambdaResolveRe
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -70,7 +71,7 @@ public class CSharpUndefinedLambdaResolveResult implements CSharpLambdaResolveRe
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetGenericExtractor getGenericExtractor()
 	{

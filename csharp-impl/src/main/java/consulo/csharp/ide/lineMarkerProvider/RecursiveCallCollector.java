@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.lineMarkerProvider;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -39,7 +39,7 @@ public class RecursiveCallCollector implements LineMarkerCollector
 {
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @NotNull Consumer<LineMarkerInfo> consumer)
+	public void collect(PsiElement psiElement, @Nonnull Consumer<LineMarkerInfo> consumer)
 	{
 		if(psiElement.getNode().getElementType() == CSharpTokens.IDENTIFIER && psiElement.getParent() instanceof CSharpReferenceExpression &&
 				psiElement.getParent().getParent() instanceof CSharpMethodCallExpressionImpl)

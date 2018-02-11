@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.stub.index;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
@@ -28,13 +28,13 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
  */
 public class TypeIndex extends StringStubIndexExtension<CSharpTypeDeclaration>
 {
-	@NotNull
+	@Nonnull
 	public static TypeIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtension(TypeIndex.class);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public StubIndexKey<String, CSharpTypeDeclaration> getKey()
 	{

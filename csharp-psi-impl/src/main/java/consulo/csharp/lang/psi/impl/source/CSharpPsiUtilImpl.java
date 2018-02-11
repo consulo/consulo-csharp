@@ -17,8 +17,8 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.io.FileUtil;
@@ -43,13 +43,13 @@ public class CSharpPsiUtilImpl
 {
 	private static final Logger LOGGER = Logger.getInstance(CSharpPsiUtilImpl.class);
 
-	public static boolean isTypeLikeElement(@NotNull PsiElement element)
+	public static boolean isTypeLikeElement(@Nonnull PsiElement element)
 	{
 		return element instanceof CSharpTypeDeclaration || CSharpMethodUtil.isDelegate(element);
 	}
 
 	@RequiredReadAction
-	public static boolean isNullOrEmpty(@NotNull PsiNameIdentifierOwner owner)
+	public static boolean isNullOrEmpty(@Nonnull PsiNameIdentifierOwner owner)
 	{
 		PsiElement nameIdentifier = owner.getNameIdentifier();
 		return nameIdentifier == null || nameIdentifier instanceof CSharpIdentifier && ((CSharpIdentifier) nameIdentifier).getValue() == null;
@@ -57,14 +57,14 @@ public class CSharpPsiUtilImpl
 
 	@Nullable
 	@RequiredReadAction
-	public static String getNameWithoutAt(@NotNull PsiNameIdentifierOwner element)
+	public static String getNameWithoutAt(@Nonnull PsiNameIdentifierOwner element)
 	{
 		return getNameWithoutAt(getNameWithAt(element));
 	}
 
 	@Nullable
 	@RequiredReadAction
-	public static String getNameWithAt(@NotNull PsiNameIdentifierOwner element)
+	public static String getNameWithAt(@Nonnull PsiNameIdentifierOwner element)
 	{
 		PsiElement nameIdentifier = element.getNameIdentifier();
 		if(nameIdentifier == null)
@@ -107,7 +107,7 @@ public class CSharpPsiUtilImpl
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetNamedElement findSingleElement(@NotNull CSharpFile file)
+	public static DotNetNamedElement findSingleElement(@Nonnull CSharpFile file)
 	{
 		DotNetNamedElement member = findSingleElementNoNameCheck(file);
 		if(member != null && Comparing.equal(FileUtil.getNameWithoutExtension(file.getName()), member.getName()))
@@ -119,7 +119,7 @@ public class CSharpPsiUtilImpl
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetNamedElement findSingleElementNoNameCheck(@NotNull CSharpFile file)
+	public static DotNetNamedElement findSingleElementNoNameCheck(@Nonnull CSharpFile file)
 	{
 		DotNetNamedElement[] members = file.getMembers();
 		if(members.length != 1)

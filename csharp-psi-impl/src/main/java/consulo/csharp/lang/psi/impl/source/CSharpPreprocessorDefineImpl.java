@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
@@ -33,13 +34,13 @@ import consulo.csharp.lang.psi.impl.light.CSharpPreprocessorLightVariable;
  */
 public class CSharpPreprocessorDefineImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorDefine
 {
-	public CSharpPreprocessorDefineImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorDefineImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitMacroDefine(this);
 	}

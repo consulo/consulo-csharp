@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.doc;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;
@@ -39,63 +40,63 @@ import consulo.lang.LanguageVersion;
  */
 public class CSharpDocParserDefinition implements ParserDefinition
 {
-	@NotNull
+	@Nonnull
 	@Override
-	public Lexer createLexer(@NotNull LanguageVersion languageVersion)
+	public Lexer createLexer(@Nonnull LanguageVersion languageVersion)
 	{
 		return new DeprecatedCSharpDocLexer();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiParser createParser(@NotNull LanguageVersion languageVersion)
+	public PsiParser createParser(@Nonnull LanguageVersion languageVersion)
 	{
 		return new CSharpDocParser();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public IFileElementType getFileNodeType()
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public TokenSet getWhitespaceTokens(@NotNull LanguageVersion languageVersion)
+	public TokenSet getWhitespaceTokens(@Nonnull LanguageVersion languageVersion)
 	{
 		return CSharpDocTokenType.WHITESPACES;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public TokenSet getCommentTokens(@NotNull LanguageVersion languageVersion)
+	public TokenSet getCommentTokens(@Nonnull LanguageVersion languageVersion)
 	{
 		return TokenSet.EMPTY;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public TokenSet getStringLiteralElements(@NotNull LanguageVersion languageVersion)
+	public TokenSet getStringLiteralElements(@Nonnull LanguageVersion languageVersion)
 	{
 		return TokenSet.EMPTY;
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElement createElement(@NotNull ASTNode node)
+	public PsiElement createElement(@Nonnull ASTNode node)
 	{
 		return new ASTWrapperPsiElement(node);
 	}
 
 	@Override
-	public PsiFile createFile(@NotNull FileViewProvider viewProvider)
+	public PsiFile createFile(@Nonnull FileViewProvider viewProvider)
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right)
 	{

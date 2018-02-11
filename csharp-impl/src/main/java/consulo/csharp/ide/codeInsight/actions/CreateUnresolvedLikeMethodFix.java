@@ -18,8 +18,8 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.BundleBase;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.impl.ConstantNode;
@@ -54,7 +54,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 		super(expression);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredDispatchThread
 	public String getText()
@@ -67,7 +67,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 		return BundleBase.format(getTemplateText(), myReferenceName, arguments);
 	}
 
-	@NotNull
+	@Nonnull
 	public abstract String getTemplateText();
 
 	@Nullable
@@ -116,7 +116,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 	}
 
 	@RequiredReadAction
-	protected void buildParameterList(@NotNull CreateUnresolvedElementFixContext context, @NotNull PsiFile file, @NotNull Template template)
+	protected void buildParameterList(@Nonnull CreateUnresolvedElementFixContext context, @Nonnull PsiFile file, @Nonnull Template template)
 	{
 		template.addTextSegment("(");
 

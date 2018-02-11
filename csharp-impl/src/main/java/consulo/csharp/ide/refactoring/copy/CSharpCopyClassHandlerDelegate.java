@@ -19,8 +19,9 @@ package consulo.csharp.ide.refactoring.copy;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.CommonBundle;
 import com.intellij.ide.util.EditorHelper;
 import com.intellij.ide.util.PlatformPackageUtil;
@@ -106,7 +107,7 @@ public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 	}
 
 	@RequiredReadAction
-	private static void doCopy(@NotNull CSharpTypeDeclaration typeDeclaration, @Nullable PsiDirectory defaultTargetDirectory, Project project)
+	private static void doCopy(@Nonnull CSharpTypeDeclaration typeDeclaration, @Nullable PsiDirectory defaultTargetDirectory, Project project)
 	{
 		PsiDirectory targetDirectory;
 		String newName;
@@ -174,9 +175,9 @@ public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 	}
 
 	@RequiredReadAction
-	private static void doCopy(@NotNull final CSharpTypeDeclaration target,
+	private static void doCopy(@Nonnull final CSharpTypeDeclaration target,
 			@Nullable final String newName,
-			@NotNull final PsiDirectory targetDirectory,
+			@Nonnull final PsiDirectory targetDirectory,
 			final boolean doClone,
 			final boolean openInEditor)
 	{
@@ -257,7 +258,7 @@ public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 
 	@Nullable
 	@RequiredReadAction
-	private static PsiDirectory tryNotNullizeDirectory(@NotNull Project project, @Nullable PsiDirectory defaultTargetDirectory)
+	private static PsiDirectory tryNotNullizeDirectory(@Nonnull Project project, @Nullable PsiDirectory defaultTargetDirectory)
 	{
 		if(defaultTargetDirectory == null)
 		{

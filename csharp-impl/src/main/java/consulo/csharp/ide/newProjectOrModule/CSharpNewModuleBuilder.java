@@ -19,7 +19,8 @@ package consulo.csharp.ide.newProjectOrModule;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
 import com.intellij.openapi.project.DumbService;
@@ -63,13 +64,13 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 	};
 
 	@Override
-	public void setupContext(@NotNull NewModuleContext context)
+	public void setupContext(@Nonnull NewModuleContext context)
 	{
 		NewModuleContext.Group group = context.createGroup("csharp", "C#");
 
 		group.add("Empty", AllIcons.FileTypes.Any_type, new NewModuleBuilderProcessor<CSharpSdkPanel>()
 		{
-			@NotNull
+			@Nonnull
 			@Override
 			public CSharpSdkPanel createConfigurationPanel()
 			{
@@ -77,7 +78,7 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 			}
 
 			@Override
-			public void setupModule(@NotNull CSharpSdkPanel panel, @NotNull ContentEntry contentEntry, @NotNull ModifiableRootModel modifiableRootModel)
+			public void setupModule(@Nonnull CSharpSdkPanel panel, @Nonnull ContentEntry contentEntry, @Nonnull ModifiableRootModel modifiableRootModel)
 			{
 				defaultSetup(panel, modifiableRootModel);
 			}
@@ -85,7 +86,7 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 
 		group.add("Console Application", AllIcons.RunConfigurations.Application, new UnzipNewModuleBuilderProcessor<CSharpSdkPanel>("/moduleTemplates/#CSharpConsoleApplication.zip")
 		{
-			@NotNull
+			@Nonnull
 			@Override
 			public CSharpSdkPanel createConfigurationPanel()
 			{
@@ -93,7 +94,7 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 			}
 
 			@Override
-			public void setupModule(@NotNull CSharpSdkPanel panel, @NotNull final ContentEntry contentEntry, @NotNull final ModifiableRootModel modifiableRootModel)
+			public void setupModule(@Nonnull CSharpSdkPanel panel, @Nonnull final ContentEntry contentEntry, @Nonnull final ModifiableRootModel modifiableRootModel)
 			{
 				unzip(modifiableRootModel);
 
@@ -119,7 +120,7 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 		});
 	}
 
-	private static void defaultSetup(@NotNull CSharpSdkPanel panel, @NotNull ModifiableRootModel modifiableRootModel)
+	private static void defaultSetup(@Nonnull CSharpSdkPanel panel, @Nonnull ModifiableRootModel modifiableRootModel)
 	{
 		Sdk sdk = panel.getSdk();
 		if(sdk == null)

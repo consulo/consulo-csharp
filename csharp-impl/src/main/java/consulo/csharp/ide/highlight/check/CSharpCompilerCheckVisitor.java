@@ -18,7 +18,8 @@ package consulo.csharp.ide.highlight.check;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
@@ -94,20 +95,20 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 	}
 
 	@Override
-	public boolean suitableForFile(@NotNull PsiFile psiFile)
+	public boolean suitableForFile(@Nonnull PsiFile psiFile)
 	{
 		VirtualFile virtualFile = psiFile.getVirtualFile();
 		return !(virtualFile instanceof MsilFileRepresentationVirtualFile) && psiFile instanceof CSharpFile;
 	}
 
 	@Override
-	public void visit(@NotNull PsiElement element)
+	public void visit(@Nonnull PsiElement element)
 	{
 		element.accept(this);
 	}
 
 	@Override
-	public boolean analyze(@NotNull PsiFile psiFile, boolean b, @NotNull HighlightInfoHolder highlightInfoHolder, @NotNull Runnable runnable)
+	public boolean analyze(@Nonnull PsiFile psiFile, boolean b, @Nonnull HighlightInfoHolder highlightInfoHolder, @Nonnull Runnable runnable)
 	{
 		myPragmaContext = CSharpPragmaContext.get(psiFile);
 		myHighlightContext = new CSharpHighlightContext(psiFile);
@@ -118,7 +119,7 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public HighlightVisitor clone()
 	{

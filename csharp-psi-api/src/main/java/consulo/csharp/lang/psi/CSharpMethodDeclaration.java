@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;

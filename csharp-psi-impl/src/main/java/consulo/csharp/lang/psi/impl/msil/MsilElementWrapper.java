@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -133,7 +133,7 @@ public abstract class MsilElementWrapper<T extends PsiElement> extends CSharpLig
 		MsilRepresentationNavigateUtil.navigateToRepresentation(myOriginal, CSharpFileType.INSTANCE, consumer);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getNavigationElement()
 	{

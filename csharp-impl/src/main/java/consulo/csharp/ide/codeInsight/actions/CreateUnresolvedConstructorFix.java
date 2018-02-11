@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
@@ -42,9 +43,9 @@ public class CreateUnresolvedConstructorFix extends CreateUnresolvedLikeMethodFi
 		super(expression);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElement getElementForAfterAdd(@NotNull DotNetNamedElement[] elements, @NotNull CSharpBodyWithBraces targetForGenerate)
+	public PsiElement getElementForAfterAdd(@Nonnull DotNetNamedElement[] elements, @Nonnull CSharpBodyWithBraces targetForGenerate)
 	{
 		PsiElement last = targetForGenerate.getLeftBrace();
 		for(DotNetNamedElement element : elements)
@@ -57,7 +58,7 @@ public class CreateUnresolvedConstructorFix extends CreateUnresolvedLikeMethodFi
 		return last;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getTemplateText()
 	{
@@ -93,7 +94,7 @@ public class CreateUnresolvedConstructorFix extends CreateUnresolvedLikeMethodFi
 
 	@RequiredReadAction
 	@Override
-	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @NotNull PsiFile file, @NotNull Template template)
+	public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @Nonnull PsiFile file, @Nonnull Template template)
 	{
 		template.addTextSegment("public ");
 		template.addTextSegment(myReferenceName);

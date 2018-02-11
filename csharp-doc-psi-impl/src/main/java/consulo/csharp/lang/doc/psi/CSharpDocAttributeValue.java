@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.doc.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 
@@ -26,7 +27,7 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpDocAttributeValue extends ASTWrapperPsiElement
 {
-	public CSharpDocAttributeValue(@NotNull ASTNode node)
+	public CSharpDocAttributeValue(@Nonnull ASTNode node)
 	{
 		super(node);
 	}

@@ -18,7 +18,7 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.csharp.lang.psi.impl.source.CSharpStubAttributeListImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpAttributeListStub;
@@ -42,15 +42,15 @@ public class CSharpAttributeListStubElementType extends CSharpAbstractStubElemen
 		super("ATTRIBUTE_LIST");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElement createElement(@NotNull ASTNode astNode)
+	public PsiElement createElement(@Nonnull ASTNode astNode)
 	{
 		return new CSharpStubAttributeListImpl(astNode);
 	}
 
 	@Override
-	public CSharpAttributeList createPsi(@NotNull CSharpAttributeListStub stub)
+	public CSharpAttributeList createPsi(@Nonnull CSharpAttributeListStub stub)
 	{
 		return new CSharpStubAttributeListImpl(stub, this);
 	}
@@ -63,7 +63,7 @@ public class CSharpAttributeListStubElementType extends CSharpAbstractStubElemen
 	}
 
 	@Override
-	public CSharpAttributeListStub createStub(@NotNull CSharpAttributeList attributeList, StubElement stubElement)
+	public CSharpAttributeListStub createStub(@Nonnull CSharpAttributeList attributeList, StubElement stubElement)
 	{
 		DotNetAttributeTargetType targetType = attributeList.getTargetType();
 		assert targetType != null;
@@ -72,21 +72,21 @@ public class CSharpAttributeListStubElementType extends CSharpAbstractStubElemen
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpAttributeListStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpAttributeListStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeVarInt(stub.getTargetIndex());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public CSharpAttributeListStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpAttributeListStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int targetIndex = stubInputStream.readVarInt();
 		return new CSharpAttributeListStub(stubElement, this, targetIndex);
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpAttributeListStub stub, @NotNull IndexSink indexSink)
+	public void indexStub(@Nonnull CSharpAttributeListStub stub, @Nonnull IndexSink indexSink)
 	{
 		indexSink.occurrence(CSharpIndexKeys.ATTRIBUTE_LIST_INDEX, stub.getTarget());
 	}

@@ -16,7 +16,8 @@
 
 package consulo.csharp.spellchecker;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
@@ -38,7 +39,7 @@ public class CSharpSpellcheckingStrategy extends SpellcheckingStrategy
 	{
 		@Override
 		@RequiredReadAction
-		public void tokenize(@NotNull PsiNameIdentifierOwner owner, TokenConsumer tokenConsumer)
+		public void tokenize(@Nonnull PsiNameIdentifierOwner owner, TokenConsumer tokenConsumer)
 		{
 			PsiElement identifier = owner.getNameIdentifier();
 			if(identifier == null)
@@ -71,7 +72,7 @@ public class CSharpSpellcheckingStrategy extends SpellcheckingStrategy
 		}
 	};
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Tokenizer getTokenizer(PsiElement element)
 	{

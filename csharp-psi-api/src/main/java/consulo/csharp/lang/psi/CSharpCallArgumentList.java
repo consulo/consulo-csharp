@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetCallArgumentList;
@@ -36,6 +36,6 @@ public interface CSharpCallArgumentList extends DotNetCallArgumentList, CSharpFi
 
 	@RequiredReadAction
 	@Override
-	@NotNull
+	@Nonnull
 	CSharpCallArgument[] getArguments();
 }

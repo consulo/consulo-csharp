@@ -16,10 +16,10 @@
 
 package consulo.csharp.ide.actions.generate.memberChoose;
 
+import javax.annotation.Nonnull;
 import javax.swing.JTree;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.generation.ClassMember;
 import com.intellij.codeInsight.generation.MemberChooserObject;
 import com.intellij.openapi.util.Iconable;
@@ -50,7 +50,7 @@ public abstract class CSharpMemberChooseObject<T extends DotNetElement> implemen
 		myDeclaration = declaration;
 	}
 
-	@NotNull
+	@Nonnull
 	public T getDeclaration()
 	{
 		return myDeclaration;
@@ -71,7 +71,7 @@ public abstract class CSharpMemberChooseObject<T extends DotNetElement> implemen
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	public abstract String getPresentationText();
 

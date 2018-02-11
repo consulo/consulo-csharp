@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.doc.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.doc.psi.CSharpDocElementFactory;
 import consulo.csharp.lang.doc.psi.CSharpDocElements;
@@ -27,7 +27,7 @@ import consulo.csharp.lang.doc.psi.CSharpDocElements;
  */
 public class CSharpDocElementFactoryImpl implements CSharpDocElementFactory
 {
-	@NotNull
+	@Nonnull
 	@Override
 	public IElementType getDocRootElementType()
 	{

@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.completion.weigher;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.ProximityLocation;
 import com.intellij.psi.util.proximity.ProximityWeigher;
@@ -38,7 +39,7 @@ public class CSharpObsoleteProximityWeigher extends ProximityWeigher
 
 	@RequiredReadAction
 	@Override
-	public Comparable weigh(@NotNull PsiElement psiElement, @NotNull ProximityLocation proximityLocation)
+	public Comparable weigh(@Nonnull PsiElement psiElement, @Nonnull ProximityLocation proximityLocation)
 	{
 		if(DotNetAttributeUtil.hasAttribute(psiElement, DotNetTypes.System.ObsoleteAttribute))
 		{

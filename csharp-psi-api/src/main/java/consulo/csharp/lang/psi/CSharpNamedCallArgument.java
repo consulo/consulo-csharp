@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiNamedElement;
 
 /**
@@ -26,9 +27,9 @@ import com.intellij.psi.PsiNamedElement;
 public interface CSharpNamedCallArgument extends CSharpCallArgument, PsiNamedElement
 {
 	@Override
-	@NotNull
+	@Nonnull
 	String getName();
 
-	@NotNull
+	@Nonnull
 	CSharpReferenceExpression getArgumentNameReference();
 }

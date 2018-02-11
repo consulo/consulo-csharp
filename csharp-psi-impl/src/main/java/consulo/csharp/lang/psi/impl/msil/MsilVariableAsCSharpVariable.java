@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpModifier;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
@@ -42,7 +44,7 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 	private MsilModifierListToCSharpModifierList myModifierList;
 	private NotNullLazyValue<DotNetTypeRef> myVariableTypRefValue = new NotNullLazyValue<DotNetTypeRef>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected DotNetTypeRef compute()
 		{
@@ -64,7 +66,7 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 		myModifierList = createModifierList(modifiers, variable);
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	protected MsilModifierListToCSharpModifierList createModifierList(CSharpModifier[] modifiers, DotNetVariable variable)
 	{
@@ -98,14 +100,14 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public final DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
 		return myVariableTypRefValue.getValue();
 	}
 
-	@NotNull
+	@Nonnull
 	public DotNetTypeRef toTypeRefImpl()
 	{
 		return MsilToCSharpUtil.extractToCSharp(myOriginal.toTypeRef(false), myOriginal);
@@ -129,7 +131,7 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
 		if(modifier == CSharpModifier.OPTIONAL)
 		{
@@ -169,7 +171,7 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
 	{
 		return null;
 	}

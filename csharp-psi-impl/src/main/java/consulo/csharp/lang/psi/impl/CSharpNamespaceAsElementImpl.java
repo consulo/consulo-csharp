@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.dotnet.lang.psi.impl.IndexBasedDotNetNamespaceAsElement;
 import consulo.dotnet.resolve.impl.IndexBasedDotNetPsiSearcher;
@@ -28,10 +29,10 @@ import com.intellij.openapi.project.Project;
  */
 public class CSharpNamespaceAsElementImpl extends IndexBasedDotNetNamespaceAsElement
 {
-	public CSharpNamespaceAsElementImpl(@NotNull Project project,
-			@NotNull String indexKey,
-			@NotNull String qName,
-			@NotNull IndexBasedDotNetPsiSearcher searcher)
+	public CSharpNamespaceAsElementImpl(@Nonnull Project project,
+			@Nonnull String indexKey,
+			@Nonnull String qName,
+			@Nonnull IndexBasedDotNetPsiSearcher searcher)
 	{
 		super(project, CSharpLanguage.INSTANCE, indexKey, qName, searcher);
 	}

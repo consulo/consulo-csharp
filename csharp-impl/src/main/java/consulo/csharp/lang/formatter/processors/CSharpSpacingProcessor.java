@@ -19,8 +19,8 @@ package consulo.csharp.lang.formatter.processors;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import consulo.csharp.lang.formatter.CSharpFormattingBlock;
@@ -52,7 +52,7 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		private final TokenSet myTokenSet;
 		private final boolean myCondition;
 
-		OperatorReferenceSpacingBuilder(CommonCodeStyleSettings commonSettings, @NotNull TokenSet parentSet, IElementType[] types, boolean condition)
+		OperatorReferenceSpacingBuilder(CommonCodeStyleSettings commonSettings, @Nonnull TokenSet parentSet, IElementType[] types, boolean condition)
 		{
 			myCommonSettings = commonSettings;
 			myParentSet = parentSet;
@@ -60,7 +60,7 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 			myCondition = condition;
 		}
 
-		public boolean match(@Nullable ASTBlock child1, @NotNull ASTBlock child2)
+		public boolean match(@Nullable ASTBlock child1, @Nonnull ASTBlock child2)
 		{
 			CSharpOperatorReferenceImpl operatorReference = findOperatorReference(child1, child2);
 			if(operatorReference != null && myParentSet != TokenSet.EMPTY)
@@ -75,7 +75,7 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		}
 
 		@Nullable
-		private static CSharpOperatorReferenceImpl findOperatorReference(@Nullable ASTBlock child1, @NotNull ASTBlock child2)
+		private static CSharpOperatorReferenceImpl findOperatorReference(@Nullable ASTBlock child1, @Nonnull ASTBlock child2)
 		{
 			if(child1 != null)
 			{
@@ -93,7 +93,7 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 			return null;
 		}
 
-		@NotNull
+		@Nonnull
 		public Spacing createSpacing()
 		{
 			int count = myCondition ? 1 : 0;
@@ -348,13 +348,13 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		operatorReferenceSpacingWithParent(ifCondition, TokenSet.EMPTY, types);
 	}
 
-	public void operatorReferenceSpacingWithParent(boolean ifCondition, @NotNull TokenSet parents, IElementType... types)
+	public void operatorReferenceSpacingWithParent(boolean ifCondition, @Nonnull TokenSet parents, IElementType... types)
 	{
 		myOperatorReferenceSpacingBuilders.add(new OperatorReferenceSpacingBuilder(myCommonSettings, parents, types, ifCondition));
 	}
 
 	@Nullable
-	public Spacing getSpacing(@Nullable ASTBlock child1, @NotNull ASTBlock child2)
+	public Spacing getSpacing(@Nullable ASTBlock child1, @Nonnull ASTBlock child2)
 	{
 		IElementType elementType1 = PsiUtilCore.getElementType(child1 == null ? null : child1.getNode());
 		IElementType elementType2 = PsiUtilCore.getElementType(child2.getNode());

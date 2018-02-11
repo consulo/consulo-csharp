@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
@@ -40,19 +41,19 @@ public class CSharpElementCompareUtil
 	public static final int CHECK_VIRTUAL_IMPL_TYPE = 1 << 1;
 
 	@RequiredReadAction
-	public static boolean isEqual(@NotNull PsiElement element, @NotNull PsiElement element2, @NotNull PsiElement scope)
+	public static boolean isEqual(@Nonnull PsiElement element, @Nonnull PsiElement element2, @Nonnull PsiElement scope)
 	{
 		return isEqual(element, element2, 0, scope);
 	}
 
 	@RequiredReadAction
-	public static boolean isEqualWithVirtualImpl(@NotNull PsiElement element, @NotNull PsiElement element2, @NotNull PsiElement scope)
+	public static boolean isEqualWithVirtualImpl(@Nonnull PsiElement element, @Nonnull PsiElement element2, @Nonnull PsiElement scope)
 	{
 		return isEqual(element, element2, CHECK_VIRTUAL_IMPL_TYPE, scope);
 	}
 
 	@RequiredReadAction
-	public static boolean isEqual(@NotNull PsiElement element, @NotNull PsiElement element2, int flags, @NotNull PsiElement scope)
+	public static boolean isEqual(@Nonnull PsiElement element, @Nonnull PsiElement element2, int flags, @Nonnull PsiElement scope)
 	{
 		if(element == element2)
 		{
@@ -188,7 +189,7 @@ public class CSharpElementCompareUtil
 	}
 
 	@RequiredReadAction
-	private static boolean compareReturnTypeRef(@NotNull PsiElement o1, @NotNull PsiElement o2, int flags, @NotNull PsiElement scope)
+	private static boolean compareReturnTypeRef(@Nonnull PsiElement o1, @Nonnull PsiElement o2, int flags, @Nonnull PsiElement scope)
 	{
 		if(!BitUtil.isSet(flags, CHECK_RETURN_TYPE))
 		{
@@ -200,7 +201,7 @@ public class CSharpElementCompareUtil
 	}
 
 	@RequiredReadAction
-	private static boolean compareVirtualImpl(@NotNull PsiElement o1, @NotNull PsiElement o2, int flags, @NotNull PsiElement scope)
+	private static boolean compareVirtualImpl(@Nonnull PsiElement o1, @Nonnull PsiElement o2, int flags, @Nonnull PsiElement scope)
 	{
 		if(!BitUtil.isSet(flags, CHECK_VIRTUAL_IMPL_TYPE))
 		{
@@ -223,7 +224,7 @@ public class CSharpElementCompareUtil
 	}
 
 	@RequiredReadAction
-	private static boolean compareParameterList(@NotNull PsiElement listOwner, @NotNull PsiElement listOwner2, @NotNull PsiElement scope)
+	private static boolean compareParameterList(@Nonnull PsiElement listOwner, @Nonnull PsiElement listOwner2, @Nonnull PsiElement scope)
 	{
 		DotNetTypeRef[] parameterTypeRefs = ((DotNetParameterListOwner) listOwner).getParameterTypeRefs();
 		DotNetTypeRef[] parameterTypeRefs1 = ((DotNetParameterListOwner) listOwner2).getParameterTypeRefs();

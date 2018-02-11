@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
@@ -38,7 +38,7 @@ public class CSharpTypeRefFromNamespace extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -46,7 +46,7 @@ public class CSharpTypeRefFromNamespace extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public String toString()
 	{

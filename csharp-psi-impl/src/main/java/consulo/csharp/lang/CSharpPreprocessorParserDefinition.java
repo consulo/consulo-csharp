@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
@@ -39,55 +40,55 @@ public class CSharpPreprocessorParserDefinition implements ParserDefinition
 {
 	private static final IFileElementType ourFileElementType = new IFileElementType(CSharpPreprocessorLanguage.INSTANCE);
 
-	@NotNull
+	@Nonnull
 	@Override
-	public Lexer createLexer(@NotNull LanguageVersion languageVersion)
+	public Lexer createLexer(@Nonnull LanguageVersion languageVersion)
 	{
 		return new _CSharpMacroLexer();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiParser createParser(@NotNull LanguageVersion languageVersion)
+	public PsiParser createParser(@Nonnull LanguageVersion languageVersion)
 	{
 		return new CSharpPreprocessorParser();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public IFileElementType getFileNodeType()
 	{
 		return ourFileElementType;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public TokenSet getWhitespaceTokens(@NotNull LanguageVersion languageVersion)
+	public TokenSet getWhitespaceTokens(@Nonnull LanguageVersion languageVersion)
 	{
 		return TokenSet.create(CSharpTokens.WHITE_SPACE);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public TokenSet getCommentTokens(@NotNull LanguageVersion languageVersion)
+	public TokenSet getCommentTokens(@Nonnull LanguageVersion languageVersion)
 	{
 		return TokenSet.create(CSharpPreprocesorTokens.LINE_COMMENT);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public TokenSet getStringLiteralElements(@NotNull LanguageVersion languageVersion)
+	public TokenSet getStringLiteralElements(@Nonnull LanguageVersion languageVersion)
 	{
 		return TokenSet.EMPTY;
 	}
 
 	@Override
-	public PsiFile createFile(@NotNull FileViewProvider viewProvider)
+	public PsiFile createFile(@Nonnull FileViewProvider viewProvider)
 	{
 		throw new IllegalArgumentException();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right)
 	{

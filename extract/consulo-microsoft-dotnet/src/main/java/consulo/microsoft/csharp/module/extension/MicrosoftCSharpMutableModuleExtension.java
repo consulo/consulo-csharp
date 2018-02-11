@@ -16,10 +16,10 @@
 
 package consulo.microsoft.csharp.module.extension;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import consulo.csharp.module.extension.CSharpConfigurationPanel;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.annotations.RequiredDispatchThread;
@@ -31,7 +31,7 @@ import consulo.roots.ModuleRootLayer;
  */
 public class MicrosoftCSharpMutableModuleExtension extends MicrosoftCSharpModuleExtension implements CSharpMutableModuleExtension<MicrosoftCSharpModuleExtension>
 {
-	public MicrosoftCSharpMutableModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
+	public MicrosoftCSharpMutableModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer module)
 	{
 		super(id, module);
 	}
@@ -39,7 +39,7 @@ public class MicrosoftCSharpMutableModuleExtension extends MicrosoftCSharpModule
 	@Nullable
 	@Override
 	@RequiredDispatchThread
-	public JComponent createConfigurablePanel(@NotNull Runnable runnable)
+	public JComponent createConfigurablePanel(@Nonnull Runnable runnable)
 	{
 		return new CSharpConfigurationPanel(this);
 	}
@@ -51,7 +51,7 @@ public class MicrosoftCSharpMutableModuleExtension extends MicrosoftCSharpModule
 	}
 
 	@Override
-	public boolean isModified(@NotNull MicrosoftCSharpModuleExtension moduleExtension)
+	public boolean isModified(@Nonnull MicrosoftCSharpModuleExtension moduleExtension)
 	{
 		return isModifiedImpl(moduleExtension);
 	}

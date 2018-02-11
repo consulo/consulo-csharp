@@ -19,9 +19,9 @@ package consulo.csharp.ide.highlight;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.lexer.CSharpLexer;
-import consulo.csharp.lang.psi.CSharpTemplateTokens;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lexer.Lexer;
@@ -77,14 +77,14 @@ public class CSharpSyntaxHighlighter extends SyntaxHighlighterBase
 		safeMap(ourKeys, CSharpTokens.NON_ACTIVE_SYMBOL, CodeInsightColors.NOT_USED_ELEMENT_ATTRIBUTES);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Lexer getHighlightingLexer()
 	{
 		return new CSharpLexer();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public TextAttributesKey[] getTokenHighlights(IElementType elementType)
 	{

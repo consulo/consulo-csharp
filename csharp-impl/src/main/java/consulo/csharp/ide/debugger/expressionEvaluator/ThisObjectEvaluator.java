@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
@@ -44,21 +44,21 @@ public class ThisObjectEvaluator extends Evaluator
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetInvalidStackFrameException, DotNetAbsentInformationException
+	public void evaluate(@Nonnull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetInvalidStackFrameException, DotNetAbsentInformationException
 	{
 		DotNetStackFrameProxy frame = context.getFrame();
 
 		context.pull(calcThisObject(frame, frame.getThisObject()), null);
 	}
 
-	@NotNull
-	public static DotNetValueProxy calcThisObject(@NotNull DotNetStackFrameProxy proxy, DotNetValueProxy thisObject)
+	@Nonnull
+	public static DotNetValueProxy calcThisObject(@Nonnull DotNetStackFrameProxy proxy, DotNetValueProxy thisObject)
 	{
 		return ObjectUtil.notNull(tryToFindObjectInsideYieldOrAsyncThis(proxy, thisObject), thisObject);
 	}
 
 	@Nullable
-	public static DotNetValueProxy tryToFindObjectInsideYieldOrAsyncThis(@NotNull DotNetStackFrameProxy proxy, DotNetValueProxy thisObject)
+	public static DotNetValueProxy tryToFindObjectInsideYieldOrAsyncThis(@Nonnull DotNetStackFrameProxy proxy, DotNetValueProxy thisObject)
 	{
 		if(!(thisObject instanceof DotNetObjectValueProxy))
 		{

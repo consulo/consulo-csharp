@@ -20,7 +20,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
+
 import consulo.dotnet.psi.DotNetExpression;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;

@@ -16,8 +16,9 @@
 
 package consulo.csharp.ide.parameterInfo;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
@@ -52,7 +53,7 @@ public class CSharpParametersInfo
 
 	private static final TextRange EMPTY = new UnfairTextRange(-1, -1);
 
-	@NotNull
+	@Nonnull
 	public static char[] getOpenAndCloseTokens(@Nullable Object callable)
 	{
 		if(callable instanceof CSharpIndexAccessExpressionImpl || callable instanceof CSharpIndexMethodDeclaration)
@@ -62,8 +63,8 @@ public class CSharpParametersInfo
 		return ourParentheses;
 	}
 
-	@NotNull
-	public static CSharpParametersInfo build(@NotNull CSharpSimpleLikeMethod callable, @NotNull PsiElement scope)
+	@Nonnull
+	public static CSharpParametersInfo build(@Nonnull CSharpSimpleLikeMethod callable, @Nonnull PsiElement scope)
 	{
 		CSharpSimpleParameterInfo[] parameters = callable.getParameterInfos();
 		DotNetTypeRef returnType = callable.getReturnTypeRef();
@@ -123,7 +124,7 @@ public class CSharpParametersInfo
 	}
 
 	@RequiredReadAction
-	private int buildParameter(@NotNull CSharpSimpleParameterInfo o, @NotNull PsiElement scope)
+	private int buildParameter(@Nonnull CSharpSimpleParameterInfo o, @Nonnull PsiElement scope)
 	{
 		String text = CSharpTypeRefPresentationUtil.buildShortText(o.getTypeRef(), scope);
 		myBuilder.append(text);
@@ -150,7 +151,7 @@ public class CSharpParametersInfo
 		return XmlStringUtil.escapeString(text).length() + nameOffset;
 	}
 
-	@NotNull
+	@Nonnull
 	public TextRange getParameterRange(int i)
 	{
 		if(i == -1)
@@ -175,7 +176,7 @@ public class CSharpParametersInfo
 		return 2;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getText()
 	{
 		return myBuilder.toString();

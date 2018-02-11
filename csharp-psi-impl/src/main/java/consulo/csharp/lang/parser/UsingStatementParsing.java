@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.parser;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.csharp.lang.parser.exp.ExpressionParsing;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -32,7 +33,7 @@ public class UsingStatementParsing extends SharedParsingHelpers
 {
 	public static final TokenSet ourStoppers = TokenSet.orSet(ourSemicolonSet, CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START, TokenSet.create(DELEGATE_KEYWORD, CONST_KEYWORD));
 
-	public static void parseUsing(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker)
+	public static void parseUsing(@Nonnull CSharpBuilderWrapper builder, @Nonnull PsiBuilder.Marker marker)
 	{
 		builder.advanceLexer();
 

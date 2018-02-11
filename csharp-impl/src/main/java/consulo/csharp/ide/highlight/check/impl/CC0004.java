@@ -19,7 +19,7 @@ package consulo.csharp.ide.highlight.check.impl;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -37,9 +37,9 @@ import com.intellij.util.SmartList;
 public class CC0004 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 {
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
-	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpMethodCallExpressionImpl element)
+	public List<HighlightInfoFactory> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpMethodCallExpressionImpl element)
 	{
 		List<PsiElement> list = new SmartList<>();
 		if(CC0001.isCalleInsideCalle(element))

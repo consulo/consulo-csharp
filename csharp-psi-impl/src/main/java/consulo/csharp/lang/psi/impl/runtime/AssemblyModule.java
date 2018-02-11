@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.runtime;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -32,9 +33,9 @@ import consulo.vfs.util.ArchiveVfsUtil;
  */
 public interface AssemblyModule
 {
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
-	static AssemblyModule resolve(@NotNull PsiElement element)
+	static AssemblyModule resolve(@Nonnull PsiElement element)
 	{
 		Module module = ModuleUtilCore.findModuleForPsiElement(element);
 		if(module != null)
@@ -54,12 +55,12 @@ public interface AssemblyModule
 		return UnknownAssemblyModule.INSTANCE;
 	}
 
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	String getName();
 
 	@RequiredReadAction
-	boolean isAllowedAssembly(@NotNull String assemblyName);
+	boolean isAllowedAssembly(@Nonnull String assemblyName);
 
-	boolean equals(@NotNull AssemblyModule module);
+	boolean equals(@Nonnull AssemblyModule module);
 }

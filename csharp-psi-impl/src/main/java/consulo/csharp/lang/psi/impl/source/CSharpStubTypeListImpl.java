@@ -16,7 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpStubElements;
@@ -34,12 +35,12 @@ import com.intellij.psi.stubs.IStubElementType;
  */
 public class CSharpStubTypeListImpl extends CSharpStubElementImpl<CSharpTypeListStub> implements DotNetTypeList
 {
-	public CSharpStubTypeListImpl(@NotNull ASTNode node)
+	public CSharpStubTypeListImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubTypeListImpl(@NotNull CSharpTypeListStub stub, @NotNull IStubElementType<? extends CSharpTypeListStub, ?> nodeType)
+	public CSharpStubTypeListImpl(@Nonnull CSharpTypeListStub stub, @Nonnull IStubElementType<? extends CSharpTypeListStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -52,7 +53,7 @@ public class CSharpStubTypeListImpl extends CSharpStubElementImpl<CSharpTypeList
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetType[] getTypes()
 	{
@@ -60,7 +61,7 @@ public class CSharpStubTypeListImpl extends CSharpStubElementImpl<CSharpTypeList
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nonnull
 	@Override
 	public DotNetTypeRef[] getTypeRefs()
 	{
@@ -79,7 +80,7 @@ public class CSharpStubTypeListImpl extends CSharpStubElementImpl<CSharpTypeList
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitTypeList(this);
 	}

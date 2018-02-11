@@ -18,8 +18,8 @@ package consulo.csharp.ide.refactoring.changeSignature;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -55,7 +55,7 @@ public class CSharpChangeInfo implements ChangeInfo
 		myNewVisibility = newVisibility;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CSharpParameterInfo[] getNewParameters()
 	{

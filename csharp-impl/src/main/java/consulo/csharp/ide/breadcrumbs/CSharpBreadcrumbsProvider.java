@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.breadcrumbs;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
 import com.intellij.ui.breadcrumbs.BreadcrumbsProvider;
@@ -34,7 +35,7 @@ import consulo.dotnet.psi.DotNetQualifiedElement;
  */
 public class CSharpBreadcrumbsProvider implements BreadcrumbsProvider
 {
-	@NotNull
+	@Nonnull
 	@Override
 	public Language getLanguage()
 	{
@@ -43,15 +44,15 @@ public class CSharpBreadcrumbsProvider implements BreadcrumbsProvider
 
 	@Override
 	@RequiredReadAction
-	public boolean acceptElement(@NotNull PsiElement psiElement)
+	public boolean acceptElement(@Nonnull PsiElement psiElement)
 	{
 		return psiElement instanceof DotNetQualifiedElement && ((DotNetQualifiedElement) psiElement).getName() != null|| psiElement instanceof CSharpAnonymousMethodExpression;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	@RequiredReadAction
-	public String getElementInfo(@NotNull PsiElement psiElement)
+	public String getElementInfo(@Nonnull PsiElement psiElement)
 	{
 		if(psiElement instanceof CSharpAnonymousMethodExpression)
 		{

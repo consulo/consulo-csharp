@@ -18,7 +18,8 @@ package consulo.csharp.ide.codeInspection.unusedUsing;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
 import com.intellij.codeInspection.LocalInspectionTool;
@@ -41,12 +42,12 @@ public class UnusedUsingInspection extends LocalInspectionTool
 {
 	public static final class DeleteStatement extends LocalQuickFixOnPsiElement
 	{
-		protected DeleteStatement(@NotNull PsiElement element)
+		protected DeleteStatement(@Nonnull PsiElement element)
 		{
 			super(element);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getText()
 		{
@@ -54,7 +55,7 @@ public class UnusedUsingInspection extends LocalInspectionTool
 		}
 
 		@Override
-		public void invoke(@NotNull Project project, @NotNull PsiFile psiFile, @NotNull final PsiElement element, @NotNull PsiElement element2)
+		public void invoke(@Nonnull Project project, @Nonnull PsiFile psiFile, @Nonnull final PsiElement element, @Nonnull PsiElement element2)
 		{
 			new WriteCommandAction.Simple<Object>(project, psiFile)
 			{
@@ -66,7 +67,7 @@ public class UnusedUsingInspection extends LocalInspectionTool
 			}.execute();
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getFamilyName()
 		{
@@ -76,9 +77,9 @@ public class UnusedUsingInspection extends LocalInspectionTool
 
 	private static final Key<UnusedUsingVisitor> KEY = Key.create("UnusedUsingVisitor");
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder, boolean isOnTheFly, @NotNull LocalInspectionToolSession session)
+	public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session)
 	{
 		UnusedUsingVisitor visitor = session.getUserData(KEY);
 		if(visitor == null)
@@ -90,7 +91,7 @@ public class UnusedUsingInspection extends LocalInspectionTool
 
 	@Override
 	@RequiredReadAction
-	public void inspectionFinished(@NotNull LocalInspectionToolSession session, @NotNull ProblemsHolder problemsHolder)
+	public void inspectionFinished(@Nonnull LocalInspectionToolSession session, @Nonnull ProblemsHolder problemsHolder)
 	{
 		UnusedUsingVisitor visitor = session.getUserData(KEY);
 		if(visitor == null)

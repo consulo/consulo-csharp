@@ -18,7 +18,8 @@ package consulo.csharp.ide.highlight;
 
 import gnu.trove.TIntHashSet;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
@@ -69,14 +70,14 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	private Document myDocument;
 
 	@Override
-	public boolean suitableForFile(@NotNull PsiFile psiFile)
+	public boolean suitableForFile(@Nonnull PsiFile psiFile)
 	{
 		return psiFile instanceof CSharpFile;
 	}
 
 	@Override
 	@RequiredReadAction
-	public void visit(@NotNull PsiElement element)
+	public void visit(@Nonnull PsiElement element)
 	{
 		if(element instanceof CSharpPreprocessorReferenceExpressionImpl)
 		{
@@ -309,7 +310,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@RequiredReadAction
-	private void highlightResolvedTarget(@NotNull PsiReference reference, @NotNull PsiElement referenceElement)
+	private void highlightResolvedTarget(@Nonnull PsiReference reference, @Nonnull PsiElement referenceElement)
 	{
 		PsiElement resolved = reference.resolve();
 
@@ -325,7 +326,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@RequiredReadAction
-	private void highlightMaybeImplicit(@NotNull CSharpCallArgumentListOwner scope)
+	private void highlightMaybeImplicit(@Nonnull CSharpCallArgumentListOwner scope)
 	{
 		MethodCalcResult methodCalcResult = null;
 		ResolveResult[] resolveResults = scope.multiResolve(false);
@@ -371,7 +372,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
-	public boolean analyze(@NotNull PsiFile psiFile, boolean b, @NotNull HighlightInfoHolder highlightInfoHolder, @NotNull Runnable runnable)
+	public boolean analyze(@Nonnull PsiFile psiFile, boolean b, @Nonnull HighlightInfoHolder highlightInfoHolder, @Nonnull Runnable runnable)
 	{
 		myHighlightInfoHolder = highlightInfoHolder;
 		myProcessedLines.clear();
@@ -381,7 +382,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public HighlightVisitor clone()
 	{

@@ -16,7 +16,8 @@
 
 package consulo.csharp.ide.parameterInfo;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.util.ArrayUtil2;
@@ -31,7 +32,7 @@ public class CSharpGenericParametersInfo
 {
 	private static final TextRange EMPTY = new UnfairTextRange(-1, -1);
 
-	public static CSharpGenericParametersInfo build(@NotNull DotNetGenericParameterListOwner parameterListOwner)
+	public static CSharpGenericParametersInfo build(@Nonnull DotNetGenericParameterListOwner parameterListOwner)
 	{
 		DotNetGenericParameter[] genericParameters = parameterListOwner.getGenericParameters();
 
@@ -71,7 +72,7 @@ public class CSharpGenericParametersInfo
 		return myBuilder.length();
 	}
 
-	@NotNull
+	@Nonnull
 	public TextRange getParameterRange(int i)
 	{
 		if(i == -1)
@@ -91,7 +92,7 @@ public class CSharpGenericParametersInfo
 		myBuilder.append(", ");
 	}
 
-	@NotNull
+	@Nonnull
 	public String getText()
 	{
 		return myBuilder.toString();
