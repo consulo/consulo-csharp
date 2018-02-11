@@ -54,7 +54,7 @@ public class CS0168 extends CompilerCheck<CSharpLocalVariable>
 		@Override
 		public void invoke(@Nonnull Project project,
 				@Nonnull PsiFile psiFile,
-				@Nullable(value = "is null when called from inspection") Editor editor,
+				@Nullable Editor editor,
 				@Nonnull PsiElement psiElement,
 				@Nonnull PsiElement psiElement1)
 		{

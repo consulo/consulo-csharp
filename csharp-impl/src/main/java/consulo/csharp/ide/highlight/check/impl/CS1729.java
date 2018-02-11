@@ -20,10 +20,9 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.Nls;
-
-import javax.annotation.Nullable;
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -67,7 +66,7 @@ public class CS1729 extends CompilerCheck<DotNetQualifiedElement>
 		@RequiredDispatchThread
 		public void invoke(@Nonnull Project project,
 				@Nonnull PsiFile psiFile,
-				@Nullable(value = "is null when called from inspection") Editor editor,
+				@Nullable Editor editor,
 				@Nonnull PsiElement psiElement,
 				@Nonnull PsiElement psiElement1)
 		{
