@@ -393,7 +393,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 			}
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.TUPLE_TYPE : CSharpElements.TUPLE_TYPE);
 		}
-		else if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
+		else if(builder.getTokenType() == CSharpTokens.IDENTIFIER || builder.getTokenType() == CSharpSoftTokens.GLOBAL_KEYWORD)
 		{
 			ExpressionParsing.ReferenceInfo referenceInfo = ExpressionParsing.parseQualifiedReference(builder, null, flags, nameStopperSet);
 			typeInfo.isParameterized = referenceInfo != null && referenceInfo.isParameterized;
