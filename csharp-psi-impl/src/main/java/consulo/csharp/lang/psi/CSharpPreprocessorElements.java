@@ -17,6 +17,8 @@
 package consulo.csharp.lang.psi;
 
 import javax.annotation.Nonnull;
+
+import org.jetbrains.annotations.NonNls;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageParserDefinitions;
@@ -40,8 +42,13 @@ import consulo.psi.tree.ElementTypeAsPsiFactory;
  */
 public interface CSharpPreprocessorElements
 {
-	IElementType PREPROCESSOR_DIRECTIVE = new ILazyParseableElementType("PREPROCESSOR_DIRECTIVE", CSharpLanguage.INSTANCE)
+	class DirectiveElementType extends ILazyParseableElementType
 	{
+		public DirectiveElementType(@Nonnull @NonNls String debugName)
+		{
+			super(debugName, CSharpLanguage.INSTANCE);
+		}
+
 		@Override
 		protected ASTNode doParseContents(@Nonnull ASTNode chameleon, @Nonnull PsiElement psi)
 		{
@@ -59,7 +66,11 @@ public interface CSharpPreprocessorElements
 		{
 			return CSharpPreprocessorLanguage.INSTANCE;
 		}
-	};
+	}
+
+	IElementType PREPROCESSOR_DIRECTIVE = new DirectiveElementType("PREPROCESSOR_DIRECTIVE");
+
+	IElementType DISABLED_PREPROCESSOR_DIRECTIVE = new DirectiveElementType("DISABLED_PREPROCESSOR_DIRECTIVE");
 
 	IElementType MACRO_DEFINE = new ElementTypeAsPsiFactory("MACRO_DEFINE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorDefineImpl.class);
 

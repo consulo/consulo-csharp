@@ -177,6 +177,8 @@ public class PreprocessorLightParser
 					return EndIfPreprocessorDirective.INSTANCE;
 				case ENDREGION:
 					return EndRegionPreprocessorDirective.INSTANCE;
+				case WARNING:
+					return new WarningDirective(StringUtil.notNullize(value.trim()));
 			}
 		}
 

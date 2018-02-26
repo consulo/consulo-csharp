@@ -121,12 +121,12 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	{
 		ProgressIndicatorProvider.checkCanceled();
 
-		IElementType elementType = element.getNode().getElementType();
+		IElementType elementType = PsiUtilCore.getElementType(element);
 		if(CSharpSoftTokens.ALL.contains(elementType))
 		{
 			myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(element).textAttributes(CSharpHighlightKey.SOFT_KEYWORD).create());
 		}
-		else if(PsiUtilCore.getElementType(element) == CSharpTokens.NON_ACTIVE_SYMBOL)
+		else if(elementType == CSharpTokens.NON_ACTIVE_SYMBOL || elementType == CSharpPreprocessorElements.DISABLED_PREPROCESSOR_DIRECTIVE)
 		{
 			if(myDocument == null)
 			{

@@ -19,9 +19,12 @@ package consulo.csharp.ide.highlight.check.impl;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiUtilCore;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.psi.impl.source.CSharpPreprocessorWarningImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 
@@ -36,6 +39,11 @@ public class CS1030 extends CompilerCheck<CSharpPreprocessorWarningImpl>
 	@Override
 	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpPreprocessorWarningImpl element)
 	{
+		IElementType elementType = PsiUtilCore.getElementType(element.getParent());
+		if(elementType == CSharpPreprocessorElements.DISABLED_PREPROCESSOR_DIRECTIVE)
+		{
+			return null;
+		}
 		return newBuilder(element).setText(element.getText());
 	}
 }

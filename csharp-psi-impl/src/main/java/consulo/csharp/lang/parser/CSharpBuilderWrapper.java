@@ -28,6 +28,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.impl.PsiBuilderAdapter;
 import com.intellij.psi.tree.IElementType;
@@ -39,6 +40,7 @@ import consulo.csharp.lang.parser.preprocessor.EndIfPreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.IfPreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.PreprocessorLightParser;
+import consulo.csharp.lang.parser.preprocessor.WarningDirective;
 import consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTemplateTokens;
@@ -193,7 +195,8 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		while(!super.eof())
 		{
 			IElementType tokenType = getTokenTypeImpl();
-			if(tokenType == CSharpTokens.NON_ACTIVE_SYMBOL || tokenType == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE)
+			if(tokenType == CSharpTokens.NON_ACTIVE_SYMBOL || tokenType == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE || tokenType == CSharpPreprocessorElements
+					.DISABLED_PREPROCESSOR_DIRECTIVE)
 			{
 				super.advanceLexer();
 			}
@@ -223,6 +226,8 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 
 		if(tokenType == CSharpTemplateTokens.PREPROCESSOR_FRAGMENT)
 		{
+			IElementType toRemapTokenType = CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE;
+
 			Set<String> variables = getUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES);
 			assert variables != null;
 			PreprocessorDirective directive = PreprocessorLightParser.parse(super.getTokenText());
@@ -296,9 +301,17 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 			{
 				myStates.pollLast();
 			}
+			else if(directive instanceof WarningDirective)
+			{
+				PreprocessorState preprocessorState = myStates.peekLast();
+				if(preprocessorState != null && !preprocessorState.isActive())
+				{
+					toRemapTokenType = CSharpPreprocessorElements.DISABLED_PREPROCESSOR_DIRECTIVE;
+				}
+			}
 
-			remapCurrentToken(CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE);
-			return CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE;
+			remapCurrentToken(toRemapTokenType);
+			return toRemapTokenType;
 		}
 
 		PreprocessorState preprocessorState = myStates.peekLast();
