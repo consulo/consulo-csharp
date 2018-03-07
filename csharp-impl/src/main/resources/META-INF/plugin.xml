@@ -113,6 +113,8 @@
 		<internalFileTemplate name="CSharpFile"/>
 		<internalFileTemplate name="CSharpAssemblyFile"/>
 
+		<filePropertyPusher implementation="consulo.csharp.lang.roots.impl.CSharpFilePropertyPusher" />
+
 		<createFromTemplateHandler implementation="consulo.csharp.ide.actions.CSharpCreateFromTemplateHandler"/>
 
 		<additionalTextAttributes scheme="Darcula" file="/colorScheme/CSharpDarcula.xml"/>
