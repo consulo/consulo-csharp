@@ -280,7 +280,7 @@ public class MethodResolver
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodCalcResult calc(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope, boolean resolveFromParent)
+	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope, boolean resolveFromParent)
 	{
 		List<NCallArgument> list = buildCallArguments(callArguments, parameterListOwner, scope, resolveFromParent);
 		return calc(list, scope);
@@ -288,14 +288,14 @@ public class MethodResolver
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodCalcResult calc(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope)
+	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope)
 	{
 		return calc(callArguments, parameterListOwner, scope, false);
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodCalcResult calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull CSharpSimpleParameterInfo[] p, @Nonnull PsiElement scope)
+	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull CSharpSimpleParameterInfo[] p, @Nonnull PsiElement scope)
 	{
 		List<NCallArgument> list = buildCallArguments(callArgumentListOwner.getCallArguments(), scope, new SimpleParameterResolveContext(p));
 		return calc(list, scope);
@@ -303,7 +303,7 @@ public class MethodResolver
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodCalcResult calc(@Nonnull DotNetTypeRef[] expressionTypeRefs, @Nonnull DotNetTypeRef[] parameterTypeRefs, @Nonnull PsiElement scope)
+	public static MethodResolvePriorityInfo calc(@Nonnull DotNetTypeRef[] expressionTypeRefs, @Nonnull DotNetTypeRef[] parameterTypeRefs, @Nonnull PsiElement scope)
 	{
 		List<NCallArgument> list = buildCallArguments(expressionTypeRefs, parameterTypeRefs);
 		return calc(list, scope);
@@ -311,7 +311,7 @@ public class MethodResolver
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodCalcResult calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope)
+	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope)
 	{
 		List<NCallArgument> list = buildCallArguments(callArgumentListOwner.getCallArguments(), parameterListOwner, scope);
 		return calc(list, scope);
@@ -319,7 +319,7 @@ public class MethodResolver
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodCalcResult calc(@Nonnull List<NCallArgument> arguments, @Nonnull PsiElement scope)
+	public static MethodResolvePriorityInfo calc(@Nonnull List<NCallArgument> arguments, @Nonnull PsiElement scope)
 	{
 		int weight = 0;
 		boolean valid = true;
@@ -346,6 +346,6 @@ public class MethodResolver
 			}
 		}
 
-		return new MethodCalcResult(valid, weight, arguments);
+		return new MethodResolvePriorityInfo(valid, weight, arguments);
 	}
 }

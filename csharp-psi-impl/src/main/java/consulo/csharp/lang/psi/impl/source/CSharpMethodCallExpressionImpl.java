@@ -32,7 +32,7 @@ import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResultUtil;
@@ -142,7 +142,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 			{
 				declaration = GenericUnwrapTool.extract(declaration, typeResolveResult.getGenericExtractor());
 
-				MethodCalcResult calcResult = MethodResolver.calc(this, declaration, this);
+				MethodResolvePriorityInfo calcResult = MethodResolver.calc(this, declaration, this);
 
 				return new ResolveResult[]{MethodResolveResult.createResult(calcResult, declaration, null)};
 			}

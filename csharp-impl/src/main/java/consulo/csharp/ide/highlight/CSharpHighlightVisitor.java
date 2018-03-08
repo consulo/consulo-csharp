@@ -50,7 +50,7 @@ import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPreprocessorReferenceExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitCastInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
@@ -328,7 +328,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	@RequiredReadAction
 	private void highlightMaybeImplicit(@Nonnull CSharpCallArgumentListOwner scope)
 	{
-		MethodCalcResult methodCalcResult = null;
+		MethodResolvePriorityInfo methodCalcResult = null;
 		ResolveResult[] resolveResults = scope.multiResolve(false);
 		ResolveResult firstValidResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
 		if(firstValidResult != null)

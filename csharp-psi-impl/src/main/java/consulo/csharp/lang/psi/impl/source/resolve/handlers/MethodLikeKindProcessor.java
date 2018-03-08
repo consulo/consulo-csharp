@@ -34,7 +34,7 @@ import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
@@ -91,7 +91,7 @@ public class MethodLikeKindProcessor implements KindProcessor
 							psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor());
 						}
 
-						MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement, element);
+						MethodResolvePriorityInfo calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement, element);
 
 						if(inferenceResult == null || inferenceResult.isSuccess())
 						{
@@ -115,7 +115,7 @@ public class MethodLikeKindProcessor implements KindProcessor
 				{
 					CSharpLambdaResolveResult lambdaTypeResolveResult = (CSharpLambdaResolveResult) maybeLambdaResolveResult;
 
-					MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, lambdaTypeResolveResult.getParameterInfos(), element);
+					MethodResolvePriorityInfo calcResult = MethodResolver.calc(callArgumentListOwner, lambdaTypeResolveResult.getParameterInfos(), element);
 
 					methodResolveResults.add(MethodResolveResult.createResult(calcResult, maybeElementGroup, result));
 				}

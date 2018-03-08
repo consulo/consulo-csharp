@@ -33,7 +33,7 @@ import consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import consulo.csharp.lang.psi.impl.DotNetTypes2;
 import consulo.csharp.lang.psi.impl.source.*;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
@@ -282,7 +282,7 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 		{
 			if(resolveResult instanceof MethodResolveResult)
 			{
-				MethodCalcResult calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
+				MethodResolvePriorityInfo calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
 
 				for(NCallArgument nCallArgument : calcResult.getArguments())
 				{

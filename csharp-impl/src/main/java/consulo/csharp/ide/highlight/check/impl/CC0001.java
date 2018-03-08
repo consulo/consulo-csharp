@@ -48,7 +48,7 @@ import consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NErrorCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
@@ -266,7 +266,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		PsiElement resolveElement = resolveResult.getElement();
 		assert resolveElement != null;
 
-		MethodCalcResult calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
+		MethodResolvePriorityInfo calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
 		List<NCallArgument> arguments = calcResult.getArguments();
 		for(NCallArgument argument : arguments)
 		{

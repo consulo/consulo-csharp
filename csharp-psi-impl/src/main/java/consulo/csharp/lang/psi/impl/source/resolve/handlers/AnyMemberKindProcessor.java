@@ -28,7 +28,7 @@ import consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -71,7 +71,7 @@ public class AnyMemberKindProcessor implements KindProcessor
 						{
 							if(psiElement instanceof DotNetLikeMethodDeclaration)
 							{
-								MethodCalcResult calc = MethodResolver.calc(lambdaResolveResult.getParameterTypeRefs(),
+								MethodResolvePriorityInfo calc = MethodResolver.calc(lambdaResolveResult.getParameterTypeRefs(),
 										((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs(), element);
 
 								methodResolveResults.add(MethodResolveResult.createResult(calc, psiElement, result));
@@ -81,7 +81,7 @@ public class AnyMemberKindProcessor implements KindProcessor
 				}
 				else
 				{
-					methodResolveResults.add(MethodResolveResult.createResult(MethodCalcResult.VALID, result.getElement(), result));
+					methodResolveResults.add(MethodResolveResult.createResult(MethodResolvePriorityInfo.TOP, result.getElement(), result));
 				}
 				return true;
 			}

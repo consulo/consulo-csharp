@@ -24,7 +24,7 @@ import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.resolve.CSharpNamedResolveSelector;
@@ -69,7 +69,7 @@ public class ParameterKindProcessor implements KindProcessor
 			return;
 		}
 
-		MethodCalcResult ourCalcResult = ((MethodResolveResult) goodResolveResult).getCalcResult();
+		MethodResolvePriorityInfo ourCalcResult = ((MethodResolveResult) goodResolveResult).getCalcResult();
 
 		for(NCallArgument o : ourCalcResult.getArguments())
 		{

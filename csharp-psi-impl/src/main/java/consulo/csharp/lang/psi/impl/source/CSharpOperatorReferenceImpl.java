@@ -69,7 +69,7 @@ import consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.StubElementResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitCastInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitOperatorArgumentAsCallArgumentWrapper;
@@ -310,7 +310,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				final DotNetTypeRef expressionTypeRef = dotNetExpression.toTypeRef(true);
 				if(expressionTypeRef == DotNetTypeRef.UNKNOWN_TYPE)
 				{
-					return new MethodResolveResult[] {MethodResolveResult.createResult(MethodCalcResult.VALID, this, CSharpUndefinedResolveResult.INSTANCE)};
+					return new MethodResolveResult[] {MethodResolveResult.createResult(MethodResolvePriorityInfo.TOP, this, CSharpUndefinedResolveResult.INSTANCE)};
 				}
 
 				resolveUserDefinedOperators(elementType, expressionTypeRef, expressionTypeRef, resolveResults, null);
@@ -412,7 +412,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		List<DotNetLikeMethodDeclaration> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
 		for(DotNetLikeMethodDeclaration psiElement : elements)
 		{
-			MethodCalcResult calc = MethodResolver.calc(arguments, psiElement, this, true);
+			MethodResolvePriorityInfo calc = MethodResolver.calc(arguments, psiElement, this, true);
 			if(implicitExpression != null)
 			{
 				calc = calc.dupWithResult(-3000000);

@@ -28,15 +28,15 @@ import com.intellij.openapi.util.UserDataHolderBase;
  * @author VISTALL
  * @since 02.11.14
  */
-public class MethodCalcResult extends UserDataHolderBase
+public class MethodResolvePriorityInfo extends UserDataHolderBase
 {
-	public static final MethodCalcResult VALID = new MethodCalcResult(true, WeightUtil.MAX_WEIGHT, Collections.<NCallArgument>emptyList());
+	public static final MethodResolvePriorityInfo TOP = new MethodResolvePriorityInfo(true, WeightUtil.MAX_WEIGHT, Collections.<NCallArgument>emptyList());
 
 	private final boolean myValid;
 	private final int myWeight;
 	private final List<NCallArgument> myArguments;
 
-	public MethodCalcResult(boolean valid, int weight, List<NCallArgument> arguments)
+	public MethodResolvePriorityInfo(boolean valid, int weight, List<NCallArgument> arguments)
 	{
 		myValid = valid;
 		myWeight = weight;
@@ -44,15 +44,15 @@ public class MethodCalcResult extends UserDataHolderBase
 	}
 
 	@Nonnull
-	public MethodCalcResult dupNoResult(int weight)
+	public MethodResolvePriorityInfo dupNoResult(int weight)
 	{
-		return new MethodCalcResult(false, getWeight() + weight, getArguments());
+		return new MethodResolvePriorityInfo(false, getWeight() + weight, getArguments());
 	}
 
 	@Nonnull
-	public MethodCalcResult dupWithResult(int weight)
+	public MethodResolvePriorityInfo dupWithResult(int weight)
 	{
-		return new MethodCalcResult(myValid, getWeight() + weight, getArguments());
+		return new MethodResolvePriorityInfo(myValid, getWeight() + weight, getArguments());
 	}
 
 	public boolean isValidResult()
@@ -82,7 +82,7 @@ public class MethodCalcResult extends UserDataHolderBase
 			return false;
 		}
 
-		MethodCalcResult that = (MethodCalcResult) o;
+		MethodResolvePriorityInfo that = (MethodResolvePriorityInfo) o;
 
 		if(myValid != that.myValid)
 		{

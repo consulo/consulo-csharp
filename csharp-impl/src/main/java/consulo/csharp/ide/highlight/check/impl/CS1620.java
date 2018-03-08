@@ -29,7 +29,7 @@ import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -106,7 +106,7 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 			return Collections.emptyList();
 		}
 
-		MethodCalcResult calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
+		MethodResolvePriorityInfo calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
 
 		List<CompilerCheckBuilder> results = new SmartList<CompilerCheckBuilder>();
 

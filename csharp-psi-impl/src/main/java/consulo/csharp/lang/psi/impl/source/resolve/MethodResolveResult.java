@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.ArrayFactory;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
 
 /**
  * @author VISTALL
@@ -34,7 +34,7 @@ public class MethodResolveResult extends CSharpResolveResult
 	public static ArrayFactory<MethodResolveResult> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new MethodResolveResult[count];
 
 	@Nonnull
-	public static MethodResolveResult createResult(@Nonnull MethodCalcResult calcResult, @Nullable PsiElement element, @Nullable ResolveResult resolveResult)
+	public static MethodResolveResult createResult(@Nonnull MethodResolvePriorityInfo calcResult, @Nullable PsiElement element, @Nullable ResolveResult resolveResult)
 	{
 		PsiElement providerElement = element == null ? null : element.getUserData(FORCE_PROVIDER_ELEMENT);
 		if(providerElement == null && resolveResult instanceof CSharpResolveResult)
@@ -51,11 +51,11 @@ public class MethodResolveResult extends CSharpResolveResult
 	}
 
 	@Nonnull
-	private final MethodCalcResult myCalcResult;
+	private final MethodResolvePriorityInfo myCalcResult;
 
 	private boolean myUnknown;
 
-	private MethodResolveResult(@Nullable PsiElement element, @Nonnull MethodCalcResult calcResult)
+	private MethodResolveResult(@Nullable PsiElement element, @Nonnull MethodResolvePriorityInfo calcResult)
 	{
 		super(element, calcResult.isValidResult());
 		myCalcResult = calcResult;
@@ -67,7 +67,7 @@ public class MethodResolveResult extends CSharpResolveResult
 	}
 
 	@Nonnull
-	public MethodCalcResult getCalcResult()
+	public MethodResolvePriorityInfo getCalcResult()
 	{
 		return myCalcResult;
 	}

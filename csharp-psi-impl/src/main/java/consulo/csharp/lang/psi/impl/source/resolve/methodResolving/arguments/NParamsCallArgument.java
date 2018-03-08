@@ -52,7 +52,7 @@ public class NParamsCallArgument extends NCallArgument
 		myTypeRefValue = NotNullLazyValue.createValue(() ->
 		{
 			assert !myCallArguments.isEmpty();
-			List<DotNetTypeRef> typeRefs = new ArrayList<DotNetTypeRef>(myCallArguments.size());
+			List<DotNetTypeRef> typeRefs = new ArrayList<>(myCallArguments.size());
 			for(CSharpCallArgument expression : myCallArguments)
 			{
 				DotNetExpression argumentExpression = expression.getArgumentExpression();
