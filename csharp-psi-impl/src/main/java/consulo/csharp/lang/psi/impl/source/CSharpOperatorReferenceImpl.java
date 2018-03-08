@@ -70,7 +70,7 @@ import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.StubElementResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.NCallArgumentBuilder;
 import consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitCastInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitOperatorArgumentAsCallArgumentWrapper;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
@@ -412,7 +412,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		List<DotNetLikeMethodDeclaration> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
 		for(DotNetLikeMethodDeclaration psiElement : elements)
 		{
-			MethodResolvePriorityInfo calc = MethodResolver.calc(arguments, psiElement, this, true);
+			MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(arguments, psiElement, this, true);
 			if(implicitExpression != null)
 			{
 				calc = calc.dupWithResult(-3000000);

@@ -39,7 +39,7 @@ import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.NCallArgumentBuilder;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
@@ -159,7 +159,7 @@ public class GenericInferenceUtil
 			return new GenericInferenceResult(genericParameters.length == typeArgumentListRefs.length, extractor);
 		}
 
-		List<NCallArgument> methodCallArguments = RecursionManager.doPreventingRecursion(methodDeclaration, false, () -> MethodResolver.buildCallArguments(callArguments, methodDeclaration, scope));
+		List<NCallArgument> methodCallArguments = RecursionManager.doPreventingRecursion(methodDeclaration, false, () -> NCallArgumentBuilder.buildCallArguments(callArguments, methodDeclaration, scope));
 
 		if(ContainerUtil.isEmpty(methodCallArguments))
 		{

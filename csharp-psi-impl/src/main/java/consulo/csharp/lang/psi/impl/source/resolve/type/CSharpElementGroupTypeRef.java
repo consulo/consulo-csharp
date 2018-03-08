@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.NCallArgumentBuilder;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -75,7 +75,7 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRefWithCachedResult imp
 				{
 					DotNetTypeRef[] methodParameterTypeRef = ((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs();
 
-					MethodResolvePriorityInfo calc = MethodResolver.calc(parameterTypeRefs, methodParameterTypeRef, scope);
+					MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(parameterTypeRefs, methodParameterTypeRef, scope);
 
 					if(calc.isValidResult())
 					{

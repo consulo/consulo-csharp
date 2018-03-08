@@ -50,7 +50,7 @@ import consulo.dotnet.util.ArrayUtil2;
  * @author VISTALL
  * @since 02.11.14
  */
-public class MethodResolver
+public class NCallArgumentBuilder
 {
 	@Nonnull
 	private static List<NCallArgument> buildCallArguments(@Nonnull DotNetTypeRef[] callArgumentTypeRefs, @Nonnull DotNetTypeRef[] parameterTypeRefs)

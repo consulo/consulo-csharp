@@ -26,7 +26,7 @@ import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.source.CSharpExpressionWithOperatorImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.NCallArgumentBuilder;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NErrorCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NNamedCallArgument;
@@ -114,12 +114,12 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 			DotNetTypeResolveResult resolve = ref.resolve();
 			if(resolve instanceof CSharpLambdaResolveResult)
 			{
-				return MethodResolver.buildCallArguments(callArguments, ((CSharpLambdaResolveResult) resolve).getParameterInfos(), scope);
+				return NCallArgumentBuilder.buildCallArguments(callArguments, ((CSharpLambdaResolveResult) resolve).getParameterInfos(), scope);
 			}
 		}
 		else if(callable instanceof DotNetParameterListOwner)
 		{
-			return MethodResolver.buildCallArguments(callArguments, (DotNetParameterListOwner) callable, scope);
+			return NCallArgumentBuilder.buildCallArguments(callArguments, (DotNetParameterListOwner) callable, scope);
 		}
 
 		return Collections.emptyList();
