@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.intellij.openapi.util.NotNullLazyValue;
+import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.CSharpCastType;
@@ -71,31 +72,35 @@ public class NParamsCallArgument extends NCallArgument
 	@RequiredReadAction
 	public int calcValid(@Nonnull PsiElement scope)
 	{
-		DotNetTypeRef parameterTypeRef = getParameterTypeRef();
+		myValid = validate(getParameterTypeRef(), getTypeRef(), this, scope);
+		return myValid;
+	}
+
+	@RequiredReadAction
+	protected static int validate(@Nullable DotNetTypeRef parameterTypeRef, @Nonnull DotNetTypeRef typeRef, @Nonnull UserDataHolderBase holder, @Nonnull PsiElement scope)
+	{
 		int newVal = FAIL;
 		if(parameterTypeRef != null)
 		{
-			if(CSharpTypeUtil.isTypeEqual(parameterTypeRef, getTypeRef(), scope))
+			if(CSharpTypeUtil.isTypeEqual(parameterTypeRef, typeRef, scope))
 			{
 				newVal = PARAMS;
 			}
 			else
 			{
-				CSharpTypeUtil.InheritResult inheritable = CSharpTypeUtil.isInheritable(parameterTypeRef, getTypeRef(), scope, CSharpCastType.IMPLICIT);
+				CSharpTypeUtil.InheritResult inheritable = CSharpTypeUtil.isInheritable(parameterTypeRef, typeRef, scope, CSharpCastType.IMPLICIT);
 				if(inheritable.isSuccess())
 				{
 					if(inheritable.isConversion())
 					{
-						putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(getTypeRef(), parameterTypeRef));
+						holder.putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(typeRef, parameterTypeRef));
 					}
 
 					newVal = PARAMS_INSTANCE_OF;
 				}
 			}
 		}
-
-		myValid = newVal;
-		return myValid;
+		return newVal;
 	}
 
 	@Nonnull

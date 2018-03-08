@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Trinity;
@@ -36,6 +37,7 @@ import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCa
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NEmptyParamsCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NErrorCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NNamedCallArgument;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NNamedParamsCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NParamsCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context.MethodParameterResolveContext;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context.ParameterResolveContext;
@@ -99,6 +101,7 @@ public class NCallArgumentBuilder
 
 		List<CSharpCallArgument> paramsArguments = new SmartList<>();
 
+		boolean paramsAlreadySet = false;
 		int i = 0;
 		for(CSharpCallArgument argument : callArguments)
 		{
@@ -117,7 +120,20 @@ public class NCallArgumentBuilder
 			{
 				name = ((CSharpNamedCallArgument) argument).getName();
 
-				list.add(new NNamedCallArgument(expressionTypeRef, argument, context.getParameterByName(name), name));
+				T parameterByName = context.getParameterByName(name);
+				if(parameterByName != null && parameterByName == context.getParamsParameter())
+				{
+					paramsAlreadySet = true;
+				}
+
+				if(paramsAlreadySet)
+				{
+					list.add(new NNamedParamsCallArgument(expressionTypeRef, argument, parameterByName, name, context.getInnerParamsParameterTypeRef()));
+				}
+				else
+				{
+					list.add(new NNamedCallArgument(expressionTypeRef, argument, parameterByName, name));
+				}
 
 				i++;
 			}
@@ -159,7 +175,7 @@ public class NCallArgumentBuilder
 						list.add(new NCallArgument(expressionTypeRef, argument, null));
 					}
 				}
-				else
+				else if(!paramsAlreadySet)
 				{
 					DotNetParameter paramsParameter = context.getParamsParameter();
 
@@ -197,22 +213,25 @@ public class NCallArgumentBuilder
 			}
 		}
 
-		// if we have params arguments add to list it
-		if(!paramsArguments.isEmpty())
+		if(!paramsAlreadySet)
 		{
-			list.add(new NParamsCallArgument(paramsArguments, context.getParamsParameter()));
-		}
-		else
-		{
-			// if we have params parameter
-			DotNetParameter paramsParameter = context.getParamsParameter();
-			if(paramsParameter != null)
+			// if we have params arguments add to list it
+			if(!paramsArguments.isEmpty())
 			{
-				// but - no arguments for it, add empty argument
-				NCallArgument nCallArgument = findByName(list, paramsParameter.getName());
-				if(nCallArgument == null)
+				list.add(new NParamsCallArgument(paramsArguments, context.getParamsParameter()));
+			}
+			else
+			{
+				// if we have params parameter
+				DotNetParameter paramsParameter = context.getParamsParameter();
+				if(paramsParameter != null)
 				{
-					list.add(new NEmptyParamsCallArgument(paramsParameter));
+					// but - no arguments for it, add empty argument
+					NCallArgument nCallArgument = findByName(list, paramsParameter.getName());
+					if(nCallArgument == null)
+					{
+						list.add(new NEmptyParamsCallArgument(paramsParameter));
+					}
 				}
 			}
 		}
