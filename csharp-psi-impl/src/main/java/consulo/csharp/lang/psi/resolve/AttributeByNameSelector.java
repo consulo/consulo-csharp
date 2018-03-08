@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi.resolve;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -26,6 +27,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.util.ContainerUtil2;
 import consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import consulo.dotnet.psi.DotNetInheritUtil;
@@ -62,15 +64,15 @@ public class AttributeByNameSelector implements CSharpResolveSelector
 
 		if(myNameWithAt.charAt(0) == '@')
 		{
-			return context.findByName(myNameWithAt.substring(1, myNameWithAt.length()), deep, options);
+			return CSharpResolveUtil.mergeGroupsToIterable(context.findByName(myNameWithAt.substring(1, myNameWithAt.length()), deep, options));
 		}
 		else
 		{
-			Collection<PsiElement> withoutSuffix = context.findByName(myNameWithAt, deep, options);
+			Collection<PsiElement> array = ContainerUtil2.concat(context.findByName(myNameWithAt, deep, options), context.findByName(myNameWithAt + AttributeSuffix, deep, options));
 
-			Collection<PsiElement> array = ContainerUtil2.concat(withoutSuffix, context.findByName(myNameWithAt + AttributeSuffix, deep, options));
+			List<PsiElement> collection = CSharpResolveUtil.mergeGroupsToIterable(array);
 
-			return ContainerUtil.findAll(array, element -> element instanceof CSharpTypeDeclaration && DotNetInheritUtil.isAttribute((DotNetTypeDeclaration) element));
+			return ContainerUtil.findAll(collection, element -> element instanceof CSharpTypeDeclaration && DotNetInheritUtil.isAttribute((DotNetTypeDeclaration) element));
 		}
 	}
 }
