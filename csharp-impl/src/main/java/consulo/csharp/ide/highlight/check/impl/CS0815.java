@@ -18,14 +18,17 @@ package consulo.csharp.ide.highlight.check.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 
 /**
@@ -52,6 +55,12 @@ public class CS0815 extends CompilerCheck<CSharpLocalVariable>
 				return newBuilder(localVariable.getInitializer(), "null");
 			}
 			DotNetTypeRef initializerType = initializer.toTypeRef(false);
+
+			if(DotNetTypeRefUtil.isVmQNameEqual(initializerType, localVariable, DotNetTypes.System.Void))
+			{
+				return newBuilder(localVariable.getInitializer(), "void");
+			}
+
 			DotNetTypeResolveResult typeResolveResult = initializerType.resolve();
 			if(typeResolveResult instanceof CSharpLambdaResolveResult && ((CSharpLambdaResolveResult) typeResolveResult).getTarget() == null)
 			{
