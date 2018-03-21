@@ -20,12 +20,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NonNls;
+import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.Ref;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
+import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpNamedElement;
 import consulo.csharp.lang.psi.CSharpStubElements;
+import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
+import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import consulo.dotnet.psi.DotNetExpression;
@@ -37,10 +44,6 @@ import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
@@ -48,6 +51,8 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariableDeclStub<DotNetParameter>> implements DotNetParameter, CSharpNamedElement
 {
+	private Ref<DotNetExpression> myInitializerExpression;
+
 	public CSharpStubParameterImpl(@Nonnull ASTNode node)
 	{
 		super(node);
@@ -56,6 +61,13 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 	public CSharpStubParameterImpl(@Nonnull CSharpVariableDeclStub<DotNetParameter> stub)
 	{
 		super(stub, CSharpStubElements.PARAMETER);
+	}
+
+	@Override
+	protected void clearUserData()
+	{
+		super.clearUserData();
+		myInitializerExpression = null;
 	}
 
 	@Override
@@ -110,6 +122,27 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 	@Override
 	public DotNetExpression getInitializer()
 	{
+		CSharpVariableDeclStub<DotNetParameter> stub = getStub();
+		if(stub != null)
+		{
+			if(myInitializerExpression != null)
+			{
+				return myInitializerExpression.get();
+			}
+
+			String initializerText = stub.getInitializerText();
+			if(initializerText != null)
+			{
+				CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(getProject(), initializerText, this);
+				DotNetExpression value = (DotNetExpression) expressionFragment.getChildren()[0];
+				myInitializerExpression = Ref.create(value);
+				return value;
+			}
+
+			return null;
+		}
+
+		myInitializerExpression = null;
 		return findChildByClass(DotNetExpression.class);
 	}
 

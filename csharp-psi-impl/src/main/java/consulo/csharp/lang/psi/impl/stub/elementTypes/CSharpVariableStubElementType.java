@@ -17,23 +17,25 @@
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NonNls;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
-import consulo.dotnet.psi.DotNetVariable;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
+import com.intellij.util.io.StringRef;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
+import consulo.dotnet.psi.DotNetVariable;
 
 /**
  * @author VISTALL
  * @since 15.01.14.
  */
-public abstract class CSharpVariableStubElementType<P extends DotNetVariable> extends
-		CSharpAbstractStubElementType<CSharpVariableDeclStub<P>, P>
+public abstract class CSharpVariableStubElementType<P extends DotNetVariable> extends CSharpAbstractStubElementType<CSharpVariableDeclStub<P>, P>
 {
 	public CSharpVariableStubElementType(@Nonnull @NonNls String debugName)
 	{
@@ -45,13 +47,20 @@ public abstract class CSharpVariableStubElementType<P extends DotNetVariable> ex
 	public CSharpVariableDeclStub<P> createStub(@Nonnull P variable, StubElement stubElement)
 	{
 		int otherModifierMask = CSharpVariableDeclStub.getOtherModifierMask(variable);
-		return new CSharpVariableDeclStub<P>(stubElement, this, null, otherModifierMask);
+		Function<P, String> initializerGetter = getInitializerGetter();
+		String initializerText = initializerGetter == null ? null : initializerGetter.apply(variable);
+		return new CSharpVariableDeclStub<>(stubElement, this, null, otherModifierMask, initializerText);
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpVariableDeclStub<P> cSharpPropertyStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpVariableDeclStub<P> variableStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeVarInt(cSharpPropertyStub.getOtherModifierMask());
+		stubOutputStream.writeVarInt(variableStub.getOtherModifierMask());
+		Function<P, String> initializerGetter = getInitializerGetter();
+		if(initializerGetter != null)
+		{
+			stubOutputStream.writeName(variableStub.getInitializerText());
+		}
 	}
 
 	@Nonnull
@@ -59,6 +68,18 @@ public abstract class CSharpVariableStubElementType<P extends DotNetVariable> ex
 	public CSharpVariableDeclStub<P> deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int otherModifierMask = stubInputStream.readVarInt();
-		return new CSharpVariableDeclStub<P>(stubElement, this, null, otherModifierMask);
+		String initializerText = null;
+		Function<P, String> initializerGetter = getInitializerGetter();
+		if(initializerGetter != null)
+		{
+			initializerText = StringRef.toString(stubInputStream.readName());
+		}
+		return new CSharpVariableDeclStub<>(stubElement, this, null, otherModifierMask, initializerText);
+	}
+
+	@Nullable
+	protected Function<P, String> getInitializerGetter()
+	{
+		return null;
 	}
 }

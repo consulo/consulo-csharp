@@ -36,9 +36,12 @@ public class CSharpVariableDeclStub<V extends DotNetVariable> extends MemberStub
 	public static final int MULTIPLE_DECLARATION_MASK = 1 << 1;
 	public static final int OPTIONAL = 1 << 2;
 
-	public CSharpVariableDeclStub(StubElement parent, CSharpAbstractStubElementType<?, ?> elementType, @Nullable String namespaceQName, int flags)
+	private String myInitializerText;
+
+	public CSharpVariableDeclStub(StubElement parent, CSharpAbstractStubElementType<?, ?> elementType, @Nullable String namespaceQName, int flags, @Nullable String initializerText)
 	{
 		super(parent, elementType, namespaceQName, flags);
+		myInitializerText = initializerText;
 	}
 
 	@RequiredReadAction
@@ -55,6 +58,12 @@ public class CSharpVariableDeclStub<V extends DotNetVariable> extends MemberStub
 			i |= BitUtil.set(i, OPTIONAL, variable.getInitializer() != null);
 		}
 		return i;
+	}
+
+	@Nullable
+	public String getInitializerText()
+	{
+		return myInitializerText;
 	}
 
 	public boolean isConstant()

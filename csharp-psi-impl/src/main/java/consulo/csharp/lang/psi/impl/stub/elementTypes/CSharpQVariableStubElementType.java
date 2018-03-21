@@ -47,7 +47,7 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	{
 		String namespaceQName = declaration.getPresentableParentQName();
 		int otherModifierMask = CSharpVariableDeclStub.getOtherModifierMask(declaration);
-		return new CSharpVariableDeclStub<P>(stubElement, this, namespaceQName, otherModifierMask);
+		return new CSharpVariableDeclStub<P>(stubElement, this, namespaceQName, otherModifierMask, null);
 	}
 
 	@Override
@@ -63,6 +63,6 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	{
 		StringRef parentQName = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readVarInt();
-		return new CSharpVariableDeclStub<P>(stubElement, this, StringRef.toString(parentQName), otherModifierMask);
+		return new CSharpVariableDeclStub<P>(stubElement, this, StringRef.toString(parentQName), otherModifierMask, null);
 	}
 }
