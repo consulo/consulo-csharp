@@ -23,12 +23,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.intellij.CommonBundle;
+import com.intellij.ide.actions.CreateFileFromTemplateAction;
 import com.intellij.ide.util.EditorHelper;
 import com.intellij.ide.util.PlatformPackageUtil;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Computable;
@@ -55,6 +59,7 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
@@ -243,7 +248,20 @@ public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 			}
 		}
 
-		PsiFile file = WriteCommandAction.runWriteCommandAction(project, (Computable<PsiFile>) () -> (PsiFile) targetDirectory.add(copyFile));
+		PsiFile file = WriteCommandAction.runWriteCommandAction(project, (Computable<PsiFile>) () ->
+		{
+			PsiFile psiFile = (PsiFile) targetDirectory.add(copyFile);
+
+			Module module = CreateFileFromTemplateAction.ModuleResolver.EP_NAME.composite().resolveModule(targetDirectory, CSharpFileType.INSTANCE);
+			if(module != null)
+			{
+				ModuleRootManager manager = ModuleRootManager.getInstance(module);
+				ModifiableRootModel modifiableModel = manager.getModifiableModel();
+				modifiableModel.addContentEntry(psiFile.getVirtualFile());
+				modifiableModel.commit();
+			}
+			return psiFile;
+		});
 
 		CopyHandler.updateSelectionInActiveProjectView(file, project, doClone);
 		if(openInEditor)
