@@ -16,14 +16,17 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.Contract;
 import javax.annotation.Nullable;
+
+import org.jetbrains.annotations.Contract;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpDefaultExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpParenthesesExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
 
@@ -94,6 +97,15 @@ public class CSharpConstantUtil
 			return true;
 		}
 
+		if(element instanceof CSharpTypeCastExpressionImpl)
+		{
+			return isConstant(((CSharpTypeCastExpressionImpl) element).getInnerExpression());
+		}
+
+		if(element instanceof CSharpParenthesesExpressionImpl)
+		{
+			return isConstant(((CSharpParenthesesExpressionImpl) element).getInnerExpression());
+		}
 		return false;
 	}
 }
