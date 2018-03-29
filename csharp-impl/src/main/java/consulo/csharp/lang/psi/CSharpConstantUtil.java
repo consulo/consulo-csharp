@@ -99,12 +99,12 @@ public class CSharpConstantUtil
 
 		if(element instanceof CSharpTypeCastExpressionImpl)
 		{
-			return isConstant(((CSharpTypeCastExpressionImpl) element).getInnerExpression());
+			return isCompileTimeConstant(((CSharpTypeCastExpressionImpl) element).getInnerExpression());
 		}
 
 		if(element instanceof CSharpParenthesesExpressionImpl)
 		{
-			return isConstant(((CSharpParenthesesExpressionImpl) element).getInnerExpression());
+			return isCompileTimeConstant(((CSharpParenthesesExpressionImpl) element).getInnerExpression());
 		}
 		return false;
 	}
