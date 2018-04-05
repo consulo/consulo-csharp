@@ -124,7 +124,13 @@ public class CSharpTypeUtil
 	{
 		if(element instanceof DotNetTypeDeclaration)
 		{
-			if(DotNetTypes.System.Nullable$1.equals(((DotNetTypeDeclaration) element).getVmQName()))
+			String vmQName = ((DotNetTypeDeclaration) element).getVmQName();
+			if(DotNetTypes.System.Nullable$1.equals(vmQName))
+			{
+				// special case - compiler box element in new Nullable<int>(null);
+				return true;
+			}
+			if(DotNetTypes.System.Enum.equals(vmQName))
 			{
 				// special case - compiler box element in new Nullable<int>(null);
 				return true;
