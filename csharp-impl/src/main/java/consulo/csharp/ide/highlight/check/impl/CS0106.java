@@ -60,8 +60,8 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 		InterfaceMember(CSharpModifier.NEW),
 		GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
 		Parameter(CSharpModifier.REF, CSharpModifier.OUT, CSharpModifier.PARAMS, CSharpModifier.THIS),
-		NamespaceEnum(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
-		NestedEnum(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.PRIVATE, CSharpModifier.INTERNAL),
+		NamespaceStruct(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
+		NestedStruct(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.PRIVATE, CSharpModifier.INTERNAL),
 		NamespaceType(CSharpModifier.STATIC, CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED),
 		NestedType(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED,
 				CSharpModifier.STATIC, CSharpModifier.NEW),
@@ -170,16 +170,16 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 
 		if(owner instanceof DotNetTypeDeclaration)
 		{
-			boolean anEnum = ((DotNetTypeDeclaration) owner).isEnum();
+			boolean struct = ((DotNetTypeDeclaration) owner).isEnum() || ((DotNetTypeDeclaration) owner).isStruct();
 
 			PsiElement parent = owner.getParent();
 			if(parent instanceof CSharpNamespaceDeclaration || parent instanceof CSharpFile)
 			{
-				return anEnum ? Owners.NamespaceEnum : Owners.NamespaceType;
+				return struct ? Owners.NamespaceStruct : Owners.NamespaceType;
 			}
 			else if(parent instanceof DotNetTypeDeclaration)
 			{
-				return anEnum ? Owners.NestedEnum : Owners.NestedType;
+				return struct ? Owners.NestedStruct : Owners.NestedType;
 			}
 		}
 
