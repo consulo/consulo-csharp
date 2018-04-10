@@ -18,7 +18,9 @@ package consulo.csharp.ide.highlight.check.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ObjectUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -33,7 +35,7 @@ import consulo.dotnet.resolve.DotNetTypeRefUtil;
 /**
  * @author VISTALL
  * @since 16-Nov-17
- *
+ * <p>
  * TODO [VISTALL] need rewrite this check, after introducing control flow
  */
 public class CS0161 extends CompilerCheck<CSharpMethodDeclaration>
@@ -55,7 +57,7 @@ public class CS0161 extends CompilerCheck<CSharpMethodDeclaration>
 			DotNetStatement[] statements = ((CSharpBlockStatementImpl) codeBlock).getStatements();
 			if(statements.length == 0)
 			{
-				return newBuilder(getNameIdentifier(element), formatElement(element));
+				return newBuilder(ObjectUtil.chooseNotNull(((CSharpBlockStatementImpl) codeBlock).getRightBrace(), getNameIdentifier(element)), formatElement(element));
 			}
 		}
 
