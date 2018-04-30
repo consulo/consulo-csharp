@@ -25,11 +25,13 @@ import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetParameter;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ObjectUtil;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 
 /**
  * @author VISTALL
@@ -48,7 +50,9 @@ public class CS1106 extends CompilerCheck<CSharpMethodDeclaration>
 			PsiElement parent = element.getParent();
 			if(parent instanceof CSharpTypeDeclaration)
 			{
-				if(((CSharpTypeDeclaration) parent).getGenericParametersCount() > 0 || !((CSharpTypeDeclaration) parent).hasModifier(DotNetModifier.STATIC))
+				DotNetTypeDeclaration type = CSharpCompositeTypeDeclaration.selectCompositeOrSelfType((DotNetTypeDeclaration) parent);
+
+				if(type.getGenericParametersCount() > 0 || !type.hasModifier(DotNetModifier.STATIC))
 				{
 					return newBuilder(ObjectUtil.notNull(element.getNameIdentifier(), element), formatElement(element));
 				}
