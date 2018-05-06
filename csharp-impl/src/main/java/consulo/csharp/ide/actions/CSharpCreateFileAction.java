@@ -47,6 +47,7 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
+import consulo.awt.TargetAWT;
 import consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
@@ -63,7 +64,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 {
 	public CSharpCreateFileAction()
 	{
-		super(null, null, CSharpFileType.INSTANCE.getIcon());
+		super(null, null, TargetAWT.to(CSharpFileType.INSTANCE.getIcon()));
 	}
 
 	@Override
@@ -166,7 +167,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 		{
 			addKind(builder, used, "Assembly File", AllIcons.FileTypes.Config, "CSharpAssemblyFile");
 		}
-		addKind(builder, used, "Empty File", CSharpFileType.INSTANCE.getIcon(), "CSharpFile");
+		addKind(builder, used, "Empty File", TargetAWT.to(CSharpFileType.INSTANCE.getIcon()), "CSharpFile");
 
 		final CSharpCreateFromTemplateHandler handler = CSharpCreateFromTemplateHandler.getInstance();
 		for(FileTemplate template : FileTemplateManager.getInstance(project).getAllTemplates())
@@ -178,7 +179,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 				{
 					name = template.getName();
 				}
-				addKind(builder, used, name, CSharpFileType.INSTANCE.getIcon(), template.getName());
+				addKind(builder, used, name, TargetAWT.to(CSharpFileType.INSTANCE.getIcon()), template.getName());
 			}
 		}
 

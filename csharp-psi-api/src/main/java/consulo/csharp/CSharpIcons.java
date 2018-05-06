@@ -19,6 +19,7 @@ package consulo.csharp;
 import javax.swing.Icon;
 
 import com.intellij.openapi.util.IconLoader;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -32,5 +33,5 @@ public interface CSharpIcons
 		Icon HidedMethod = IconLoader.findIcon("/icons/gutter/hidedMethod.png");
 	}
 
-	Icon FileType = IconLoader.findIcon("/icons/csharp.png");
+	Image FileType = IconLoader.findIcon("/icons/csharp.png");
 }

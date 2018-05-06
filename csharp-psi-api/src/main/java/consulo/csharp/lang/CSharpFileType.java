@@ -18,11 +18,11 @@ package consulo.csharp.lang;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.Icon;
 
-import consulo.csharp.CSharpIcons;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.fileTypes.TemplateLanguageFileType;
+import consulo.csharp.CSharpIcons;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -63,7 +63,7 @@ public class CSharpFileType extends LanguageFileType implements TemplateLanguage
 
 	@Nullable
 	@Override
-	public Icon getIcon()
+	public Image getIcon()
 	{
 		return CSharpIcons.FileType;
 	}
