@@ -18,17 +18,17 @@ package consulo.mono.csharp.compiler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.Icon;
 
-import consulo.csharp.compiler.BaseInternalCompilerProvider;
-import consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
-import consulo.csharp.module.extension.CSharpModuleExtension;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.csharp.compiler.BaseInternalCompilerProvider;
+import consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
+import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.mono.dotnet.sdk.MonoSdkType;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -42,8 +42,9 @@ public class MonoInternalCompilerProvider extends BaseInternalCompilerProvider
 		return "mono-dotnet";
 	}
 
+	@Nonnull
 	@Override
-	public Icon getIcon()
+	public Image getIcon()
 	{
 		return MonoSdkType.getInstance().getIcon();
 	}

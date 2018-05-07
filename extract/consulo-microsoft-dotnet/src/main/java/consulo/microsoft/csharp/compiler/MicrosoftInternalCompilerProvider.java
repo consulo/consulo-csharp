@@ -17,17 +17,17 @@
 package consulo.microsoft.csharp.compiler;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
-
 import javax.annotation.Nullable;
+
+import com.intellij.openapi.vfs.VirtualFile;
 import consulo.csharp.compiler.BaseInternalCompilerProvider;
 import consulo.csharp.compiler.CSharpCompilerUtil;
 import consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import consulo.csharp.module.extension.CSharpModuleExtension;
-import com.intellij.openapi.vfs.VirtualFile;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.microsoft.dotnet.sdk.MicrosoftDotNetSdkType;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -41,8 +41,9 @@ public class MicrosoftInternalCompilerProvider extends BaseInternalCompilerProvi
 		return "microsoft-dotnet";
 	}
 
+	@Nonnull
 	@Override
-	public Icon getIcon()
+	public Image getIcon()
 	{
 		return MicrosoftDotNetSdkType.getInstance().getIcon();
 	}

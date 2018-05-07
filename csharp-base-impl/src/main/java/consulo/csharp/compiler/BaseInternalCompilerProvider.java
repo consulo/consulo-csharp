@@ -17,16 +17,17 @@
 package consulo.csharp.compiler;
 
 import javax.annotation.Nullable;
-import javax.swing.Icon;
 
 import javax.annotation.Nonnull;
 
+import consulo.awt.TargetAWT;
 import consulo.csharp.module.extension.CSharpModuleExtension;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkType;
 import com.intellij.openapi.vfs.VirtualFile;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.roots.ui.configuration.SdkComboBox;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -36,7 +37,8 @@ public abstract class BaseInternalCompilerProvider extends CSharpCompilerProvide
 {
 	public abstract String getExtensionId();
 
-	public abstract Icon getIcon();
+	@Nonnull
+	public abstract Image getIcon();
 
 	@Nullable
 	@Override
@@ -76,7 +78,7 @@ public abstract class BaseInternalCompilerProvider extends CSharpCompilerProvide
 			VirtualFile child = homeDirectory.findChild(CSharpCompilerUtil.COMPILER_NAME);
 			if(child != null)
 			{
-				comboBox.insertCustomSdkItem(CSharpModuleExtension.INTERNAL_SDK_KEY, "<internal>", getIcon());
+				comboBox.insertCustomSdkItem(CSharpModuleExtension.INTERNAL_SDK_KEY, "<internal>", TargetAWT.to(getIcon()));
 			}
 		}
 	}
