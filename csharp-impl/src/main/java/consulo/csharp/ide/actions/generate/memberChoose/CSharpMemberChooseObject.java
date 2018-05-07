@@ -28,6 +28,7 @@ import com.intellij.ui.SimpleColoredComponent;
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
+import consulo.awt.TargetAWT;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -60,7 +61,7 @@ public abstract class CSharpMemberChooseObject<T extends DotNetElement> implemen
 	@RequiredDispatchThread
 	public void renderTreeNode(SimpleColoredComponent component, JTree tree)
 	{
-		component.setIcon(IconDescriptorUpdaters.getIconWithoutCache(myDeclaration, Iconable.ICON_FLAG_VISIBILITY));
+		component.setIcon(TargetAWT.to(IconDescriptorUpdaters.getIcon(myDeclaration, Iconable.ICON_FLAG_VISIBILITY)));
 		component.append(getPresentationText());
 	}
 

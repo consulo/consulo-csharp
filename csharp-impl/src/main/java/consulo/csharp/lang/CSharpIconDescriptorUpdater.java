@@ -17,7 +17,6 @@
 package consulo.csharp.lang;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -44,6 +43,7 @@ import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.ide.IconDescriptor;
 import consulo.ide.IconDescriptorUpdater;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -90,7 +90,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		}
 		else if(element instanceof CSharpTypeDeclaration)
 		{
-			Icon main = null;
+			Image main = null;
 
 			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
 			if(!DumbService.getInstance(element.getProject()).isDumb())

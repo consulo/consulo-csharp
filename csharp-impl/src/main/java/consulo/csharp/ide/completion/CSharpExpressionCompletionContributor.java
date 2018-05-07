@@ -87,6 +87,7 @@ import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.ide.IconDescriptorUpdaters;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -738,7 +739,7 @@ class CSharpExpressionCompletionContributor
 	private static LookupElement buildForMethodReference(final CSharpMethodDeclaration methodDeclaration, CSharpTypeDeclaration contextType, final CSharpReferenceExpressionEx expression)
 	{
 		LookupElementBuilder builder = LookupElementBuilder.create(methodDeclaration.getName());
-		builder = builder.withIcon(AllIcons.Nodes.MethodReference);
+		builder = builder.withIcon((Image) AllIcons.Nodes.MethodReference);
 
 		final DotNetTypeRef[] parameterTypes = methodDeclaration.getParameterTypeRefs();
 

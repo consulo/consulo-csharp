@@ -25,6 +25,7 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
 import consulo.annotations.RequiredDispatchThread;
+import consulo.awt.TargetAWT;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
@@ -96,7 +97,7 @@ public class CSharpQualifiedElementPresentationProvider implements ItemPresentat
 		@Override
 		public Icon getIcon(boolean b)
 		{
-			return IconDescriptorUpdaters.getIcon(myDeclaration, Iconable.ICON_FLAG_VISIBILITY);
+			return TargetAWT.to(IconDescriptorUpdaters.getIcon(myDeclaration, Iconable.ICON_FLAG_VISIBILITY));
 		}
 	}
 

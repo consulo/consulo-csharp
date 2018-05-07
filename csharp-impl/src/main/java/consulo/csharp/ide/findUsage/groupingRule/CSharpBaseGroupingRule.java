@@ -36,6 +36,7 @@ import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.usages.UsageGroup;
 import com.intellij.usages.UsageView;
+import consulo.awt.TargetAWT;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.ide.IconDescriptorUpdaters;
 
@@ -61,7 +62,7 @@ public class CSharpBaseGroupingRule<T extends PsiElement> implements UsageGroup,
 		{
 			return null;
 		}
-		return IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY | Iconable.ICON_FLAG_READ_STATUS);
+		return TargetAWT.to(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY | Iconable.ICON_FLAG_READ_STATUS));
 	}
 
 	@Nonnull

@@ -22,9 +22,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
-
 import javax.annotation.Nullable;
+
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -83,6 +82,7 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.ide.IconDescriptorUpdaters;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -184,7 +184,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 
 				LookupElementBuilder lookupElementBuilder = LookupElementBuilder.create(builder.toString());
 				lookupElementBuilder = lookupElementBuilder.withPresentableText(builder.append("{ }").toString());
-				lookupElementBuilder = lookupElementBuilder.withIcon(AllIcons.Nodes.Lambda);
+				lookupElementBuilder = lookupElementBuilder.withIcon((Image) AllIcons.Nodes.Lambda);
 
 				result.addElement(PrioritizedLookupElement.withPriority(lookupElementBuilder, async ? 1.5 : 2));
 			}
@@ -243,7 +243,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 				builder.append(" }");
 
 				LookupElementBuilder lookupElementBuilder = LookupElementBuilder.create(builder.toString());
-				lookupElementBuilder = lookupElementBuilder.withIcon(AllIcons.Nodes.Lambda);
+				lookupElementBuilder = lookupElementBuilder.withIcon((Image) AllIcons.Nodes.Lambda);
 				lookupElementBuilder = reformatInsertHandler(lookupElementBuilder);
 
 				result.addElement(PrioritizedLookupElement.withPriority(lookupElementBuilder, async ? 0.5 : 1));
@@ -426,7 +426,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 
 			@Nullable
 			@RequiredReadAction
-			private Icon getIconForInnerTypeRef(@Nonnull CSharpArrayTypeRef typeRef, @Nonnull PsiElement scope)
+			private Image getIconForInnerTypeRef(@Nonnull CSharpArrayTypeRef typeRef, @Nonnull PsiElement scope)
 			{
 				DotNetTypeRef innerTypeRef = typeRef.getInnerTypeRef();
 				if(innerTypeRef instanceof CSharpArrayTypeRef)
@@ -446,7 +446,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 
 			@Nullable
 			@RequiredReadAction
-			private Icon getIconForInnerTypeRef(DotNetTypeRef innerTypeRef, @Nonnull PsiElement scope)
+			private Image getIconForInnerTypeRef(DotNetTypeRef innerTypeRef, @Nonnull PsiElement scope)
 			{
 				PsiElement element = innerTypeRef.resolve().getElement();
 				if(element != null)

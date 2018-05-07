@@ -22,9 +22,9 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.Icon;
 
-import javax.annotation.Nullable;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IdeView;
 import com.intellij.ide.actions.CreateFileFromTemplateAction;
@@ -52,7 +52,6 @@ import consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
-import consulo.ide.IconDescriptor;
 import consulo.psi.PsiPackage;
 import consulo.psi.PsiPackageManager;
 
@@ -158,11 +157,11 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 	protected void buildDialog(Project project, PsiDirectory psiDirectory, CreateFileFromTemplateDialog.Builder builder)
 	{
 		Set<String> used = new HashSet<>();
-		addKind(builder, used, "Class", new IconDescriptor(AllIcons.Nodes.Class).toIcon(), "CSharpClass");
-		addKind(builder, used, "Interface", new IconDescriptor(AllIcons.Nodes.Interface).toIcon(), "CSharpInterface");
-		addKind(builder, used, "Enum", new IconDescriptor(AllIcons.Nodes.Enum).toIcon(), "CSharpEnum");
-		addKind(builder, used, "Struct", new IconDescriptor(AllIcons.Nodes.Struct).toIcon(), "CSharpStruct");
-		addKind(builder, used, "Attribute", new IconDescriptor(AllIcons.Nodes.Attribute).toIcon(), "CSharpAttribute");
+		addKind(builder, used, "Class", AllIcons.Nodes.Class, "CSharpClass");
+		addKind(builder, used, "Interface", AllIcons.Nodes.Interface, "CSharpInterface");
+		addKind(builder, used, "Enum", AllIcons.Nodes.Enum, "CSharpEnum");
+		addKind(builder, used, "Struct", AllIcons.Nodes.Struct, "CSharpStruct");
+		addKind(builder, used, "Attribute", AllIcons.Nodes.Attribute, "CSharpAttribute");
 		if(isCreationOfAssemblyFileAvailable(psiDirectory))
 		{
 			addKind(builder, used, "Assembly File", AllIcons.FileTypes.Config, "CSharpAssemblyFile");

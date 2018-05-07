@@ -29,6 +29,7 @@ import javax.swing.JComponent;
 import javax.annotation.Nullable;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
+import consulo.awt.TargetAWT;
 import consulo.csharp.ide.codeInsight.actions.AddAccessModifierFix;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
@@ -119,7 +120,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 			@Override
 			protected Icon getItemIcon(DotNetFieldDeclaration item)
 			{
-				return IconDescriptorUpdaters.getIcon(item, Iconable.ICON_FLAG_VISIBILITY);
+				return TargetAWT.to(IconDescriptorUpdaters.getIcon(item, Iconable.ICON_FLAG_VISIBILITY));
 			}
 		};
 

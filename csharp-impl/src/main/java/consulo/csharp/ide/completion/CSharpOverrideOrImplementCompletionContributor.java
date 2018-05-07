@@ -22,9 +22,8 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
-
 import javax.annotation.Nullable;
+
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -65,6 +64,7 @@ import consulo.dotnet.psi.DotNetXXXAccessor;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.ide.IconDescriptor;
 import consulo.ide.IconDescriptorUpdaters;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -183,7 +183,7 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 			return null;
 		}
 
-		final Icon rightIcon;
+		final Image rightIcon;
 		if(typeDeclaration.isInterface())
 		{
 			if(element.hasModifier(DotNetModifier.ABSTRACT))

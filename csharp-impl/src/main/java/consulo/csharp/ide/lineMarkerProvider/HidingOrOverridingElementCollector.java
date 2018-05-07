@@ -20,16 +20,7 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 
-import consulo.annotations.RequiredDispatchThread;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.CSharpIcons;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -40,6 +31,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ConstantFunction;
 import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.annotations.RequiredReadAction;
+import consulo.awt.TargetAWT;
+import consulo.csharp.CSharpIcons;
+import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.dotnet.psi.DotNetModifier;
+import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -103,7 +104,7 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 				return;
 			}
 
-			Icon icon = null;
+			Image icon = null;
 			if(virtualImplementOwner.getTypeForImplement() != null)
 			{
 				icon = CSharpIcons.Gutter.HidingMethod;
@@ -121,7 +122,8 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 				}
 			}
 
-			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, new ConstantFunction<>("Searching for overriding"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.RIGHT);
+			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), TargetAWT.to(icon), Pass.LINE_MARKERS, new ConstantFunction<>("Searching for overriding"),
+					OurHandler.INSTANCE, GutterIconRenderer.Alignment.RIGHT);
 
 			consumer.consume(lineMarkerInfo);
 		}
