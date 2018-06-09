@@ -46,6 +46,8 @@ public interface CSharpPreprocesorTokens extends TokenType
 
 	IElementType WARNING_KEYWORD = new IElementType("WARNING_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
+	IElementType ERROR_KEYWORD = new IElementType("ERROR_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
+
 	IElementType ILLEGAL_KEYWORD = new IElementType("ILLEGAL_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
 	IElementType MACRO_STOP = new IElementType("MACRO_STOP", CSharpPreprocessorLanguage.INSTANCE);

@@ -86,6 +86,8 @@ public interface CSharpPreprocessorElements
 
 	IElementType WARNING_DIRECTIVE = new ElementTypeAsPsiFactory("WARNING_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorWarningImpl.class);
 
+	IElementType ERROR_DIRECTIVE = new ElementTypeAsPsiFactory("ERROR_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorErrorImpl.class);
+
 	IElementType MACRO_STOP_DIRECTIVE = new ElementTypeAsPsiFactory("MACRO_STOP_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorBlockStopImpl.class);
 
 	IElementType PREFIX_EXPRESSION = new ElementTypeAsPsiFactory("PREFIX_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorPrefixExpressionImpl.class);

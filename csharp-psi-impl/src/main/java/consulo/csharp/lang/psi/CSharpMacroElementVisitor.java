@@ -84,4 +84,9 @@ public class CSharpMacroElementVisitor extends PsiElementVisitor
 	{
 		visitElement(element);
 	}
+
+	public void visitError(CSharpPreprocessorErrorImpl element)
+	{
+		visitElement(element);
+	}
 }

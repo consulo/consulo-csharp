@@ -38,6 +38,7 @@ MACRO_ELSE={MACRO_START}"else"
 MACRO_ELIF={MACRO_START}"elif"
 MACRO_PRAGMA={MACRO_START}"pragma"
 MACRO_WARNING={MACRO_START}"warning"
+MACRO_ERROR={MACRO_START}"error"
 %%
 
 <YYINITIAL>
@@ -63,6 +64,8 @@ MACRO_WARNING={MACRO_START}"warning"
 	{MACRO_PRAGMA}       { return CSharpPreprocesorTokens.PRAGMA_KEYWORD; }
 
 	{MACRO_WARNING}      { return CSharpPreprocesorTokens.WARNING_KEYWORD; }
+
+	{MACRO_ERROR}        { return CSharpPreprocesorTokens.ERROR_KEYWORD; }
 
 	"("                  { return CSharpPreprocesorTokens.LPAR; }
 

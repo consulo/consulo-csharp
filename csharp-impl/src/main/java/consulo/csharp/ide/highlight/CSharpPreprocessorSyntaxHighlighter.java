@@ -47,6 +47,7 @@ public class CSharpPreprocessorSyntaxHighlighter extends SyntaxHighlighterBase
 		safeMap(ourKeys, CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
 		safeMap(ourKeys, CSharpPreprocesorTokens.PRAGMA_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
 		safeMap(ourKeys, CSharpPreprocesorTokens.WARNING_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocesorTokens.ERROR_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
 		//FIXME [VISTALL] highlight bug safeMap(ourKeys, CSharpPreprocesorTokens.LINE_COMMENT, CSharpHighlightKey.LINE_COMMENT);
 	}
 

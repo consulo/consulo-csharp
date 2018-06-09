@@ -52,7 +52,8 @@ public class PreprocessorLightParser
 		REGION,
 		ENDREGION,
 		PRAGMA,
-		WARNING
+		WARNING,
+		ERROR
 	}
 
 	@Nullable
@@ -91,6 +92,11 @@ public class PreprocessorLightParser
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.WARNING;
+					}
+					else if(elementType == CSharpPreprocesorTokens.ERROR_KEYWORD)
+					{
+						state = State.DIRECTIVE;
+						directive = Directive.ERROR;
 					}
 					else if(elementType == CSharpPreprocesorTokens.MACRO_ENDIF_KEYWORD)
 					{
@@ -137,6 +143,7 @@ public class PreprocessorLightParser
 						case REGION:
 						case PRAGMA:
 						case WARNING:
+						case ERROR:
 							value += lexer.getTokenText();
 							break;
 						default:
