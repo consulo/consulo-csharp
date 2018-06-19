@@ -42,6 +42,25 @@
 		</repository>
 	</repositories>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>consulo.maven</groupId>
+				<artifactId>consulo-maven-plugin</artifactId>
+				<version>2-SNAPSHOT</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate-lexers</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 	<groupId>consulo.plugin</groupId>
 	<artifactId>consulo.csharp-csharp.doc.psi.impl</artifactId>
 	<version>2-SNAPSHOT</version>
