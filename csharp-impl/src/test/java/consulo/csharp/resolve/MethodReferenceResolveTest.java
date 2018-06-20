@@ -28,7 +28,7 @@ import consulo.testFramework.ResolvingTestCase;
  * @author VISTALL
  * @since 06.04.2016
  */
-public class MethodReferenceResolveTest extends ResolvingTestCase
+public abstract class MethodReferenceResolveTest extends ResolvingTestCase
 {
 	public MethodReferenceResolveTest()
 	{

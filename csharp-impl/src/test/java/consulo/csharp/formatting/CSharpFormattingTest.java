@@ -23,7 +23,7 @@ import consulo.testFramework.FormattingTestCase;
  * @author VISTALL
  * @since 19.04.2015
  */
-public class CSharpFormattingTest extends FormattingTestCase
+public abstract class CSharpFormattingTest extends FormattingTestCase
 {
 	public CSharpFormattingTest()
 	{

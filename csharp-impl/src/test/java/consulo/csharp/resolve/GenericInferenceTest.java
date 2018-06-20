@@ -28,7 +28,7 @@ import consulo.testFramework.ResolvingTestCase;
  * @author VISTALL
  * @since 08-Feb-17
  */
-public class GenericInferenceTest extends ResolvingTestCase
+public abstract class GenericInferenceTest extends ResolvingTestCase
 {
 	public GenericInferenceTest()
 	{

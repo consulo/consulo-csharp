@@ -27,7 +27,7 @@ import consulo.testFramework.OneFileAtProjectTestCase;
  * @author VISTALL
  * @since 08.04.2016
  */
-public class VmQNameTest extends OneFileAtProjectTestCase
+public abstract class VmQNameTest extends OneFileAtProjectTestCase
 {
 	private static final String ourTarget = "<target>";
 

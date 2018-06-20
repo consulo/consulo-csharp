@@ -22,7 +22,7 @@ import consulo.testFramework.FoldingTestCase;
  * @author VISTALL
  * @since 08.04.2016
  */
-public class CSharpFoldingTest extends FoldingTestCase {
+public abstract class CSharpFoldingTest extends FoldingTestCase {
     public CSharpFoldingTest() {
         super("/csharp-impl/testData/folding/", "cs");
     }
