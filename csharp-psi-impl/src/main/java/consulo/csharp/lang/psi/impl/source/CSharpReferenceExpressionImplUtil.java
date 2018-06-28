@@ -21,9 +21,12 @@ import static consulo.csharp.lang.psi.CSharpReferenceExpression.ResolveToKind;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Comparing;
@@ -98,6 +101,16 @@ public class CSharpReferenceExpressionImplUtil
 		public ResolveResult[] resolve(@Nonnull CSharpReferenceExpressionEx ref, boolean resolveFromParent)
 		{
 			return ref.multiResolveImpl(ref.kind(), resolveFromParent);
+		}
+	}
+
+	private static class ParamatizeValue
+	{
+		private final Map<PsiElement, ResolveResult[]> myResults = new ConcurrentHashMap<>();
+
+		public ResolveResult[] get(@Nonnull PsiElement element, @Nonnull Function<PsiElement, ResolveResult[]> function)
+		{
+			return myResults.computeIfAbsent(element, function);
 		}
 	}
 
@@ -661,18 +674,16 @@ public class CSharpReferenceExpressionImplUtil
 
 	@Nonnull
 	@RequiredReadAction
-	public static ResolveResult[] tryResolveFromQualifier(@Nonnull CSharpReferenceExpressionEx referenceExpressionEx, @Nonnull PsiElement qualifierElement)
+	public static ResolveResult[] tryResolveFromQualifier(@Nonnull CSharpReferenceExpressionEx expression, @Nonnull PsiElement qualifierElement)
 	{
-		if(!referenceExpressionEx.isValid())
+		if(!expression.isValid())
 		{
 			return ResolveResult.EMPTY_ARRAY;
 		}
 
-		return CachedValuesManager.getManager(referenceExpressionEx.getProject()).getParameterizedCachedValue(referenceExpressionEx, ourFromQualifierKey, param ->
-		{
-			ResolveResult[] resolveResults = tryResolveFromQualifierImpl(referenceExpressionEx, param);
-			return CachedValueProvider.Result.create(resolveResults, PsiModificationTracker.MODIFICATION_COUNT);
-		}, false, qualifierElement);
+		ParamatizeValue paramatizeValue = CachedValuesManager.getCachedValue(expression, () -> CachedValueProvider.Result.create(new ParamatizeValue(), PsiModificationTracker.MODIFICATION_COUNT));
+
+		return paramatizeValue.get(qualifierElement, element -> tryResolveFromQualifierImpl(expression, element));
 	}
 
 	@Nonnull

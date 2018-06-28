@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 
 import javax.annotation.Nonnull;
+
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.CommonProcessors;

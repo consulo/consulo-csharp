@@ -149,6 +149,7 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 				return parentContext == CSharpContextUtil.ContextType.INSTANCE ? 10 : 5;
 			}
 
+			String vmQName = forceTarget.getVmQName();
 			// region Some code
 			ResolveResult[] resolveResults = myParent.tryResolveFromQualifier(forceTarget);
 			if(resolveResults.length == 0)
