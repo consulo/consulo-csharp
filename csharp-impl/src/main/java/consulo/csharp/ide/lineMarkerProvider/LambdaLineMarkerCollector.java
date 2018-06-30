@@ -19,16 +19,10 @@ package consulo.csharp.ide.lineMarkerProvider;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-import javax.swing.Icon;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredDispatchThread;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImplUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import javax.swing.Icon;
+
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -45,6 +39,14 @@ import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ConstantFunction;
 import com.intellij.util.Consumer;
 import com.intellij.util.Function;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.annotations.RequiredReadAction;
+import consulo.awt.TargetAWT;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImplUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -71,17 +73,18 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 			return info instanceof MarkerInfo;
 		}
 
+		@Nonnull
 		@Override
-		public Icon getCommonIcon(@Nonnull List<MergeableLineMarkerInfo> infos)
+		public Image getCommonIcon(@Nonnull List<MergeableLineMarkerInfo> infos)
 		{
-			return myIcon;
+			return TargetAWT.from(myIcon);
 		}
 
 		@Nonnull
 		@Override
 		public Function<? super PsiElement, String> getCommonTooltip(@Nonnull List<MergeableLineMarkerInfo> infos)
 		{
-			return new ConstantFunction<PsiElement, String>("Navigate to lambda delegate");
+			return new ConstantFunction<>("Navigate to lambda delegate");
 		}
 	}
 
@@ -98,9 +101,8 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 				return;
 			}
 
-			MarkerInfo markerInfo = new MarkerInfo(parent, psiElement.getTextRange(), AllIcons.Gutter.ImplementingFunctional, Pass.UPDATE_ALL, new ConstantFunction<PsiElement,
-					String>("Navigate to lambda delegate"), new GutterIconNavigationHandler<PsiElement>()
-
+			MarkerInfo markerInfo = new MarkerInfo(parent, psiElement.getTextRange(), AllIcons.Gutter.ImplementingFunctional, Pass.UPDATE_ALL, new ConstantFunction<>("Navigate to lambda delegate"),
+					new GutterIconNavigationHandler<PsiElement>()
 			{
 				@Override
 				@RequiredDispatchThread
@@ -122,7 +124,8 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 						((Navigatable) element).navigate(true);
 					}
 				}
-			}, GutterIconRenderer.Alignment.RIGHT); NavigateAction.setNavigateAction(markerInfo, "Navigate to lambda delegate", IdeActions.ACTION_GOTO_SUPER);
+			}, GutterIconRenderer.Alignment.RIGHT);
+			NavigateAction.setNavigateAction(markerInfo, "Navigate to lambda delegate", IdeActions.ACTION_GOTO_SUPER);
 			lineMarkerInfos.consume(markerInfo);
 		}
 	}
