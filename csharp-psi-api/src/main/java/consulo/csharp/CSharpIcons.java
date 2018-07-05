@@ -16,8 +16,6 @@
 
 package consulo.csharp;
 
-import javax.swing.Icon;
-
 import com.intellij.openapi.util.IconLoader;
 import consulo.ui.image.Image;
 
@@ -30,7 +28,7 @@ public interface CSharpIcons
 	interface Gutter
 	{
 		Image HidingMethod = IconLoader.findIcon("/icons/gutter/hidingMethod.png");
-		Icon HidedMethod = IconLoader.findIcon("/icons/gutter/hidedMethod.png");
+		Image HidedMethod = IconLoader.findIcon("/icons/gutter/hidedMethod.png");
 	}
 
 	Image FileType = IconLoader.findIcon("/icons/csharp.png");

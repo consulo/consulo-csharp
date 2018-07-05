@@ -20,16 +20,7 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 
-import consulo.annotations.RequiredDispatchThread;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.CSharpIcons;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -40,6 +31,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ConstantFunction;
 import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.CSharpIcons;
+import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.dotnet.psi.DotNetModifier;
+import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -103,7 +103,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 				return;
 			}
 
-			Icon icon = CSharpIcons.Gutter.HidedMethod;
+			Image icon = CSharpIcons.Gutter.HidedMethod;
 			for(DotNetVirtualImplementOwner overrideElement : overrideElements)
 			{
 				if(overrideElement.getTypeForImplement() == null)
@@ -140,8 +140,8 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 					icon = AllIcons.Gutter.OverridenMethod;
 				}
 			}
-			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, new ConstantFunction<PsiElement,
-					String>("Searching for overrided"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.RIGHT);
+			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, new ConstantFunction<>("Searching for " + "overrided"),
+					OurHandler.INSTANCE, GutterIconRenderer.Alignment.RIGHT);
 
 			consumer.consume(lineMarkerInfo);
 		}

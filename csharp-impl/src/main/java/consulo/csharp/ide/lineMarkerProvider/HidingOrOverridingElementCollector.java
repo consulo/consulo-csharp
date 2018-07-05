@@ -33,7 +33,6 @@ import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
-import consulo.awt.TargetAWT;
 import consulo.csharp.CSharpIcons;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetModifier;
@@ -122,7 +121,7 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 				}
 			}
 
-			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), TargetAWT.to(icon), Pass.LINE_MARKERS, new ConstantFunction<>("Searching for overriding"),
+			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, new ConstantFunction<>("Searching for overriding"),
 					OurHandler.INSTANCE, GutterIconRenderer.Alignment.RIGHT);
 
 			consumer.consume(lineMarkerInfo);

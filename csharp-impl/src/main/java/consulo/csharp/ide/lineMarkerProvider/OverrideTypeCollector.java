@@ -20,15 +20,8 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 import javax.swing.JComponent;
 
-import consulo.annotations.RequiredDispatchThread;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -41,6 +34,13 @@ import com.intellij.util.Consumer;
 import com.intellij.util.FunctionUtil;
 import com.intellij.util.Functions;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -57,8 +57,9 @@ public class OverrideTypeCollector implements LineMarkerCollector
 		{
 			if(hasChild(parent))
 			{
-				final Icon icon = parent.isInterface() ? AllIcons.Gutter.ImplementedMethod : AllIcons.Gutter.OverridenMethod;
-				LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, FunctionUtil.constant("Searching for overriding"), new GutterIconNavigationHandler<PsiElement>()
+				Image icon = parent.isInterface() ? AllIcons.Gutter.ImplementedMethod : AllIcons.Gutter.OverridenMethod;
+				LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, FunctionUtil.constant("Searching for overriding"),
+						new GutterIconNavigationHandler<PsiElement>()
 				{
 					@Override
 					@RequiredDispatchThread
@@ -67,7 +68,8 @@ public class OverrideTypeCollector implements LineMarkerCollector
 						final DotNetTypeDeclaration typeDeclaration = CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);
 						assert typeDeclaration != null;
 						final CommonProcessors.CollectProcessor<DotNetTypeDeclaration> collectProcessor = new CommonProcessors.CollectProcessor<>();
-						if(!ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> TypeInheritorsSearch.search(typeDeclaration, true).forEach(collectProcessor), "Searching for overriding", true, typeDeclaration.getProject(), (JComponent) mouseEvent.getComponent()))
+						if(!ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> TypeInheritorsSearch.search(typeDeclaration, true).forEach(collectProcessor), "Searching for " +
+								"overriding", true, typeDeclaration.getProject(), (JComponent) mouseEvent.getComponent()))
 						{
 							return;
 						}
@@ -76,8 +78,7 @@ public class OverrideTypeCollector implements LineMarkerCollector
 
 						CSharpLineMarkerUtil.openTargets(ContainerUtil.map(results, CSharpTransformer.INSTANCE), mouseEvent, "Navigate to inheritors", Functions.<PsiElement, PsiElement>identity());
 					}
-				}, GutterIconRenderer.Alignment.RIGHT
-				);
+				}, GutterIconRenderer.Alignment.RIGHT);
 				consumer.consume(lineMarkerInfo);
 			}
 		}
