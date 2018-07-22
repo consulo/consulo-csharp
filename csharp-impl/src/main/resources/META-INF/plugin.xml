@@ -130,6 +130,7 @@
 		<applicationService serviceInterface="consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings" serviceImplementation="consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings"/>
 
 		<projectService serviceImplementation="consulo.csharp.lang.psi.impl.partial.CSharpPartialElementManager"/>
+		<projectService serviceImplementation="consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceManager" />
 
 		<fileTypeFactory implementation="consulo.csharp.lang.CSharpFileTypeFactory"/>
 

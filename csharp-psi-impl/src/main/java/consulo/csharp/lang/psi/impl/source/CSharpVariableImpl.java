@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiModificationTracker;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
@@ -64,7 +65,13 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
-		return ourCacheSystem.toTypeRef(this, resolveFromInitializer);
+		return ourCacheSystem.toTypeRef(this, resolveFromInitializer, getCacheKeys());
+	}
+
+	@Nonnull
+	protected Object[] getCacheKeys()
+	{
+		return new Object[]{PsiModificationTracker.MODIFICATION_COUNT};
 	}
 
 	@RequiredReadAction

@@ -24,6 +24,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayFactory;
 import com.intellij.util.ArrayUtil;
@@ -35,7 +36,7 @@ import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpLambdaParameter;
 import consulo.csharp.lang.psi.CSharpLambdaParameterList;
 import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceManager;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -59,6 +60,16 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitLambdaParameter(this);
+	}
+
+	@Nonnull
+	@Override
+	protected Object[] getCacheKeys()
+	{
+		return new Object[]{
+				PsiModificationTracker.MODIFICATION_COUNT,
+				GenericInferenceManager.getInstance(getProject())
+		};
 	}
 
 	@RequiredReadAction
@@ -85,7 +96,7 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 		DotNetType type = getType();
 		if(type == null)
 		{
-			if(GenericInferenceUtil.isInsideGenericInferenceSession(PsiTreeUtil.getParentOfType(this, CSharpLambdaExpressionImpl.class)))
+			if(GenericInferenceManager.getInstance(getProject()).isInsideGenericInferenceSession(PsiTreeUtil.getParentOfType(this, CSharpLambdaExpressionImpl.class)))
 			{
 				return resolveTypeForParameter();
 			}

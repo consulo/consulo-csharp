@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
@@ -36,7 +37,7 @@ import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
-import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceManager;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
@@ -63,8 +64,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	@Nullable
 	public DotNetTypeRef getInferenceSessionTypeRef()
 	{
-		GenericInferenceUtil.InferenceSessionData inferenceSessionData = GenericInferenceUtil.ourInsideInferenceSession.get();
-		return inferenceSessionData != null ? inferenceSessionData.getTypeRef(this) : null;
+		return GenericInferenceManager.getInstance(getProject()).getInferenceSessionTypeRef(this);
 	}
 
 	@RequiredReadAction
