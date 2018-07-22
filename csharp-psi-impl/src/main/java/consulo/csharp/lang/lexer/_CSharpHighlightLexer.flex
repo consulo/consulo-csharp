@@ -11,10 +11,29 @@ import consulo.csharp.lang.psi.CSharpTemplateTokens;
 
 %{
   private int myStringInterpolationBalance;
+  private boolean myReturnToInterpolation;
+
+  private java.util.ArrayDeque<Integer> myStacks = new java.util.ArrayDeque<>();
+
+  public void push(int value) {
+     myStacks.add(value);
+
+     yybegin(value);
+  }
+
+  public void back() {
+     if(myStacks.isEmpty()) {
+        yybegin(YYINITIAL);
+     }
+     else {
+        int value = myStacks.removeLast();
+        yybegin(value);
+     }
+  }
 %}
 
 %public
-%class _CSharpLexer
+%class _CSharpHighlightLexer
 %extends LexerBase
 %unicode
 %function advanceImpl
@@ -84,6 +103,10 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 	"{"
 	{
 		myStringInterpolationBalance ++;
+		myReturnToInterpolation = true;
+
+		push(YYINITIAL);
+
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
 
@@ -95,18 +118,13 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"\""
 	{
-		if(myStringInterpolationBalance == 0)
-		{
-			yybegin(YYINITIAL);
-			return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
-		}
-		else
-		{
-			return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
-		}
+		back();
+
+		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
 
-	[^!{!}!\"]
+
+	[^!{!\"!}]+
 	{
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
@@ -122,11 +140,14 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"$\""
 	{
-		yybegin(STRING_INTERPOLATION);
+		push(STRING_INTERPOLATION);
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
 
-	{VERBATIM_STRING_LITERAL} { return CSharpTokens.VERBATIM_STRING_LITERAL; }
+	{VERBATIM_STRING_LITERAL}
+	{
+		return CSharpTokens.VERBATIM_STRING_LITERAL;
+	}
 
 	"__arglist"               { return CSharpTokens.__ARGLIST_KEYWORD; }
 
@@ -293,7 +314,19 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 //
 	"{"                       { return CSharpTokens.LBRACE; }
 
-	"}"                       { return CSharpTokens.RBRACE; }
+	"}"
+	{
+		if(myReturnToInterpolation)
+		{
+			myReturnToInterpolation = false;
+			yypushback(yylength());
+			push(STRING_INTERPOLATION);
+		}
+		else
+		{
+			return CSharpTokens.RBRACE;
+		}
+	}
 
 	"["                       { return CSharpTokens.LBRACKET; }
 

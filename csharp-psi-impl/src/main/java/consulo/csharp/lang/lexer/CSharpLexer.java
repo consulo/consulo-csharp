@@ -32,7 +32,7 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class CSharpLexer extends MergingLexerAdapterBase
 {
-	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.PREPROCESSOR_FRAGMENT, CSharpTokensImpl.LINE_DOC_COMMENT);
+	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.PREPROCESSOR_FRAGMENT, CSharpTokensImpl.LINE_DOC_COMMENT, CSharpTokensImpl.INTERPOLATION_STRING_LITERAL);
 
 	private static class MyMergeFunction implements MergeFunction
 	{
@@ -50,10 +50,16 @@ public class CSharpLexer extends MergingLexerAdapterBase
 
 			while(true)
 			{
+				CharSequence tokenSequence = originalLexer.getTokenSequence();
 				IElementType currentToken = originalLexer.getTokenType();
 				if(currentToken == null)
 				{
 					break;
+				}
+
+				if(currentToken == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL)
+				{
+					System.out.println();
 				}
 
 				// we need merge two docs if one line between
@@ -88,7 +94,12 @@ public class CSharpLexer extends MergingLexerAdapterBase
 
 	public CSharpLexer()
 	{
-		super(new _CSharpLexer());
+		this(new _CSharpLexer());
+	}
+
+	public CSharpLexer(Lexer lexer)
+	{
+		super(lexer);
 		myMergeFunction = new MyMergeFunction();
 	}
 

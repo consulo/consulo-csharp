@@ -1,0 +1,16 @@
+$"some variable {"dasdas"} asdasdasdas"
+
+$"some variable {'char'} asdasdasdas"
+
+$"some variable {if} asdasdasdas"
+
+$"some variable {$"someValue"} asdasdasdas"
+
+$"some variable {@"someValue"} asdasdasdas"
+
+$"some variable {someValue} asdasdasdas"
+
+
+
+
+

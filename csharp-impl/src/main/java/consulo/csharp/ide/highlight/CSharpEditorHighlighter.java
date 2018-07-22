@@ -44,6 +44,9 @@ public class CSharpEditorHighlighter extends LayeredLexerEditorHighlighter
 	public CSharpEditorHighlighter(@Nullable final VirtualFile virtualFile, @Nonnull final EditorColorsScheme colors)
 	{
 		super(new CSharpSyntaxHighlighter(), colors);
+
+		registerLayer(CSharpCfsLanguageVersion.getInstance().getExpressionElementType(), new LayerDescriptor(new CSharpSyntaxHighlighter(), ""));
+
 		registerLayer(CSharpTokens.STRING_LITERAL, new LayerDescriptor(new CSharpSyntaxHighlighter()
 		{
 			@Nonnull
@@ -63,8 +66,7 @@ public class CSharpEditorHighlighter extends LayeredLexerEditorHighlighter
 				return new StringLiteralLexer('\'', CSharpTokens.CHARACTER_LITERAL);
 			}
 		}, ""));
-		registerLayer(CSharpTokensImpl.INTERPOLATION_STRING_LITERAL, new LayerDescriptor(new CfsSyntaxHighlighter(CSharpCfsLanguageVersion
-				.getInstance())
+		registerLayer(CSharpTokensImpl.INTERPOLATION_STRING_LITERAL, new LayerDescriptor(new CfsSyntaxHighlighter(CSharpCfsLanguageVersion.getInstance())
 		{
 			@Nonnull
 			@Override

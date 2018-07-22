@@ -18,9 +18,13 @@ package consulo.csharp.lang;
 
 import javax.annotation.Nonnull;
 
+import com.intellij.lexer.Lexer;
+import com.intellij.lexer.MergingLexerAdapter;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 import consulo.csharp.cfs.lang.BaseExpressionCfsLanguageVersion;
 import consulo.csharp.cfs.lang.CfsLanguage;
+import consulo.csharp.lang.lexer.CSharpInterpolationStringLexer;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.impl.source.injection.CSharpInjectExpressionElementType;
 
@@ -41,9 +45,30 @@ public class CSharpCfsLanguageVersion extends BaseExpressionCfsLanguageVersion
 		super(CSharpLanguage.INSTANCE);
 	}
 
+	@Nonnull
+	public IElementType getExpressionElementType()
+	{
+		if(myExpressionElementType == null)
+		{
+			myExpressionElementType = createExpressionElementType();
+		}
+		return myExpressionElementType;
+	}
+
 	@Override
 	public IElementType createExpressionElementType()
 	{
 		return new CSharpInjectExpressionElementType("EXPRESSION", CfsLanguage.INSTANCE, CSharpReferenceExpression.ResolveToKind.ANY_MEMBER);
+	}
+
+	@Nonnull
+	@Override
+	public Lexer createInnerLexer()
+	{
+		if(myExpressionElementType == null)
+		{
+			myExpressionElementType = createExpressionElementType();
+		}
+		return new MergingLexerAdapter(new CSharpInterpolationStringLexer(myExpressionElementType), TokenSet.create(myExpressionElementType));
 	}
 }
