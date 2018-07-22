@@ -31,7 +31,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 15.01.14
  */
-public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPropertyDeclaration> implements  CSharpPropertyDeclaration
+public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPropertyDeclaration> implements CSharpPropertyDeclaration
 {
 	private final DotNetTypeRef myTypeRef;
 	private final DotNetTypeRef myVirtualTypeRefForImpl;
@@ -113,5 +113,12 @@ public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPr
 	public DotNetTypeRef getTypeRefForImplement()
 	{
 		return myVirtualTypeRefForImpl;
+	}
+
+	@RequiredReadAction
+	@Override
+	public boolean isAutoGet()
+	{
+		return myOriginal.isAutoGet();
 	}
 }

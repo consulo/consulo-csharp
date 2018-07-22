@@ -65,6 +65,7 @@ public enum CSharpCompilerChecks
 	CS0168(CSharpLanguageVersion._1_0, HighlightInfoType.UNUSED_SYMBOL), // local variable usage check
 	CS0169(CSharpLanguageVersion._1_0, HighlightInfoType.UNUSED_SYMBOL), // field is not used
 	CS0173(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // failed to find conditional expression type
+	CS0200(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // readonly check
 	CS0201(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expression statement can be only call, etc
 	CS0206(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref/out expressions can be only indexer, etc
 	CS0211(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // cant take address for expression

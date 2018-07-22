@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
+import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetPropertyDeclaration;
 
 /**
@@ -24,4 +25,6 @@ import consulo.dotnet.psi.DotNetPropertyDeclaration;
  */
 public interface CSharpPropertyDeclaration extends DotNetPropertyDeclaration, CSharpXXXAccessorOwner
 {
+	@RequiredReadAction
+	boolean isAutoGet();
 }
