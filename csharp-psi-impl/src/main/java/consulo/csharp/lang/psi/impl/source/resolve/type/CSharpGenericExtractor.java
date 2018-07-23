@@ -83,7 +83,6 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 			}
 		}
 
-		String name = parameter.getName();
 		if(index == -1)
 		{
 			return null;
