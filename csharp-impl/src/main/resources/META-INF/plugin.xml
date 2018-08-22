@@ -55,12 +55,6 @@
 		</group>
 	</actions>
 
-	<project-components>
-		<component>
-			<implementation-class>consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent</implementation-class>
-		</component>
-	</project-components>
-
 	<extensionPoints>
 		<extensionPoint name="additionalMemberProvider"
 						interface="consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider"/>
@@ -341,5 +335,7 @@
 		<todoIndexer filetype="C#" implementationClass="consulo.csharp.ide.idCache.CSharpTodoIndexer"/>
 
 		<breadcrumbsInfoProvider implementation="consulo.csharp.ide.breadcrumbs.CSharpBreadcrumbsProvider"/>
+
+		<projectService serviceImplementation="consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent" lazy="false" />
 	</extensions>
 </idea-plugin>
