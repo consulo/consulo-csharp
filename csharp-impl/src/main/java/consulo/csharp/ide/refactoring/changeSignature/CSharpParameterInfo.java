@@ -18,17 +18,16 @@ package consulo.csharp.ide.refactoring.changeSignature;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.intellij.refactoring.changeSignature.ParameterInfo;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.refactoring.changeSignature.ParameterInfo;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -73,12 +72,12 @@ public class CSharpParameterInfo implements ParameterInfo
 		myModifier = findModifier(parameter);
 	}
 
-	public CSharpParameterInfo(String name, @Nullable DotNetParameter parameter, int newIndex)
+	public CSharpParameterInfo(String name, @Nullable DotNetParameter parameter, @Nonnull DotNetTypeRef parameterTypeRef, int newIndex)
 	{
 		myParameter = parameter;
 		myName = name;
 		myTypeText = "";
-		myTypeRef = new CSharpTypeRefByQName(parameter, DotNetTypes.System.Object);
+		myTypeRef = parameterTypeRef;
 		myNewIndex = newIndex;
 		myOldIndex = parameter == null ? -1 : parameter.getIndex();
 	}

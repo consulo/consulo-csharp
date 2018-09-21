@@ -25,9 +25,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiCodeFragment;
 import com.intellij.psi.PsiElement;
@@ -36,6 +33,11 @@ import com.intellij.refactoring.ui.StringTableCellEditor;
 import com.intellij.ui.ColoredTableCellRenderer;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.SimpleTextAttributes;
+import consulo.csharp.lang.CSharpFileType;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import consulo.dotnet.DotNetTypes;
 
 /**
  * @author VISTALL
@@ -168,25 +170,28 @@ public class CSharpParameterTableModel extends ParameterTableModelBase<CSharpPar
 		}
 	}
 
-	private final Project myProject;
+	private final CSharpMethodDescriptor myMethodDescriptor;
 
-	public CSharpParameterTableModel(Project project, PsiElement typeContext, PsiElement defaultValueContext)
+	public CSharpParameterTableModel(CSharpMethodDescriptor methodDescriptor, PsiElement typeContext, PsiElement defaultValueContext)
 	{
-		super(typeContext, defaultValueContext, new TypeColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(project, CSharpFileType.INSTANCE), new MyNameColumn(project),
-				new DefaultValueColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(project, CSharpFileType.INSTANCE, "Place value:"), new ModifierColumn());
-		myProject = project;
+		super(typeContext, defaultValueContext, new TypeColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(methodDescriptor.getMethod().getProject(), CSharpFileType.INSTANCE), new
+						MyNameColumn(methodDescriptor.getMethod().getProject()),
+				new DefaultValueColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(methodDescriptor.getMethod().getProject(), CSharpFileType.INSTANCE, "Place value:"), new ModifierColumn());
+		myMethodDescriptor = methodDescriptor;
 	}
 
 	@Override
 	protected CSharpParameterTableModelItem createRowItem(@Nullable CSharpParameterInfo parameterInfo)
 	{
+		Project project = myMethodDescriptor.getMethod().getProject();
+
 		if(parameterInfo == null)
 		{
-			parameterInfo = new CSharpParameterInfo("", null, getRowCount());
+			parameterInfo = new CSharpParameterInfo("", null, new CSharpTypeRefByQName(myDefaultValueContext, DotNetTypes.System.Object), getRowCount());
 		}
-		PsiCodeFragment fragment = CSharpFragmentFactory.createTypeFragment(myProject, parameterInfo.getTypeText(), myDefaultValueContext);
+		PsiCodeFragment fragment = CSharpFragmentFactory.createTypeFragment(project, parameterInfo.getTypeText(), myDefaultValueContext);
 
-		PsiCodeFragment defaultValue = CSharpFragmentFactory.createExpressionFragment(myProject, "", myDefaultValueContext);
+		PsiCodeFragment defaultValue = CSharpFragmentFactory.createExpressionFragment(project, "", myDefaultValueContext);
 		return new CSharpParameterTableModelItem(parameterInfo, fragment, defaultValue);
 	}
 }

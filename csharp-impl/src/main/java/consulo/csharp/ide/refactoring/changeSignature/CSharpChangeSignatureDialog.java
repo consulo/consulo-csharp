@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -36,16 +37,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 
-import javax.annotation.Nullable;
-import consulo.csharp.ide.highlight.check.impl.CS1547;
-import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
-import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.lang.psi.CSharpAccessModifier;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
-import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.EditorFontType;
@@ -80,6 +71,17 @@ import com.intellij.util.ui.table.JBTableRow;
 import com.intellij.util.ui.table.JBTableRowEditor;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.highlight.check.impl.CS1547;
+import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import consulo.csharp.lang.CSharpFileType;
+import consulo.csharp.lang.psi.CSharpAccessModifier;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
+import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetParameter;
@@ -108,7 +110,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	@Override
 	protected CSharpParameterTableModel createParametersInfoModel(CSharpMethodDescriptor method)
 	{
-		return new CSharpParameterTableModel(getProject(), myDefaultValueContext, myDefaultValueContext);
+		return new CSharpParameterTableModel(method, myDefaultValueContext, myDefaultValueContext);
 	}
 
 	@Override
@@ -249,7 +251,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 			@Override
 			public JComponent[] getFocusableComponents()
 			{
-				final List<JComponent> focusable = new ArrayList<JComponent>();
+				final List<JComponent> focusable = new ArrayList<>();
 				focusable.add(myTypeEditor.getFocusTarget());
 				focusable.add(myNameEditor.getFocusTarget());
 				if(myDefaultValueEditor != null)
@@ -346,7 +348,8 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 					animator.start();
 				}
 			}
-		});	}
+		});
+	}
 
 	private int getTypesColumnWidth()
 	{
@@ -472,11 +475,14 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	@RequiredDispatchThread
 	public List<CSharpParameterInfo> getParameters()
 	{
-		List<CSharpParameterInfo> result = new ArrayList<CSharpParameterInfo>(myParametersTableModel.getRowCount());
+		List<CSharpParameterInfo> result = new ArrayList<>(myParametersTableModel.getRowCount());
 		int i = 0;
 		for(ParameterTableModelItemBase<CSharpParameterInfo> item : myParametersTableModel.getItems())
 		{
-			CSharpParameterInfo e = new CSharpParameterInfo(item.parameter.getName(), item.parameter.getParameter(), i++);
+			DotNetParameter parameter = item.parameter.getParameter();
+			DotNetTypeRef typeRef = parameter == null ? new CSharpTypeRefByQName(myDefaultValueContext, DotNetTypes.System.Object) : parameter.toTypeRef(true);
+
+			CSharpParameterInfo e = new CSharpParameterInfo(item.parameter.getName(), item.parameter.getParameter(), typeRef, i++);
 
 			DotNetType type = PsiTreeUtil.getChildOfType(item.typeCodeFragment, DotNetType.class);
 			e.setTypeText(type == null ? "" : type.getText());
