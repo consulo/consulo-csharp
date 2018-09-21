@@ -22,6 +22,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.intellij.psi.util.PsiTreeUtil;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -50,6 +51,7 @@ import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetReferenceExpression;
+import consulo.dotnet.psi.DotNetStatement;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 
 /**
@@ -152,7 +154,8 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 				builder.append(StringUtil.join(newArguments, ", "));
 				builder.append(");");
 
-				CSharpCallArgumentListOwner call = (CSharpCallArgumentListOwner) CSharpFileFactory.createExpression(usageInfo.getProject(), builder.toString());
+				DotNetStatement statement = CSharpFileFactory.createStatement(usageInfo.getProject(), builder);
+				CSharpCallArgumentListOwner call = PsiTreeUtil.getChildOfType(statement, CSharpCallArgumentListOwner.class);
 				parameterList.replace(call.getParameterList());
 			}
 			return true;
