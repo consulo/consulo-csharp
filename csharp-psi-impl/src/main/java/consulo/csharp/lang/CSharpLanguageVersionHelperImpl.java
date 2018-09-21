@@ -17,6 +17,7 @@
 package consulo.csharp.lang;
 
 import javax.annotation.Nonnull;
+import javax.inject.Singleton;
 
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.lang.LanguageVersion;
@@ -25,6 +26,7 @@ import consulo.lang.LanguageVersion;
  * @author VISTALL
  * @since 14.12.13.
  */
+@Singleton
 public class CSharpLanguageVersionHelperImpl extends CSharpLanguageVersionHelper
 {
 	private final CSharpLanguageVersionWrapper[] myWrappers;

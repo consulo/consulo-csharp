@@ -17,6 +17,8 @@
 package consulo.csharp.ide.codeInsight;
 
 import javax.annotation.Nonnull;
+import javax.inject.Singleton;
+
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
@@ -27,6 +29,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
  * @author VISTALL
  * @since 01.01.14.
  */
+@Singleton
 @State(name = "CSharpCodeInsightSettings", storages = @Storage("editor.codeinsight.xml"))
 public class CSharpCodeInsightSettings implements PersistentStateComponent<CSharpCodeInsightSettings>
 {

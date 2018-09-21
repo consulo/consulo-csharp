@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.DumbService;
@@ -44,6 +46,7 @@ import consulo.dotnet.resolve.impl.IndexBasedDotNetPsiSearcher;
  * @author VISTALL
  * @since 13.07.14
  */
+@Singleton
 public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 {
 	@Nonnull
@@ -52,6 +55,7 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 		return ServiceManager.getService(project, CSharpPsiSearcher.class);
 	}
 
+	@Inject
 	public CSharpPsiSearcher(Project project)
 	{
 		super(project);
@@ -102,7 +106,7 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 			{
 				if(partials.isEmpty())
 				{
-					partials = new ArrayList<CSharpTypeDeclaration>(2);
+					partials = new ArrayList<>(2);
 				}
 
 				partials.add((CSharpTypeDeclaration) element);
@@ -122,7 +126,7 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 		{
 			CSharpTypeDeclaration typeDeclaration = CSharpPartialElementManager.getInstance(myProject).getOrCreateCompositeType(scope, vmQName, partials);
 
-			List<DotNetTypeDeclaration> anotherList = new ArrayList<DotNetTypeDeclaration>(declarations.size() - partials.size() + 1);
+			List<DotNetTypeDeclaration> anotherList = new ArrayList<>(declarations.size() - partials.size() + 1);
 			anotherList.add(typeDeclaration);
 
 			declarations.removeAll(partials);

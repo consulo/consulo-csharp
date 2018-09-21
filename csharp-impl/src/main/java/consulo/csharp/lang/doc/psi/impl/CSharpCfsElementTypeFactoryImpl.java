@@ -18,6 +18,8 @@ package consulo.csharp.lang.doc.psi.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.inject.Singleton;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageParserDefinitions;
@@ -39,6 +41,7 @@ import consulo.lang.LanguageVersion;
  * @author VISTALL
  * @since 26-Dec-17
  */
+@Singleton
 public class CSharpCfsElementTypeFactoryImpl implements CSharpCfsElementTypeFactory
 {
 	@Nonnull

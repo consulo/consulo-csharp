@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.lineMarkerProvider.HidedOrOverridedElementCollector;
@@ -71,6 +72,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 	protected final DaemonCodeAnalyzerSettings myDaemonCodeAnalyzerSettings;
 	protected final EditorColorsManager myEditorColorsManager;
 
+	@Inject
 	public CSharpLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager)
 	{
 		myDaemonCodeAnalyzerSettings = daemonSettings;

@@ -20,6 +20,7 @@ import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.inject.Singleton;
 
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.components.ServiceManager;
@@ -33,6 +34,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  * @author VISTALL
  * @since 2018-07-23
  */
+@Singleton
 public class GenericInferenceManager extends SimpleModificationTracker implements Disposable
 {
 	@Nonnull

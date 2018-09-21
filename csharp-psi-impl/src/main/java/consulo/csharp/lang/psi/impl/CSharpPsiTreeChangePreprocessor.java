@@ -18,6 +18,8 @@ package consulo.csharp.lang.psi.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.inject.Inject;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiNameIdentifierOwner;
@@ -36,6 +38,7 @@ import consulo.dotnet.psi.DotNetStatement;
  */
 public class CSharpPsiTreeChangePreprocessor extends PsiTreeChangePreprocessorBase
 {
+	@Inject
 	public CSharpPsiTreeChangePreprocessor(@Nonnull PsiManager psiManager)
 	{
 		super(psiManager);

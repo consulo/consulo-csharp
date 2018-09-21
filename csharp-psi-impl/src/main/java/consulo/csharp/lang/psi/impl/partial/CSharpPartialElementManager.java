@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import com.intellij.ProjectTopics;
 import com.intellij.openapi.Disposable;
@@ -38,6 +40,7 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
  * @author VISTALL
  * @since 02.05.2015
  */
+@Singleton
 public class CSharpPartialElementManager implements Disposable
 {
 	@Nonnull
@@ -49,6 +52,7 @@ public class CSharpPartialElementManager implements Disposable
 	private final Map<GlobalSearchScope, Map<String, CSharpTypeDeclaration>> myCache = ContainerUtil.createConcurrentWeakMap();
 	private final Project myProject;
 
+	@Inject
 	public CSharpPartialElementManager(@Nonnull Project project)
 	{
 		myProject = project;

@@ -17,6 +17,8 @@
 package consulo.csharp.lang.doc.psi.impl;
 
 import javax.annotation.Nonnull;
+import javax.inject.Singleton;
+
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.doc.psi.CSharpDocElementFactory;
 import consulo.csharp.lang.doc.psi.CSharpDocElements;
@@ -25,6 +27,7 @@ import consulo.csharp.lang.doc.psi.CSharpDocElements;
  * @author VISTALL
  * @since 26-Dec-17
  */
+@Singleton
 public class CSharpDocElementFactoryImpl implements CSharpDocElementFactory
 {
 	@Nonnull

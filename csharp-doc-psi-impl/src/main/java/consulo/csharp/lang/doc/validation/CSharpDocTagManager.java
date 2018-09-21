@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.inject.Singleton;
 
 import com.intellij.openapi.components.ServiceManager;
 import consulo.annotations.Immutable;
@@ -30,6 +31,7 @@ import consulo.annotations.Immutable;
  * @author VISTALL
  * @since 03.03.2015
  */
+@Singleton
 public class CSharpDocTagManager
 {
 	@Nonnull

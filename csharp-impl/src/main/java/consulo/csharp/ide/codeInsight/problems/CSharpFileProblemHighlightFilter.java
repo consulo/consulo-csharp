@@ -16,6 +16,8 @@
 
 package consulo.csharp.ide.codeInsight.problems;
 
+import javax.inject.Inject;
+
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -28,6 +30,7 @@ public class CSharpFileProblemHighlightFilter implements Condition<VirtualFile>
 {
 	private final Project myProject;
 
+	@Inject
 	public CSharpFileProblemHighlightFilter(Project project)
 	{
 		myProject = project;

@@ -32,7 +32,7 @@ import com.intellij.psi.util.PsiTreeUtil;
  */
 public class CSharpClassBodyContextType extends TemplateContextType
 {
-	protected CSharpClassBodyContextType()
+	public CSharpClassBodyContextType()
 	{
 		super("CSHARP_CLASS_BODY", "C# Class Body");
 	}

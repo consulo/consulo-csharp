@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
+
 import com.intellij.ide.projectView.SelectableTreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
@@ -43,6 +45,7 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 {
 	private final Project myProject;
 
+	@Inject
 	public CSharpProjectViewProvider(Project project)
 	{
 		myProject = project;
