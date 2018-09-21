@@ -50,16 +50,10 @@ public class CSharpLexer extends MergingLexerAdapterBase
 
 			while(true)
 			{
-				CharSequence tokenSequence = originalLexer.getTokenSequence();
 				IElementType currentToken = originalLexer.getTokenType();
 				if(currentToken == null)
 				{
 					break;
-				}
-
-				if(currentToken == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL)
-				{
-					System.out.println();
 				}
 
 				// we need merge two docs if one line between

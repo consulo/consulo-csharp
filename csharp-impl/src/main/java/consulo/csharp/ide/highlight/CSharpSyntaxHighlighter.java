@@ -29,6 +29,7 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.StringEscapesTokenTypes;
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.lexer.CSharpLexer;
+import consulo.csharp.lang.lexer._CSharpHighlightLexer;
 import consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -83,7 +84,7 @@ public class CSharpSyntaxHighlighter extends SyntaxHighlighterBase
 	@Override
 	public Lexer getHighlightingLexer()
 	{
-		return new CSharpLexer();
+		return new CSharpLexer(new _CSharpHighlightLexer());
 	}
 
 	@Nonnull

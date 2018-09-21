@@ -393,7 +393,7 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	{SINGLE_LINE_DOC_COMMENT}
 	{
-		return com.intellij.openapi.util.text.StringUtil.startsWith(yytext(), "////") ? CSharpTokens.LINE_COMMENT : CSharpTokensImpl.LINE_DOC_COMMENT;
+		return com.intellij.openapi.util.text.StringUtil.startsWith(getTokenSequence(), "////") ? CSharpTokens.LINE_COMMENT : CSharpTokensImpl.LINE_DOC_COMMENT;
 	}
 
 	{SINGLE_LINE_COMMENT}     { return CSharpTokens.LINE_COMMENT; }
