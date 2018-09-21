@@ -22,9 +22,10 @@ import java.util.Collection;
 import java.util.Collections;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -47,7 +48,8 @@ import consulo.module.extension.ModuleExtensionChangeListener;
  * @author VISTALL
  * @since 06.12.14
  */
-public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
+@Singleton
+public class DotNetLibraryAnalyzerComponent
 {
 	public static class EapDescriptor extends EarlyAccessProgramDescriptor
 	{
@@ -91,27 +93,22 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 	 */
 	//private final Map<Module, MultiMap<String, NamespaceReference>> myCacheMap = new ConcurrentWeakKeyHashMap<Module, MultiMap<String, NamespaceReference>>();
 
+	@Inject
 	public DotNetLibraryAnalyzerComponent(Project project)
-	{
-		super(project);
-	}
-
-	@Override
-	public void initComponent()
 	{
 		if(!EarlyAccessProgramManager.is(EapDescriptor.class))
 		{
 			return;
 		}
 
-		MessageBusConnection connect = myProject.getMessageBus().connect();
+		MessageBusConnection connect = project.getMessageBus().connect();
 
 		connect.subscribe(DumbService.DUMB_MODE, new DumbService.DumbModeListener()
 		{
 			@Override
 			public void enteredDumbMode()
 			{
-				Module[] modules = ModuleManager.getInstance(myProject).getModules();
+				Module[] modules = ModuleManager.getInstance(project).getModules();
 				for(Module module : modules)
 				{
 					DotNetSimpleModuleExtension extension = ModuleUtilCore.getExtension(module, DotNetSimpleModuleExtension.class);

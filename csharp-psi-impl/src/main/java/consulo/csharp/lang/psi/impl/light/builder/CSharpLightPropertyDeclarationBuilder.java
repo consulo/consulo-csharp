@@ -154,4 +154,11 @@ public class CSharpLightPropertyDeclarationBuilder extends CSharpLightVariableBu
 	{
 		return DotNetTypeRef.ERROR_TYPE;
 	}
+
+	@RequiredReadAction
+	@Override
+	public boolean isAutoGet()
+	{
+		return false;
+	}
 }

@@ -214,4 +214,11 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 	{
 		return CSharpPropertyDeclaration.class;
 	}
+
+	@RequiredReadAction
+	@Override
+	public boolean isAutoGet()
+	{
+		return false;
+	}
 }

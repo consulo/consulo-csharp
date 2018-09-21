@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi.impl.source;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -39,7 +40,7 @@ import consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightIndexMethodDeclarationBuilder;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceManager;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.DotNetTypes;
@@ -172,7 +173,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 	@RequiredReadAction
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
-		if(GenericInferenceUtil.isInsideGenericInferenceSession())
+		if(GenericInferenceManager.getInstance(getProject()).isInsideGenericInferenceSession())
 		{
 			return OurResolver.INSTANCE.resolve(this, incompleteCode);
 		}

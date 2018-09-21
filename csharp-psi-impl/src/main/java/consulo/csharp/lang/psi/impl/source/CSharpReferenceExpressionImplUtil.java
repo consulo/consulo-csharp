@@ -59,7 +59,7 @@ import consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import consulo.csharp.lang.psi.impl.source.injection.CSharpForInjectionFragmentHolder;
 import consulo.csharp.lang.psi.impl.source.resolve.*;
 import consulo.csharp.lang.psi.impl.source.resolve.extensionResolver.ExtensionResolveScopeProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceManager;
 import consulo.csharp.lang.psi.impl.source.resolve.handlers.*;
 import consulo.csharp.lang.psi.impl.source.resolve.sorter.StaticVsInstanceComparator;
 import consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeComparator;
@@ -209,7 +209,7 @@ public class CSharpReferenceExpressionImplUtil
 
 		ResolveResult[] resolveResults;
 		CSharpReferenceExpressionImplUtil.OurResolver resolver = CSharpReferenceExpressionImplUtil.OurResolver.INSTANCE;
-		if(GenericInferenceUtil.isInsideGenericInferenceSession())
+		if(GenericInferenceManager.getInstance(expression.getProject()).isInsideGenericInferenceSession())
 		{
 			resolveResults = resolver.resolve(expression, resolveFromParent);
 		}

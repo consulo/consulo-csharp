@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -62,11 +63,16 @@ public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTyp
 	protected List<DotNetTypeRef> getExtendTypeRefs()
 	{
 		DotNetTypeRef[] typeRefs = myElement.getExtendTypeRefs();
-		List<DotNetTypeRef> extendTypeRefs = new ArrayList<DotNetTypeRef>(typeRefs.length);
+		List<DotNetTypeRef> extendTypeRefs = new ArrayList<>(typeRefs.length);
 
 		for(DotNetTypeRef typeRef : typeRefs)
 		{
-			extendTypeRefs.add(GenericUnwrapTool.exchangeTypeRef(typeRef, myExtractor, myElement));
+			DotNetTypeRef ref = RecursionManager.doPreventingRecursion(this, false, () -> GenericUnwrapTool.exchangeTypeRef(typeRef, myExtractor, myElement));
+			if(ref == null)
+			{
+				continue;
+			}
+			extendTypeRefs.add(ref);
 		}
 		return extendTypeRefs;
 	}

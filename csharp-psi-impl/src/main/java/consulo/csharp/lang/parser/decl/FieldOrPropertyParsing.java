@@ -68,7 +68,9 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 
 	private static PsiBuilder.Marker parseFieldAfterName(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType to, int typeFlags, boolean semicolonEat, ModifierSet set)
 	{
-		if(builder.getTokenType() == EQ || builder.getTokenType() == DARROW)
+		boolean autoProperty = builder.getTokenType() == DARROW;
+
+		if(builder.getTokenType() == EQ || autoProperty)
 		{
 			builder.advanceLexer();
 			if(ExpressionParsing.parseVariableInitializer(builder, set) == null)
@@ -77,7 +79,13 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 			}
 		}
 
-		if(builder.getTokenType() == COMMA)
+		if(autoProperty)
+		{
+			// if we found darrow - its property
+			to = PROPERTY_DECLARATION;
+		}
+
+		if(!autoProperty && builder.getTokenType() == COMMA)
 		{
 			builder.advanceLexer();
 

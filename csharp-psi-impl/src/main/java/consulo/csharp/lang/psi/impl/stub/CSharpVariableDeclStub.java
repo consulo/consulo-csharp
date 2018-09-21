@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.BitUtil;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.lang.psi.impl.source.CSharpStubParameterImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpStubVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpStubVariableImplUtil;
@@ -35,6 +36,7 @@ public class CSharpVariableDeclStub<V extends DotNetVariable> extends MemberStub
 	public static final int CONSTANT_MASK = 1 << 0;
 	public static final int MULTIPLE_DECLARATION_MASK = 1 << 1;
 	public static final int OPTIONAL = 1 << 2;
+	public static final int AUTO_GET = 1 << 3;
 
 	private String myInitializerText;
 
@@ -48,14 +50,18 @@ public class CSharpVariableDeclStub<V extends DotNetVariable> extends MemberStub
 	public static int getOtherModifierMask(DotNetVariable variable)
 	{
 		int i = 0;
-		i |= BitUtil.set(i, CONSTANT_MASK, variable.isConstant());
+		i = BitUtil.set(i, CONSTANT_MASK, variable.isConstant());
 		if(variable instanceof CSharpStubVariableImpl)
 		{
-			i |= BitUtil.set(i, MULTIPLE_DECLARATION_MASK, CSharpStubVariableImplUtil.isMultipleDeclaration((CSharpStubVariableImpl<?>) variable));
+			i = BitUtil.set(i, MULTIPLE_DECLARATION_MASK, CSharpStubVariableImplUtil.isMultipleDeclaration((CSharpStubVariableImpl<?>) variable));
 		}
 		if(variable instanceof CSharpStubParameterImpl)
 		{
-			i |= BitUtil.set(i, OPTIONAL, variable.getInitializer() != null);
+			i = BitUtil.set(i, OPTIONAL, variable.getInitializer() != null);
+		}
+		if(variable instanceof CSharpPropertyDeclaration)
+		{
+			i = BitUtil.set(i, AUTO_GET, ((CSharpPropertyDeclaration) variable).isAutoGet());
 		}
 		return i;
 	}
@@ -69,6 +75,11 @@ public class CSharpVariableDeclStub<V extends DotNetVariable> extends MemberStub
 	public boolean isConstant()
 	{
 		return BitUtil.isSet(getOtherModifierMask(), CONSTANT_MASK);
+	}
+
+	public boolean isAutoGet()
+	{
+		return BitUtil.isSet(getOtherModifierMask(), AUTO_GET);
 	}
 
 	public boolean isMultipleDeclaration()

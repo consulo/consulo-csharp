@@ -61,6 +61,7 @@ public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharp
 		return getStubOrPsiChildren(CSharpStubElements.XXX_ACCESSOR, DotNetXXXAccessor.ARRAY_FACTORY);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetExpression getInitializer()
@@ -68,6 +69,7 @@ public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharp
 		return findChildByClass(DotNetExpression.class);
 	}
 
+	@RequiredReadAction
 	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
@@ -109,5 +111,18 @@ public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharp
 		{
 			return typeForImplement.toTypeRef();
 		}
+	}
+
+	@RequiredReadAction
+	@Override
+	public boolean isAutoGet()
+	{
+		CSharpVariableDeclStub<CSharpPropertyDeclarationImpl> greenStub = getGreenStub();
+		if(greenStub != null)
+		{
+			return greenStub.isAutoGet();
+		}
+
+		return findChildByType(CSharpTokens.DARROW) != null;
 	}
 }
