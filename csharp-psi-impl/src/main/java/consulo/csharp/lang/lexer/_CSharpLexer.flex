@@ -106,7 +106,7 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 		}
 	}
 
-	[^!{!}!\"]
+	[^]
 	{
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}

@@ -11,12 +11,11 @@ import consulo.csharp.lang.psi.CSharpTemplateTokens;
 
 %{
   private int myStringInterpolationBalance;
-  private boolean myReturnToInterpolation;
 
   private java.util.ArrayDeque<Integer> myStacks = new java.util.ArrayDeque<>();
 
   public void push(int value) {
-     myStacks.add(value);
+     myStacks.add(yystate());
 
      yybegin(value);
   }
@@ -103,7 +102,6 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 	"{"
 	{
 		myStringInterpolationBalance ++;
-		myReturnToInterpolation = true;
 
 		push(YYINITIAL);
 
@@ -123,8 +121,7 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
 
-
-	[^!{!\"!}]+
+	[^]
 	{
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
@@ -316,9 +313,8 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"}"
 	{
-		if(myReturnToInterpolation)
+		if(myStringInterpolationBalance != 0)
 		{
-			myReturnToInterpolation = false;
 			yypushback(yylength());
 			push(STRING_INTERPOLATION);
 		}
