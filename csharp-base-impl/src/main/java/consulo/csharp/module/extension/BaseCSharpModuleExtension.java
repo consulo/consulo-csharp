@@ -21,10 +21,9 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jdom.Element;
-
-import javax.annotation.Nullable;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -32,6 +31,7 @@ import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.ObjectUtil;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.compiler.CSharpPlatform;
@@ -101,7 +101,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 				{
 					continue;
 				}
-				typeDeclarations.add((DotNetTypeDeclaration) method.getParent());
+				ContainerUtil.addIfNotNull(typeDeclarations, ObjectUtil.tryCast(method.getParent(), DotNetTypeDeclaration.class));
 			}
 		}
 		return ContainerUtil.toArray(typeDeclarations, DotNetTypeDeclaration.ARRAY_FACTORY);
