@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Contract;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpCheckedExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpDefaultExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpParenthesesExpressionImpl;
@@ -100,6 +101,11 @@ public class CSharpConstantUtil
 		if(element instanceof CSharpTypeCastExpressionImpl)
 		{
 			return isCompileTimeConstant(((CSharpTypeCastExpressionImpl) element).getInnerExpression());
+		}
+
+		if(element instanceof CSharpCheckedExpressionImpl)
+		{
+			return isCompileTimeConstant(((CSharpCheckedExpressionImpl) element).getInnerExpression());
 		}
 
 		if(element instanceof CSharpParenthesesExpressionImpl)
