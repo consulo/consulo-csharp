@@ -16,24 +16,20 @@
 
 package consulo.csharp.lang.psi.impl.source.injection;
 
-import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilderFactory;
-import com.intellij.lang.PsiParser;
+import com.intellij.lang.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.ILazyParseableElementType;
 import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.doc.lexer.CSharpReferenceLexer;
+import consulo.csharp.lang.lexer.CSharpLexer;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.ModifierSet;
 import consulo.csharp.lang.parser.exp.ExpressionParsing;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -67,7 +63,7 @@ public class CSharpInjectExpressionElementType extends ILazyParseableElementType
 	{
 		final Project project = psi.getProject();
 		final Language languageForParser = getLanguageForParser(psi);
-		CSharpReferenceLexer lexer = new CSharpReferenceLexer();
+		CSharpLexer lexer = new CSharpLexer();
 		PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, languageForParser, languageForParser.getVersions()[0], chameleon.getChars());
 		return ourParser.parse(this, builder, languageForParser.getVersions()[0]).getFirstChildNode();
 	}
