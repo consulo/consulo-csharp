@@ -16,16 +16,13 @@
 
 package consulo.csharp.ide.presentation;
 
-import javax.swing.Icon;
-
 import javax.annotation.Nullable;
+
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProvider;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
-import consulo.ui.RequiredUIAccess;
-import consulo.awt.TargetAWT;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
@@ -36,6 +33,8 @@ import consulo.dotnet.psi.DotNetMethodDeclaration;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.ide.IconDescriptorUpdaters;
+import consulo.ui.RequiredUIAccess;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -95,9 +94,9 @@ public class CSharpQualifiedElementPresentationProvider implements ItemPresentat
 
 		@Nullable
 		@Override
-		public Icon getIcon(boolean b)
+		public Image getIcon()
 		{
-			return TargetAWT.to(IconDescriptorUpdaters.getIcon(myDeclaration, Iconable.ICON_FLAG_VISIBILITY));
+			return IconDescriptorUpdaters.getIcon(myDeclaration, Iconable.ICON_FLAG_VISIBILITY);
 		}
 	}
 
