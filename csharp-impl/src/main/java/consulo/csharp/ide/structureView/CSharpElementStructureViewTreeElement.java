@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
@@ -64,7 +64,7 @@ public class CSharpElementStructureViewTreeElement extends PsiTreeElementBase<Ps
 
 	@Nullable
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public String getPresentableText()
 	{
 		PsiNamedElement value = getValue();

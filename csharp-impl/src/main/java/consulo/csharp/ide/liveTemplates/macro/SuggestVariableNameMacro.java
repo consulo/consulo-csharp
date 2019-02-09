@@ -40,7 +40,7 @@ import com.intellij.psi.text.BlockSupport;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.ide.lineMarkerProvider.CSharpLineMarkerUtil;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -75,7 +75,7 @@ public class SuggestVariableNameMacro extends Macro
 
 	@Nullable
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public Result calculateQuickResult(@Nonnull Expression[] params, ExpressionContext context)
 	{
 		return calculateResult(params, context);
@@ -83,7 +83,7 @@ public class SuggestVariableNameMacro extends Macro
 
 	@Nullable
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public LookupElement[] calculateLookupItems(@Nonnull Expression[] params, ExpressionContext context)
 	{
 		Collection<String> suggestedVariableNames = getSuggestedVariableNames(context);
@@ -98,7 +98,7 @@ public class SuggestVariableNameMacro extends Macro
 
 	@Nullable
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public Result calculateResult(@Nonnull Expression[] params, ExpressionContext context)
 	{
 		Collection<String> suggestedVariableNames = getSuggestedVariableNames(context);
@@ -106,7 +106,7 @@ public class SuggestVariableNameMacro extends Macro
 	}
 
 	@Nonnull
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	private Collection<String> getSuggestedVariableNames(ExpressionContext context)
 	{
 		final Project project = context.getProject();

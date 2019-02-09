@@ -18,7 +18,7 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceLocalVariableHandler;
 import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
@@ -50,7 +50,7 @@ public class IntroduceLocalVariableIntention extends BaseRefactoringIntentionAct
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement psi)
 	{
 		CSharpExpressionStatementImpl exprStmt = PsiTreeUtil.getParentOfType(psi, CSharpExpressionStatementImpl.class);

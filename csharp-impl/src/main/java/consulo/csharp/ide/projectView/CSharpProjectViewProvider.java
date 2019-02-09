@@ -29,7 +29,7 @@ import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.ide.codeInsight.problems.CSharpLocationUtil;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.impl.source.CSharpDummyDeclarationImpl;
@@ -59,7 +59,7 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public Collection<AbstractTreeNode> modify(AbstractTreeNode abstractTreeNode, Collection<AbstractTreeNode> oldNodes, ViewSettings settings)
 	{
 		List<AbstractTreeNode> nodes = new ArrayList<>(oldNodes.size());

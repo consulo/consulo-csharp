@@ -69,7 +69,7 @@ import com.intellij.util.PairFunction;
 import com.intellij.util.ui.table.JBListTable;
 import com.intellij.util.ui.table.JBTableRow;
 import com.intellij.util.ui.table.JBTableRowEditor;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.check.impl.CS1547;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
@@ -114,7 +114,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	protected BaseRefactoringProcessor createRefactoringProcessor()
 	{
 		CSharpChangeInfo changeInfo = generateChangeInfo();
@@ -291,7 +291,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	protected JComponent getRowPresentation(ParameterTableModelItemBase<CSharpParameterInfo> item, boolean selected, final boolean focused)
 	{
 		final String typeText = item.typeCodeFragment.getText();
@@ -397,7 +397,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 		return myMethod.getMethod();
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	private CSharpChangeInfo generateChangeInfo()
 	{
 		DotNetLikeMethodDeclaration methodDeclaration = getMethodDeclaration();
@@ -472,7 +472,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 
 	@Override
 	@Nonnull
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public List<CSharpParameterInfo> getParameters()
 	{
 		List<CSharpParameterInfo> result = new ArrayList<>(myParametersTableModel.getRowCount());
@@ -498,7 +498,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	protected PsiCodeFragment createReturnTypeCodeFragment()
 	{
 		String text = CSharpTypeRefPresentationUtil.buildShortText(myMethod.getMethod().getReturnTypeRef(), myDefaultValueContext);
@@ -516,7 +516,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 
 	@Nullable
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	protected String validateAndCommitData()
 	{
 		String methodName = getMethodName();
@@ -542,7 +542,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	protected String calculateSignature()
 	{
 		DotNetLikeMethodDeclaration methodDeclaration = getMethodDeclaration();

@@ -28,7 +28,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 
 /**
@@ -39,7 +39,7 @@ public class CSharpEnterInDocLineCommentHandler extends EnterHandlerDelegateAdap
 	private static final String DOC_LINE_START = "///";
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public Result preprocessEnter(@Nonnull final PsiFile file,
 			@Nonnull final Editor editor,
 			@Nonnull final Ref<Integer> caretOffsetRef,

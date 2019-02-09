@@ -24,7 +24,7 @@ import com.intellij.navigation.ItemPresentationProvider;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.awt.TargetAWT;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
@@ -54,7 +54,7 @@ public class CSharpQualifiedElementPresentationProvider implements ItemPresentat
 
 		@Nullable
 		@Override
-		@RequiredDispatchThread
+		@RequiredUIAccess
 		public String getPresentableText()
 		{
 			if(myDeclaration instanceof DotNetTypeDeclaration)
@@ -82,7 +82,7 @@ public class CSharpQualifiedElementPresentationProvider implements ItemPresentat
 
 		@Nullable
 		@Override
-		@RequiredDispatchThread
+		@RequiredUIAccess
 		public String getLocationString()
 		{
 			String presentableParentQName = myDeclaration.getPresentableParentQName();

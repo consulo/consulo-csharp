@@ -45,7 +45,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.awt.TargetAWT;
 import consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
@@ -67,7 +67,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	protected boolean isAvailable(DataContext dataContext)
 	{
 		Module module = findModule(dataContext);
@@ -153,7 +153,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	protected void buildDialog(Project project, PsiDirectory psiDirectory, CreateFileFromTemplateDialog.Builder builder)
 	{
 		Set<String> used = new HashSet<>();

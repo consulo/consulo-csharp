@@ -18,7 +18,7 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -39,7 +39,7 @@ public class CastNArgumentToTypeRefFix extends CastExpressionToTypeRef
 		myParameterName = parameterName;
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Nonnull
 	@Override
 	public String getText()

@@ -22,7 +22,7 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 
 import javax.annotation.Nonnull;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureDialog;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpParameterInfo;
@@ -64,7 +64,7 @@ public class CSharpExtractMethodDialog extends CSharpChangeSignatureDialog
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	protected void invokeRefactoring(BaseRefactoringProcessor processor)
 	{
 		CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(getProject());
@@ -124,7 +124,7 @@ public class CSharpExtractMethodDialog extends CSharpChangeSignatureDialog
 		return !StringUtil.isEmpty(getMethodName());
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Override
 	protected BaseRefactoringProcessor createRefactoringProcessor()
 	{

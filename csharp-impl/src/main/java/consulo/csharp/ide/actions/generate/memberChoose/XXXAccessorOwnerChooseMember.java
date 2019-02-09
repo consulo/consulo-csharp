@@ -19,7 +19,7 @@ package consulo.csharp.ide.actions.generate.memberChoose;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
@@ -48,7 +48,7 @@ public class XXXAccessorOwnerChooseMember extends ImplementMemberChooseObject<CS
 	@RequiredReadAction
 	@Nonnull
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public String getPresentationText()
 	{
 		if(myDeclaration instanceof CSharpPropertyDeclaration)
@@ -64,7 +64,7 @@ public class XXXAccessorOwnerChooseMember extends ImplementMemberChooseObject<CS
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public String getText()
 	{
 		StringBuilder builder = new StringBuilder();

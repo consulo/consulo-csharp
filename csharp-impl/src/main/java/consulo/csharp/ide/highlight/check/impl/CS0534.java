@@ -29,7 +29,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -76,7 +76,7 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
 		}
 
 		@Override
-		@RequiredDispatchThread
+		@RequiredUIAccess
 		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			new ImplementMethodsHandler().invoke(project, editor, file);

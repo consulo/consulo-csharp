@@ -21,7 +21,7 @@ import java.awt.event.MouseEvent;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -110,7 +110,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 			}, new GutterIconNavigationHandler<PsiElement>()
 			{
 				@Override
-				@RequiredDispatchThread
+				@RequiredUIAccess
 				public void navigate(MouseEvent mouseEvent, PsiElement element)
 				{
 					final CSharpTypeDeclaration typeDeclaration = CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);

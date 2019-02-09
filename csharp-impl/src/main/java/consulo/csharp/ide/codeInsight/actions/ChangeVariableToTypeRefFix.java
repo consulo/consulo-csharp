@@ -18,7 +18,7 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetType;
@@ -77,7 +77,7 @@ public class ChangeVariableToTypeRefFix extends BaseIntentionAction
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		PsiDocumentManager.getInstance(project).commitAllDocuments();

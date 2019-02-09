@@ -56,7 +56,7 @@ import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.codeInsight.completion.CompletionProvider;
@@ -128,7 +128,7 @@ class CSharpExpressionCompletionContributor
 							t = t.withInsertHandler(new InsertHandler<LookupElement>()
 							{
 								@Override
-								@RequiredDispatchThread
+								@RequiredUIAccess
 								public void handleInsert(InsertionContext context1, LookupElement item)
 								{
 									CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(parameters.getOriginalPosition(), CSharpSimpleLikeMethodAsElement.class);

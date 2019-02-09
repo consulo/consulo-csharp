@@ -37,7 +37,7 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.actions.generate.memberChoose.CSharpVariableChooseObject;
 import consulo.csharp.ide.actions.generate.memberChoose.ConstructorChooseMember;
@@ -68,7 +68,7 @@ import consulo.dotnet.resolve.DotNetGenericExtractor;
  */
 public class GenerateConstructorHandler implements CodeInsightActionHandler
 {
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Override
 	public void invoke(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file)
 	{

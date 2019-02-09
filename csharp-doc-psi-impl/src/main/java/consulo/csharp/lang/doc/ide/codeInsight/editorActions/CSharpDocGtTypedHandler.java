@@ -52,7 +52,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 
 public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 {
@@ -70,7 +70,7 @@ public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 	};
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public Result beforeCharTyped(final char c, final Project project, final Editor editor, final PsiFile editedFile, final FileType fileType)
 	{
 		if(!(editedFile instanceof CSharpFile))

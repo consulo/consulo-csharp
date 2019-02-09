@@ -25,7 +25,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.ide.refactoring.util.CSharpRefactoringUtil;
@@ -530,7 +530,7 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	protected abstract String getDeclarationString(CSharpIntroduceOperation operation, String initExpression);
 
 	@Nullable
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	private PsiElement performReplace(@Nonnull final PsiElement declaration, final CSharpIntroduceOperation operation)
 	{
 		final DotNetExpression initializer = operation.getInitializer();

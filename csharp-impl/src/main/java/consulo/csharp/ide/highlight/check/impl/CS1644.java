@@ -21,7 +21,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -98,7 +98,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 		}
 
 		@Override
-		@RequiredDispatchThread
+		@RequiredUIAccess
 		public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
 		{
 			CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);

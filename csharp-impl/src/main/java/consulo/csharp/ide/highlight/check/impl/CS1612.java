@@ -38,7 +38,7 @@ import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.refactoring.actions.RenameElementAction;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -99,7 +99,7 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 		}
 
 		@Override
-		@RequiredDispatchThread
+		@RequiredUIAccess
 		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			CSharpFieldDeclaration element = myFieldPointer.getElement();
@@ -151,7 +151,7 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 		}
 
 		@Override
-		@RequiredDispatchThread
+		@RequiredUIAccess
 		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			CSharpFieldDeclaration element = myFieldPointer.getElement();

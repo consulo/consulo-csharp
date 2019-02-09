@@ -18,7 +18,7 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.DotNetTypes;
@@ -53,7 +53,7 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 
 	@Nonnull
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public String getText()
 	{
 		DotNetExpression element = myExpressionPointer.getElement();
@@ -72,7 +72,7 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		if(myExpectedTypeRef == DotNetTypeRef.UNKNOWN_TYPE)
@@ -93,7 +93,7 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		DotNetExpression element = myExpressionPointer.getElement();

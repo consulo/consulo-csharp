@@ -64,7 +64,7 @@ import com.intellij.util.Processor;
 import com.intellij.util.containers.ArrayListSet;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.dotnet.DotNetTypes;
@@ -96,7 +96,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public void invoke(@Nonnull final Project project, final Editor editor, final PsiFile file, DataContext dataContext)
 	{
 		PsiDocumentManager.getInstance(project).commitAllDocuments();

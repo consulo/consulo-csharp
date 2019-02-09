@@ -16,7 +16,7 @@
 package consulo.csharp.ide.completion.util;
 
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.ide.parameterInfo.CSharpParameterInfoHandler;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetParameterList;
@@ -43,20 +43,20 @@ public class CSharpParenthesesInsertHandler implements InsertHandler<LookupEleme
 		myLikeMethodDeclaration = likeMethodDeclaration;
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	private static boolean isToken(@Nullable final PsiElement element, final String text)
 	{
 		return element != null && text.equals(element.getText());
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	private boolean placeCaretInsideParentheses()
 	{
 		DotNetParameterList parameterList = myLikeMethodDeclaration.getParameterList();
 		return parameterList != null && parameterList.getParametersCount() > 0;
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Override
 	public void handleInsert(final InsertionContext context, final LookupElement item)
 	{
@@ -142,7 +142,7 @@ public class CSharpParenthesesInsertHandler implements InsertHandler<LookupEleme
 	}
 
 	@Nullable
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	protected PsiElement findNextToken(final InsertionContext context)
 	{
 		final PsiFile file = context.getFile();

@@ -48,7 +48,7 @@ import com.intellij.psi.PsiParserFacade;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings;
@@ -110,7 +110,7 @@ public class AddUsingAction implements QuestionAction
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public boolean execute()
 	{
 		PsiDocumentManager.getInstance(myProject).commitAllDocuments();
@@ -139,7 +139,7 @@ public class AddUsingAction implements QuestionAction
 				}
 
 				@Override
-				@RequiredDispatchThread
+				@RequiredUIAccess
 
 				public PopupStep onChosen(final NamespaceReference selectedValue, boolean finalChoice)
 				{
@@ -167,7 +167,7 @@ public class AddUsingAction implements QuestionAction
 		return namespace + " from '" + libraryName + "'";
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	private void execute0(final NamespaceReference namespaceReference)
 	{
 		PsiDocumentManager.getInstance(myProject).commitAllDocuments();

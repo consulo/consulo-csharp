@@ -18,7 +18,7 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.dotnet.psi.DotNetModifierList;
@@ -79,7 +79,7 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
 	{
 		DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);

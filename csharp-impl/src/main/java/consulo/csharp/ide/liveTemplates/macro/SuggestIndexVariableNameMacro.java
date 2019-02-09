@@ -21,7 +21,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.ide.lineMarkerProvider.CSharpLineMarkerUtil;
 import consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.template.Expression;
@@ -61,7 +61,7 @@ public class SuggestIndexVariableNameMacro extends Macro
 
 	@Nullable
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public Result calculateResult(@Nonnull Expression[] params, ExpressionContext context)
 	{
 		final Project project = context.getProject();

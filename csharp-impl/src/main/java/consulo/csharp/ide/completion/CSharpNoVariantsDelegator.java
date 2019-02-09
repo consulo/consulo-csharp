@@ -43,7 +43,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.Processor;
 import com.intellij.util.indexing.IdFilter;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.codeInsight.actions.AddUsingAction;
@@ -104,7 +104,7 @@ class CSharpNoVariantsDelegator
 	}
 
 	@RequiredReadAction
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public static void fillCompletionVariants(CompletionParameters parameters, CompletionResultSet result)
 	{
 		final InheritorsHolder holder = new InheritorsHolder(result);

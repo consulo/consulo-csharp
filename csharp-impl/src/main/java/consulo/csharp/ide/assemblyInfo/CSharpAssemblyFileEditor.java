@@ -48,7 +48,7 @@ import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.treeStructure.SimpleTree;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.ui.tree.TreeUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.ide.assemblyInfo.blocks.CSharpAssemblyBlock;
 import consulo.csharp.ide.assemblyInfo.blocks.CSharpSimpleStringAssemblyBlock;
 import consulo.dotnet.DotNetTypes;
@@ -107,7 +107,7 @@ public class CSharpAssemblyFileEditor extends UserDataHolderBase implements File
 		simpleTree.setRootVisible(false);
 		simpleTree.setCellRenderer(new ColoredTreeCellRenderer()
 		{
-			@RequiredDispatchThread
+			@RequiredUIAccess
 			@Override
 			public void customizeCellRenderer(JTree jTree, Object o, boolean b, boolean b2, boolean b3, int i, boolean b4)
 			{

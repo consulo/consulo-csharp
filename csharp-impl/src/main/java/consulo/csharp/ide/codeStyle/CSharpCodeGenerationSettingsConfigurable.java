@@ -29,7 +29,7 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.lang.CSharpLanguage;
 
 /**
@@ -65,7 +65,7 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		return ApplicationBundle.message("title.code.generation");
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Nullable
 	@Override
 	public JComponent createComponent()
@@ -73,7 +73,7 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		return myRoot;
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Override
 	public boolean isModified()
 	{
@@ -96,7 +96,7 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		return !textField.getText().trim().equals(value);
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Override
 	public void apply() throws ConfigurationException
 	{
@@ -113,7 +113,7 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		myCommenterForm.apply(mySettings.getContainer());
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Override
 	public void reset()
 	{

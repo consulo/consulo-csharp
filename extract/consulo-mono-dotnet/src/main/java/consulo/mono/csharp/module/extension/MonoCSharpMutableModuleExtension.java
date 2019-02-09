@@ -22,7 +22,7 @@ import javax.swing.JComponent;
 
 import consulo.csharp.module.extension.CSharpConfigurationPanel;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.roots.ModuleRootLayer;
 
 /**
@@ -38,7 +38,7 @@ public class MonoCSharpMutableModuleExtension extends MonoCSharpModuleExtension 
 
 	@Nullable
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public JComponent createConfigurablePanel(@Nonnull Runnable runnable)
 	{
 		return new CSharpConfigurationPanel(this);

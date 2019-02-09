@@ -34,7 +34,7 @@ import com.intellij.util.Consumer;
 import com.intellij.util.FunctionUtil;
 import com.intellij.util.Functions;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
@@ -62,7 +62,7 @@ public class OverrideTypeCollector implements LineMarkerCollector
 						new GutterIconNavigationHandler<PsiElement>()
 				{
 					@Override
-					@RequiredDispatchThread
+					@RequiredUIAccess
 					public void navigate(MouseEvent mouseEvent, PsiElement element)
 					{
 						final DotNetTypeDeclaration typeDeclaration = CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);

@@ -26,7 +26,7 @@ import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.ui.SimpleColoredComponent;
 import com.intellij.util.ArrayFactory;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.awt.TargetAWT;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
@@ -58,7 +58,7 @@ public abstract class CSharpMemberChooseObject<T extends DotNetElement> implemen
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public void renderTreeNode(SimpleColoredComponent component, JTree tree)
 	{
 		component.setIcon(TargetAWT.to(IconDescriptorUpdaters.getIcon(myDeclaration, Iconable.ICON_FLAG_VISIBILITY)));

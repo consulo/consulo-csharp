@@ -46,7 +46,7 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Function;
 import com.intellij.util.Processor;
 import com.intellij.util.Query;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.awt.TargetAWT;
 import consulo.csharp.ide.codeInsight.actions.AddAccessModifierFix;
@@ -74,7 +74,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 		myReadonly = readonly;
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Override
 	public void invoke(@Nonnull final Project project, @Nonnull final Editor editor, @Nonnull final PsiFile file)
 	{
@@ -154,7 +154,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 				new WriteCommandAction(project, "Generate property", file)
 				{
 					@Override
-					@RequiredDispatchThread
+					@RequiredUIAccess
 					protected void run(Result result) throws Throwable
 					{
 						if(PropertiesComponent.getInstance().getBoolean(ourReplaceReferencesToProperty, true))

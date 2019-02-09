@@ -18,7 +18,7 @@ package consulo.csharp.ide.highlight.check.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
@@ -67,7 +67,7 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 		}
 
 		@Override
-		@RequiredDispatchThread
+		@RequiredUIAccess
 		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(file, CSharpSimpleModuleExtension.class);

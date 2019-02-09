@@ -38,7 +38,7 @@ import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ConstantFunction;
 import com.intellij.util.Consumer;
 import com.intellij.util.Function;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
@@ -103,7 +103,7 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 					new GutterIconNavigationHandler<PsiElement>()
 			{
 				@Override
-				@RequiredDispatchThread
+				@RequiredUIAccess
 				public void navigate(MouseEvent e, PsiElement elt)
 				{
 					if(!(elt instanceof CSharpLambdaExpressionImpl))

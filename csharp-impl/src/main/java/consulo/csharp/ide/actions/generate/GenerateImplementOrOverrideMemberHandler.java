@@ -35,7 +35,7 @@ import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.PairConsumer;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.actions.generate.memberChoose.CSharpMemberChooseObject;
 import consulo.csharp.ide.actions.generate.memberChoose.MethodChooseMember;
@@ -55,7 +55,7 @@ import consulo.dotnet.psi.DotNetNamedElement;
  */
 public abstract class GenerateImplementOrOverrideMemberHandler implements LanguageCodeInsightActionHandler
 {
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Override
 	public void invoke(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file)
 	{
@@ -76,7 +76,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 		PairConsumer<PsiElement, StringBuilder> returnAppender = new PairConsumer<PsiElement, StringBuilder>()
 		{
 			@Override
-			@RequiredDispatchThread
+			@RequiredUIAccess
 			public void consume(PsiElement element, StringBuilder builder)
 			{
 				GenerateImplementOrOverrideMemberHandler.this.appendReturnStatement(builder, element);
@@ -85,7 +85,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 		PairConsumer<PsiElement, StringBuilder> additionalModifiersAppender = new PairConsumer<PsiElement, StringBuilder>()
 		{
 			@Override
-			@RequiredDispatchThread
+			@RequiredUIAccess
 			public void consume(PsiElement element, StringBuilder builder)
 			{
 				GenerateImplementOrOverrideMemberHandler.this.appendAdditionalModifiers(builder, element);

@@ -32,7 +32,7 @@ import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.completion.CSharpCompletionSorting;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
@@ -388,7 +388,7 @@ public class CSharpLookupElementBuilder
 			builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
 			{
 				@Override
-				@RequiredDispatchThread
+				@RequiredUIAccess
 				public void handleInsert(InsertionContext context, LookupElement item)
 				{
 					if(finalRefType != null)

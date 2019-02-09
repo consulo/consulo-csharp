@@ -41,7 +41,7 @@ import com.intellij.refactoring.RefactoringBundle;
 import com.intellij.refactoring.introduce.inplace.InplaceVariableIntroducer;
 import com.intellij.ui.NonFocusableCheckBox;
 import com.intellij.util.ui.JBUI;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
@@ -141,7 +141,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 
 			@Nullable
 			@Override
-			@RequiredDispatchThread
+			@RequiredUIAccess
 			protected JComponent getComponent()
 			{
 				CSharpLocalVariable variable = (CSharpLocalVariable) getVariable();
@@ -158,7 +158,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 					myUseVarType.addItemListener(new ItemListener()
 					{
 						@Override
-						@RequiredDispatchThread
+						@RequiredUIAccess
 						public void itemStateChanged(ItemEvent e)
 						{
 							CSharpCodeGenerationSettings.getInstance(myProject).USE_VAR_FOR_EXTRACT_LOCAL_VARIABLE = myUseVarType.isSelected();
@@ -176,7 +176,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 					myConstant.addItemListener(new ItemListener()
 					{
 						@Override
-						@RequiredDispatchThread
+						@RequiredUIAccess
 						public void itemStateChanged(ItemEvent e)
 						{
 							doConstantOrRemove(myConstant.isSelected());
@@ -207,7 +207,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 				return panel;
 			}
 
-			@RequiredDispatchThread
+			@RequiredUIAccess
 			private void doConstantOrRemove(final boolean value)
 			{
 				PsiDocumentManager.getInstance(myProject).commitAllDocuments();
@@ -273,7 +273,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 				}.execute();
 			}
 
-			@RequiredDispatchThread
+			@RequiredUIAccess
 			private void doVarType(final DotNetExpression initializer, final boolean value)
 			{
 				PsiDocumentManager.getInstance(myProject).commitAllDocuments();

@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairConsumer;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
@@ -45,14 +45,14 @@ public class MethodChooseMember extends ImplementMemberChooseObject<CSharpMethod
 	@RequiredReadAction
 	@Nonnull
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public String getPresentationText()
 	{
 		return CSharpElementPresentationUtil.formatMethod(myDeclaration, CSharpElementPresentationUtil.METHOD_WITH_RETURN_TYPE | CSharpElementPresentationUtil.METHOD_PARAMETER_NAME);
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public String getText()
 	{
 		StringBuilder builder = new StringBuilder();

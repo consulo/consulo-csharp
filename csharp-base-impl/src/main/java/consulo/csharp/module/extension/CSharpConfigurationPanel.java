@@ -46,7 +46,7 @@ import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.ui.TextFieldWithHistory;
 import com.intellij.ui.TitledSeparator;
 import com.intellij.ui.components.JBCheckBox;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.compiler.CSharpCompilerProvider;
 import consulo.csharp.compiler.CSharpPlatform;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
@@ -69,7 +69,7 @@ public class CSharpConfigurationPanel extends JPanel
 			"default"
 	};
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public CSharpConfigurationPanel(final CSharpMutableModuleExtension<?> ext)
 	{
 		super(new VerticalFlowLayout());

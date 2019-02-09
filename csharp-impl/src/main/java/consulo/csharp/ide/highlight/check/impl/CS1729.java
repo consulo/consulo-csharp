@@ -29,7 +29,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.actions.generate.GenerateConstructorHandler;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -63,7 +63,7 @@ public class CS1729 extends CompilerCheck<DotNetQualifiedElement>
 		}
 
 		@Override
-		@RequiredDispatchThread
+		@RequiredUIAccess
 		public void invoke(@Nonnull Project project,
 				@Nonnull PsiFile psiFile,
 				@Nullable Editor editor,

@@ -31,7 +31,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ConstantFunction;
 import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.CSharpIcons;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
@@ -52,7 +52,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 		public static final OurHandler INSTANCE = new OurHandler();
 
 		@Override
-		@RequiredDispatchThread
+		@RequiredUIAccess
 		public void navigate(MouseEvent mouseEvent, PsiElement element)
 		{
 			DotNetVirtualImplementOwner virtualImplementOwner = CSharpLineMarkerUtil.findElementForLineMarker(element);

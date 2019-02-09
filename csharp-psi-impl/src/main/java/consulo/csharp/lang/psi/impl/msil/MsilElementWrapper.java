@@ -28,7 +28,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.intellij.util.Consumer;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.msil.representation.MsilRepresentationNavigateUtil;
 
@@ -82,7 +82,7 @@ public abstract class MsilElementWrapper<T extends PsiElement> extends CSharpLig
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public void navigate(boolean requestFocus)
 	{
 		final Class<? extends PsiElement> navigationElementClass = getNavigationElementClass();

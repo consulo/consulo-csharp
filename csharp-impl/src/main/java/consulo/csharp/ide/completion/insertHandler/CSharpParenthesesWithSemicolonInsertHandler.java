@@ -21,7 +21,7 @@ import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.csharp.ide.completion.util.CSharpParenthesesInsertHandler;
 import consulo.csharp.lang.psi.CSharpCodeFragment;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
@@ -43,7 +43,7 @@ public class CSharpParenthesesWithSemicolonInsertHandler implements InsertHandle
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public void handleInsert(InsertionContext context, LookupElement item)
 	{
 		boolean isMethodLike = myDeclaration instanceof DotNetLikeMethodDeclaration;

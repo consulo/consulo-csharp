@@ -30,7 +30,7 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.dotnet.DotNetRunUtil;
@@ -79,7 +79,7 @@ public class CS0017 extends CompilerCheck<CSharpMethodDeclaration>
 		}
 
 		@Override
-		@RequiredDispatchThread
+		@RequiredUIAccess
 		public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
 		{
 			DotNetModuleExtension extension = ModuleUtilCore.getExtension(element, DotNetModuleExtension.class);

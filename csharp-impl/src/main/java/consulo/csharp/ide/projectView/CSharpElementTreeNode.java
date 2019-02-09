@@ -34,7 +34,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.BitUtil;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -132,7 +132,7 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 
 	@Nullable
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	protected Collection<AbstractTreeNode> getChildrenImpl()
 	{
 		final ViewSettings settings = getSettings();
@@ -220,7 +220,7 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	protected void updateImpl(PresentationData presentationData)
 	{
 		DotNetNamedElement value = getValue();

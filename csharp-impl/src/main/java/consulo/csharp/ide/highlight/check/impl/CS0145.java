@@ -18,7 +18,7 @@ package consulo.csharp.ide.highlight.check.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -123,14 +123,14 @@ public class CS0145 extends CompilerCheck<DotNetVariable>
 		}
 
 		@Override
-		@RequiredDispatchThread
+		@RequiredUIAccess
 		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			return myVariablePointer.getElement() != null;
 		}
 
 		@Override
-		@RequiredDispatchThread
+		@RequiredUIAccess
 		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			DotNetVariable element = myVariablePointer.getElement();

@@ -34,7 +34,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import consulo.csharp.lang.psi.CSharpFile;
@@ -60,7 +60,7 @@ import consulo.dotnet.resolve.DotNetTypeRefUtil;
 public class CSharpTypedHandler extends TypedHandlerDelegate
 {
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public Result beforeCharTyped(char c, Project project, Editor editor, PsiFile file, FileType fileType)
 	{
 		if(!(file instanceof CSharpFile))
@@ -106,7 +106,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public Result charTyped(char c, Project project, Editor editor, @Nonnull PsiFile file)
 	{
 		if(c == '/')
@@ -163,7 +163,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 	}
 
 	@Nonnull
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	private static Pair<CharSequence, Integer> buildDocComment(DotNetQualifiedElement qualifiedElement, Editor editor, int offset)
 	{
 		String lineIndent = CodeStyleFacade.getInstance(qualifiedElement.getProject()).getLineIndent(editor.getDocument(), offset);
@@ -224,7 +224,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 		return Pair.<CharSequence, Integer>create(builder, diffForCaret);
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	private static boolean handleDotAtPointerType(Editor editor, PsiFile file)
 	{
 		if(DumbService.isDumb(file.getProject()))
@@ -280,7 +280,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 		return true;
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	private static void autoPopupMemberLookup(Project project, final Editor editor)
 	{
 		AutoPopupController.getInstance(project).autoPopupMemberLookup(editor, new Condition<PsiFile>()
