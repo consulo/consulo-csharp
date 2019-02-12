@@ -16,12 +16,11 @@
 
 package consulo.csharp.ide.lineMarkerProvider;
 
-import javax.swing.Icon;
-
 import com.intellij.ide.util.PsiElementListCellRenderer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.presentation.java.SymbolPresentationUtil;
 import com.intellij.util.Function;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -43,7 +42,7 @@ public class PsiMappedElementListCellRender extends PsiElementListCellRenderer<P
 	}
 
 	@Override
-	protected Icon getIcon(PsiElement element)
+	protected Image getIcon(PsiElement element)
 	{
 		PsiElement map = myMap.fun(element);
 		if(map != null)

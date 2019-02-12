@@ -17,9 +17,8 @@
 package consulo.csharp.ide.findUsage.groupingRule;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
-
 import javax.annotation.Nullable;
+
 import com.intellij.lang.findUsages.LanguageFindUsages;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.navigation.NavigationItemFileStatus;
@@ -36,9 +35,9 @@ import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.usages.UsageGroup;
 import com.intellij.usages.UsageView;
-import consulo.awt.TargetAWT;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.ide.IconDescriptorUpdaters;
+import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -55,14 +54,14 @@ public class CSharpBaseGroupingRule<T extends PsiElement> implements UsageGroup,
 
 	@Nullable
 	@Override
-	public Icon getIcon(boolean b)
+	public Image getIcon()
 	{
 		T element = myPointer.getElement();
 		if(element == null)
 		{
 			return null;
 		}
-		return TargetAWT.to(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY | Iconable.ICON_FLAG_READ_STATUS));
+		return IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY | Iconable.ICON_FLAG_READ_STATUS);
 	}
 
 	@Nonnull

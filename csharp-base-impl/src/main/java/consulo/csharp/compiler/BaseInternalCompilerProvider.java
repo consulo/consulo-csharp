@@ -78,7 +78,7 @@ public abstract class BaseInternalCompilerProvider extends CSharpCompilerProvide
 			VirtualFile child = homeDirectory.findChild(CSharpCompilerUtil.COMPILER_NAME);
 			if(child != null)
 			{
-				comboBox.insertCustomSdkItem(CSharpModuleExtension.INTERNAL_SDK_KEY, "<internal>", TargetAWT.to(getIcon()));
+				comboBox.insertCustomSdkItem(CSharpModuleExtension.INTERNAL_SDK_KEY, "<internal>", getIcon());
 			}
 		}
 	}
