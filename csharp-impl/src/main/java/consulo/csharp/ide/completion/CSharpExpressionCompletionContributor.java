@@ -43,7 +43,6 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
@@ -56,7 +55,6 @@ import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.codeInsight.completion.CompletionProvider;
@@ -87,7 +85,9 @@ import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.ide.IconDescriptorUpdaters;
+import consulo.ui.RequiredUIAccess;
 import consulo.ui.image.Image;
+import consulo.ui.image.ImageEffects;
 
 /**
  * @author VISTALL
@@ -302,7 +302,7 @@ class CSharpExpressionCompletionContributor
 				{
 					LookupElementBuilder builder = LookupElementBuilder.create(wantToCompleteParameter + ": ");
 					builder = builder.withTailText("<expression>", true);
-					builder = builder.withIcon(IconLoader.getTransparentIcon(AllIcons.Nodes.Parameter));
+					builder = builder.withIcon(ImageEffects.transparent(AllIcons.Nodes.Parameter));
 
 					CSharpCompletionSorting.force(builder, CSharpCompletionSorting.KindSorter.Type.parameterInCall);
 					result.consume(builder);
