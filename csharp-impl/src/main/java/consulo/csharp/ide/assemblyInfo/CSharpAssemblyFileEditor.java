@@ -16,11 +16,11 @@
 
 package consulo.csharp.ide.assemblyInfo;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTree;
@@ -29,7 +29,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-import javax.annotation.Nullable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorLocation;
@@ -48,10 +47,11 @@ import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.treeStructure.SimpleTree;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.ui.tree.TreeUtil;
-import consulo.ui.RequiredUIAccess;
 import consulo.csharp.ide.assemblyInfo.blocks.CSharpAssemblyBlock;
 import consulo.csharp.ide.assemblyInfo.blocks.CSharpSimpleStringAssemblyBlock;
 import consulo.dotnet.DotNetTypes;
+import consulo.ui.RequiredUIAccess;
+import kava.beans.PropertyChangeListener;
 
 /**
  * @author VISTALL
