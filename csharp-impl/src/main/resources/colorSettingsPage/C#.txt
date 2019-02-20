@@ -45,3 +45,10 @@ public static class <class_name>StringExtensions</class_name> {
         <delegate_method_name>MyDelegateMethod</delegate_method_name> localVar = <method_ref>SomeMethod</method_ref>;
     }
 }
+
+public enum <enum_name>SomeEnum</enum_name> {
+    <static_field>VALUE1</static_field>,
+    <static_field>VALUE2</static_field>
+}
+
+public interface <interface_name>ErrorMarker</interface_name> {}

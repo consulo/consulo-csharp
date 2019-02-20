@@ -21,9 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
-
 import javax.annotation.Nullable;
+
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.options.OptionsBundle;
@@ -41,33 +40,36 @@ import consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightKey;
 public class CSharpColorSettingsPage implements ColorSettingsPage
 {
 	private static final AttributesDescriptor[] ourDescriptors = new AttributesDescriptor[]{
-			new AttributesDescriptor("Block comment", CSharpHighlightKey.BLOCK_COMMENT),
-			new AttributesDescriptor("Line comment", CSharpHighlightKey.LINE_COMMENT),
-			new AttributesDescriptor("Keyword", CSharpHighlightKey.KEYWORD),
-			new AttributesDescriptor("Context keyword", CSharpHighlightKey.SOFT_KEYWORD),
-			new AttributesDescriptor("Preprocessor keyword", CSharpHighlightKey.MACRO_KEYWORD),
-			new AttributesDescriptor("Preprocessor variable", CSharpHighlightKey.MACRO_VARIABLE),
-			new AttributesDescriptor("Disabled preprocessor block", CSharpHighlightKey.DISABLED_BLOCK),
+			new AttributesDescriptor("Comments//Block comment", CSharpHighlightKey.BLOCK_COMMENT),
+			new AttributesDescriptor("Comments//Line comment", CSharpHighlightKey.LINE_COMMENT),
+			new AttributesDescriptor("Keywods//Keyword", CSharpHighlightKey.KEYWORD),
+			new AttributesDescriptor("Keywods//Context keyword", CSharpHighlightKey.SOFT_KEYWORD),
+			new AttributesDescriptor("Keywods//Preprocessor keyword", CSharpHighlightKey.MACRO_KEYWORD),
+			new AttributesDescriptor("Preprocessor//Preprocessor variable", CSharpHighlightKey.MACRO_VARIABLE),
+			new AttributesDescriptor("Preprocessor//Disabled preprocessor block", CSharpHighlightKey.DISABLED_BLOCK),
 			new AttributesDescriptor("String", CSharpHighlightKey.STRING),
 			new AttributesDescriptor("Number", CSharpHighlightKey.NUMBER),
-			new AttributesDescriptor("Class name", CSharpHighlightKey.CLASS_NAME),
-			new AttributesDescriptor("Constructor declaration", CSharpHighlightKey.CONSTRUCTOR_NAME),
-			new AttributesDescriptor("Method declaration", CSharpHighlightKey.METHOD_NAME),
-			new AttributesDescriptor("Delegate method name", CSharpHighlightKey.DELEGATE_METHOD_NAME),
-			new AttributesDescriptor("Generic parameter name", CSharpHighlightKey.GENERIC_PARAMETER_NAME),
-			new AttributesDescriptor("Extension method call", CSharpHighlightKey.EXTENSION_METHOD_CALL),
-			new AttributesDescriptor("Static method call", CSharpHighlightKey.STATIC_METHOD_CALL),
-			new AttributesDescriptor("Instance method call", CSharpHighlightKey.INSTANCE_METHOD_CALL),
-			new AttributesDescriptor("Instance field or property", CSharpHighlightKey.INSTANCE_FIELD_OR_PROPERTY),
-			new AttributesDescriptor("Static field or property", CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY),
-			new AttributesDescriptor("Static event", CSharpHighlightKey.STATIC_EVENT),
-			new AttributesDescriptor("Instance event", CSharpHighlightKey.INSTANCE_EVENT),
-			new AttributesDescriptor("Parameter", CSharpHighlightKey.PARAMETER),
-			new AttributesDescriptor("Method reference", CSharpHighlightKey.METHOD_REF),
+			new AttributesDescriptor("Classes and Interfaces//Class name", CSharpHighlightKey.CLASS_NAME),
+			new AttributesDescriptor("Classes and Interfaces//Attribute name", CSharpHighlightKey.ATTRIBUTE_NAME),
+			new AttributesDescriptor("Classes and Interfaces//Enum name", CSharpHighlightKey.ENUM_NAME),
+			new AttributesDescriptor("Classes and Interfaces//Inteface name", CSharpHighlightKey.INTERFACE_NAME),
+			new AttributesDescriptor("Methods//Constructor declaration", CSharpHighlightKey.CONSTRUCTOR_NAME),
+			new AttributesDescriptor("Methods//Method declaration", CSharpHighlightKey.METHOD_NAME),
+			new AttributesDescriptor("Methods//Delegate method name", CSharpHighlightKey.DELEGATE_METHOD_NAME),
+			new AttributesDescriptor("Methods//Extension method call", CSharpHighlightKey.EXTENSION_METHOD_CALL),
+			new AttributesDescriptor("Methods//Static method call", CSharpHighlightKey.STATIC_METHOD_CALL),
+			new AttributesDescriptor("Methods//Instance method call", CSharpHighlightKey.INSTANCE_METHOD_CALL),
+			new AttributesDescriptor("Methods//Method reference", CSharpHighlightKey.METHOD_REF),
+			new AttributesDescriptor("Class Fieds & Properties & Events//Instance field or property", CSharpHighlightKey.INSTANCE_FIELD_OR_PROPERTY),
+			new AttributesDescriptor("Class Fieds & Properties & Events//Static field or property", CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY),
+			new AttributesDescriptor("Class Fieds & Properties & Events//Static event", CSharpHighlightKey.STATIC_EVENT),
+			new AttributesDescriptor("Class Fieds & Properties & Events//Instance event", CSharpHighlightKey.INSTANCE_EVENT),
+			new AttributesDescriptor("Parameters//Generic parameter name", CSharpHighlightKey.GENERIC_PARAMETER_NAME),
+			new AttributesDescriptor("Parameters//Parameter", CSharpHighlightKey.PARAMETER),
 			new AttributesDescriptor("Implicit or explicit cast", CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST),
-			new AttributesDescriptor("Doc comment", CSharpDocHighlightKey.DOC_COMMENT),
-			new AttributesDescriptor("Doc tag", CSharpDocHighlightKey.DOC_COMMENT_TAG),
-			new AttributesDescriptor("Doc attribute", CSharpDocHighlightKey.DOC_COMMENT_ATTRIBUTE),
+			new AttributesDescriptor("Comments//Documentation//Documentation comment", CSharpDocHighlightKey.DOC_COMMENT),
+			new AttributesDescriptor("Comments//Documentation//Documentation tag", CSharpDocHighlightKey.DOC_COMMENT_TAG),
+			new AttributesDescriptor("Comments//Documentation//Documentation attribute", CSharpDocHighlightKey.DOC_COMMENT_ATTRIBUTE),
 			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.dot"), CSharpHighlightKey.DOT),
 			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.comma"), CSharpHighlightKey.COMMA),
 			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.brackets"), CSharpHighlightKey.BRACKETS),
@@ -75,14 +77,17 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.parentheses"), CSharpHighlightKey.PARENTHESES),
 			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.semicolon"), CSharpHighlightKey.SEMICOLON),
 			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.operation"), CSharpHighlightKey.OPERATION_SIGN),
-			new AttributesDescriptor("Colon", CSharpHighlightKey.COLON),
-			new AttributesDescriptor("Arrows (->, =>)", CSharpHighlightKey.ARROW),
+			new AttributesDescriptor("Braces and Operators//Colon", CSharpHighlightKey.COLON),
+			new AttributesDescriptor("Braces and Operators//Arrows (->, =>)", CSharpHighlightKey.ARROW),
 	};
+
 	private static final Map<String, TextAttributesKey> ourAdditionalTags = new HashMap<String, TextAttributesKey>()
 	{
 		{
 			put("class_name", CSharpHighlightKey.CLASS_NAME);
 			put("attribute_name", CSharpHighlightKey.ATTRIBUTE_NAME);
+			put("interface_name", CSharpHighlightKey.INTERFACE_NAME);
+			put("enum_name", CSharpHighlightKey.ENUM_NAME);
 			put("generic_parameter_name", CSharpHighlightKey.GENERIC_PARAMETER_NAME);
 			put("delegate_method_name", CSharpHighlightKey.DELEGATE_METHOD_NAME);
 			put("soft_keyword", CSharpHighlightKey.SOFT_KEYWORD);
@@ -117,13 +122,6 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 			throw new Error(e);
 		}
 	});
-
-	@Nullable
-	@Override
-	public Icon getIcon()
-	{
-		return null;
-	}
 
 	@Nonnull
 	@Override

@@ -98,7 +98,15 @@ public class CSharpHighlightUtil
 				return CSharpHighlightKey.DELEGATE_METHOD_NAME;
 			}
 
-			if(DotNetInheritUtil.isAttribute((DotNetTypeDeclaration) element))
+			if(((CSharpTypeDeclaration) element).isEnum())
+			{
+				key = CSharpHighlightKey.ENUM_NAME;
+			}
+			else if(((CSharpTypeDeclaration) element).isInterface())
+			{
+				key = CSharpHighlightKey.INTERFACE_NAME;
+			}
+			else if(DotNetInheritUtil.isAttribute((DotNetTypeDeclaration) element))
 			{
 				key = CSharpHighlightKey.ATTRIBUTE_NAME;
 			}

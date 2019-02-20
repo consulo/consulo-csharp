@@ -16,10 +16,10 @@
 
 package consulo.csharp.ide.highlight;
 
-import consulo.csharp.lang.CSharpLanguage;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import consulo.csharp.lang.CSharpLanguage;
 
 /**
  * @author VISTALL
@@ -28,10 +28,14 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 public interface CSharpHighlightKey
 {
 	TextAttributesKey STRING = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.STRING);
+
 	TextAttributesKey CLASS_NAME = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.CLASS_NAME);
-	TextAttributesKey ATTRIBUTE_NAME = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.METADATA);
-	TextAttributesKey GENERIC_PARAMETER_NAME = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
-			DefaultLanguageHighlighterColors.TYPE_ALIAS_NAME);
+	TextAttributesKey ENUM_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_ENUM_NAME", CLASS_NAME);
+	TextAttributesKey INTERFACE_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_INTERFACE_NAME", CLASS_NAME);
+	TextAttributesKey ATTRIBUTE_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_ATTRIBUTE_NAME", DefaultLanguageHighlighterColors.METADATA);
+
+	TextAttributesKey GENERIC_PARAMETER_NAME = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.TYPE_ALIAS_NAME);
+
 	TextAttributesKey METHOD_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_METHOD_NAME",
 			DefaultLanguageHighlighterColors.INSTANCE_METHOD);
 	TextAttributesKey CONSTRUCTOR_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_CONSTRUCTOR_NAME", METHOD_NAME);
