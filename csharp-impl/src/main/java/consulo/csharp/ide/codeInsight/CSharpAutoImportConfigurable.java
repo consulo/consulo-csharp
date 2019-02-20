@@ -17,13 +17,14 @@
 package consulo.csharp.ide.codeInsight;
 
 import javax.annotation.Nonnull;
+
 import com.intellij.openapi.application.ApplicationBundle;
 import com.intellij.openapi.options.Configurable;
 import consulo.options.SimpleConfigurableByProperties;
 import consulo.ui.CheckBox;
 import consulo.ui.Component;
 import consulo.ui.RequiredUIAccess;
-import consulo.ui.VerticalLayout;
+import consulo.ui.layout.VerticalLayout;
 
 /**
  * @author VISTALL
