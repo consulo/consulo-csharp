@@ -1,16 +1,21 @@
-$"some variable {"dasdas"} asdasdasdas"
-
-$"some variable {'char'} asdasdasdas"
-
-$"some variable {if} asdasdasdas"
-
-$"some variable {$"someValue"} asdasdasdas"
-
-$"some variable {@"someValue"} asdasdasdas"
-
-$"some variable {someValue} asdasdasdas"
-
-
-
-
-
+STRING_INTERPOLATION ('$"some variable {')
+STRING_LITERAL ('"dasdas"')
+STRING_INTERPOLATION ('} asdasdasdas"')
+WHITE_SPACE ('\n\n')
+STRING_INTERPOLATION ('$"some variable {')
+CHARACTER_LITERAL (''char'')
+STRING_INTERPOLATION ('} asdasdasdas"')
+WHITE_SPACE ('\n\n')
+STRING_INTERPOLATION ('$"some variable {')
+IF_KEYWORD ('if')
+STRING_INTERPOLATION ('} asdasdasdas"')
+WHITE_SPACE ('\n\n')
+STRING_INTERPOLATION ('$"some variable {$"someValue"} asdasdasdas"')
+WHITE_SPACE ('\n\n')
+STRING_INTERPOLATION ('$"some variable {')
+VERBATIM_STRING_LITERAL ('@"someValue"')
+STRING_INTERPOLATION ('} asdasdasdas"')
+WHITE_SPACE ('\n\n')
+STRING_INTERPOLATION ('$"some variable {')
+IDENTIFIER ('someValue')
+STRING_INTERPOLATION ('} asdasdasdas"')

@@ -16,18 +16,19 @@
 
 package lexerTest;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.lexer.Lexer;
-import com.intellij.mock.MockApplication;
 import com.intellij.openapi.Disposable;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.CSharpCfsElementTypeFactory;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.doc.psi.CSharpDocElementFactory;
+import consulo.csharp.lang.lexer.CSharpLexer;
 import consulo.csharp.lang.lexer._CSharpHighlightLexer;
+import consulo.injecting.InjectingContainerBuilder;
+import consulo.test.light.LightApplicationBuilder;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -42,28 +43,39 @@ public class CSharpHightlightLexerTest extends LexerTestCase
 	{
 		myDisposable = Disposer.newDisposable();
 
-		MockApplication mockApplication = new MockApplication(myDisposable);
-		ApplicationManager.setApplication(mockApplication, myDisposable);
-
-		mockApplication.registerService(CSharpCfsElementTypeFactory.class, new CSharpCfsElementTypeFactory()
+		LightApplicationBuilder.DefaultRegistrator registrator = new LightApplicationBuilder.DefaultRegistrator()
 		{
-			@Nonnull
 			@Override
-			public IElementType getInterpolationStringElementType()
+			public void registerServices(@Nonnull InjectingContainerBuilder builder)
 			{
-				return new IElementType("STRING_INTERPOLATION", CSharpLanguage.INSTANCE);
-			}
-		});
+				super.registerServices(builder);
 
-		mockApplication.registerService(CSharpDocElementFactory.class, new CSharpDocElementFactory()
-		{
-			@Nonnull
-			@Override
-			public IElementType getDocRootElementType()
-			{
-				return new IElementType("DOC_COMMENT", CSharpLanguage.INSTANCE);
+				builder.bind(CSharpCfsElementTypeFactory.class).to(new CSharpCfsElementTypeFactory()
+				{
+
+					@Nonnull
+					@Override
+					public IElementType getInterpolationStringElementType()
+					{
+						return new IElementType("STRING_INTERPOLATION", CSharpLanguage.INSTANCE);
+					}
+				});
+
+				builder.bind(CSharpDocElementFactory.class).to(new CSharpDocElementFactory()
+				{
+					@Nonnull
+					@Override
+					public IElementType getDocRootElementType()
+					{
+						return new IElementType("DOC_COMMENT", CSharpLanguage.INSTANCE);
+					}
+				});
 			}
-		});
+		};
+
+		LightApplicationBuilder builder = LightApplicationBuilder.create(myDisposable, registrator);
+
+		builder.build();
 
 		super.setUp();
 	}
@@ -80,10 +92,25 @@ public class CSharpHightlightLexerTest extends LexerTestCase
 		doTest("$\"some variable {     $\"someValue\"      } asdasdasdas\"");
 	}
 
+	public void testhightlightStringInterpolation() throws Exception
+	{
+		doTest("$\"some variable {\"dasdas\"} asdasdasdas\"\n" +
+				"\n" +
+				"$\"some variable {'char'} asdasdasdas\"\n" +
+				"\n" +
+				"$\"some variable {if} asdasdasdas\"\n" +
+				"\n" +
+				"$\"some variable {$\"someValue\"} asdasdasdas\"\n" +
+				"\n" +
+				"$\"some variable {@\"someValue\"} asdasdasdas\"\n" +
+				"\n" +
+				"$\"some variable {someValue} asdasdasdas\"");
+	}
+
 	@Override
 	protected Lexer createLexer()
 	{
-		return new _CSharpHighlightLexer();
+		return new CSharpLexer(new _CSharpHighlightLexer());
 	}
 
 	@Override

@@ -1,0 +1,5 @@
+STRING_INTERPOLATION ('$"some variable {')
+WHITE_SPACE ('     ')
+STRING_INTERPOLATION ('$"someValue"')
+WHITE_SPACE ('      ')
+STRING_INTERPOLATION ('} asdasdasdas"')
