@@ -18,12 +18,13 @@ package consulo.csharp.lang.psi;
 
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiRecursiveVisitor;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-public class CSharpRecursiveElementVisitor extends CSharpElementVisitor
+public class CSharpRecursiveElementVisitor extends CSharpElementVisitor implements PsiRecursiveVisitor
 {
 	@Override
 	public void visitElement(PsiElement element)

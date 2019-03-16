@@ -21,16 +21,19 @@ import javax.annotation.Nullable;
 
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiRecursiveVisitor;
+import consulo.ui.RequiredUIAccess;
 
 /**
  * @author VISTALL
  * @since 27.11.14
  */
-public class CSharpStoppableRecursiveElementVisitor<T> extends CSharpRecursiveElementVisitor
+public class CSharpStoppableRecursiveElementVisitor<T> extends CSharpRecursiveElementVisitor implements PsiRecursiveVisitor
 {
 	private T myValue;
 
 	@Override
+	@RequiredUIAccess
 	public void visitElement(PsiElement element)
 	{
 		ProgressManager.checkCanceled();

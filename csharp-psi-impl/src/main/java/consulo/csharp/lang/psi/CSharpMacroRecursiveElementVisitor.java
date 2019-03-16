@@ -17,12 +17,13 @@
 package consulo.csharp.lang.psi;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiRecursiveVisitor;
 
 /**
  * @author VISTALL
  * @since 24.01.14
  */
-public class CSharpMacroRecursiveElementVisitor extends CSharpMacroElementVisitor
+public class CSharpMacroRecursiveElementVisitor extends CSharpMacroElementVisitor implements PsiRecursiveVisitor
 {
 	@Override
 	public void visitElement(PsiElement element)
