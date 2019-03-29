@@ -56,18 +56,20 @@ public class ExpressionOrStatementInsertHandler<T extends LookupElement> impleme
 		final Document document = editor.getDocument();
 		context.commitDocument();
 
-		PsiElement elementAt = context.getFile().findElementAt(context.getStartOffset());
 		handleInsertImpl(context, item, editor, document);
+
 		if(myOpenChar == '{')
 		{
 			document.insertString(editor.getCaretModel().getOffset(), "\n");
 		}
-		context.commitDocument();
-		if(elementAt != null)
-		{
-			PsiElement parent = elementAt.getParent();
 
-			CodeStyleManager.getInstance(elementAt.getProject()).reformat(parent);
+		context.commitDocument();
+
+		PsiElement elementAt = context.getFile().findElementAt(context.getStartOffset());
+		PsiElement parent = elementAt == null ? null : elementAt.getParent();
+		if(parent != null)
+		{
+			CodeStyleManager.getInstance(parent.getProject()).reformat(parent);
 
 			if(myOpenChar == '{')
 			{
