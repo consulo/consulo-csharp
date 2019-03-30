@@ -17,6 +17,8 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import javax.annotation.Nonnull;
+
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.ASTNode;
@@ -33,9 +35,17 @@ public class CSharpCheckedStatementImpl extends CSharpElementImpl implements Dot
 		super(node);
 	}
 
+	@RequiredReadAction
 	public boolean isUnchecked()
 	{
 		return findChildByType(CSharpTokens.UNCHECKED_KEYWORD) != null;
+	}
+
+	@Nonnull
+	@RequiredReadAction
+	public DotNetStatement[] getStatements()
+	{
+		return findChildrenByClass(DotNetStatement.class);
 	}
 
 	@Override

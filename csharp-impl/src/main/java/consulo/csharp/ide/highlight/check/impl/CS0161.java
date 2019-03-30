@@ -26,6 +26,7 @@ import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpCheckedStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetStatement;
@@ -58,6 +59,18 @@ public class CS0161 extends CompilerCheck<CSharpMethodDeclaration>
 			if(statements.length == 0)
 			{
 				return newBuilder(ObjectUtil.chooseNotNull(((CSharpBlockStatementImpl) codeBlock).getRightBrace(), getNameIdentifier(element)), formatElement(element));
+			}
+			else if(statements.length == 1)
+			{
+				DotNetStatement statement = statements[0];
+				if(statement instanceof CSharpCheckedStatementImpl)
+				{
+					DotNetStatement[] childStatements = ((CSharpCheckedStatementImpl) statement).getStatements();
+					if(childStatements.length == 0)
+					{
+						return newBuilder(ObjectUtil.chooseNotNull(((CSharpBlockStatementImpl) codeBlock).getRightBrace(), getNameIdentifier(element)), formatElement(element));
+					}
+				}
 			}
 		}
 
