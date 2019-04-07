@@ -67,7 +67,7 @@ public interface CSharpMemberAddByCompletionContributor
 				}
 
 				PsiElement nextSibling = UsefulPsiTreeUtil.getNextSiblingSkippingWhiteSpacesAndComments(currentElement);
-				TextRange textRange = nextSibling == null ? null : new TextRange(currentElement.getTextRange().getEndOffset(), nextSibling.getTextRange().getStartOffset());
+				TextRange textRange = nextSibling == null ? null : new TextRange(currentElement.getTextRange().getStartOffset(), nextSibling.getTextRange().getStartOffset());
 				if(textRange != null && !StringUtil.containsLineBreak(textRange.subSequence(currentElement.getContainingFile().getText())))
 				{
 					return;
