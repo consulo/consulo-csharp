@@ -65,20 +65,6 @@ public class CSharpImportOptimizer implements ImportOptimizer
 
 	@Nonnull
 	@Override
-	public String getActionName()
-	{
-		return "_Optimize 'using' directives";
-	}
-
-	@Nonnull
-	@Override
-	public String getActionDescription()
-	{
-		return getActionName();
-	}
-
-	@Nonnull
-	@Override
 	public Runnable processFile(final PsiFile psiFile)
 	{
 		return new CollectingInfoRunnable()

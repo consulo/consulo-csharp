@@ -21,28 +21,10 @@ import java.lang.reflect.Method;
 import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.NonNls;
-import com.intellij.lang.LanguageExtensionPoint;
-import com.intellij.lang.LanguageParserDefinitions;
-import com.intellij.lang.ParserDefinition;
-import com.intellij.mock.MockPsiDocumentManager;
-import com.intellij.openapi.extensions.impl.ExtensionsAreaImpl;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.psi.PsiDocumentManager;
-import consulo.csharp.lang.CSharpCfsElementTypeFactory;
-import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.CSharpLanguageVersionHelper;
-import consulo.csharp.lang.CSharpLanguageVersionHelperImpl;
-import consulo.csharp.lang.CSharpParserDefinition;
-import consulo.csharp.lang.doc.CSharpDocParserDefinition;
-import consulo.csharp.lang.doc.psi.CSharpDocElementFactory;
-import consulo.csharp.lang.doc.psi.impl.CSharpCfsElementTypeFactoryImpl;
-import consulo.csharp.lang.doc.psi.impl.CSharpDocElementFactoryImpl;
-import consulo.csharp.lang.doc.validation.CSharpDocTagManager;
-import consulo.injecting.InjectingContainerBuilder;
 import consulo.lang.LanguageVersion;
-import consulo.psi.tree.PsiElementFactory;
-import consulo.psi.tree.impl.DefaultPsiElementFactory;
-import consulo.test.light.LightApplicationBuilder;
+import com.intellij.openapi.fileTypes.FileType;
+import consulo.testFramework.ParsingTestCase;
 
 /**
  * @author VISTALL
@@ -52,50 +34,7 @@ public abstract class CSharpParsingTestCase extends ParsingTestCase
 {
 	public CSharpParsingTestCase(@NonNls @Nonnull String dataPath)
 	{
-		super(dataPath, "cs");
-	}
-
-	@Override
-	protected FileType getFileType(String fileName)
-	{
-		return CSharpFileType.INSTANCE;
-	}
-
-	@Override
-	protected LightApplicationBuilder.DefaultRegistrator createAppRegistrator()
-	{
-		return new LightApplicationBuilder.DefaultRegistrator()
-		{
-			@Override
-			public void registerServices(@Nonnull InjectingContainerBuilder builder)
-			{
-				super.registerServices(builder);
-				builder.bind(CSharpLanguageVersionHelper.class).to(CSharpLanguageVersionHelperImpl.class);
-				builder.bind(CSharpDocElementFactory.class).to(CSharpDocElementFactoryImpl.class);
-				builder.bind(CSharpCfsElementTypeFactory.class).to(CSharpCfsElementTypeFactoryImpl.class);
-				builder.bind(PsiDocumentManager.class).to(MockPsiDocumentManager.class);
-				builder.bind(CSharpDocTagManager.class).to(CSharpDocTagManager.class);
-			}
-
-			@Override
-			public void registerExtensionPointsAndExtensions(@Nonnull ExtensionsAreaImpl area)
-			{
-				super.registerExtensionPointsAndExtensions(area);
-
-				LanguageExtensionPoint<ParserDefinition> value = new LanguageExtensionPoint<>();
-				value.language = "C#";
-				value.implementationClass = CSharpParserDefinition.class.getName();
-				registerExtension(area, LanguageParserDefinitions.INSTANCE.getExtensionPointName(), value);
-
-				value = new LanguageExtensionPoint<>();
-				value.language = "C#Doc";
-				value.implementationClass = CSharpDocParserDefinition.class.getName();
-				registerExtension(area, LanguageParserDefinitions.INSTANCE.getExtensionPointName(), value);
-
-				registerExtensionPoint(area, PsiElementFactory.EP.getExtensionPointName(), PsiElementFactory.class);
-				registerExtension(area, PsiElementFactory.EP.getExtensionPointName(), new DefaultPsiElementFactory());
-			}
-		};
+		super("/csharp-impl/testData/" + dataPath + "/", "cs");
 	}
 
 	@Override
