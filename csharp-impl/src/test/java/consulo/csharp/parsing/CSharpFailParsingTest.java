@@ -22,7 +22,7 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
  * @author VISTALL
  * @since 22.05.2015
  */
-public abstract class CSharpFailParsingTest extends CSharpParsingTestCase
+public class CSharpFailParsingTest extends CSharpParsingTestCase
 {
 	public CSharpFailParsingTest()
 	{
