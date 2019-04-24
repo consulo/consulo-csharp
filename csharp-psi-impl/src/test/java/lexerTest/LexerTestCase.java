@@ -99,7 +99,7 @@ public abstract class LexerTestCase extends UsefulTestCase
 			{
 				break;
 			}
-			String tokenText = getTokenText(lexer);
+			CharSequence tokenText = getTokenText(lexer);
 			String tokenTypeName = tokenType.toString();
 			String line = tokenTypeName + " ('" + tokenText + "')\n";
 			result += line;
@@ -130,7 +130,7 @@ public abstract class LexerTestCase extends UsefulTestCase
 		return true;
 	}
 
-	private static String getTokenText(Lexer lexer)
+	private static CharSequence getTokenText(Lexer lexer)
 	{
 		final IElementType tokenType = lexer.getTokenType();
 		if(tokenType instanceof TokenWrapper)
