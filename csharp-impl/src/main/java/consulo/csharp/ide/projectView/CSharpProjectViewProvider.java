@@ -20,6 +20,7 @@ import com.intellij.ide.projectView.SelectableTreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.ide.util.treeView.AbstractTreeUi;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -74,6 +75,8 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 		List<AbstractTreeNode> nodes = new ArrayList<>(oldNodes.size());
 		for(AbstractTreeNode treeNode : oldNodes)
 		{
+			ProgressManager.checkCanceled();
+
 			Object value = treeNode.getValue();
 
 			if(value instanceof PsiFile)
