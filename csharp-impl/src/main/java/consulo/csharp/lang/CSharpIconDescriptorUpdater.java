@@ -16,8 +16,6 @@
 
 package consulo.csharp.lang;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.DumbService;
@@ -36,6 +34,7 @@ import consulo.csharp.lang.psi.impl.msil.MsilElementWrapper;
 import consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
 import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.DotNetRunUtil;
 import consulo.dotnet.module.DotNetModuleUtil;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
@@ -43,7 +42,10 @@ import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.ide.IconDescriptor;
 import consulo.ide.IconDescriptorUpdater;
+import consulo.ide.IconDescriptorUpdaters;
 import consulo.ui.image.Image;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -78,6 +80,13 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			if(virtualFile != null && StringUtil.equals(virtualFile.getNameSequence(), CSharpAssemblyConstants.FileName))
 			{
 				iconDescriptor.setMainIcon(AllIcons.FileTypes.Config);
+				return;
+			}
+
+			DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElement((CSharpFile) element);
+			if(singleElement != null)
+			{
+				IconDescriptorUpdaters.processExistingDescriptor(iconDescriptor, singleElement, flags);
 				return;
 			}
 		}
