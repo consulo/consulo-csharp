@@ -1,12 +1,5 @@
 package consulo.csharp.ide.codeInsight.hits;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.codeInsight.hints.InlayInfo;
 import com.intellij.codeInsight.hints.InlayParameterHintsProvider;
 import com.intellij.codeInsight.hints.MethodInfo;
@@ -16,14 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.CSharpConstantUtil;
-import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpExpressionWithOperatorImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.NCallArgumentBuilder;
@@ -37,6 +23,12 @@ import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -174,6 +166,13 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 
 		List<String> paramNames = ContainerUtil.map(params, it -> it.getNotNullName());
 		return new MethodInfo(name, paramNames);
+	}
+
+	@Nonnull
+	@Override
+	public String getInlayPresentation(@Nonnull String inlayText)
+	{
+		return inlayText + "=";
 	}
 
 	@Nonnull
