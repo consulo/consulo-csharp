@@ -92,7 +92,7 @@ public class CSharpHightlightLexerTest extends LexerTestCase
 		doTest("$\"some variable {     $\"someValue\"      } asdasdasdas\"");
 	}
 
-	public void testhightlightStringInterpolation() throws Exception
+	public void testHightlightStringInterpolation() throws Exception
 	{
 		doTest("$\"some variable {\"dasdas\"} asdasdasdas\"\n" +
 				"\n" +
@@ -105,6 +105,23 @@ public class CSharpHightlightLexerTest extends LexerTestCase
 				"$\"some variable {@\"someValue\"} asdasdasdas\"\n" +
 				"\n" +
 				"$\"some variable {someValue} asdasdasdas\"");
+	}
+
+	public void testHightlightStringInterpolationWithFormat() throws Exception
+	{
+		doTest("using System;\n" +
+				"\n" +
+				"public class Program {\n" +
+				"\n" +
+				"    public static void Main() {\n" +
+				"        int value = 1;\n" +
+				"        bool v = false;\n" +
+				"        String atr = $\"some value {value:####} fsafas\";\n" +
+				"        Console.WriteLine(atr);\n" +
+				"\n" +
+				"\n" +
+				"    }\n" +
+				"}\n");
 	}
 
 	@Override

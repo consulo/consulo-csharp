@@ -16,11 +16,6 @@
 
 package consulo.csharp.ide.highlight;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.CodeInsightColors;
@@ -28,11 +23,16 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.StringEscapesTokenTypes;
 import com.intellij.psi.tree.IElementType;
+import consulo.csharp.cfs.lang.CfsTokens;
 import consulo.csharp.lang.lexer.CSharpLexer;
 import consulo.csharp.lang.lexer._CSharpHighlightLexer;
 import consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
+
+import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -78,6 +78,9 @@ public class CSharpSyntaxHighlighter extends SyntaxHighlighterBase
 
 		safeMap(ourKeys, CSharpPreprocessorElements.DISABLED_PREPROCESSOR_DIRECTIVE, CodeInsightColors.NOT_USED_ELEMENT_ATTRIBUTES);
 		safeMap(ourKeys, CSharpTokens.NON_ACTIVE_SYMBOL, CodeInsightColors.NOT_USED_ELEMENT_ATTRIBUTES);
+
+		// from CfsSyntaxHighlighter
+		safeMap(ourKeys, CfsTokens.FORMAT, DefaultLanguageHighlighterColors.INSTANCE_FIELD);
 	}
 
 	@Nonnull

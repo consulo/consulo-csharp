@@ -3,6 +3,7 @@ package consulo.csharp.lang.lexer;
 import java.util.*;
 import com.intellij.lexer.LexerBase;
 import com.intellij.psi.tree.IElementType;
+import consulo.csharp.cfs.lang.CfsTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTokensImpl;
 import consulo.csharp.lang.psi.CSharpTemplateTokens;
@@ -11,6 +12,7 @@ import consulo.csharp.lang.psi.CSharpTemplateTokens;
 
 %{
   private int myStringInterpolationBalance;
+  private boolean myInsideStringInterpolationExpression;
 
   private java.util.ArrayDeque<Integer> myStacks = new java.util.ArrayDeque<>();
 
@@ -42,6 +44,7 @@ import consulo.csharp.lang.psi.CSharpTemplateTokens;
 
 %state PREPROCESSOR_DIRECTIVE
 %state STRING_INTERPOLATION
+%state STRING_INTERPOLATION_FORMAT_WAIT
 
 DIGIT=[0-9]
 WHITE_SPACE=[ \n\r\t\f]+
@@ -103,6 +106,8 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 	{
 		myStringInterpolationBalance ++;
 
+		myInsideStringInterpolationExpression = true;
+
 		push(YYINITIAL);
 
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
@@ -111,6 +116,7 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 	"}"
 	{
 		myStringInterpolationBalance --;
+		myInsideStringInterpolationExpression = false;
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
 
@@ -125,6 +131,18 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 	{
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
+}
+
+<STRING_INTERPOLATION_FORMAT_WAIT>
+{
+	"}"
+	{
+		yypushback(yylength());
+
+		yybegin(YYINITIAL);
+	}
+
+	[^]   { return CfsTokens.FORMAT; }
 }
 
 <YYINITIAL>
@@ -362,7 +380,15 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"="                       { return CSharpTokens.EQ; }
 
-	":"                       { return CSharpTokens.COLON; }
+	":"
+	{
+		if(myInsideStringInterpolationExpression)
+		{
+			yybegin(STRING_INTERPOLATION_FORMAT_WAIT);
+			return CfsTokens.COLON;
+		}
+		return CSharpTokens.COLON;
+	}
 
 	"::"                      { return CSharpTokens.COLONCOLON; }
 

@@ -16,15 +16,16 @@
 
 package consulo.csharp.lang.lexer;
 
-import consulo.csharp.lang.psi.CSharpTemplateTokens;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpTokensImpl;
 import com.intellij.lexer.Lexer;
 import com.intellij.lexer.LexerPosition;
 import com.intellij.lexer.MergeFunction;
 import com.intellij.lexer.MergingLexerAdapterBase;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import consulo.csharp.cfs.lang.CfsTokens;
+import consulo.csharp.lang.psi.CSharpTemplateTokens;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.CSharpTokensImpl;
 
 /**
  * @author VISTALL
@@ -32,7 +33,8 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class CSharpLexer extends MergingLexerAdapterBase
 {
-	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.PREPROCESSOR_FRAGMENT, CSharpTokensImpl.LINE_DOC_COMMENT, CSharpTokensImpl.INTERPOLATION_STRING_LITERAL);
+	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.PREPROCESSOR_FRAGMENT, CSharpTokensImpl.LINE_DOC_COMMENT, CSharpTokensImpl.INTERPOLATION_STRING_LITERAL,
+			CfsTokens.FORMAT);
 
 	private static class MyMergeFunction implements MergeFunction
 	{

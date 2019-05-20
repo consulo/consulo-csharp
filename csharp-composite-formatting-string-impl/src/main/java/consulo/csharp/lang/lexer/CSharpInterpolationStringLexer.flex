@@ -24,6 +24,7 @@ import consulo.csharp.cfs.lang.CfsTokens;
 %eof}
 
 %state ARGUMENT_WAIT
+%state FORMAT_WAIT
 
 %%
 
@@ -36,7 +37,16 @@ import consulo.csharp.cfs.lang.CfsTokens;
 
 <ARGUMENT_WAIT>
 {
+   ":" { yybegin(FORMAT_WAIT); return CfsTokens.COLON; }
+
    "}" { yybegin(YYINITIAL); return CfsTokens.END; }
 
    [^]   { return myArgumentElementType; }
+}
+
+<FORMAT_WAIT>
+{
+   "}" { yybegin(YYINITIAL); return CfsTokens.END; }
+
+   [^]   { return CfsTokens.FORMAT; }
 }
