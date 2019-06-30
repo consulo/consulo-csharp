@@ -16,9 +16,6 @@
 
 package consulo.csharp.lang.doc.inspection;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -31,6 +28,9 @@ import consulo.csharp.lang.doc.CSharpDocUtil;
 import consulo.csharp.lang.doc.psi.CSharpDocAttribute;
 import consulo.csharp.lang.doc.psi.CSharpDocElementVisitor;
 import consulo.csharp.lang.doc.psi.CSharpDocTagImpl;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -56,7 +56,12 @@ public class CSharpDocInspection extends LocalInspectionTool
 				int textLength = element.getTextLength();
 				if(textLength == 0)
 				{
-					holder.registerProblem(element.getPrevSibling(), element.getErrorDescription(), ProblemHighlightType.WEAK_WARNING);
+					PsiElement prevSibling = element.getPrevSibling();
+					if(prevSibling == null)
+					{
+						return;
+					}
+					holder.registerProblem(prevSibling, element.getErrorDescription(), ProblemHighlightType.WEAK_WARNING);
 				}
 				else
 				{
