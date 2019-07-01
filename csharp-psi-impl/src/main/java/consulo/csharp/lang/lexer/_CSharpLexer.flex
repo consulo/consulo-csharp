@@ -126,6 +126,12 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
 
+	"$@\""
+	{
+		yybegin(STRING_INTERPOLATION);
+		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
+	}
+
 	{VERBATIM_STRING_LITERAL} { return CSharpTokens.VERBATIM_STRING_LITERAL; }
 
 	"__arglist"               { return CSharpTokens.__ARGLIST_KEYWORD; }
