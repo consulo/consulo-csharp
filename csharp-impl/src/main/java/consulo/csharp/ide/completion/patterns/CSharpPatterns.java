@@ -16,8 +16,6 @@
 
 package consulo.csharp.ide.completion.patterns;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.patterns.PatternCondition;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.patterns.StandardPatterns;
@@ -26,19 +24,13 @@ import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpUserType;
-import consulo.csharp.lang.psi.UsefulPsiTreeUtil;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetType;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -179,6 +171,29 @@ public class CSharpPatterns
 	@Nonnull
 	public static PsiElementPattern.Capture<PsiElement> fieldStart()
 	{
-		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).withSuperParent(3, CSharpFieldDeclaration.class);
+		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).withSuperParent(3, CSharpFieldDeclaration.class).with(new PatternCondition<PsiElement>("field-type-no-qualifier")
+		{
+			@Override
+			@RequiredReadAction
+			public boolean accepts(@Nonnull PsiElement element, ProcessingContext context)
+			{
+				CSharpFieldDeclaration declaration = PsiTreeUtil.getParentOfType(element, CSharpFieldDeclaration.class);
+				if(declaration == null)
+				{
+					return false;
+				}
+				DotNetType type = declaration.getType();
+				if(!(type instanceof CSharpUserType))
+				{
+					return false;
+				}
+				CSharpReferenceExpression referenceExpression = ((CSharpUserType) type).getReferenceExpression();
+				if(referenceExpression.getQualifier() != null)
+				{
+					return false;
+				}
+				return true;
+			}
+		});
 	}
 }

@@ -16,18 +16,7 @@
 
 package consulo.csharp.ide.completion;
 
-import static com.intellij.patterns.StandardPatterns.psiElement;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.CompletionUtilCore;
+import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.Condition;
@@ -48,6 +37,12 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
 import consulo.dotnet.DotNetRunUtil;
 import consulo.dotnet.psi.*;
+
+import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.intellij.patterns.StandardPatterns.psiElement;
 
 /**
  * @author VISTALL
@@ -229,6 +224,11 @@ class CSharpKeywordCompletionContributor
 				final PsiElement position = parameters.getPosition();
 				if(position.getParent() instanceof DotNetReferenceExpression && position.getParent().getParent() instanceof DotNetUserType)
 				{
+					if(((DotNetReferenceExpression) position.getParent()).getQualifier() != null)
+					{
+						return;
+					}
+
 					PsiElement parent1 = position.getParent().getParent();
 
 					// dont allow inside statements
