@@ -16,8 +16,6 @@
 
 package consulo.csharp.ide.codeInspection.matchNamespace;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalInspectionToolSession;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -28,13 +26,15 @@ import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author VISTALL
  * @since 05-Nov-17
  */
 public class MatchNamespaceInspection extends LocalInspectionTool
 {
-	private static final Key<MatchNamespaceVisitor> KEY = Key.create("UnusedSymbolVisitor");
+	private static final Key<MatchNamespaceVisitor> KEY = Key.create("MatchNamespaceVisitor");
 
 	@Nonnull
 	@Override

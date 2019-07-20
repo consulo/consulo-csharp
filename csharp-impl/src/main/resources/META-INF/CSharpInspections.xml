@@ -29,7 +29,7 @@
 		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.unnecessaryEnumUnderlyingType.UnnecessaryEnumUnderlyingTypeInspection"
 						 displayName="Unnecessary enum underlying type" groupName="C#" enabledByDefault="true" level="WARNING"/>
 		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.matchNamespace.MatchNamespaceInspection"
-						 displayName="Namespace match vfs inspection" groupName="C#" enabledByDefault="false" level="WARNING"/>
+						 displayName="Namespace match vfs inspection" groupName="C#" enabledByDefault="true" level="WARNING"/>
 		<localInspection
 				language="C#"
 				implementationClass="consulo.csharp.ide.codeInspection.unnecessaryNamedArgument.UnnecessaryNamedArgumentInspection"
