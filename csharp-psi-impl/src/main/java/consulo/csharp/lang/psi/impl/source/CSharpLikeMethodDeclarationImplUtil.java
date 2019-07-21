@@ -16,31 +16,23 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpElementCompareUtil;
-import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
-import consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetParameterListOwner;
-import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetVirtualImplementOwner;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
+import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import consulo.dotnet.psi.*;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.resolve.DotNetTypeResolveResult;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -68,7 +60,23 @@ public class CSharpLikeMethodDeclarationImplUtil
 		{
 			return true;
 		}
-		return originalElement1 == originalElement2;
+
+		if(originalElement1 == originalElement2)
+		{
+			return true;
+		}
+
+		if(o1 instanceof CSharpConstructorDeclaration && o2 instanceof CSharpTypeDeclaration)
+		{
+			// default constructor builder
+			PsiElement navigationElement = o1.getNavigationElement();
+			if(navigationElement == o2)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Nonnull
@@ -120,10 +128,10 @@ public class CSharpLikeMethodDeclarationImplUtil
 	}
 
 	public static boolean processDeclarations(@Nonnull DotNetLikeMethodDeclaration methodDeclaration,
-			@Nonnull PsiScopeProcessor processor,
-			@Nonnull ResolveState state,
-			PsiElement lastParent,
-			@Nonnull PsiElement place)
+											  @Nonnull PsiScopeProcessor processor,
+											  @Nonnull ResolveState state,
+											  PsiElement lastParent,
+											  @Nonnull PsiElement place)
 	{
 		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.GENERIC_PARAMETER))
 		{

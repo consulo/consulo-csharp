@@ -16,16 +16,19 @@
 
 package consulo.csharp.ide.findUsage.referenceSearch;
 
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Processor;
+import consulo.annotations.RequiredWriteAction;
+import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
+import consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.StructOrGenericParameterConstructorProvider;
+import consulo.dotnet.psi.DotNetNamedElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -34,20 +37,30 @@ import com.intellij.util.Processor;
 public class CSharpConstructorPlusTypeReferenceSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>
 {
 	@Override
+	@RequiredWriteAction
 	public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<PsiReference> consumer)
 	{
 		PsiElement elementToSearch = queryParameters.getElementToSearch();
 
 		if(elementToSearch instanceof CSharpTypeDeclaration)
 		{
+			String name = ((CSharpTypeDeclaration) elementToSearch).getName();
+			if(name == null)
+			{
+				return;
+			}
+
 			for(DotNetNamedElement member : ((CSharpTypeDeclaration) elementToSearch).getMembers())
 			{
 				if(member instanceof CSharpConstructorDeclaration)
 				{
-					ReferencesSearch.search(member, queryParameters.getEffectiveSearchScope(), queryParameters.isIgnoreAccessScope()).forEach
-							(consumer);
+					queryParameters.getOptimizer().searchWord(name, queryParameters.getEffectiveSearchScope(), true, member);
 				}
 			}
+
+			CSharpLightConstructorDeclarationBuilder constructor = StructOrGenericParameterConstructorProvider.buildDefaultConstructor((DotNetNamedElement) elementToSearch, name);
+
+			queryParameters.getOptimizer().searchWord(name, queryParameters.getEffectiveSearchScope(), true, constructor);
 		}   /*
 		else if(elementToSearch instanceof CSharpConstructorDeclaration)
 		{
