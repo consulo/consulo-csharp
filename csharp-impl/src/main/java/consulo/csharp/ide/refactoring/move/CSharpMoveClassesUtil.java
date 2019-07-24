@@ -38,7 +38,6 @@ import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -177,10 +176,10 @@ public class CSharpMoveClassesUtil
 	 * if first element is namespace declaration - second will namespace as element (global namespace object not c# file declaration)
 	 */
 	@Nonnull
-	public static Set<Couple<DotNetNamedElement>> findTypesAndNamespaces(@Nonnull CSharpFile file)
+	public static Set<Couple<DotNetNamedElement>> findTypesAndNamespaces(@Nonnull PsiElement element)
 	{
 		Set<Couple<DotNetNamedElement>> result = new LinkedHashSet<>();
-		file.accept(new CSharpRecursiveElementVisitor()
+		element.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override
 			public void visitTypeDeclaration(CSharpTypeDeclaration declaration)

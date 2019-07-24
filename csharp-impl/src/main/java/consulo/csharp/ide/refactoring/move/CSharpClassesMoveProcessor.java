@@ -67,6 +67,19 @@ import java.util.*;
  */
 public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor
 {
+	public static class MyUsageInfo extends UsageInfo
+	{
+		Couple<DotNetNamedElement> myDeclarationAndResolveTargetCouple;
+		PsiReference myReference;
+
+		public MyUsageInfo(PsiElement element, final Couple<DotNetNamedElement> couple, PsiReference reference)
+		{
+			super(element);
+			myDeclarationAndResolveTargetCouple = couple;
+			myReference = reference;
+		}
+	}
+
 	private static final Logger LOG = Logger.getInstance(CSharpClassesMoveProcessor.class);
 
 	protected final PsiElement[] myElementsToMove;
@@ -144,7 +157,7 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor
 
 	@Nonnull
 	@RequiredReadAction
-	private static GlobalSearchScope mapScope(DotNetNamedElement element)
+	public static GlobalSearchScope mapScope(DotNetNamedElement element)
 	{
 		if(element instanceof DotNetNamespaceAsElement)
 		{
@@ -232,7 +245,7 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor
 				}
 			}
 
-			retargetUsages(usages);
+			myNonCodeUsages = retargetUsages(usages);
 
 			if(MoveFilesOrDirectoriesDialog.isOpenInEditor())
 			{
@@ -243,7 +256,6 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor
 			{
 				myMoveCallback.refactoringCompleted();
 			}
-
 		}
 		catch(IncorrectOperationException e)
 		{
@@ -268,7 +280,7 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor
 		{
 			if(psiElement instanceof CSharpFile)
 			{
-				Set<Couple<DotNetNamedElement>> typesAndNamespaces = CSharpMoveClassesUtil.findTypesAndNamespaces((CSharpFile) psiElement);
+				Set<Couple<DotNetNamedElement>> typesAndNamespaces = CSharpMoveClassesUtil.findTypesAndNamespaces(psiElement);
 
 				for(Couple<DotNetNamedElement> couple : typesAndNamespaces)
 				{
@@ -366,7 +378,7 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor
 	}
 
 	@RequiredWriteAction
-	protected void retargetUsages(UsageInfo[] usages)
+	public static NonCodeUsageInfo[] retargetUsages(UsageInfo[] usages)
 	{
 		final List<NonCodeUsageInfo> nonCodeUsages = new ArrayList<>();
 		for(UsageInfo usageInfo : usages)
@@ -402,7 +414,7 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor
 			}
 		}
 
-		myNonCodeUsages = nonCodeUsages.toArray(new NonCodeUsageInfo[nonCodeUsages.size()]);
+		return nonCodeUsages.toArray(new NonCodeUsageInfo[nonCodeUsages.size()]);
 	}
 
 	@Nonnull
@@ -410,18 +422,5 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor
 	protected String getCommandName()
 	{
 		return RefactoringBundle.message("move.title");
-	}
-
-	static class MyUsageInfo extends UsageInfo
-	{
-		Couple<DotNetNamedElement> myDeclarationAndResolveTargetCouple;
-		PsiReference myReference;
-
-		public MyUsageInfo(PsiElement element, final Couple<DotNetNamedElement> couple, PsiReference reference)
-		{
-			super(element);
-			myDeclarationAndResolveTargetCouple = couple;
-			myReference = reference;
-		}
 	}
 }
