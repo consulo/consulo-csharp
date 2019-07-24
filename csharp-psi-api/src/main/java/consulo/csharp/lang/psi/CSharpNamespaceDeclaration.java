@@ -16,10 +16,12 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nullable;
-
+import consulo.annotations.RequiredWriteAction;
 import consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import consulo.dotnet.psi.DotNetReferenceExpression;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -29,4 +31,7 @@ public interface CSharpNamespaceDeclaration extends DotNetNamespaceDeclaration, 
 {
 	@Nullable
 	DotNetReferenceExpression getNamespaceReference();
+
+	@RequiredWriteAction
+	void setNamespace(@Nonnull String namespace);
 }

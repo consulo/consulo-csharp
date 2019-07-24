@@ -16,25 +16,22 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import consulo.dotnet.psi.DotNetReferenceExpression;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.resolve.DotNetPsiSearcher;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -72,7 +69,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 		}
 
 		DotNetReferenceExpression namespaceReference = getNamespaceReference();
-		return namespaceReference == null ? null : namespaceReference.getText();
+		return namespaceReference == null ? null : StringUtil.strip(namespaceReference.getText(), CharFilter.NOT_WHITESPACE_FILTER);
 	}
 
 	@RequiredReadAction

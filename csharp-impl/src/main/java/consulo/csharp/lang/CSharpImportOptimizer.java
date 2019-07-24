@@ -16,40 +16,25 @@
 
 package consulo.csharp.lang;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ImportOptimizer;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
-import consulo.csharp.lang.psi.CSharpFile;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpPreprocessorElements;
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
-import consulo.csharp.lang.psi.CSharpUsingTypeStatement;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import consulo.dotnet.psi.DotNetReferenceExpression;
 import consulo.dotnet.psi.DotNetType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author VISTALL
@@ -86,18 +71,7 @@ public class CSharpImportOptimizer implements ImportOptimizer
 			@RequiredReadAction
 			public void run()
 			{
-				final UnusedUsingVisitor unusedUsingVisitor = new UnusedUsingVisitor();
-				PsiRecursiveElementVisitor visitor = new PsiRecursiveElementVisitor()
-				{
-					@Override
-					public void visitElement(PsiElement element)
-					{
-						element.accept(unusedUsingVisitor);
-						super.visitElement(element);
-					}
-				};
-
-				psiFile.accept(visitor);
+				final UnusedUsingVisitor unusedUsingVisitor = UnusedUsingVisitor.accept(psiFile);
 
 				for(Map.Entry<CSharpUsingListChild, Boolean> entry : unusedUsingVisitor.getUsingContext().entrySet())
 				{

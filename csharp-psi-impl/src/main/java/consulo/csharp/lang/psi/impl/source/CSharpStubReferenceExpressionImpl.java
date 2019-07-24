@@ -16,8 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
@@ -26,21 +24,18 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
-import consulo.csharp.lang.psi.CSharpSoftTokens;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.impl.stub.CSharpReferenceExpressionStub;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -201,10 +196,11 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return this;
 	}
 
+	@RequiredWriteAction
 	@Override
 	public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
 	{
-		return this;
+		return CSharpReferenceExpressionImplUtil.bindToElement(this, element);
 	}
 
 	@Override
@@ -212,13 +208,6 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	public boolean isReferenceTo(PsiElement element)
 	{
 		return CSharpReferenceExpressionImplUtil.isReferenceTo(this, element);
-	}
-
-	@Nonnull
-	@Override
-	public Object[] getVariants()
-	{
-		return ArrayUtil.EMPTY_OBJECT_ARRAY;
 	}
 
 	@Override

@@ -16,14 +16,6 @@
 
 package consulo.csharp.ide.completion.expected;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -31,22 +23,24 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.BaseScopeProcessor;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
-import consulo.csharp.ide.codeInsight.actions.AddUsingAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import consulo.csharp.lang.psi.CSharpUsingTypeStatement;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import consulo.dotnet.psi.DotNetConstructorDeclaration;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.csharp.lang.psi.impl.source.using.AddUsingUtil;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author VISTALL
@@ -183,7 +177,7 @@ public class ExpectedUsingInfo
 		PsiFile containingFile = element.getContainingFile();
 		for(String namespace : namespaces)
 		{
-			new AddUsingAction(null, containingFile, Collections.emptySet()).addUsingNoCaretMoving(namespace);
+			AddUsingUtil.addUsingNoCaretMoving(containingFile, namespace);
 		}
 	}
 

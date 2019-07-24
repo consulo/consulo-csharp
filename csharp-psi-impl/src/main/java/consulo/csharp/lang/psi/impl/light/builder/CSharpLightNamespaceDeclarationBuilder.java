@@ -16,12 +16,12 @@
 
 package consulo.csharp.lang.psi.impl.light.builder;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
+import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
@@ -29,10 +29,10 @@ import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetReferenceExpression;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -60,6 +60,13 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 	public DotNetReferenceExpression getNamespaceReference()
 	{
 		return null;
+	}
+
+	@RequiredWriteAction
+	@Override
+	public void setNamespace(@Nonnull String namespace)
+	{
+		throw new UnsupportedOperationException();
 	}
 
 	@RequiredReadAction

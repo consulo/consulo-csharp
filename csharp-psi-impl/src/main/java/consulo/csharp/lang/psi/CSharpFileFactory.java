@@ -16,10 +16,6 @@
 
 package consulo.csharp.lang.psi;
 
-import java.util.function.BiConsumer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
@@ -27,11 +23,7 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.SingleRootFileViewProvider;
-import com.intellij.psi.StubBasedPsiElement;
+import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -41,17 +33,17 @@ import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.ModifierSet;
+import consulo.csharp.lang.parser.SharedParsingHelpers;
 import consulo.csharp.lang.parser.exp.ExpressionParsing;
 import consulo.csharp.lang.parser.stmt.StatementParsing;
 import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpFileWithScopeImpl;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.psi.DotNetStatement;
-import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.*;
 import consulo.lang.LanguageVersion;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.BiConsumer;
 
 /**
  * @author VISTALL
@@ -170,6 +162,9 @@ public class CSharpFileFactory
 	private static final IElementType ourExpressionElementType = createElementType("expression-element-type", (builder, languageVersion) -> ExpressionParsing.parse(new CSharpBuilderWrapper(builder,
 			languageVersion), ModifierSet.EMPTY));
 
+	private static final IElementType ourStubExpressionElementType = createElementType("expression-element-type", (builder, languageVersion) -> ExpressionParsing.parse(new CSharpBuilderWrapper
+			(builder, languageVersion), ModifierSet.EMPTY, SharedParsingHelpers.STUB_SUPPORT));
+
 	private static final IElementType ourStatementElementType = createElementType("statement-element-type", (builder, languageVersion) -> StatementParsing.parse(new CSharpBuilderWrapper(builder,
 			languageVersion), ModifierSet.EMPTY));
 
@@ -178,6 +173,14 @@ public class CSharpFileFactory
 	public static DotNetExpression createExpression(@Nonnull Project project, @Nonnull String text)
 	{
 		return parseFile(text, project, DotNetExpression.class, ourExpressionElementType);
+	}
+
+	@RequiredReadAction
+	@Nonnull
+	public static DotNetExpression createExpression(@Nonnull Project project, @Nonnull PsiElement stubMarker, @Nonnull String text)
+	{
+		IElementType refExpression = stubMarker instanceof StubBasedPsiElement ? ourStubExpressionElementType : ourExpressionElementType;
+		return parseFile(text, project, DotNetExpression.class, refExpression);
 	}
 
 	@RequiredReadAction

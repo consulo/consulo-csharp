@@ -16,27 +16,21 @@
 
 package consulo.csharp.ide.codeInspection.unusedUsing;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpAttribute;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
-import consulo.csharp.lang.psi.CSharpUsingTypeStatement;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.DotNetTypes2;
 import consulo.csharp.lang.psi.impl.source.CSharpLinqExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
 
 /**
  * @author VISTALL
@@ -88,6 +82,7 @@ public abstract class BaseUnusedUsingVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitReferenceExpression(CSharpReferenceExpression expression)
 	{
 		super.visitReferenceExpression(expression);

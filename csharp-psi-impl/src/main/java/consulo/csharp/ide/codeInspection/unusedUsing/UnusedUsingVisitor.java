@@ -16,12 +16,10 @@
 
 package consulo.csharp.ide.codeInspection.unusedUsing;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiRecursiveElementVisitor;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
@@ -31,8 +29,11 @@ import consulo.csharp.lang.psi.impl.DotNetTypes2;
 import consulo.csharp.lang.psi.impl.source.CSharpLinqExpressionImpl;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -40,6 +41,23 @@ import com.intellij.psi.PsiElement;
  */
 public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 {
+	@Nonnull
+	public static UnusedUsingVisitor accept(@Nonnull PsiFile file)
+	{
+		final UnusedUsingVisitor unusedUsingVisitor = new UnusedUsingVisitor();
+		PsiRecursiveElementVisitor visitor = new PsiRecursiveElementVisitor()
+		{
+			@Override
+			public void visitElement(PsiElement element)
+			{
+				element.accept(unusedUsingVisitor);
+				super.visitElement(element);
+			}
+		};
+		file.accept(visitor);
+		return unusedUsingVisitor;
+	}
+
 	private Map<CSharpUsingListChild, Boolean> myUsingContext = new HashMap<CSharpUsingListChild, Boolean>();
 
 	@Override

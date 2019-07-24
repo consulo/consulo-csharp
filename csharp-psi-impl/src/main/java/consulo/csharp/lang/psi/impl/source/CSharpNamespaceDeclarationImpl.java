@@ -16,29 +16,19 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.stub.CSharpNamespaceDeclStub;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetNamespaceDeclaration;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetReferenceExpression;
+import consulo.dotnet.psi.*;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -122,6 +112,15 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	public DotNetReferenceExpression getNamespaceReference()
 	{
 		return findChildByClass(DotNetReferenceExpression.class);
+	}
+
+	@Override
+	@RequiredWriteAction
+	public void setNamespace(@Nonnull String namespace)
+	{
+		PsiElement referenceToken = CSharpFileFactory.createExpression(getProject(), namespace);
+
+		getNamespaceReference().replace(referenceToken);
 	}
 
 	@RequiredReadAction

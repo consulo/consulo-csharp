@@ -16,8 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.openapi.util.Condition;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.Consumer;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -33,10 +35,8 @@ import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.Consumer;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -71,30 +71,23 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 
 			if(parameterlessConstructor == null)
 			{
-				buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC, extractor, consumer);
+				buildDefaultConstructor((DotNetNamedElement) element, extractor, consumer);
 			}
 		}
 		else if(element instanceof CSharpTypeDeclaration)
 		{
 			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
-			DotNetNamedElement anyConstructor = ContainerUtil.find(typeDeclaration.getMembers(), new Condition<DotNetNamedElement>()
-			{
-				@Override
-				public boolean value(DotNetNamedElement element)
-				{
-					return element instanceof CSharpConstructorDeclaration && !((CSharpConstructorDeclaration) element).isDeConstructor();
-				}
-			});
+			DotNetNamedElement anyConstructor = ContainerUtil.find(typeDeclaration.getMembers(), e -> e instanceof CSharpConstructorDeclaration && !((CSharpConstructorDeclaration) e).isDeConstructor());
 
 			if(anyConstructor == null)
 			{
-				buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC, extractor, consumer);
+				buildDefaultConstructor((DotNetNamedElement) element, extractor, consumer);
 			}
 		}
 		else if(element instanceof DotNetGenericParameter)
 		{
 			// we need always create constructor, it ill check in CS0304
-			buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC, extractor, consumer);
+			buildDefaultConstructor((DotNetNamedElement) element, extractor, consumer);
 		}
 	}
 
@@ -107,7 +100,6 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 
 	@RequiredReadAction
 	private static void buildDefaultConstructor(@Nonnull DotNetNamedElement element,
-			@Nonnull CSharpModifier modifier,
 			@Nonnull DotNetGenericExtractor extractor,
 			@Nonnull Consumer<PsiElement> consumer)
 	{
@@ -116,11 +108,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 		{
 			return;
 		}
-		CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(element);
-		builder.addModifier(modifier);
-		builder.setNavigationElement(element);
-		builder.withParent(element);
-		builder.withName(name);
+		CSharpLightConstructorDeclarationBuilder builder = buildDefaultConstructor(element, name);
 
 		CSharpMethodDeclaration delegatedMethod = element.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE);
 		if(delegatedMethod != null)
@@ -133,5 +121,16 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 			builder.addParameter(parameter);
 		}
 		consumer.consume(builder);
+	}
+
+	@RequiredReadAction
+	public static CSharpLightConstructorDeclarationBuilder buildDefaultConstructor(@Nonnull DotNetNamedElement element, @Nonnull String name)
+	{
+		CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(element);
+		builder.addModifier(CSharpModifier.PUBLIC);
+		builder.setNavigationElement(element);
+		builder.withParent(element);
+		builder.withName(name);
+		return builder;
 	}
 }

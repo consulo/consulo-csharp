@@ -16,43 +16,26 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import static consulo.csharp.lang.psi.CSharpReferenceExpression.ResolveToKind;
-
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.ResolveState;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
 import com.intellij.psi.impl.source.tree.injected.Place;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.ParameterizedCachedValue;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.*;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.Processor;
 import consulo.annotations.RequiredReadAction;
+import consulo.annotations.RequiredWriteAction;
+import consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
@@ -63,27 +46,23 @@ import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInfer
 import consulo.csharp.lang.psi.impl.source.resolve.handlers.*;
 import consulo.csharp.lang.psi.impl.source.resolve.sorter.StaticVsInstanceComparator;
 import consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeComparator;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
+import consulo.csharp.lang.psi.impl.source.resolve.type.*;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
-import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
-import consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
-import consulo.csharp.lang.psi.resolve.ExtensionMethodByNameSelector;
-import consulo.csharp.lang.psi.resolve.MemberByNameSelector;
-import consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
+import consulo.csharp.lang.psi.impl.source.using.AddUsingUtil;
+import consulo.csharp.lang.psi.resolve.*;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import consulo.dotnet.resolve.DotNetPointerTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.resolve.*;
 import consulo.dotnet.util.ArrayUtil2;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+
+import static consulo.csharp.lang.psi.CSharpReferenceExpression.ResolveToKind;
 
 /**
  * @author VISTALL
@@ -185,6 +164,81 @@ public class CSharpReferenceExpressionImplUtil
 			}
 			ourProcessors[i] = kindProcessor;
 		}
+	}
+
+	@Nonnull
+	@RequiredWriteAction
+	public static PsiElement bindToElement(CSharpReferenceExpressionEx expression, PsiElement element)
+	{
+		if(element instanceof CSharpTypeDeclaration)
+		{
+			String parentQName = ((CSharpTypeDeclaration) element).getPresentableParentQName();
+			if(parentQName == null)
+			{
+				return element;
+			}
+
+			DotNetExpression qualifier = expression.getQualifier();
+			if(qualifier != null)
+			{
+				if(qualifier instanceof CSharpReferenceExpression)
+				{
+					DotNetExpression newQualifier = CSharpFileFactory.createExpression(expression.getProject(), qualifier, parentQName);
+					qualifier.replace(newQualifier);
+					return element;
+				}
+
+				// if expression is not reference?
+				return element;
+			}
+		}
+
+		// it will CSharpNamespaceDeclaration (not DotNetNamespaceAsElement - since it can be not changed)
+		if(element instanceof CSharpNamespaceDeclaration)
+		{
+			String qName = ((CSharpNamespaceDeclaration) element).getPresentableQName();
+			PsiElement parent = expression.getParent();
+
+			PsiElement resolvedElement = expression.resolve();
+			// namespace is not resolved - replace it via current namespace
+			if(resolvedElement == null)
+			{
+				if(parent instanceof CSharpUsingNamespaceStatement)
+				{
+					// if new qualifier already in using list - do not change expr and provide duplicate using
+					if(AddUsingUtil.isUsingListContainsNamespace((CSharpUsingListOwner) parent.getParent(), qName))
+					{
+						parent.delete();
+						return element;
+					}
+				}
+
+				DotNetExpression newQualifier = CSharpFileFactory.createExpression(expression.getProject(), expression, qName);
+				expression.replace(newQualifier);
+				return newQualifier;
+			}
+			else
+			{
+				PsiFile containingFile = expression.getContainingFile();
+
+				// if this expression parent is using statement. check if it unused. and change if unused
+				if(parent instanceof CSharpUsingNamespaceStatement)
+				{
+					UnusedUsingVisitor usingVisitor = UnusedUsingVisitor.accept(containingFile);
+
+					Boolean isUsed = usingVisitor.getUsingContext().get(parent);
+					if(isUsed == Boolean.FALSE)
+					{
+						DotNetExpression newQualifier = CSharpFileFactory.createExpression(expression.getProject(), expression, qName);
+						expression.replace(newQualifier);
+						return newQualifier;
+					}
+				}
+
+				AddUsingUtil.addUsingNoCaretMoving(containingFile, qName);
+			}
+		}
+		return element;
 	}
 
 	@RequiredReadAction
@@ -589,9 +643,9 @@ public class CSharpReferenceExpressionImplUtil
 	@Nonnull
 	@RequiredReadAction
 	public static ResolveResult[] buildSelectorAndMultiResolve(@Nonnull ResolveToKind kind,
-			@Nullable final CSharpCallArgumentListOwner callArgumentListOwner,
-			@Nonnull final CSharpQualifiedNonReference element,
-			boolean resolveFromParent)
+															   @Nullable final CSharpCallArgumentListOwner callArgumentListOwner,
+															   @Nonnull final CSharpQualifiedNonReference element,
+															   boolean resolveFromParent)
 	{
 		return buildSelectorAndMultiResolve(kind, callArgumentListOwner, element, null, resolveFromParent);
 	}
@@ -599,10 +653,10 @@ public class CSharpReferenceExpressionImplUtil
 	@Nonnull
 	@RequiredReadAction
 	public static ResolveResult[] buildSelectorAndMultiResolve(@Nonnull ResolveToKind kind,
-			@Nullable final CSharpCallArgumentListOwner callArgumentListOwner,
-			@Nonnull final CSharpQualifiedNonReference element,
-			@Nullable final PsiElement forceQualifierElement,
-			boolean resolveFromParent)
+															   @Nullable final CSharpCallArgumentListOwner callArgumentListOwner,
+															   @Nonnull final CSharpQualifiedNonReference element,
+															   @Nullable final PsiElement forceQualifierElement,
+															   boolean resolveFromParent)
 	{
 		CSharpResolveSelector selector = StaticResolveSelectors.NONE;
 		switch(kind)
@@ -661,9 +715,9 @@ public class CSharpReferenceExpressionImplUtil
 
 	@RequiredReadAction
 	public static void collectResults(@Nonnull CSharpResolveOptions options,
-			@Nonnull DotNetGenericExtractor defaultExtractor,
-			@Nullable PsiElement forceQualifierElement,
-			@Nonnull final Processor<ResolveResult> processor)
+									  @Nonnull DotNetGenericExtractor defaultExtractor,
+									  @Nullable PsiElement forceQualifierElement,
+									  @Nonnull final Processor<ResolveResult> processor)
 	{
 		final ResolveToKind kind = options.getKind();
 
@@ -696,9 +750,9 @@ public class CSharpReferenceExpressionImplUtil
 
 	@RequiredReadAction
 	public static void processAnyMember(@Nonnull CSharpResolveOptions options,
-			@Nonnull DotNetGenericExtractor defaultExtractor,
-			@Nullable PsiElement forceQualifierElement,
-			@Nonnull Processor<ResolveResult> processor)
+										@Nonnull DotNetGenericExtractor defaultExtractor,
+										@Nullable PsiElement forceQualifierElement,
+										@Nonnull Processor<ResolveResult> processor)
 	{
 		PsiElement qualifier = options.getQualifier();
 		@Nonnull PsiElement element = options.getElement();

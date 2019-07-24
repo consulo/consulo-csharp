@@ -16,23 +16,13 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.swing.Icon;
-
-import javax.annotation.Nullable;
 import com.intellij.codeInsight.actions.OptimizeImportsProcessor;
 import com.intellij.codeInsight.hint.QuestionAction;
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.application.Result;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.LogicalPosition;
-import com.intellij.openapi.editor.RangeMarker;
-import com.intellij.openapi.editor.ScrollType;
+import com.intellij.openapi.editor.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
@@ -42,27 +32,23 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiParserFacade;
-import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.ui.RequiredUIAccess;
-import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings;
-import consulo.csharp.lang.psi.CSharpCodeFragment;
-import consulo.csharp.lang.psi.CSharpFile;
-import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
+import consulo.csharp.lang.psi.impl.source.using.AddUsingUtil;
 import consulo.dotnet.DotNetBundle;
 import consulo.dotnet.libraryAnalyzer.NamespaceReference;
-import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.roots.orderEntry.DotNetLibraryOrderEntryImpl;
 import consulo.roots.impl.ModuleRootLayerImpl;
+import consulo.ui.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -92,21 +78,6 @@ public class AddUsingAction implements QuestionAction
 		myFile = ref.getContainingFile();
 		myProject = ref.getProject();
 		myElements = references;
-	}
-
-	@Nonnull
-	@RequiredReadAction
-	private PsiElement getElementForBeforeAdd()
-	{
-		if(myFile instanceof CSharpFile)
-		{
-			CSharpUsingListChild[] usingStatements = ((CSharpFile) myFile).getUsingStatements();
-			if(usingStatements.length > 0)
-			{
-				return ArrayUtil.getLastElement(usingStatements);
-			}
-		}
-		return myFile;
 	}
 
 	@Override
@@ -172,44 +143,32 @@ public class AddUsingAction implements QuestionAction
 	{
 		PsiDocumentManager.getInstance(myProject).commitAllDocuments();
 
-		new WriteCommandAction<Object>(myProject, myFile)
+		WriteCommandAction.runWriteCommandAction(myProject, () ->
 		{
-			@Override
-			@RequiredReadAction
-			protected void run(Result<Object> objectResult) throws Throwable
+			addUsing(namespaceReference.getNamespace());
+
+			String libraryName = namespaceReference.getLibraryName();
+			if(libraryName != null)
 			{
-				addUsing(namespaceReference.getNamespace());
-
-				String libraryName = namespaceReference.getLibraryName();
-				if(libraryName != null)
+				Module moduleForFile = ModuleUtilCore.findModuleForPsiElement(myFile);
+				if(moduleForFile != null)
 				{
-					Module moduleForFile = ModuleUtilCore.findModuleForPsiElement(myFile);
-					if(moduleForFile != null)
-					{
-						ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(moduleForFile);
+					ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(moduleForFile);
 
-						final ModifiableRootModel modifiableModel = moduleRootManager.getModifiableModel();
+					final ModifiableRootModel modifiableModel = moduleRootManager.getModifiableModel();
 
-						modifiableModel.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) moduleRootManager.getCurrentLayer(), libraryName));
+					modifiableModel.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) moduleRootManager.getCurrentLayer(), libraryName));
 
-						new WriteCommandAction<Object>(moduleForFile.getProject())
-						{
-							@Override
-							protected void run(Result<Object> objectResult) throws Throwable
-							{
-								modifiableModel.commit();
-							}
-						}.execute();
-					}
+					WriteAction.run(modifiableModel::commit);
 				}
 			}
-		}.execute();
+		});
 	}
 
-	@RequiredReadAction
+	@RequiredWriteAction
 	public void addUsing(String qName)
 	{
-		addUsingNoCaretMoving(qName);
+		AddUsingUtil.addUsingNoCaretMoving(myFile, qName);
 
 		assert myEditor != null;
 
@@ -246,50 +205,5 @@ public class AddUsingAction implements QuestionAction
 			myEditor.getCaretModel().moveToLogicalPosition(new LogicalPosition(pos2.line, newCol));
 			myEditor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
 		}
-	}
-
-	@RequiredWriteAction
-	public void addUsingNoCaretMoving(String qName)
-	{
-		PsiElement elementForBeforeAdd = getElementForBeforeAdd();
-
-		CSharpUsingNamespaceStatement newStatement = CSharpFileFactory.createUsingNamespaceStatement(myProject, qName);
-
-		if(myFile instanceof CSharpCodeFragment)
-		{
-			((CSharpCodeFragment) myFile).addUsingChild(newStatement);
-		}
-		else if(elementForBeforeAdd instanceof CSharpUsingListChild)
-		{
-			addUsingStatementAfter(elementForBeforeAdd, newStatement);
-		}
-		else if(elementForBeforeAdd instanceof CSharpFile)
-		{
-			DotNetQualifiedElement[] members = ((CSharpFile) elementForBeforeAdd).getMembers();
-
-			PsiElement firstChild = members.length > 0 ? members[0] : elementForBeforeAdd.getFirstChild();
-
-			assert firstChild != null;
-
-			PsiElement usingStatementNew = elementForBeforeAdd.addBefore(newStatement, firstChild);
-
-			PsiElement whiteSpaceFromText = PsiParserFacade.SERVICE.getInstance(myProject).createWhiteSpaceFromText("\n\n");
-
-			elementForBeforeAdd.addAfter(whiteSpaceFromText, usingStatementNew);
-		}
-	}
-
-	@RequiredReadAction
-	private static void addUsingStatementAfter(@Nonnull PsiElement afterElement, @Nonnull CSharpUsingNamespaceStatement newStatement)
-	{
-		Project project = afterElement.getProject();
-
-		PsiElement parent = afterElement.getParent();
-
-		PsiElement whiteSpaceFromText = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
-
-		parent.addAfter(whiteSpaceFromText, afterElement);
-
-		parent.addAfter(newStatement, afterElement.getNode().getTreeNext().getPsi());
 	}
 }

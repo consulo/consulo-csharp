@@ -16,21 +16,6 @@
 
 package consulo.csharp.lang.parser;
 
-import gnu.trove.THashSet;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.csharp.lang.parser.exp.ExpressionParsing;
-import consulo.csharp.lang.psi.CSharpElements;
-import consulo.csharp.lang.psi.CSharpSoftTokens;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.CSharpTokenSets;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpTokensImpl;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.LighterASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.WhitespacesAndCommentsBinder;
@@ -40,6 +25,15 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.BitUtil;
 import com.intellij.util.NotNullFunction;
+import consulo.csharp.lang.parser.exp.ExpressionParsing;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import gnu.trove.THashSet;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -470,7 +464,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 			return null;
 		}
 
-		ExpressionParsing.parseArgumentList(builder, true, set);
+		ExpressionParsing.parseArgumentList(builder, true, set, 0);
 
 		mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.ATTRIBUTE : CSharpElements.ATTRIBUTE);
 		return mark;
