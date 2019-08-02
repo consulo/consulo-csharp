@@ -31,6 +31,7 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindowManager;
@@ -194,8 +195,9 @@ public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 
 		assert copy != null;
 
+		String oldTypeName = target.getName();
 		String copyTypeName = FileUtil.getNameWithoutExtension(newName);
-		if(CSharpNameSuggesterUtil.isIdentifier(copyTypeName))
+		if(!StringUtil.equals(oldTypeName, newName) && CSharpNameSuggesterUtil.isIdentifier(copyTypeName))
 		{
 			PsiElement typeIdentifier = copy.getNameIdentifier();
 			if(typeIdentifier != null)
