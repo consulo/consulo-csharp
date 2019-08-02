@@ -176,7 +176,7 @@ public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 							   final boolean doClone,
 							   final boolean openInEditor)
 	{
-		Project project = target.getProject();
+		Project project = targetDirectory.getProject();
 
 		PsiFile oldFile = targetDirectory.findFile(newName);
 		if(oldFile != null)
