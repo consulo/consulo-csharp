@@ -16,12 +16,6 @@
 
 package consulo.csharp.ide.refactoring.copy;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.CommonBundle;
 import com.intellij.ide.actions.CreateFileFromTemplateAction;
 import com.intellij.ide.util.EditorHelper;
@@ -40,12 +34,7 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.psi.PsiBinaryFile;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileSystemItem;
-import com.intellij.psi.PsiManager;
+import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.refactoring.RefactoringBundle;
@@ -60,12 +49,13 @@ import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetNamedElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -181,10 +171,10 @@ public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 
 	@RequiredReadAction
 	private static void doCopy(@Nonnull final CSharpTypeDeclaration target,
-			@Nullable final String newName,
-			@Nonnull final PsiDirectory targetDirectory,
-			final boolean doClone,
-			final boolean openInEditor)
+							   @Nullable final String newName,
+							   @Nonnull final PsiDirectory targetDirectory,
+							   final boolean doClone,
+							   final boolean openInEditor)
 	{
 		Project project = target.getProject();
 
@@ -235,6 +225,11 @@ public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 					super.visitReferenceExpression(expression);
 
 					PsiElement resolveTarget = expression.resolve();
+					if(expression.kind() == CSharpReferenceExpression.ResolveToKind.THIS || expression.kind() == CSharpReferenceExpression.ResolveToKind.BASE)
+					{
+						return;
+					}
+
 					if(target.isEquivalentTo(resolveTarget) || resolveTarget instanceof CSharpConstructorDeclaration && target.isEquivalentTo(resolveTarget.getParent()))
 					{
 						referenceToChange.add(expression);
