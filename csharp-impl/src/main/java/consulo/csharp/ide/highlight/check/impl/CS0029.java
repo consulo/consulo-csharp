@@ -16,9 +16,11 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
+import com.intellij.openapi.util.Trinity;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.ObjectUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpErrorBundle;
 import consulo.csharp.ide.codeInsight.actions.AddModifierFix;
@@ -28,21 +30,15 @@ import consulo.csharp.ide.codeInsight.actions.ChangeVariableToTypeRefFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.CSharpHighlightKey;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.CSharpCastType;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import consulo.csharp.lang.psi.impl.source.*;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import consulo.csharp.lang.psi.impl.source.*;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
 import consulo.dotnet.DotNetTypes;
@@ -53,12 +49,9 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.openapi.util.Trinity;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ObjectUtil;
-import consulo.csharp.lang.CSharpCastType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -343,7 +336,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		PsiElement parent = element.getParent();
 		if(element instanceof DotNetExpression && parent instanceof CSharpNewArrayLengthImpl)
 		{
-			return Trinity.create(new CSharpTypeRefByQName(element, DotNetTypes.System.Int32), ((DotNetExpression)element).toTypeRef(true), element);
+			return Trinity.create(new CSharpTypeRefByQName(element, DotNetTypes.System.UInt64), ((DotNetExpression)element).toTypeRef(true), element);
 		}
 		return null;
 	}
