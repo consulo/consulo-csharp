@@ -16,31 +16,12 @@
 
 package consulo.csharp.lang.parser;
 
-import gnu.trove.THashMap;
-
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.impl.PsiBuilderAdapter;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import consulo.csharp.lang.CSharpLanguageVersionWrapper;
-import consulo.csharp.lang.parser.preprocessor.DefinePreprocessorDirective;
-import consulo.csharp.lang.parser.preprocessor.ElsePreprocessorDirective;
-import consulo.csharp.lang.parser.preprocessor.EndIfPreprocessorDirective;
-import consulo.csharp.lang.parser.preprocessor.IfPreprocessorDirective;
-import consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
-import consulo.csharp.lang.parser.preprocessor.PreprocessorLightParser;
-import consulo.csharp.lang.parser.preprocessor.WarningDirective;
+import consulo.csharp.lang.parser.preprocessor.*;
 import consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTemplateTokens;
@@ -49,6 +30,11 @@ import consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpFileStubElementType;
 import consulo.csharp.lang.psi.impl.stub.elementTypes.macro.MacroEvaluator;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.lang.LanguageVersion;
+import gnu.trove.THashMap;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author VISTALL
@@ -67,38 +53,10 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		}
 	}
 
-	static class PreprocessorState
-	{
-		Deque<Boolean> ifDirectives = new ArrayDeque<>();
-
-		public PreprocessorState(@Nonnull Boolean initialValue)
-		{
-			ifDirectives.add(initialValue);
-		}
-
-		boolean haveActive()
-		{
-			for(Boolean state : ifDirectives)
-			{
-				if(state)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		boolean isActive()
-		{
-			Boolean value = ifDirectives.peekLast();
-			return value != null && value;
-		}
-	}
-
 	private TokenSet mySoftSet = TokenSet.EMPTY;
 	private LanguageVersion myLanguageVersion;
 
-	private Deque<PreprocessorState> myStates = new ArrayDeque<>();
+	private PreprocessorState myState = new PreprocessorState();
 
 	public CSharpBuilderWrapper(PsiBuilder delegate, LanguageVersion languageVersion)
 	{
@@ -231,38 +189,37 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 			Set<String> variables = getUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES);
 			assert variables != null;
 			PreprocessorDirective directive = PreprocessorLightParser.parse(super.getTokenText());
+
+			boolean disabledToken = myState.isDisabled();
+
 			if(directive instanceof DefinePreprocessorDirective)
 			{
 				// if code is disabled - dont handle define
-				PreprocessorState preprocessorState = myStates.peekLast();
-				if(preprocessorState != null && !preprocessorState.isActive())
+				if(!disabledToken)
 				{
-					remapCurrentToken(CSharpTokens.NON_ACTIVE_SYMBOL);
-					return CSharpTokens.NON_ACTIVE_SYMBOL;
-				}
+					Set<String> newVariables = new HashSet<>(variables);
 
-				Set<String> newVariables = new HashSet<>(variables);
-
-				if(((DefinePreprocessorDirective) directive).isUndef())
-				{
-					newVariables.remove(((DefinePreprocessorDirective) directive).getVariable());
+					if(((DefinePreprocessorDirective) directive).isUndef())
+					{
+						newVariables.remove(((DefinePreprocessorDirective) directive).getVariable());
+					}
+					else
+					{
+						newVariables.add(((DefinePreprocessorDirective) directive).getVariable());
+					}
+					putUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES, newVariables);
 				}
-				else
-				{
-					newVariables.add(((DefinePreprocessorDirective) directive).getVariable());
-				}
-				putUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES, newVariables);
 			}
 			else if(directive instanceof IfPreprocessorDirective)
 			{
 				if(((IfPreprocessorDirective) directive).isElseIf())
 				{
-					PreprocessorState state = myStates.peekLast();
+					PreprocessorState.SubState state = myState.last();
 					if(state == null)
 					{
 						boolean evaluate = MacroEvaluator.evaluate(((IfPreprocessorDirective) directive).getValue(), variables);
 
-						myStates.add(new PreprocessorState(evaluate));
+						myState.newState(disabledToken ? Boolean.FALSE : evaluate);
 					}
 					else if(state.haveActive()) // if we already have active - disable it
 					{
@@ -272,21 +229,24 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 					{
 						boolean evaluate = MacroEvaluator.evaluate(((IfPreprocessorDirective) directive).getValue(), variables);
 
-						state.ifDirectives.addLast(evaluate);
+						state.ifDirectives.addLast(disabledToken ? Boolean.FALSE : evaluate);
 					}
 				}
 				else
 				{
 					boolean evaluate = MacroEvaluator.evaluate(((IfPreprocessorDirective) directive).getValue(), variables);
-					myStates.addLast(new PreprocessorState(evaluate));
+					myState.newState(disabledToken ? Boolean.FALSE : evaluate);
 				}
+
+				// refresh current #if state
+				disabledToken = myState.isDisabled();
 			}
 			else if(directive instanceof ElsePreprocessorDirective)
 			{
-				PreprocessorState state = myStates.peekLast();
+				PreprocessorState.SubState state = myState.last();
 				if(state == null)
 				{
-					myStates.add(new PreprocessorState(Boolean.FALSE));
+					myState.newState(Boolean.FALSE);
 				}
 				else if(state.haveActive())
 				{
@@ -294,28 +254,28 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 				}
 				else
 				{
-					state.ifDirectives.addLast(Boolean.TRUE);
+					state.ifDirectives.addLast(disabledToken ? Boolean.FALSE : Boolean.TRUE);
 				}
 			}
 			else if(directive instanceof EndIfPreprocessorDirective)
 			{
-				myStates.pollLast();
+				myState.removeLast();
 			}
 			else if(directive instanceof WarningDirective)
 			{
-				PreprocessorState preprocessorState = myStates.peekLast();
-				if(preprocessorState != null && !preprocessorState.isActive())
-				{
-					toRemapTokenType = CSharpPreprocessorElements.DISABLED_PREPROCESSOR_DIRECTIVE;
-				}
+				// nothing?
+			}
+
+			if(disabledToken)
+			{
+				toRemapTokenType = CSharpPreprocessorElements.DISABLED_PREPROCESSOR_DIRECTIVE;
 			}
 
 			remapCurrentToken(toRemapTokenType);
 			return toRemapTokenType;
 		}
 
-		PreprocessorState preprocessorState = myStates.peekLast();
-		if(preprocessorState != null && !preprocessorState.isActive())
+		if(myState.isDisabled())
 		{
 			remapCurrentToken(CSharpTokens.NON_ACTIVE_SYMBOL);
 			return CSharpTokens.NON_ACTIVE_SYMBOL;
