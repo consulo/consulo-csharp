@@ -16,11 +16,6 @@
 
 package consulo.csharp.ide.newProjectOrModule;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
 import com.intellij.openapi.project.DumbService;
@@ -28,6 +23,7 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.dotnet.DotNetTarget;
 import consulo.dotnet.module.extension.DotNetMutableModuleExtension;
@@ -38,6 +34,12 @@ import consulo.ide.newProject.NewModuleBuilderProcessor;
 import consulo.ide.newProject.NewModuleContext;
 import consulo.roots.ModifiableModuleRootLayer;
 import consulo.roots.impl.ModuleRootLayerImpl;
+import consulo.ui.wizard.WizardStep;
+
+import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * @author VISTALL
@@ -68,37 +70,51 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 	{
 		NewModuleContext.Group group = context.createGroup("csharp", "C#");
 
-		group.add("Empty", AllIcons.FileTypes.Any_type, new NewModuleBuilderProcessor<CSharpSdkPanel>()
+		group.add("Empty", AllIcons.FileTypes.Any_type, new NewModuleBuilderProcessor<CSharpNewModuleContext>()
 		{
 			@Nonnull
 			@Override
-			public CSharpSdkPanel createConfigurationPanel()
+			public CSharpNewModuleContext createContext(boolean isNewProject)
 			{
-				return new CSharpSdkPanel();
+				return new CSharpNewModuleContext(isNewProject);
 			}
 
 			@Override
-			public void setupModule(@Nonnull CSharpSdkPanel panel, @Nonnull ContentEntry contentEntry, @Nonnull ModifiableRootModel modifiableRootModel)
+			public void buildSteps(@Nonnull Consumer<WizardStep<CSharpNewModuleContext>> consumer, @Nonnull CSharpNewModuleContext context)
 			{
-				defaultSetup(panel, modifiableRootModel);
+				consumer.accept(new CSharpSetupStep(context));
+			}
+
+			@RequiredReadAction
+			@Override
+			public void process(@Nonnull CSharpNewModuleContext context, @Nonnull ContentEntry contentEntry, @Nonnull ModifiableRootModel modifiableRootModel)
+			{
+				defaultSetup(context, modifiableRootModel);
 			}
 		});
 
-		group.add("Console Application", AllIcons.RunConfigurations.Application, new UnzipNewModuleBuilderProcessor<CSharpSdkPanel>("/moduleTemplates/#CSharpConsoleApplication.zip")
+		group.add("Console Application", AllIcons.RunConfigurations.Application, new UnzipNewModuleBuilderProcessor<CSharpNewModuleContext>("/moduleTemplates/#CSharpConsoleApplication.zip")
 		{
 			@Nonnull
 			@Override
-			public CSharpSdkPanel createConfigurationPanel()
+			public CSharpNewModuleContext createContext(boolean isNewProject)
 			{
-				return new CSharpSdkPanel().disableTargetComboBox(DotNetTarget.EXECUTABLE);
+				return new CSharpNewModuleContext(isNewProject);
 			}
 
 			@Override
-			public void setupModule(@Nonnull CSharpSdkPanel panel, @Nonnull final ContentEntry contentEntry, @Nonnull final ModifiableRootModel modifiableRootModel)
+			public void buildSteps(@Nonnull Consumer<WizardStep<CSharpNewModuleContext>> consumer, @Nonnull CSharpNewModuleContext context)
+			{
+				consumer.accept(new CSharpSetupStep(context).disableTargetComboBox(DotNetTarget.EXECUTABLE));
+			}
+
+			@RequiredReadAction
+			@Override
+			public void process(@Nonnull CSharpNewModuleContext context, @Nonnull ContentEntry contentEntry, @Nonnull ModifiableRootModel modifiableRootModel)
 			{
 				unzip(modifiableRootModel);
 
-				defaultSetup(panel, modifiableRootModel);
+				defaultSetup(context, modifiableRootModel);
 
 				DumbService.getInstance(modifiableRootModel.getProject()).smartInvokeLater(new Runnable()
 				{
@@ -120,9 +136,9 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 		});
 	}
 
-	private static void defaultSetup(@Nonnull CSharpSdkPanel panel, @Nonnull ModifiableRootModel modifiableRootModel)
+	private static void defaultSetup(@Nonnull CSharpNewModuleContext context, @Nonnull ModifiableRootModel modifiableRootModel)
 	{
-		Sdk sdk = panel.getSdk();
+		Sdk sdk = context.getSdk();
 		if(sdk == null)
 		{
 			return;
@@ -149,7 +165,7 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 				dotNetMutableModuleExtension.getVariables().add("DEBUG");
 			}
 			dotNetMutableModuleExtension.getInheritableSdk().set(null, sdk);
-			dotNetMutableModuleExtension.setTarget(panel.getTarget());
+			dotNetMutableModuleExtension.setTarget(context.getTarget());
 			dotNetMutableModuleExtension.getVariables().add("TRACE");
 
 			CSharpMutableModuleExtension<?> cSharpMutableModuleExtension = layer.getExtensionWithoutCheck(pair[1]);
