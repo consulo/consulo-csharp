@@ -78,18 +78,25 @@ class PreprocessorState
 		return myStates.pollLast();
 	}
 
-	public boolean isDisabled()
+	public boolean isDisabled(boolean skipCurrent)
 	{
 		if(myStates.isEmpty())
 		{
 			return false;
 		}
 
+		SubState last = last();
+
 		Iterator<SubState> iterator = myStates.descendingIterator();
 
 		while(iterator.hasNext())
 		{
 			SubState next = iterator.next();
+
+			if(skipCurrent && last == next)
+			{
+				continue;
+			}
 
 			if(!next.isActive())
 			{

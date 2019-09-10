@@ -190,7 +190,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 			assert variables != null;
 			PreprocessorDirective directive = PreprocessorLightParser.parse(super.getTokenText());
 
-			boolean disabledToken = myState.isDisabled();
+			boolean disabledToken = myState.isDisabled(false);
 
 			if(directive instanceof DefinePreprocessorDirective)
 			{
@@ -239,7 +239,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 				}
 
 				// refresh current #if state
-				disabledToken = myState.isDisabled();
+				disabledToken = myState.isDisabled(false);
 			}
 			else if(directive instanceof ElsePreprocessorDirective)
 			{
@@ -254,6 +254,8 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 				}
 				else
 				{
+					disabledToken = myState.isDisabled(true);
+
 					state.ifDirectives.addLast(disabledToken ? Boolean.FALSE : Boolean.TRUE);
 				}
 			}
@@ -275,7 +277,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 			return toRemapTokenType;
 		}
 
-		if(myState.isDisabled())
+		if(myState.isDisabled(false))
 		{
 			remapCurrentToken(CSharpTokens.NON_ACTIVE_SYMBOL);
 			return CSharpTokens.NON_ACTIVE_SYMBOL;

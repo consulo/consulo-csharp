@@ -16,21 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
-import com.intellij.lang.LanguageParserDefinitions;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilderFactory;
-import com.intellij.lang.PsiParser;
+import com.intellij.lang.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
@@ -53,6 +39,14 @@ import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpFileStub;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.lang.LanguageVersion;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -155,7 +149,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	@Override
 	public int getStubVersion()
 	{
-		return 96;
+		return 97;
 	}
 
 	@Nonnull
