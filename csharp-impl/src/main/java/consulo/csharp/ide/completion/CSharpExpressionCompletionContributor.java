@@ -16,26 +16,8 @@
 
 package consulo.csharp.ide.completion;
 
-import static com.intellij.patterns.StandardPatterns.psiElement;
-
-import gnu.trove.THashSet;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.completion.PrioritizedLookupElement;
+import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -88,6 +70,16 @@ import consulo.ide.IconDescriptorUpdaters;
 import consulo.ui.RequiredUIAccess;
 import consulo.ui.image.Image;
 import consulo.ui.image.ImageEffects;
+import gnu.trove.THashSet;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static com.intellij.patterns.StandardPatterns.psiElement;
 
 /**
  * @author VISTALL
@@ -111,6 +103,10 @@ class CSharpExpressionCompletionContributor
 				if(parent.getQualifier() == null && (parent.kind() == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER || parent.kind() == CSharpReferenceExpression.ResolveToKind
 						.EXPRESSION_OR_TYPE_LIKE))
 				{
+					CSharpCompletionUtil.tokenSetToLookup(result, TokenSet.create(CSharpTokens.DEFAULT_KEYWORD), (t, elementType) -> t, elementType -> {
+						return CSharpModuleUtil.findLanguageVersion(parent).isAtLeast(CSharpLanguageVersion._7_1);
+					});
+
 					CSharpCompletionUtil.tokenSetToLookup(result, ourExpressionLiterals, (t, elementType) ->
 					{
 						if(elementType == CSharpTokens.DEFAULT_KEYWORD || elementType == CSharpTokens.TYPEOF_KEYWORD || elementType == CSharpSoftTokens.NAMEOF_KEYWORD || elementType == CSharpTokens
@@ -796,10 +792,10 @@ class CSharpExpressionCompletionContributor
 
 	@RequiredReadAction
 	private static void resolveGenericParameterValues(CSharpTypeDeclaration targetType,
-			DotNetTypeDeclaration expectedType,
-			DotNetGenericExtractor expectedGenericExtractor,
-			Map<DotNetGenericParameter, DotNetTypeRef> map,
-			PsiElement scope)
+													  DotNetTypeDeclaration expectedType,
+													  DotNetGenericExtractor expectedGenericExtractor,
+													  Map<DotNetGenericParameter, DotNetTypeRef> map,
+													  PsiElement scope)
 	{
 		if(targetType.isEquivalentTo(expectedType))
 		{

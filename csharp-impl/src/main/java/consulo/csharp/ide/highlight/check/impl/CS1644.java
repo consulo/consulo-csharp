@@ -16,35 +16,6 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.ui.RequiredUIAccess;
-import consulo.annotations.RequiredReadAction;
-import consulo.annotations.RequiredWriteAction;
-import consulo.csharp.ide.highlight.CSharpHighlightContext;
-import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpDictionaryInitializerImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpFinallyStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpGenericParameterListImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.CSharpTupleExpressionImpl;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.csharp.module.extension.CSharpMutableModuleExtension;
-import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetStatement;
-import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.lang.ASTNode;
@@ -59,6 +30,26 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
+import consulo.annotations.RequiredReadAction;
+import consulo.annotations.RequiredWriteAction;
+import consulo.csharp.ide.highlight.CSharpHighlightContext;
+import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.*;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpMutableModuleExtension;
+import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetModifierList;
+import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetStatement;
+import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.ui.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -365,6 +356,15 @@ public class CS1644 extends CompilerCheck<PsiElement>
 				public PsiElement fun(PsiElement psiElement)
 				{
 					return psiElement instanceof CSharpTupleType || psiElement instanceof CSharpTupleExpressionImpl ? psiElement : null;
+				}
+			}));
+			add(new Feature("default literal", CSharpLanguageVersion._7_1, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				@RequiredReadAction
+				public PsiElement fun(PsiElement psiElement)
+				{
+					return psiElement instanceof CSharpDefaultExpressionImpl && ((CSharpDefaultExpressionImpl) psiElement).isSimplified() ? psiElement : null;
 				}
 			}));
 		}

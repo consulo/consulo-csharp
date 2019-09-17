@@ -590,7 +590,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 	}
 
-	public static void parseArgumentList(CSharpBuilderWrapper builder, boolean fieldSet, ModifierSet set,int flags)
+	public static void parseArgumentList(CSharpBuilderWrapper builder, boolean fieldSet, ModifierSet set, int flags)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -786,7 +786,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(tokenType == DEFAULT_KEYWORD)
 		{
-			return parseExpressionWithTypeInLParRPar(builder, NONE, null, DEFAULT_EXPRESSION);
+			return parseDefaultExpression(builder);
 		}
 
 		if(tokenType == SIZEOF_KEYWORD)
@@ -939,6 +939,28 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 
 		return null;
+	}
+
+	@Nonnull
+	private static PsiBuilder.Marker parseDefaultExpression(CSharpBuilderWrapper builder)
+	{
+		PsiBuilder.Marker marker = builder.mark();
+		builder.advanceLexer();
+
+		if(builder.getTokenType() == LPAR)
+		{
+			if(expect(builder, LPAR, "'(' expected"))
+			{
+				if(parseType(builder, NONE, TokenSet.EMPTY) == null)
+				{
+					builder.error("Type expected");
+				}
+				expect(builder, RPAR, "')' expected");
+			}
+		}
+
+		marker.done(DEFAULT_EXPRESSION);
+		return marker;
 	}
 
 	private static PsiBuilder.Marker parseTupleExpressionAfterLPar(CSharpBuilderWrapper builder, ModifierSet set)

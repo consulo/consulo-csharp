@@ -16,11 +16,11 @@
 
 package consulo.csharp.module.extension;
 
-import javax.annotation.Nonnull;
-
 import consulo.csharp.CSharpBundle;
 import consulo.util.pointers.Named;
 import consulo.util.pointers.NamedPointer;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -34,9 +34,10 @@ public enum CSharpLanguageVersion implements Named, NamedPointer<CSharpLanguageV
 	_4_0,
 	_5_0,
 	_6_0,
-	_7_0;
+	_7_0,
+	_7_1;
 
-	public static final CSharpLanguageVersion HIGHEST = _7_0;
+	public static final CSharpLanguageVersion HIGHEST = _7_1;
 
 	public boolean isAtLeast(@Nonnull CSharpLanguageVersion languageVersion)
 	{

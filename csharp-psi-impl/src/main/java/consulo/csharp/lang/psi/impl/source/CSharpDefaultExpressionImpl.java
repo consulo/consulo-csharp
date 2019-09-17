@@ -16,14 +16,16 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -46,6 +48,12 @@ public class CSharpDefaultExpressionImpl extends CSharpExpressionImpl implements
 	public DotNetType getType()
 	{
 		return findChildByClass(DotNetType.class);
+	}
+
+	@RequiredReadAction
+	public boolean isSimplified()
+	{
+		return findChildByType(CSharpTokens.LPAR) == null;
 	}
 
 	@RequiredReadAction

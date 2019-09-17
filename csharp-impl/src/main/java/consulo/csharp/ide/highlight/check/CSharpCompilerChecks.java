@@ -16,16 +16,16 @@
 
 package consulo.csharp.ide.highlight.check;
 
-import java.lang.reflect.ParameterizedType;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
+import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
+import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import java.lang.reflect.ParameterizedType;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
