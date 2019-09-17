@@ -16,26 +16,23 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.sorter;
 
-import java.util.Comparator;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.RecursionManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.ResolveResult;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpContextUtil;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.ResolveResult;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Comparator;
 
 /**
  * @author VISTALL
@@ -149,10 +146,8 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 				return parentContext == CSharpContextUtil.ContextType.INSTANCE ? 10 : 5;
 			}
 
-			String vmQName = forceTarget.getVmQName();
-			// region Some code
-			ResolveResult[] resolveResults = myParent.tryResolveFromQualifier(forceTarget);
-			if(resolveResults.length == 0)
+			ResolveResult[] resolveResults = RecursionManager.doPreventingRecursion(myParent, false, () -> myParent.tryResolveFromQualifier(forceTarget));
+			if(resolveResults == null || resolveResults.length == 0)
 			{
 				return parentContext == CSharpContextUtil.ContextType.INSTANCE ? 10 : 5;
 			}
@@ -186,7 +181,6 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 					}
 				}
 			}
-			// endregion
 		}
 		else
 		{
