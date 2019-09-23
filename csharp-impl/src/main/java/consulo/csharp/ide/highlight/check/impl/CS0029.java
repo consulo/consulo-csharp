@@ -17,10 +17,10 @@
 package consulo.csharp.ide.highlight.check.impl;
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.openapi.util.Trinity;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ObjectUtil;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpErrorBundle;
 import consulo.csharp.ide.codeInsight.actions.AddModifierFix;
@@ -52,6 +52,8 @@ import consulo.dotnet.resolve.DotNetTypeResolveResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -59,40 +61,122 @@ import javax.annotation.Nullable;
  */
 public class CS0029 extends CompilerCheck<PsiElement>
 {
+	private static class CheckTarget
+	{
+		private List<DotNetTypeRef> myExpectedTypeRefs = new ArrayList<>();
+
+		private DotNetTypeRef myActualTypeRef;
+
+		private PsiElement myTarget;
+
+		private CheckTarget expect(DotNetTypeRef typeRef)
+		{
+			myExpectedTypeRefs.add(typeRef);
+			return this;
+		}
+
+		private CheckTarget actual(DotNetTypeRef typeRef)
+		{
+			myActualTypeRef = typeRef;
+			return this;
+		}
+
+		private CheckTarget target(PsiElement target)
+		{
+			myTarget = target;
+			return this;
+		}
+
+		private void check()
+		{
+			if(myExpectedTypeRefs.isEmpty() || myActualTypeRef == null || myTarget == null)
+			{
+				throw new IllegalArgumentException("not full data");
+			}
+		}
+	}
+
+	private static final String[] ourNewArrayLenghtTypes = new String[]{
+			DotNetTypes.System.Int32,
+			// set int32 as default type for new array lenght
+			DotNetTypes.System.Byte,
+			DotNetTypes.System.SByte,
+			DotNetTypes.System.Int16,
+			DotNetTypes.System.UInt16,
+			DotNetTypes.System.UInt32,
+			DotNetTypes.System.Int64,
+			DotNetTypes.System.UInt64,
+	};
+
+	@Nonnull
+	private static CheckTarget target(@Nonnull DotNetTypeRef expected, @Nonnull DotNetTypeRef actual, @Nonnull PsiElement target)
+	{
+		return new CheckTarget().expect(expected).actual(actual).target(target);
+	}
+
 	@RequiredReadAction
 	@Nullable
 	@Override
 	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull PsiElement element)
 	{
-		Trinity<? extends DotNetTypeRef, ? extends DotNetTypeRef, ? extends PsiElement> resolve = resolve(element);
-		if(resolve == null)
+		CheckTarget target = resolve(element);
+		if(target == null)
 		{
 			return null;
 		}
 
-		DotNetTypeRef firstTypeRef = resolve.getFirst();
+		target.check();
 
+		PsiElement elementToHighlight = target.myTarget;
 
-		DotNetTypeRef secondTypeRef = resolve.getSecond();
-		if(CSharpTypeUtil.isErrorTypeRef(firstTypeRef) || CSharpTypeUtil.isErrorTypeRef(secondTypeRef))
+		DotNetTypeRef actualTypeRef = target.myActualTypeRef;
+		if(CSharpTypeUtil.isErrorTypeRef(actualTypeRef))
 		{
 			return null;
 		}
-		PsiElement elementToHighlight = resolve.getThird();
 
-		CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(firstTypeRef, secondTypeRef, element, CSharpCastType.IMPLICIT);
-		if(!inheritResult.isSuccess())
+		List<DotNetTypeRef> expectedTypeRefs = target.myExpectedTypeRefs;
+		for(DotNetTypeRef expectedTypeRef : expectedTypeRefs)
 		{
-			CompilerCheckBuilder builder = newBuilder(elementToHighlight, formatTypeRef(secondTypeRef, element), formatTypeRef(firstTypeRef, element));
+			if(CSharpTypeUtil.isErrorTypeRef(expectedTypeRef))
+			{
+				return null;
+			}
+		}
+
+		CSharpTypeUtil.InheritResult successResult = null;
+		DotNetTypeRef conversionResultTypeRef = null;
+
+		for(DotNetTypeRef expectedTypeRef : expectedTypeRefs)
+		{
+			CSharpTypeUtil.InheritResult result = CSharpTypeUtil.isInheritable(expectedTypeRef, actualTypeRef, element, CSharpCastType.IMPLICIT);
+
+			if(result.isSuccess())
+			{
+				successResult = result;
+				break;
+			}
+
+			if(result.isConversion())
+			{
+				conversionResultTypeRef = expectedTypeRef;
+			}
+		}
+
+		if(successResult == null)
+		{
+			DotNetTypeRef firstExpectedTypeRef = ContainerUtil.getFirstItem(expectedTypeRefs);
+
+			CompilerCheckBuilder builder = newBuilder(elementToHighlight, formatTypeRef(actualTypeRef, element), formatTypeRef(firstExpectedTypeRef, element));
 
 			if(elementToHighlight instanceof DotNetExpression)
 			{
-				builder.addQuickFix(new CastExpressionToTypeRef((DotNetExpression) elementToHighlight, firstTypeRef));
+				builder.addQuickFix(new CastExpressionToTypeRef((DotNetExpression) elementToHighlight, firstExpectedTypeRef));
 			}
 
 			if(element instanceof DotNetVariable)
 			{
-				builder.addQuickFix(new ChangeVariableToTypeRefFix((DotNetVariable) element, secondTypeRef));
+				builder.addQuickFix(new ChangeVariableToTypeRefFix((DotNetVariable) element, actualTypeRef));
 			}
 
 			if(element instanceof CSharpReturnStatementImpl)
@@ -100,18 +184,18 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				CSharpSimpleLikeMethodAsElement methodElement = PsiTreeUtil.getParentOfType(element, CSharpSimpleLikeMethodAsElement.class);
 				if(methodElement instanceof CSharpConversionMethodDeclaration || methodElement instanceof CSharpMethodDeclaration)
 				{
-					builder.addQuickFix(new ChangeReturnToTypeRefFix((DotNetLikeMethodDeclaration) methodElement, secondTypeRef));
+					builder.addQuickFix(new ChangeReturnToTypeRefFix((DotNetLikeMethodDeclaration) methodElement, actualTypeRef));
 				}
 
 				if(CSharpModuleUtil.findLanguageVersion(element).isAtLeast(CSharpLanguageVersion._4_0))
 				{
-					DotNetTypeResolveResult typeResolveResult = firstTypeRef.resolve();
+					DotNetTypeResolveResult typeResolveResult = firstExpectedTypeRef.resolve();
 					PsiElement firstElement = typeResolveResult.getElement();
 					if(firstElement instanceof CSharpTypeDeclaration && DotNetTypes.System.Threading.Tasks.Task$1.equals(((CSharpTypeDeclaration) firstElement).getVmQName()))
 					{
 						DotNetGenericParameter[] genericParameters = ((CSharpTypeDeclaration) firstElement).getGenericParameters();
 						DotNetTypeRef genericParameterTypeRef = typeResolveResult.getGenericExtractor().extract(genericParameters[0]);
-						if(genericParameterTypeRef != null && CSharpTypeUtil.isInheritable(genericParameterTypeRef, secondTypeRef, element))
+						if(genericParameterTypeRef != null && CSharpTypeUtil.isInheritable(genericParameterTypeRef, actualTypeRef, element))
 						{
 							builder.addQuickFix(new AddModifierFix(CSharpModifier.ASYNC, methodElement));
 						}
@@ -120,10 +204,10 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			}
 			return builder;
 		}
-		else if(inheritResult.isConversion())
+		else if(conversionResultTypeRef != null)
 		{
-			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(secondTypeRef, element),
-					CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(firstTypeRef, element));
+			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(actualTypeRef, element),
+					CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(conversionResultTypeRef, element));
 			return newBuilder(elementToHighlight).setText(text).setHighlightInfoType(HighlightInfoType.INFORMATION).setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
 		}
 
@@ -131,7 +215,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 	}
 
 	@RequiredReadAction
-	private Trinity<? extends DotNetTypeRef, ? extends DotNetTypeRef, ? extends PsiElement> resolve(PsiElement element)
+	private CheckTarget resolve(PsiElement element)
 	{
 		if(element instanceof DotNetVariable)
 		{
@@ -159,7 +243,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 					}
 				}
 			}
-			return Trinity.create(variableTypRef, initializerTypeRef, initializer);
+			return target(variableTypRef, initializerTypeRef, initializer);
 		}
 		else if(element instanceof DotNetExpression && element.getParent() instanceof CSharpMethodDeclaration)
 		{
@@ -173,7 +257,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			}
 
 			DotNetTypeRef returnTypeRef = model.extractTypeRef(parent.getReturnTypeRef(), element);
-			return Trinity.create(returnTypeRef, ((DotNetExpression) element).toTypeRef(true), element);
+			return target(returnTypeRef, ((DotNetExpression) element).toTypeRef(true), element);
 		}
 		else if(element instanceof CSharpAssignmentExpressionImpl)
 		{
@@ -187,7 +271,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			return Trinity.create(expressions[0].toTypeRef(true), expressions[1].toTypeRef(true), expressions[1]);
+			return target(expressions[0].toTypeRef(true), expressions[1].toTypeRef(true), expressions[1]);
 		}
 		else if(element instanceof CSharpWhileStatementImpl)
 		{
@@ -196,7 +280,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			return Trinity.create(new CSharpTypeRefByQName(element, DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
+			return target(new CSharpTypeRefByQName(element, DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
 		}
 		else if(element instanceof CSharpDoWhileStatementImpl)
 		{
@@ -205,7 +289,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			return Trinity.create(new CSharpTypeRefByQName(element, DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
+			return target(new CSharpTypeRefByQName(element, DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
 		}
 		else if(element instanceof CSharpIfStatementImpl)
 		{
@@ -214,7 +298,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			return Trinity.create(new CSharpTypeRefByQName(element, DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
+			return target(new CSharpTypeRefByQName(element, DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
 		}
 		else if(element instanceof CSharpRefTypeExpressionImpl)
 		{
@@ -223,7 +307,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			return Trinity.create(new CSharpTypeRefByQName(element, DotNetTypes.System.TypedReference), expression.toTypeRef(true), expression);
+			return target(new CSharpTypeRefByQName(element, DotNetTypes.System.TypedReference), expression.toTypeRef(true), expression);
 		}
 		else if(element instanceof CSharpSwitchLabelStatementImpl)
 		{
@@ -243,7 +327,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			return Trinity.create(switchExpression.toTypeRef(true), expression.toTypeRef(true), expression);
+			return target(switchExpression.toTypeRef(true), expression.toTypeRef(true), expression);
 		}
 		else if(element instanceof CSharpRefValueExpressionImpl)
 		{
@@ -252,7 +336,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			return Trinity.create(new CSharpTypeRefByQName(element, DotNetTypes.System.TypedReference), expression.toTypeRef(true), expression);
+			return target(new CSharpTypeRefByQName(element, DotNetTypes.System.TypedReference), expression.toTypeRef(true), expression);
 		}
 		else if(element instanceof CSharpLambdaExpressionImpl)
 		{
@@ -286,7 +370,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				{
 					return null;
 				}
-				return Trinity.create(returnTypeRef, ((DotNetExpression) singleExpression).toTypeRef(true), singleExpression);
+				return target(returnTypeRef, ((DotNetExpression) singleExpression).toTypeRef(true), singleExpression);
 			}
 		}
 		else if(element instanceof CSharpNamedFieldOrPropertySetImpl)
@@ -297,7 +381,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			return Trinity.create(nameElement.toTypeRef(true), valueExpression.toTypeRef(true), valueExpression);
+			return target(nameElement.toTypeRef(true), valueExpression.toTypeRef(true), valueExpression);
 		}
 		else if(element instanceof CSharpReturnStatementImpl)
 		{
@@ -330,13 +414,20 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				expected = typeRef;
 			}
-			return Trinity.create(expected, actual, ObjectUtil.notNull(expression, element));
+			return target(expected, actual, ObjectUtil.notNull(expression, element));
 		}
 
 		PsiElement parent = element.getParent();
 		if(element instanceof DotNetExpression && parent instanceof CSharpNewArrayLengthImpl)
 		{
-			return Trinity.create(new CSharpTypeRefByQName(element, DotNetTypes.System.UInt64), ((DotNetExpression)element).toTypeRef(true), element);
+			CheckTarget target = new CheckTarget();
+			target.target(element);
+			target.actual(((DotNetExpression) element).toTypeRef(true));
+			for(String newArrayLenghtType : ourNewArrayLenghtTypes)
+			{
+				target.expect(new CSharpTypeRefByQName(element, newArrayLenghtType));
+			}
+			return target;
 		}
 		return null;
 	}
