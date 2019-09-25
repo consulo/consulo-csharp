@@ -39,10 +39,7 @@ import consulo.csharp.lang.psi.impl.source.*;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetStatement;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.ui.RequiredUIAccess;
 
@@ -366,6 +363,17 @@ public class CS1644 extends CompilerCheck<PsiElement>
 				{
 					return psiElement instanceof CSharpDefaultExpressionImpl && ((CSharpDefaultExpressionImpl) psiElement).isSimplified() ? psiElement : null;
 				}
+			}));
+			add(new Feature("expression body property accessor", CSharpLanguageVersion._7_0, element -> {
+				if(element instanceof DotNetXXXAccessor)
+				{
+					PsiElement codeBlock = ((DotNetXXXAccessor) element).getCodeBlock();
+					if(codeBlock instanceof DotNetExpression)
+					{
+						return codeBlock;
+					}
+				}
+				return null;
 			}));
 		}
 	};

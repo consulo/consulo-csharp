@@ -16,14 +16,13 @@
 
 package consulo.csharp.lang.parser.decl;
 
-import consulo.csharp.lang.parser.CSharpBuilderWrapper;
-import consulo.csharp.lang.parser.ModifierSet;
-import consulo.csharp.lang.parser.SharedParsingHelpers;
-import consulo.csharp.lang.parser.stmt.StatementParsing;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import consulo.csharp.lang.parser.ModifierSet;
+import consulo.csharp.lang.parser.SharedParsingHelpers;
 
 /**
  * @author VISTALL
@@ -63,14 +62,7 @@ public class MemberWithBodyParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(builder.getTokenType() == LBRACE)
-			{
-				StatementParsing.parse(builder, pairModifierList.getSecond());
-			}
-			else
-			{
-				expect(builder, SEMICOLON, "';' expected");
-			}
+			MethodParsing.parseMethodBody(builder, pairModifierList.getSecond());
 
 			marker.done(to);
 		}

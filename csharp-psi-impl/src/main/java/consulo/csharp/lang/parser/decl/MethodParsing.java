@@ -60,10 +60,10 @@ public class MethodParsing extends MemberWithBodyParsing
 	}
 
 	public static void parseMethodStartAfterType(@Nonnull CSharpBuilderWrapper builder,
-			@Nonnull PsiBuilder.Marker marker,
-			@Nullable TypeInfo typeInfo,
-			@Nonnull Target target,
-			@Nonnull ModifierSet set)
+												 @Nonnull PsiBuilder.Marker marker,
+												 @Nullable TypeInfo typeInfo,
+												 @Nonnull Target target,
+												 @Nonnull ModifierSet set)
 	{
 		if(target == Target.CONSTRUCTOR || target == Target.DECONSTRUCTOR)
 		{
@@ -145,23 +145,7 @@ public class MethodParsing extends MemberWithBodyParsing
 			GenericParameterParsing.parseGenericConstraintList(builder);
 		}
 
-		if(!expect(builder, SEMICOLON, null))
-		{
-			if(builder.getTokenType() == LBRACE)
-			{
-				StatementParsing.parse(builder, set);
-			}
-			else if(builder.getTokenType() == DARROW)
-			{
-				builder.advanceLexer();
-				ExpressionParsing.parse(builder, set);
-				expect(builder, SEMICOLON, "';' expected");
-			}
-			else
-			{
-				builder.error("';' expected");
-			}
-		}
+		parseMethodBody(builder, set);
 
 		switch(target)
 		{
@@ -175,6 +159,24 @@ public class MethodParsing extends MemberWithBodyParsing
 			case CONVERSION_METHOD:
 				done(marker, CONVERSION_METHOD_DECLARATION);
 				break;
+		}
+	}
+
+	public static void parseMethodBody(CSharpBuilderWrapper builder, ModifierSet set)
+	{
+		if(builder.getTokenType() == LBRACE)
+		{
+			StatementParsing.parse(builder, set);
+		}
+		else if(builder.getTokenType() == DARROW)
+		{
+			builder.advanceLexer();
+			ExpressionParsing.parse(builder, set);
+			expect(builder, SEMICOLON, "';' expected");
+		}
+		else
+		{
+			expect(builder, SEMICOLON, "';' expected");
 		}
 	}
 
