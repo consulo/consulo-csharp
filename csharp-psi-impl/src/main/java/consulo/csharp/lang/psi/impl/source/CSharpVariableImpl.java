@@ -45,7 +45,7 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 		}
 	};
 
-	private final ThreadLocal<Boolean> myTypeRefProcessing = ThreadLocal.withInitial(() -> Boolean.FALSE);
+	protected final ThreadLocal<Boolean> myTypeRefProcessing = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
 	public CSharpVariableImpl(@Nonnull ASTNode node)
 	{

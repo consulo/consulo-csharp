@@ -16,19 +16,16 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
-
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
+import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
+import consulo.dotnet.psi.*;
+import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -109,6 +106,7 @@ public class CSharpContextUtil
 					resolvedElement instanceof DotNetNamespaceAsElement ||
 					resolvedElement instanceof CSharpLocalVariable ||
 					resolvedElement instanceof CSharpLinqVariable ||
+					resolvedElement instanceof CSharpOutRefVariableImpl ||
 					resolvedElement instanceof DotNetParameter ||
 					resolvedElement instanceof CSharpLambdaParameter ||
 					resolvedElement instanceof CSharpConstructorDeclaration)

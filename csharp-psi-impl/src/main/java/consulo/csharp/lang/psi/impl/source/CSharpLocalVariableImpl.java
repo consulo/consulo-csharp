@@ -16,14 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.jetbrains.annotations.NonNls;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.search.LocalSearchScope;
@@ -34,16 +27,18 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpIdentifier;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
-import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.logging.Logger;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -51,7 +46,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CSharpLocalVariable
 {
-	private static final Logger LOGGER = Logger.getInstance(CSharpLocalVariableImpl.class);
+	private static final Logger LOG = Logger.getInstance(CSharpLocalVariableImpl.class);
 
 	public CSharpLocalVariableImpl(@Nonnull ASTNode node)
 	{
@@ -195,7 +190,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		{
 			return new LocalSearchScope(parent);
 		}
-		CSharpLocalVariableImpl.LOGGER.error("Global usage scope for local variable, parent: " + parent.getClass().getName());
+		CSharpLocalVariableImpl.LOG.error("Global usage scope for local variable, parent: " + parent.getClass().getName());
 		return super.getUseScope();
 	}
 

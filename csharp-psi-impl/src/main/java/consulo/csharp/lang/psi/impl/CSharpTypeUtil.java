@@ -16,14 +16,6 @@
 
 package consulo.csharp.lang.psi.impl;
 
-import gnu.trove.THashSet;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -33,27 +25,22 @@ import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpUserTypeRef;
+import consulo.csharp.lang.psi.impl.source.CSharpOutRefAutoTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.*;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterList;
-import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetPointerTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.psi.*;
+import consulo.dotnet.resolve.*;
 import consulo.dotnet.util.ArrayUtil2;
+import gnu.trove.THashSet;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -311,6 +298,16 @@ public class CSharpTypeUtil
 				return fail();
 			}
 			return isInheritable(((CSharpRefTypeRef) top).getInnerTypeRef(), ((CSharpRefTypeRef) target).getInnerTypeRef(), scope, castType);
+		}
+
+		if(top instanceof CSharpRefTypeRef && target instanceof CSharpOutRefAutoTypeRef)
+		{
+			if(((CSharpRefTypeRef) top).getType() != ((CSharpOutRefAutoTypeRef) target).getType())
+			{
+				return fail();
+			}
+
+			return SIMPLE_SUCCESS;
 		}
 
 		if(target instanceof CSharpRefTypeRef)

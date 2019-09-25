@@ -16,20 +16,14 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpFieldOrPropertySetBlock;
-import consulo.csharp.lang.psi.CSharpNewExpression;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpUserType;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpAnonymTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
@@ -38,10 +32,12 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetReferenceExpression;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -259,5 +255,19 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 	{
 		CSharpCallArgumentList parameterList = getParameterList();
 		return parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
+	}
+
+	@Override
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	{
+		CSharpCallArgument[] callArguments = getCallArguments();
+		for(CSharpCallArgument callArgument : callArguments)
+		{
+			if(!callArgument.processDeclarations(processor, state, lastParent, place))
+			{
+				return false;
+			}
+		}
+		return super.processDeclarations(processor, state, lastParent, place);
 	}
 }

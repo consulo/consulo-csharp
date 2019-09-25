@@ -16,17 +16,18 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayFactory;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableImpl;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -138,6 +139,7 @@ public enum ExecuteTarget
 					return element instanceof CSharpLocalVariable ||
 							element instanceof DotNetParameter ||
 							element instanceof CSharpLinqVariable ||
+							element instanceof CSharpOutRefVariableImpl ||
 							element instanceof CSharpLambdaParameter;
 				}
 			};

@@ -16,9 +16,6 @@
 
 package consulo.csharp.ide.findUsage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.navigation.ItemPresentation;
@@ -28,18 +25,14 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpTupleElementImpl;
+import consulo.csharp.lang.psi.impl.source.*;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -69,6 +62,7 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 
 	@Nonnull
 	@Override
+	@RequiredReadAction
 	public String getType(@Nonnull PsiElement element)
 	{
 		if(element instanceof CSharpTypeDeclaration)
@@ -126,6 +120,11 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		else if(element instanceof CSharpLinqVariable)
 		{
 			return "linq local variable";
+		}
+		else if(element instanceof CSharpOutRefVariableImpl)
+		{
+			CSharpOutRefVariableExpressionImpl parent = (CSharpOutRefVariableExpressionImpl) element.getParent();
+			return parent.getType() + " local variable";
 		}
 		else if(element instanceof DotNetGenericParameter)
 		{

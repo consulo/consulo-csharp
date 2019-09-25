@@ -149,6 +149,10 @@ public interface CSharpElements
 
 	IElementType OUT_REF_WRAP_EXPRESSION = new ElementTypeAsPsiFactory("OUT_REF_WRAP_EXPRESSION", CSharpLanguage.INSTANCE, CSharpOutRefWrapExpressionImpl.class);
 
+	IElementType OUT_REF_VARIABLE_EXPRESSION = new ElementTypeAsPsiFactory("OUT_REF_VARIABLE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpOutRefVariableExpressionImpl.class);
+
+	IElementType OUT_REF_VARIABLE = new ElementTypeAsPsiFactory("OUT_REF_VARIABLE", CSharpLanguage.INSTANCE, CSharpOutRefVariableImpl.class);
+
 	IElementType CONDITIONAL_EXPRESSION = new ElementTypeAsPsiFactory("CONDITIONAL_EXPRESSION", CSharpLanguage.INSTANCE, CSharpConditionalExpressionImpl.class);
 
 	IElementType NULL_COALESCING_EXPRESSION = new ElementTypeAsPsiFactory("NULL_COALESCING_EXPRESSION", CSharpLanguage.INSTANCE, CSharpNullCoalescingExpressionImpl.class);

@@ -16,17 +16,11 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
 import com.intellij.psi.PsiElementVisitor;
 import consulo.csharp.lang.psi.impl.source.*;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterList;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetParameterList;
-import consulo.dotnet.psi.DotNetPointerType;
-import consulo.dotnet.psi.DotNetTypeList;
-import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.*;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -664,5 +658,15 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	public void visitShortObjectInitializerExpression(CSharpShortObjectInitializerExpressionImpl expression)
 	{
 		visitElement(expression);
+	}
+
+	public void visitOutRefVariableExpression(CSharpOutRefVariableExpressionImpl expression)
+	{
+		visitElement(expression);
+	}
+
+	public void visitOutRefVariable(CSharpOutRefVariableImpl variable)
+	{
+		visitVariable(variable);
 	}
 }

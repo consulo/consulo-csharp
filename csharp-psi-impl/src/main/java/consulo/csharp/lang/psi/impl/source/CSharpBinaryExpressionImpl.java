@@ -16,19 +16,21 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.tree.IElementType;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpConstantBaseTypeRef;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -103,5 +105,22 @@ public class CSharpBinaryExpressionImpl extends CSharpExpressionWithOperatorImpl
 			nextSibling = nextSibling.getNextSibling();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	{
+		DotNetExpression leftExpression = getLeftExpression();
+		if(leftExpression != null && !leftExpression.processDeclarations(processor, state, lastParent, place))
+		{
+			return false;
+		}
+
+		DotNetExpression rightExpression = getRightExpression();
+		if(rightExpression != null && !rightExpression.processDeclarations(processor, state, lastParent, place))
+		{
+			return false;
+		}
+		return super.processDeclarations(processor, state, lastParent, place);
 	}
 }

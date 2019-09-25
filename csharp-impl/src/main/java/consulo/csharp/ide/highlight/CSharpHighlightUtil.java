@@ -16,9 +16,6 @@
 
 package consulo.csharp.ide.highlight;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.annotations.PropertyKey;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
@@ -30,19 +27,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.psi.DotNetAttributeUtil;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetInheritUtil;
-import consulo.dotnet.psi.DotNetMethodDeclaration;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.*;
+import org.jetbrains.annotations.PropertyKey;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -175,7 +169,7 @@ public class CSharpHighlightUtil
 				key = DefaultLanguageHighlighterColors.LOCAL_VARIABLE;
 			}
 		}
-		else if(element instanceof CSharpLinqVariable)
+		else if(element instanceof CSharpLinqVariable || element instanceof CSharpOutRefVariableImpl)
 		{
 			key = DefaultLanguageHighlighterColors.LOCAL_VARIABLE;
 		}

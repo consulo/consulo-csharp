@@ -16,12 +16,16 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
-import com.intellij.lang.ASTNode;
 import consulo.dotnet.psi.DotNetExpression;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -45,5 +49,12 @@ public class CSharpCallArgumentImpl extends CSharpElementImpl implements CSharpC
 	public DotNetExpression getArgumentExpression()
 	{
 		return findChildByClass(DotNetExpression.class);
+	}
+
+	@Override
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	{
+		DotNetExpression expression = getArgumentExpression();
+		return expression != null && expression.processDeclarations(processor, state, lastParent, place);
 	}
 }

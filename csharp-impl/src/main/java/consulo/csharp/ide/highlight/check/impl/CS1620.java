@@ -16,11 +16,12 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.*;
+import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -28,6 +29,7 @@ import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
@@ -37,16 +39,10 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.SmartList;
+
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -130,7 +126,7 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 				continue;
 			}
 
-			CSharpRefTypeRef.Type type = null;
+			CSharpRefTypeRef.Type type;
 
 			DotNetParameter parameter = (DotNetParameter) parameterElement;
 			if(parameter.hasModifier(CSharpModifier.REF))
@@ -146,11 +142,16 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 				continue;
 			}
 
-			DotNetTypeRef typeRef = argument.getTypeRef();
-			if(!(typeRef instanceof CSharpRefTypeRef) || ((CSharpRefTypeRef) typeRef).getType() != type)
+			if(argumentExpression instanceof CSharpOutRefVariableExpressionImpl && ((CSharpOutRefVariableExpressionImpl) argumentExpression).getType() == type)
 			{
-				results.add(newBuilder(argumentExpression, String.valueOf(parameter.getIndex() + 1), type.name()).addQuickFix(new BaseUseTypeFix
-						(argumentExpression, type)));
+				continue;
+			}
+
+			DotNetTypeRef typeRef = argument.getTypeRef();
+			if(!(typeRef instanceof CSharpRefTypeRef) ||
+					((CSharpRefTypeRef) typeRef).getType() != type)
+			{
+				results.add(newBuilder(argumentExpression, String.valueOf(parameter.getIndex() + 1), type.name()).addQuickFix(new BaseUseTypeFix(argumentExpression, type)));
 			}
 			return results;
 		}

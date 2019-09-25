@@ -1089,12 +1089,27 @@ public class ExpressionParsing extends SharedParsingHelpers
 		PsiBuilder.Marker mark = builder.mark();
 		builder.advanceLexer();
 
-		if(parse(builder, set) == null)
-		{
-			builder.error("Expression expected");
-		}
+		PsiBuilder.Marker possibleVarMark = builder.mark();
 
-		mark.done(OUT_REF_WRAP_EXPRESSION);
+		if(parseType(builder, VAR_SUPPORT) != null && builder.getTokenType() == CSharpTokens.IDENTIFIER)
+		{
+			doneIdentifier(builder, NONE);
+
+			possibleVarMark.done(OUT_REF_VARIABLE);
+
+			mark.done(OUT_REF_VARIABLE_EXPRESSION);
+		}
+		else
+		{
+			possibleVarMark.rollbackTo();
+
+			if(parse(builder, set) == null)
+			{
+				builder.error("Expression expected");
+			}
+
+			mark.done(OUT_REF_WRAP_EXPRESSION);
+		}
 		return mark;
 	}
 

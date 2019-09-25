@@ -16,15 +16,18 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.ArrayUtil;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -101,5 +104,19 @@ public class CSharpIfStatementImpl extends CSharpElementImpl implements DotNetSt
 	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitIfStatement(this);
+	}
+
+	@Override
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	{
+		DotNetExpression conditionExpression = getConditionExpression();
+		if(conditionExpression != null)
+		{
+			if(!conditionExpression.processDeclarations(processor, state, lastParent, place))
+			{
+				return false;
+			}
+		}
+		return super.processDeclarations(processor, state, lastParent, place);
 	}
 }
