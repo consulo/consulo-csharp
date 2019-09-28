@@ -49,7 +49,8 @@ public class ExpressionParsing extends SharedParsingHelpers
 		ADDITIVE,
 		MULTIPLICATIVE,
 		UNARY,
-		MAYBE_NULLABLE_TYPE
+		MAYBE_NULLABLE_TYPE,
+		MAYBE_NULLABLE_WITH_VARIABLE
 	}
 
 	private static final TokenSet CONDITIONAL_OR_OPS = TokenSet.create(OROR);
@@ -223,44 +224,68 @@ public class ExpressionParsing extends SharedParsingHelpers
 				return parseUnary(builder, set, flags);
 
 			case MAYBE_NULLABLE_TYPE:
-				TypeInfo typeInfo = parseType(builder, NONE);
-				if(typeInfo == null)
+				return parseMaybeNullableType(builder, set, flags);
+			case MAYBE_NULLABLE_WITH_VARIABLE:
+				PsiBuilder.Marker nullableType = parseMaybeNullableType(builder, set, flags);
+				if(nullableType == null)
 				{
 					return null;
 				}
 
-				// if we have nullable type - need find colon, or return original marker
-				if(typeInfo.isNullable)
+				if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
 				{
-					if(builder.getTokenType() == QUEST)
-					{
-						return typeInfo.marker;
-					}
-					// o is int? "true" : "false"
-					PsiBuilder.Marker marker = parseConditional(builder, set, flags);
-					if(marker != null)
-					{
-						IElementType tokenType = builder.getTokenType();
-						marker.rollbackTo();
-
-						if(tokenType == COLON)
-						{
-							typeInfo.marker.rollbackTo();
-
-							TypeInfo anotherTypeInfo = parseType(builder, WITHOUT_NULLABLE);
-							assert anotherTypeInfo != null;
-							return anotherTypeInfo.marker;
-						}
-					}
-					return typeInfo.marker;
+					PsiBuilder.Marker varIdentifierMarker = builder.mark();
+					doneIdentifier(builder, flags);
+					varIdentifierMarker.done(IS_VARIABLE);
+					return nullableType;
 				}
 				else
 				{
-					return typeInfo.marker;
+					return nullableType;
 				}
 			default:
 				assert false : "Unexpected type: " + type;
 				return null;
+		}
+	}
+
+	@Nullable
+	private static PsiBuilder.Marker parseMaybeNullableType(CSharpBuilderWrapper builder, ModifierSet set, int flags)
+	{
+		TypeInfo typeInfo = parseType(builder, NONE);
+		if(typeInfo == null)
+		{
+			return null;
+		}
+
+		// if we have nullable type - need find colon, or return original marker
+		if(typeInfo.isNullable)
+		{
+			if(builder.getTokenType() == QUEST)
+			{
+				return typeInfo.marker;
+			}
+			// o is int? "true" : "false"
+			PsiBuilder.Marker marker = parseConditional(builder, set, flags);
+			if(marker != null)
+			{
+				IElementType tokenType = builder.getTokenType();
+				marker.rollbackTo();
+
+				if(tokenType == COLON)
+				{
+					typeInfo.marker.rollbackTo();
+
+					TypeInfo anotherTypeInfo = parseType(builder, WITHOUT_NULLABLE);
+					assert anotherTypeInfo != null;
+					return anotherTypeInfo.marker;
+				}
+			}
+			return typeInfo.marker;
+		}
+		else
+		{
+			return typeInfo.marker;
 		}
 	}
 
@@ -413,7 +438,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			else if(tokenType == IS_KEYWORD)
 			{
 				toCreate = IS_EXPRESSION;
-				toParse = ExprType.MAYBE_NULLABLE_TYPE;
+				toParse = ExprType.MAYBE_NULLABLE_WITH_VARIABLE;
 			}
 			else if(tokenType == AS_KEYWORD)
 			{
@@ -438,7 +463,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			final PsiBuilder.Marker right = parseExpression(builder, toParse, set, flags);
 			if(right == null)
 			{
-				builder.error(toParse == ExprType.MAYBE_NULLABLE_TYPE ? "Type expected" : "Expression expected");
+				builder.error(toParse == ExprType.MAYBE_NULLABLE_TYPE || toParse == ExprType.MAYBE_NULLABLE_WITH_VARIABLE ? "Type expected" : "Expression expected");
 				expression.done(toCreate);
 				return expression;
 			}

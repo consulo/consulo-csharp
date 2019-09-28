@@ -126,6 +126,10 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 			CSharpOutRefVariableExpressionImpl parent = (CSharpOutRefVariableExpressionImpl) element.getParent();
 			return parent.getType() + " local variable";
 		}
+		else if(element instanceof CSharpIsVariableImpl)
+		{
+			return "is variable";
+		}
 		else if(element instanceof DotNetGenericParameter)
 		{
 			return "generic parameter";

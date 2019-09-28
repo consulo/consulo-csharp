@@ -27,6 +27,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.CSharpIsVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
@@ -169,7 +170,7 @@ public class CSharpHighlightUtil
 				key = DefaultLanguageHighlighterColors.LOCAL_VARIABLE;
 			}
 		}
-		else if(element instanceof CSharpLinqVariable || element instanceof CSharpOutRefVariableImpl)
+		else if(element instanceof CSharpLinqVariable || element instanceof CSharpOutRefVariableImpl || element instanceof CSharpIsVariableImpl)
 		{
 			key = DefaultLanguageHighlighterColors.LOCAL_VARIABLE;
 		}

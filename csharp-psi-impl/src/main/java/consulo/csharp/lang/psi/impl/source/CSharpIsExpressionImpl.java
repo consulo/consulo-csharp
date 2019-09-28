@@ -16,9 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -26,6 +27,9 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -64,5 +68,22 @@ public class CSharpIsExpressionImpl extends CSharpExpressionImpl implements DotN
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		return new CSharpTypeRefByQName(this, DotNetTypes.System.Boolean);
+	}
+
+	@Nullable
+	public CSharpIsVariableImpl getVariable()
+	{
+		return findChildByClass(CSharpIsVariableImpl.class);
+	}
+
+	@Override
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	{
+		CSharpIsVariableImpl variable = getVariable();
+		if(variable != null && !processor.execute(variable, state))
+		{
+			return false;
+		}
+		return super.processDeclarations(processor, state, lastParent, place);
 	}
 }

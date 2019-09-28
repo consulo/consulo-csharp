@@ -19,6 +19,7 @@ package consulo.csharp.lang.psi.impl.source.resolve;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayFactory;
 import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.CSharpIsVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableImpl;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -139,6 +140,7 @@ public enum ExecuteTarget
 					return element instanceof CSharpLocalVariable ||
 							element instanceof DotNetParameter ||
 							element instanceof CSharpLinqVariable ||
+							element instanceof CSharpIsVariableImpl ||
 							element instanceof CSharpOutRefVariableImpl ||
 							element instanceof CSharpLambdaParameter;
 				}

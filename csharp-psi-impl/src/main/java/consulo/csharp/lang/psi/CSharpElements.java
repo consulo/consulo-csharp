@@ -127,6 +127,8 @@ public interface CSharpElements
 
 	IElementType IS_EXPRESSION = new ElementTypeAsPsiFactory("IS_EXPRESSION", CSharpLanguage.INSTANCE, CSharpIsExpressionImpl.class);
 
+	IElementType IS_VARIABLE = new ElementTypeAsPsiFactory("IS_VARIABLE", CSharpLanguage.INSTANCE, CSharpIsVariableImpl.class);
+
 	IElementType AS_EXPRESSION = new ElementTypeAsPsiFactory("AS_EXPRESSION", CSharpLanguage.INSTANCE, CSharpAsExpressionImpl.class);
 
 	IElementType NEW_ARRAY_LENGTH = new ElementTypeAsPsiFactory("NEW_ARRAY_LENGTH", CSharpLanguage.INSTANCE, CSharpNewArrayLengthImpl.class);
