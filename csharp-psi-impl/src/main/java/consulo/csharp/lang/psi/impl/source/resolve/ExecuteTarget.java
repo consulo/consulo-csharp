@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi.impl.source.resolve;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayFactory;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpIsVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
@@ -38,6 +39,7 @@ public enum ExecuteTarget
 {
 	LABEL
 			{
+				@RequiredReadAction
 				@Override
 				public boolean isMyElement(@Nonnull PsiElement element)
 				{
@@ -46,6 +48,7 @@ public enum ExecuteTarget
 			},
 	TYPE
 			{
+				@RequiredReadAction
 				@Override
 				public boolean isMyElement(@Nonnull PsiElement element)
 				{
@@ -54,6 +57,7 @@ public enum ExecuteTarget
 			},
 	MEMBER
 			{
+				@RequiredReadAction
 				@Override
 				public boolean isMyElement(@Nonnull PsiElement element)
 				{
@@ -62,6 +66,7 @@ public enum ExecuteTarget
 			},
 	DELEGATE_METHOD
 			{
+				@RequiredReadAction
 				@Override
 				public boolean isMyElement(@Nonnull PsiElement element)
 				{
@@ -70,6 +75,7 @@ public enum ExecuteTarget
 			},
 	TYPE_DEF
 			{
+				@RequiredReadAction
 				@Override
 				public boolean isMyElement(@Nonnull PsiElement element)
 				{
@@ -78,6 +84,7 @@ public enum ExecuteTarget
 			},
 	NAMESPACE
 			{
+				@RequiredReadAction
 				@Override
 				public boolean isMyElement(@Nonnull PsiElement element)
 				{
@@ -86,6 +93,7 @@ public enum ExecuteTarget
 			},
 	GENERIC_PARAMETER
 			{
+				@RequiredReadAction
 				@Override
 				public boolean isMyElement(@Nonnull PsiElement element)
 				{
@@ -94,6 +102,7 @@ public enum ExecuteTarget
 			},
 	FIELD
 			{
+				@RequiredReadAction
 				@Override
 				public boolean isMyElement(@Nonnull PsiElement element)
 				{
@@ -102,6 +111,7 @@ public enum ExecuteTarget
 			},
 	PROPERTY
 			{
+				@RequiredReadAction
 				@Override
 				public boolean isMyElement(@Nonnull PsiElement element)
 				{
@@ -110,6 +120,7 @@ public enum ExecuteTarget
 			},
 	CONSTRUCTOR
 			{
+				@RequiredReadAction
 				@Override
 				public boolean isMyElement(@Nonnull PsiElement element)
 				{
@@ -118,6 +129,7 @@ public enum ExecuteTarget
 			},
 	EVENT
 			{
+				@RequiredReadAction
 				@Override
 				public boolean isMyElement(@Nonnull PsiElement element)
 				{
@@ -126,14 +138,16 @@ public enum ExecuteTarget
 			},
 	ELEMENT_GROUP
 			{
+				@RequiredReadAction
 				@Override
 				public boolean isMyElement(@Nonnull PsiElement element)
 				{
 					return element instanceof CSharpElementGroup;
 				}
 			},
-	LOCAL_VARIABLE_OR_PARAMETER
+	LOCAL_VARIABLE_OR_PARAMETER_OR_LOCAL_METHOD
 			{
+				@RequiredReadAction
 				@Override
 				public boolean isMyElement(@Nonnull PsiElement element)
 				{
@@ -142,7 +156,8 @@ public enum ExecuteTarget
 							element instanceof CSharpLinqVariable ||
 							element instanceof CSharpIsVariableImpl ||
 							element instanceof CSharpOutRefVariableImpl ||
-							element instanceof CSharpLambdaParameter;
+							element instanceof CSharpLambdaParameter ||
+							element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isLocal();
 				}
 			};
 
@@ -158,5 +173,6 @@ public enum ExecuteTarget
 		}
 	};
 
+	@RequiredReadAction
 	public abstract boolean isMyElement(@Nonnull PsiElement element);
 }

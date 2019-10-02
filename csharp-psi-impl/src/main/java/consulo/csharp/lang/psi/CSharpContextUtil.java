@@ -61,6 +61,11 @@ public class CSharpContextUtil
 			return ContextType.ANY;
 		}
 
+		if(element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isLocal())
+		{
+			return ContextType.ANY;
+		}
+
 		if(CSharpPsiUtilImpl.isTypeLikeElement(element))
 		{
 			return ContextType.STATIC;

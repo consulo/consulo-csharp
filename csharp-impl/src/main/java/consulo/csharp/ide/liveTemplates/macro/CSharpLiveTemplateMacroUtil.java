@@ -47,7 +47,7 @@ public class CSharpLiveTemplateMacroUtil
 		Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImplUtil.getResolveLayers(scope, false);
 
 		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
-		StubScopeProcessor processor = new SimpleNamedScopeProcessor(psiElementProcessor, true, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
+		StubScopeProcessor processor = new SimpleNamedScopeProcessor(psiElementProcessor, true, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER_OR_LOCAL_METHOD);
 		CSharpResolveUtil.treeWalkUp(processor, scope, scope, resolveLayers.getFirst());
 
 		CSharpResolveOptions options = CSharpResolveOptions.build();

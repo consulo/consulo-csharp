@@ -14,8 +14,8 @@
   - limitations under the License.
   -->
 
-<idea-plugin>
+<consulo-plugin>
 	<extensions defaultExtensionNs="com.intellij">
 		<lang.defineVersion language="CFS" implementationClass="consulo.csharp.lang.CSharpCfsLanguageVersion"/>
 	</extensions>
-</idea-plugin>
+</consulo-plugin>

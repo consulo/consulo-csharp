@@ -16,13 +16,13 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.Processor;
+import consulo.annotations.RequiredReadAction;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
 
 /**
  * @author VISTALL
@@ -33,7 +33,7 @@ public interface CSharpElementGroup<T extends PsiElement> extends PsiNamedElemen
 	@Nonnull
 	Collection<T> getElements();
 
-	boolean process(@Nonnull Processor<? super T> processor);
+	boolean process(@RequiredReadAction @Nonnull Processor<? super T> processor);
 
 	@Override
 	@Nonnull

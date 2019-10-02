@@ -145,7 +145,7 @@ public class MethodParsing extends MemberWithBodyParsing
 			GenericParameterParsing.parseGenericConstraintList(builder);
 		}
 
-		parseMethodBody(builder, set);
+		parseMethodBodyOrSemicolon(builder, set);
 
 		switch(target)
 		{
@@ -162,21 +162,31 @@ public class MethodParsing extends MemberWithBodyParsing
 		}
 	}
 
-	public static void parseMethodBody(CSharpBuilderWrapper builder, ModifierSet set)
+	public static void parseMethodBodyOrSemicolon(CSharpBuilderWrapper builder, ModifierSet set)
+	{
+		if(!parseMethodBody(builder, set))
+		{
+			expect(builder, SEMICOLON, "';' expected");
+		}
+	}
+
+	public static boolean parseMethodBody(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		if(builder.getTokenType() == LBRACE)
 		{
 			StatementParsing.parse(builder, set);
+			return true;
 		}
 		else if(builder.getTokenType() == DARROW)
 		{
 			builder.advanceLexer();
 			ExpressionParsing.parse(builder, set);
 			expect(builder, SEMICOLON, "';' expected");
+			return true;
 		}
 		else
 		{
-			expect(builder, SEMICOLON, "';' expected");
+			return false;
 		}
 	}
 

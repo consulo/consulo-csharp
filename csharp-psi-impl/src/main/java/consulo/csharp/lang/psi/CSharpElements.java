@@ -59,6 +59,10 @@ public interface CSharpElements
 
 	IElementType LOCAL_VARIABLE = new ElementTypeAsPsiFactory("LOCAL_VARIABLE", CSharpLanguage.INSTANCE, CSharpLocalVariableImpl.class);
 
+	IElementType LOCAL_METHOD = new ElementTypeAsPsiFactory("LOCAL_METHOD", CSharpLanguage.INSTANCE, CSharpLocalMethodDeclarationImpl.class);
+
+	IElementType LOCAL_METHOD_STATEMENT = new ElementTypeAsPsiFactory("LOCAL_METHOD_STATEMENT", CSharpLanguage.INSTANCE, CSharpLocalMethodDeclarationStatementImpl.class);
+
 	IElementType PROPERTY_DECLARATION = CSharpStubElements.PROPERTY_DECLARATION;
 
 	IElementType ARRAY_METHOD_DECLARATION = CSharpStubElements.INDEX_METHOD_DECLARATION;

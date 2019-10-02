@@ -470,6 +470,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		return mark;
 	}
 
+	@Nonnull
 	protected static Pair<PsiBuilder.Marker, ModifierSet> parseModifierList(CSharpBuilderWrapper builder, int flags)
 	{
 		PsiBuilder.Marker marker = builder.mark();

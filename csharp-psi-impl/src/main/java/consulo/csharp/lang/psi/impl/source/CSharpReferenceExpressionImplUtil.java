@@ -752,7 +752,7 @@ public class CSharpReferenceExpressionImplUtil
 	public static void processAnyMember(@Nonnull CSharpResolveOptions options,
 										@Nonnull DotNetGenericExtractor defaultExtractor,
 										@Nullable PsiElement forceQualifierElement,
-										@Nonnull Processor<ResolveResult> processor)
+										@Nonnull @RequiredReadAction Processor<ResolveResult> processor)
 	{
 		PsiElement qualifier = options.getQualifier();
 		@Nonnull PsiElement element = options.getElement();
@@ -958,7 +958,7 @@ public class CSharpReferenceExpressionImplUtil
 			// if resolving is any member, first we need process locals and then go to fields and other
 			if(kind == ResolveToKind.ANY_MEMBER || kind == ResolveToKind.METHOD || kind == ResolveToKind.NAMEOF)
 			{
-				SimpleNamedScopeProcessor localProcessor = new SimpleNamedScopeProcessor(memberProcessor, completion, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
+				SimpleNamedScopeProcessor localProcessor = new SimpleNamedScopeProcessor(memberProcessor, completion, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER_OR_LOCAL_METHOD);
 
 				CSharpResolveUtil.treeWalkUp(localProcessor, target, element, last, resolveState);
 			}
@@ -1056,7 +1056,7 @@ public class CSharpReferenceExpressionImplUtil
 						ExecuteTarget.FIELD,
 						ExecuteTarget.PROPERTY,
 						ExecuteTarget.EVENT,
-						ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER
+						ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER_OR_LOCAL_METHOD
 				};
 				break;
 			case CONSTRUCTOR:
@@ -1105,6 +1105,7 @@ public class CSharpReferenceExpressionImplUtil
 	 * @return couple of psieelement, first is the last element for walk, second is the stub member for walk
 	 */
 	@Nonnull
+	@RequiredReadAction
 	public static Couple<PsiElement> getResolveLayers(final PsiElement element, boolean strict)
 	{
 		PsiElement last = null;
@@ -1153,6 +1154,10 @@ public class CSharpReferenceExpressionImplUtil
 					targetToWalkChildren = PsiTreeUtil.getParentOfType(temp, DotNetModifierListOwner.class);
 				}
 				break;
+			}
+			else if(temp instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) temp).isLocal())
+			{
+				// nothing - go up
 			}
 			else if(temp instanceof DotNetFieldDeclaration || temp instanceof DotNetPropertyDeclaration || temp instanceof DotNetEventDeclaration || temp instanceof DotNetLikeMethodDeclaration)
 			{

@@ -14,7 +14,7 @@
   - limitations under the License.
   -->
 
-<idea-plugin>
+<consulo-plugin>
 	<extensions defaultExtensionNs="com.intellij">
 		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.obsolete.ObsoleteInspection"
 						 displayName="Obsolete warnings" groupName="C#" enabledByDefault="true"/>
@@ -55,4 +55,4 @@
 						 enabledByDefault="true"
 						 level="WARNING"/>
 	</extensions>
-</idea-plugin>
+</consulo-plugin>

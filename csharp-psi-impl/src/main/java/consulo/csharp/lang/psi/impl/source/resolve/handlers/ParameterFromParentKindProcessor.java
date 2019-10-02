@@ -55,7 +55,7 @@ public class ParameterFromParentKindProcessor implements KindProcessor
 		}
 
 		SimpleNamedScopeProcessor scopeProcessor = new SimpleNamedScopeProcessor(processor, options.isCompletion(),
-				ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
+				ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER_OR_LOCAL_METHOD);
 		ResolveState state = ResolveState.initial();
 		state = state.put(CSharpResolveUtil.SELECTOR, options.getSelector());
 

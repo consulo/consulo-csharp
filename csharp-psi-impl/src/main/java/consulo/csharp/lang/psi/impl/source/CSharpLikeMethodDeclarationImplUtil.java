@@ -144,7 +144,7 @@ public class CSharpLikeMethodDeclarationImplUtil
 			}
 		}
 
-		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER))
+		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER_OR_LOCAL_METHOD))
 		{
 			for(DotNetParameter parameter : methodDeclaration.getParameters())
 			{

@@ -16,19 +16,22 @@
 
 package consulo.csharp.lang.parser.stmt;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.lang.LighterASTNode;
+import com.intellij.lang.PsiBuilder;
+import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.ModifierSet;
 import consulo.csharp.lang.parser.SharedParsingHelpers;
 import consulo.csharp.lang.parser.decl.FieldOrPropertyParsing;
+import consulo.csharp.lang.parser.decl.MethodParsing;
 import consulo.csharp.lang.parser.exp.ExpressionParsing;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
-import com.intellij.lang.LighterASTNode;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.tree.IElementType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -48,10 +51,12 @@ public class StatementParsing extends SharedParsingHelpers
 		PsiBuilder.Marker marker = builder.mark();
 
 		builder.enableSoftKeyword(CSharpSoftTokens.YIELD_KEYWORD);
+		builder.enableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
 
 		IElementType tokenType = builder.getTokenType();
 
 		builder.disableSoftKeyword(CSharpSoftTokens.YIELD_KEYWORD);
+		builder.disableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
 
 		if(tokenType == LOCK_KEYWORD)
 		{
@@ -136,8 +141,25 @@ public class StatementParsing extends SharedParsingHelpers
 		{
 			parseFinallyStatement(builder, marker, set);
 		}
+		else if(tokenType == ASYNC_KEYWORD)
+		{
+			PsiBuilder.Marker methodMarker = parseLocalMethodDeclaration(builder, marker, false);
+			if(methodMarker != null)
+			{
+			return methodMarker;
+			}
+
+			builder.remapBackIfSoft();
+
+			return parseLabelOrVariableOrExpression(tokenType, builder, marker, set);
+		}
 		else if(tokenType == UNSAFE_KEYWORD)
 		{
+			PsiBuilder.Marker methodMarker = parseLocalMethodDeclaration(builder, marker, false);
+			if(methodMarker != null)
+			{
+				return methodMarker;
+			}
 			parseUnsafeStatement(builder, marker, set);
 		}
 		else if(tokenType == IF_KEYWORD)
@@ -190,28 +212,91 @@ public class StatementParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			if(tokenType == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == COLON)
-			{
-				parseLabeledStatement(builder, marker, set);
-				return marker;
-			}
-
-			if(parseVariableOrExpression(builder, marker, set) == null)
-			{
-				return null;
-			}
+			return parseLabelOrVariableOrExpression(tokenType, builder, marker, set);
 		}
 		return marker;
+	}
+
+	@Nullable
+	private static PsiBuilder.Marker parseLabelOrVariableOrExpression(IElementType tokenType, CSharpBuilderWrapper builder, @Nonnull PsiBuilder.Marker marker, ModifierSet set)
+	{
+		if(tokenType == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == COLON)
+		{
+			parseLabeledStatement(builder, marker, set);
+			return marker;
+		}
+
+		if(parseVariableOrExpression(builder, marker, set) == null)
+		{
+			return null;
+		}
+
+		return marker;
+	}
+
+	@Nullable
+	private static PsiBuilder.Marker parseLocalMethodDeclaration(CSharpBuilderWrapper builder, @Nonnull PsiBuilder.Marker statementMarker, boolean rollbackBody)
+	{
+		PsiBuilder.Marker methodMarker = builder.mark();
+
+		ModifierSet modifierSet = ModifierSet.EMPTY;
+
+		IElementType tokenType = builder.getTokenType();
+		if(tokenType == UNSAFE_KEYWORD || tokenType == ASYNC_KEYWORD)
+		{
+			Pair<PsiBuilder.Marker, ModifierSet> pair = parseModifierList(builder, NONE);
+			modifierSet = pair.getSecond();
+		}
+
+		TypeInfo type = parseType(builder, NONE);
+		if(type == null)
+		{
+			methodMarker.rollbackTo();
+			return null;
+		}
+
+		// name (
+		if(builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == LPAR)
+		{
+			doneIdentifier(builder, NONE);
+
+			MethodParsing.parseParameterList(builder, SharedParsingHelpers.NONE, RPAR, modifierSet);
+
+			if(!MethodParsing.parseMethodBody(builder, modifierSet))
+			{
+				if(rollbackBody)
+				{
+					methodMarker.rollbackTo();
+					return null;
+				}
+				else
+				{
+					builder.error("Expected body");
+				}
+			}
+
+			methodMarker.done(LOCAL_METHOD);
+
+			statementMarker.done(LOCAL_METHOD_STATEMENT);
+
+			return statementMarker;
+		}
+		else
+		{
+			methodMarker.rollbackTo();
+			return null;
+		}
 	}
 
 	private static enum ParseVariableOrExpressionResult
 	{
 		VARIABLE,
+		METHOD,
 		EXPRESSION
 	}
 
 	@Nullable
-	private static ParseVariableOrExpressionResult parseVariableOrExpression(CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker someMarker, ModifierSet set)
+	private static ParseVariableOrExpressionResult parseVariableOrExpression(CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker statementMarker, ModifierSet set)
 	{
 		LocalVarType localVarType = canParseAsVariable(builder, set);
 		// need for example remap global keyword to identifier when it try to parse
@@ -224,34 +309,41 @@ public class StatementParsing extends SharedParsingHelpers
 				PsiBuilder.Marker expressionMarker = ExpressionParsing.parse(builder, set);
 				if(expressionMarker == null)
 				{
-					if(someMarker != null)
+					if(statementMarker != null)
 					{
-						someMarker.drop();
+						statementMarker.drop();
 					}
 					return null;
 				}
 				else
 				{
-					if(someMarker != null)
+					if(statementMarker != null)
 					{
 						expect(builder, SEMICOLON, "';' expected");
 					}
 				}
 
-				if(someMarker != null)
+				if(statementMarker != null)
 				{
-					someMarker.done(EXPRESSION_STATEMENT);
+					statementMarker.done(EXPRESSION_STATEMENT);
 				}
 				return ParseVariableOrExpressionResult.EXPRESSION;
 			case WITH_NAME:
 				PsiBuilder.Marker mark = builder.mark();
 				FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE, VAR_SUPPORT, false, set);
-				if(someMarker != null)
+				if(statementMarker != null)
 				{
 					expect(builder, SEMICOLON, "';' expected");
-					someMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
+					statementMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 				}
 				return ParseVariableOrExpressionResult.VARIABLE;
+			case LOCAL_METHOD:
+				PsiBuilder.Marker marker = parseLocalMethodDeclaration(builder, statementMarker == null ? builder.mark() : statementMarker, false);
+				if(marker == null)
+				{
+					return null;
+				}
+				return ParseVariableOrExpressionResult.METHOD;
 			case NO_NAME:
 				PsiBuilder.Marker newMarker = builder.mark();
 				TypeInfo typeInfo = parseType(builder, BRACKET_RETURN_BEFORE | VAR_SUPPORT);
@@ -259,10 +351,10 @@ public class StatementParsing extends SharedParsingHelpers
 				reportIdentifier(builder, NONE);
 				newMarker.done(LOCAL_VARIABLE);
 
-				if(someMarker != null)
+				if(statementMarker != null)
 				{
 					expect(builder, SEMICOLON, "';' expected");
-					someMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
+					statementMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 				}
 				return ParseVariableOrExpressionResult.VARIABLE;
 			default:
@@ -274,6 +366,7 @@ public class StatementParsing extends SharedParsingHelpers
 	{
 		NONE,
 		WITH_NAME,
+		LOCAL_METHOD,
 		NO_NAME
 	}
 
@@ -316,6 +409,11 @@ public class StatementParsing extends SharedParsingHelpers
 				if(builder.lookAhead(1) == CSharpTokens.SEMICOLON || builder.lookAhead(1) == CSharpTokens.EQ)
 				{
 					return LocalVarType.WITH_NAME;
+				}
+
+				if(builder.lookAhead(1) == LPAR)
+				{
+					return LocalVarType.LOCAL_METHOD;
 				}
 
 				if(StringUtil.containsLineBreak(sequence))

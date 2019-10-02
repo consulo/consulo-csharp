@@ -14,7 +14,7 @@
   - limitations under the License.
   -->
 
-<idea-plugin>
+<consulo-plugin>
 	<extensions defaultExtensionNs="com.intellij">
 		<intentionAction>
 			<className>consulo.csharp.ide.codeInsight.actions.IntroduceLocalVariableIntention</className>
@@ -47,4 +47,4 @@
 			<className>consulo.csharp.ide.codeInsight.actions.ConvertToPropertyFieldFix</className>
 		</intentionAction>
 	</extensions>
-</idea-plugin>
+</consulo-plugin>

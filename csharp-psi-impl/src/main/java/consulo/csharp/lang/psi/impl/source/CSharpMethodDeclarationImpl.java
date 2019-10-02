@@ -16,34 +16,28 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpGenericConstraint;
-import consulo.csharp.lang.psi.CSharpGenericConstraintList;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.CSharpTokenSets;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
-import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
-import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.BitUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
+import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
+import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
+import consulo.dotnet.psi.DotNetType;
+import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpMethodDeclStub> implements CSharpMethodDeclaration
+public class CSharpMethodDeclarationImpl extends CSharpStubLikeMethodDeclarationImpl<CSharpMethodDeclStub> implements CSharpMethodDeclaration
 {
 	public CSharpMethodDeclarationImpl(@Nonnull ASTNode node)
 	{

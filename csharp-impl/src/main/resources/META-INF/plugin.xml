@@ -14,7 +14,7 @@
   - limitations under the License.
   -->
 
-<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
+<consulo-plugin>
 	<id>consulo.csharp</id>
 	<name>C#</name>
 	<category>Custom Languages</category>
@@ -27,16 +27,9 @@
 	<depends config-file="microsoft-csharp.xml" optional="true">consulo.dotnet.microsoft</depends>
 	<depends config-file="mono-csharp.xml" optional="true">consulo.dotnet.mono</depends>
 
-	<xi:include href="/META-INF/CSharpInspections.xml" xpointer="xpointer(/idea-plugin/*)">
-		<xi:fallback/>
-	</xi:include>
-
-	<xi:include href="/META-INF/CSharpIntentions.xml" xpointer="xpointer(/idea-plugin/*)">
-		<xi:fallback/>
-	</xi:include>
-	<xi:include href="/META-INF/CSharpCfs.xml" xpointer="xpointer(/idea-plugin/*)">
-		<xi:fallback/>
-	</xi:include>
+	<import path="/META-INF/CSharpInspections.xml" />
+	<import path="/META-INF/CSharpIntentions.xml" />
+	<import path="/META-INF/CSharpCfs.xml" />
 
 	<actions>
 		<action id="CSharp.File" class="consulo.csharp.ide.actions.CSharpCreateFileAction">
@@ -338,4 +331,4 @@
 
 		<projectService serviceImplementation="consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent" lazy="false" />
 	</extensions>
-</idea-plugin>
+</consulo-plugin>

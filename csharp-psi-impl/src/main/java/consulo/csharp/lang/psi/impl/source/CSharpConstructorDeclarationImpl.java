@@ -37,7 +37,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpConstructorDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpMethodDeclStub> implements CSharpConstructorDeclaration
+public class CSharpConstructorDeclarationImpl extends CSharpStubLikeMethodDeclarationImpl<CSharpMethodDeclStub> implements CSharpConstructorDeclaration
 {
 	public CSharpConstructorDeclarationImpl(@Nonnull ASTNode node)
 	{

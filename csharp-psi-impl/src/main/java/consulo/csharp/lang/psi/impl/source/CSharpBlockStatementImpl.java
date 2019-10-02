@@ -16,21 +16,20 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpBodyWithBraces;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetStatement;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -70,11 +69,23 @@ public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNe
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement
-			place)
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
 	{
 		DotNetStatement[] statements = getStatements();
-		List<PsiElement> elements = new ArrayList<>(statements.length);
+
+		// local methods ignore position in block
+		for(DotNetStatement statement : statements)
+		{
+			if(statement instanceof CSharpLocalMethodDeclarationStatementImpl)
+			{
+				if(!statement.processDeclarations(processor, state, lastParent, place))
+				{
+					return false;
+				}
+			}
+		}
+
+		List<DotNetStatement> elements = new ArrayList<>(statements.length);
 		for(DotNetStatement statement : statements)
 		{
 			if(statement == lastParent)
@@ -86,9 +97,14 @@ public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNe
 
 		Collections.reverse(elements);
 
-		for(PsiElement dotNetStatement : elements)
+		for(DotNetStatement statement : elements)
 		{
-			if(!dotNetStatement.processDeclarations(processor, state, lastParent, place))
+			if(statement instanceof CSharpLocalMethodDeclarationStatementImpl)
+			{
+				continue;
+			}
+
+			if(!statement.processDeclarations(processor, state, lastParent, place))
 			{
 				return false;
 			}

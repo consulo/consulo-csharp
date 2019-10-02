@@ -36,7 +36,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  * @author VISTALL
  * @since 09.01.14
  */
-public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpMethodDeclStub> implements
+public class CSharpConversionMethodDeclarationImpl extends CSharpStubLikeMethodDeclarationImpl<CSharpMethodDeclStub> implements
 		CSharpConversionMethodDeclaration, CSharpSimpleLikeMethodAsElement
 {
 	public CSharpConversionMethodDeclarationImpl(@Nonnull ASTNode node)

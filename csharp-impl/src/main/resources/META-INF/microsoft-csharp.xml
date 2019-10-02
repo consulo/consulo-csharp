@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<idea-plugin>
+<consulo-plugin>
 	<extensions defaultExtensionNs="com.intellij">
 		<moduleExtensionProvider key="microsoft-csharp"
 								 parentKey="microsoft-dotnet"
@@ -27,4 +27,4 @@
 	<extensions defaultExtensionNs="consulo.csharp">
 		<compilerProvider id="ms-internal" implementation="consulo.microsoft.csharp.compiler.MicrosoftInternalCompilerProvider" order="first"/>
 	</extensions>
-</idea-plugin>
+</consulo-plugin>

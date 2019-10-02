@@ -16,14 +16,15 @@
 
 package consulo.csharp.lang.parser;
 
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.parser.decl.DeclarationParsing;
 import com.intellij.lang.ASTNode;
-import consulo.lang.LanguageVersion;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
+import consulo.application.ApplicationProperties;
+import consulo.csharp.lang.parser.decl.DeclarationParsing;
+import consulo.lang.LanguageVersion;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -35,7 +36,8 @@ public class CSharpParser extends SharedParsingHelpers implements PsiParser
 	@Override
 	public ASTNode parse(@Nonnull IElementType elementType, @Nonnull PsiBuilder builder, @Nonnull LanguageVersion languageVersion)
 	{
-		//builder.setDebugMode(true);
+		builder.setDebugMode(ApplicationProperties.isInSandbox());
+
 		CSharpBuilderWrapper builderWrapper = new CSharpBuilderWrapper(builder, languageVersion);
 
 		PsiBuilder.Marker marker = builderWrapper.mark();

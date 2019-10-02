@@ -16,41 +16,34 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterList;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetParameterList;
-import consulo.dotnet.psi.DotNetStatement;
-import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import consulo.csharp.lang.psi.CSharpStubElements;
+import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
+import consulo.dotnet.psi.*;
+import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 28.11.13.
  */
-public abstract class CSharpLikeMethodDeclarationImpl<T extends CSharpMethodDeclStub> extends CSharpStubMemberImpl<T> implements
-		DotNetLikeMethodDeclaration
+public abstract class CSharpStubLikeMethodDeclarationImpl<T extends CSharpMethodDeclStub> extends CSharpStubMemberImpl<T> implements DotNetLikeMethodDeclaration
 {
-	public CSharpLikeMethodDeclarationImpl(@Nonnull ASTNode node)
+	public CSharpStubLikeMethodDeclarationImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpLikeMethodDeclarationImpl(@Nonnull T stub, @Nonnull IStubElementType<? extends T, ?> nodeType)
+	public CSharpStubLikeMethodDeclarationImpl(@Nonnull T stub, @Nonnull IStubElementType<? extends T, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}

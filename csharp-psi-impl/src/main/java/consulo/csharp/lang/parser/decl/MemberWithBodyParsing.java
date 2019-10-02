@@ -62,7 +62,7 @@ public class MemberWithBodyParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			MethodParsing.parseMethodBody(builder, pairModifierList.getSecond());
+			MethodParsing.parseMethodBodyOrSemicolon(builder, pairModifierList.getSecond());
 
 			marker.done(to);
 		}

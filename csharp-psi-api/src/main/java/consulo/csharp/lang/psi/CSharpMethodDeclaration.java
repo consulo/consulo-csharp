@@ -16,11 +16,12 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nullable;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetMethodDeclaration;
+
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -42,4 +43,10 @@ public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharp
 	@Nullable
 	@RequiredReadAction
 	IElementType getOperatorElementType();
+
+	@RequiredReadAction
+	default boolean isLocal()
+	{
+		return false;
+	}
 }
