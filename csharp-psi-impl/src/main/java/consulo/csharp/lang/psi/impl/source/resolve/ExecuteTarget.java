@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi.impl.source.resolve;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayFactory;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpIsVariableImpl;
@@ -157,7 +158,14 @@ public enum ExecuteTarget
 							element instanceof CSharpIsVariableImpl ||
 							element instanceof CSharpOutRefVariableImpl ||
 							element instanceof CSharpLambdaParameter ||
-							element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isLocal();
+							element instanceof CSharpElementGroup && isLocalMethodGroup((CSharpElementGroup) element);
+				}
+
+				@RequiredReadAction
+				private boolean isLocalMethodGroup(CSharpElementGroup group)
+				{
+					Object firstItem = ContainerUtil.getFirstItem(group.getElements());
+					return firstItem instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) firstItem).isLocal();
 				}
 			};
 

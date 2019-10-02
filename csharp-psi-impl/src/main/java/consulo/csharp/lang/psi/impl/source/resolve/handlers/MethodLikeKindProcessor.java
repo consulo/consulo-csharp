@@ -22,7 +22,6 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.util.Processor;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
@@ -104,21 +103,6 @@ public class MethodLikeKindProcessor implements KindProcessor
 					}
 					return true;
 				});
-			}
-			else if(maybeElementGroup instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) maybeElementGroup).isLocal())
-			{
-				MethodResolvePriorityInfo calcResult = NCallArgumentBuilder.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) maybeElementGroup, element);
-
-				GenericInferenceUtil.GenericInferenceResult inferenceResult = maybeElementGroup.getUserData(GenericInferenceUtil.INFERENCE_RESULT);
-
-				if(inferenceResult == null || inferenceResult.isSuccess())
-				{
-					methodResolveResults.add(MethodResolveResult.createResult(calcResult, maybeElementGroup, result));
-				}
-				else
-				{
-					methodResolveResults.add(MethodResolveResult.createResult(calcResult.dupNoResult(-4000000), maybeElementGroup, result));
-				}
 			}
 			else if(maybeElementGroup instanceof DotNetVariable)
 			{

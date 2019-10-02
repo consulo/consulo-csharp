@@ -20,16 +20,22 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.util.containers.MultiMap;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
+import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.dotnet.psi.DotNetStatement;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author VISTALL
@@ -68,20 +74,43 @@ public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNe
 		return findChildrenByClass(DotNetStatement.class);
 	}
 
+	@Nonnull
+	private Collection<CSharpElementGroup<CSharpMethodDeclaration>> getLocalMethods()
+	{
+		return CachedValuesManager.getCachedValue(this, () -> {
+			MultiMap<String, CSharpMethodDeclaration> multiMap = new MultiMap<>();
+
+			for(DotNetStatement statement : getStatements())
+			{
+				if(statement instanceof CSharpLocalMethodDeclarationStatementImpl)
+				{
+					CSharpMethodDeclaration method = ((CSharpLocalMethodDeclarationStatementImpl) statement).getMethod();
+
+					multiMap.putValue(method.getName(), method);
+				}
+			}
+
+			List<CSharpElementGroup<CSharpMethodDeclaration>> list = multiMap
+					.entrySet()
+					.stream()
+					.map(e -> new CSharpElementGroupImpl<>(getProject(), e.getKey(), e.getValue()))
+					.collect(Collectors.toList());
+
+			return CachedValueProvider.Result.create(list, PsiModificationTracker.MODIFICATION_COUNT);
+		});
+	}
+
 	@Override
 	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
 	{
 		DotNetStatement[] statements = getStatements();
 
 		// local methods ignore position in block
-		for(DotNetStatement statement : statements)
+		for(CSharpElementGroup<CSharpMethodDeclaration> group : getLocalMethods())
 		{
-			if(statement instanceof CSharpLocalMethodDeclarationStatementImpl)
+			if(!processor.execute(group, state))
 			{
-				if(!statement.processDeclarations(processor, state, lastParent, place))
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
