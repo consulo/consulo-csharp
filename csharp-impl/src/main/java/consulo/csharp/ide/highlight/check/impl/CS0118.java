@@ -16,15 +16,17 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.source.CSharpNameOfExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -43,7 +45,8 @@ public class CS0118 extends CompilerCheck<CSharpReferenceExpression>
 			return null;
 		}
 		// qualifier of another expression
-		if(element.getParent() instanceof CSharpReferenceExpression)
+		PsiElement parent = element.getParent();
+		if(parent instanceof CSharpReferenceExpression || parent instanceof CSharpNameOfExpressionImpl)
 		{
 			return null;
 		}
