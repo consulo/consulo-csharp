@@ -16,12 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.resolve.baseResolveContext;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.openapi.util.AtomicNullableLazyValue;
 import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
@@ -37,6 +31,12 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapToo
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -91,7 +91,7 @@ public abstract class SimpleElementGroupCollector<E extends PsiElement> extends 
 
 		myResolveContext.acceptChildren(visitor);
 
-		for(CSharpAdditionalMemberProvider memberProvider : ourAdditionalMemberProviders)
+		for(CSharpAdditionalMemberProvider memberProvider : CSharpAdditionalMemberProvider.EP_NAME.getExtensionList())
 		{
 			if(memberProvider.getTarget() == myTarget)
 			{
