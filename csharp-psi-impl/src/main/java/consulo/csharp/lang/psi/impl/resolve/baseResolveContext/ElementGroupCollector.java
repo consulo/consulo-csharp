@@ -16,15 +16,15 @@
 
 package consulo.csharp.lang.psi.impl.resolve.baseResolveContext;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.Consumer;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
 import consulo.csharp.lang.psi.impl.resolve.CSharpBaseResolveContext;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.Consumer;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,8 +32,6 @@ import com.intellij.util.Consumer;
  */
 public abstract class ElementGroupCollector<E extends PsiElement>
 {
-	protected static final CSharpAdditionalMemberProvider[] ourAdditionalMemberProviders = CSharpAdditionalMemberProvider.EP_NAME.getExtensions();
-
 	protected final CSharpAdditionalMemberProvider.Target myTarget;
 	protected final CSharpBaseResolveContext<?> myResolveContext;
 
