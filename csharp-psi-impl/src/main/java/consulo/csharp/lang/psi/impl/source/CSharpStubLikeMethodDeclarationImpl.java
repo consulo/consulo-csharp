@@ -23,6 +23,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpElements;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
@@ -75,7 +76,21 @@ public abstract class CSharpStubLikeMethodDeclarationImpl<T extends CSharpMethod
 	@Override
 	public PsiElement getCodeBlock()
 	{
-		return PsiTreeUtil.getChildOfAnyType(this, DotNetExpression.class, DotNetStatement.class);
+		return getCodeBlockElement(this);
+	}
+
+	@RequiredReadAction
+	@Nullable
+	public static PsiElement getCodeBlockElement(PsiElement element)
+	{
+		ASTNode node = element.getNode().findChildByType(CSharpElements.METHOD_BODIES);
+		if(node != null)
+		{
+			CSharpMethodBodyImpl psi = (CSharpMethodBodyImpl) node.getPsi();
+			return psi.getInnerElement();
+		}
+
+		return PsiTreeUtil.getChildOfAnyType(element, DotNetExpression.class, DotNetStatement.class);
 	}
 
 	@Nullable
@@ -125,9 +140,9 @@ public abstract class CSharpStubLikeMethodDeclarationImpl<T extends CSharpMethod
 
 	@Override
 	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
-			@Nonnull ResolveState state,
-			PsiElement lastParent,
-			@Nonnull PsiElement place)
+									   @Nonnull ResolveState state,
+									   PsiElement lastParent,
+									   @Nonnull PsiElement place)
 	{
 		return CSharpLikeMethodDeclarationImplUtil.processDeclarations(this, processor, state, lastParent, place);
 	}

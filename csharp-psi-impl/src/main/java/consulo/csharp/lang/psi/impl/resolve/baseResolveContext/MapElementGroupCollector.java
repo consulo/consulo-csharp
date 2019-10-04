@@ -16,12 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.resolve.baseResolveContext;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.AtomicNullableLazyValue;
 import com.intellij.psi.PsiElement;
@@ -38,6 +32,12 @@ import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -110,7 +110,7 @@ public abstract class MapElementGroupCollector<K, E extends PsiElement> extends 
 
 		myResolveContext.acceptChildren(visitor);
 
-		for(CSharpAdditionalMemberProvider memberProvider : ourAdditionalMemberProviders)
+		for(CSharpAdditionalMemberProvider memberProvider : CSharpAdditionalMemberProvider.EP_NAME.getExtensionList())
 		{
 			if(memberProvider.getTarget() == myTarget)
 			{

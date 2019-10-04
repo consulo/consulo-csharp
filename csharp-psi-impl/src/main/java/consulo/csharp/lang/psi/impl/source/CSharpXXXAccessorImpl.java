@@ -16,10 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import java.util.Locale;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
@@ -39,9 +35,12 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.psi.DotNetXXXAccessor;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Locale;
 
 /**
  * @author VISTALL
@@ -189,7 +188,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	@Override
 	public PsiElement getCodeBlock()
 	{
-		return findChildByClass(DotNetStatement.class);
+		return CSharpStubLikeMethodDeclarationImpl.getCodeBlockElement(this);
 	}
 
 	@Nullable

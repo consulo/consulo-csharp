@@ -16,10 +16,20 @@
 
 package consulo.csharp.lang.psi;
 
+import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import consulo.csharp.lang.parser.ModifierSet;
+import consulo.csharp.lang.parser.SharedParsingHelpers;
+import consulo.csharp.lang.parser.exp.ExpressionParsing;
+import consulo.csharp.lang.parser.stmt.StatementParsing;
+import consulo.csharp.lang.psi.impl.elementType.BaseMethodBodyLazyElementType;
 import consulo.csharp.lang.psi.impl.source.*;
 import consulo.psi.tree.ElementTypeAsPsiFactory;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -292,4 +302,36 @@ public interface CSharpElements
 	IElementType ATTRIBUTE_LIST = new ElementTypeAsPsiFactory("ATTRIBUTE_LIST", CSharpLanguage.INSTANCE, CSharpAttributeListImpl.class);
 
 	IElementType ATTRIBUTE = new ElementTypeAsPsiFactory("ATTRIBUTE", CSharpLanguage.INSTANCE, CSharpAttributeImpl.class);
+
+	IElementType STATEMENT_METHOD_BODY = new BaseMethodBodyLazyElementType("CSHARP_STATEMENT_METHOD_BODY")
+	{
+		@Override
+		protected void parse(@Nonnull CSharpBuilderWrapper wrapper, @Nonnull ModifierSet set)
+		{
+			StatementParsing.parse(wrapper, set);
+
+			while(!wrapper.eof())
+			{
+				PsiBuilder.Marker er = wrapper.mark();
+				wrapper.advanceLexer();
+				er.error("Unexpected token");
+			}
+		}
+	};
+
+	IElementType EXPRESSION_METHOD_BODY = new BaseMethodBodyLazyElementType("CSHARP_EXPRESSION_METHOD_BODY")
+	{
+		@Override
+		protected void parse(@Nonnull CSharpBuilderWrapper wrapper, @Nonnull ModifierSet set)
+		{
+			// skip =>
+			wrapper.advanceLexer();
+
+			ExpressionParsing.parse(wrapper, set);
+
+			SharedParsingHelpers.expect(wrapper, CSharpTokens.SEMICOLON, "';' expected");
+		}
+	};
+
+	TokenSet METHOD_BODIES = TokenSet.create(STATEMENT_METHOD_BODY, EXPRESSION_METHOD_BODY);
 }

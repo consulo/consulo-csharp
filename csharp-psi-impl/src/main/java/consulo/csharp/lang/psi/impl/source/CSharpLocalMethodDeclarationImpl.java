@@ -21,7 +21,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.*;
@@ -107,7 +106,7 @@ public class CSharpLocalMethodDeclarationImpl extends CSharpMemberImpl implement
 	@Override
 	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
-	 	visitor.visitMethodDeclaration(this);
+		visitor.visitMethodDeclaration(this);
 	}
 
 	@RequiredReadAction
@@ -131,7 +130,7 @@ public class CSharpLocalMethodDeclarationImpl extends CSharpMemberImpl implement
 	@Override
 	public PsiElement getCodeBlock()
 	{
-		return PsiTreeUtil.getChildOfAnyType(this, DotNetExpression.class, DotNetStatement.class);
+		return CSharpStubLikeMethodDeclarationImpl.getCodeBlockElement(this);
 	}
 
 	@Nullable

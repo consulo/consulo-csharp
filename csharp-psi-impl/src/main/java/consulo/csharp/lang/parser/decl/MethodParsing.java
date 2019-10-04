@@ -162,12 +162,85 @@ public class MethodParsing extends MemberWithBodyParsing
 		}
 	}
 
+	private static void parseMethodBoryOrSemicolon(CSharpBuilderWrapper builder)
+	{
+		IElementType tokenType = builder.getTokenType();
+		if(tokenType == LBRACE)
+		{
+			PsiBuilder.Marker marker = builder.mark();
+
+			int braceLevel = 0;
+
+			while(!builder.eof())
+			{
+				IElementType nextToken = builder.getTokenType();
+				if(nextToken == LBRACE)
+				{
+					braceLevel++;
+				}
+				else if(nextToken == RBRACE)
+				{
+					braceLevel--;
+
+					if(braceLevel <= 0)
+					{
+						// eat only if level correct
+						// least error brace for next item parsing
+						if(braceLevel == 0)
+						{
+							builder.advanceLexer();
+						}
+						break;
+					}
+				}
+
+				builder.advanceLexer();
+			}
+
+			marker.collapse(CSharpElements.STATEMENT_METHOD_BODY);
+		}
+		else if(tokenType == DARROW)
+		{
+			PsiBuilder.Marker marker = builder.mark();
+
+			int braceLevel = 0;
+
+			while(!builder.eof())
+			{
+				IElementType nextToken = builder.getTokenType();
+				if(nextToken == LBRACE)
+				{
+					braceLevel++;
+				}
+				else if(nextToken == RBRACE)
+				{
+					braceLevel--;
+				}
+				else if(nextToken == SEMICOLON && braceLevel <= 0)
+				{
+					builder.advanceLexer();
+					break;
+				}
+
+				builder.advanceLexer();
+			}
+
+			marker.collapse(CSharpElements.EXPRESSION_METHOD_BODY);
+		}
+		else if(tokenType == SEMICOLON)
+		{
+			builder.advanceLexer();
+		}
+		else
+		{
+			builder.error("';' expected");
+		}
+	}
+
+	@Deprecated
 	public static void parseMethodBodyOrSemicolon(CSharpBuilderWrapper builder, ModifierSet set)
 	{
-		if(!parseMethodBody(builder, set))
-		{
-			expect(builder, SEMICOLON, "';' expected");
-		}
+		parseMethodBoryOrSemicolon(builder);
 	}
 
 	public static boolean parseMethodBody(CSharpBuilderWrapper builder, ModifierSet set)
