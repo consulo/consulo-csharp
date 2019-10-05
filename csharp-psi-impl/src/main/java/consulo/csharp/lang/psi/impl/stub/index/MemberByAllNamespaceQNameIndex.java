@@ -16,11 +16,12 @@
 
 package consulo.csharp.lang.psi.impl.stub.index;
 
-import javax.annotation.Nonnull;
-import consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
+import consulo.dotnet.psi.DotNetQualifiedElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -28,9 +29,10 @@ import com.intellij.psi.stubs.StubIndexKey;
  */
 public class MemberByAllNamespaceQNameIndex extends StringStubIndexExtension<DotNetQualifiedElement>
 {
+	@Nonnull
 	public static MemberByAllNamespaceQNameIndex getInstance()
 	{
-		return StubIndexExtension.EP_NAME.findExtension(MemberByAllNamespaceQNameIndex.class);
+		return StubIndexExtension.EP_NAME.findExtensionOrFail(MemberByAllNamespaceQNameIndex.class);
 	}
 
 	@Nonnull

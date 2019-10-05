@@ -62,8 +62,6 @@ public class CSharpMsilStubIndexer extends MsilStubIndexer
 				break;
 			}
 		}
-
-		indexSink.occurrence(CSharpIndexKeys.TYPE_BY_QNAME_INDEX, MsilHelper.appendNoGeneric(stub.getNamespace(), stub.getName()));
 	}
 
 	@Override

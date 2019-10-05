@@ -16,18 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.stub.index;
 
+import com.intellij.psi.stubs.StubIndexKey;
 import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.dotnet.psi.DotNetAttributeTargetType;
-import consulo.dotnet.psi.DotNetEventDeclaration;
-import consulo.dotnet.psi.DotNetFieldDeclaration;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetPropertyDeclaration;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.DotNetTypeList;
-import com.intellij.psi.stubs.StubIndexKey;
+import consulo.dotnet.psi.*;
 
 /**
  * @author VISTALL
@@ -35,23 +28,17 @@ import com.intellij.psi.stubs.StubIndexKey;
  */
 public interface CSharpIndexKeys
 {
-	StubIndexKey<String, DotNetQualifiedElement> MEMBER_BY_NAMESPACE_QNAME_INDEX =
-			StubIndexKey.createIndexKey("csharp.member.by.namespace.qname.index");
-	StubIndexKey<String, DotNetQualifiedElement> MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX =
-			StubIndexKey.createIndexKey("csharp.member.by.all.namespace.qname.index");
+	StubIndexKey<String, DotNetQualifiedElement> MEMBER_BY_NAMESPACE_QNAME_INDEX = StubIndexKey.createIndexKey("csharp.member.by.namespace.qname.index");
+	StubIndexKey<String, DotNetQualifiedElement> MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX = StubIndexKey.createIndexKey("csharp.member.by.all.namespace.qname.index");
 
 	StubIndexKey<String, DotNetLikeMethodDeclaration> METHOD_INDEX = StubIndexKey.createIndexKey("csharp.method.index");
-	StubIndexKey<String, DotNetLikeMethodDeclaration> EXTENSION_METHOD_BY_NAME_INDEX =
-			StubIndexKey.createIndexKey("csharp.extension.method.by.name.index");
-	StubIndexKey<String, CSharpMethodDeclaration> DELEGATE_METHOD_BY_NAME_INDEX =
-			StubIndexKey.createIndexKey("csharp.delegate.method.by.name.index");
+	StubIndexKey<String, DotNetLikeMethodDeclaration> EXTENSION_METHOD_BY_NAME_INDEX = StubIndexKey.createIndexKey("csharp.extension.method.by.name.index");
+	StubIndexKey<String, CSharpMethodDeclaration> DELEGATE_METHOD_BY_NAME_INDEX = StubIndexKey.createIndexKey("csharp.delegate.method.by.name.index");
 
-	StubIndexKey<String, DotNetTypeDeclaration> TYPE_WITH_EXTENSION_METHODS_INDEX =
-			StubIndexKey.createIndexKey("csharp.type.with.extensions.index");
+	StubIndexKey<String, DotNetTypeDeclaration> TYPE_WITH_EXTENSION_METHODS_INDEX = StubIndexKey.createIndexKey("csharp.type.with.extensions.index");
 
 	StubIndexKey<String, CSharpTypeDeclaration> TYPE_INDEX = StubIndexKey.createIndexKey("csharp.type.index");
-	StubIndexKey<String, DotNetTypeDeclaration> TYPE_BY_QNAME_INDEX = StubIndexKey.createIndexKey("csharp.type.by.qname.index");
-	StubIndexKey<String, DotNetTypeDeclaration> TYPE_BY_VMQNAME_INDEX = StubIndexKey.createIndexKey("csharp.type.by.vm.qname.index");
+	StubIndexKey<Integer, DotNetTypeDeclaration> TYPE_BY_VMQNAME_INDEX = StubIndexKey.createIndexKey("csharp.type.by.vm.qname.index");
 
 	StubIndexKey<String, DotNetEventDeclaration> EVENT_INDEX = StubIndexKey.createIndexKey("csharp.event.index");
 	StubIndexKey<String, DotNetPropertyDeclaration> PROPERTY_INDEX = StubIndexKey.createIndexKey("csharp.property.index");
