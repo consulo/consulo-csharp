@@ -309,9 +309,9 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			}
 			return target(new CSharpTypeRefByQName(element, DotNetTypes.System.TypedReference), expression.toTypeRef(true), expression);
 		}
-		else if(element instanceof CSharpSwitchLabelStatementImpl)
+		else if(element instanceof CSharpCaseOrDefaultStatementImpl)
 		{
-			DotNetExpression expression = ((CSharpSwitchLabelStatementImpl) element).getExpression();
+			DotNetExpression expression = ((CSharpCaseOrDefaultStatementImpl) element).getExpression();
 			if(expression == null)
 			{
 				return null;

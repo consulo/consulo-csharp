@@ -377,7 +377,18 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			}));
 			add(new Feature("pattern matching", CSharpLanguageVersion._7_0, element ->
 			{
-				return element instanceof CSharpIsVariableImpl ? element : null;
+				if(element instanceof CSharpIsVariableImpl)
+				{
+					return element;
+				}
+				else if(element instanceof CSharpCasePatternStatementImpl)
+				{
+					return element;
+				}
+				else
+				{
+					return null;
+				}
 			}));
 		}
 	};

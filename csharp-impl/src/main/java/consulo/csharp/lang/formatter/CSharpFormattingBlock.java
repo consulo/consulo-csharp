@@ -16,20 +16,7 @@
 
 package consulo.csharp.lang.formatter;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.formatting.ASTBlock;
-import com.intellij.formatting.Alignment;
-import com.intellij.formatting.Block;
-import com.intellij.formatting.Indent;
-import com.intellij.formatting.Spacing;
-import com.intellij.formatting.Wrap;
+import com.intellij.formatting.*;
 import com.intellij.formatting.templateLanguages.BlockWithParent;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
@@ -51,6 +38,10 @@ import consulo.csharp.lang.formatter.processors.CSharpWrappingProcessor;
 import consulo.csharp.lang.psi.CSharpElements;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author VISTALL
@@ -210,13 +201,13 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 				blockWithParent = childBlock;
 
 				IElementType elementType = next.getElementType();
-				if(elementType == SWITCH_LABEL_STATEMENT)
+				if(elementType == CASE_OR_DEFAULT_STATEMENT || elementType == CASE_PATTERN_STATEMENT)
 				{
 					ASTNode someNextElement;
 					while((someNextElement = nodes.poll()) != null)
 					{
 						IElementType someNextElementType = someNextElement.getElementType();
-						if(someNextElementType == SWITCH_LABEL_STATEMENT || someNextElementType == RBRACE)
+						if(someNextElementType == CASE_OR_DEFAULT_STATEMENT || someNextElementType == CASE_PATTERN_STATEMENT || someNextElementType == RBRACE)
 						{
 							nodes.addFirst(someNextElement);
 							break;

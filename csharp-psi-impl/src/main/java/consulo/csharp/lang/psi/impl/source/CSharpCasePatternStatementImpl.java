@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2019 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,32 +23,32 @@ import com.intellij.psi.scope.PsiScopeProcessor;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetStatement;
+import consulo.dotnet.psi.DotNetVariable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
- * @since 26.02.14
+ * @since 2019-10-05
  */
-public class CSharpSwitchStatementImpl extends CSharpElementImpl implements DotNetStatement
+public class CSharpCasePatternStatementImpl extends CSharpElementImpl implements CSharpSwitchLabelStatement
 {
-	public CSharpSwitchStatementImpl(@Nonnull ASTNode node)
+	public CSharpCasePatternStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public CSharpSwitchLabelStatement[] getStatements()
+	public DotNetVariable getVariable()
 	{
-		return findChildrenByClass(CSharpSwitchLabelStatement.class);
+		return findNotNullChildByClass(CSharpCaseVariableImpl.class);
 	}
 
 	@Nullable
 	@RequiredReadAction
-	public DotNetExpression getExpression()
+	public DotNetExpression getWhenExpression()
 	{
 		return findChildByClass(DotNetExpression.class);
 	}
@@ -56,20 +56,23 @@ public class CSharpSwitchStatementImpl extends CSharpElementImpl implements DotN
 	@Override
 	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
-		visitor.visitSwitchStatement(this);
+		visitor.visitCasePatternStatement(this);
 	}
 
 	@Override
 	@RequiredReadAction
 	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
 	{
-		CSharpSwitchLabelStatement[] statements = getStatements();
-		for(CSharpSwitchLabelStatement statement : statements)
+		DotNetVariable variable = getVariable();
+		if(!processor.execute(variable, state))
 		{
-			if(!statement.processDeclarations(processor, state, lastParent, place))
-			{
-				return false;
-			}
+			return false;
+		}
+
+		DotNetExpression whenExpression = getWhenExpression();
+		if(whenExpression != null && !whenExpression.processDeclarations(processor, state, lastParent, place))
+		{
+			return false;
 		}
 		return super.processDeclarations(processor, state, lastParent, place);
 	}
