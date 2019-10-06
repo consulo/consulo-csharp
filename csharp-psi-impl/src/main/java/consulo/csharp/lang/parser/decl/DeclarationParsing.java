@@ -16,8 +16,11 @@
 
 package consulo.csharp.lang.parser.decl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.lang.PsiBuilder;
+import com.intellij.openapi.util.Pair;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.NotNullFunction;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.ModifierSet;
 import consulo.csharp.lang.parser.SharedParsingHelpers;
@@ -26,11 +29,9 @@ import consulo.csharp.lang.parser.exp.ExpressionParsing;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.NotNullFunction;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -127,6 +128,11 @@ public class DeclarationParsing extends SharedParsingHelpers
 		}
 		if(tokenType == NAMESPACE_KEYWORD)
 		{
+			if(modifierListMarker != null)
+			{
+				modifierListMarker.drop();
+			}
+
 			NamespaceDeclarationParsing.parse(builder, marker);
 		}
 		else if(CSharpTokenSets.TYPE_DECLARATION_START.contains(tokenType))
@@ -147,6 +153,11 @@ public class DeclarationParsing extends SharedParsingHelpers
 		}
 		else if(tokenType == USING_KEYWORD)
 		{
+			if(modifierListMarker != null)
+			{
+				modifierListMarker.drop();
+			}
+
 			UsingStatementParsing.parseUsing(builder, marker);
 		}
 		else if(tokenType == CONST_KEYWORD)
