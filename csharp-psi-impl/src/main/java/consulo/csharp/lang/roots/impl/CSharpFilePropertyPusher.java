@@ -16,16 +16,6 @@
 
 package consulo.csharp.lang.roots.impl;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
@@ -41,6 +31,17 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.module.extension.ModuleExtension;
+import gnu.trove.TIntHashSet;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author VISTALL
@@ -49,7 +50,7 @@ import consulo.module.extension.ModuleExtension;
 public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAttribute>
 {
 	public static final Key<CSharpFileAttribute> ourCSharpFileAttributeKey = Key.create("CSharpFilePropertyPusher.PREPROCESSOR_VARIABLES");
-	private static final FileAttribute ourFileAttribute = new FileAttribute("csharp-file-preprocessor-variables", 1, false);
+	private static final FileAttribute ourFileAttribute = new FileAttribute("csharp-file-preprocessor-variables", 2, false);
 
 	private static final Key<Set<String>> ourChangedModulesKey = Key.create("CSharpFilePropertyPusher.ourChangedModules");
 
@@ -132,9 +133,20 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
 		if(extension != null)
 		{
 			CSharpSimpleModuleExtension csharpExtension = ModuleUtilCore.getExtension(module, CSharpSimpleModuleExtension.class);
-			return new CSharpFileAttribute(new TreeSet<>(extension.getVariables()), csharpExtension == null ? CSharpLanguageVersion.HIGHEST : csharpExtension.getLanguageVersion());
+			return new CSharpFileAttribute(csharpExtension == null ? CSharpLanguageVersion.HIGHEST : csharpExtension.getLanguageVersion(), varHashCode(extension.getVariables()));
 		}
 		return CSharpFileAttribute.DEFAULT;
+	}
+
+	private static int varHashCode(@Nonnull Collection<String> vars)
+	{
+		Set<String> sortedSet = new TreeSet<>(vars);
+		TIntHashSet intSet = new TIntHashSet();
+		for(String varName : sortedSet)
+		{
+			intSet.add(varName.hashCode());
+		}
+		return intSet.hashCode();
 	}
 
 	@Override
