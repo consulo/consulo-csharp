@@ -8,6 +8,7 @@ import consulo.csharp.cfs.lang.CfsTokens;
 
 %{
   private IElementType myArgumentElementType;
+  private int myInsideParenthesesBalance;
 
   public CSharpInterpolationStringLexer(IElementType argumentElementType) {
      myArgumentElementType = argumentElementType;
@@ -37,7 +38,30 @@ import consulo.csharp.cfs.lang.CfsTokens;
 
 <ARGUMENT_WAIT>
 {
-   ":" { yybegin(FORMAT_WAIT); return CfsTokens.COLON; }
+	"("
+	{
+		myInsideParenthesesBalance ++;
+		return myArgumentElementType;
+	}
+
+	")"
+	{
+		myInsideParenthesesBalance --;
+		return myArgumentElementType;
+	}
+
+	":"
+	{
+		if(myInsideParenthesesBalance > 0)
+		{
+			return myArgumentElementType;
+		}
+		else
+		{
+			yybegin(FORMAT_WAIT);
+			return CfsTokens.COLON;
+		}
+   }
 
    "}" { yybegin(YYINITIAL); return CfsTokens.END; }
 
