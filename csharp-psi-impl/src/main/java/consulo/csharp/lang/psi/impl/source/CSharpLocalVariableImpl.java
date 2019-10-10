@@ -26,9 +26,12 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
+import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetType;
@@ -101,7 +104,16 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		}
 		else
 		{
-			return super.toTypeRefImpl(resolveFromInitializer);
+			DotNetTypeRef defaultTypeRef = super.toTypeRefImpl(resolveFromInitializer);
+			if(isConstant())
+			{
+				DotNetExpression initializer = getInitializer();
+				if(initializer instanceof CSharpConstantExpressionImpl)
+				{
+					return new CSharpConstantTypeRef((CSharpConstantExpressionImpl) initializer, defaultTypeRef);
+				}
+			}
+			return defaultTypeRef;
 		}
 	}
 
@@ -151,6 +163,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		return findChildByClass(CSharpIdentifier.class);
 	}
 
+	@RequiredWriteAction
 	@Override
 	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
 	{
@@ -190,7 +203,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		{
 			return new LocalSearchScope(parent);
 		}
-		CSharpLocalVariableImpl.LOG.error("Global usage scope for local variable, parent: " + parent.getClass().getName());
+		LOG.error("Global usage scope for local variable, parent: " + parent.getClass().getName());
 		return super.getUseScope();
 	}
 

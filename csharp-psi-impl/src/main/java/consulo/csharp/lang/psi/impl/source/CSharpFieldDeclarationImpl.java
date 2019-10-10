@@ -16,19 +16,22 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetFieldDeclaration;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetType;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpFieldDeclaration;
+import consulo.csharp.lang.psi.CSharpStubElements;
+import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
+import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;
+import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
+import consulo.dotnet.psi.*;
+import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 
 /**
  * @author VISTALL
@@ -36,6 +39,16 @@ import consulo.dotnet.psi.DotNetType;
  */
 public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<DotNetFieldDeclaration>> implements CSharpFieldDeclaration
 {
+	private static class FieldConstantRef extends CSharpConstantTypeRef
+	{
+		public FieldConstantRef(CSharpConstantExpressionImpl element, @Nonnull DotNetTypeRef defaultTypeRef)
+		{
+			super(element, defaultTypeRef);
+		}
+	}
+
+	private volatile WeakReference<DotNetExpression> myInitializerExpression;
+
 	public CSharpFieldDeclarationImpl(@Nonnull ASTNode node)
 	{
 		super(node);
@@ -61,6 +74,23 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	}
 
 	@RequiredReadAction
+	@Nonnull
+	@Override
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
+	{
+		DotNetTypeRef defaultTypeRef = super.toTypeRefImpl(resolveFromInitializer);
+		if(isConstant())
+		{
+			DotNetExpression initializer = getInitializer();
+			if(initializer instanceof CSharpConstantExpressionImpl)
+			{
+				return new CSharpConstantTypeRef((CSharpConstantExpressionImpl) initializer, defaultTypeRef);
+			}
+		}
+		return defaultTypeRef;
+	}
+
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
@@ -81,7 +111,35 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	@Override
 	public DotNetExpression getInitializer()
 	{
+		CSharpVariableDeclStub<DotNetFieldDeclaration> stub = getStub();
+		if(stub != null)
+		{
+			if(myInitializerExpression != null)
+			{
+				return myInitializerExpression.get();
+			}
+
+			String initializerText = stub.getInitializerText();
+			if(initializerText != null)
+			{
+				CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(getProject(), initializerText, this);
+				DotNetExpression value = (DotNetExpression) expressionFragment.getChildren()[0];
+				myInitializerExpression = new WeakReference<>(value);
+				return value;
+			}
+
+			return null;
+		}
+
+		myInitializerExpression = null;
 		return findChildByClass(DotNetExpression.class);
+	}
+
+	@Override
+	protected void clearUserData()
+	{
+		super.clearUserData();
+		myInitializerExpression = null;
 	}
 
 	@RequiredReadAction

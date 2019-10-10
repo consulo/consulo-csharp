@@ -16,33 +16,19 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.util.function.Function;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.lang.ASTNode;
 import consulo.csharp.lang.psi.impl.source.CSharpStubParameterImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
-import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 15.01.14
  */
-public class CSharpParameterStubElementType extends CSharpVariableStubElementType<DotNetParameter>
+public class CSharpParameterStubElementType extends CSharpBaseVariableStubElementType<DotNetParameter>
 {
-	private static final Function<DotNetParameter, String> ourDefaultInitializerTextGetter = p ->
-	{
-		DotNetExpression initializer = p.getInitializer();
-		if(initializer != null)
-		{
-			return initializer.getText();
-		}
-		return null;
-	};
-
 	public CSharpParameterStubElementType()
 	{
 		super("PARAMETER");
@@ -61,10 +47,9 @@ public class CSharpParameterStubElementType extends CSharpVariableStubElementTyp
 		return new CSharpStubParameterImpl(stub);
 	}
 
-	@Nullable
 	@Override
-	protected Function<DotNetParameter, String> getInitializerGetter()
+	protected boolean supportsInitializer(int modifiers)
 	{
-		return ourDefaultInitializerTextGetter;
+		return true;
 	}
 }

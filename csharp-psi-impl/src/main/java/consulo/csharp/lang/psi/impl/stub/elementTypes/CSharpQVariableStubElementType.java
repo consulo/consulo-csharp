@@ -16,53 +16,36 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NonNls;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.util.io.StringRef;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetVariable;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 07.01.14.
  */
-public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & DotNetQualifiedElement> extends CSharpAbstractStubElementType<CSharpVariableDeclStub<P>, P>
+public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & DotNetQualifiedElement> extends CSharpBaseVariableStubElementType<P>
 {
 	public CSharpQVariableStubElementType(@Nonnull @NonNls String debugName)
 	{
 		super(debugName);
 	}
 
+	@Override
+	protected boolean supportsParentQName()
+	{
+		return true;
+	}
+
 	@RequiredReadAction
+	@Nullable
 	@Override
-	public CSharpVariableDeclStub<P> createStub(@Nonnull P declaration, StubElement stubElement)
+	protected String getParentQName(@Nonnull P variable)
 	{
-		String namespaceQName = declaration.getPresentableParentQName();
-		int otherModifierMask = CSharpVariableDeclStub.getOtherModifierMask(declaration);
-		return new CSharpVariableDeclStub<P>(stubElement, this, namespaceQName, otherModifierMask, null);
-	}
-
-	@Override
-	public void serialize(@Nonnull CSharpVariableDeclStub<P> variableStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
-	{
-		stubOutputStream.writeName(variableStub.getParentQName());
-		stubOutputStream.writeVarInt(variableStub.getOtherModifierMask());
-	}
-
-	@Nonnull
-	@Override
-	public CSharpVariableDeclStub<P> deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
-	{
-		StringRef parentQName = stubInputStream.readName();
-		int otherModifierMask = stubInputStream.readVarInt();
-		return new CSharpVariableDeclStub<P>(stubElement, this, StringRef.toString(parentQName), otherModifierMask, null);
+		return variable.getPresentableParentQName();
 	}
 }
