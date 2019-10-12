@@ -16,13 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.genericInference;
 
-import java.util.function.Function;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Singleton;
-
-import com.intellij.openapi.Disposable;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SimpleModificationTracker;
@@ -30,12 +23,17 @@ import com.intellij.psi.PsiElement;
 import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Singleton;
+import java.util.function.Function;
+
 /**
  * @author VISTALL
  * @since 2018-07-23
  */
 @Singleton
-public class GenericInferenceManager extends SimpleModificationTracker implements Disposable
+public class GenericInferenceManager extends SimpleModificationTracker
 {
 	@Nonnull
 	public static GenericInferenceManager getInstance(@Nonnull Project project)
@@ -91,11 +89,5 @@ public class GenericInferenceManager extends SimpleModificationTracker implement
 				myInsideInferenceSession.set(null);
 			}
 		}
-	}
-
-	@Override
-	public void dispose()
-	{
-		myInsideInferenceSession.remove();
 	}
 }
