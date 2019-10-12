@@ -25,6 +25,7 @@ import com.intellij.util.NotNullFunction;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.lang.psi.impl.DotNetTypeRefCacheUtil;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.platform.Platform;
 
 /**
  * @author VISTALL
@@ -32,7 +33,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public abstract class CSharpTypeRefCacher<E extends PsiElement>
 {
-	public static final boolean ENABLED = true;
+	public static final boolean ENABLED = Boolean.getBoolean("consulo.csharp.enable.type.ref.cache");
 
 	private static class Resolver<E extends PsiElement> implements NotNullFunction<E, DotNetTypeRef>
 	{
