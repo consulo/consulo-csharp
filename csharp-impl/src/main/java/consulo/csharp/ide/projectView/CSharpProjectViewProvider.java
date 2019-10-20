@@ -21,6 +21,7 @@ import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.ide.util.treeView.AbstractTreeUi;
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -44,7 +45,7 @@ import java.util.List;
  * @author VISTALL
  * @since 09.12.13.
  */
-public class CSharpProjectViewProvider implements SelectableTreeStructureProvider
+public class CSharpProjectViewProvider implements SelectableTreeStructureProvider, DumbAware
 {
 	private final Project myProject;
 
