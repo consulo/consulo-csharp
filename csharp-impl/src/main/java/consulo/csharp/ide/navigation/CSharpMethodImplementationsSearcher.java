@@ -16,18 +16,17 @@
 
 package consulo.csharp.ide.navigation;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.application.ReadAction;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.searches.DefinitionsScopedSearch;
 import com.intellij.util.Processor;
 import com.intellij.util.QueryExecutor;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
 
 /**
  * @author VISTALL
@@ -36,7 +35,7 @@ import com.intellij.util.containers.ContainerUtil;
 public class CSharpMethodImplementationsSearcher implements QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters>
 {
 	@Override
-	public boolean execute(@Nonnull DefinitionsScopedSearch.SearchParameters queryParameters, @Nonnull Processor<PsiElement> consumer)
+	public boolean execute(@Nonnull DefinitionsScopedSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiElement> consumer)
 	{
 		PsiElement element = queryParameters.getElement();
 		if(element instanceof DotNetVirtualImplementOwner)

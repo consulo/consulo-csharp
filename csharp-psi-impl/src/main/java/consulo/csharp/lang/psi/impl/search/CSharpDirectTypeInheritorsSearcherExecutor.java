@@ -15,16 +15,8 @@
  */
 package consulo.csharp.lang.psi.impl.search;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.application.ReadAction;
-import consulo.csharp.lang.psi.impl.stub.index.ExtendsListIndex;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.text.StringUtil;
@@ -34,10 +26,17 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.util.Processor;
 import com.intellij.util.QueryExecutor;
 import com.intellij.util.containers.HashMap;
+import consulo.csharp.lang.psi.impl.stub.index.ExtendsListIndex;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.psi.search.searches.DirectTypeInheritorsSearch;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author max
@@ -47,7 +46,7 @@ import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
 public class CSharpDirectTypeInheritorsSearcherExecutor implements QueryExecutor<DotNetTypeDeclaration, DirectTypeInheritorsSearch.SearchParameters>
 {
 	@Override
-	public boolean execute(@Nonnull final DirectTypeInheritorsSearch.SearchParameters p, @Nonnull final Processor<DotNetTypeDeclaration> consumer)
+	public boolean execute(@Nonnull final DirectTypeInheritorsSearch.SearchParameters p, @Nonnull final Processor<? super DotNetTypeDeclaration> consumer)
 	{
 		String vmQName = p.getVmQName();
 

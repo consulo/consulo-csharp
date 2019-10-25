@@ -16,19 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.search;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.search.searches.AllTypesSearch;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
@@ -39,17 +26,24 @@ import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.Processor;
 import com.intellij.util.QueryExecutor;
+import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.search.searches.AllTypesSearch;
+
+import javax.annotation.Nonnull;
+import java.util.*;
 
 /**
  * @author max
- *         <p/>
- *         Copied from Java plugin by Jetbrains (com.intellij.psi.search.searches.ClassInheritorsSearch)
+ * <p/>
+ * Copied from Java plugin by Jetbrains (com.intellij.psi.search.searches.ClassInheritorsSearch)
  */
 public class CSharpAllTypesSearchExecutor implements QueryExecutor<DotNetTypeDeclaration, AllTypesSearch.SearchParameters>
 {
 	@Override
-	public boolean execute(@Nonnull final AllTypesSearch.SearchParameters queryParameters, @Nonnull final Processor<DotNetTypeDeclaration>
-			consumer)
+	public boolean execute(@Nonnull final AllTypesSearch.SearchParameters queryParameters, @Nonnull final Processor<? super DotNetTypeDeclaration> consumer)
 	{
 		SearchScope scope = queryParameters.getScope();
 
@@ -69,8 +63,9 @@ public class CSharpAllTypesSearchExecutor implements QueryExecutor<DotNetTypeDec
 		return true;
 	}
 
-	private static boolean processAllClassesInGlobalScope(final GlobalSearchScope scope, final Processor<DotNetTypeDeclaration> processor,
-			final AllTypesSearch.SearchParameters parameters)
+	private static boolean processAllClassesInGlobalScope(final GlobalSearchScope scope,
+														  final Processor<? super DotNetTypeDeclaration> processor,
+														  final AllTypesSearch.SearchParameters parameters)
 	{
 		final Collection<String> names = ApplicationManager.getApplication().runReadAction(new Computable<Collection<String>>()
 		{
@@ -140,7 +135,7 @@ public class CSharpAllTypesSearchExecutor implements QueryExecutor<DotNetTypeDec
 		return true;
 	}
 
-	private static boolean processScopeRootForAllClasses(PsiElement scopeRoot, final Processor<DotNetTypeDeclaration> processor)
+	private static boolean processScopeRootForAllClasses(PsiElement scopeRoot, final Processor<? super DotNetTypeDeclaration> processor)
 	{
 		if(scopeRoot == null)
 		{

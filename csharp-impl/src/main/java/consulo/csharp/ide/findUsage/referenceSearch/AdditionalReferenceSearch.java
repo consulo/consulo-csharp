@@ -16,13 +16,14 @@
 
 package consulo.csharp.ide.findUsage.referenceSearch;
 
-import javax.annotation.Nonnull;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Processor;
+import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,7 +32,7 @@ import com.intellij.util.Processor;
 public class AdditionalReferenceSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>
 {
 	@Override
-	public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<PsiReference> consumer)
+	public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer)
 	{
 		PsiElement elementToSearch = queryParameters.getElementToSearch();
 
