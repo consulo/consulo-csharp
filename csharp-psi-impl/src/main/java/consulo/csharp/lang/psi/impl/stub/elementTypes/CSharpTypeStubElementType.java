@@ -16,11 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
@@ -35,6 +30,9 @@ import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpTypeDeclStub;
 import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
 
 /**
  * @author VISTALL
@@ -108,19 +106,7 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 				}
 			}
 
-			indexSink.occurrence(CSharpIndexKeys.TYPE_BY_QNAME_INDEX, getNameWithNamespaceForIndexing(parentQName, name));
-
-			indexSink.occurrence(CSharpIndexKeys.TYPE_BY_VMQNAME_INDEX, stub.getVmQName());
+			indexSink.occurrence(CSharpIndexKeys.TYPE_BY_VMQNAME_INDEX, stub.getVmQName().hashCode());
 		}
-	}
-
-	@Nonnull
-	public static String getNameWithNamespaceForIndexing(@Nullable String namespace, @Nonnull String name)
-	{
-		if(StringUtil.isEmpty(namespace))
-		{
-			return name;
-		}
-		return namespace + "." + name;
 	}
 }

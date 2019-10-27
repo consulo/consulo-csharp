@@ -16,27 +16,22 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpAttributeList;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpModifierList;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.impl.stub.CSharpModifierListStub;
-import consulo.dotnet.psi.DotNetAttribute;
-import consulo.dotnet.psi.DotNetAttributeList;
-import consulo.dotnet.psi.DotNetModifier;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.stub.CSharpModifierListStub;
+import consulo.dotnet.psi.DotNetAttribute;
+import consulo.dotnet.psi.DotNetAttributeList;
+import consulo.dotnet.psi.DotNetModifier;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -112,7 +107,7 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 			return stub.hasModifier(modifier);
 		}
 
-		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
+		IElementType iElementType = CSharpModifierListImplUtil.asElementType(modifier);
 		return findChildByType(iElementType) != null;
 	}
 
@@ -120,7 +115,7 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	@Override
 	public PsiElement getModifierElement(DotNetModifier modifier)
 	{
-		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
+		IElementType iElementType = CSharpModifierListImplUtil.asElementType(modifier);
 		return findChildByType(iElementType);
 	}
 
@@ -128,7 +123,7 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	@Override
 	public List<PsiElement> getModifierElements(@Nonnull DotNetModifier modifier)
 	{
-		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
+		IElementType iElementType = CSharpModifierListImplUtil.asElementType(modifier);
 		return findChildrenByType(iElementType);
 	}
 

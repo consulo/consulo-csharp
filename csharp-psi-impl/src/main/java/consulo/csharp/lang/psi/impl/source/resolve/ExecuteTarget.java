@@ -21,6 +21,7 @@ import com.intellij.util.ArrayFactory;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.CSharpCaseVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpIsVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableImpl;
@@ -156,6 +157,7 @@ public enum ExecuteTarget
 							element instanceof DotNetParameter ||
 							element instanceof CSharpLinqVariable ||
 							element instanceof CSharpIsVariableImpl ||
+							element instanceof CSharpCaseVariableImpl ||
 							element instanceof CSharpOutRefVariableImpl ||
 							element instanceof CSharpLambdaParameter ||
 							element instanceof CSharpElementGroup && isLocalMethodGroup((CSharpElementGroup) element);

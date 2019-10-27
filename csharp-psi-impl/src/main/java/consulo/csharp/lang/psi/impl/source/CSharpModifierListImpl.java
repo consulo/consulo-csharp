@@ -16,13 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -33,6 +26,12 @@ import consulo.csharp.lang.psi.CSharpModifierList;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetAttributeList;
 import consulo.dotnet.psi.DotNetModifier;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -96,7 +95,7 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpM
 	@Override
 	public boolean hasModifierInTree(@Nonnull DotNetModifier modifier)
 	{
-		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
+		IElementType iElementType = CSharpModifierListImplUtil.asElementType(modifier);
 		return findChildByType(iElementType) != null;
 	}
 
@@ -104,7 +103,7 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpM
 	@Override
 	public PsiElement getModifierElement(DotNetModifier modifier)
 	{
-		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
+		IElementType iElementType = CSharpModifierListImplUtil.asElementType(modifier);
 		return findChildByType(iElementType);
 	}
 
@@ -112,7 +111,7 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpM
 	@Override
 	public List<PsiElement> getModifierElements(@Nonnull DotNetModifier modifier)
 	{
-		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
+		IElementType iElementType = CSharpModifierListImplUtil.asElementType(modifier);
 		return findChildrenByType(iElementType);
 	}
 

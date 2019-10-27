@@ -16,25 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableMap;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.ResolveState;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -47,28 +33,13 @@ import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.lang.CSharpCastType;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpQualifiedNonReference;
-import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import consulo.csharp.lang.psi.CSharpTokenSets;
-import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
-import consulo.csharp.lang.psi.impl.source.resolve.AsPsiElementProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
-import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.CSharpUndefinedResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
-import consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.StubElementResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.*;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.NCallArgumentBuilder;
 import consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitCastInfo;
@@ -85,6 +56,10 @@ import consulo.dotnet.resolve.DotNetPointerTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.util.ArrayUtil2;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author VISTALL
@@ -550,6 +525,10 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
+		if(CSharpReferenceExpressionImplUtil.isCacheDisabled(this))
+		{
+			return OurResolver.INSTANCE.resolve(this, incompleteCode);
+		}
 		return ResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, false, incompleteCode);
 	}
 

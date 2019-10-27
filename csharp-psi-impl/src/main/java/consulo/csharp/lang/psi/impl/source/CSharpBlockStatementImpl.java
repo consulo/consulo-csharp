@@ -69,9 +69,10 @@ public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNe
 	}
 
 	@Nonnull
+	@RequiredReadAction
 	public DotNetStatement[] getStatements()
 	{
-		return findChildrenByClass(DotNetStatement.class);
+		return CachedValuesManager.getCachedValue(this, () -> CachedValueProvider.Result.create(findChildrenByClass(DotNetStatement.class), PsiModificationTracker.MODIFICATION_COUNT));
 	}
 
 	@Nonnull

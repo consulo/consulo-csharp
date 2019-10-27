@@ -16,9 +16,8 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -31,8 +30,9 @@ import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -60,6 +60,11 @@ public class CS0151 extends CompilerCheck<DotNetExpression>
 	@Override
 	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetExpression element)
 	{
+		if(languageVersion.isAtLeast(CSharpLanguageVersion._7_0))
+		{
+			return null;
+		}
+
 		if(element.getParent() instanceof CSharpSwitchStatementImpl)
 		{
 			DotNetTypeRef typeRef = element.toTypeRef(true);

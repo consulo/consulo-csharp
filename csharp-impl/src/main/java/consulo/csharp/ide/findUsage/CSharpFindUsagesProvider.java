@@ -130,6 +130,10 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		{
 			return "is variable";
 		}
+		else if(element instanceof CSharpCaseVariableImpl)
+		{
+			return "case variable";
+		}
 		else if(element instanceof DotNetGenericParameter)
 		{
 			return "generic parameter";

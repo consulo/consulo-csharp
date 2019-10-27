@@ -29,10 +29,7 @@ import com.intellij.psi.impl.source.tree.injected.Place;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.*;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.CommonProcessors;
-import com.intellij.util.ObjectUtil;
-import com.intellij.util.Processor;
+import com.intellij.util.*;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
@@ -70,7 +67,9 @@ import static consulo.csharp.lang.psi.CSharpReferenceExpression.ResolveToKind;
  */
 public class CSharpReferenceExpressionImplUtil
 {
-	public static class OurResolver implements ResolveCache.PolyVariantResolver<CSharpReferenceExpressionEx>
+	public static final boolean ourEnableCache = SystemProperties.getBooleanProperty("consulo.csharp.enable.ref.cache", true);
+
+	private static class OurResolver implements ResolveCache.PolyVariantResolver<CSharpReferenceExpressionEx>
 	{
 		public static final OurResolver INSTANCE = new OurResolver();
 
@@ -263,7 +262,7 @@ public class CSharpReferenceExpressionImplUtil
 
 		ResolveResult[] resolveResults;
 		CSharpReferenceExpressionImplUtil.OurResolver resolver = CSharpReferenceExpressionImplUtil.OurResolver.INSTANCE;
-		if(GenericInferenceManager.getInstance(expression.getProject()).isInsideGenericInferenceSession())
+		if(isCacheDisabled(expression))
 		{
 			resolveResults = resolver.resolve(expression, resolveFromParent);
 		}
@@ -280,6 +279,16 @@ public class CSharpReferenceExpressionImplUtil
 		{
 			return CSharpResolveUtil.filterValidResults(resolveResults);
 		}
+	}
+
+	public static boolean isCacheDisabled(@Nonnull PsiElement element)
+	{
+		// inside generic inference session - don't callo cache
+		if(GenericInferenceManager.getInstance(element.getProject()).isInsideGenericInferenceSession())
+		{
+			return true;
+		}
+		return !ourEnableCache;
 	}
 
 	@RequiredReadAction

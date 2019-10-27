@@ -16,20 +16,6 @@
 
 package consulo.csharp.lang.formatter.processors;
 
-import javax.annotation.Nonnull;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
-import consulo.csharp.lang.formatter.CSharpFormattingBlock;
-import consulo.csharp.lang.psi.CSharpElements;
-import consulo.csharp.lang.psi.CSharpPreprocessorElements;
-import consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerCompositeValueImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerSingleValueImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
-import consulo.dotnet.psi.DotNetStatement;
 import com.intellij.formatting.Indent;
 import com.intellij.formatting.templateLanguages.BlockWithParent;
 import com.intellij.lang.ASTNode;
@@ -38,6 +24,17 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.codeInsight.CommentUtilCore;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
+import consulo.csharp.lang.formatter.CSharpFormattingBlock;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerCompositeValueImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerSingleValueImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
+import consulo.dotnet.psi.DotNetStatement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -146,7 +143,9 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 			if(psi instanceof CSharpBlockStatementImpl)
 			{
 				BlockWithParent parentBlock = myBlock.getParent();
-				if(parentBlock != null && ((CSharpFormattingBlock) parentBlock).getElementType() == CSharpElements.SWITCH_LABEL_STATEMENT)
+				if(parentBlock != null &&
+						(((CSharpFormattingBlock) parentBlock).getElementType() == CSharpElements.CASE_OR_DEFAULT_STATEMENT ||
+						((CSharpFormattingBlock) parentBlock).getElementType() == CSharpElements.CASE_PATTERN_STATEMENT))
 				{
 					return Indent.getNoneIndent();
 				}

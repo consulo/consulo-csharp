@@ -16,16 +16,17 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.stubs.IndexSink;
+import com.intellij.util.BitUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpFieldDeclarationImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.stubs.IndexSink;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -36,6 +37,12 @@ public class CSharpFieldStubElementType extends CSharpQVariableStubElementType<D
 	public CSharpFieldStubElementType()
 	{
 		super("FIELD_DECLARATION");
+	}
+
+	@Override
+	protected boolean supportsInitializer(int modifiers)
+	{
+		return BitUtil.isSet(modifiers, CSharpVariableDeclStub.CONSTANT_MASK);
 	}
 
 	@Nonnull

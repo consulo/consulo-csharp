@@ -18,14 +18,18 @@ package consulo.csharp.lang.psi;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.source.CSharpCaseVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
+import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 
 /**
  * @author VISTALL
@@ -56,6 +60,20 @@ public class CSharpContextUtil
 	@RequiredReadAction
 	public static CSharpContextUtil.ContextType getContextForResolved(@Nonnull PsiElement element)
 	{
+		if(element instanceof CSharpElementGroup)
+		{
+			Collection elements = ((CSharpElementGroup) element).getElements();
+			if(elements.size() != 1)
+			{
+				// FIXME [VISTALL] any?
+				return ContextType.ANY;
+			}
+
+			PsiElement item = (PsiElement) ContainerUtil.getFirstItem(elements);
+			assert item != null;
+			return getContextForResolved(item);
+		}
+
 		if(!(element instanceof DotNetModifierListOwner))
 		{
 			return ContextType.ANY;
@@ -112,6 +130,7 @@ public class CSharpContextUtil
 					resolvedElement instanceof CSharpLocalVariable ||
 					resolvedElement instanceof CSharpLinqVariable ||
 					resolvedElement instanceof CSharpOutRefVariableImpl ||
+					resolvedElement instanceof CSharpCaseVariableImpl ||
 					resolvedElement instanceof DotNetParameter ||
 					resolvedElement instanceof CSharpLambdaParameter ||
 					resolvedElement instanceof CSharpConstructorDeclaration)

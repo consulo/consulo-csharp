@@ -17,13 +17,9 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetStatement;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,18 +28,11 @@ import javax.annotation.Nullable;
  * @author VISTALL
  * @since 26.02.14
  */
-public class CSharpSwitchStatementImpl extends CSharpElementImpl implements DotNetStatement
+public class CSharpCaseOrDefaultStatementImpl extends CSharpElementImpl implements CSharpSwitchLabelStatement
 {
-	public CSharpSwitchStatementImpl(@Nonnull ASTNode node)
+	public CSharpCaseOrDefaultStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
-	}
-
-	@Nonnull
-	@RequiredReadAction
-	public CSharpSwitchLabelStatement[] getStatements()
-	{
-		return findChildrenByClass(CSharpSwitchLabelStatement.class);
 	}
 
 	@Nullable
@@ -56,21 +45,6 @@ public class CSharpSwitchStatementImpl extends CSharpElementImpl implements DotN
 	@Override
 	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
-		visitor.visitSwitchStatement(this);
-	}
-
-	@Override
-	@RequiredReadAction
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
-	{
-		CSharpSwitchLabelStatement[] statements = getStatements();
-		for(CSharpSwitchLabelStatement statement : statements)
-		{
-			if(!statement.processDeclarations(processor, state, lastParent, place))
-			{
-				return false;
-			}
-		}
-		return super.processDeclarations(processor, state, lastParent, place);
+		visitor.visitSwitchLabelStatement(this);
 	}
 }

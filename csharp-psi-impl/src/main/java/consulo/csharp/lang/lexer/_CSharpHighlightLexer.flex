@@ -13,6 +13,7 @@ import consulo.csharp.lang.psi.CSharpTemplateTokens;
 %{
   private int myStringInterpolationBalance;
   private boolean myInsideStringInterpolationExpression;
+  private int myInsideStringInterpolationParenthesesBalance;
 
   private java.util.ArrayDeque<Integer> myStacks = new java.util.ArrayDeque<>();
 
@@ -352,9 +353,23 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"]"                       { return CSharpTokens.RBRACKET; }
 
-	"("                       { return CSharpTokens.LPAR; }
+	"("
+	{
+		if(myInsideStringInterpolationExpression)
+		{
+			myInsideStringInterpolationParenthesesBalance ++;
+		}
+		return CSharpTokens.LPAR;
+	}
 
-	")"                       { return CSharpTokens.RPAR; }
+	")"
+	{
+		if(myInsideStringInterpolationExpression)
+		{
+			myInsideStringInterpolationParenthesesBalance --;
+		}
+		return CSharpTokens.RPAR;
+	}
 
 	"*="                      { return CSharpTokens.MULEQ; }
 
@@ -388,7 +403,7 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	":"
 	{
-		if(myInsideStringInterpolationExpression)
+		if(myInsideStringInterpolationExpression && myInsideStringInterpolationParenthesesBalance == 0)
 		{
 			yybegin(STRING_INTERPOLATION_FORMAT_WAIT);
 			return CfsTokens.COLON;

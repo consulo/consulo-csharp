@@ -16,15 +16,15 @@
 
 package consulo.csharp.ide.navigation;
 
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.searches.DefinitionsScopedSearch;
 import com.intellij.util.Processor;
 import com.intellij.util.QueryExecutor;
+import consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -33,7 +33,7 @@ import com.intellij.util.QueryExecutor;
 public class CSharpTypeImplementationSearcher implements QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters>
 {
 	@Override
-	public boolean execute(@Nonnull DefinitionsScopedSearch.SearchParameters queryParameters, @Nonnull final Processor<PsiElement> consumer)
+	public boolean execute(@Nonnull DefinitionsScopedSearch.SearchParameters queryParameters, @Nonnull final Processor<? super PsiElement> consumer)
 	{
 		final PsiElement element = queryParameters.getElement();
 		if(element instanceof DotNetTypeDeclaration)

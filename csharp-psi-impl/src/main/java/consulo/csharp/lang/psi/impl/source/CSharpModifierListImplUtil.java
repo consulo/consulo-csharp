@@ -16,15 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import gnu.trove.THashSet;
-
-import java.util.EnumSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.PsiWhiteSpace;
@@ -33,20 +24,14 @@ import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpAccessModifier;
-import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
-import consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpModifierList;
-import consulo.csharp.lang.psi.CSharpSoftTokens;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.DotNetVirtualImplementOwner;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.psi.*;
+import consulo.dotnet.psi.*;
+import gnu.trove.THashSet;
+import org.omg.CORBA.INTERNAL;
+
+import javax.annotation.Nonnull;
+import java.util.*;
 
 /**
  * @author VISTALL
@@ -54,7 +39,9 @@ import consulo.dotnet.psi.DotNetXXXAccessor;
  */
 public class CSharpModifierListImplUtil
 {
-	public static final Map<CSharpModifier, IElementType> ourModifiers = new LinkedHashMap<CSharpModifier, IElementType>()
+	private static final IElementType ourDummyUnregisteredModifier = new IElementType("ourDummyUnregisteredModifier", CSharpLanguage.INSTANCE);
+
+	private static final Map<CSharpModifier, IElementType> ourModifiers = new LinkedHashMap<CSharpModifier, IElementType>()
 	{
 		{
 			put(CSharpModifier.PUBLIC, CSharpTokens.PUBLIC_KEYWORD);
@@ -76,9 +63,20 @@ public class CSharpModifierListImplUtil
 			put(CSharpModifier.OVERRIDE, CSharpTokens.OVERRIDE_KEYWORD);
 			put(CSharpModifier.ASYNC, CSharpSoftTokens.ASYNC_KEYWORD);
 			put(CSharpModifier.IN, CSharpSoftTokens.IN_KEYWORD);
+			put(CSharpModifier.INTERFACE_ABSTRACT, CSharpSoftTokens.ABSTRACT_KEYWORD);
 			put(CSharpModifier.EXTERN, CSharpSoftTokens.EXTERN_KEYWORD);
+
+			// this modifier stored in differed way
+			put(CSharpModifier.OPTIONAL, ourDummyUnregisteredModifier);
 		}
 	};
+
+	@Nonnull
+	public static IElementType asElementType(@Nonnull DotNetModifier modifier)
+	{
+		CSharpModifier mod = CSharpModifier.as(modifier);
+		return Objects.requireNonNull(ourModifiers.get(mod), "Unknown modifier: " + mod);
+	}
 
 	private static final EnumSet<CSharpModifier> emptySet = EnumSet.noneOf(CSharpModifier.class);
 

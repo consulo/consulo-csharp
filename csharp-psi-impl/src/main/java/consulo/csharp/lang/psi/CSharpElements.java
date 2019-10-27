@@ -143,6 +143,10 @@ public interface CSharpElements
 
 	IElementType IS_VARIABLE = new ElementTypeAsPsiFactory("IS_VARIABLE", CSharpLanguage.INSTANCE, CSharpIsVariableImpl.class);
 
+	IElementType CASE_PATTERN_STATEMENT = new ElementTypeAsPsiFactory("CASE_PATTERN_STATEMENT", CSharpLanguage.INSTANCE, CSharpCasePatternStatementImpl.class);
+
+	IElementType CASE_VARIABLE = new ElementTypeAsPsiFactory("CASE_VARIABLE", CSharpLanguage.INSTANCE, CSharpCaseVariableImpl.class);
+
 	IElementType AS_EXPRESSION = new ElementTypeAsPsiFactory("AS_EXPRESSION", CSharpLanguage.INSTANCE, CSharpAsExpressionImpl.class);
 
 	IElementType NEW_ARRAY_LENGTH = new ElementTypeAsPsiFactory("NEW_ARRAY_LENGTH", CSharpLanguage.INSTANCE, CSharpNewArrayLengthImpl.class);
@@ -281,7 +285,7 @@ public interface CSharpElements
 
 	IElementType UNSAFE_STATEMENT = new ElementTypeAsPsiFactory("UNSAFE_STATEMENT", CSharpLanguage.INSTANCE, CSharpUnsafeStatementImpl.class);
 
-	IElementType SWITCH_LABEL_STATEMENT = new ElementTypeAsPsiFactory("SWITCH_LABEL_STATEMENT", CSharpLanguage.INSTANCE, CSharpSwitchLabelStatementImpl.class);
+	IElementType CASE_OR_DEFAULT_STATEMENT = new ElementTypeAsPsiFactory("CASE_OR_DEFAULT_STATEMENT", CSharpLanguage.INSTANCE, CSharpCaseOrDefaultStatementImpl.class);
 
 	IElementType THROW_STATEMENT = new ElementTypeAsPsiFactory("THROW_STATEMENT_STATEMENT", CSharpLanguage.INSTANCE, CSharpThrowStatementImpl.class);
 

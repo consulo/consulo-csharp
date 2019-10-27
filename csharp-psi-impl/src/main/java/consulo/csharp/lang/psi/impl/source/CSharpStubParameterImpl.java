@@ -16,12 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.jetbrains.annotations.NonNls;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -35,15 +30,13 @@ import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetParameterList;
-import consulo.dotnet.psi.DotNetParameterListOwner;
-import consulo.dotnet.psi.DotNetType;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 
 /**
  * @author VISTALL
@@ -51,7 +44,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariableDeclStub<DotNetParameter>> implements DotNetParameter, CSharpNamedElement
 {
-	private Ref<DotNetExpression> myInitializerExpression;
+	private volatile WeakReference<DotNetExpression> myInitializerExpression;
 
 	public CSharpStubParameterImpl(@Nonnull ASTNode node)
 	{
@@ -135,7 +128,7 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 			{
 				CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(getProject(), initializerText, this);
 				DotNetExpression value = (DotNetExpression) expressionFragment.getChildren()[0];
-				myInitializerExpression = Ref.create(value);
+				myInitializerExpression = new WeakReference<>(value);
 				return value;
 			}
 

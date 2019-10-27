@@ -28,7 +28,7 @@ import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
  * @author VISTALL
  * @since 26-Nov-16.
  */
-public class CSharpTupleVariableStubElementType extends CSharpVariableStubElementType<CSharpTupleVariable>
+public class CSharpTupleVariableStubElementType extends CSharpBaseVariableStubElementType<CSharpTupleVariable>
 {
 	public CSharpTupleVariableStubElementType()
 	{

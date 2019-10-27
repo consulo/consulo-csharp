@@ -485,7 +485,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(statement);
 	}
 
-	public void visitSwitchLabelStatement(CSharpSwitchLabelStatementImpl statement)
+	public void visitSwitchLabelStatement(CSharpCaseOrDefaultStatementImpl statement)
 	{
 		visitElement(statement);
 	}
@@ -676,6 +676,16 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	}
 
 	public void visitLocalMethodDeclarationStatement(CSharpLocalMethodDeclarationStatementImpl statement)
+	{
+		visitElement(statement);
+	}
+
+	public void visitCaseVariable(CSharpCaseVariableImpl variable)
+	{
+		visitVariable(variable);
+	}
+
+	public void visitCasePatternStatement(CSharpCasePatternStatementImpl statement)
 	{
 		visitElement(statement);
 	}

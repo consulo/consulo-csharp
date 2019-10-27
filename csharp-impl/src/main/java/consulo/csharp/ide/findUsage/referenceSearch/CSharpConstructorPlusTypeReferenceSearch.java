@@ -38,7 +38,7 @@ public class CSharpConstructorPlusTypeReferenceSearch extends QueryExecutorBase<
 {
 	@Override
 	@RequiredWriteAction
-	public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<PsiReference> consumer)
+	public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer)
 	{
 		PsiElement elementToSearch = queryParameters.getElementToSearch();
 

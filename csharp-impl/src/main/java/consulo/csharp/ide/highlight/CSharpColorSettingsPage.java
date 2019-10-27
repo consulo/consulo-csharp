@@ -16,13 +16,6 @@
 
 package consulo.csharp.ide.highlight;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.options.OptionsBundle;
@@ -32,6 +25,12 @@ import com.intellij.openapi.options.colors.ColorSettingsPage;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.io.FileUtil;
 import consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightKey;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -155,7 +154,7 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 	@Override
 	public ColorDescriptor[] getColorDescriptors()
 	{
-		return new ColorDescriptor[0];
+		return ColorDescriptor.EMPTY_ARRAY;
 	}
 
 	@Nonnull

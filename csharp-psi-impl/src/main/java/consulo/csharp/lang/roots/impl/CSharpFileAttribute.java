@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import com.intellij.util.io.DataInputOutputUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -34,75 +35,62 @@ public class CSharpFileAttribute
 {
 	protected static CSharpFileAttribute read(DataInputStream inputStream) throws IOException
 	{
-		List<String> oldValue = DataInputOutputUtil.readSeq(inputStream, inputStream::readUTF);
 		int ver = DataInputOutputUtil.readINT(inputStream);
-		return new CSharpFileAttribute(oldValue, (byte) ver);
+		int varsHashCode = DataInputOutputUtil.readINT(inputStream);
+		return new CSharpFileAttribute((byte) ver, varsHashCode);
 	}
 
 	public static void write(DataOutputStream outputStream, CSharpFileAttribute newAttribute) throws IOException
 	{
-		DataInputOutputUtil.writeSeq(outputStream, newAttribute.values, outputStream::writeUTF);
-		DataInputOutputUtil.writeINT(outputStream, newAttribute.languageVersion);
+		DataInputOutputUtil.writeINT(outputStream, newAttribute.myLanguageVersion);
+		DataInputOutputUtil.writeINT(outputStream, newAttribute.myPreprocessorVariablesHashCode);
 	}
 
-	public static final CSharpFileAttribute DEFAULT = new CSharpFileAttribute(Collections.emptyList(), CSharpLanguageVersion.HIGHEST);
+	public static final CSharpFileAttribute DEFAULT = new CSharpFileAttribute(CSharpLanguageVersion.HIGHEST, 0);
 
-	private final Collection<String> values;
-	private final byte languageVersion;
+	private final byte myLanguageVersion;
+	private final int myPreprocessorVariablesHashCode;
 
-	public CSharpFileAttribute(Collection<String> values, CSharpLanguageVersion languageVersion)
+	public CSharpFileAttribute(CSharpLanguageVersion languageVersion, int preprocessorVariablesHashCode)
 	{
-		this(values, (byte) languageVersion.ordinal());
+		this((byte) languageVersion.ordinal(), preprocessorVariablesHashCode);
 	}
 
-	public CSharpFileAttribute(Collection<String> values, byte languageVersion)
+	public CSharpFileAttribute(byte languageVersion, int preprocessorVariablesHashCode)
 	{
-		this.values = values;
-		this.languageVersion = languageVersion;
+		myLanguageVersion = languageVersion;
+		myPreprocessorVariablesHashCode = preprocessorVariablesHashCode;
 	}
 
 	@Override
 	public boolean equals(Object o)
 	{
-		if(!(o instanceof CSharpFileAttribute))
+		if(this == o)
+		{
+			return true;
+		}
+		if(o == null || getClass() != o.getClass())
 		{
 			return false;
 		}
+		CSharpFileAttribute that = (CSharpFileAttribute) o;
+		return myLanguageVersion == that.myLanguageVersion &&
+				myPreprocessorVariablesHashCode == that.myPreprocessorVariablesHashCode;
+	}
 
-		CSharpFileAttribute other = (CSharpFileAttribute) o;
-
-		if(!equal(values, other.values))
-		{
-			return false;
-		}
-
-		return languageVersion == other.languageVersion;
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(myLanguageVersion, myPreprocessorVariablesHashCode);
 	}
 
 	@Override
 	public String toString()
 	{
 		final StringBuilder sb = new StringBuilder("CSharpFileAttribute{");
-		sb.append("values=").append(values);
-		sb.append(", languageVersion=").append(languageVersion);
+		sb.append("myLanguageVersion=").append(myLanguageVersion);
+		sb.append(", myPreprocessorVariablesHashCode=").append(myPreprocessorVariablesHashCode);
 		sb.append('}');
 		return sb.toString();
-	}
-
-	private static boolean equal(Collection<String> o1, Collection<String> o2)
-	{
-		if(o1.size() != o2.size())
-		{
-			return false;
-		}
-
-		for(String value : o1)
-		{
-			if(!o2.contains(value))
-			{
-				return false;
-			}
-		}
-		return true;
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2019 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,36 +16,36 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import com.intellij.lang.ASTNode;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.dotnet.psi.DotNetType;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetStatement;
-import com.intellij.lang.ASTNode;
-
 /**
  * @author VISTALL
- * @since 26.02.14
+ * @since 2019-10-05
  */
-public class CSharpSwitchLabelStatementImpl extends CSharpElementImpl implements DotNetStatement
+public class CSharpCaseVariableImpl extends CSharpVariableImpl
 {
-	public CSharpSwitchLabelStatementImpl(@Nonnull ASTNode node)
+	public CSharpCaseVariableImpl(@Nonnull ASTNode node)
 	{
 		super(node);
-	}
-
-	@Nullable
-	@RequiredReadAction
-	public DotNetExpression getExpression()
-	{
-		return findChildByClass(DotNetExpression.class);
 	}
 
 	@Override
 	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
-		visitor.visitSwitchLabelStatement(this);
+		visitor.visitCaseVariable(this);
+	}
+
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public DotNetType getType()
+	{
+		return findNotNullChildByClass(DotNetType.class);
 	}
 }

@@ -16,9 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -28,25 +25,20 @@ import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpQualifiedNonReference;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightIndexMethodDeclarationBuilder;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceManager;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetPointerTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -173,7 +165,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 	@RequiredReadAction
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
-		if(GenericInferenceManager.getInstance(getProject()).isInsideGenericInferenceSession())
+		if(CSharpReferenceExpressionImplUtil.isCacheDisabled(this))
 		{
 			return OurResolver.INSTANCE.resolve(this, incompleteCode);
 		}

@@ -18,6 +18,8 @@ package consulo.csharp.lang.psi.impl.source;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.tree.IElementType;
@@ -204,5 +206,11 @@ public class CSharpLocalMethodDeclarationImpl extends CSharpMemberImpl implement
 	public DotNetTypeRef getTypeRefForImplement()
 	{
 		return DotNetTypeRef.ERROR_TYPE;
+	}
+
+	@Override
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	{
+		return CSharpLikeMethodDeclarationImplUtil.processDeclarations(this, processor, state, lastParent, place);
 	}
 }

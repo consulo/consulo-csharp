@@ -228,7 +228,6 @@
 								 implementationClass="consulo.csharp.lang.psi.impl.manipulator.CSharpConstantExpressionElementManipulator"/>
 
 		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.TypeIndex"/>
-		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.TypeByQNameIndex"/>
 		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.TypeByVmQNameIndex"/>
 		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.TypeWithExtensionMethodsIndex"/>
 		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.MethodIndex"/>

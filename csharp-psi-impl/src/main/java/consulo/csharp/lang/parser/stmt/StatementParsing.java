@@ -146,7 +146,7 @@ public class StatementParsing extends SharedParsingHelpers
 			PsiBuilder.Marker methodMarker = parseLocalMethodDeclaration(builder, marker, false);
 			if(methodMarker != null)
 			{
-			return methodMarker;
+				return methodMarker;
 			}
 
 			builder.remapBackIfSoft();
@@ -710,17 +710,72 @@ public class StatementParsing extends SharedParsingHelpers
 	{
 		builder.advanceLexer();
 
+		IElementType doneElement = CASE_OR_DEFAULT_STATEMENT;
+
 		if(caseLabel)
 		{
-			if(ExpressionParsing.parse(builder, set) == null)
+			if(!parseCasePatternStatement(builder, set))
 			{
-				builder.error("Expression expected");
+				if(ExpressionParsing.parse(builder, set) == null)
+				{
+					builder.error("Expression expected");
+				}
+			}
+			else
+			{
+				doneElement = CASE_PATTERN_STATEMENT;
 			}
 		}
 
 		expect(builder, COLON, "':' expected");
 
-		marker.done(SWITCH_LABEL_STATEMENT);
+		marker.done(doneElement);
+	}
+
+	private static boolean parseCasePatternStatement(@Nonnull CSharpBuilderWrapper builder, @Nonnull ModifierSet set)
+	{
+		PsiBuilder.Marker patternVarMarker = builder.mark();
+
+		TypeInfo typeInfo = parseType(builder);
+		if(typeInfo == null)
+		{
+			patternVarMarker.rollbackTo();
+			return false;
+		}
+
+		if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
+		{
+			doneIdentifier(builder, NONE);
+
+			patternVarMarker.done(CASE_VARIABLE);
+
+			builder.enableSoftKeyword(CSharpSoftTokens.WHEN_KEYWORD);
+
+			IElementType possibleWhenTokenType = builder.getTokenType();
+
+			builder.disableSoftKeyword(CSharpSoftTokens.WHEN_KEYWORD);
+
+			if(possibleWhenTokenType == CSharpSoftTokens.WHEN_KEYWORD)
+			{
+				builder.advanceLexer();
+
+				if(ExpressionParsing.parse(builder, set) == null)
+				{
+					builder.error("Expression expected");
+				}
+			}
+			else if(possibleWhenTokenType != COLON)
+			{
+				builder.error("'when' expected");
+			}
+
+			return true;
+		}
+		else
+		{
+			patternVarMarker.rollbackTo();
+			return false;
+		}
 	}
 
 	private static void parseUsingOrFixed(@Nonnull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, IElementType to, ModifierSet set)

@@ -16,15 +16,6 @@
 
 package consulo.dotnet.libraryAnalyzer;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -34,15 +25,23 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.containers.MultiMap;
 import com.intellij.util.messages.MessageBusConnection;
-import consulo.dotnet.module.extension.DotNetLibraryOpenCache;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.ide.eap.EarlyAccessProgramDescriptor;
 import consulo.ide.eap.EarlyAccessProgramManager;
+import consulo.internal.dotnet.asm.mbel.ModuleParser;
 import consulo.internal.dotnet.asm.mbel.TypeDef;
 import consulo.internal.dotnet.asm.parse.MSILParseException;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
 import consulo.module.extension.ModuleExtension;
 import consulo.module.extension.ModuleExtensionChangeListener;
+
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author VISTALL
@@ -191,13 +190,10 @@ public class DotNetLibraryAnalyzerComponent
 
 	private static MultiMap<String, NamespaceReference> buildCache(File key, String libraryName)
 	{
-		DotNetLibraryOpenCache.Record record = null;
 		try
 		{
-			record = DotNetLibraryOpenCache.acquireWithNext(key.getPath());
-
 			MultiMap<String, NamespaceReference> map = new MultiMap<String, NamespaceReference>();
-			TypeDef[] typeDefs = record.get().getTypeDefs();
+			TypeDef[] typeDefs = new ModuleParser(key).getTypeDefs();
 
 			for(TypeDef typeDef : typeDefs)
 			{
@@ -210,18 +206,8 @@ public class DotNetLibraryAnalyzerComponent
 			}
 			return map;
 		}
-		catch(IOException ignored)
+		catch(IOException | MSILParseException ignored)
 		{
-		}
-		catch(MSILParseException ignored)
-		{
-		}
-		finally
-		{
-			if(record != null)
-			{
-				record.finish();
-			}
 		}
 		return MultiMap.emptyInstance();
 	}

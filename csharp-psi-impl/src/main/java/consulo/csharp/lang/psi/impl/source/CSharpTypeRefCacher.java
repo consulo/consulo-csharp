@@ -16,8 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValue;
@@ -26,14 +24,14 @@ import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.lang.psi.impl.DotNetTypeRefCacheUtil;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author VISTALL
  * @since 13-May-16
  */
 public abstract class CSharpTypeRefCacher<E extends PsiElement>
 {
-	public static final boolean ENABLED = true;
-
 	private static class Resolver<E extends PsiElement> implements NotNullFunction<E, DotNetTypeRef>
 	{
 		private CSharpTypeRefCacher<E> myCacher;
@@ -75,7 +73,7 @@ public abstract class CSharpTypeRefCacher<E extends PsiElement>
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRef(E element, boolean resolveFromParentOrInitializer)
 	{
-		if(!ENABLED)
+		if(CSharpReferenceExpressionImplUtil.isCacheDisabled(element))
 		{
 			return toTypeRefImpl(element, resolveFromParentOrInitializer);
 		}
@@ -89,7 +87,7 @@ public abstract class CSharpTypeRefCacher<E extends PsiElement>
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRef(E element, boolean resolveFromParentOrInitializer, Object... dropKeys)
 	{
-		if(!ENABLED)
+		if(CSharpReferenceExpressionImplUtil.isCacheDisabled(element))
 		{
 			return toTypeRefImpl(element, resolveFromParentOrInitializer);
 		}
