@@ -23,10 +23,14 @@ import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.ILazyParseableElementType;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.ModifierSet;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodBodyImpl;
+import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.lang.LanguageVersion;
 import org.jetbrains.annotations.NonNls;
 
@@ -46,6 +50,7 @@ public abstract class BaseMethodBodyLazyElementType extends ILazyParseableElemen
 	protected abstract void parse(@Nonnull CSharpBuilderWrapper wrapper, @Nonnull ModifierSet set);
 
 	@Override
+	@RequiredReadAction
 	protected ASTNode doParseContents(@Nonnull ASTNode chameleon, @Nonnull PsiElement psi)
 	{
 		final Project project = psi.getProject();
@@ -58,8 +63,15 @@ public abstract class BaseMethodBodyLazyElementType extends ILazyParseableElemen
 
 		PsiBuilder.Marker mark = wrapper.mark();
 
-		// todo wrong EMPTY
-		parse(wrapper, ModifierSet.EMPTY);
+		ModifierSet modifierSet = ModifierSet.EMPTY;
+		if(psi instanceof DotNetModifierListOwner)
+		{
+			if(((DotNetModifierListOwner) psi).hasModifier(CSharpModifier.ASYNC))
+			{
+				modifierSet = ModifierSet.create(CSharpSoftTokens.ASYNC_KEYWORD);
+			}
+		}
+		parse(wrapper, modifierSet);
 
 		while(!wrapper.eof())
 		{
