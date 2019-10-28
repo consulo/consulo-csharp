@@ -31,7 +31,7 @@ import consulo.csharp.lang.psi.impl.msil.typeParsing.SomeType;
 import consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.msil.lang.psi.MsilEventEntry;
 import consulo.msil.lang.psi.MsilMethodEntry;
@@ -42,12 +42,12 @@ import consulo.msil.lang.psi.MsilMethodEntry;
  */
 public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVariable implements CSharpEventDeclaration
 {
-	private final DotNetXXXAccessor[] myAccessors;
+	private final DotNetXAccessor[] myAccessors;
 
 	private final NullableLazyValue<DotNetType> myTypeForImplementValue;
 
 	@RequiredReadAction
-	public MsilEventAsCSharpEventDeclaration(PsiElement parent, MsilEventEntry variable, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	public MsilEventAsCSharpEventDeclaration(PsiElement parent, MsilEventEntry variable, List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs)
 	{
 		super(parent, MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(variable, pairs), variable);
 		myAccessors = MsilPropertyAsCSharpPropertyDeclaration.buildAccessors(this, pairs);
@@ -87,7 +87,7 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 
 	@Nonnull
 	@Override
-	public DotNetXXXAccessor[] getAccessors()
+	public DotNetXAccessor[] getAccessors()
 	{
 		return myAccessors;
 	}

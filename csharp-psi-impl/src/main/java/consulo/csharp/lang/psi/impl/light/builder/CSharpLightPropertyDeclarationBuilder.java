@@ -27,7 +27,7 @@ import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
@@ -128,9 +128,9 @@ public class CSharpLightPropertyDeclarationBuilder extends CSharpLightVariableBu
 
 	@Nonnull
 	@Override
-	public DotNetXXXAccessor[] getAccessors()
+	public DotNetXAccessor[] getAccessors()
 	{
-		return DotNetXXXAccessor.EMPTY_ARRAY;
+		return DotNetXAccessor.EMPTY_ARRAY;
 	}
 
 	@RequiredReadAction

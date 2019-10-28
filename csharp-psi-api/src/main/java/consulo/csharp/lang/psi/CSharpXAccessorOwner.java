@@ -16,19 +16,21 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
-
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.psi.DotNetAccessorOwner;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetXXXAccessor;
-import consulo.dotnet.psi.DotNetAccessorOwner;
+import consulo.dotnet.psi.DotNetXAccessor;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 20.12.14
  */
-public interface CSharpXXXAccessorOwner extends DotNetElement, CSharpBodyWithBraces, DotNetModifierListOwner, DotNetAccessorOwner
+public interface CSharpXAccessorOwner extends DotNetElement, CSharpBodyWithBraces, DotNetModifierListOwner, DotNetAccessorOwner
 {
 	@Nonnull
-	DotNetXXXAccessor[] getAccessors();
+	@RequiredReadAction
+	DotNetXAccessor[] getAccessors();
 }

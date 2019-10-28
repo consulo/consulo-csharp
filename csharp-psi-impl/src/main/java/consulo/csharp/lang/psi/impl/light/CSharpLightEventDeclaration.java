@@ -23,7 +23,7 @@ import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpEventDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
@@ -59,7 +59,7 @@ public class CSharpLightEventDeclaration extends CSharpLightVariable<CSharpEvent
 
 	@Nonnull
 	@Override
-	public DotNetXXXAccessor[] getAccessors()
+	public DotNetXAccessor[] getAccessors()
 	{
 		return myOriginal.getAccessors();
 	}

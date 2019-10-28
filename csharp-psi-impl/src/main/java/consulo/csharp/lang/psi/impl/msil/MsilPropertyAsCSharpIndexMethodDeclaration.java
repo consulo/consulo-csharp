@@ -16,11 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import java.util.List;
-
-import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.NullableLazyValue;
@@ -29,6 +24,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
@@ -41,6 +37,11 @@ import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.msil.lang.psi.MsilMethodEntry;
 import consulo.msil.lang.psi.MsilPropertyEntry;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -52,7 +53,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 
 	private final DotNetParameter[] myParameters;
 
-	private final DotNetXXXAccessor[] myAccessors;
+	private final DotNetXAccessor[] myAccessors;
 
 	private final NullableLazyValue<DotNetType> myTypeForImplementValue;
 
@@ -61,7 +62,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 	private final NotNullLazyValue<DotNetTypeRef[]> myParameterTypeRefsValue;
 
 	@RequiredReadAction
-	public MsilPropertyAsCSharpIndexMethodDeclaration(PsiElement parent, MsilPropertyEntry propertyEntry, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	public MsilPropertyAsCSharpIndexMethodDeclaration(PsiElement parent, MsilPropertyEntry propertyEntry, List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs)
 	{
 		super(parent, propertyEntry);
 
@@ -77,7 +78,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 
 			myModifierList.addAdditionalAttribute(attribute);
 		}
-		Pair<DotNetXXXAccessor, MsilMethodEntry> p = pairs.get(0);
+		Pair<DotNetXAccessor, MsilMethodEntry> p = pairs.get(0);
 
 		DotNetParameter firstParameter = p.getSecond().getParameters()[0];
 		myParameters = new DotNetParameter[]{new MsilParameterAsCSharpParameter(this, firstParameter, this, 0)};
@@ -158,7 +159,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 
 	@Nonnull
 	@Override
-	public DotNetXXXAccessor[] getAccessors()
+	public DotNetXAccessor[] getAccessors()
 	{
 		return myAccessors;
 	}
@@ -222,11 +223,11 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return myParameters;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public PsiElement getCodeBlock()
+	public CSharpCodeBodyProxy getCodeBlock()
 	{
-		return null;
+		return CSharpCodeBodyProxy.EMPTY;
 	}
 
 	@Nullable

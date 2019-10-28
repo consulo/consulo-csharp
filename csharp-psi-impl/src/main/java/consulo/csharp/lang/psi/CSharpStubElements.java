@@ -16,17 +16,17 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.impl.source.CSharpStubNullableTypeImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpStubPointerTypeImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpUsingTypeStatementImpl;
-import consulo.csharp.lang.psi.impl.stub.elementTypes.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.psi.tree.TokenSet;
+import consulo.csharp.lang.psi.impl.source.CSharpStubNullableTypeImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpStubPointerTypeImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpUsingTypeStatementImpl;
+import consulo.csharp.lang.psi.impl.stub.elementTypes.*;
 import consulo.dotnet.psi.DotNetPointerType;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -70,7 +70,7 @@ public interface CSharpStubElements
 	CSharpTypeDefStubElementType TYPE_DEF_STATEMENT = new CSharpTypeDefStubElementType();
 	CSharpGenericParameterListStubElementType GENERIC_PARAMETER_LIST = new CSharpGenericParameterListStubElementType();
 	CSharpGenericParameterStubElementType GENERIC_PARAMETER = new CSharpGenericParameterStubElementType();
-	CSharpXXXAccessorStubElementType XXX_ACCESSOR = new CSharpXXXAccessorStubElementType();
+	CSharpXAccessorStubElementType XACCESSOR = new CSharpXAccessorStubElementType();
 	CSharpGenericConstraintListStubElementType GENERIC_CONSTRAINT_LIST = new CSharpGenericConstraintListStubElementType();
 	CSharpGenericConstraintStubElementType GENERIC_CONSTRAINT = new CSharpGenericConstraintStubElementType();
 	CSharpGenericConstraintKeywordValueStubElementType GENERIC_CONSTRAINT_KEYWORD_VALUE = new CSharpGenericConstraintKeywordValueStubElementType();

@@ -16,8 +16,6 @@
 
 package consulo.csharp.ide.codeInsight.moveUpDown;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.codeInsight.editorActions.moveUpDown.LineMover;
 import com.intellij.codeInsight.editorActions.moveUpDown.LineRange;
 import com.intellij.codeInsight.editorActions.moveUpDown.StatementUpDownMover;
@@ -39,15 +37,13 @@ import consulo.csharp.ide.refactoring.util.CSharpRefactoringUtil;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpDoWhileStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpWhileStatementImpl;
+import consulo.csharp.lang.psi.impl.source.*;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.psi.DotNetVariable;
+
+import javax.annotation.Nonnull;
 
 /**
  * initial version from java plugin com.intellij.openapi.editor.actions.moveUpDown.StatementMover
@@ -347,7 +343,7 @@ class CSharpStatementMover extends LineMover
 		TextRange inside;
 		if(guard instanceof DotNetLikeMethodDeclaration)
 		{
-			inside = ((DotNetLikeMethodDeclaration) guard).getCodeBlock().getTextRange();
+			inside = ((DotNetLikeMethodDeclaration) guard).getCodeBlock().getElement().getTextRange();
 		}
 		else
 		{

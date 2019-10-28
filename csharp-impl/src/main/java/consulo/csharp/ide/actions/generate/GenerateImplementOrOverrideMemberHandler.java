@@ -46,7 +46,7 @@ import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
+import consulo.csharp.lang.psi.CSharpXAccessorOwner;
 import consulo.dotnet.psi.DotNetNamedElement;
 
 /**
@@ -100,7 +100,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 			}
 			else if(psiElement instanceof CSharpPropertyDeclaration || psiElement instanceof CSharpIndexMethodDeclaration)
 			{
-				memberChooseObjects.add(new XXXAccessorOwnerChooseMember((CSharpXXXAccessorOwner) psiElement, additionalModifiersAppender, returnAppender, canGenerateBlock));
+				memberChooseObjects.add(new XXXAccessorOwnerChooseMember((CSharpXAccessorOwner) psiElement, additionalModifiersAppender, returnAppender, canGenerateBlock));
 			}
 		}
 

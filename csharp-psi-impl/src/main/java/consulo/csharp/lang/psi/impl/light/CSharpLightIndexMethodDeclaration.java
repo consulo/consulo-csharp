@@ -24,7 +24,7 @@ import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -46,7 +46,7 @@ public class CSharpLightIndexMethodDeclaration extends CSharpLightLikeMethodDecl
 
 	@Nonnull
 	@Override
-	public DotNetXXXAccessor[] getAccessors()
+	public DotNetXAccessor[] getAccessors()
 	{
 		return myOriginal.getAccessors();
 	}

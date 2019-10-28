@@ -16,14 +16,12 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierListOwner;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -35,6 +33,9 @@ public interface CSharpSimpleLikeMethodAsElement extends DotNetElement, CSharpSi
 	@RequiredReadAction
 	boolean hasModifier(@Nonnull DotNetModifier modifier);
 
-	@Nullable
-	PsiElement getCodeBlock();
+	@Nonnull
+	default CSharpCodeBodyProxy getCodeBlock()
+	{
+		return CSharpCodeBodyProxy.EMPTY;
+	}
 }

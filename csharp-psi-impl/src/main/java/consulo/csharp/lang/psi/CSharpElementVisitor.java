@@ -135,7 +135,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitVariable(declaration);
 	}
 
-	public void visitXXXAccessor(DotNetXXXAccessor accessor)
+	public void visitXXXAccessor(DotNetXAccessor accessor)
 	{
 		visitElement(accessor);
 	}

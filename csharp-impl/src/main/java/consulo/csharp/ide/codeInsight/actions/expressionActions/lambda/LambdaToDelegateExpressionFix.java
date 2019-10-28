@@ -16,18 +16,6 @@
 
 package consulo.csharp.ide.codeInsight.actions.expressionActions.lambda;
 
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpLambdaParameter;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetStatement;
-import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -36,8 +24,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -46,6 +41,7 @@ import com.intellij.util.IncorrectOperationException;
 public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
 {
 	@Override
+	@RequiredReadAction
 	public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException
 	{
 		CSharpLambdaExpressionImpl lambdaExpression = PsiTreeUtil.getParentOfType(element, CSharpLambdaExpressionImpl.class);
@@ -70,26 +66,18 @@ public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
 			}
 			CSharpLambdaParameter parameter = parameters[i];
 
-			builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameter.toTypeRef(true), lambdaExpression)).append(" ").append(parameter
-					.getName());
+			builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameter.toTypeRef(true), lambdaExpression)).append(" ").append(parameter.getName());
 		}
 		builder.append(") { ");
 
-		PsiElement codeBlock = lambdaExpression.getCodeBlock();
+		PsiElement codeBlock = lambdaExpression.getCodeBlock().getElement();
 		if(codeBlock instanceof DotNetExpression)
 		{
 			builder.append("return ").append(codeBlock.getText()).append(";");
 		}
 		else if(codeBlock instanceof CSharpBlockStatementImpl)
 		{
-			String join = StringUtil.join(((CSharpBlockStatementImpl) codeBlock).getStatements(), new Function<DotNetStatement, String>()
-			{
-				@Override
-				public String fun(DotNetStatement dotNetStatement)
-				{
-					return dotNetStatement.getText();
-				}
-			}, "\n");
+			String join = StringUtil.join(((CSharpBlockStatementImpl) codeBlock).getStatements(), PsiElement::getText, "\n");
 
 			builder.append(join);
 		}
@@ -102,6 +90,7 @@ public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
 	{
 		IElementType elementType = PsiUtilCore.getElementType(element);

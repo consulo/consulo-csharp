@@ -16,46 +16,46 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
-
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.source.CSharpXXXAccessorImpl;
-import consulo.csharp.lang.psi.impl.stub.CSharpXXXAccessorStub;
-import consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.source.CSharpXAccessorImpl;
+import consulo.csharp.lang.psi.impl.stub.CSharpXXXAccessorStub;
+import consulo.dotnet.psi.DotNetXAccessor;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
 
 /**
  * @author VISTALL
  * @since 20.05.14
  */
-public class CSharpXXXAccessorStubElementType extends CSharpAbstractStubElementType<CSharpXXXAccessorStub, DotNetXXXAccessor>
+public class CSharpXAccessorStubElementType extends CSharpAbstractStubElementType<CSharpXXXAccessorStub, DotNetXAccessor>
 {
-	public CSharpXXXAccessorStubElementType()
+	public CSharpXAccessorStubElementType()
 	{
-		super("XXX_ACCESSOR");
+		super("XACCESSOR");
 	}
 
 	@Nonnull
 	@Override
-	public CSharpXXXAccessorImpl createElement(@Nonnull ASTNode astNode)
+	public CSharpXAccessorImpl createElement(@Nonnull ASTNode astNode)
 	{
-		return new CSharpXXXAccessorImpl(astNode);
+		return new CSharpXAccessorImpl(astNode);
 	}
 
 	@Override
-	public CSharpXXXAccessorImpl createPsi(@Nonnull CSharpXXXAccessorStub cSharpXXXAccessorStub)
+	public CSharpXAccessorImpl createPsi(@Nonnull CSharpXXXAccessorStub cSharpXXXAccessorStub)
 	{
-		return new CSharpXXXAccessorImpl(cSharpXXXAccessorStub);
+		return new CSharpXAccessorImpl(cSharpXXXAccessorStub);
 	}
 
+	@Nonnull
 	@RequiredReadAction
 	@Override
-	public CSharpXXXAccessorStub createStub(@Nonnull DotNetXXXAccessor accessor, StubElement stubElement)
+	public CSharpXXXAccessorStub createStub(@Nonnull DotNetXAccessor accessor, StubElement stubElement)
 	{
 		int otherModifiers = CSharpXXXAccessorStub.getOtherModifiers(accessor);
 		return new CSharpXXXAccessorStub(stubElement, otherModifiers);
@@ -64,14 +64,14 @@ public class CSharpXXXAccessorStubElementType extends CSharpAbstractStubElementT
 	@Override
 	public void serialize(@Nonnull CSharpXXXAccessorStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeInt(stub.getOtherModifierMask());
+		stubOutputStream.writeVarInt(stub.getOtherModifierMask());
 	}
 
 	@Nonnull
 	@Override
 	public CSharpXXXAccessorStub deserialize(@Nonnull StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
-		int otherModifiers = inputStream.readInt();
+		int otherModifiers = inputStream.readVarInt();
 		return new CSharpXXXAccessorStub(stubElement, otherModifiers);
 	}
 }

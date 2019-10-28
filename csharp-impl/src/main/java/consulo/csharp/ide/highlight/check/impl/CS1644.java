@@ -107,7 +107,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 		private CSharpLanguageVersion myLanguageVersion;
 		private Function<PsiElement, PsiElement> myFunc;
 
-		Feature(String name, CSharpLanguageVersion languageVersion, Function<PsiElement, PsiElement> processor)
+		Feature(String name, CSharpLanguageVersion languageVersion, @RequiredReadAction Function<PsiElement, PsiElement> processor)
 		{
 			myName = name;
 			myLanguageVersion = languageVersion;
@@ -226,29 +226,20 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					return null;
 				}
 			}));
-			add(new Feature("expression-bodied members", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
-			{
-				@Override
-				public PsiElement fun(PsiElement element)
+			add(new Feature("expression-bodied members", CSharpLanguageVersion._6_0, element -> {
+				if(element instanceof CSharpMethodDeclaration)
 				{
-					if(element instanceof CSharpMethodDeclaration)
-					{
-						PsiElement codeBlock = ((CSharpMethodDeclaration) element).getCodeBlock();
-						if(codeBlock instanceof DotNetExpression)
-						{
-							return codeBlock;
-						}
-					}
-					else if(element instanceof CSharpFieldDeclaration)
-					{
-						ASTNode darrowNode = element.getNode().findChildByType(CSharpTokens.DARROW);
-						if(darrowNode != null)
-						{
-							return darrowNode.getPsi();
-						}
-					}
-					return null;
+					return ((CSharpMethodDeclaration) element).getCodeBlock().asExpression();
 				}
+				else if(element instanceof CSharpFieldDeclaration)
+				{
+					ASTNode darrowNode = element.getNode().findChildByType(CSharpTokens.DARROW);
+					if(darrowNode != null)
+					{
+						return darrowNode.getPsi();
+					}
+				}
+				return null;
 			}));
 			add(new Feature("exception filters", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
@@ -365,13 +356,9 @@ public class CS1644 extends CompilerCheck<PsiElement>
 				}
 			}));
 			add(new Feature("expression body property accessor", CSharpLanguageVersion._7_0, element -> {
-				if(element instanceof DotNetXXXAccessor)
+				if(element instanceof DotNetXAccessor)
 				{
-					PsiElement codeBlock = ((DotNetXXXAccessor) element).getCodeBlock();
-					if(codeBlock instanceof DotNetExpression)
-					{
-						return codeBlock;
-					}
+					return ((DotNetXAccessor) element).getCodeBlock().asExpression();
 				}
 				return null;
 			}));

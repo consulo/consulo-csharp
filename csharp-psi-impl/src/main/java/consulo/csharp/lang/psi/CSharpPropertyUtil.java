@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -35,14 +35,14 @@ public class CSharpPropertyUtil
 		if(element instanceof CSharpPropertyDeclaration)
 		{
 			CSharpPropertyDeclaration propertyDeclaration = (CSharpPropertyDeclaration) element;
-			DotNetXXXAccessor[] accessors = propertyDeclaration.getAccessors();
+			DotNetXAccessor[] accessors = propertyDeclaration.getAccessors();
 			if(accessors.length == 2 && accessors[0].getCodeBlock() == null && accessors[1].getCodeBlock() == null)
 			{
 				return true;
 			}
 
 			// C# 6.0 specific readonly auto property
-			if(accessors.length == 1 && accessors[0].getAccessorKind() == DotNetXXXAccessor.Kind.GET && accessors[0].getCodeBlock() == null)
+			if(accessors.length == 1 && accessors[0].getAccessorKind() == DotNetXAccessor.Kind.GET && accessors[0].getCodeBlock() == null)
 			{
 				return CSharpModuleUtil.findLanguageVersion(element).isAtLeast(CSharpLanguageVersion._6_0);
 			}

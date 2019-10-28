@@ -191,9 +191,9 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Package);  //TODO [VISTALL] icon
 		}
-		else if(element instanceof DotNetXXXAccessor)
+		else if(element instanceof DotNetXAccessor)
 		{
-			DotNetXXXAccessor.Kind accessorKind = ((DotNetXXXAccessor) element).getAccessorKind();
+			DotNetXAccessor.Kind accessorKind = ((DotNetXAccessor) element).getAccessorKind();
 			if(accessorKind != null)
 			{
 				switch(accessorKind)

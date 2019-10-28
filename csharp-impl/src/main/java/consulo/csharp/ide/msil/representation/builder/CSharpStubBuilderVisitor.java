@@ -83,18 +83,18 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		builder.append(" ");
 		appendName(declaration, builder);
 		StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
-		for(DotNetXXXAccessor dotNetXXXAccessor : declaration.getAccessors())
+		for(DotNetXAccessor DotNetXAccessor : declaration.getAccessors())
 		{
-			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor, myCompiled));
+			e.getBlocks().addAll(buildBlocks(DotNetXAccessor, myCompiled));
 		}
 		myBlocks.add(e);
 	}
 
 	@Override
 	@RequiredReadAction
-	public void visitXXXAccessor(DotNetXXXAccessor accessor)
+	public void visitXXXAccessor(DotNetXAccessor accessor)
 	{
-		DotNetXXXAccessor.Kind accessorKind = accessor.getAccessorKind();
+		DotNetXAccessor.Kind accessorKind = accessor.getAccessorKind();
 		if(accessorKind == null)
 		{
 			return;
@@ -163,9 +163,9 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		appendName(declaration, builder);
 
 		StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
-		for(DotNetXXXAccessor dotNetXXXAccessor : declaration.getAccessors())
+		for(DotNetXAccessor DotNetXAccessor : declaration.getAccessors())
 		{
-			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor, myCompiled));
+			e.getBlocks().addAll(buildBlocks(DotNetXAccessor, myCompiled));
 		}
 		myBlocks.add(e);
 	}
@@ -184,9 +184,9 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		processParameterList(declaration, builder, '[', ']');
 
 		StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
-		for(DotNetXXXAccessor dotNetXXXAccessor : declaration.getAccessors())
+		for(DotNetXAccessor DotNetXAccessor : declaration.getAccessors())
 		{
-			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor, myCompiled));
+			e.getBlocks().addAll(buildBlocks(DotNetXAccessor, myCompiled));
 		}
 		myBlocks.add(e);
 	}
@@ -655,12 +655,12 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				continue;
 			}
 
-			if(dotNetModifier == CSharpModifier.STATIC && owner instanceof DotNetXXXAccessor)
+			if(dotNetModifier == CSharpModifier.STATIC && owner instanceof DotNetXAccessor)
 			{
 				continue;
 			}
 
-			if((dotNetModifier == CSharpModifier.ABSTRACT || dotNetModifier == CSharpModifier.PUBLIC) && owner instanceof DotNetXXXAccessor &&
+			if((dotNetModifier == CSharpModifier.ABSTRACT || dotNetModifier == CSharpModifier.PUBLIC) && owner instanceof DotNetXAccessor &&
 					isInterface(owner.getParent().getParent()))
 			{
 				continue;

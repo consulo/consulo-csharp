@@ -16,41 +16,23 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.*;
+import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.AddModifierFix;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpPropertyUtil;
-import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.dotnet.psi.DotNetCodeBlockOwner;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetStatement;
-import consulo.dotnet.psi.DotNetXXXAccessor;
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.util.IncorrectOperationException;
+import consulo.dotnet.psi.*;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -111,12 +93,7 @@ public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner>
 
 			DotNetStatement statement = CSharpFileFactory.createStatement(element.getProject(), builder.toString());
 
-			ASTNode node = element.getNode();
-			ASTNode childByType = node.findChildByType(CSharpTokens.SEMICOLON);
-			if(childByType != null)
-			{
-				childByType.getPsi().replace(statement);
-			}
+			element.getCodeBlock().replace(statement);
 
 			PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 			PsiDocumentManager.getInstance(project).commitDocument(editor.getDocument());
@@ -142,8 +119,8 @@ public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner>
 			highlight = element;
 		}
 
-		PsiElement codeBlock = element.getCodeBlock();
-		if(codeBlock == null && !isAllowEmptyCodeBlock(element))
+		CSharpCodeBodyProxy codeBlock = (CSharpCodeBodyProxy) element.getCodeBlock();
+		if(codeBlock.isSemicolonOrEmpty() && !isAllowEmptyCodeBlock(element))
 		{
 			CompilerCheckBuilder result = newBuilder(highlight, formatElement(element));
 			if(element instanceof CSharpConstructorDeclaration)
@@ -157,7 +134,7 @@ public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner>
 				result.addQuickFix(new AddModifierFix(CSharpModifier.EXTERN, (DotNetModifierListOwner) element));
 				result.addQuickFix(new AddModifierFix(CSharpModifier.PARTIAL, (DotNetModifierListOwner) element));
 			}
-			else if(element instanceof DotNetXXXAccessor)
+			else if(element instanceof DotNetXAccessor)
 			{
 				result.addQuickFix(new CreateEmptyCodeBlockFix(element));
 			}
@@ -177,7 +154,7 @@ public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner>
 			return true;
 		}
 
-		if(owner instanceof DotNetXXXAccessor)
+		if(owner instanceof DotNetXAccessor)
 		{
 			PsiElement parent = owner.getParent();
 			if(parent instanceof CSharpPropertyDeclaration)

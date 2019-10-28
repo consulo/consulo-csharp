@@ -31,7 +31,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
@@ -74,9 +74,9 @@ public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 
 	@Nonnull
 	@Override
-	public DotNetXXXAccessor[] getAccessors()
+	public DotNetXAccessor[] getAccessors()
 	{
-		return getStubOrPsiChildren(CSharpStubElements.XXX_ACCESSOR, DotNetXXXAccessor.ARRAY_FACTORY);
+		return getStubOrPsiChildren(CSharpStubElements.XACCESSOR, DotNetXAccessor.ARRAY_FACTORY);
 	}
 
 	@Nullable

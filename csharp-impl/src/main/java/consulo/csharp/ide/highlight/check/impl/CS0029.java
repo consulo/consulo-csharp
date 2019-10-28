@@ -352,8 +352,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			PsiElement singleExpression = lambdaExpression.getCodeBlock();
-			if(singleExpression instanceof DotNetExpression)
+			DotNetExpression singleExpression = lambdaExpression.getCodeBlock().asExpression();
+			if(singleExpression != null)
 			{
 				DotNetTypeRef returnTypeRef = ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
 

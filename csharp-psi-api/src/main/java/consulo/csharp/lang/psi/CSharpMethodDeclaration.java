@@ -21,6 +21,7 @@ import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetMethodDeclaration;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -43,6 +44,10 @@ public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharp
 	@Nullable
 	@RequiredReadAction
 	IElementType getOperatorElementType();
+
+	@Nonnull
+	@Override
+	CSharpCodeBodyProxy getCodeBlock();
 
 	@RequiredReadAction
 	default boolean isLocal()

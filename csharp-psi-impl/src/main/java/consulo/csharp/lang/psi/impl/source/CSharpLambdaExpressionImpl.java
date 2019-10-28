@@ -16,12 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
@@ -30,12 +24,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpLambdaParameter;
-import consulo.csharp.lang.psi.CSharpLambdaParameterList;
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceManager;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
@@ -46,9 +35,13 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -83,16 +76,11 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 				(CSharpLambdaExpressionImpl.this), CSharpLambdaExpressionImpl.this), false).getValue();
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public PsiElement getCodeBlock()
+	public CSharpCodeBodyProxy getCodeBlock()
 	{
-		DotNetExpression singleExpression = findChildByClass(DotNetExpression.class);
-		if(singleExpression != null)
-		{
-			return singleExpression;
-		}
-		return findChildByClass(DotNetStatement.class);
+		return new CSharpCodeBodyProxyImpl(this);
 	}
 
 	@Nonnull
@@ -164,7 +152,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	@RequiredReadAction
 	private DotNetTypeRef findPossibleReturnTypeRef()
 	{
-		PsiElement codeBlock = getCodeBlock();
+		PsiElement codeBlock = getCodeBlock().getElement();
 		if(codeBlock instanceof DotNetExpression)
 		{
 			return ((DotNetExpression) codeBlock).toTypeRef(false);

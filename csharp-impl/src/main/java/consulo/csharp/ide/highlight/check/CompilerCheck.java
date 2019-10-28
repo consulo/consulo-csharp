@@ -16,13 +16,6 @@
 
 package consulo.csharp.ide.highlight.check;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.intention.IntentionAction;
@@ -40,15 +33,15 @@ import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetNamespaceDeclaration;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * @author VISTALL
@@ -248,10 +241,10 @@ public abstract class CompilerCheck<T extends PsiElement>
 		{
 			return ((CSharpLocalVariable) e).getName();
 		}
-		else if(e instanceof DotNetXXXAccessor)
+		else if(e instanceof DotNetXAccessor)
 		{
 			PsiElement parent = e.getParent();
-			return formatElement(parent) + "." + ((DotNetXXXAccessor) e).getAccessorKind().name().toLowerCase(Locale.US);
+			return formatElement(parent) + "." + ((DotNetXAccessor) e).getAccessorKind().name().toLowerCase(Locale.US);
 		}
 
 		String parentName = null;

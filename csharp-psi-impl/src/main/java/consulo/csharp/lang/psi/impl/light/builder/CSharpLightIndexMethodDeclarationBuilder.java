@@ -26,7 +26,7 @@ import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
@@ -77,11 +77,12 @@ public class CSharpLightIndexMethodDeclarationBuilder extends CSharpLightLikeMet
 		return builder.toString();
 	}
 
+	@RequiredReadAction
 	@Nonnull
 	@Override
-	public DotNetXXXAccessor[] getAccessors()
+	public DotNetXAccessor[] getAccessors()
 	{
-		return DotNetXXXAccessor.EMPTY_ARRAY;
+		return DotNetXAccessor.EMPTY_ARRAY;
 	}
 
 	@RequiredReadAction

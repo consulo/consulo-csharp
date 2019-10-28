@@ -17,7 +17,7 @@
 package consulo.csharp.lang.psi.impl.stub;
 
 import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.ArrayUtil;
 
@@ -25,27 +25,27 @@ import com.intellij.util.ArrayUtil;
  * @author VISTALL
  * @since 20.05.14
  */
-public class CSharpXXXAccessorStub extends MemberStub<DotNetXXXAccessor>
+public class CSharpXXXAccessorStub extends MemberStub<DotNetXAccessor>
 {
 	public CSharpXXXAccessorStub(StubElement parent, int otherModifiers)
 	{
-		super(parent, CSharpStubElements.XXX_ACCESSOR, null, otherModifiers);
+		super(parent, CSharpStubElements.XACCESSOR, null, otherModifiers);
 	}
 
-	public static int getOtherModifiers(DotNetXXXAccessor accessor)
+	public static int getOtherModifiers(DotNetXAccessor accessor)
 	{
-		DotNetXXXAccessor.Kind accessorKind = accessor.getAccessorKind();
+		DotNetXAccessor.Kind accessorKind = accessor.getAccessorKind();
 		if(accessorKind == null)
 		{
 			return -1;
 		}
-		int i = ArrayUtil.indexOf(DotNetXXXAccessor.Kind.VALUES, accessor.getAccessorKind());
+		int i = ArrayUtil.indexOf(DotNetXAccessor.Kind.VALUES, accessor.getAccessorKind());
 		assert i != -1;
 		return i;
 	}
 
-	public DotNetXXXAccessor.Kind getAccessorType()
+	public DotNetXAccessor.Kind getAccessorType()
 	{
-		return getOtherModifierMask() == -1 ? null : DotNetXXXAccessor.Kind.VALUES[getOtherModifierMask()];
+		return getOtherModifierMask() == -1 ? null : DotNetXAccessor.Kind.VALUES[getOtherModifierMask()];
 	}
 }

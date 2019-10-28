@@ -22,6 +22,6 @@ import consulo.dotnet.psi.DotNetEventDeclaration;
  * @author VISTALL
  * @since 15.01.14
  */
-public interface CSharpEventDeclaration extends DotNetEventDeclaration, CSharpXXXAccessorOwner
+public interface CSharpEventDeclaration extends DotNetEventDeclaration, CSharpXAccessorOwner
 {
 }

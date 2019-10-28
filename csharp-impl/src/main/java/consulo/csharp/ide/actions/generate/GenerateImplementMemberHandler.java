@@ -16,24 +16,19 @@
 
 package consulo.csharp.ide.actions.generate;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author VISTALL
@@ -73,10 +68,10 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 		{
 			generateReturnForTypeRef(builder, ((CSharpMethodDeclaration) item).getReturnTypeRef(), item);
 		}
-		else if(item instanceof DotNetXXXAccessor)
+		else if(item instanceof DotNetXAccessor)
 		{
-			DotNetXXXAccessor.Kind accessorKind = ((DotNetXXXAccessor) item).getAccessorKind();
-			if(accessorKind == DotNetXXXAccessor.Kind.GET)
+			DotNetXAccessor.Kind accessorKind = ((DotNetXAccessor) item).getAccessorKind();
+			if(accessorKind == DotNetXAccessor.Kind.GET)
 			{
 				PsiElement parent = item.getParent();
 				if(parent instanceof CSharpPropertyDeclaration)

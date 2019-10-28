@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi;
 
-import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import consulo.csharp.lang.CSharpLanguage;
@@ -61,7 +60,7 @@ public interface CSharpElements
 
 	IElementType CONVERSION_METHOD_DECLARATION = CSharpStubElements.CONVERSION_METHOD_DECLARATION;
 
-	IElementType XXX_ACCESSOR = CSharpStubElements.XXX_ACCESSOR;
+	IElementType XXX_ACCESSOR = CSharpStubElements.XACCESSOR;
 
 	IElementType FIELD_DECLARATION = CSharpStubElements.FIELD_DECLARATION;
 
@@ -313,13 +312,15 @@ public interface CSharpElements
 		protected void parse(@Nonnull CSharpBuilderWrapper wrapper, @Nonnull ModifierSet set)
 		{
 			StatementParsing.parse(wrapper, set);
+		}
+	};
 
-			while(!wrapper.eof())
-			{
-				PsiBuilder.Marker er = wrapper.mark();
-				wrapper.advanceLexer();
-				er.error("Unexpected token");
-			}
+	IElementType EMPTY_METHOD_BODY = new BaseMethodBodyLazyElementType("CSHARP_EMPTY_METHOD_BODY")
+	{
+		@Override
+		protected void parse(@Nonnull CSharpBuilderWrapper wrapper, @Nonnull ModifierSet set)
+		{
+			SharedParsingHelpers.expect(wrapper, CSharpTokens.SEMICOLON, "';' expected");
 		}
 	};
 
@@ -337,5 +338,5 @@ public interface CSharpElements
 		}
 	};
 
-	TokenSet METHOD_BODIES = TokenSet.create(STATEMENT_METHOD_BODY, EXPRESSION_METHOD_BODY);
+	TokenSet METHOD_BODIES = TokenSet.create(STATEMENT_METHOD_BODY, EMPTY_METHOD_BODY, EXPRESSION_METHOD_BODY);
 }

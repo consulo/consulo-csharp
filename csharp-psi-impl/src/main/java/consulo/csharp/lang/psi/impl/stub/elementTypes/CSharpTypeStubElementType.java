@@ -73,7 +73,7 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 	{
 		stubOutputStream.writeName(stub.getParentQName());
 		stubOutputStream.writeName(stub.getVmQName());
-		stubOutputStream.writeInt(stub.getOtherModifierMask());
+		stubOutputStream.writeVarInt(stub.getOtherModifierMask());
 	}
 
 	@Nonnull
@@ -82,7 +82,7 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 	{
 		StringRef parentQName = stubInputStream.readName();
 		StringRef vmQName = stubInputStream.readName();
-		int otherModifierMask = stubInputStream.readInt();
+		int otherModifierMask = stubInputStream.readVarInt();
 		return new CSharpTypeDeclStub(stubElement, StringRef.toString(parentQName), StringRef.toString(vmQName), otherModifierMask);
 	}
 

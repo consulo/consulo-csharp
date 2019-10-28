@@ -16,10 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
@@ -34,6 +30,9 @@ import consulo.csharp.lang.psi.impl.source.CSharpMethodDeclarationImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
 
 /**
  * @author VISTALL
@@ -59,6 +58,7 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 		return new CSharpMethodDeclarationImpl(cSharpTypeStub, this);
 	}
 
+	@Nonnull
 	@RequiredReadAction
 	@Override
 	public CSharpMethodDeclStub createStub(@Nonnull CSharpMethodDeclaration methodDeclaration, StubElement stubElement)
@@ -73,8 +73,8 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 	public void serialize(@Nonnull CSharpMethodDeclStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getParentQName());
-		stubOutputStream.writeInt(stub.getOtherModifierMask());
-		stubOutputStream.writeInt(stub.getOperatorIndex());
+		stubOutputStream.writeVarInt(stub.getOtherModifierMask());
+		stubOutputStream.writeVarInt(stub.getOperatorIndex());
 	}
 
 	@Nonnull
@@ -82,8 +82,8 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 	public CSharpMethodDeclStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef qname = stubInputStream.readName();
-		int otherModifierMask = stubInputStream.readInt();
-		int operatorIndex = stubInputStream.readInt();
+		int otherModifierMask = stubInputStream.readVarInt();
+		int operatorIndex = stubInputStream.readVarInt();
 		return new CSharpMethodDeclStub(stubElement, StringRef.toString(qname), otherModifierMask, operatorIndex);
 	}
 

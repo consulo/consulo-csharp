@@ -16,11 +16,11 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,15 +30,7 @@ public interface CSharpSimpleLikeMethod
 {
 	public static final CSharpSimpleLikeMethod[] EMPTY_ARRAY = new CSharpSimpleLikeMethod[0];
 
-	public static ArrayFactory<CSharpSimpleLikeMethod> ARRAY_FACTORY = new ArrayFactory<CSharpSimpleLikeMethod>()
-	{
-		@Nonnull
-		@Override
-		public CSharpSimpleLikeMethod[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpSimpleLikeMethod[count];
-		}
-	};
+	public static ArrayFactory<CSharpSimpleLikeMethod> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpSimpleLikeMethod[count];
 
 	@Nonnull
 	@RequiredReadAction

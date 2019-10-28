@@ -21,9 +21,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpElements;
+import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
@@ -72,25 +71,18 @@ public abstract class CSharpStubLikeMethodDeclarationImpl<T extends CSharpMethod
 		return parameterList == null ? DotNetTypeRef.EMPTY_ARRAY : parameterList.getParameterTypeRefs();
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public PsiElement getCodeBlock()
+	public CSharpCodeBodyProxyImpl getCodeBlock()
 	{
 		return getCodeBlockElement(this);
 	}
 
 	@RequiredReadAction
-	@Nullable
-	public static PsiElement getCodeBlockElement(PsiElement element)
+	@Nonnull
+	public static CSharpCodeBodyProxyImpl getCodeBlockElement(PsiElement element)
 	{
-		ASTNode node = element.getNode().findChildByType(CSharpElements.METHOD_BODIES);
-		if(node != null)
-		{
-			CSharpMethodBodyImpl psi = (CSharpMethodBodyImpl) node.getPsi();
-			return psi.getInnerElement();
-		}
-
-		return PsiTreeUtil.getChildOfAnyType(element, DotNetExpression.class, DotNetStatement.class);
+		return new CSharpCodeBodyProxyImpl((CSharpSimpleLikeMethodAsElement) element);
 	}
 
 	@Nullable

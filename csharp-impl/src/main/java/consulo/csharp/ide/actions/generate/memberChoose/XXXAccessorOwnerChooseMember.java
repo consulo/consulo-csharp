@@ -19,15 +19,16 @@ package consulo.csharp.ide.actions.generate.memberChoose;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+
+import consulo.csharp.lang.psi.CSharpXAccessorOwner;
 import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
 import consulo.dotnet.psi.DotNetPropertyDeclaration;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairConsumer;
 
@@ -35,9 +36,9 @@ import com.intellij.util.PairConsumer;
  * @author VISTALL
  * @since 02.04.2016
  */
-public class XXXAccessorOwnerChooseMember extends ImplementMemberChooseObject<CSharpXXXAccessorOwner>
+public class XXXAccessorOwnerChooseMember extends ImplementMemberChooseObject<CSharpXAccessorOwner>
 {
-	public XXXAccessorOwnerChooseMember(CSharpXXXAccessorOwner declaration,
+	public XXXAccessorOwnerChooseMember(CSharpXAccessorOwner declaration,
 			PairConsumer<PsiElement, StringBuilder> additionalModifiersAppender,
 			PairConsumer<PsiElement, StringBuilder> returnAppender,
 			boolean canGenerateBlock)
@@ -77,9 +78,9 @@ public class XXXAccessorOwnerChooseMember extends ImplementMemberChooseObject<CS
 
 		builder.append(getPresentationText());
 		builder.append(" {\n");
-		for(DotNetXXXAccessor accessor : myDeclaration.getAccessors())
+		for(DotNetXAccessor accessor : myDeclaration.getAccessors())
 		{
-			DotNetXXXAccessor.Kind accessorKind = accessor.getAccessorKind();
+			DotNetXAccessor.Kind accessorKind = accessor.getAccessorKind();
 			if(accessorKind == null)
 			{
 				continue;

@@ -28,7 +28,6 @@ import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.*;
 import gnu.trove.THashSet;
-import org.omg.CORBA.INTERNAL;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -63,10 +62,10 @@ public class CSharpModifierListImplUtil
 			put(CSharpModifier.OVERRIDE, CSharpTokens.OVERRIDE_KEYWORD);
 			put(CSharpModifier.ASYNC, CSharpSoftTokens.ASYNC_KEYWORD);
 			put(CSharpModifier.IN, CSharpSoftTokens.IN_KEYWORD);
-			put(CSharpModifier.INTERFACE_ABSTRACT, CSharpSoftTokens.ABSTRACT_KEYWORD);
 			put(CSharpModifier.EXTERN, CSharpSoftTokens.EXTERN_KEYWORD);
 
 			// this modifier stored in differed way
+			put(CSharpModifier.INTERFACE_ABSTRACT, ourDummyUnregisteredModifier);
 			put(CSharpModifier.OPTIONAL, ourDummyUnregisteredModifier);
 		}
 	};
@@ -161,7 +160,7 @@ public class CSharpModifierListImplUtil
 				{
 					return true;
 				}
-				if(parent instanceof DotNetXXXAccessor)
+				if(parent instanceof DotNetXAccessor)
 				{
 					PsiElement superParent = parent.getParent();
 					return superParent instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) superParent).hasModifier(DotNetModifier.STATIC);
@@ -172,9 +171,9 @@ public class CSharpModifierListImplUtil
 				{
 					return true;
 				}
-				if(parent instanceof DotNetXXXAccessor)
+				if(parent instanceof DotNetXAccessor)
 				{
-					if(((DotNetXXXAccessor) parent).getCodeBlock() == null)
+					if(((DotNetXAccessor) parent).getCodeBlock() == null)
 					{
 						PsiElement accessorOwner = parent.getParent();
 						if(accessorOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) accessorOwner).hasModifier(modifier))
@@ -193,7 +192,7 @@ public class CSharpModifierListImplUtil
 				{
 					return true;
 				}
-				if(parent instanceof DotNetXXXAccessor)
+				if(parent instanceof DotNetXAccessor)
 				{
 					PsiElement superParent = parent.getParent();
 					return superParent instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) superParent).hasModifier(DotNetModifier.ABSTRACT);

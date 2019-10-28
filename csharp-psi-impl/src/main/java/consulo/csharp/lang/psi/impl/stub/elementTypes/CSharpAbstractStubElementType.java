@@ -16,19 +16,19 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.impl.stub.CSharpIdentifierStub;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.psi.CSharpStubElements;
+import consulo.csharp.lang.psi.impl.stub.CSharpIdentifierStub;
 import consulo.psi.tree.IElementTypeAsPsiFactory;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -53,7 +53,7 @@ public abstract class CSharpAbstractStubElementType<S extends StubElement, P ext
 	@RequiredReadAction
 	public static String getName(StubElement<?> element)
 	{
-		CSharpIdentifierStub identifierStub = (CSharpIdentifierStub) element.findChildStubByType(CSharpStubElements.IDENTIFIER);
+		CSharpIdentifierStub identifierStub = element.findChildStubByType(CSharpStubElements.IDENTIFIER);
 		if(identifierStub == null)
 		{
 			return null;

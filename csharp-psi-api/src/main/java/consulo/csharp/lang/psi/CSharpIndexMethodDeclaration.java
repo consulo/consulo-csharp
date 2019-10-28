@@ -20,11 +20,16 @@ import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetMemberOwner;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author VISTALL
  * @since 01.03.14
  */
 public interface CSharpIndexMethodDeclaration extends DotNetLikeMethodDeclaration, DotNetVirtualImplementOwner, DotNetMemberOwner,
-		CSharpSimpleLikeMethodAsElement, CSharpBodyWithBraces, CSharpXXXAccessorOwner
+		CSharpSimpleLikeMethodAsElement, CSharpBodyWithBraces, CSharpXAccessorOwner
 {
+	@Nonnull
+	@Override
+	CSharpCodeBodyProxy getCodeBlock();
 }

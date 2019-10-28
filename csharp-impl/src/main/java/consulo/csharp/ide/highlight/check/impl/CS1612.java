@@ -16,12 +16,6 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.swing.SwingUtilities;
-
 import com.intellij.codeInsight.daemon.impl.IdentifierHighlighterPass;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.ide.DataManager;
@@ -29,37 +23,25 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiParserFacade;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.psi.*;
 import com.intellij.refactoring.actions.RenameElementAction;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
-import consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetStatement;
-import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.*;
+import consulo.ui.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.util.Collection;
 
 /**
  * @author VISTALL
@@ -136,10 +118,10 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 
 			if(targetSetElement instanceof CSharpPropertyDeclaration)
 			{
-				DotNetXXXAccessor[] accessors = ((CSharpPropertyDeclaration) targetSetElement).getAccessors();
-				for(DotNetXXXAccessor accessor : accessors)
+				DotNetXAccessor[] accessors = ((CSharpPropertyDeclaration) targetSetElement).getAccessors();
+				for(DotNetXAccessor accessor : accessors)
 				{
-					if(accessor.getAccessorKind() == DotNetXXXAccessor.Kind.SET)
+					if(accessor.getAccessorKind() == DotNetXAccessor.Kind.SET)
 					{
 						return true;
 					}

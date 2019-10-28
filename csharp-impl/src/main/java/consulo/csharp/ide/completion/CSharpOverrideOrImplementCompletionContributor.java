@@ -16,14 +16,6 @@
 
 package consulo.csharp.ide.completion;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -41,30 +33,23 @@ import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.actions.generate.GenerateImplementMemberHandler;
 import consulo.csharp.ide.actions.generate.GenerateOverrideMemberHandler;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
-import consulo.csharp.lang.psi.CSharpAccessModifier;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
-import consulo.dotnet.psi.DotNetElement;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetStatement;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.DotNetVirtualImplementOwner;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.ide.IconDescriptor;
 import consulo.ide.IconDescriptorUpdaters;
 import consulo.ui.image.Image;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * @author VISTALL
@@ -148,9 +133,9 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 			lookupElementBuilder = lookupElementBuilder.withLookupString(methodDeclaration.getName());
 			lookupElementBuilder = lookupElementBuilder.withTailText(" {...}", true);
 		}
-		else if(element instanceof CSharpXXXAccessorOwner)
+		else if(element instanceof CSharpXAccessorOwner)
 		{
-			CSharpXXXAccessorOwner accessorOwner = (CSharpXXXAccessorOwner) element;
+			CSharpXAccessorOwner accessorOwner = (CSharpXAccessorOwner) element;
 			StringBuilder builder = new StringBuilder();
 
 			CSharpAccessModifier modifier = hide || typeDeclaration.isInterface() ? CSharpAccessModifier.NONE : CSharpAccessModifier.findModifier(accessorOwner);
@@ -248,7 +233,7 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 
 			if(virtualImplementOwner instanceof CSharpMethodDeclaration)
 			{
-				PsiElement codeBlock = ((CSharpMethodDeclaration) virtualImplementOwner).getCodeBlock();
+				PsiElement codeBlock = ((CSharpMethodDeclaration) virtualImplementOwner).getCodeBlock().getElement();
 				if(codeBlock instanceof CSharpBlockStatementImpl)
 				{
 					DotNetStatement[] statements = ((CSharpBlockStatementImpl) codeBlock).getStatements();
@@ -273,13 +258,13 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 
 	@Nonnull
 	@RequiredReadAction
-	private static String buildAccessorTail(CSharpTypeDeclaration typeDeclaration, CSharpXXXAccessorOwner owner, boolean hide, boolean body)
+	private static String buildAccessorTail(CSharpTypeDeclaration typeDeclaration, CSharpXAccessorOwner owner, boolean hide, boolean body)
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append(" { ");
-		for(DotNetXXXAccessor accessor : owner.getAccessors())
+		for(DotNetXAccessor accessor : owner.getAccessors())
 		{
-			DotNetXXXAccessor.Kind accessorKind = accessor.getAccessorKind();
+			DotNetXAccessor.Kind accessorKind = accessor.getAccessorKind();
 			if(accessorKind == null)
 			{
 				continue;
@@ -387,7 +372,7 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 					continue;
 				}
 
-				if(element instanceof CSharpMethodDeclaration || element instanceof CSharpXXXAccessorOwner)
+				if(element instanceof CSharpMethodDeclaration || element instanceof CSharpXAccessorOwner)
 				{
 					elements.add((DotNetModifierListOwner) element);
 				}

@@ -16,27 +16,23 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.*;
+import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetCodeBlockOwner;
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -77,12 +73,9 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 			}
 			PsiDocumentManager.getInstance(project).commitAllDocuments();
 
-			PsiElement codeBlock = element.getCodeBlock();
-			if(codeBlock != null)
-			{
-				codeBlock.delete();
-				element.getNode().addLeaf(CSharpTokens.SEMICOLON, ";", null);
-			}
+			CSharpCodeBodyProxy codeBlock = (CSharpCodeBodyProxy) element.getCodeBlock();
+
+			codeBlock.replaceBySemicolon();
 		}
 	}
 
@@ -96,7 +89,7 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 		{
 			return null;
 		}
-		if((element.hasModifier(CSharpModifier.ABSTRACT) || element.isDelegate()) && element.getCodeBlock() != null)
+		if((element.hasModifier(CSharpModifier.ABSTRACT) || element.isDelegate()) && element.getCodeBlock().isNotSemicolonAndNotEmpty())
 		{
 			CompilerCheckBuilder compilerCheckBuilder = newBuilder(nameIdentifier, formatElement(element));
 			compilerCheckBuilder.addQuickFix(new RemoveCodeBlockFix(element));

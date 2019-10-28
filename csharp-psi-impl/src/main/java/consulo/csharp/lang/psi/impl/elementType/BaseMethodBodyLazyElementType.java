@@ -61,6 +61,13 @@ public abstract class BaseMethodBodyLazyElementType extends ILazyParseableElemen
 		// todo wrong EMPTY
 		parse(wrapper, ModifierSet.EMPTY);
 
+		while(!wrapper.eof())
+		{
+			PsiBuilder.Marker er = wrapper.mark();
+			wrapper.advanceLexer();
+			er.error("Unexpected token");
+		}
+
 		mark.done(this);
 
 		return wrapper.getTreeBuilt().getFirstChildNode();

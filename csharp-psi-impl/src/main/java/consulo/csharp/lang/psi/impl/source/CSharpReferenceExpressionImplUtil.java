@@ -1174,7 +1174,7 @@ public class CSharpReferenceExpressionImplUtil
 				targetToWalkChildren = temp.getParent();
 				break;
 			}
-			else if(temp instanceof DotNetXXXAccessor)
+			else if(temp instanceof DotNetXAccessor)
 			{
 				last = temp;
 				targetToWalkChildren = temp.getParent().getParent();

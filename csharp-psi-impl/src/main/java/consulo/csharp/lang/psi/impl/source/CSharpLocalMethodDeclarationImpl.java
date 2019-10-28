@@ -128,9 +128,9 @@ public class CSharpLocalMethodDeclarationImpl extends CSharpMemberImpl implement
 		return returnType == null ? DotNetTypeRef.ERROR_TYPE : returnType.toTypeRef();
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public PsiElement getCodeBlock()
+	public CSharpCodeBodyProxyImpl getCodeBlock()
 	{
 		return CSharpStubLikeMethodDeclarationImpl.getCodeBlockElement(this);
 	}

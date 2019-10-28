@@ -229,7 +229,9 @@ public class MethodParsing extends MemberWithBodyParsing
 		}
 		else if(tokenType == SEMICOLON)
 		{
+			PsiBuilder.Marker marker = builder.mark();
 			builder.advanceLexer();
+			marker.collapse(CSharpElements.EMPTY_METHOD_BODY);
 		}
 		else
 		{

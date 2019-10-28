@@ -16,29 +16,24 @@
 
 package consulo.csharp.lang.psi.impl.light.builder;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterList;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetParameterList;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
+import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
+import consulo.dotnet.psi.*;
+import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -72,6 +67,7 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return CSharpLikeMethodDeclarationImplUtil.isEquivalentTo(this, another);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetType getReturnType()
@@ -87,11 +83,11 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return myReturnType;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public PsiElement getCodeBlock()
+	public CSharpCodeBodyProxy getCodeBlock()
 	{
-		return null;
+		return CSharpCodeBodyProxy.EMPTY;
 	}
 
 	@Nullable
@@ -142,6 +138,7 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return ContainerUtil.toArray(myParameters, DotNetParameter.ARRAY_FACTORY);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
@@ -154,6 +151,7 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return myParentQName;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableQName()

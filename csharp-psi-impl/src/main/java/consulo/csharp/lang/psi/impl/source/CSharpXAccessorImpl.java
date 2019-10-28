@@ -35,7 +35,7 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
 import javax.annotation.Nonnull;
@@ -46,16 +46,16 @@ import java.util.Locale;
  * @author VISTALL
  * @since 04.12.13.
  */
-public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccessorStub> implements DotNetXXXAccessor, CSharpSimpleLikeMethodAsElement
+public class CSharpXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccessorStub> implements DotNetXAccessor, CSharpSimpleLikeMethodAsElement
 {
-	public CSharpXXXAccessorImpl(@Nonnull ASTNode node)
+	public CSharpXAccessorImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpXXXAccessorImpl(@Nonnull CSharpXXXAccessorStub stub)
+	public CSharpXAccessorImpl(@Nonnull CSharpXXXAccessorStub stub)
 	{
-		super(stub, CSharpStubElements.XXX_ACCESSOR);
+		super(stub, CSharpStubElements.XACCESSOR);
 	}
 
 
@@ -119,7 +119,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	@Nonnull
 	private Pair<DotNetTypeRef, DotNetQualifiedElement> getTypeRefOfParent()
 	{
-		CSharpXXXAccessorOwner element = PsiTreeUtil.getParentOfType(this, CSharpXXXAccessorOwner.class);
+		CSharpXAccessorOwner element = PsiTreeUtil.getParentOfType(this, CSharpXAccessorOwner.class);
 		if(element == null)
 		{
 			return Pair.create(DotNetTypeRef.ERROR_TYPE, null);
@@ -184,9 +184,9 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		visitor.visitXXXAccessor(this);
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public PsiElement getCodeBlock()
+	public CSharpCodeBodyProxy getCodeBlock()
 	{
 		return CSharpStubLikeMethodDeclarationImpl.getCodeBlockElement(this);
 	}

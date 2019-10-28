@@ -16,19 +16,18 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
-
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.source.CSharpStubModifierListImpl;
-import consulo.csharp.lang.psi.impl.stub.CSharpModifierListStub;
-import consulo.dotnet.psi.DotNetModifierList;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.source.CSharpStubModifierListImpl;
+import consulo.csharp.lang.psi.impl.stub.CSharpModifierListStub;
+import consulo.dotnet.psi.DotNetModifierList;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
 
 /**
  * @author VISTALL
@@ -65,14 +64,14 @@ public class CSharpModifierListStubElementType extends CSharpAbstractStubElement
 	@Override
 	public void serialize(@Nonnull CSharpModifierListStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeInt(stub.getModifierMask());
+		stubOutputStream.writeVarInt(stub.getModifierMask());
 	}
 
 	@Nonnull
 	@Override
 	public CSharpModifierListStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
-		int modifierMask = stubInputStream.readInt();
+		int modifierMask = stubInputStream.readVarInt();
 		return new CSharpModifierListStub(stubElement, this, modifierMask);
 	}
 }

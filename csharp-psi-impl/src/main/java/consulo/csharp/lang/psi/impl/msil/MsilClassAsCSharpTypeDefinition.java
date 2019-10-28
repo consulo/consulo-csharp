@@ -16,18 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import gnu.trove.THashSet;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.NullableLazyValue;
@@ -36,27 +24,26 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpGenericConstraint;
-import consulo.csharp.lang.psi.CSharpGenericConstraintList;
-import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
-import consulo.msil.lang.psi.MsilClassEntry;
-import consulo.msil.lang.psi.MsilEventEntry;
-import consulo.msil.lang.psi.MsilFieldEntry;
-import consulo.msil.lang.psi.MsilMethodEntry;
-import consulo.msil.lang.psi.MsilPropertyEntry;
-import consulo.msil.lang.psi.MsilTokens;
-import consulo.msil.lang.psi.MsilXXXAcessor;
+import consulo.msil.lang.psi.*;
+import consulo.ui.RequiredUIAccess;
+import gnu.trove.THashSet;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -106,15 +93,15 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 			{
 				if(element instanceof MsilPropertyEntry)
 				{
-					DotNetXXXAccessor[] accessors = ((MsilPropertyEntry) element).getAccessors();
+					DotNetXAccessor[] accessors = ((MsilPropertyEntry) element).getAccessors();
 
-					List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs = new ArrayList<>(2);
+					List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs = new ArrayList<>(2);
 
-					for(DotNetXXXAccessor accessor : accessors)
+					for(DotNetXAccessor accessor : accessors)
 					{
-						if(accessor instanceof MsilXXXAcessor)
+						if(accessor instanceof MsilXAcessor)
 						{
-							MsilMethodEntry methodEntry = ((MsilXXXAcessor) accessor).resolveToMethod();
+							MsilMethodEntry methodEntry = ((MsilXAcessor) accessor).resolveToMethod();
 							if(methodEntry != null)
 							{
 								pairs.add(Pair.create(accessor, methodEntry));
@@ -125,10 +112,10 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 
 					if(!pairs.isEmpty())
 					{
-						Pair<DotNetXXXAccessor, MsilMethodEntry> value = pairs.get(0);
+						Pair<DotNetXAccessor, MsilMethodEntry> value = pairs.get(0);
 
-						if(value.getFirst().getAccessorKind() == DotNetXXXAccessor.Kind.GET && value.getSecond().getParameters().length == 1 || value.getFirst().getAccessorKind() ==
-								DotNetXXXAccessor.Kind.SET && value.getSecond().getParameters().length == 2)
+						if(value.getFirst().getAccessorKind() == DotNetXAccessor.Kind.GET && value.getSecond().getParameters().length == 1 || value.getFirst().getAccessorKind() ==
+								DotNetXAccessor.Kind.SET && value.getSecond().getParameters().length == 2)
 						{
 							list.add(new MsilPropertyAsCSharpIndexMethodDeclaration(parentThis, (MsilPropertyEntry) element, pairs));
 							continue;
@@ -139,15 +126,15 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 				}
 				else if(element instanceof MsilEventEntry)
 				{
-					DotNetXXXAccessor[] accessors = ((MsilEventEntry) element).getAccessors();
+					DotNetXAccessor[] accessors = ((MsilEventEntry) element).getAccessors();
 
-					List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs = new ArrayList<>(2);
+					List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs = new ArrayList<>(2);
 
-					for(DotNetXXXAccessor accessor : accessors)
+					for(DotNetXAccessor accessor : accessors)
 					{
-						if(accessor instanceof MsilXXXAcessor)
+						if(accessor instanceof MsilXAcessor)
 						{
-							MsilMethodEntry methodEntry = ((MsilXXXAcessor) accessor).resolveToMethod();
+							MsilMethodEntry methodEntry = ((MsilXAcessor) accessor).resolveToMethod();
 							if(methodEntry != null)
 							{
 								pairs.add(Pair.create(accessor, methodEntry));

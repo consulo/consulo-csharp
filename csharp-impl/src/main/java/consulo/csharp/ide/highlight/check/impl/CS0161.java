@@ -16,9 +16,6 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ObjectUtil;
 import consulo.annotations.RequiredReadAction;
@@ -32,6 +29,9 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -52,7 +52,7 @@ public class CS0161 extends CompilerCheck<CSharpMethodDeclaration>
 			return null;
 		}
 
-		PsiElement codeBlock = element.getCodeBlock();
+		PsiElement codeBlock = element.getCodeBlock().getElement();
 		if(codeBlock instanceof CSharpBlockStatementImpl)
 		{
 			DotNetStatement[] statements = ((CSharpBlockStatementImpl) codeBlock).getStatements();

@@ -16,20 +16,17 @@
 
 package consulo.csharp.lang.formatter.processors;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetParameterList;
-import consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.*;
+import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetParameterList;
+import consulo.dotnet.psi.DotNetXAccessor;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -76,15 +73,16 @@ public class CSharpFormattingUtil
 		return false;
 	}
 
+	@RequiredReadAction
 	public static boolean isAutoAccessorOwner(@Nonnull PsiElement element)
 	{
-		if(element instanceof CSharpXXXAccessorOwner)
+		if(element instanceof CSharpXAccessorOwner)
 		{
-			DotNetXXXAccessor[] accessors = ((CSharpXXXAccessorOwner) element).getAccessors();
-			for(DotNetXXXAccessor accessor : accessors)
+			DotNetXAccessor[] accessors = ((CSharpXAccessorOwner) element).getAccessors();
+			for(DotNetXAccessor accessor : accessors)
 			{
-				PsiElement codeBlock = accessor.getCodeBlock();
-				if(codeBlock != null)
+				CSharpCodeBodyProxy codeBlock = (CSharpCodeBodyProxy) accessor.getCodeBlock();
+				if(codeBlock.isNotSemicolonAndNotEmpty())
 				{
 					return false;
 				}

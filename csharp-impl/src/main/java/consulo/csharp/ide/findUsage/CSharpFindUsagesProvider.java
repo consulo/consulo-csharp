@@ -235,12 +235,12 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 			return builder.toString();
 		}
 
-		if(element instanceof DotNetXXXAccessor)
+		if(element instanceof DotNetXAccessor)
 		{
 			PsiElement parent = element.getParent();
 
 			String nodeText = getNodeText(parent, useFullName);
-			PsiElement accessorElement = ((DotNetXXXAccessor) element).getAccessorElement();
+			PsiElement accessorElement = ((DotNetXAccessor) element).getAccessorElement();
 			if(accessorElement == null)
 			{
 				return nodeText;

@@ -16,32 +16,33 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.dotnet.psi.DotNetCodeBodyProxy;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.msil.lang.psi.MsilMethodEntry;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 12.12.14
  */
-public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNetXXXAccessor> implements DotNetXXXAccessor
+public class MsilXAccessorAsCSharpXAccessor extends MsilElementWrapper<DotNetXAccessor> implements DotNetXAccessor
 {
 	private final PsiElement myParent;
 	private final MsilModifierListToCSharpModifierList myModifierList;
 
-	public MsilXXXAccessorAsCSharpXXXAccessor(@Nonnull PsiElement parent,
-			@Nonnull DotNetXXXAccessor original,
-			@Nonnull MsilMethodEntry resolvedMethod)
+	public MsilXAccessorAsCSharpXAccessor(@Nonnull PsiElement parent,
+										  @Nonnull DotNetXAccessor original,
+										  @Nonnull MsilMethodEntry resolvedMethod)
 	{
 		super(parent, original);
 		myParent = parent;
@@ -57,7 +58,7 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNe
 	@Override
 	public String toString()
 	{
-		return "DotNetXXXAccessor: " + getAccessorKind();
+		return "DotNetXAccessor: " + getAccessorKind();
 	}
 
 	@Override
@@ -80,11 +81,11 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNe
 		return myOriginal.getAccessorKind();
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public PsiElement getCodeBlock()
+	public DotNetCodeBodyProxy getCodeBlock()
 	{
-		return null;
+		return CSharpCodeBodyProxy.EMPTY;
 	}
 
 	@RequiredReadAction
@@ -126,6 +127,6 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNe
 	@Override
 	protected Class<? extends PsiElement> getNavigationElementClass()
 	{
-		return DotNetXXXAccessor.class;
+		return DotNetXAccessor.class;
 	}
 }

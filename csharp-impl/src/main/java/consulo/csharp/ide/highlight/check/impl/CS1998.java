@@ -16,19 +16,21 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.lang.psi.CSharpStoppableRecursiveElementVisitor;
 import consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifierList;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -51,8 +53,8 @@ public class CS1998 extends CompilerCheck<CSharpSimpleLikeMethodAsElement>
 		{
 			return null;
 		}
-		PsiElement codeBlock = element.getCodeBlock();
-		if(codeBlock == null)
+		CSharpCodeBodyProxy codeBlock = element.getCodeBlock();
+		if(codeBlock.isSemicolonOrEmpty())
 		{
 			return null;
 		}
@@ -64,7 +66,7 @@ public class CS1998 extends CompilerCheck<CSharpSimpleLikeMethodAsElement>
 				stopWalk(Boolean.TRUE);
 			}
 		};
-		codeBlock.accept(visitor);
+		codeBlock.getElement().accept(visitor);
 
 		if(visitor.getValue() == null)
 		{

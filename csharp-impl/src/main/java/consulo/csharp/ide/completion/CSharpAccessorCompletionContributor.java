@@ -46,9 +46,9 @@ import consulo.annotations.RequiredWriteAction;
 import consulo.codeInsight.completion.CompletionProvider;
 import consulo.csharp.lang.psi.CSharpEventDeclaration;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
-import consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
+import consulo.csharp.lang.psi.CSharpXAccessorOwner;
 import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 
 /**
  * @author VISTALL
@@ -58,14 +58,14 @@ class CSharpAccessorCompletionContributor
 {
 	static void extend(CompletionContributor contributor)
 	{
-		contributor.extend(CompletionType.BASIC, psiElement().andNot(psiElement().inside(DotNetXXXAccessor.class)), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, psiElement().andNot(psiElement().inside(DotNetXAccessor.class)), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
 			public void addCompletions(@Nonnull CompletionParameters completionParameters, ProcessingContext processingContext, @Nonnull CompletionResultSet resultSet)
 			{
 				PsiElement position = completionParameters.getPosition();
-				final CSharpXXXAccessorOwner accessorOwner = PsiTreeUtil.getParentOfType(position, CSharpXXXAccessorOwner.class);
+				final CSharpXAccessorOwner accessorOwner = PsiTreeUtil.getParentOfType(position, CSharpXAccessorOwner.class);
 				if(accessorOwner == null)
 				{
 					return;
@@ -110,7 +110,7 @@ class CSharpAccessorCompletionContributor
 
 									context.commitDocument();
 
-									DotNetXXXAccessor accessor = PsiTreeUtil.getParentOfType(elementAt, DotNetXXXAccessor.class);
+									DotNetXAccessor accessor = PsiTreeUtil.getParentOfType(elementAt, DotNetXAccessor.class);
 									if(accessor != null)
 									{
 										CodeStyleManager.getInstance(context.getProject()).reformat(accessor);
@@ -127,7 +127,7 @@ class CSharpAccessorCompletionContributor
 		});
 	}
 
-	private static void buildAccessorKeywordsCompletion(CompletionResultSet resultSet, final CSharpXXXAccessorOwner accessorOwner, @Nullable InsertHandler<LookupElement> insertHandler)
+	private static void buildAccessorKeywordsCompletion(CompletionResultSet resultSet, final CSharpXAccessorOwner accessorOwner, @Nullable InsertHandler<LookupElement> insertHandler)
 	{
 		TokenSet tokenSet = accessorOwner instanceof CSharpEventDeclaration ? TokenSet.create(CSharpSoftTokens.ADD_KEYWORD, CSharpSoftTokens.REMOVE_KEYWORD) : TokenSet.create(CSharpSoftTokens
 				.GET_KEYWORD, CSharpSoftTokens.SET_KEYWORD);
@@ -152,12 +152,12 @@ class CSharpAccessorCompletionContributor
 		}
 	}
 
-	private static boolean isCanShowAccessorKeyword(IElementType elementType, CSharpXXXAccessorOwner accessorOwner)
+	private static boolean isCanShowAccessorKeyword(IElementType elementType, CSharpXAccessorOwner accessorOwner)
 	{
-		DotNetXXXAccessor[] accessors = accessorOwner.getAccessors();
-		for(DotNetXXXAccessor accessor : accessors)
+		DotNetXAccessor[] accessors = accessorOwner.getAccessors();
+		for(DotNetXAccessor accessor : accessors)
 		{
-			DotNetXXXAccessor.Kind accessorKind = accessor.getAccessorKind();
+			DotNetXAccessor.Kind accessorKind = accessor.getAccessorKind();
 			if(accessorKind == null)
 			{
 				continue;

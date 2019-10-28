@@ -37,7 +37,7 @@ import consulo.csharp.lang.psi.impl.msil.typeParsing.SomeType;
 import consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilMethodEntry;
@@ -50,12 +50,12 @@ import consulo.msil.lang.psi.MsilTokens;
  */
 public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCSharpVariable implements CSharpPropertyDeclaration
 {
-	private DotNetXXXAccessor[] myAccessors;
+	private DotNetXAccessor[] myAccessors;
 
 	private final NullableLazyValue<DotNetType> myTypeForImplementValue;
 
 	@RequiredReadAction
-	public MsilPropertyAsCSharpPropertyDeclaration(PsiElement parent, MsilPropertyEntry variable, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	public MsilPropertyAsCSharpPropertyDeclaration(PsiElement parent, MsilPropertyEntry variable, List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs)
 	{
 		super(parent, getAdditionalModifiers(variable, pairs), variable);
 		myAccessors = buildAccessors(this, pairs);
@@ -73,19 +73,19 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		});
 	}
 
-	public static DotNetXXXAccessor[] buildAccessors(@Nonnull PsiElement parent, @Nonnull List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	public static DotNetXAccessor[] buildAccessors(@Nonnull PsiElement parent, @Nonnull List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs)
 	{
-		List<DotNetXXXAccessor> accessors = new ArrayList<DotNetXXXAccessor>(2);
+		List<DotNetXAccessor> accessors = new ArrayList<DotNetXAccessor>(2);
 
-		for(Pair<DotNetXXXAccessor, MsilMethodEntry> pair : pairs)
+		for(Pair<DotNetXAccessor, MsilMethodEntry> pair : pairs)
 		{
-			accessors.add(new MsilXXXAccessorAsCSharpXXXAccessor(parent, pair.getFirst(), pair.getSecond()));
+			accessors.add(new MsilXAccessorAsCSharpXAccessor(parent, pair.getFirst(), pair.getSecond()));
 		}
-		return ContainerUtil.toArray(accessors, DotNetXXXAccessor.ARRAY_FACTORY);
+		return ContainerUtil.toArray(accessors, DotNetXAccessor.ARRAY_FACTORY);
 	}
 
 	@Nonnull
-	public static CSharpModifier[] getAdditionalModifiers(PsiElement parent, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	public static CSharpModifier[] getAdditionalModifiers(PsiElement parent, List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs)
 	{
 		PsiElement maybeTypeParent = parent.getParent();
 		if(maybeTypeParent instanceof MsilClassEntry && ((MsilClassEntry) maybeTypeParent).hasModifier(MsilTokens.INTERFACE_KEYWORD))
@@ -95,7 +95,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 
 		boolean staticMod = false;
 		List<CSharpAccessModifier> modifiers = new SmartList<CSharpAccessModifier>();
-		for(Pair<DotNetXXXAccessor, MsilMethodEntry> pair : pairs)
+		for(Pair<DotNetXAccessor, MsilMethodEntry> pair : pairs)
 		{
 			CSharpAccessModifier accessModifier = getAccessModifier(pair.getSecond());
 			modifiers.add(accessModifier);
@@ -165,7 +165,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 
 	@Nonnull
 	@Override
-	public DotNetXXXAccessor[] getAccessors()
+	public DotNetXAccessor[] getAccessors()
 	{
 		return myAccessors;
 	}

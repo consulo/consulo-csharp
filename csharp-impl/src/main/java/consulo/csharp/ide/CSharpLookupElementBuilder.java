@@ -210,11 +210,11 @@ public class CSharpLookupElementBuilder
 				}
 			});
 		}
-		/*else if(element instanceof DotNetXXXAccessor)
+		/*else if(element instanceof DotNetXAccessor)
 		{
 			DotNetNamedElement parent = (DotNetNamedElement) element.getParent();
 
-			DotNetXXXAccessor.Kind accessorKind = ((DotNetXXXAccessor) element).getAccessorKind();
+			DotNetXAccessor.Kind accessorKind = ((DotNetXAccessor) element).getAccessorKind();
 			if(accessorKind == null)
 			{
 				return null;

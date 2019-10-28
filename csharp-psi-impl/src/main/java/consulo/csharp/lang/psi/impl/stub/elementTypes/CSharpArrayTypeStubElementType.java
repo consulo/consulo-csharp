@@ -16,18 +16,17 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.CSharpArrayType;
-import consulo.csharp.lang.psi.impl.source.CSharpStubArrayTypeImpl;
-import consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
+import consulo.csharp.lang.psi.CSharpArrayType;
+import consulo.csharp.lang.psi.impl.source.CSharpStubArrayTypeImpl;
+import consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
 
 /**
  * @author VISTALL
@@ -53,10 +52,11 @@ public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementTyp
 		return new CSharpStubArrayTypeImpl(stub, this);
 	}
 
+	@Nonnull
 	@Override
-	public CSharpWithIntValueStub<CSharpArrayType> createStub(@Nonnull CSharpArrayType cSharpArrayType, StubElement stubElement)
+	public CSharpWithIntValueStub<CSharpArrayType> createStub(@Nonnull CSharpArrayType arrayType, StubElement stubElement)
 	{
-		return new CSharpWithIntValueStub<CSharpArrayType>(stubElement, this, cSharpArrayType.getDimensions());
+		return new CSharpWithIntValueStub<>(stubElement, this, arrayType.getDimensions());
 	}
 
 	@Override
@@ -70,6 +70,6 @@ public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementTyp
 	public CSharpWithIntValueStub<CSharpArrayType> deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int i = stubInputStream.readVarInt();
-		return new CSharpWithIntValueStub<CSharpArrayType>(stubElement, this, i);
+		return new CSharpWithIntValueStub<>(stubElement, this, i);
 	}
 }
