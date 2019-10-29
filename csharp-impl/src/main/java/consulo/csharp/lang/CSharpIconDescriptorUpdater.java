@@ -17,8 +17,11 @@
 package consulo.csharp.lang;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.DumbService;
+import com.intellij.openapi.roots.ModuleFileIndex;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Iconable;
@@ -36,7 +39,6 @@ import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.DotNetRunUtil;
-import consulo.dotnet.module.DotNetModuleUtil;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -224,8 +226,8 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 
 		if(virtualFile != null && virtualFile.getFileType() == CSharpFileType.INSTANCE)
 		{
-			DotNetModuleExtension extension = ModuleUtilCore.getExtension(element, DotNetModuleExtension.class);
-			if(extension != null && extension.isAllowSourceRoots() && !DotNetModuleUtil.isUnderSourceRoot(element))
+			DotNetModuleExtension extension = ModuleUtilCore.getExtension(element.getProject(), virtualFile, DotNetModuleExtension.class);
+			if(extension != null && extension.isAllowSourceRoots() && !isUnderSourceRoot(extension.getModule(), virtualFile))
 			{
 				ProjectFileIndex fileIndex = ProjectRootManager.getInstance(element.getProject()).getFileIndex();
 				if(fileIndex.isInLibrary(virtualFile))
@@ -235,6 +237,12 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 				iconDescriptor.addLayerIcon(AllIcons.Nodes.ExcludedFromCompile);
 			}
 		}
+	}
+
+	public static boolean isUnderSourceRoot(@Nonnull Module module, @Nonnull VirtualFile file)
+	{
+		ModuleFileIndex fileIndex = ModuleRootManager.getInstance(module).getFileIndex();
+		return fileIndex.isInSourceContent(file) || fileIndex.isInTestSourceContent(file);
 	}
 
 	@RequiredReadAction
