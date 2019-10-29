@@ -26,7 +26,7 @@ import java.util.Iterator;
  * @author VISTALL
  * @since 2019-08-09
  */
-class PreprocessorState
+public class PreprocessorState
 {
 	public static class SubState
 	{

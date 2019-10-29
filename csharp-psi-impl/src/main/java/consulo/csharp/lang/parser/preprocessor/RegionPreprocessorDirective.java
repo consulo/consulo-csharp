@@ -24,9 +24,9 @@ public class RegionPreprocessorDirective extends PreprocessorDirective
 {
 	private String myValue;
 
-	public RegionPreprocessorDirective(String value)
+	public RegionPreprocessorDirective(CharSequence value)
 	{
-		myValue = value;
+		myValue = value.toString();
 	}
 
 	@Override

@@ -35,6 +35,8 @@ import gnu.trove.THashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @author VISTALL
@@ -186,87 +188,8 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		{
 			IElementType toRemapTokenType = CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE;
 
-			Set<String> variables = getUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES);
-			assert variables != null;
-			PreprocessorDirective directive = PreprocessorLightParser.parse(super.getTokenText());
-
-			boolean disabledToken = myState.isDisabled(false);
-
-			if(directive instanceof DefinePreprocessorDirective)
-			{
-				// if code is disabled - dont handle define
-				if(!disabledToken)
-				{
-					Set<String> newVariables = new HashSet<>(variables);
-
-					if(((DefinePreprocessorDirective) directive).isUndef())
-					{
-						newVariables.remove(((DefinePreprocessorDirective) directive).getVariable());
-					}
-					else
-					{
-						newVariables.add(((DefinePreprocessorDirective) directive).getVariable());
-					}
-					putUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES, newVariables);
-				}
-			}
-			else if(directive instanceof IfPreprocessorDirective)
-			{
-				if(((IfPreprocessorDirective) directive).isElseIf())
-				{
-					PreprocessorState.SubState state = myState.last();
-					if(state == null)
-					{
-						boolean evaluate = MacroEvaluator.evaluate(((IfPreprocessorDirective) directive).getValue(), variables);
-
-						myState.newState(disabledToken ? Boolean.FALSE : evaluate);
-					}
-					else if(state.haveActive()) // if we already have active - disable it
-					{
-						state.ifDirectives.addLast(Boolean.FALSE);
-					}
-					else
-					{
-						boolean evaluate = MacroEvaluator.evaluate(((IfPreprocessorDirective) directive).getValue(), variables);
-
-						state.ifDirectives.addLast(disabledToken ? Boolean.FALSE : evaluate);
-					}
-				}
-				else
-				{
-					boolean evaluate = MacroEvaluator.evaluate(((IfPreprocessorDirective) directive).getValue(), variables);
-					myState.newState(disabledToken ? Boolean.FALSE : evaluate);
-				}
-
-				// refresh current #if state
-				disabledToken = myState.isDisabled(false);
-			}
-			else if(directive instanceof ElsePreprocessorDirective)
-			{
-				PreprocessorState.SubState state = myState.last();
-				if(state == null)
-				{
-					myState.newState(Boolean.FALSE);
-				}
-				else if(state.haveActive())
-				{
-					state.ifDirectives.addLast(Boolean.FALSE);
-				}
-				else
-				{
-					disabledToken = myState.isDisabled(true);
-
-					state.ifDirectives.addLast(disabledToken ? Boolean.FALSE : Boolean.TRUE);
-				}
-			}
-			else if(directive instanceof EndIfPreprocessorDirective)
-			{
-				myState.removeLast();
-			}
-			else if(directive instanceof WarningDirective)
-			{
-				// nothing?
-			}
+			boolean disabledToken = processState(myState, () -> getUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES), it -> putUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES, it)
+					, super.getTokenSequence());
 
 			if(disabledToken)
 			{
@@ -293,6 +216,94 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 			}
 		}
 		return tokenType;
+	}
+
+	public static boolean processState(PreprocessorState preprocessorState, Supplier<Set<String>> getVars, Consumer<Set<String>> setVars, CharSequence tokenSequence)
+	{
+		Set<String> variables = getVars.get();
+		assert variables != null;
+		PreprocessorDirective directive = PreprocessorLightParser.parse(tokenSequence);
+
+		boolean disabledToken = preprocessorState.isDisabled(false);
+
+		if(directive instanceof DefinePreprocessorDirective)
+		{
+			// if code is disabled - dont handle define
+			if(!disabledToken)
+			{
+				Set<String> newVariables = new HashSet<>(variables);
+
+				if(((DefinePreprocessorDirective) directive).isUndef())
+				{
+					newVariables.remove(((DefinePreprocessorDirective) directive).getVariable());
+				}
+				else
+				{
+					newVariables.add(((DefinePreprocessorDirective) directive).getVariable());
+				}
+
+				setVars.accept(newVariables);
+			}
+		}
+		else if(directive instanceof IfPreprocessorDirective)
+		{
+			if(((IfPreprocessorDirective) directive).isElseIf())
+			{
+				PreprocessorState.SubState state = preprocessorState.last();
+				if(state == null)
+				{
+					boolean evaluate = MacroEvaluator.evaluate(((IfPreprocessorDirective) directive).getValue(), variables);
+
+					preprocessorState.newState(disabledToken ? Boolean.FALSE : evaluate);
+				}
+				else if(state.haveActive()) // if we already have active - disable it
+				{
+					state.ifDirectives.addLast(Boolean.FALSE);
+				}
+				else
+				{
+					boolean evaluate = MacroEvaluator.evaluate(((IfPreprocessorDirective) directive).getValue(), variables);
+
+					state.ifDirectives.addLast(disabledToken ? Boolean.FALSE : evaluate);
+				}
+			}
+			else
+			{
+				boolean evaluate = MacroEvaluator.evaluate(((IfPreprocessorDirective) directive).getValue(), variables);
+				preprocessorState.newState(disabledToken ? Boolean.FALSE : evaluate);
+			}
+
+			// refresh current #if state
+			disabledToken = preprocessorState.isDisabled(false);
+		}
+		else if(directive instanceof ElsePreprocessorDirective)
+		{
+			PreprocessorState.SubState state = preprocessorState.last();
+			if(state == null)
+			{
+				preprocessorState.newState(Boolean.FALSE);
+			}
+			else if(state.haveActive())
+			{
+				state.ifDirectives.addLast(Boolean.FALSE);
+			}
+			else
+			{
+				disabledToken = preprocessorState.isDisabled(true);
+
+				state.ifDirectives.addLast(disabledToken ? Boolean.FALSE : Boolean.TRUE);
+			}
+		}
+		else if(directive instanceof EndIfPreprocessorDirective)
+		{
+			preprocessorState.removeLast();
+		}
+		else if(directive instanceof WarningDirective)
+		{
+			// nothing?
+		}
+
+		return disabledToken;
 	}
 
 	@Override

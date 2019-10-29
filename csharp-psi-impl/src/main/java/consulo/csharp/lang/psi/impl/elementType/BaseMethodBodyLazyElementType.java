@@ -22,7 +22,10 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.ILazyParseableElementType;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
@@ -30,11 +33,13 @@ import consulo.csharp.lang.parser.ModifierSet;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodBodyImpl;
+import consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpFileStubElementType;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.lang.LanguageVersion;
 import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nonnull;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -59,6 +64,7 @@ public abstract class BaseMethodBodyLazyElementType extends ILazyParseableElemen
 		final LanguageVersion languageVersion = tempLanguageVersion == null ? psi.getLanguageVersion() : tempLanguageVersion;
 		final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
 
+		builder.putUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES, collectVariableFor(psi));
 		CSharpBuilderWrapper wrapper = new CSharpBuilderWrapper(builder, languageVersion);
 
 		PsiBuilder.Marker mark = wrapper.mark();
@@ -83,6 +89,18 @@ public abstract class BaseMethodBodyLazyElementType extends ILazyParseableElemen
 		mark.done(this);
 
 		return wrapper.getTreeBuilt().getFirstChildNode();
+	}
+
+	@Nonnull
+	private static Set<String> collectVariableFor(@Nonnull PsiElement element)
+	{
+		return CachedValuesManager.getCachedValue(element, () -> {
+			PsiFile psiFile = element.getContainingFile();
+			Set<String> defines = CSharpFileStubElementType.getStableDefines(psiFile);
+			CSharpPreprocessorVisitor visitor = new CSharpPreprocessorVisitor(defines, element.getStartOffsetInParent());
+			psiFile.accept(visitor);
+			return CachedValueProvider.Result.create(visitor.getVariables(), element);
+		}) ;
 	}
 
 	@Override

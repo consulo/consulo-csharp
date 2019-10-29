@@ -16,17 +16,15 @@
 
 package consulo.csharp.lang.parser.preprocessor;
 
-import gnu.trove.THashSet;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.lexer._CSharpMacroLexer;
 import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
+import gnu.trove.THashSet;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -57,7 +55,7 @@ public class PreprocessorLightParser
 	}
 
 	@Nullable
-	public static PreprocessorDirective parse(String text)
+	public static PreprocessorDirective parse(CharSequence text)
 	{
 		_CSharpMacroLexer lexer = new _CSharpMacroLexer();
 		lexer.start(text);
