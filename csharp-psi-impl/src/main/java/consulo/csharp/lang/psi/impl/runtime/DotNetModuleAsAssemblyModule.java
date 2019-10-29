@@ -16,27 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.runtime;
 
-import java.util.List;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import consulo.annotations.RequiredReadAction;
 
 import javax.annotation.Nonnull;
-
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.impl.source.PsiFileImpl;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.DotNetTypes2;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
-import consulo.internal.dotnet.asm.signature.TypeSignature;
-import consulo.msil.lang.psi.MsilAssemblyEntry;
-import consulo.msil.lang.psi.MsilCustomAttribute;
-import consulo.msil.lang.psi.MsilFile;
-import consulo.msil.lang.stubbing.MsilCustomAttributeArgumentList;
-import consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
-import consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
-import consulo.vfs.util.ArchiveVfsUtil;
 
 /**
  * @author VISTALL
@@ -65,51 +49,7 @@ class DotNetModuleAsAssemblyModule implements AssemblyModule
 	@Override
 	public boolean isAllowedAssembly(@Nonnull String assemblyName)
 	{
-		VirtualFile archiveRootForLocalFile = ArchiveVfsUtil.getArchiveRootForLocalFile(myModuleFile);
-		if(archiveRootForLocalFile == null)
-		{
-			return false;
-		}
-
-		VirtualFile assemblyFile = archiveRootForLocalFile.findChild("AssemblyInfo.msil");
-		if(assemblyFile == null)
-		{
-			return false;
-		}
-		PsiFileImpl file = (PsiFileImpl) PsiManager.getInstance(myProject).findFile(assemblyFile);
-		if(!(file instanceof MsilFile))
-		{
-			return false;
-		}
-
-		for(PsiElement psiElement : ((MsilFile) file).getMembers())
-		{
-			if(psiElement instanceof MsilAssemblyEntry)
-			{
-				MsilAssemblyEntry assemblyEntry = (MsilAssemblyEntry) psiElement;
-
-				MsilCustomAttribute[] attributes = assemblyEntry.getAttributes();
-				for(MsilCustomAttribute attribute : attributes)
-				{
-					if(DotNetTypeRefUtil.isVmQNameEqual(attribute.toTypeRef(), attribute, DotNetTypes2.System.Runtime.CompilerServices.InternalsVisibleToAttribute))
-					{
-						MsilCustomAttributeArgumentList argumentList = MsilCustomAttributeStubber.build(attribute);
-						List<MsiCustomAttributeValue> constructorArguments = argumentList.getConstructorArguments();
-						if(constructorArguments.size() != 1)
-						{
-							continue;
-						}
-
-						MsiCustomAttributeValue msiCustomAttributeValue = constructorArguments.get(0);
-						if(msiCustomAttributeValue.getTypeSignature() == TypeSignature.STRING && Comparing.equal(msiCustomAttributeValue.getValue(), assemblyName))
-						{
-							return true;
-						}
-					}
-				}
-			}
-		}
-		return false;
+		return AssemblyModuleCache.getInstance(myProject).getBinaryAllowedAssemblies(myModuleFile).contains(assemblyName);
 	}
 
 	@Override

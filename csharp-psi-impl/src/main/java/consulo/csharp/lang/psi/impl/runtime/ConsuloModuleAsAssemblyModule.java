@@ -16,24 +16,12 @@
 
 package consulo.csharp.lang.psi.impl.runtime;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.util.ObjectUtil;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
-import consulo.csharp.lang.psi.CSharpAttribute;
-import consulo.csharp.lang.psi.CSharpAttributeList;
-import consulo.csharp.lang.psi.impl.DotNetTypes2;
-import consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
 import consulo.dotnet.module.DotNetAssemblyUtil;
-import consulo.dotnet.psi.DotNetAttributeTargetType;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -61,40 +49,7 @@ class ConsuloModuleAsAssemblyModule implements AssemblyModule
 	@Override
 	public boolean isAllowedAssembly(@Nonnull String assemblyName)
 	{
-		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, myModule.getProject(), myModule.getModuleScope());
-
-		for(CSharpAttributeList attributeList : attributeLists)
-		{
-			for(CSharpAttribute attribute : attributeList.getAttributes())
-			{
-				DotNetTypeDeclaration dotNetTypeDeclaration = attribute.resolveToType();
-				if(dotNetTypeDeclaration == null)
-				{
-					continue;
-				}
-
-				if(DotNetTypes2.System.Runtime.CompilerServices.InternalsVisibleToAttribute.equalsIgnoreCase(dotNetTypeDeclaration.getVmQName()))
-				{
-					Module attributeModule = ModuleUtilCore.findModuleForPsiElement(attribute);
-					if(attributeModule == null || !attributeModule.equals(myModule))
-					{
-						continue;
-					}
-
-					DotNetExpression[] parameterExpressions = attribute.getParameterExpressions();
-					if(parameterExpressions.length == 0)
-					{
-						continue;
-					}
-					String valueAs = new ConstantExpressionEvaluator(parameterExpressions[0]).getValueAs(String.class);
-					if(Comparing.equal(valueAs, assemblyName))
-					{
-						return true;
-					}
-				}
-			}
-		}
-		return false;
+		return AssemblyModuleCache.getInstance(myModule.getProject()).getSourceAllowedAssemblies(myModule).contains(assemblyName);
 	}
 
 	@Override

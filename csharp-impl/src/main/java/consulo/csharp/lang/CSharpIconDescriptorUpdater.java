@@ -228,7 +228,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			if(extension != null && extension.isAllowSourceRoots() && !DotNetModuleUtil.isUnderSourceRoot(element))
 			{
 				ProjectFileIndex fileIndex = ProjectRootManager.getInstance(element.getProject()).getFileIndex();
-				if(fileIndex.isInLibraryClasses(virtualFile) || fileIndex.isInLibrarySource(virtualFile))
+				if(fileIndex.isInLibrary(virtualFile))
 				{
 					return;
 				}
