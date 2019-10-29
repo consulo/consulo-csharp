@@ -39,14 +39,6 @@ import java.lang.ref.WeakReference;
  */
 public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<DotNetFieldDeclaration>> implements CSharpFieldDeclaration
 {
-	private static class FieldConstantRef extends CSharpConstantTypeRef
-	{
-		public FieldConstantRef(CSharpConstantExpressionImpl element, @Nonnull DotNetTypeRef defaultTypeRef)
-		{
-			super(element, defaultTypeRef);
-		}
-	}
-
 	private volatile WeakReference<DotNetExpression> myInitializerExpression;
 
 	public CSharpFieldDeclarationImpl(@Nonnull ASTNode node)
