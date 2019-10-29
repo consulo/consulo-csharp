@@ -286,7 +286,6 @@
 		<quoteHandler fileType="C#" className="consulo.csharp.ide.CSharpQuoteHandler"/>
 		<colorSettingsPage implementation="consulo.csharp.ide.highlight.CSharpColorSettingsPage"/>
 		<fileEditorProvider implementation="consulo.csharp.ide.assemblyInfo.CSharpAssemblyFileEditorProvider"/>
-		<psi.treeChangePreprocessor implementation="consulo.csharp.lang.psi.impl.CSharpPsiTreeChangePreprocessor"/>
 		<lang.psiStructureViewFactory language="C#" implementationClass="consulo.csharp.ide.structureView.CSharpStructureViewFactory"/>
 		<lang.formatter language="C#" implementationClass="consulo.csharp.lang.formatter.CSharpFormattingModelBuilder"/>
 		<lang.commenter language="C#" implementationClass="consulo.csharp.lang.CSharpCommenter"/>

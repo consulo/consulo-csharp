@@ -29,6 +29,7 @@ import com.intellij.psi.StubBuilder;
 import com.intellij.psi.stubs.DefaultStubBuilder;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
+import com.intellij.psi.tree.ILazyParseableElementType;
 import com.intellij.psi.tree.IStubFileElementType;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.indexing.IndexingDataKeys;
@@ -76,6 +77,17 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 				}
 				return super.createStubForFile(file);
 			}
+
+			@Override
+			public boolean skipChildProcessingWhenBuildingStubs(@Nonnull ASTNode parent, @Nonnull ASTNode node)
+			{
+				// skip any lazy parseable elements, like preprocessors or code blocks etc
+				if(node.getElementType() instanceof ILazyParseableElementType)
+				{
+					return true;
+				}
+				return false;
+			}
 		};
 	}
 
@@ -88,7 +100,20 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 		final LanguageVersion tempLanguageVersion = chameleon.getUserData(LanguageVersion.KEY);
 		final CSharpLanguageVersionWrapper languageVersion = (CSharpLanguageVersionWrapper) (tempLanguageVersion == null ? psi.getLanguageVersion() : tempLanguageVersion);
 
-		FileViewProvider viewProvider = ((PsiFile) psi).getViewProvider();
+		Set<String> defVariables = getStableDefines((PsiFile) psi);
+
+		final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
+		builder.putUserData(PREPROCESSOR_VARIABLES, defVariables);
+
+		final PsiParser parser = LanguageParserDefinitions.INSTANCE.forLanguage(languageForParser).createParser(languageVersion);
+		return parser.parse(this, builder, languageVersion).getFirstChildNode();
+	}
+
+	@Nonnull
+	@RequiredReadAction
+	public static Set<String> getStableDefines(@Nonnull PsiFile psi)
+	{
+		FileViewProvider viewProvider = psi.getViewProvider();
 		VirtualFile virtualFile = viewProvider.getVirtualFile();
 		if(virtualFile instanceof LightVirtualFile)
 		{
@@ -107,19 +132,14 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 		Set<String> defVariables = Collections.emptySet();
 		if(virtualFile != null)
 		{
-			List<String> variables = findVariables(virtualFile, project);
+			List<String> variables = findVariables(virtualFile, psi.getProject());
 
 			if(variables != null)
 			{
 				defVariables = new HashSet<>(variables);
 			}
 		}
-
-		final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
-		builder.putUserData(PREPROCESSOR_VARIABLES, defVariables);
-
-		final PsiParser parser = LanguageParserDefinitions.INSTANCE.forLanguage(languageForParser).createParser(languageVersion);
-		return parser.parse(this, builder, languageVersion).getFirstChildNode();
+		return defVariables;
 	}
 
 	@Nullable
