@@ -16,12 +16,6 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
@@ -31,8 +25,12 @@ import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.util.ContainerUtil2;
 import consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import consulo.dotnet.psi.DotNetInheritUtil;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -72,7 +70,7 @@ public class AttributeByNameSelector implements CSharpResolveSelector
 
 			List<PsiElement> collection = CSharpResolveUtil.mergeGroupsToIterable(array);
 
-			return ContainerUtil.findAll(collection, element -> element instanceof CSharpTypeDeclaration && DotNetInheritUtil.isAttribute((DotNetTypeDeclaration) element));
+			return ContainerUtil.findAll(collection, element -> element instanceof CSharpTypeDeclaration && DotNetInheritUtil.isAttribute((CSharpTypeDeclaration) element));
 		}
 	}
 }

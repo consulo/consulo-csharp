@@ -16,9 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.openapi.util.NotNullLazyValue;
+import com.intellij.psi.PsiElement;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.ToNativeElementTransformers;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -26,9 +26,6 @@ import consulo.csharp.lang.psi.impl.msil.transformer.MsilToNativeElementTransfor
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpUserTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.SingleNullableStateResolveResult;
-import com.intellij.openapi.util.NotNullLazyValue;
-import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
@@ -42,6 +39,9 @@ import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilMethodEntry;
 import consulo.msil.lang.psi.impl.type.MsilClassGenericTypeRefImpl;
 import consulo.msil.lang.psi.impl.type.MsilMethodGenericTypeRefImpl;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -180,12 +180,18 @@ public class MsilDelegateTypeRef extends DotNetTypeRefWithCachedResult
 		}
 	};
 
-	private DotNetTypeRef myTypeRef;
+	private final DotNetTypeRef myTypeRef;
 
 	public MsilDelegateTypeRef(@Nonnull PsiElement scope, @Nonnull DotNetTypeRef typeRef)
 	{
 		super(scope.getProject());
 		myTypeRef = typeRef;
+	}
+
+	@Override
+	public boolean isEqualToVmQName(@Nonnull String vmQName)
+	{
+		return myTypeRef.isEqualToVmQName(vmQName);
 	}
 
 	@RequiredReadAction

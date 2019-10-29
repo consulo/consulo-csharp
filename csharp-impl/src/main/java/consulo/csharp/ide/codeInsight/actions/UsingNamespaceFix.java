@@ -16,17 +16,6 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.codeInsight.daemon.impl.ShowAutoImportPass;
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.intention.HighPriorityAction;
@@ -48,14 +37,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.Processors;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpAttribute;
-import consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpNewExpression;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpUserType;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
@@ -69,21 +51,16 @@ import consulo.dotnet.DotNetBundle;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent;
 import consulo.dotnet.libraryAnalyzer.NamespaceReference;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetInheritUtil;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.psi.DotNetNamespaceDeclaration;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetShortNameSearcher;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.GlobalSearchScopeFilter;
 import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilMethodEntry;
+
+import javax.annotation.Nonnull;
+import java.util.*;
 
 /**
  * @author VISTALL

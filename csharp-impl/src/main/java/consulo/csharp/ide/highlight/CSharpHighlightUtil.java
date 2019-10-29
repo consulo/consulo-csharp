@@ -27,10 +27,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpCaseVariableImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpIsVariableImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
+import consulo.csharp.lang.psi.impl.source.*;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.DotNetTypes;
@@ -102,7 +99,7 @@ public class CSharpHighlightUtil
 			{
 				key = CSharpHighlightKey.INTERFACE_NAME;
 			}
-			else if(DotNetInheritUtil.isAttribute((DotNetTypeDeclaration) element))
+			else if(DotNetInheritUtil.isAttribute((CSharpTypeDeclaration) element))
 			{
 				key = CSharpHighlightKey.ATTRIBUTE_NAME;
 			}

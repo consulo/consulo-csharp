@@ -16,8 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -29,6 +27,8 @@ import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetPsiSearcher;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -72,6 +72,12 @@ public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
 		}
 
 		return new CSharpUserTypeRef.Result<>(type, DotNetGenericExtractor.EMPTY);
+	}
+
+	@Override
+	public boolean isEqualToVmQName(@Nonnull String vmQName)
+	{
+		return vmQName.equals(myQualifiedName);
 	}
 
 	@RequiredReadAction
