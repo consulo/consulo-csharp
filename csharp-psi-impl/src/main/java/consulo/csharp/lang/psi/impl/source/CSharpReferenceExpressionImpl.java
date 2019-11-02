@@ -41,8 +41,6 @@ import javax.annotation.Nullable;
  */
 public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implements CSharpReferenceExpressionEx
 {
-	private static final Logger LOGGER = Logger.getInstance(CSharpReferenceExpressionImpl.class);
-
 	public CSharpReferenceExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
