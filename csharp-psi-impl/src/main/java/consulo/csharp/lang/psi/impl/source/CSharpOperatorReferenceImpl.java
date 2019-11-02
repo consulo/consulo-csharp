@@ -76,13 +76,13 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		@RequiredReadAction
 		public ResolveResult[] resolve(@Nonnull CSharpOperatorReferenceImpl reference, boolean incompleteCode)
 		{
-			if(!incompleteCode)
+			if(incompleteCode)
 			{
 				return multiResolveImpl(reference);
 			}
 			else
 			{
-				ResolveResult[] resolveResults = reference.multiResolve(false);
+				ResolveResult[] resolveResults = multiResolveImpl(reference);
 
 				List<ResolveResult> filter = new SmartList<>();
 				for(ResolveResult resolveResult : resolveResults)
@@ -201,7 +201,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public PsiElement resolve()
 	{
-		ResolveResult[] resolveResults = multiResolve(true);
+		ResolveResult[] resolveResults = multiResolve(false);
 		return CSharpResolveUtil.findFirstValidElement(resolveResults);
 	}
 

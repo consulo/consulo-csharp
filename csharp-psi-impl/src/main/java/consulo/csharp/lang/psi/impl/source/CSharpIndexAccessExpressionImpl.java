@@ -68,7 +68,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 			}
 
 			ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.multiResolveImpl(CSharpReferenceExpression.ResolveToKind.ARRAY_METHOD, expression, expression, true);
-			return !incompleteCode ? resolveResults : CSharpResolveUtil.filterValidResults(resolveResults);
+			return incompleteCode ? resolveResults : CSharpResolveUtil.filterValidResults(resolveResults);
 		}
 	}
 

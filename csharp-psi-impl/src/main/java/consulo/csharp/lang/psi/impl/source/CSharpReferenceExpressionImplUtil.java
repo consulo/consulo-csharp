@@ -271,7 +271,7 @@ public class CSharpReferenceExpressionImplUtil
 			resolveResults = ResolveCache.getInstance(expression.getProject()).resolveWithCaching(expression, resolver, false, resolveFromParent);
 		}
 
-		if(!incompleteCode)
+		if(incompleteCode)
 		{
 			return resolveResults;
 		}
