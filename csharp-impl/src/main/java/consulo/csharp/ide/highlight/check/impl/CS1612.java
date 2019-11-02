@@ -173,7 +173,9 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 
 			DotNetLikeMethodDeclaration method = CSharpFileFactory.createMethod(project, "void test() { " + builder + "}");
 
-			CSharpBlockStatementImpl codeBlock = (CSharpBlockStatementImpl) method.getCodeBlock();
+			DotNetCodeBodyProxy proxy = method.getCodeBlock();
+
+			CSharpBlockStatementImpl codeBlock = (CSharpBlockStatementImpl) proxy.getElement();
 
 			assert codeBlock != null;
 

@@ -173,7 +173,8 @@ public class CSharpModifierListImplUtil
 				}
 				if(parent instanceof DotNetXAccessor)
 				{
-					if(((DotNetXAccessor) parent).getCodeBlock() == null)
+					CSharpCodeBodyProxy block = (CSharpCodeBodyProxy) ((DotNetXAccessor) parent).getCodeBlock();
+					if(block.isSemicolonOrEmpty())
 					{
 						PsiElement accessorOwner = parent.getParent();
 						if(accessorOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) accessorOwner).hasModifier(modifier))
