@@ -21,6 +21,7 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetCodeBlockOwner;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -51,7 +52,7 @@ public class CS0531 extends CompilerCheck<DotNetCodeBlockOwner>
 			superParent = element.getParent();
 		}
 
-		if(element.getCodeBlock() != null && superParent instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) superParent).isInterface())
+		if(((CSharpCodeBodyProxy) element.getCodeBlock()).isNotSemicolonAndNotEmpty() && superParent instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) superParent).isInterface())
 		{
 			PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
 			if(nameIdentifier == null)

@@ -16,12 +16,14 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
+import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
+import consulo.dotnet.psi.DotNetCodeBodyProxy;
 import consulo.dotnet.psi.DotNetXAccessor;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -36,17 +38,24 @@ public class CSharpPropertyUtil
 		{
 			CSharpPropertyDeclaration propertyDeclaration = (CSharpPropertyDeclaration) element;
 			DotNetXAccessor[] accessors = propertyDeclaration.getAccessors();
-			if(accessors.length == 2 && accessors[0].getCodeBlock() == null && accessors[1].getCodeBlock() == null)
+			if(accessors.length == 2 && isSemicolonOrEmpty(accessors[0].getCodeBlock()) && isSemicolonOrEmpty(accessors[1].getCodeBlock()))
 			{
 				return true;
 			}
 
 			// C# 6.0 specific readonly auto property
-			if(accessors.length == 1 && accessors[0].getAccessorKind() == DotNetXAccessor.Kind.GET && accessors[0].getCodeBlock() == null)
+			if(accessors.length == 1 && accessors[0].getAccessorKind() == DotNetXAccessor.Kind.GET && isSemicolonOrEmpty(accessors[0].getCodeBlock()))
 			{
 				return CSharpModuleUtil.findLanguageVersion(element).isAtLeast(CSharpLanguageVersion._6_0);
 			}
 		}
 		return false;
+	}
+
+	@RequiredReadAction
+	private static boolean isSemicolonOrEmpty(DotNetCodeBodyProxy proxy)
+	{
+		CSharpCodeBodyProxy codeBlock = (CSharpCodeBodyProxy) proxy;
+		return codeBlock.isSemicolonOrEmpty();
 	}
 }
