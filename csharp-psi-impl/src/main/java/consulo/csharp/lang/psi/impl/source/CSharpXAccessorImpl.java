@@ -116,6 +116,14 @@ public class CSharpXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccessorS
 		return accessorKind.name().toLowerCase(Locale.US);
 	}
 
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public String getNameWithAt()
+	{
+		return getName();
+	}
+
 	@Nonnull
 	private Pair<DotNetTypeRef, DotNetQualifiedElement> getTypeRefOfParent()
 	{
