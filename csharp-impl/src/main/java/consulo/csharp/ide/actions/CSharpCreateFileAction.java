@@ -16,15 +16,6 @@
 
 package consulo.csharp.ide.actions;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.swing.Icon;
-
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IdeView;
 import com.intellij.ide.actions.CreateFileFromTemplateAction;
@@ -39,21 +30,31 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.InputValidatorEx;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
-import consulo.ui.RequiredUIAccess;
 import consulo.annotations.RequiredReadAction;
-import consulo.awt.TargetAWT;
 import consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
+import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
+import consulo.logging.Logger;
 import consulo.psi.PsiPackage;
 import consulo.psi.PsiPackageManager;
+import consulo.ui.RequiredUIAccess;
+import consulo.ui.image.Image;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -61,9 +62,11 @@ import consulo.psi.PsiPackageManager;
  */
 public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 {
+	private static final Logger LOG = Logger.getInstance(CSharpCreateFileAction.class);
+
 	public CSharpCreateFileAction()
 	{
-		super(null, null, TargetAWT.to(CSharpFileType.INSTANCE.getIcon()));
+		super(null, null, CSharpFileType.INSTANCE.getIcon());
 	}
 
 	@Override
@@ -140,7 +143,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			LOG.error(e);
 			return null;
 		}
 	}
@@ -157,6 +160,30 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 	protected void buildDialog(Project project, PsiDirectory psiDirectory, CreateFileFromTemplateDialog.Builder builder)
 	{
 		Set<String> used = new HashSet<>();
+		builder.setValidator(new InputValidatorEx()
+		{
+			@Nullable
+			@Override
+			public String getErrorText(String text)
+			{
+				return "Illegal name";
+			}
+
+			@RequiredUIAccess
+			@Override
+			public boolean checkInput(String text)
+			{
+				return !CSharpNameSuggesterUtil.isKeyword(text);
+			}
+
+			@RequiredUIAccess
+			@Override
+			public boolean canClose(String text)
+			{
+				return checkInput(text);
+			}
+		});
+
 		addKind(builder, used, "Class", AllIcons.Nodes.Class, "CSharpClass");
 		addKind(builder, used, "Interface", AllIcons.Nodes.Interface, "CSharpInterface");
 		addKind(builder, used, "Enum", AllIcons.Nodes.Enum, "CSharpEnum");
@@ -166,7 +193,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 		{
 			addKind(builder, used, "Assembly File", AllIcons.FileTypes.Config, "CSharpAssemblyFile");
 		}
-		addKind(builder, used, "Empty File", TargetAWT.to(CSharpFileType.INSTANCE.getIcon()), "CSharpFile");
+		addKind(builder, used, "Empty File", CSharpFileType.INSTANCE.getIcon(), "CSharpFile");
 
 		final CSharpCreateFromTemplateHandler handler = CSharpCreateFromTemplateHandler.getInstance();
 		for(FileTemplate template : FileTemplateManager.getInstance(project).getAllTemplates())
@@ -178,14 +205,14 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 				{
 					name = template.getName();
 				}
-				addKind(builder, used, name, TargetAWT.to(CSharpFileType.INSTANCE.getIcon()), template.getName());
+				addKind(builder, used, name, CSharpFileType.INSTANCE.getIcon(), template.getName());
 			}
 		}
 
 		builder.setTitle("Create New File");
 	}
 
-	private static void addKind(CreateFileFromTemplateDialog.Builder builder, @Nonnull Set<String> used, @Nonnull String kind, @Nullable Icon icon, @Nonnull String templateName)
+	private static void addKind(CreateFileFromTemplateDialog.Builder builder, @Nonnull Set<String> used, @Nonnull String kind, @Nullable Image icon, @Nonnull String templateName)
 	{
 		used.add(kind);
 
