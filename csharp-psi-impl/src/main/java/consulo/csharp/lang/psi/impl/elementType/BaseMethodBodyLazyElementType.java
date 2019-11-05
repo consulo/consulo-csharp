@@ -31,6 +31,7 @@ import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.ModifierSet;
 import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpModifierList;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodBodyImpl;
 import consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpFileStubElementType;
@@ -72,7 +73,8 @@ public abstract class BaseMethodBodyLazyElementType extends ILazyParseableElemen
 		ModifierSet modifierSet = ModifierSet.EMPTY;
 		if(psi instanceof DotNetModifierListOwner)
 		{
-			if(((DotNetModifierListOwner) psi).hasModifier(CSharpModifier.ASYNC))
+			CSharpModifierList modifierList = (CSharpModifierList) ((DotNetModifierListOwner) psi).getModifierList();
+			if(modifierList != null && modifierList.hasModifierInTree(CSharpModifier.ASYNC))
 			{
 				modifierSet = ModifierSet.create(CSharpSoftTokens.ASYNC_KEYWORD);
 			}
