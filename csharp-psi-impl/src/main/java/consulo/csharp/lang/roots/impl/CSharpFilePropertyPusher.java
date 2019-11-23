@@ -21,6 +21,7 @@ import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.impl.FilePropertyPusher;
 import com.intellij.openapi.roots.impl.PushedFilePropertiesUpdater;
+import com.intellij.openapi.util.Conditions;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.newvfs.FileAttribute;
@@ -55,7 +56,7 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
 	private static final Key<Set<String>> ourChangedModulesKey = Key.create("CSharpFilePropertyPusher.ourChangedModules");
 
 	@Override
-	public void initExtra(@Nonnull Project project, @Nonnull MessageBus messageBus, @Nonnull Engine engine)
+	public void initExtra(@Nonnull Project project, @Nonnull MessageBus messageBus)
 	{
 		project.getMessageBus().connect().subscribe(ModuleExtension.CHANGE_TOPIC, (oldExtension, newExtension) ->
 		{
@@ -188,7 +189,7 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
 				CSharpFileAttribute.write(oStream, newAttribute);
 			}
 
-			PushedFilePropertiesUpdater.getInstance(project).filePropertiesChanged(virtualFile);
+			PushedFilePropertiesUpdater.getInstance(project).filePropertiesChanged(virtualFile, Conditions.alwaysTrue());
 		}
 	}
 
@@ -205,7 +206,7 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
 
 		if(!changedModules.isEmpty())
 		{
-			PushedFilePropertiesUpdater.getInstance(project).pushForProject(this);
+			PushedFilePropertiesUpdater.getInstance(project).pushAll(this);
 		}
 	}
 }
