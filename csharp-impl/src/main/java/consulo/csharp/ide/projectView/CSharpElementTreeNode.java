@@ -35,7 +35,7 @@ import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.BitUtil;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.ui.RequiredUIAccess;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;

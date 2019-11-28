@@ -21,7 +21,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpErrorBundle;
 import consulo.csharp.ide.codeInsight.actions.AddModifierFix;
 import consulo.csharp.ide.codeInsight.actions.CastExpressionToTypeRef;

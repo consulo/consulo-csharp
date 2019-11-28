@@ -30,7 +30,7 @@ import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.parser.preprocessor.PragmaWarningPreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.PreprocessorLightParser;

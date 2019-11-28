@@ -32,7 +32,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilBase;
 import com.intellij.util.ProcessingContext;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.completion.CSharpCompletionSorting;
 import consulo.csharp.ide.completion.CSharpCompletionUtil;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;

@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 
 import consulo.csharp.lang.psi.CSharpXAccessorOwner;
 import consulo.ui.RequiredUIAccess;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;

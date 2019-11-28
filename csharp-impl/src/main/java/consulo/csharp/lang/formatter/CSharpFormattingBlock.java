@@ -29,7 +29,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.SmartList;
 import com.intellij.util.codeInsight.CommentUtilCore;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.formatter.processors.CSharpIndentProcessor;

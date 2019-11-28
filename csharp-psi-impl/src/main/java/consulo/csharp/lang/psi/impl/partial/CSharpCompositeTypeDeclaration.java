@@ -16,21 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.partial;
 
-import gnu.trove.THashSet;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
@@ -49,9 +34,8 @@ import com.intellij.util.ObjectUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
-import consulo.annotations.Immutable;
-import consulo.annotations.RequiredReadAction;
-import consulo.annotations.RequiredWriteAction;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import consulo.csharp.lang.psi.CSharpModifier;
@@ -60,14 +44,14 @@ import consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterList;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.DotNetTypeList;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import gnu.trove.THashSet;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author VISTALL
@@ -492,7 +476,6 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	}
 
 	@Nonnull
-	@Immutable
 	public CSharpTypeDeclaration[] getTypeDeclarations()
 	{
 		return myTypeDeclarations;

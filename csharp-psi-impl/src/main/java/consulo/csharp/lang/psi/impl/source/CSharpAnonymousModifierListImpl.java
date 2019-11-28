@@ -32,7 +32,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.impl.light.LightElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetModifier;
 

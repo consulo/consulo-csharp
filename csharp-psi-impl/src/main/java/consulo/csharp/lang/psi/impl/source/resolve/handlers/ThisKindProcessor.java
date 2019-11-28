@@ -27,7 +27,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Processor;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResultWithExtractor;

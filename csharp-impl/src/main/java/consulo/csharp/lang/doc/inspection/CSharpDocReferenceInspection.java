@@ -21,7 +21,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.ide.highlight.check.impl.CC0001;
 import consulo.csharp.lang.doc.CSharpDocUtil;

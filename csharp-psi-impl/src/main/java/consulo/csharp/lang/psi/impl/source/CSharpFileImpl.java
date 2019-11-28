@@ -29,7 +29,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.IncorrectOperationException;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.dotnet.psi.DotNetNamedElement;

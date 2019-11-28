@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.Contract;
 import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpCheckedExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;

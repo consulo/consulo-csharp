@@ -18,7 +18,7 @@ package consulo.csharp.lang.psi.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpEventDeclaration;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;

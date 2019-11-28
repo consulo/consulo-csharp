@@ -18,7 +18,7 @@ package consulo.csharp.ide.liveTemplates.context;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import com.intellij.codeInsight.template.TemplateContextType;

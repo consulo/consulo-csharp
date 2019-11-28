@@ -47,7 +47,7 @@ import com.intellij.refactoring.move.moveFilesOrDirectories.MoveFilesOrDirectori
 import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.psi.*;

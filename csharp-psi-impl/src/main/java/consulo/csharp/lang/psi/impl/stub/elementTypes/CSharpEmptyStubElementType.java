@@ -21,7 +21,7 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.NonNls;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.psi.stubs.StubElement;

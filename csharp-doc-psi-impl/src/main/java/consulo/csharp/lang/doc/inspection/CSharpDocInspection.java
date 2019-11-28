@@ -23,7 +23,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.doc.CSharpDocUtil;
 import consulo.csharp.lang.doc.psi.CSharpDocAttribute;
 import consulo.csharp.lang.doc.psi.CSharpDocElementVisitor;

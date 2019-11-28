@@ -22,7 +22,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.IncorrectOperationException;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.AddModifierFix;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;

@@ -70,7 +70,7 @@ import com.intellij.util.ui.table.JBListTable;
 import com.intellij.util.ui.table.JBTableRow;
 import com.intellij.util.ui.table.JBTableRowEditor;
 import consulo.ui.RequiredUIAccess;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.check.impl.CS1547;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpFileType;

@@ -18,11 +18,11 @@ package consulo.csharp.lang.psi.impl.elementType;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ObjectUtil;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.PreprocessorState;
 import consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.psi.CSharpStoppableRecursiveElementVisitor;
-import consulo.ui.RequiredUIAccess;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -44,7 +44,7 @@ public class CSharpPreprocessorVisitor extends CSharpStoppableRecursiveElementVi
 		myStopOffset = stopOffset;
 	}
 
-	@RequiredUIAccess
+	@RequiredReadAction
 	@Override
 	public void visitElement(PsiElement element)
 	{

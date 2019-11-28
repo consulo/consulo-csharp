@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import javax.annotation.Nonnull;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContextAdapter;
 import com.intellij.openapi.util.UserDataHolder;

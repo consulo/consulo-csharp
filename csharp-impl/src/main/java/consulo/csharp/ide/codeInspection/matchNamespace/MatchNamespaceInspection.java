@@ -22,7 +22,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElementVisitor;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 

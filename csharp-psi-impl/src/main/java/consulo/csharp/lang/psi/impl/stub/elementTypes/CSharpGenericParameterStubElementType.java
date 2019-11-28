@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpGenericParameterImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpGenericParameterStub;
 import consulo.dotnet.psi.DotNetGenericParameter;

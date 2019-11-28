@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Contract;
 
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.CastNArgumentToTypeRefFix;
 import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedConstructorFix;
 import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodFix;

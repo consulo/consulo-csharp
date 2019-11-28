@@ -35,7 +35,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceService;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetExpression;
 
 /**

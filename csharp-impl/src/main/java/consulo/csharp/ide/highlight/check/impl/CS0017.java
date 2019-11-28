@@ -31,7 +31,7 @@ import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import consulo.ui.RequiredUIAccess;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.dotnet.DotNetRunUtil;
 import consulo.dotnet.DotNetTarget;

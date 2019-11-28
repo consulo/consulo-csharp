@@ -29,7 +29,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.ProcessingContext;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeInsight.completion.CompletionProvider;
 import consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;

@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.ProximityLocation;
 import com.intellij.psi.util.proximity.ProximityWeigher;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetAttributeUtil;
 

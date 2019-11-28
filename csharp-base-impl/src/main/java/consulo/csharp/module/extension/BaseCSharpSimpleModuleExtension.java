@@ -23,7 +23,7 @@ import org.jdom.Element;
 import javax.annotation.Nullable;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.module.CSharpLanguageVersionPointer;
 import consulo.dotnet.compiler.DotNetCompileFailedException;

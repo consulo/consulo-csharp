@@ -39,7 +39,7 @@ import com.intellij.psi.impl.source.tree.TreeElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.IncorrectOperationException;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpTokens;

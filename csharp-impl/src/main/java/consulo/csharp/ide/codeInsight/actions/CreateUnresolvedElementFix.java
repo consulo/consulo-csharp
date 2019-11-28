@@ -43,7 +43,7 @@ import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.dotnet.psi.DotNetMemberOwner;
 import consulo.dotnet.psi.DotNetNamedElement;

@@ -37,7 +37,7 @@ import com.intellij.util.Processor;
 import com.intellij.util.Query;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;

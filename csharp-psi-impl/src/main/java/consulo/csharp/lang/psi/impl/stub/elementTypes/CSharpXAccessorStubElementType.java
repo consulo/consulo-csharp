@@ -20,7 +20,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpXAccessorImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpXXXAccessorStub;
 import consulo.dotnet.psi.DotNetXAccessor;

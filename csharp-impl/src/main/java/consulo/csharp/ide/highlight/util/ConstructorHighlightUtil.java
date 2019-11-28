@@ -18,7 +18,7 @@ package consulo.csharp.ide.highlight.util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.quickFix.RenameQuickFix;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;

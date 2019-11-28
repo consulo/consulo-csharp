@@ -20,7 +20,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
 import consulo.csharp.lang.doc.validation.CSharpDocTagManager;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;

@@ -17,7 +17,7 @@
 package consulo.csharp.ide.findUsage.usageType;
 
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;

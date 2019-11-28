@@ -65,7 +65,7 @@ import com.intellij.util.containers.ArrayListSet;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
 import consulo.ui.RequiredUIAccess;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;

@@ -18,7 +18,7 @@ package consulo.csharp.ide.completion.smartEnter;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;

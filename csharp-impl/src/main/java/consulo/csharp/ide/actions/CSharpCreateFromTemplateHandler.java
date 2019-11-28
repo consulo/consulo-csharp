@@ -37,7 +37,7 @@ import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.util.QualifiedName;
 import com.intellij.testFramework.LightVirtualFile;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;

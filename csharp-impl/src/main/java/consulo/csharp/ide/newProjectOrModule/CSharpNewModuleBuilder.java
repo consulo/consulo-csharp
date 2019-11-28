@@ -23,7 +23,7 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.vfs.VirtualFile;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.dotnet.DotNetTarget;
 import consulo.dotnet.module.extension.DotNetMutableModuleExtension;

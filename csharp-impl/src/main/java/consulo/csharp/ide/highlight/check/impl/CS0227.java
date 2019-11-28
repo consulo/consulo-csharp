@@ -19,7 +19,7 @@ package consulo.csharp.ide.highlight.check.impl;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import consulo.ui.RequiredUIAccess;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;

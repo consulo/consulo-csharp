@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.refactoring.rename.inplace.VariableInplaceRenamer;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpNamedElement;
 import consulo.dotnet.psi.DotNetNamedElement;
 

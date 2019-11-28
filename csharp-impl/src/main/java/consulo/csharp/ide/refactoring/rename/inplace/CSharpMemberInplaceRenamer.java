@@ -25,7 +25,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.refactoring.rename.inplace.MemberInplaceRenamer;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpNamedElement;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetNamedElement;

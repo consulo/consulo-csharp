@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpCaseVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;

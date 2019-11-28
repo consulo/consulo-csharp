@@ -19,7 +19,7 @@ package consulo.csharp.ide.liveTemplates.macro;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpLookupElementBuilder;
 import consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.lookup.LookupElement;

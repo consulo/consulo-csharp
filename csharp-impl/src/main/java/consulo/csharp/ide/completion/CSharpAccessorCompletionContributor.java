@@ -41,7 +41,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.codeInsight.completion.CompletionProvider;
 import consulo.csharp.lang.psi.CSharpEventDeclaration;

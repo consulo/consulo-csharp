@@ -22,7 +22,7 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.BitUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;

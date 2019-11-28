@@ -29,7 +29,7 @@ import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.lang.doc.CSharpDocUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;

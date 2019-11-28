@@ -7,7 +7,7 @@ import com.intellij.psi.AbstractElementManipulator;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTokensImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;

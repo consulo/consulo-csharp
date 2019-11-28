@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 
 /**
  * @author VISTALL

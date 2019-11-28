@@ -18,7 +18,7 @@ package consulo.csharp.ide.codeInsight.template.postfix;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;

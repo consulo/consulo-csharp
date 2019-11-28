@@ -23,7 +23,7 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceManager;

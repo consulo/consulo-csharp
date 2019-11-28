@@ -27,7 +27,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.DotNetTypes2;
 import consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;

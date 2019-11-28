@@ -16,13 +16,13 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiRecursiveVisitor;
-import consulo.ui.RequiredUIAccess;
+import consulo.annotation.access.RequiredReadAction;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -33,7 +33,7 @@ public class CSharpStoppableRecursiveElementVisitor<T> extends CSharpRecursiveEl
 	private T myValue;
 
 	@Override
-	@RequiredUIAccess
+	@RequiredReadAction
 	public void visitElement(PsiElement element)
 	{
 		ProgressManager.checkCanceled();

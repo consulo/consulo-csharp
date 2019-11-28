@@ -17,7 +17,7 @@
 package consulo.csharp.ide.actions.generate;
 
 import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;

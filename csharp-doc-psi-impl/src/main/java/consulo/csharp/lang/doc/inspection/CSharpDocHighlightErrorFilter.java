@@ -19,7 +19,7 @@ package consulo.csharp.lang.doc.inspection;
 import javax.annotation.Nonnull;
 import com.intellij.codeInsight.highlighting.HighlightErrorFilter;
 import com.intellij.psi.PsiErrorElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.doc.CSharpDocUtil;
 
 /**

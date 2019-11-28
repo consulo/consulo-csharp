@@ -18,7 +18,7 @@ package consulo.csharp.lang.psi.impl.resolve.baseResolveContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;

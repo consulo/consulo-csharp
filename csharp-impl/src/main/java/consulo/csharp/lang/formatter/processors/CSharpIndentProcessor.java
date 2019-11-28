@@ -24,7 +24,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.codeInsight.CommentUtilCore;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import consulo.csharp.lang.formatter.CSharpFormattingBlock;
 import consulo.csharp.lang.psi.*;

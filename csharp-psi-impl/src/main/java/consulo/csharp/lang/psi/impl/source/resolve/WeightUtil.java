@@ -25,7 +25,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 
 /**
  * @author VISTALL

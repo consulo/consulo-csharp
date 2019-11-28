@@ -37,7 +37,7 @@ import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.codeInsight.completion.CompletionProvider;
 import consulo.csharp.ide.CSharpLookupElementBuilder;

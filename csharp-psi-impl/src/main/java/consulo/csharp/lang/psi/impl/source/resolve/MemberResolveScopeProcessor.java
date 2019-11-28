@@ -29,7 +29,7 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.Processor;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;

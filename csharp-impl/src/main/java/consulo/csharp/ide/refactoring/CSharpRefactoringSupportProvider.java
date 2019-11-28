@@ -18,7 +18,7 @@ package consulo.csharp.ide.refactoring;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureHandler;
 import consulo.csharp.ide.refactoring.extractMethod.CSharpExtractMethodHandler;
 import consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceLocalVariableHandler;

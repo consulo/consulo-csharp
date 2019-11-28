@@ -18,7 +18,7 @@ package consulo.csharp.ide.codeInspection.unnecessaryType;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.ChangeVariableToTypeRefFix;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpLocalVariable;

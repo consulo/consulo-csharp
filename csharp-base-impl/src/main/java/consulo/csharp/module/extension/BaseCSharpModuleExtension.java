@@ -33,7 +33,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.compiler.CSharpPlatform;
 import consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;

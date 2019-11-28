@@ -16,10 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.jetbrains.annotations.NonNls;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.LocalSearchScope;
@@ -29,8 +25,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayFactory;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import consulo.annotations.RequiredReadAction;
-import consulo.annotations.RequiredWriteAction;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpLambdaParameter;
@@ -40,6 +36,10 @@ import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInfer
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

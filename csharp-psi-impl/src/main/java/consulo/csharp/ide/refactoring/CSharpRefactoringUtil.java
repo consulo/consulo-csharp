@@ -16,7 +16,7 @@
 
 package consulo.csharp.ide.refactoring;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpIdentifier;
 import com.intellij.psi.PsiElement;

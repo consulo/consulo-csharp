@@ -33,7 +33,7 @@ import com.intellij.psi.tree.ILazyParseableElementType;
 import com.intellij.psi.tree.IStubFileElementType;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.indexing.IndexingDataKeys;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.CSharpLanguageVersionWrapper;
 import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;

@@ -39,7 +39,7 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.Function;
 import com.intellij.xml.util.XmlStringUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
 import consulo.csharp.lang.psi.CSharpEventDeclaration;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;

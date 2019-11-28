@@ -17,7 +17,7 @@
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
 import javax.annotation.Nonnull;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;

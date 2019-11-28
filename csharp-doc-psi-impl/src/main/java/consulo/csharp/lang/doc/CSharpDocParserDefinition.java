@@ -28,7 +28,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.doc.lexer.DeprecatedCSharpDocLexer;
 import consulo.csharp.lang.doc.parser.CSharpDocParser;
 import consulo.csharp.lang.doc.psi.CSharpDocTokenType;

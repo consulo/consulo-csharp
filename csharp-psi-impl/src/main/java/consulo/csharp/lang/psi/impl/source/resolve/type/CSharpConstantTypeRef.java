@@ -26,7 +26,7 @@ import org.joou.UInteger;
 import org.joou.ULong;
 import org.joou.UShort;
 import com.intellij.openapi.progress.ProcessCanceledException;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;

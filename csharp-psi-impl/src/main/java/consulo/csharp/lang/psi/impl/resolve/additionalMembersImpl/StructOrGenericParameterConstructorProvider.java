@@ -20,7 +20,7 @@ import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;

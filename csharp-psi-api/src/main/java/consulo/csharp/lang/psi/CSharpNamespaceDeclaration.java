@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
-import consulo.annotations.RequiredWriteAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import consulo.dotnet.psi.DotNetReferenceExpression;
 

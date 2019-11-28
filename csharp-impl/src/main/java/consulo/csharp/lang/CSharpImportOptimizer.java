@@ -25,7 +25,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;

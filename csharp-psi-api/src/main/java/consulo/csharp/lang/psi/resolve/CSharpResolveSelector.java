@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi.resolve;
 import java.util.Collection;
 
 import javax.annotation.Nonnull;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import com.intellij.psi.PsiElement;
 
 /**

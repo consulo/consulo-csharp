@@ -16,9 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type.wrapper;
 
-import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.openapi.util.Key;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
@@ -28,23 +25,17 @@ import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
-import consulo.annotations.RequiredWriteAction;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.psi.CSharpGenericConstraint;
-import consulo.csharp.lang.psi.CSharpGenericConstraintList;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.ToNativeElementTransformers;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightFieldDeclarationBuilder;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterList;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.DotNetTypeList;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

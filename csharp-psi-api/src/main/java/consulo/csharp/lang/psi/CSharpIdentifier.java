@@ -17,7 +17,7 @@
 package consulo.csharp.lang.psi;
 
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetElement;
 
 /**

@@ -27,7 +27,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.IElementType;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInspection.CSharpInspectionBundle;
 import consulo.csharp.ide.projectView.CSharpElementTreeNode;
 import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;

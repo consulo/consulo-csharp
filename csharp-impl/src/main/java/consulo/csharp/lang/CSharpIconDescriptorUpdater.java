@@ -30,7 +30,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.BitUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.msil.MsilElementWrapper;

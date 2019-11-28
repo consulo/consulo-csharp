@@ -25,7 +25,7 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetEventDeclaration;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetModifierList;

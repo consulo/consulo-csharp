@@ -16,11 +16,12 @@
 
 package consulo.csharp.module.extension;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

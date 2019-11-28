@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.SmartList;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetModifier;

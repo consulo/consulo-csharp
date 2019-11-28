@@ -16,13 +16,14 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import javax.annotation.Nonnull;
-import consulo.csharp.lang.psi.ToNativeElementTransformers;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.NotNullFunction;
-import consulo.annotations.DeprecationInfo;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.DeprecationInfo;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.ToNativeElementTransformers;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

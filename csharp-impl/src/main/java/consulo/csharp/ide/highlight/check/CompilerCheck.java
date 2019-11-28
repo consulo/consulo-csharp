@@ -24,7 +24,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.application.ApplicationProperties;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.CSharpErrorBundle;

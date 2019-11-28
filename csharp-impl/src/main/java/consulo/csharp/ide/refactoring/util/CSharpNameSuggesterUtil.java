@@ -36,7 +36,7 @@ import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.lang.lexer.CSharpLexer;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;

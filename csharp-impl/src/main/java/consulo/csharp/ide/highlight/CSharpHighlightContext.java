@@ -19,7 +19,7 @@ package consulo.csharp.ide.highlight;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.intellij.openapi.util.UserDataHolderBase;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;

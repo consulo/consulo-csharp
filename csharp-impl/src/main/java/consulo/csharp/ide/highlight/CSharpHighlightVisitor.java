@@ -38,7 +38,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpErrorBundle;
 import consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
 import consulo.csharp.ide.highlight.util.ConstructorHighlightUtil;

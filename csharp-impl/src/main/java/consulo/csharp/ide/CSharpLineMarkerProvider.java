@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.lineMarkerProvider.HidedOrOverridedElementCollector;
 import consulo.csharp.ide.lineMarkerProvider.HidingOrOverridingElementCollector;
 import consulo.csharp.ide.lineMarkerProvider.LambdaLineMarkerCollector;

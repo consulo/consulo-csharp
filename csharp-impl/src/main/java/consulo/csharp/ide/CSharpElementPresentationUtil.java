@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.BitUtil;
 import com.intellij.util.Function;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetConstructorDeclaration;

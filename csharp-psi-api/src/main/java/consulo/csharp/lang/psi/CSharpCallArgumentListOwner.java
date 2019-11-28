@@ -16,12 +16,12 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import consulo.annotations.DeprecationInfo;
+import consulo.annotation.DeprecationInfo;
 import consulo.dotnet.psi.DotNetCallArgumentListOwner;
 import consulo.dotnet.psi.DotNetExpression;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

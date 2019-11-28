@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi.impl.source.resolve.type;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;

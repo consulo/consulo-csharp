@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NonNls;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.csharp.lang.psi.CSharpNamedElement;
 import consulo.dotnet.psi.DotNetModifier;

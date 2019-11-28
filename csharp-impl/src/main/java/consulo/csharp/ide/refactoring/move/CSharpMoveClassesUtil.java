@@ -37,7 +37,7 @@ import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;

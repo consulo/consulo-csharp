@@ -24,7 +24,7 @@ import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
 

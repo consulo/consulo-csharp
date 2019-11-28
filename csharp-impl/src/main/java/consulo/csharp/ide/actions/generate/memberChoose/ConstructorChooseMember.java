@@ -28,7 +28,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayFactory;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
 import consulo.csharp.lang.psi.CSharpAccessModifier;

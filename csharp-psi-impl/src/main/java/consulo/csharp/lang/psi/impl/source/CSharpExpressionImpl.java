@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi.impl.source;
 import javax.annotation.Nonnull;
 
 import com.intellij.lang.ASTNode;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceManager;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;

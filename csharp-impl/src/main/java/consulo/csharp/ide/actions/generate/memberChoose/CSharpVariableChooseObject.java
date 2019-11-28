@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.intellij.util.ArrayFactory;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;

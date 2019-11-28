@@ -35,7 +35,7 @@ import com.intellij.util.FunctionUtil;
 import com.intellij.util.Functions;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.ui.RequiredUIAccess;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
 import consulo.dotnet.psi.DotNetTypeDeclaration;

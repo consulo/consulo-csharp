@@ -16,9 +16,10 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import javax.annotation.Nonnull;
 import com.intellij.psi.PsiElement;
-import consulo.annotations.DeprecationInfo;
+import consulo.annotation.DeprecationInfo;
+
+import javax.annotation.Nonnull;
 
 /**
 * @author VISTALL

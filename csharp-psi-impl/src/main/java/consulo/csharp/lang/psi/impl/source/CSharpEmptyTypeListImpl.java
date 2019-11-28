@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.ASTNode;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.resolve.DotNetTypeRef;

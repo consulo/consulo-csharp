@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 
 /**
  * @author VISTALL

@@ -32,7 +32,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.PsiDocumentManagerImpl;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.refactoring.util.CSharpRefactoringUtil;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpTokens;

@@ -44,7 +44,7 @@ import com.intellij.usageView.UsageInfo;
 import com.intellij.util.PairFunction;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.MultiMap;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetModifierList;

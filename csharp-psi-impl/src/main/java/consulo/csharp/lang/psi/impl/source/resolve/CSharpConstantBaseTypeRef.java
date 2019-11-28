@@ -18,7 +18,7 @@ package consulo.csharp.lang.psi.impl.source.resolve;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;

@@ -17,7 +17,7 @@
 package consulo.csharp.lang.psi;
 
 import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetCodeBodyProxy;
 import consulo.dotnet.psi.DotNetElement;
 

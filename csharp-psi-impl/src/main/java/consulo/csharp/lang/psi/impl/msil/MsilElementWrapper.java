@@ -16,21 +16,22 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.lang.psi.CSharpElementCompareUtil;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.light.CSharpLightElement;
 import com.intellij.openapi.util.Ref;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.intellij.util.Consumer;
-import consulo.ui.RequiredUIAccess;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.CSharpFileType;
+import consulo.csharp.lang.psi.CSharpElementCompareUtil;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.light.CSharpLightElement;
 import consulo.msil.representation.MsilRepresentationNavigateUtil;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

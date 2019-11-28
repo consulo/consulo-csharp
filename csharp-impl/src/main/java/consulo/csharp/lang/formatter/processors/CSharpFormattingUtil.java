@@ -19,7 +19,7 @@ package consulo.csharp.lang.formatter.processors;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetParameterList;

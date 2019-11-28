@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 
 import com.intellij.refactoring.changeSignature.ParameterInfo;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetParameter;

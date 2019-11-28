@@ -17,7 +17,7 @@
 package consulo.csharp.lang.psi.impl.msil;
 
 import javax.annotation.Nullable;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.msil.lang.psi.MsilConstantValue;

@@ -21,7 +21,7 @@ import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveResult;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;

@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;

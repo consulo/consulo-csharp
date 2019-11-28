@@ -22,7 +22,7 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpAnonymTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;

@@ -24,7 +24,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairFunction;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpEmptyGenericWrapperTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;

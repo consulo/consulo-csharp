@@ -16,17 +16,17 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPolyVariantReference;
-import consulo.annotations.Immutable;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetReferenceExpression;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -61,7 +61,6 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		TUPLE_PROPERTY; // tuple property (name: exp)
 
 		@Nonnull
-		@Immutable
 		public static final ResolveToKind[] VALUES = values();
 	}
 
@@ -75,7 +74,6 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		NESTED_TYPE;
 
 		@Nonnull
-		@Immutable
 		public static final AccessType[] VALUES = values();
 	}
 

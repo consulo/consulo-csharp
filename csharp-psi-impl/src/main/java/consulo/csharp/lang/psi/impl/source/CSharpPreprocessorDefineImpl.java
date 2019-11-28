@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import consulo.csharp.lang.psi.CSharpPreprocessorDefine;

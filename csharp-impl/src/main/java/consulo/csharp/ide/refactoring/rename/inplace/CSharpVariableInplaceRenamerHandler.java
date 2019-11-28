@@ -25,7 +25,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.refactoring.rename.inplace.VariableInplaceRenameHandler;
 import com.intellij.refactoring.rename.inplace.VariableInplaceRenamer;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.refactoring.CSharpRefactoringSupportProvider;
 import consulo.csharp.lang.psi.CSharpNamedElement;
 

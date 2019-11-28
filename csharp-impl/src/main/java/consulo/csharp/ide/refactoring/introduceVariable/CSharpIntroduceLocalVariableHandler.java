@@ -42,7 +42,7 @@ import com.intellij.refactoring.introduce.inplace.InplaceVariableIntroducer;
 import com.intellij.ui.NonFocusableCheckBox;
 import com.intellij.util.ui.JBUI;
 import consulo.ui.RequiredUIAccess;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;

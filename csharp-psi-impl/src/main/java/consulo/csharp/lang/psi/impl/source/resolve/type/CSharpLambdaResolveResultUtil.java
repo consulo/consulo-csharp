@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import org.jetbrains.annotations.Contract;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;

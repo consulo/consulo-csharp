@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
 import com.intellij.ui.breadcrumbs.BreadcrumbsProvider;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;

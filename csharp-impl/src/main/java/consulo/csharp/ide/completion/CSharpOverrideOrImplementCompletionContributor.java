@@ -27,7 +27,7 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.ProcessingContext;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.CSharpIcons;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.actions.generate.GenerateImplementMemberHandler;

@@ -30,7 +30,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.refactoring.rename.RenamePsiElementProcessor;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 

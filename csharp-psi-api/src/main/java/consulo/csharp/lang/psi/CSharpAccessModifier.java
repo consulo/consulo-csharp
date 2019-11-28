@@ -16,14 +16,12 @@
 
 package consulo.csharp.lang.psi;
 
-import java.util.Locale;
+import com.intellij.psi.PsiElement;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.dotnet.psi.DotNetModifierListOwner;
 
 import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import consulo.annotations.Immutable;
-import consulo.annotations.RequiredReadAction;
-import consulo.dotnet.psi.DotNetModifierListOwner;
+import java.util.Locale;
 
 /**
  * @author VISTALL
@@ -47,7 +45,6 @@ public enum CSharpAccessModifier
 	PROTECTED(CSharpModifier.PROTECTED),
 	PRIVATE(CSharpModifier.PRIVATE);
 
-	@Immutable
 	public static final CSharpAccessModifier[] VALUES = values();
 
 	private final CSharpModifier[] myModifiers;
@@ -103,7 +100,6 @@ public enum CSharpAccessModifier
 
 
 	@Nonnull
-	@Immutable
 	public CSharpModifier[] getModifiers()
 	{
 		return myModifiers;

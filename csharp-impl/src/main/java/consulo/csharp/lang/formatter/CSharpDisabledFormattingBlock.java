@@ -30,7 +30,7 @@ import com.intellij.formatting.Wrap;
 import com.intellij.formatting.templateLanguages.BlockWithParent;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 
 /**
  * @author VISTALL

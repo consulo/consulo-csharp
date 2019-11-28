@@ -20,7 +20,7 @@ import java.util.Collections;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetTypeRef;

@@ -18,7 +18,7 @@ package consulo.csharp.ide.actions.generate.memberChoose;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 

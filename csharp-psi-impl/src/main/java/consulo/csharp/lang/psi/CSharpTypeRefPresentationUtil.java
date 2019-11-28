@@ -32,7 +32,7 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGeneric
 import com.intellij.psi.PsiElement;
 import com.intellij.util.BitUtil;
 import com.intellij.util.PairFunction;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetGenericParameter;

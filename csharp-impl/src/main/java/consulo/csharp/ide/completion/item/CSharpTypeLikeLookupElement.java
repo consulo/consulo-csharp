@@ -18,7 +18,7 @@ package consulo.csharp.ide.completion.item;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.completion.CSharpCompletionSorting;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;

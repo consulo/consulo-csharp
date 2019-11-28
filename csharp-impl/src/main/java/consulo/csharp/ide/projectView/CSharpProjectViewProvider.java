@@ -25,7 +25,7 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.problems.CSharpLocationUtil;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.impl.source.CSharpDummyDeclarationImpl;

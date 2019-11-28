@@ -40,7 +40,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import consulo.csharp.lang.parser.preprocessor.EndRegionPreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;

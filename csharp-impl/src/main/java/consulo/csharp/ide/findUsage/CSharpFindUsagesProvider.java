@@ -23,7 +23,7 @@ import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.*;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;

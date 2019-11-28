@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpConstructorDeclarationImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import com.intellij.lang.ASTNode;

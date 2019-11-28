@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Trinity;

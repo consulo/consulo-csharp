@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.psi.stubs.IStubElementType;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTupleType;

@@ -37,7 +37,7 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.impl.PsiManagerEx;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.io.URLUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;

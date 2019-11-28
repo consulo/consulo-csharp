@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpModifier;

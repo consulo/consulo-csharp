@@ -29,7 +29,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.ResolveState;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.SmartList;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;

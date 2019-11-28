@@ -18,7 +18,7 @@ package consulo.csharp.lang.psi.impl.msil;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetCodeBodyProxy;

@@ -23,7 +23,7 @@ import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiUtilCore;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.dll.DotNetModuleFileType;
 import consulo.vfs.util.ArchiveVfsUtil;
 

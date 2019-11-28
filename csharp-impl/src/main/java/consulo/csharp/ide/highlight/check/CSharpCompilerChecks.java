@@ -18,7 +18,7 @@ package consulo.csharp.ide.highlight.check;
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 

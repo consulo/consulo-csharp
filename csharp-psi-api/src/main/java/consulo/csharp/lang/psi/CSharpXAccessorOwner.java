@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetAccessorOwner;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetModifierListOwner;

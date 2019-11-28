@@ -20,7 +20,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;

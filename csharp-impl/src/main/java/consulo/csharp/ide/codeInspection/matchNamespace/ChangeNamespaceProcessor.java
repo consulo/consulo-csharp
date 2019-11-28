@@ -24,7 +24,7 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.refactoring.BaseRefactoringProcessor;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.usageView.UsageViewDescriptor;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.refactoring.move.CSharpClassesMoveProcessor;
 import consulo.csharp.ide.refactoring.move.CSharpMoveClassesUtil;

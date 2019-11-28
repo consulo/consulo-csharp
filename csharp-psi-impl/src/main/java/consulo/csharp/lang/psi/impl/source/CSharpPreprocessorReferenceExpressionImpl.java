@@ -16,12 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import gnu.trove.THashMap;
-
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.Comparing;
@@ -34,14 +28,19 @@ import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.Processor;
-import consulo.annotations.RequiredReadAction;
-import consulo.annotations.RequiredWriteAction;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import consulo.csharp.lang.psi.CSharpPreprocessorDefine;
 import consulo.csharp.lang.psi.CSharpPreprocessorVariable;
 import consulo.csharp.lang.psi.impl.light.CSharpPreprocessorLightVariable;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import gnu.trove.THashMap;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Map;
 
 /**
  * @author VISTALL

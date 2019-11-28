@@ -28,7 +28,7 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
 

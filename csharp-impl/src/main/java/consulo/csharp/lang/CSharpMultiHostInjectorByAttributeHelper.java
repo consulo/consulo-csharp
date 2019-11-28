@@ -19,7 +19,7 @@ package consulo.csharp.lang;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.intellij.openapi.util.TextRange;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
