@@ -18,7 +18,7 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import javax.annotation.Nonnull;
 
-import consulo.ui.RequiredUIAccess;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceLocalVariableHandler;
 import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;

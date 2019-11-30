@@ -16,8 +16,6 @@
 
 package consulo.csharp.ide.presentation;
 
-import javax.annotation.Nullable;
-
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProvider;
 import com.intellij.navigation.NavigationItem;
@@ -33,8 +31,10 @@ import consulo.dotnet.psi.DotNetMethodDeclaration;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.ide.IconDescriptorUpdaters;
-import consulo.ui.RequiredUIAccess;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
+
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

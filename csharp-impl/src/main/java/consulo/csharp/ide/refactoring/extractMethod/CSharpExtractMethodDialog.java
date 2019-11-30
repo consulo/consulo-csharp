@@ -16,13 +16,14 @@
 
 package consulo.csharp.ide.refactoring.extractMethod;
 
-import java.util.List;
-
-import javax.swing.Action;
-import javax.swing.JComponent;
-
-import javax.annotation.Nonnull;
-import consulo.ui.RequiredUIAccess;
+import com.intellij.CommonBundle;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.refactoring.BaseRefactoringProcessor;
+import com.intellij.util.Processor;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureDialog;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpParameterInfo;
@@ -35,14 +36,11 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.CommonBundle;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.BaseRefactoringProcessor;
-import com.intellij.util.Processor;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import javax.swing.*;
+import java.util.List;
 
 /**
  * @author VISTALL

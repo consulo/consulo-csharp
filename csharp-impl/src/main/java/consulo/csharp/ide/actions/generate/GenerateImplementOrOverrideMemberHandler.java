@@ -16,12 +16,6 @@
 
 package consulo.csharp.ide.actions.generate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.ide.util.MemberChooser;
 import com.intellij.ide.util.MemberChooserBuilder;
 import com.intellij.lang.LanguageCodeInsightActionHandler;
@@ -35,19 +29,19 @@ import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.PairConsumer;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.ui.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.actions.generate.memberChoose.CSharpMemberChooseObject;
 import consulo.csharp.ide.actions.generate.memberChoose.MethodChooseMember;
 import consulo.csharp.ide.actions.generate.memberChoose.XXXAccessorOwnerChooseMember;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpXAccessorOwner;
+import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author VISTALL

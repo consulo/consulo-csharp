@@ -37,7 +37,7 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.ui.RequiredUIAccess;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.actions.generate.memberChoose.CSharpVariableChooseObject;
 import consulo.csharp.ide.actions.generate.memberChoose.ConstructorChooseMember;

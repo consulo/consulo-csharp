@@ -16,19 +16,7 @@
 
 package consulo.csharp.ide.completion;
 
-import gnu.trove.THashSet;
-
-import java.util.Collections;
-import java.util.Set;
-
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResult;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.CompletionUtil;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.completion.PrefixMatcher;
+import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.completion.impl.BetterPrefixMatcher;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -43,9 +31,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.Processor;
 import com.intellij.util.indexing.IdFilter;
-import consulo.ui.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.annotations.RequiredWriteAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.ide.codeInsight.actions.AddUsingAction;
 import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import consulo.csharp.ide.completion.util.LtGtInsertHandler;
@@ -66,6 +53,11 @@ import consulo.dotnet.resolve.DotNetShortNameSearcher;
 import consulo.dotnet.resolve.GlobalSearchScopeFilter;
 import consulo.ide.IconDescriptorUpdaters;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
+import consulo.ui.annotation.RequiredUIAccess;
+import gnu.trove.THashSet;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * @author VISTALL

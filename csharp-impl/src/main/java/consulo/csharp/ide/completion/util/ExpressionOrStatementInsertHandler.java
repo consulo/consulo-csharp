@@ -16,8 +16,6 @@
 
 package consulo.csharp.ide.completion.util;
 
-import javax.annotation.Nullable;
-import consulo.annotations.RequiredWriteAction;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -32,6 +30,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.codeStyle.CodeStyleManager;
+import consulo.annotation.access.RequiredWriteAction;
+
+import javax.annotation.Nullable;
 
 /**
  * @author peter

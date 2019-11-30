@@ -16,7 +16,7 @@
 package consulo.csharp.ide.completion.util;
 
 import javax.annotation.Nullable;
-import consulo.ui.RequiredUIAccess;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.csharp.ide.parameterInfo.CSharpParameterInfoHandler;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetParameterList;

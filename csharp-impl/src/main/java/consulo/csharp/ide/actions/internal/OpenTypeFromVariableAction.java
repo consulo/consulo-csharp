@@ -16,26 +16,25 @@
 
 package consulo.csharp.ide.actions.internal;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
-import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import com.intellij.ide.actions.OpenFileAction;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.psi.PsiElement;
 import com.intellij.testFramework.LightVirtualFile;
-import consulo.ui.RequiredUIAccess;
+import consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
+import consulo.csharp.lang.CSharpFileType;
+import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * @author VISTALL

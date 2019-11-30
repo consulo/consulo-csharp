@@ -46,7 +46,7 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Function;
 import com.intellij.util.Processor;
 import com.intellij.util.Query;
-import consulo.ui.RequiredUIAccess;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.awt.TargetAWT;
 import consulo.csharp.ide.codeInsight.actions.AddAccessModifierFix;

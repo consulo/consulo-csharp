@@ -16,21 +16,18 @@
 
 package consulo.csharp.ide.codeStyle;
 
-import javax.annotation.Nullable;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import org.jetbrains.annotations.Nls;
 import com.intellij.application.options.codeStyle.CommenterForm;
 import com.intellij.openapi.application.ApplicationBundle;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
-import consulo.ui.RequiredUIAccess;
 import consulo.csharp.lang.CSharpLanguage;
+import consulo.ui.annotation.RequiredUIAccess;
+import org.jetbrains.annotations.Nls;
+
+import javax.annotation.Nullable;
+import javax.swing.*;
 
 /**
  * @author VISTALL

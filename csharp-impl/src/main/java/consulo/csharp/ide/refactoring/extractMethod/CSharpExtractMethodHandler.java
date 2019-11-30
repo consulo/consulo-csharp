@@ -16,30 +16,6 @@
 
 package consulo.csharp.ide.refactoring.extractMethod;
 
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.Contract;
-
-import javax.annotation.Nullable;
-import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
-import consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
-import consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import consulo.csharp.lang.psi.UsefulPsiTreeUtil;
-import consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
-import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
-import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
@@ -48,11 +24,7 @@ import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiParserFacade;
-import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.RefactoringActionHandler;
@@ -64,22 +36,31 @@ import com.intellij.util.Processor;
 import com.intellij.util.containers.ArrayListSet;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
-import consulo.ui.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.annotations.RequiredWriteAction;
+import consulo.annotation.access.RequiredWriteAction;
+import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
+import consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
+import consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
+import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
+import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetLocalVariable;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetStatement;
-import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
+import consulo.ui.annotation.RequiredUIAccess;
+import org.jetbrains.annotations.Contract;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author VISTALL

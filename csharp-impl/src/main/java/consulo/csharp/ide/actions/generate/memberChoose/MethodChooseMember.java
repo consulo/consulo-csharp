@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairConsumer;
-import consulo.ui.RequiredUIAccess;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;

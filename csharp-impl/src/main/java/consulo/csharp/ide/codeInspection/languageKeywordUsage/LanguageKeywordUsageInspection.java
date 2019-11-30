@@ -16,18 +16,6 @@
 
 package consulo.csharp.ide.codeInspection.languageKeywordUsage;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
-import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
-import consulo.csharp.ide.completion.CSharpCompletionUtil;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpUserType;
-import consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImplUtil;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -39,9 +27,16 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.annotations.RequiredWriteAction;
+import consulo.annotation.access.RequiredWriteAction;
+import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.csharp.ide.completion.CSharpCompletionUtil;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImplUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
 
 /**
  * @author VISTALL

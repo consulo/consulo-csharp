@@ -16,17 +16,6 @@
 
 package consulo.csharp.ide.lineMarkerProvider;
 
-import java.awt.event.MouseEvent;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import consulo.ui.RequiredUIAccess;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -42,6 +31,16 @@ import com.intellij.psi.presentation.java.SymbolPresentationUtil;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.Consumer;
 import com.intellij.util.Function;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.awt.event.MouseEvent;
 
 /**
  * @author VISTALL

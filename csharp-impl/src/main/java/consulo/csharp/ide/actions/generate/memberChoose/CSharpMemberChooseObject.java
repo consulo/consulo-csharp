@@ -16,23 +16,22 @@
 
 package consulo.csharp.ide.actions.generate.memberChoose;
 
-import javax.annotation.Nonnull;
-import javax.swing.JTree;
-
-import javax.annotation.Nullable;
 import com.intellij.codeInsight.generation.ClassMember;
 import com.intellij.codeInsight.generation.MemberChooserObject;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.ui.SimpleColoredComponent;
 import com.intellij.util.ArrayFactory;
-import consulo.ui.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.awt.TargetAWT;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.ide.IconDescriptorUpdaters;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
 
 /**
  * @author VISTALL
@@ -61,7 +60,7 @@ public abstract class CSharpMemberChooseObject<T extends DotNetElement> implemen
 	@RequiredUIAccess
 	public void renderTreeNode(SimpleColoredComponent component, JTree tree)
 	{
-		component.setIcon(TargetAWT.to(IconDescriptorUpdaters.getIcon(myDeclaration, Iconable.ICON_FLAG_VISIBILITY)));
+		component.setIcon(IconDescriptorUpdaters.getIcon(myDeclaration, Iconable.ICON_FLAG_VISIBILITY));
 		component.append(getPresentationText());
 	}
 

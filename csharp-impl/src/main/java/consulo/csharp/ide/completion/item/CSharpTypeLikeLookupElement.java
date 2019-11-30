@@ -16,20 +16,6 @@
 
 package consulo.csharp.ide.completion.item;
 
-import javax.annotation.Nonnull;
-
-import consulo.annotation.access.RequiredReadAction;
-import consulo.annotations.RequiredWriteAction;
-import consulo.csharp.ide.completion.CSharpCompletionSorting;
-import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodUtil;
-import consulo.csharp.lang.psi.CSharpNewExpression;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpUserType;
-import consulo.csharp.lang.psi.impl.msil.MsilMethodAsCSharpMethodDeclaration;
-import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -38,6 +24,16 @@ import com.intellij.openapi.editor.CaretModel;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
+import consulo.csharp.ide.completion.CSharpCompletionSorting;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.msil.MsilMethodAsCSharpMethodDeclaration;
+import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

@@ -21,7 +21,7 @@ import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.psi.PsiElement;
-import consulo.ui.RequiredUIAccess;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.csharp.ide.completion.util.CSharpParenthesesInsertHandler;
 import consulo.csharp.lang.psi.CSharpCodeFragment;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;

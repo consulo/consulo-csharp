@@ -25,7 +25,7 @@ import com.intellij.refactoring.BaseRefactoringProcessor;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.usageView.UsageViewDescriptor;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.annotations.RequiredWriteAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.ide.refactoring.move.CSharpClassesMoveProcessor;
 import consulo.csharp.ide.refactoring.move.CSharpMoveClassesUtil;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
