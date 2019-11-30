@@ -16,14 +16,11 @@
 
 package consulo.csharp.lang.doc.validation;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import consulo.annotations.Immutable;
 
 /**
  * @author VISTALL
@@ -48,7 +45,6 @@ public class CSharpDocTagInfo
 	}
 
 	@Nonnull
-	@Immutable
 	public Collection<CSharpDocAttributeInfo> getAttributes()
 	{
 		return myAttributes.values();

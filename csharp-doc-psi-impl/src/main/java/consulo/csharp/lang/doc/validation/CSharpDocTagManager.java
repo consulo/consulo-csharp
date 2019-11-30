@@ -16,16 +16,14 @@
 
 package consulo.csharp.lang.doc.validation;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import com.intellij.openapi.components.ServiceManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Singleton;
-
-import com.intellij.openapi.components.ServiceManager;
-import consulo.annotations.Immutable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -71,7 +69,6 @@ public class CSharpDocTagManager
 	}
 
 	@Nonnull
-	@Immutable
 	public Collection<CSharpDocTagInfo> getTags()
 	{
 		return myTags.values();

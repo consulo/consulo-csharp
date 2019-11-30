@@ -15,20 +15,10 @@
  */
 package consulo.csharp.lang.doc.ide.codeInsight.editorActions;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.openapi.diagnostic.Logger;
-import consulo.csharp.lang.doc.CSharpDocUtil;
-import consulo.csharp.lang.doc.psi.CSharpDocAttributeValue;
-import consulo.csharp.lang.doc.psi.CSharpDocTagImpl;
-import consulo.csharp.lang.doc.psi.CSharpDocText;
-import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
-import consulo.csharp.lang.psi.CSharpFile;
 import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
 import com.intellij.codeInsight.highlighting.BraceMatchingUtil;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.editor.ex.EditorEx;
@@ -37,13 +27,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.TokenType;
+import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.RoleFinder;
@@ -52,7 +36,17 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.ui.RequiredUIAccess;
+import consulo.csharp.lang.doc.CSharpDocUtil;
+import consulo.csharp.lang.doc.psi.CSharpDocAttributeValue;
+import consulo.csharp.lang.doc.psi.CSharpDocTagImpl;
+import consulo.csharp.lang.doc.psi.CSharpDocText;
+import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
+import consulo.csharp.lang.psi.CSharpFile;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 {
