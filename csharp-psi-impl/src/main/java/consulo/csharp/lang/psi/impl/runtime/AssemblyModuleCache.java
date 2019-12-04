@@ -21,7 +21,6 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiElement;
@@ -47,6 +46,7 @@ import consulo.msil.lang.psi.MsilFile;
 import consulo.msil.lang.stubbing.MsilCustomAttributeArgumentList;
 import consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
 import consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
+import consulo.util.dataholder.UserDataHolderBase;
 import consulo.vfs.util.ArchiveVfsUtil;
 import gnu.trove.THashSet;
 

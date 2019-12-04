@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.operatorResolving;
 
-import javax.annotation.Nonnull;
-
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.util.Key;
+import consulo.util.dataholder.Key;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

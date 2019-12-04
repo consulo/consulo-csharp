@@ -16,22 +16,22 @@
 
 package consulo.csharp.lang.psi.impl.resolve;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import javax.annotation.Nonnull;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpTypeDefStatement;
-import consulo.csharp.lang.psi.resolve.CSharpResolveContextAdapter;
-import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Processor;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import consulo.util.dataholder.UserDataHolder;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author VISTALL
  * @since 05.03.2016
  */
-public class CSharpTypeDefResolveContext extends CSharpResolveContextAdapter
+public class CSharpTypeDefResolveContext implements CSharpResolveContext
 {
 	private CSharpTypeDefStatement myStatement;
 	private String myName;

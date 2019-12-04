@@ -16,20 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.resolve;
 
-import gnu.trove.THashSet;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.openapi.util.NotNullLazyValue;
-import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.Processor;
@@ -37,11 +24,7 @@ import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpCastType;
-import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.resolve.baseResolveContext.MapElementGroupCollectors;
 import consulo.csharp.lang.psi.impl.resolve.baseResolveContext.SimpleElementGroupCollectors;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -52,6 +35,12 @@ import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.util.dataholder.UserDataHolder;
+import gnu.trove.THashSet;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author VISTALL

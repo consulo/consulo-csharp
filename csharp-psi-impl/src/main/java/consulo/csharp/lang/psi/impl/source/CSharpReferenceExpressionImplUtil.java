@@ -20,7 +20,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
@@ -50,6 +49,7 @@ import consulo.csharp.lang.psi.resolve.*;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.*;
 import consulo.dotnet.util.ArrayUtil2;
+import consulo.util.dataholder.Key;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

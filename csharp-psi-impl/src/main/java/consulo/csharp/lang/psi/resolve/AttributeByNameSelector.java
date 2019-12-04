@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
@@ -26,6 +25,7 @@ import consulo.csharp.lang.util.ContainerUtil2;
 import consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import consulo.dotnet.psi.DotNetInheritUtil;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import consulo.util.dataholder.UserDataHolderBase;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;

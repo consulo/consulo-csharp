@@ -16,10 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.resolve;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.openapi.util.NotNullLazyValue;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.Processor;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
@@ -27,20 +26,20 @@ import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import consulo.csharp.lang.psi.CSharpUsingTypeStatement;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
-import consulo.csharp.lang.psi.resolve.CSharpResolveContextAdapter;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.openapi.util.NotNullLazyValue;
-import com.intellij.openapi.util.UserDataHolder;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.Processor;
+import consulo.util.dataholder.UserDataHolder;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
 
 /**
  * @author VISTALL
  * @since 05.03.2016
  */
-public class CSharpUsingNamespaceOrTypeResolveContext extends CSharpResolveContextAdapter
+public class CSharpUsingNamespaceOrTypeResolveContext implements CSharpResolveContext
 {
 	private CSharpUsingListChild myUsingListChild;
 

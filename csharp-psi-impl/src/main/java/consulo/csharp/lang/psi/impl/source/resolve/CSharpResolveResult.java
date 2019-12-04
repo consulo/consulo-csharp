@@ -16,9 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import consulo.annotation.access.RequiredReadAction;
@@ -29,6 +26,10 @@ import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import consulo.util.dataholder.Key;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

@@ -16,13 +16,13 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
-import com.intellij.openapi.util.UserDataHolderBase;
+import consulo.util.dataholder.UserDataHolderBase;
+
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL

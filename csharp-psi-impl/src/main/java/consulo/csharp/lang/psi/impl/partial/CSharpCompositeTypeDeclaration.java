@@ -19,7 +19,6 @@ package consulo.csharp.lang.psi.impl.partial;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Key;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.light.LightElement;
@@ -46,6 +45,7 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.util.dataholder.Key;
 import gnu.trove.THashSet;
 import org.jetbrains.annotations.NonNls;
 

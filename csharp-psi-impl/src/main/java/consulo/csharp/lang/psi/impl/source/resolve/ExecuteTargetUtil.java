@@ -16,14 +16,13 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import java.util.EnumSet;
-
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.KeyWithDefaultValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import consulo.util.dataholder.Key;
+import consulo.util.dataholder.KeyWithDefaultValue;
+
+import javax.annotation.Nonnull;
+import java.util.EnumSet;
 
 /**
  * @author VISTALL
@@ -31,14 +30,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  */
 public class ExecuteTargetUtil
 {
-	public static final Key<EnumSet<ExecuteTarget>> EXECUTE_TARGETS = new KeyWithDefaultValue<EnumSet<ExecuteTarget>>("execute.targets")
-	{
-		@Override
-		public EnumSet<ExecuteTarget> getDefaultValue()
-		{
-			return EnumSet.noneOf(ExecuteTarget.class);
-		}
-	};
+	public static final Key<EnumSet<ExecuteTarget>> EXECUTE_TARGETS = KeyWithDefaultValue.create("execute.targets", () -> EnumSet.noneOf(ExecuteTarget.class));
 
 	public static boolean isMyElement(@Nonnull PsiScopeProcessor psiScopeProcessor, @Nonnull PsiElement element)
 	{

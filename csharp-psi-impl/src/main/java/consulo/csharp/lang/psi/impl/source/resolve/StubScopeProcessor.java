@@ -16,15 +16,16 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.annotation.access.RequiredReadAction;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.util.dataholder.Key;
+import consulo.util.dataholder.UserDataHolderBase;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

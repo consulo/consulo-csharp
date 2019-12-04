@@ -16,14 +16,13 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.util.dataholder.UserDataHolderBase;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
 
 /**
  * @author VISTALL

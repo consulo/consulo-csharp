@@ -17,8 +17,6 @@
 package consulo.csharp.lang.psi.impl.source.resolve.util;
 
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.KeyWithDefaultValue;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.scope.PsiScopeProcessor;
@@ -45,6 +43,8 @@ import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.*;
 import consulo.dotnet.util.ArrayUtil2;
 import consulo.logging.Logger;
+import consulo.util.dataholder.Key;
+import consulo.util.dataholder.KeyWithDefaultValue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,21 +59,13 @@ public class CSharpResolveUtil
 {
 	private static final Logger LOG = Logger.getInstance(CSharpResolveUtil.class);
 
-	public static final KeyWithDefaultValue<DotNetGenericExtractor> EXTRACTOR = new KeyWithDefaultValue<DotNetGenericExtractor>("dot-net-extractor")
-	{
-		@Override
-		public DotNetGenericExtractor getDefaultValue()
-		{
-			return DotNetGenericExtractor.EMPTY;
-		}
-	};
+	public static final KeyWithDefaultValue<DotNetGenericExtractor> EXTRACTOR = KeyWithDefaultValue.create("dot-net-extractor", DotNetGenericExtractor.EMPTY);
 
 	public static final Key<DotNetQualifiedElement> ACCESSOR_VALUE_VARIABLE_OWNER = Key.create("accessor.value.variable");
 	public static final Key<CSharpMethodDeclaration> EXTENSION_METHOD_WRAPPER = Key.create("extension.method.wrapper");
 	public static final Key<CSharpMethodDeclaration> DELEGATE_METHOD_TYPE = Key.create("delegate.method.type");
 	public static final Key<CSharpResolveSelector> SELECTOR = Key.create("resolve.selector");
 	public static final Key<Boolean> WALK_DEEP = Key.create("walk.deep");
-
 
 	public static boolean treeWalkUp(@Nonnull PsiScopeProcessor processor, @Nonnull PsiElement entrance, @Nonnull PsiElement sender, @Nullable PsiElement maxScope)
 	{

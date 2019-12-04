@@ -16,16 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.genericInference;
 
-import gnu.trove.THashMap;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.SmartList;
@@ -39,21 +31,19 @@ import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.NCallArgumentBuilder;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.*;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.util.ArrayUtil2;
+import consulo.util.dataholder.Key;
+import gnu.trove.THashMap;
+
+import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -61,7 +51,7 @@ import consulo.dotnet.util.ArrayUtil2;
  */
 public class GenericInferenceUtil
 {
-	public static final Key<GenericInferenceUtil.GenericInferenceResult> INFERENCE_RESULT = Key.create("inference.result");
+	public static final Key<GenericInferenceResult> INFERENCE_RESULT = Key.create("inference.result");
 
 	public static class GenericInferenceResult
 	{

@@ -20,7 +20,6 @@ import com.intellij.lang.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
@@ -40,6 +39,7 @@ import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpFileStub;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.lang.LanguageVersion;
+import consulo.util.dataholder.Key;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

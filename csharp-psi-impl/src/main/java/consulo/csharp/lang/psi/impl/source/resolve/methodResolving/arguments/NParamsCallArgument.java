@@ -16,15 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.openapi.util.NotNullLazyValue;
-import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpCastType;
@@ -35,6 +27,13 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.util.dataholder.UserDataHolderBase;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -46,6 +45,7 @@ public class NParamsCallArgument extends NCallArgument
 	private final List<CSharpCallArgument> myCallArguments;
 	private final NotNullLazyValue<DotNetTypeRef> myTypeRefValue;
 
+	@RequiredReadAction
 	public NParamsCallArgument(@Nonnull List<CSharpCallArgument> callArguments, @Nullable DotNetParameter parameter)
 	{
 		super(DotNetTypeRef.ERROR_TYPE, null, parameter);

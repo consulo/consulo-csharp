@@ -16,13 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.resolve;
 
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.CachedValue;
@@ -31,12 +25,7 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.NotNullFunction;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDefStatement;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
-import consulo.csharp.lang.psi.CSharpUsingTypeStatement;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.dotnet.psi.DotNetGenericParameter;
@@ -44,6 +33,11 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.resolve.DotNetPsiSearcher;
+import consulo.util.dataholder.Key;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -51,7 +45,6 @@ import consulo.dotnet.resolve.DotNetPsiSearcher;
  */
 public class CSharpResolveContextUtil
 {
-	private static final Logger LOGGER = Logger.getInstance(CSharpResolveContextUtil.class);
 	private static final Key<CachedValue<CSharpResolveContext>> RESOLVE_CONTEXT = Key.create("resolve-context");
 
 	@Nonnull

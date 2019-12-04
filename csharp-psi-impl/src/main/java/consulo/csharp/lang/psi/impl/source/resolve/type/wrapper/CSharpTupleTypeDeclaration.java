@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type.wrapper;
 
-import com.intellij.openapi.util.Key;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -32,6 +31,7 @@ import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightFieldDeclarationBuilder;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.util.dataholder.Key;
 import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nonnull;
