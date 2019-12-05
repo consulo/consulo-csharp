@@ -16,9 +16,9 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiErrorElement;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -29,10 +29,10 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetType;
-import com.intellij.openapi.util.Key;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.psi.tree.IElementType;
+import consulo.util.dataholder.Key;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -40,7 +40,7 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CS1547 extends CompilerCheck<CSharpNativeType>
 {
-	public static Key<Boolean> ourReturnTypeFlag = Key.create("CS1547");
+	public static final Key<Boolean> ourReturnTypeFlag = Key.create("CS1547");
 
 	private static final String VOID = "void";
 

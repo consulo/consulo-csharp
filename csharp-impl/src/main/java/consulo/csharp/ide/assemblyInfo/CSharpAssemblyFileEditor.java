@@ -23,7 +23,6 @@ import com.intellij.openapi.fileEditor.FileEditorState;
 import com.intellij.openapi.fileEditor.FileEditorStateLevel;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.openapi.vfs.ReadonlyStatusHandler;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -38,6 +37,7 @@ import consulo.csharp.ide.assemblyInfo.blocks.CSharpAssemblyBlock;
 import consulo.csharp.ide.assemblyInfo.blocks.CSharpSimpleStringAssemblyBlock;
 import consulo.dotnet.DotNetTypes;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.dataholder.UserDataHolderBase;
 import kava.beans.PropertyChangeListener;
 
 import javax.annotation.Nonnull;

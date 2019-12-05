@@ -16,23 +16,18 @@
 
 package consulo.csharp.ide.codeInspection.unusedUsing;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.LocalInspectionToolSession;
-import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.codeInspection.*;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpUsingListChild;
+import consulo.util.dataholder.Key;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
 
 /**
  * @author VISTALL

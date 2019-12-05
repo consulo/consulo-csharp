@@ -16,22 +16,11 @@
 
 package consulo.csharp.ide.completion;
 
-import gnu.trove.THashSet;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionSorter;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementWeigher;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.SyntaxTraverser;
@@ -43,21 +32,22 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.completion.weigher.CSharpRecursiveGuardWeigher;
-import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
-import consulo.csharp.lang.psi.CSharpEventDeclaration;
-import consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import consulo.csharp.lang.psi.CSharpLambdaParameter;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import consulo.util.dataholder.Key;
+import consulo.util.dataholder.UserDataHolder;
+import gnu.trove.THashSet;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author VISTALL

@@ -16,17 +16,11 @@
 
 package consulo.csharp.ide.completion;
 
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -39,6 +33,12 @@ import consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.util.NotNullPairFunction;
+import consulo.util.dataholder.Key;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author VISTALL

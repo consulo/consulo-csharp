@@ -16,18 +16,18 @@
 
 package consulo.csharp.lang.formatter;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.util.dataholder.UserDataHolderBase;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author VISTALL
