@@ -19,8 +19,6 @@ import consulo.csharp.lang.psi.CSharpTemplateTokens;
 %unicode
 %function advanceImpl
 %type IElementType
-%eof{  return;
-%eof}
 
 %state PREPROCESSOR_DIRECTIVE
 %state STRING_INTERPOLATION
@@ -425,5 +423,5 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	{WHITE_SPACE}             { return CSharpTokens.WHITE_SPACE; }
 
-	.                         { return CSharpTokens.BAD_CHARACTER; }
+	[^]                       { return CSharpTokens.BAD_CHARACTER; }
 }

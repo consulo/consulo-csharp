@@ -13,8 +13,6 @@ import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 %unicode
 %function advanceImpl
 %type IElementType
-%eof{  return;
-%eof}
 
 %state MACRO_ENTERED
 %state MACRO_EXPRESSION
@@ -103,5 +101,5 @@ MACRO_ERROR={MACRO_START}"error"
 
 	{WHITE_SPACE}        {  return CSharpPreprocesorTokens.WHITE_SPACE; }
 
-	.                    { return CSharpPreprocesorTokens.BAD_CHARACTER; }
+	[^]                  { return CSharpPreprocesorTokens.BAD_CHARACTER; }
 }
