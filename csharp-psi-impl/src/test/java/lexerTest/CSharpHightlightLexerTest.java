@@ -16,10 +16,20 @@
 
 package lexerTest;
 
+import java.io.File;
+import java.net.URISyntaxException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+
+import org.jetbrains.annotations.NonNls;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.testFramework.LexerTestCase;
+import consulo.container.boot.ContainerPathManager;
 import consulo.csharp.lang.CSharpCfsElementTypeFactory;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.doc.psi.CSharpDocElementFactory;
@@ -27,8 +37,8 @@ import consulo.csharp.lang.lexer.CSharpLexer;
 import consulo.csharp.lang.lexer._CSharpHighlightLexer;
 import consulo.injecting.InjectingContainerBuilder;
 import consulo.test.light.LightApplicationBuilder;
-
-import javax.annotation.Nonnull;
+import consulo.testFramework.AssertEx;
+import consulo.testFramework.util.TestUtil;
 
 /**
  * @author VISTALL
@@ -105,6 +115,32 @@ public class CSharpHightlightLexerTest extends LexerTestCase
 				"$\"some variable {@\"someValue\"} asdasdasdas\"\n" +
 				"\n" +
 				"$\"some variable {someValue} asdasdasdas\"");
+	}
+
+	@Override
+	protected void doTest(@NonNls String text, @Nullable String expected)
+	{
+		String result = printTokens(text, 0);
+
+		if(expected != null)
+		{
+			AssertEx.assertSameLines(expected, result);
+		}
+		else
+		{
+			try
+			{
+				File file = new File(CSharpHightlightLexerTest.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+
+				File testFile = new File(file, getDirPath() + "/" + TestUtil.getTestName(this, true) + ".txt");
+
+				AssertEx.assertSameLinesWithFile(testFile.getPath(), result);
+			}
+			catch(URISyntaxException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
 	}
 
 	public void testHightlightStringInterpolationWithFormat() throws Exception
