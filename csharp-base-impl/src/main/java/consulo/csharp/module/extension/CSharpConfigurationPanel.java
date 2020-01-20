@@ -16,19 +16,36 @@
 
 package consulo.csharp.module.extension;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+
+
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.projectRoots.SdkModel;
 import com.intellij.openapi.projectRoots.SdkType;
 import com.intellij.openapi.roots.ui.configuration.ProjectStructureConfigurable;
-import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.*;
+import com.intellij.ui.ColoredListCellRendererWrapper;
+import com.intellij.ui.DocumentAdapter;
+import com.intellij.ui.SimpleTextAttributes;
+import com.intellij.ui.TextFieldWithHistory;
+import com.intellij.ui.TitledSeparator;
 import com.intellij.ui.components.JBCheckBox;
 import consulo.csharp.compiler.CSharpCompilerProvider;
 import consulo.csharp.compiler.CSharpPlatform;
@@ -36,16 +53,6 @@ import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;
 import consulo.roots.ui.configuration.SdkComboBox;
 import consulo.ui.annotation.RequiredUIAccess;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * @author VISTALL
@@ -181,7 +188,7 @@ public class CSharpConfigurationPanel extends JPanel
 
 		add(new TitledSeparator("Compiler Options"));
 
-		CSharpCompilerProvider[] extensions = CSharpCompilerProvider.EP_NAME.getExtensions();
+		List<CSharpCompilerProvider> extensions = CSharpCompilerProvider.EP_NAME.getExtensionList();
 		DotNetSimpleModuleExtension netExtension = ext.getModuleRootLayer().getExtension(DotNetSimpleModuleExtension.class);
 		final Set<SdkType> compilerBundleTypes = new LinkedHashSet<SdkType>();
 		if(netExtension != null)
@@ -196,7 +203,7 @@ public class CSharpConfigurationPanel extends JPanel
 			}
 		}
 
-		final ProjectSdksModel projectSdksModel = ProjectStructureConfigurable.getInstance(ext.getProject()).getProjectSdksModel();
+		final SdkModel projectSdksModel = ProjectStructureConfigurable.getInstance(ext.getProject()).getProjectSdksModel();
 
 		final SdkComboBox compilerComboBox = new SdkComboBox(projectSdksModel, compilerBundleTypes::contains, null, "Auto Select", AllIcons.Actions.FindPlain);
 
