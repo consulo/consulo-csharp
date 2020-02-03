@@ -16,19 +16,20 @@
 
 package consulo.csharp.ide.findUsage.referenceSearch;
 
+import javax.annotation.Nonnull;
+
+
 import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Processor;
-import consulo.annotation.access.RequiredWriteAction;
+import consulo.application.AccessRule;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
 import consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.StructOrGenericParameterConstructorProvider;
 import consulo.dotnet.psi.DotNetNamedElement;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -37,20 +38,19 @@ import javax.annotation.Nonnull;
 public class CSharpConstructorPlusTypeReferenceSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>
 {
 	@Override
-	@RequiredWriteAction
 	public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer)
 	{
 		PsiElement elementToSearch = queryParameters.getElementToSearch();
 
 		if(elementToSearch instanceof CSharpTypeDeclaration)
 		{
-			String name = ((CSharpTypeDeclaration) elementToSearch).getName();
+			String name = AccessRule.read(((CSharpTypeDeclaration) elementToSearch)::getName);
 			if(name == null)
 			{
 				return;
 			}
 
-			for(DotNetNamedElement member : ((CSharpTypeDeclaration) elementToSearch).getMembers())
+			for(DotNetNamedElement member : AccessRule.read(((CSharpTypeDeclaration) elementToSearch)::getMembers))
 			{
 				if(member instanceof CSharpConstructorDeclaration)
 				{
@@ -58,7 +58,7 @@ public class CSharpConstructorPlusTypeReferenceSearch extends QueryExecutorBase<
 				}
 			}
 
-			CSharpLightConstructorDeclarationBuilder constructor = StructOrGenericParameterConstructorProvider.buildDefaultConstructor((DotNetNamedElement) elementToSearch, name);
+			CSharpLightConstructorDeclarationBuilder constructor = AccessRule.read(() -> StructOrGenericParameterConstructorProvider.buildDefaultConstructor((DotNetNamedElement) elementToSearch, name));
 
 			queryParameters.getOptimizer().searchWord(name, queryParameters.getEffectiveSearchScope(), true, constructor);
 		}   /*
