@@ -16,6 +16,12 @@
 
 package consulo.csharp.lang.psi;
 
+import java.util.Collection;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
@@ -25,11 +31,12 @@ import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
-import consulo.dotnet.psi.*;
+import consulo.dotnet.psi.DotNetGenericParameter;
+import consulo.dotnet.psi.DotNetModifier;
+import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-
-import javax.annotation.Nonnull;
-import java.util.Collection;
 
 /**
  * @author VISTALL
@@ -177,9 +184,9 @@ public class CSharpContextUtil
 		return ContextType.ANY;
 	}
 
-	private static boolean isLikeType(PsiElement element)
+	private static boolean isLikeType(@Nullable PsiElement element)
 	{
-		return CSharpPsiUtilImpl.isTypeLikeElement(element)||
+		return element != null && CSharpPsiUtilImpl.isTypeLikeElement(element)||
 				element instanceof DotNetNamespaceAsElement ||
 				element instanceof CSharpTypeDefStatement;
 	}
