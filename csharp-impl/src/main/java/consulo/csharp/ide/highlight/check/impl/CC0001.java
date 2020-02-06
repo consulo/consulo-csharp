@@ -22,10 +22,24 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 
 import org.jetbrains.annotations.Contract;
-
-import javax.annotation.Nullable;
+import com.intellij.codeInsight.daemon.impl.HighlightInfo;
+import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
+import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
+import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixActionRegistrarImpl;
+import com.intellij.codeInsight.quickfix.UnresolvedReferenceQuickFixProvider;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiPolyVariantReference;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.ResolveResult;
+import com.intellij.ui.ColorUtil;
+import com.intellij.ui.JBColor;
+import com.intellij.xml.util.XmlStringUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.CastNArgumentToTypeRefFix;
 import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedConstructorFix;
@@ -61,20 +75,6 @@ import consulo.dotnet.psi.DotNetUserType;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
-import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixActionRegistrarImpl;
-import com.intellij.codeInsight.quickfix.UnresolvedReferenceQuickFixProvider;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.ResolveResult;
-import com.intellij.ui.ColorUtil;
-import com.intellij.ui.JBColor;
-import com.intellij.xml.util.XmlStringUtil;
 
 /**
  * @author VISTALL
@@ -117,11 +117,11 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 
 		if(callElement instanceof PsiPolyVariantReference)
 		{
-			resolveResults = ((PsiPolyVariantReference) callElement).multiResolve(false);
+			resolveResults = ((PsiPolyVariantReference) callElement).multiResolve(true);
 		}
 		else if(callElement instanceof CSharpCallArgumentListOwner)
 		{
-			resolveResults = ((CSharpCallArgumentListOwner) callElement).multiResolve(false);
+			resolveResults = ((CSharpCallArgumentListOwner) callElement).multiResolve(true);
 		}
 
 		ResolveResult goodResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
