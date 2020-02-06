@@ -16,6 +16,11 @@
 
 package consulo.csharp.ide.codeInspection.matchNamespace;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiFile;
@@ -26,10 +31,7 @@ import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.dotnet.module.DotNetNamespaceGeneratePolicy;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import consulo.dotnet.psi.DotNetReferenceExpression;
 
 /**
  * @author VISTALL
@@ -42,6 +44,7 @@ class MatchNamespaceVisitor extends CSharpElementVisitor
 
 	private List<CSharpNamespaceDeclaration> myRootNamespaces = new ArrayList<>();
 
+	@RequiredReadAction
 	MatchNamespaceVisitor(ProblemsHolder holder, DotNetSimpleModuleExtension extension)
 	{
 		myHolder = holder;
@@ -57,6 +60,12 @@ class MatchNamespaceVisitor extends CSharpElementVisitor
 	{
 		CSharpNamespaceDeclaration top = PsiTreeUtil.getParentOfType(declaration, CSharpNamespaceDeclaration.class);
 		if(top != null)
+		{
+			return;
+		}
+
+		DotNetReferenceExpression namespaceReference = declaration.getNamespaceReference();
+		if(namespaceReference == null)
 		{
 			return;
 		}
@@ -86,8 +95,9 @@ class MatchNamespaceVisitor extends CSharpElementVisitor
 
 			if(!Objects.equals(myExpectedNamespace, presentableQName))
 			{
-				myHolder.registerProblem(declaration.getNamespaceReference(), CSharpInspectionBundle.message("expected.namespace.inspection", myExpectedNamespace), new ChangeNamespaceFix
-						(declaration, myExpectedNamespace));
+				DotNetReferenceExpression namespaceReference = declaration.getNamespaceReference();
+				assert namespaceReference != null;
+				myHolder.registerProblem(namespaceReference, CSharpInspectionBundle.message("expected.namespace.inspection", myExpectedNamespace), new ChangeNamespaceFix(declaration, myExpectedNamespace));
 			}
 		}
 	}
