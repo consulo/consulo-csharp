@@ -21,19 +21,23 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.util.BitUtil;
+import com.intellij.util.PairFunction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpEmptyGenericWrapperTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTupleTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.BitUtil;
-import com.intellij.util.PairFunction;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
@@ -167,6 +171,31 @@ public class CSharpTypeRefPresentationUtil
 		{
 			appendTypeRef(scope, builder, ((CSharpEmptyGenericWrapperTypeRef) typeRef).getInnerTypeRef(), flags | NO_GENERIC_ARGUMENTS);
 			builder.append("<>");
+		}
+		else if(typeRef instanceof CSharpTupleTypeRef)
+		{
+			CSharpTupleTypeRef tupleTypeRef = (CSharpTupleTypeRef) typeRef;
+
+			PsiNameIdentifierOwner[] variables = tupleTypeRef.getVariables();
+			DotNetTypeRef[] typeRefs = tupleTypeRef.getTypeRefs();
+
+			builder.append("(");
+			for(int i = 0; i < variables.length; i++)
+			{
+				PsiNameIdentifierOwner tuplePartVar = variables[i];
+				DotNetTypeRef tuplePartTypeRef = typeRefs[i];
+
+				if(i != 0)
+				{
+					builder.append(", ");
+				}
+
+				appendTypeRef(scope, builder, tuplePartTypeRef, flags);
+				builder.append(" ");
+				String name = tuplePartVar.getName();
+				builder.append(name == null ? "Item" + (i + 1) : name);
+			}
+			builder.append(")");
 		}
 		else if(typeRef instanceof DotNetPointerTypeRef)
 		{

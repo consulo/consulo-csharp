@@ -49,13 +49,22 @@ public class CSharpTupleTypeRef extends DotNetTypeRefWithCachedResult
 		myVariables = variables;
 	}
 
+	public DotNetTypeRef[] getTypeRefs()
+	{
+		return myTypeRefs;
+	}
+
+	public PsiNameIdentifierOwner[] getVariables()
+	{
+		return myVariables;
+	}
+
 	@RequiredReadAction
 	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(myScope.getProject()).findType("System.ValueTuple`" + myVariables.length, myScope
-				.getResolveScope(), CSharpTransform.INSTANCE);
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(myScope.getProject()).findType("System.ValueTuple`" + myVariables.length, myScope.getResolveScope(), CSharpTransform.INSTANCE);
 		if(type == null)
 		{
 			return DotNetTypeResolveResult.EMPTY;

@@ -18,13 +18,16 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+
+import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTupleTypeRef;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -44,6 +47,27 @@ public class MethodGenerateUtil
 		}
 		else
 		{
+			if(typeRef instanceof CSharpTupleTypeRef)
+			{
+				StringBuilder builder = new StringBuilder();
+
+				builder.append("(");
+				DotNetTypeRef[] typeRefs = ((CSharpTupleTypeRef) typeRef).getTypeRefs();
+				for(int i = 0; i < typeRefs.length; i++)
+				{
+					if(i != 0)
+					{
+						builder.append(", ");
+					}
+
+					DotNetTypeRef tuplePartTypeRef = typeRefs[i];
+					builder.append(getDefaultValueForType(tuplePartTypeRef, scope));
+				}
+				builder.append(")");
+
+				return builder.toString();
+			}
+
 			if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Void))
 			{
 				return null;
