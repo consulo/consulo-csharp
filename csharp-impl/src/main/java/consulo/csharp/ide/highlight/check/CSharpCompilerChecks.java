@@ -16,16 +16,18 @@
 
 package consulo.csharp.ide.highlight.check;
 
+import java.lang.reflect.ParameterizedType;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
+
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-
-import javax.annotation.Nonnull;
-import java.lang.reflect.ParameterizedType;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author VISTALL
@@ -47,6 +49,7 @@ public enum CSharpCompilerChecks
 	CS0106(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // modifier check
 	CS0107(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // modifier protection check
 	CS0113(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // virtual/new can't be with override
+	CS0116(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // namespaces can contains only classes or delegate methods
 	CS0118(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expected variable but found type
 	CS0120(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // instance members required instance object reference
 	CS0122(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // visibility checks
