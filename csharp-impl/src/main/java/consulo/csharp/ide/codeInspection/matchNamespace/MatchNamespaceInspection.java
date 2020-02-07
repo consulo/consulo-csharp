@@ -16,17 +16,20 @@
 
 package consulo.csharp.ide.codeInspection.matchNamespace;
 
+import javax.annotation.Nonnull;
+
+
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalInspectionToolSession;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.psi.PsiCodeFragment;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.util.dataholder.Key;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -41,12 +44,18 @@ public class MatchNamespaceInspection extends LocalInspectionTool
 	@RequiredReadAction
 	public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session)
 	{
-		if(!(holder.getFile() instanceof CSharpFile))
+		PsiFile file = holder.getFile();
+		if(!(file instanceof CSharpFile))
 		{
 			return PsiElementVisitor.EMPTY_VISITOR;
 		}
 
-		DotNetSimpleModuleExtension extension = ModuleUtilCore.getExtension(holder.getFile(), DotNetSimpleModuleExtension.class);
+		if(file instanceof PsiCodeFragment)
+		{
+			return PsiElementVisitor.EMPTY_VISITOR;
+		}
+
+		DotNetSimpleModuleExtension extension = ModuleUtilCore.getExtension(file, DotNetSimpleModuleExtension.class);
 		if(extension == null)
 		{
 			return PsiElementVisitor.EMPTY_VISITOR;
