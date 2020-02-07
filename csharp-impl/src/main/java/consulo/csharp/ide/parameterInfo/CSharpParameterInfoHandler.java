@@ -188,7 +188,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		List<ItemToShow> list = new SmartList<>();
 		if(element instanceof CSharpCallArgumentListOwner)
 		{
-			ResolveResult[] resolveResults = ((CSharpCallArgumentListOwner) element).multiResolve(false);
+			ResolveResult[] resolveResults = ((CSharpCallArgumentListOwner) element).multiResolve(true);
 
 			for(ResolveResult resolveResult : resolveResults)
 			{
