@@ -16,6 +16,17 @@
 
 package consulo.csharp.ide.refactoring.introduceVariable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+
 import com.intellij.codeInsight.CodeInsightUtilCore;
 import com.intellij.codeInsight.template.impl.TemplateManagerImpl;
 import com.intellij.codeInsight.template.impl.TemplateState;
@@ -23,10 +34,21 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.*;
+import com.intellij.openapi.editor.CaretModel;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.ScrollType;
+import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pass;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiParserFacade;
+import com.intellij.psi.PsiRecursiveElementVisitor;
+import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.SmartPointerManager;
+import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
@@ -41,7 +63,13 @@ import com.intellij.util.Function;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.ide.refactoring.util.CSharpRefactoringUtil;
-import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.CSharpFile;
+import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import consulo.dotnet.DotNetTypes;
@@ -52,10 +80,6 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import consulo.ui.annotation.RequiredUIAccess;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.*;
 
 @SuppressWarnings("MethodMayBeStatic")
 public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
@@ -514,11 +538,11 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	{
 		final DotNetExpression initializer = operation.getInitializer();
 		final Project project = operation.getProject();
-		PsiDocumentManager.getInstance(project).commitAllDocuments();
-		return new WriteCommandAction<PsiElement>(project, declaration.getContainingFile())
+
+		SmartPsiElementPointer<PsiElement> pointer = new WriteCommandAction<SmartPsiElementPointer<PsiElement>>(project, declaration.getContainingFile())
 		{
 			@Override
-			protected void run(final Result<PsiElement> result) throws Throwable
+			protected void run(final Result<SmartPsiElementPointer<PsiElement>> result) throws Throwable
 			{
 				PsiElement createdDeclaration = addDeclaration(operation, declaration);
 
@@ -531,7 +555,7 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 					}
 				}
 
-				result.setResult(createdDeclaration);
+				result.setResult(createdDeclaration == null ? null : SmartPointerManager.createPointer(createdDeclaration));
 
 				PsiElement newExpression = createExpression(project, operation.getName());
 
@@ -572,6 +596,8 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 				postRefactoring(operation.getElement());
 			}
 		}.execute().getResultObject();
+
+		return pointer == null ? null : pointer.getElement();
 	}
 
 	protected PsiElement modifyDeclaration(@Nonnull PsiElement declaration)
