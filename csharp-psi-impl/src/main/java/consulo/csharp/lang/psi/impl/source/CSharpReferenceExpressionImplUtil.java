@@ -16,19 +16,44 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import static consulo.csharp.lang.psi.CSharpReferenceExpression.ResolveToKind;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiLanguageInjectionHost;
+import com.intellij.psi.PsiPolyVariantReference;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
 import com.intellij.psi.impl.source.tree.injected.Place;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.util.*;
-import com.intellij.util.*;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.ParameterizedCachedValue;
+import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.ArrayUtil;
+import com.intellij.util.CommonProcessors;
+import com.intellij.util.ObjectUtil;
+import com.intellij.util.Processor;
+import com.intellij.util.SystemProperties;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
@@ -42,24 +67,31 @@ import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInfer
 import consulo.csharp.lang.psi.impl.source.resolve.handlers.*;
 import consulo.csharp.lang.psi.impl.source.resolve.sorter.StaticVsInstanceComparator;
 import consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeComparator;
-import consulo.csharp.lang.psi.impl.source.resolve.type.*;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.impl.source.using.AddUsingUtil;
-import consulo.csharp.lang.psi.resolve.*;
+import consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
+import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
+import consulo.csharp.lang.psi.resolve.ExtensionMethodByNameSelector;
+import consulo.csharp.lang.psi.resolve.MemberByNameSelector;
+import consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
+import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.*;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import consulo.dotnet.resolve.DotNetPointerTypeRef;
+import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.resolve.DotNetTypeRefUtil;
+import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.util.ArrayUtil2;
 import consulo.util.dataholder.Key;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-
-import static consulo.csharp.lang.psi.CSharpReferenceExpression.ResolveToKind;
 
 /**
  * @author VISTALL
@@ -949,6 +981,22 @@ public class CSharpReferenceExpressionImplUtil
 				}
 
 				CSharpResolveUtil.walkUsing(extensionProcessor, targetToWalkChildren, null, resolveState);
+
+				if(CSharpNullableTypeUtil.containsNullableCalls(element))
+				{
+					if(DotNetTypeRefUtil.isVmQNameEqual(qualifierTypeRef, element, DotNetTypes.System.Nullable$1))
+					{
+						extensionProcessor.unpackNullableTypeRef();
+
+						if(!CSharpResolveUtil.walkChildren(extensionProcessor, targetToWalkChildren, true, false, resolveState))
+						{
+							consumeSorted(memberProcessor);
+							return;
+						}
+
+						CSharpResolveUtil.walkUsing(extensionProcessor, targetToWalkChildren, null, resolveState);
+					}
+				}
 
 				extensionProcessor.consumeAsMethodGroup();
 			}

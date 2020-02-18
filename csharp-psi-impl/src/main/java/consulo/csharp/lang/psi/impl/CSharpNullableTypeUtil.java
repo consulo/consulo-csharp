@@ -23,9 +23,11 @@ import consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpParenthesesExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -40,25 +42,35 @@ import com.intellij.psi.PsiElement;
 public class CSharpNullableTypeUtil
 {
 	@RequiredReadAction
-	public static boolean containsNullableCalls(@Nonnull CSharpQualifiedNonReference expression)
+	public static boolean containsNullableCalls(@Nonnull PsiElement element)
 	{
-		if(expression instanceof CSharpReferenceExpression)
+		if(element instanceof CSharpReferenceExpression)
 		{
-			if(((CSharpReferenceExpression) expression).getMemberAccessType() == CSharpReferenceExpression.AccessType.NULLABLE_CALL)
+			if(((CSharpReferenceExpression) element).getMemberAccessType() == CSharpReferenceExpression.AccessType.NULLABLE_CALL)
 			{
 				return true;
 			}
 
 		}
-		else if(expression instanceof CSharpIndexAccessExpressionImpl)
+		else if(element instanceof CSharpIndexAccessExpressionImpl)
 		{
-			if(((CSharpIndexAccessExpressionImpl) expression).isNullable())
+			if(((CSharpIndexAccessExpressionImpl) element).isNullable())
 			{
 				return true;
 			}
 		}
-		PsiElement qualifier = expression.getQualifier();
-		return qualifier instanceof CSharpQualifiedNonReference && containsNullableCalls((CSharpQualifiedNonReference) qualifier);
+
+		if(element instanceof CSharpQualifiedNonReference)
+		{
+			PsiElement qualifier = ((CSharpQualifiedNonReference) element).getQualifier();
+			return qualifier instanceof CSharpQualifiedNonReference && containsNullableCalls(qualifier);
+		}
+		else if(element instanceof CSharpParenthesesExpressionImpl)
+		{
+			DotNetExpression innerExpression = ((CSharpParenthesesExpressionImpl) element).getInnerExpression();
+			return innerExpression != null && containsNullableCalls(innerExpression);
+		}
+		return false;
 	}
 
 	@Nonnull

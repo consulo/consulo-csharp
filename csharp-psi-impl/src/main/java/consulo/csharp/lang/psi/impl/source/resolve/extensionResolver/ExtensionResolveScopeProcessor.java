@@ -35,6 +35,7 @@ import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.light.CSharpLightMethodDeclaration;
 import consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
@@ -66,11 +67,11 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 	private final StubScopeProcessor myProcessor;
 	@Nullable
 	private final CSharpCallArgumentListOwner myCallArgumentListOwner;
-	private final DotNetTypeRef myQualifierTypeRef;
 
 	private final List<CSharpMethodDeclaration> myResolvedElements = new SmartList<>();
 
 	private ExtensionQualifierAsCallArgumentWrapper myArgumentWrapper;
+	private DotNetTypeRef myQualifierTypeRef;
 
 	public ExtensionResolveScopeProcessor(@Nonnull DotNetTypeRef qualifierTypeRef,
 			@Nonnull CSharpReferenceExpression expression,
@@ -78,12 +79,20 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 			@Nonnull StubScopeProcessor processor,
 			@Nullable CSharpCallArgumentListOwner callArgumentListOwner)
 	{
-		myQualifierTypeRef = qualifierTypeRef;
 		myExpression = expression;
 		myCompletion = completion;
 		myProcessor = processor;
 		myCallArgumentListOwner = callArgumentListOwner;
+
+		myQualifierTypeRef = qualifierTypeRef;
 		myArgumentWrapper = new ExtensionQualifierAsCallArgumentWrapper(expression.getProject(), qualifierTypeRef);
+	}
+
+	@RequiredReadAction
+	public void unpackNullableTypeRef()
+	{
+		myQualifierTypeRef = CSharpNullableTypeUtil.unbox(myQualifierTypeRef);
+		myArgumentWrapper = new ExtensionQualifierAsCallArgumentWrapper(myExpression.getProject(), myQualifierTypeRef);
 	}
 
 	@RequiredReadAction

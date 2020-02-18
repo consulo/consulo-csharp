@@ -20,15 +20,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
-import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.csharp.module.extension.CSharpModuleUtil;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.resolve.DotNetTypeRef;
+
+
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.template.Expression;
@@ -39,6 +32,16 @@ import com.intellij.codeInsight.template.TextResult;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
+import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
+import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpModuleUtil;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL
@@ -83,11 +86,25 @@ public class ForeachComponentTypeMacro extends Macro
 		{
 			return LookupElement.EMPTY_ARRAY;
 		}
-		List<LookupElement> list = new SmartList<LookupElement>();
-		list.add(LookupElementBuilder.create(result.toString()));
-		if(CSharpModuleUtil.findLanguageVersion(context.getPsiElementAtStartOffset()).isAtLeast(CSharpLanguageVersion._2_0))
+		List<LookupElement> list = new SmartList<>();
+
+		boolean useVarForExtractLocalVariable = CSharpCodeGenerationSettings.getInstance(context.getProject()).USE_VAR_FOR_EXTRACT_LOCAL_VARIABLE;
+		boolean varSupported = CSharpModuleUtil.findLanguageVersion(context.getPsiElementAtStartOffset()).isAtLeast(CSharpLanguageVersion._2_0);
+
+		boolean canUseVar = varSupported && useVarForExtractLocalVariable;
+
+		if(canUseVar)
 		{
 			list.add(LookupElementBuilder.create("var").bold());
+		}
+		else
+		{
+			list.add(LookupElementBuilder.create(result.toString()));
+
+			if(varSupported)
+			{
+				list.add(LookupElementBuilder.create("var").bold());
+			}
 		}
 		return list.toArray(new LookupElement[list.size()]);
 	}
@@ -95,8 +112,7 @@ public class ForeachComponentTypeMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public Result calculateResult(
-			@Nonnull Expression[] params, ExpressionContext context)
+	public Result calculateResult(@Nonnull Expression[] params, ExpressionContext context)
 	{
 		if(params.length != 1)
 		{
