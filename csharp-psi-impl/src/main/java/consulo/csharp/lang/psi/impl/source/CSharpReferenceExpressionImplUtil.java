@@ -982,7 +982,7 @@ public class CSharpReferenceExpressionImplUtil
 
 				CSharpResolveUtil.walkUsing(extensionProcessor, targetToWalkChildren, null, resolveState);
 
-				if(CSharpNullableTypeUtil.containsNullableCalls(element))
+				if(element instanceof CSharpReferenceExpression && CSharpNullableTypeUtil.containsNullableCalls(element))
 				{
 					if(DotNetTypeRefUtil.isVmQNameEqual(qualifierTypeRef, element, DotNetTypes.System.Nullable$1))
 					{
