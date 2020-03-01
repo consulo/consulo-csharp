@@ -27,6 +27,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpCaseVariableImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpIsVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
@@ -136,6 +137,7 @@ public class CSharpContextUtil
 					resolvedElement instanceof DotNetNamespaceAsElement ||
 					resolvedElement instanceof CSharpLocalVariable ||
 					resolvedElement instanceof CSharpLinqVariable ||
+					resolvedElement instanceof CSharpIsVariableImpl ||
 					resolvedElement instanceof CSharpOutRefVariableImpl ||
 					resolvedElement instanceof CSharpCaseVariableImpl ||
 					resolvedElement instanceof DotNetParameter ||
