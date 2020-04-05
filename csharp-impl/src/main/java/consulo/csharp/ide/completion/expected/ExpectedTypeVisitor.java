@@ -222,7 +222,7 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 		{
 			CSharpOperatorReferenceImpl operatorElement = parent.getOperatorElement();
 
-			ResolveResult[] resolveResults = operatorElement.multiResolve(false);
+			ResolveResult[] resolveResults = operatorElement.multiResolve(true);
 
 			for(ResolveResult resolveResult : resolveResults)
 			{
@@ -277,7 +277,7 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 
 		assert callArgumentListOwner != null;
 
-		ResolveResult[] resolveResults = callArgumentListOwner.multiResolve(false);
+		ResolveResult[] resolveResults = callArgumentListOwner.multiResolve(true);
 		for(ResolveResult resolveResult : resolveResults)
 		{
 			if(resolveResult instanceof MethodResolveResult)
