@@ -72,24 +72,30 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 		}
 
 		@Override
+		@RequiredReadAction
 		public void handleInsert(InsertionContext insertionContext, LookupElement item)
 		{
 			Editor editor = insertionContext.getEditor();
 			int offset = editor.getCaretModel().getOffset();
 			boolean isVoidReturnType = DotNetTypeRefUtil.isVmQNameEqual(myPseudoMethod.getReturnTypeRef(), myPseudoMethod, DotNetTypes.System.Void);
-			if(!isVoidReturnType)
+
+			if(isVoidReturnType)
 			{
-				TailType.insertChar(editor, offset, ' ');
-				TailType.insertChar(editor, offset + 1, ';');
+				if(insertionContext.getCompletionChar() == '\n')
+				{
+					TailType.insertChar(editor, offset, ';');
+					insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
+				}
 			}
 			else
 			{
-				TailType.insertChar(editor, offset, ';');
-			}
+				if(insertionContext.getCompletionChar() == '\n')
+				{
+					TailType.insertChar(editor, offset, ' ');
 
-			insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
-			if(!isVoidReturnType)
-			{
+					insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
+				}
+
 				AutoPopupController.getInstance(editor.getProject()).autoPopupMemberLookup(editor, null);
 			}
 		}
