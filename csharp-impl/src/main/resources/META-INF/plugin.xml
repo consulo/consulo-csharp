@@ -255,6 +255,8 @@
 		<codeInsight.template.postfixTemplateProvider language="C#"
 													  implementationClass="consulo.csharp.ide.codeInsight.template.postfix.CSharpPostfixTemplateProvider"/>
 
+		<targetElementUtilEx implementation="consulo.csharp.ide.codeInsight.CSharpTargetElementUtilEx" />
+
 		<referencesSearch implementation="consulo.csharp.ide.findUsage.referenceSearch.AdditionalReferenceSearch"/>
 		<referencesSearch implementation="consulo.csharp.ide.findUsage.referenceSearch.CSharpConstructorPlusTypeReferenceSearch"/>
 		<referencesSearch implementation="consulo.csharp.ide.findUsage.referenceSearch.CSharpImplementedReferenceSearch"/>

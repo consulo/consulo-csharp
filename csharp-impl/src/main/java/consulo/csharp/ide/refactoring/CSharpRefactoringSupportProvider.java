@@ -118,7 +118,7 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 		{
 			return false;
 		}
-		SearchScope useScope = PsiSearchHelper.SERVICE.getInstance(elementToRename.getProject()).getUseScope(elementToRename);
+		SearchScope useScope = PsiSearchHelper.getInstance(elementToRename.getProject()).getUseScope(elementToRename);
 		if(!(useScope instanceof LocalSearchScope))
 		{
 			return false;
@@ -131,5 +131,4 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 		PsiFile containingFile = elementToRename.getContainingFile();
 		return PsiTreeUtil.isAncestor(containingFile, scopeElements[0], false);
 	}
-
 }
