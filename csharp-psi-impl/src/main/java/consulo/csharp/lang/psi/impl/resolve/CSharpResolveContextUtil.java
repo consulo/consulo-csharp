@@ -107,15 +107,17 @@ public class CSharpResolveContextUtil
 		if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
 		{
 			String vmQName = typeDeclaration.getVmQName();
-			assert vmQName != null;
-			DotNetTypeDeclaration[] types = DotNetPsiSearcher.getInstance(typeDeclaration.getProject()).findTypes(vmQName, resolveScope);
-
-			for(DotNetTypeDeclaration type : types)
+			if(vmQName != null)
 			{
-				if(type instanceof CSharpCompositeTypeDeclaration)
+				DotNetTypeDeclaration[] types = DotNetPsiSearcher.getInstance(typeDeclaration.getProject()).findTypes(vmQName, resolveScope);
+
+				for(DotNetTypeDeclaration type : types)
 				{
-					typeDeclaration = (CSharpTypeDeclaration) type;
-					break;
+					if(type instanceof CSharpCompositeTypeDeclaration)
+					{
+						typeDeclaration = (CSharpTypeDeclaration) type;
+						break;
+					}
 				}
 			}
 		}
