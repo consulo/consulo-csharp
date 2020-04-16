@@ -16,6 +16,16 @@
 
 package consulo.csharp.ide.refactoring.introduceVariable;
 
+import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.Collection;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
@@ -33,7 +43,11 @@ import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.highlight.check.impl.CS0023;
-import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.CSharpConstantUtil;
+import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
@@ -46,15 +60,6 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.ui.annotation.RequiredUIAccess;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @author VISTALL
@@ -136,7 +141,10 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 			protected JComponent getComponent()
 			{
 				CSharpLocalVariable variable = (CSharpLocalVariable) getVariable();
-				assert variable != null;
+				if(variable == null)
+				{
+					return null;
+				}
 				final DotNetExpression initializer = variable.getInitializer();
 				assert initializer != null;
 
