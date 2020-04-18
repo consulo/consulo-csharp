@@ -96,7 +96,14 @@ public class CSharpNameSuggesterUtil
 
 		if(suggestedNames == null)
 		{
-			suggestedNames = getSuggestedNames(variable.toTypeRef(true), variable);
+			if(variable.toTypeRef(false) == DotNetTypeRef.AUTO_TYPE)
+			{
+				suggestedNames = ContainerUtil.newArrayList("v");
+			}
+			else
+			{
+				suggestedNames = getSuggestedNames(variable.toTypeRef(true), variable);
+			}
 		}
 
 		DotNetExpression initializer = variable.getInitializer();
