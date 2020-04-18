@@ -309,13 +309,30 @@ public class CSharpReferenceExpressionImplUtil
 		}
 		else
 		{
-			return CSharpResolveUtil.filterValidResults(resolveResults);
+			ResolveResult[] validResults = CSharpResolveUtil.filterValidResults(resolveResults);
+			if(validResults.length > 0)
+			{
+				return validResults;
+			}
+			else if(resolveResults.length > 0)
+			{
+				ResolveToKind kind = expression.kind();
+
+				switch(kind)
+				{
+					case CONSTRUCTOR:
+					case METHOD:
+						return resolveResults;
+				}
+			}
+
+			return ResolveResult.EMPTY_ARRAY;
 		}
 	}
 
 	public static boolean isCacheDisabled(@Nonnull PsiElement element)
 	{
-		// inside generic inference session - don't callo cache
+		// inside generic inference session - don't call cache
 		if(GenericInferenceManager.getInstance(element.getProject()).isInsideGenericInferenceSession())
 		{
 			return true;
