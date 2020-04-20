@@ -16,6 +16,9 @@
 
 package consulo.csharp.lang.parser.decl;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
@@ -27,9 +30,6 @@ import consulo.csharp.lang.parser.stmt.StatementParsing;
 import consulo.csharp.lang.psi.CSharpElements;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokens;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -162,7 +162,7 @@ public class MethodParsing extends MemberWithBodyParsing
 		}
 	}
 
-	private static void parseMethodBoryOrSemicolon(CSharpBuilderWrapper builder)
+	private static void parseMethodBodyOrSemicolon(CSharpBuilderWrapper builder)
 	{
 		IElementType tokenType = builder.getTokenType();
 		if(tokenType == LBRACE)
@@ -242,7 +242,7 @@ public class MethodParsing extends MemberWithBodyParsing
 	@Deprecated
 	public static void parseMethodBodyOrSemicolon(CSharpBuilderWrapper builder, ModifierSet set)
 	{
-		parseMethodBoryOrSemicolon(builder);
+		parseMethodBodyOrSemicolon(builder);
 	}
 
 	public static boolean parseMethodBody(CSharpBuilderWrapper builder, ModifierSet set)

@@ -16,6 +16,9 @@
 
 package consulo.csharp.lang.parser.exp;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -30,9 +33,6 @@ import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class ExpressionParsing extends SharedParsingHelpers
 {
@@ -716,37 +716,37 @@ public class ExpressionParsing extends SharedParsingHelpers
 		CSharpLanguageVersion version = builder.getVersion();
 		builder.enableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
 
-		boolean linqState = false;
+		boolean linqState = false, asyncState = false, awaitState = false, nameofState = false;
 		if(version.isAtLeast(CSharpLanguageVersion._3_0))
 		{
 			linqState = builder.enableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
 		if(version.isAtLeast(CSharpLanguageVersion._4_0))
 		{
-			builder.enableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
+			asyncState = builder.enableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
 		}
 		if(modifierSet.contains(CSharpSoftTokens.ASYNC_KEYWORD))
 		{
-			builder.enableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
+			awaitState = builder.enableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
 		}
 		if(version.isAtLeast(CSharpLanguageVersion._6_0))
 		{
-			builder.enableSoftKeyword(CSharpSoftTokens.NAMEOF_KEYWORD);
+			nameofState = builder.enableSoftKeyword(CSharpSoftTokens.NAMEOF_KEYWORD);
 		}
 		IElementType tokenType = builder.getTokenType();
 		if(linqState)
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
-		if(version.isAtLeast(CSharpLanguageVersion._4_0))
+		if(asyncState)
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
 		}
-		if(modifierSet.contains(CSharpSoftTokens.ASYNC_KEYWORD))
+		if(awaitState)
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
 		}
-		if(version.isAtLeast(CSharpLanguageVersion._6_0))
+		if(nameofState)
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.NAMEOF_KEYWORD);
 		}

@@ -16,6 +16,15 @@
 
 package consulo.csharp.lang.parser;
 
+import gnu.trove.THashSet;
+
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.LighterASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.WhitespacesAndCommentsBinder;
@@ -24,16 +33,14 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.BitUtil;
-import com.intellij.util.NotNullFunction;
 import consulo.csharp.lang.parser.exp.ExpressionParsing;
-import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.CSharpElements;
+import consulo.csharp.lang.psi.CSharpSoftTokens;
+import consulo.csharp.lang.psi.CSharpStubElements;
+import consulo.csharp.lang.psi.CSharpTokenSets;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.CSharpTokensImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import gnu.trove.THashSet;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author VISTALL
@@ -527,18 +534,16 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	}
 
 	@Nonnull
-	protected static <T> Pair<PsiBuilder.Marker, T> parseWithSoftElements(NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, T>> func,
-			CSharpBuilderWrapper builderWrapper,
-			IElementType... softs)
+	protected static <T> Pair<PsiBuilder.Marker, T> parseWithSoftElements(Function<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, T>> func, CSharpBuilderWrapper builderWrapper, IElementType... softs)
 	{
 		return parseWithSoftElements(func, builderWrapper, TokenSet.create(softs));
 	}
 
 	@Nonnull
-	protected static <T> Pair<PsiBuilder.Marker, T> parseWithSoftElements(NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, T>> func, CSharpBuilderWrapper builderWrapper, TokenSet softs)
+	protected static <T> Pair<PsiBuilder.Marker, T> parseWithSoftElements(Function<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, T>> func, CSharpBuilderWrapper builderWrapper, TokenSet softs)
 	{
 		builderWrapper.enableSoftKeywords(softs);
-		Pair<PsiBuilder.Marker, T> fun = func.fun(builderWrapper);
+		Pair<PsiBuilder.Marker, T> fun = func.apply(builderWrapper);
 		builderWrapper.disableSoftKeywords(softs);
 		return fun;
 	}

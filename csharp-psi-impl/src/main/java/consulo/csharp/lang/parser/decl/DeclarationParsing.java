@@ -16,11 +16,13 @@
 
 package consulo.csharp.lang.parser.decl;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.NotNullFunction;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.ModifierSet;
 import consulo.csharp.lang.parser.SharedParsingHelpers;
@@ -29,9 +31,6 @@ import consulo.csharp.lang.parser.exp.ExpressionParsing;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -93,15 +92,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 	{
 		PsiBuilder.Marker marker = builder.mark();
 
-		Pair<PsiBuilder.Marker, ModifierSet> modifierListPair = parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, ModifierSet>>()
-		{
-			@Nonnull
-			@Override
-			public Pair<PsiBuilder.Marker, ModifierSet> fun(CSharpBuilderWrapper builderWrapper)
-			{
-				return parseModifierListWithAttributes(builderWrapper, STUB_SUPPORT);
-			}
-		}, builder, PARTIAL_KEYWORD, ASYNC_KEYWORD);
+		Pair<PsiBuilder.Marker, ModifierSet> modifierListPair = parseWithSoftElements(b -> parseModifierListWithAttributes(b, STUB_SUPPORT), builder, PARTIAL_KEYWORD, ASYNC_KEYWORD);
 
 		PsiBuilder.Marker modifierListMarker = modifierListPair.getFirst();
 		ModifierSet modifierSet = modifierListPair.getSecond();
