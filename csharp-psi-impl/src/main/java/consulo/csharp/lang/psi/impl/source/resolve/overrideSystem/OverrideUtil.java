@@ -103,10 +103,10 @@ public class OverrideUtil
 		{
 			return psiElements;
 		}
+
 		if(!ExecuteTargetUtil.canProcess(processor, ExecuteTarget.ELEMENT_GROUP, ExecuteTarget.EVENT, ExecuteTarget.PROPERTY))
 		{
-			List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
-			return elements;
+			return CSharpResolveUtil.mergeGroupsToIterable(psiElements);
 		}
 
 		List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);

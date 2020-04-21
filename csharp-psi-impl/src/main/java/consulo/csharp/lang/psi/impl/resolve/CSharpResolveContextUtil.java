@@ -16,6 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.resolve;
 
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -25,7 +30,12 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.NotNullFunction;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import consulo.csharp.lang.psi.CSharpUsingListChild;
+import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
+import consulo.csharp.lang.psi.CSharpUsingTypeStatement;
 import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.dotnet.psi.DotNetGenericParameter;
@@ -34,10 +44,6 @@ import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.resolve.DotNetPsiSearcher;
 import consulo.util.dataholder.Key;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Set;
 
 /**
  * @author VISTALL
@@ -131,7 +137,7 @@ public class CSharpResolveContextUtil
 			@Nonnull final CSharpTypeDeclaration typeDeclaration,
 			@Nullable final Set<PsiElement> recursiveGuardSet)
 	{
-		if(genericExtractor == DotNetGenericExtractor.EMPTY && recursiveGuardSet == null)
+		if(genericExtractor == DotNetGenericExtractor.EMPTY && (recursiveGuardSet == null || recursiveGuardSet.size() == 1 && recursiveGuardSet.contains(typeDeclaration)))
 		{
 			CachedValue<CSharpResolveContext> provider = typeDeclaration.getUserData(RESOLVE_CONTEXT);
 			if(provider != null)
