@@ -161,6 +161,8 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 
 				for(PsiElement psiElement : elementGroup.getElements())
 				{
+					ProgressManager.checkCanceled();
+
 					CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) psiElement;
 
 					if(isAlreadyAdded(methodDeclaration))
