@@ -18,6 +18,9 @@ package consulo.csharp.lang.psi.impl.source;
 
 import javax.annotation.Nonnull;
 
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpStubElements;
@@ -50,6 +53,12 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 	@Nonnull
 	@RequiredReadAction
 	public CSharpUsingListChild[] getUsingStatements()
+	{
+		return CachedValuesManager.getCachedValue(this, () -> CachedValueProvider.Result.create(getUsingStatementsInner(), PsiModificationTracker.MODIFICATION_COUNT)) ;
+	}
+
+	@Nonnull
+	private CSharpUsingListChild[] getUsingStatementsInner()
 	{
 		StubElement<?> stub = getStub();
 		if(stub != null)
