@@ -27,17 +27,9 @@ import consulo.dotnet.psi.DotNetAttributeList;
  */
 public interface CSharpAttributeList extends DotNetAttributeList
 {
-	public static final CSharpAttributeList[] EMPTY_ARRAY = new CSharpAttributeList[0];
+	CSharpAttributeList[] EMPTY_ARRAY = new CSharpAttributeList[0];
 
-	public static ArrayFactory<CSharpAttributeList> ARRAY_FACTORY = new ArrayFactory<CSharpAttributeList>()
-	{
-		@Nonnull
-		@Override
-		public CSharpAttributeList[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpAttributeList[count];
-		}
-	};
+	ArrayFactory<CSharpAttributeList> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpAttributeList[count];
 
 	@Nonnull
 	@Override

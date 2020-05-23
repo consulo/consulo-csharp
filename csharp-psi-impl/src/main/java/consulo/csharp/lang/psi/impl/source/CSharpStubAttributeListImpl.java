@@ -19,6 +19,8 @@ package consulo.csharp.lang.psi.impl.source;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.IStubElementType;
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -26,8 +28,6 @@ import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.impl.stub.CSharpAttributeListStub;
 import consulo.dotnet.psi.DotNetAttributeTargetType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.stubs.IStubElementType;
 
 /**
  * @author VISTALL
@@ -40,8 +40,7 @@ public class CSharpStubAttributeListImpl extends CSharpStubElementImpl<CSharpAtt
 		super(node);
 	}
 
-	public CSharpStubAttributeListImpl(@Nonnull CSharpAttributeListStub stub,
-			@Nonnull IStubElementType<? extends CSharpAttributeListStub, ?> nodeType)
+	public CSharpStubAttributeListImpl(@Nonnull CSharpAttributeListStub stub, @Nonnull IStubElementType<? extends CSharpAttributeListStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -59,7 +58,7 @@ public class CSharpStubAttributeListImpl extends CSharpStubElementImpl<CSharpAtt
 		CSharpAttributeListStub stub = getGreenStub();
 		if(stub != null)
 		{
-			return stub.getTarget();
+			return stub.getTargetType();
 		}
 		return CSharpAttributeListImpl.getAttributeType(findChildByType(CSharpTokenSets.ATTRIBUTE_TARGETS));
 	}

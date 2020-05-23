@@ -16,12 +16,13 @@
 
 package consulo.csharp.lang.psi.impl.stub;
 
-import javax.annotation.Nonnull;
-import consulo.dotnet.psi.DotNetAttributeList;
-import consulo.dotnet.psi.DotNetAttributeTargetType;
+import javax.annotation.Nullable;
+
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
+import consulo.dotnet.psi.DotNetAttributeList;
+import consulo.dotnet.psi.DotNetAttributeTargetType;
 
 /**
  * @author VISTALL
@@ -29,22 +30,17 @@ import com.intellij.psi.stubs.StubElement;
  */
 public class CSharpAttributeListStub extends StubBase<DotNetAttributeList>
 {
-	private int myTargetIndex;
+	private DotNetAttributeTargetType myTargetType;
 
-	public CSharpAttributeListStub(StubElement parent, IStubElementType elementType, int targetIndex)
+	public CSharpAttributeListStub(StubElement parent, IStubElementType elementType, @Nullable DotNetAttributeTargetType targetType)
 	{
 		super(parent, elementType);
-		myTargetIndex = targetIndex;
+		myTargetType = targetType;
 	}
 
-	@Nonnull
-	public DotNetAttributeTargetType getTarget()
+	@Nullable
+	public DotNetAttributeTargetType getTargetType()
 	{
-		return DotNetAttributeTargetType.values()[getTargetIndex()];
-	}
-
-	public int getTargetIndex()
-	{
-		return myTargetIndex;
+		return myTargetType;
 	}
 }

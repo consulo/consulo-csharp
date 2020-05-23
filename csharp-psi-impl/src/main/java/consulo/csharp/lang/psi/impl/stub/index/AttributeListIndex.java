@@ -68,7 +68,7 @@ public class AttributeListIndex extends AbstractStubIndex<DotNetAttributeTargetT
 	@Nonnull
 	public static AttributeListIndex getInstance()
 	{
-		return StubIndexExtension.EP_NAME.findExtension(AttributeListIndex.class);
+		return StubIndexExtension.EP_NAME.findExtensionOrFail(AttributeListIndex.class);
 	}
 
 	@Nonnull

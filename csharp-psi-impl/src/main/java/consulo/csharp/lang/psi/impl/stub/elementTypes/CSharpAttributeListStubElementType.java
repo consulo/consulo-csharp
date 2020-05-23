@@ -19,17 +19,18 @@ package consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
-import consulo.csharp.lang.psi.CSharpAttributeList;
-import consulo.csharp.lang.psi.impl.source.CSharpStubAttributeListImpl;
-import consulo.csharp.lang.psi.impl.stub.CSharpAttributeListStub;
-import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import consulo.dotnet.psi.DotNetAttributeTargetType;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
+import consulo.csharp.lang.psi.CSharpAttributeList;
+import consulo.csharp.lang.psi.impl.source.CSharpStubAttributeListImpl;
+import consulo.csharp.lang.psi.impl.stub.CSharpAttributeListStub;
+import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
+import consulo.dotnet.psi.DotNetAttributeTargetType;
 
 /**
  * @author VISTALL
@@ -55,26 +56,19 @@ public class CSharpAttributeListStubElementType extends CSharpAbstractStubElemen
 		return new CSharpStubAttributeListImpl(stub, this);
 	}
 
-	@Override
-	public boolean shouldCreateStub(ASTNode node)
-	{
-		PsiElement psi = node.getPsi();
-		return ((CSharpAttributeList) psi).getTargetType() != null;
-	}
-
+	@Nonnull
 	@Override
 	public CSharpAttributeListStub createStub(@Nonnull CSharpAttributeList attributeList, StubElement stubElement)
 	{
 		DotNetAttributeTargetType targetType = attributeList.getTargetType();
-		assert targetType != null;
-		int targetIndex = targetType.ordinal();
-		return new CSharpAttributeListStub(stubElement, this, targetIndex);
+		return new CSharpAttributeListStub(stubElement, this, targetType);
 	}
 
 	@Override
 	public void serialize(@Nonnull CSharpAttributeListStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeVarInt(stub.getTargetIndex());
+		DotNetAttributeTargetType targetType = stub.getTargetType();
+		stubOutputStream.writeVarInt(targetType == null ? -1 : targetType.ordinal());
 	}
 
 	@Nonnull
@@ -82,12 +76,16 @@ public class CSharpAttributeListStubElementType extends CSharpAbstractStubElemen
 	public CSharpAttributeListStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int targetIndex = stubInputStream.readVarInt();
-		return new CSharpAttributeListStub(stubElement, this, targetIndex);
+		return new CSharpAttributeListStub(stubElement, this, targetIndex == -1 ? null : DotNetAttributeTargetType.values()[targetIndex]);
 	}
 
 	@Override
 	public void indexStub(@Nonnull CSharpAttributeListStub stub, @Nonnull IndexSink indexSink)
 	{
-		indexSink.occurrence(CSharpIndexKeys.ATTRIBUTE_LIST_INDEX, stub.getTarget());
+		DotNetAttributeTargetType targetType = stub.getTargetType();
+		if(targetType != null)
+		{
+			indexSink.occurrence(CSharpIndexKeys.ATTRIBUTE_LIST_INDEX, targetType);
+		}
 	}
 }
