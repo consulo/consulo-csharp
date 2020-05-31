@@ -36,6 +36,7 @@ import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ArrayFactory;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
@@ -346,9 +347,10 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 			context.setUIComponentEnabled(false);
 			return;
 		}
-		CSharpParametersInfo build = CSharpParametersInfo.build(p.myLikeMethod, p.myScope);
 
-		String text = build.getText();
+		ParameterPresentationBuilder<CSharpSimpleParameterInfo> build = CSharpParametersInfo.build(p.myLikeMethod, p.myScope);
+
+		String text = build.toString();
 
 		TextRange parameterRange = build.getParameterRange(context.getCurrentParameterIndex());
 

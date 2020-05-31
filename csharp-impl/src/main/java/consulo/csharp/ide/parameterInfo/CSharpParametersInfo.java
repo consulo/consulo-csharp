@@ -19,7 +19,13 @@ package consulo.csharp.ide.parameterInfo;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.checkerframework.common.aliasing.qual.NonLeaked;
+import com.intellij.codeInsight.CodeInsightSettings;
+import com.intellij.openapi.application.AccessToken;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
@@ -29,12 +35,6 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.util.ArrayUtil2;
-import com.intellij.codeInsight.CodeInsightSettings;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.UnfairTextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.xml.util.XmlStringUtil;
 
 /**
  * @author VISTALL
@@ -51,7 +51,6 @@ public class CSharpParametersInfo
 			')'
 	};
 
-	private static final TextRange EMPTY = new UnfairTextRange(-1, -1);
 
 	@Nonnull
 	public static char[] getOpenAndCloseTokens(@Nullable Object callable)
@@ -64,23 +63,32 @@ public class CSharpParametersInfo
 	}
 
 	@Nonnull
-	public static CSharpParametersInfo build(@Nonnull CSharpSimpleLikeMethod callable, @Nonnull PsiElement scope)
+	@RequiredReadAction
+	public static ParameterPresentationBuilder<CSharpSimpleParameterInfo> build(@Nonnull CSharpSimpleLikeMethod callable, @Nonnull PsiElement scope)
 	{
 		CSharpSimpleParameterInfo[] parameters = callable.getParameterInfos();
 		DotNetTypeRef returnType = callable.getReturnTypeRef();
 
 		char[] bounds = getOpenAndCloseTokens(callable);
 
-		int length = 0;
+		ParameterPresentationBuilder<CSharpSimpleParameterInfo> builder = new ParameterPresentationBuilder<>();
 
-		CSharpParametersInfo parametersInfo = new CSharpParametersInfo(parameters.length);
 		if(CodeInsightSettings.getInstance().SHOW_FULL_SIGNATURES_IN_PARAMETER_INFO)
 		{
-			String textOfReturnType = CSharpTypeRefPresentationUtil.buildShortText(returnType, scope);
-			parametersInfo.myBuilder.append(textOfReturnType);
-			parametersInfo.myBuilder.append(" ").append(bounds[0]);
+			if(callable instanceof CSharpConstructorDeclaration)
+			{
+				builder.add(((CSharpConstructorDeclaration) callable).getName());
+			}
+			else if(callable instanceof PsiNamedElement)
+			{
+				builder.add(CSharpTypeRefPresentationUtil.buildShortText(returnType, scope));
 
-			length = XmlStringUtil.escapeString(textOfReturnType).length() + 2; // space and brace
+				builder.addSpace();
+
+				builder.add(((PsiNamedElement) callable).getName());
+			}
+
+			builder.addEscaped(String.valueOf(bounds[0]));
 		}
 
 		if(parameters.length > 0)
@@ -89,52 +97,43 @@ public class CSharpParametersInfo
 			{
 				if(i != 0)
 				{
-					length += parametersInfo.appendComma();
+					builder.add(", ");
 				}
 
-				final int startOffset = length;
 				CSharpSimpleParameterInfo parameter = parameters[i];
-				length += parametersInfo.buildParameter(parameter, scope);
-				parametersInfo.myParameterRanges[i] = new TextRange(startOffset, length);
+				try (AccessToken ignored = builder.beginParameter(i))
+				{
+					buildParameter(builder, parameter, scope);
+				}
 			}
 		}
 		else
 		{
-			String text = "<no parameters>";
-			parametersInfo.myBuilder.append(text);
-			parametersInfo.myParameterRanges[0] = new TextRange(length, length + XmlStringUtil.escapeString(text).length());
+			try (AccessToken ignored = builder.beginParameter(0))
+			{
+				builder.add("<no parameters>");
+			}
 		}
 
 		if(CodeInsightSettings.getInstance().SHOW_FULL_SIGNATURES_IN_PARAMETER_INFO)
 		{
-			parametersInfo.myBuilder.append(bounds[1]);
+			builder.addEscaped(String.valueOf(bounds[1]));
 		}
 
-		return parametersInfo;
-	}
-
-	private TextRange[] myParameterRanges;
-	private int myParameterCount;
-	private StringBuilder myBuilder = new StringBuilder();
-
-	public CSharpParametersInfo(int count)
-	{
-		myParameterCount = count;
-		myParameterRanges = new TextRange[myParameterCount == 0 ? 1 : myParameterCount];
+		return builder;
 	}
 
 	@RequiredReadAction
-	private int buildParameter(@Nonnull CSharpSimpleParameterInfo o, @Nonnull PsiElement scope)
+	private static void buildParameter(@NonLeaked ParameterPresentationBuilder<CSharpSimpleParameterInfo> builder, @Nonnull CSharpSimpleParameterInfo o, @Nonnull PsiElement scope)
 	{
 		String text = CSharpTypeRefPresentationUtil.buildShortText(o.getTypeRef(), scope);
-		myBuilder.append(text);
-		int nameOffset = 0;
+		builder.add(text);
+
 		if(o.getTypeRef() != CSharpStaticTypeRef.__ARGLIST_TYPE)
 		{
-			myBuilder.append(" ");
+			builder.addSpace();
 			String notNullName = o.getNotNullName();
-			myBuilder.append(notNullName);
-			nameOffset += notNullName.length() + 1;
+			builder.add(notNullName);
 		}
 
 		PsiElement element = o.getElement();
@@ -144,41 +143,9 @@ public class CSharpParametersInfo
 			if(initializer != null)
 			{
 				String initializerText = initializer.getText();
-				myBuilder.append(" = ").append(initializerText);
-				nameOffset += initializerText.length() + 3;
+				builder.add(" = ");
+				builder.addEscaped(initializerText);
 			}
 		}
-		return XmlStringUtil.escapeString(text).length() + nameOffset;
-	}
-
-	@Nonnull
-	public TextRange getParameterRange(int i)
-	{
-		if(i == -1)
-		{
-			if(myParameterCount == 0)
-			{
-				return myParameterRanges[0];
-			}
-			return EMPTY;
-		}
-		if(myParameterCount == 0)
-		{
-			return EMPTY;
-		}
-		TextRange textRange = ArrayUtil2.safeGet(myParameterRanges, i);
-		return textRange == null ? EMPTY : textRange;
-	}
-
-	private int appendComma()
-	{
-		myBuilder.append(", ");
-		return 2;
-	}
-
-	@Nonnull
-	public String getText()
-	{
-		return myBuilder.toString();
 	}
 }
