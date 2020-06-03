@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.intellij.ProjectTopics;
-import com.intellij.openapi.Disposable;
+import consulo.disposer.Disposable;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootAdapter;

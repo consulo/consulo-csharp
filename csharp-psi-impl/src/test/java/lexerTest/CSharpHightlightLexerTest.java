@@ -25,11 +25,10 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NonNls;
 import com.intellij.lexer.Lexer;
-import com.intellij.openapi.Disposable;
-import com.intellij.openapi.util.Disposer;
+import consulo.disposer.Disposable;
+import consulo.disposer.Disposer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.testFramework.LexerTestCase;
-import consulo.container.boot.ContainerPathManager;
 import consulo.csharp.lang.CSharpCfsElementTypeFactory;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.doc.psi.CSharpDocElementFactory;
@@ -51,7 +50,7 @@ public class CSharpHightlightLexerTest extends LexerTestCase
 	@Override
 	protected void setUp() throws Exception
 	{
-		myDisposable = Disposer.newDisposable();
+		myDisposable = Disposable.newDisposable();
 
 		LightApplicationBuilder.DefaultRegistrator registrator = new LightApplicationBuilder.DefaultRegistrator()
 		{
@@ -118,7 +117,7 @@ public class CSharpHightlightLexerTest extends LexerTestCase
 	}
 
 	@Override
-	protected void doTest(@NonNls String text, @Nullable String expected)
+	protected void doTest(String text, @Nullable String expected)
 	{
 		String result = printTokens(text, 0);
 
