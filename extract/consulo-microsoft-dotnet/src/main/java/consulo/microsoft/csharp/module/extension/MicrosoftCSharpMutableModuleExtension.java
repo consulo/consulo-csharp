@@ -16,32 +16,37 @@
 
 package consulo.microsoft.csharp.module.extension;
 
-import consulo.csharp.module.extension.CSharpConfigurationPanel;
-import consulo.csharp.module.extension.CSharpMutableModuleExtension;
-import consulo.roots.ModuleRootLayer;
-import consulo.ui.annotation.RequiredUIAccess;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.*;
+
+import consulo.csharp.module.extension.CSharpConfigurationPanel;
+import consulo.csharp.module.extension.CSharpMutableModuleExtension;
+import consulo.disposer.Disposable;
+import consulo.module.extension.swing.SwingMutableModuleExtension;
+import consulo.roots.ModuleRootLayer;
+import consulo.ui.Component;
+import consulo.ui.Label;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.layout.VerticalLayout;
 
 /**
  * @author VISTALL
  * @since 26.11.13.
  */
-public class MicrosoftCSharpMutableModuleExtension extends MicrosoftCSharpModuleExtension implements CSharpMutableModuleExtension<MicrosoftCSharpModuleExtension>
+public class MicrosoftCSharpMutableModuleExtension extends MicrosoftCSharpModuleExtension implements CSharpMutableModuleExtension<MicrosoftCSharpModuleExtension>, SwingMutableModuleExtension
 {
 	public MicrosoftCSharpMutableModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer module)
 	{
 		super(id, module);
 	}
 
+	@RequiredUIAccess
 	@Nullable
 	@Override
-	@RequiredUIAccess
-	public JComponent createConfigurablePanel(@Nonnull Runnable runnable)
+	public Component createConfigurationComponent(@Nonnull Disposable disposable, @Nonnull Runnable runnable)
 	{
-		return new CSharpConfigurationPanel(this);
+		return VerticalLayout.create().add(Label.create("Unsupported UI"));
 	}
 
 	@Override
@@ -54,5 +59,13 @@ public class MicrosoftCSharpMutableModuleExtension extends MicrosoftCSharpModule
 	public boolean isModified(@Nonnull MicrosoftCSharpModuleExtension moduleExtension)
 	{
 		return isModifiedImpl(moduleExtension);
+	}
+
+	@RequiredUIAccess
+	@Nullable
+	@Override
+	public JComponent createConfigurablePanel(@Nonnull Disposable disposable, @Nonnull Runnable runnable)
+	{
+		return new CSharpConfigurationPanel(this);
 	}
 }

@@ -16,32 +16,45 @@
 
 package consulo.mono.csharp.module.extension;
 
-import consulo.csharp.module.extension.CSharpConfigurationPanel;
-import consulo.csharp.module.extension.CSharpMutableModuleExtension;
-import consulo.roots.ModuleRootLayer;
-import consulo.ui.annotation.RequiredUIAccess;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.*;
+
+import consulo.csharp.module.extension.CSharpConfigurationPanel;
+import consulo.csharp.module.extension.CSharpMutableModuleExtension;
+import consulo.disposer.Disposable;
+import consulo.module.extension.swing.SwingMutableModuleExtension;
+import consulo.roots.ModuleRootLayer;
+import consulo.ui.Component;
+import consulo.ui.Label;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.layout.VerticalLayout;
 
 /**
  * @author VISTALL
  * @since 26.11.13.
  */
-public class MonoCSharpMutableModuleExtension extends MonoCSharpModuleExtension implements CSharpMutableModuleExtension<MonoCSharpModuleExtension>
+public class MonoCSharpMutableModuleExtension extends MonoCSharpModuleExtension implements CSharpMutableModuleExtension<MonoCSharpModuleExtension>, SwingMutableModuleExtension
 {
 	public MonoCSharpMutableModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer module)
 	{
 		super(id, module);
 	}
 
+	@RequiredUIAccess
 	@Nullable
 	@Override
-	@RequiredUIAccess
-	public JComponent createConfigurablePanel(@Nonnull Runnable runnable)
+	public JComponent createConfigurablePanel(@Nonnull Disposable disposable, @Nonnull Runnable runnable)
 	{
 		return new CSharpConfigurationPanel(this);
+	}
+
+	@RequiredUIAccess
+	@Nullable
+	@Override
+	public Component createConfigurationComponent(@Nonnull Disposable disposable, @Nonnull Runnable runnable)
+	{
+		return VerticalLayout.create().add(Label.create("Unsupported UI"));
 	}
 
 	@Override
