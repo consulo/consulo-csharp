@@ -16,7 +16,18 @@
 
 package consulo.csharp.lang.psi.impl.runtime;
 
-import consulo.disposer.Disposable;
+import gnu.trove.THashSet;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -26,6 +37,7 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.source.PsiFileImpl;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
@@ -35,6 +47,7 @@ import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.csharp.lang.psi.impl.DotNetTypes2;
 import consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
+import consulo.disposer.Disposable;
 import consulo.dotnet.psi.DotNetAttributeTargetType;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -48,12 +61,6 @@ import consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
 import consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
 import consulo.util.dataholder.UserDataHolderBase;
 import consulo.vfs.util.ArchiveVfsUtil;
-import gnu.trove.THashSet;
-
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.*;
 
 /**
  * @author VISTALL
@@ -95,7 +102,7 @@ public class AssemblyModuleCache extends UserDataHolderBase implements Disposabl
 	{
 		Set<String> assemblies = new HashSet<>();
 
-		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, module.getProject(), module.getModuleScope());
+		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, module.getProject(), GlobalSearchScope.moduleScope(module));
 
 		for(CSharpAttributeList attributeList : attributeLists)
 		{

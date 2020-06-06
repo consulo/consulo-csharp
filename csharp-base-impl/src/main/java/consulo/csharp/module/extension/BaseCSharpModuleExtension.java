@@ -90,7 +90,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	public PsiElement[] getEntryPointElements()
 	{
 		final List<DotNetTypeDeclaration> typeDeclarations = new ArrayList<DotNetTypeDeclaration>();
-		Collection<DotNetLikeMethodDeclaration> methods = MethodIndex.getInstance().get("Main", getProject(), getModule().getModuleScope());
+		Collection<DotNetLikeMethodDeclaration> methods = MethodIndex.getInstance().get("Main", getProject(), GlobalSearchScope.moduleScope(getModule()));
 		for(DotNetLikeMethodDeclaration method : methods)
 		{
 			if(method instanceof CSharpMethodDeclaration && DotNetRunUtil.isEntryPoint((DotNetMethodDeclaration) method))
@@ -112,7 +112,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	@RequiredReadAction
 	public String getAssemblyTitle()
 	{
-		GlobalSearchScope moduleScope = getModule().getModuleScope();
+		GlobalSearchScope moduleScope = GlobalSearchScope.moduleScope(getModule());
 		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, getProject(), moduleScope);
 
 		loop:
