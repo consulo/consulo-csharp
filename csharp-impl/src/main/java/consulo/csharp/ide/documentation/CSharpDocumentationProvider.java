@@ -17,8 +17,15 @@
 package consulo.csharp.ide.documentation;
 
 import com.intellij.lang.documentation.DocumentationProvider;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtil;
+import com.intellij.openapi.roots.OrderEntry;
+import com.intellij.openapi.roots.ProjectFileIndex;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.Function;
@@ -200,6 +207,30 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 	private static String generateQuickTypeDeclarationInfo(DotNetTypeDeclaration element, boolean isFullDocumentation)
 	{
 		StringBuilder builder = new StringBuilder();
+
+		if(isFullDocumentation)
+		{
+			PsiFile containingFile = element.getContainingFile();
+			final ProjectFileIndex fileIndex = ProjectRootManager.getInstance(element.getProject()).getFileIndex();
+			VirtualFile vFile = containingFile == null ? null : containingFile.getVirtualFile();
+			if(vFile != null && (fileIndex.isInLibrarySource(vFile) || fileIndex.isInLibraryClasses(vFile)))
+			{
+				final List<OrderEntry> orderEntries = fileIndex.getOrderEntriesForFile(vFile);
+				if(orderEntries.size() > 0)
+				{
+					final OrderEntry orderEntry = orderEntries.get(0);
+					builder.append("[").append(StringUtil.escapeXml(orderEntry.getPresentableName())).append("] ");
+				}
+			}
+			else
+			{
+				final Module module = containingFile == null ? null : ModuleUtil.findModuleForPsiElement(containingFile);
+				if(module != null)
+				{
+					builder.append('[').append(module.getName()).append("] ");
+				}
+			}
+		}
 
 		String presentableParentQName = element.getPresentableParentQName();
 		if(!StringUtil.isEmpty(presentableParentQName))
