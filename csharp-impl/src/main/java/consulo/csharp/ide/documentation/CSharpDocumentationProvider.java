@@ -16,47 +16,29 @@
 
 package consulo.csharp.ide.documentation;
 
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import org.emonic.base.codehierarchy.CodeHierarchyHelper;
-import org.emonic.base.documentation.IDocumentation;
-
-import javax.annotation.Nullable;
 import com.intellij.lang.documentation.DocumentationProvider;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtil;
-import com.intellij.openapi.roots.OrderEntry;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.Function;
 import com.intellij.xml.util.XmlStringUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
-import consulo.csharp.lang.psi.CSharpEventDeclaration;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDefStatement;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import consulo.dotnet.documentation.DotNetDocumentationCache;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetArrayTypeRef;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetPointerTypeRef;
-import consulo.dotnet.resolve.DotNetPsiSearcher;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.resolve.*;
+import org.emonic.base.codehierarchy.CodeHierarchyHelper;
+import org.emonic.base.documentation.IDocumentation;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -71,31 +53,38 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 	@RequiredReadAction
 	public String getQuickNavigateInfo(PsiElement element, PsiElement element2)
 	{
+		return getNavigateInfo(element, false);
+	}
+
+	@Nullable
+	@RequiredReadAction
+	private static String getNavigateInfo(PsiElement element, boolean isFullDocumentation)
+	{
 		if(element instanceof DotNetTypeDeclaration)
 		{
-			return generateQuickTypeDeclarationInfo((DotNetTypeDeclaration) element);
+			return generateQuickTypeDeclarationInfo((DotNetTypeDeclaration) element, isFullDocumentation);
 		}
 		else if(element instanceof DotNetVariable)
 		{
-			return generateQuickVariableInfo((DotNetVariable) element);
+			return generateQuickVariableInfo((DotNetVariable) element, isFullDocumentation);
 		}
 		else if(element instanceof DotNetLikeMethodDeclaration)
 		{
-			return generateQuickLikeMethodDeclarationInfo((DotNetLikeMethodDeclaration) element);
+			return generateQuickLikeMethodDeclarationInfo((DotNetLikeMethodDeclaration) element, isFullDocumentation);
 		}
 		else if(element instanceof CSharpTypeDefStatement)
 		{
-			return generateQuickTypeAliasInfo((CSharpTypeDefStatement) element);
+			return generateQuickTypeAliasInfo((CSharpTypeDefStatement) element, isFullDocumentation);
 		}
 		return null;
 	}
 
 	@RequiredReadAction
-	private static String generateQuickTypeAliasInfo(CSharpTypeDefStatement typeDefStatement)
+	private static String generateQuickTypeAliasInfo(CSharpTypeDefStatement typeDefStatement, boolean isFullDocumentation)
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("type alias ");
-		builder.append(typeDefStatement.getName());
+		appendName(typeDefStatement, builder, isFullDocumentation);
 
 		DotNetTypeRef typeRef = typeDefStatement.toTypeRef();
 		if(typeRef != DotNetTypeRef.ERROR_TYPE)
@@ -107,7 +96,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 	}
 
 	@RequiredReadAction
-	private static String generateQuickLikeMethodDeclarationInfo(DotNetLikeMethodDeclaration element)
+	private static String generateQuickLikeMethodDeclarationInfo(DotNetLikeMethodDeclaration element, boolean isFullDocumentation)
 	{
 		StringBuilder builder = new StringBuilder();
 
@@ -124,11 +113,11 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 			{
 				builder.append("~");
 			}
-			builder.append(element.getName());
+			appendName(element, builder, isFullDocumentation);
 		}
 		else
 		{
-			builder.append(generateLinksForType(element.getReturnTypeRef(), element, false));
+			builder.append(generateLinksForType(element.getReturnTypeRef(), element, isFullDocumentation));
 			builder.append(" ");
 			if(element instanceof CSharpIndexMethodDeclaration)
 			{
@@ -136,7 +125,17 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 			}
 			else
 			{
+				if(isFullDocumentation)
+				{
+					builder.append("<b>");
+				}
+
 				builder.append(XmlStringUtil.escapeString(element.getName()));
+
+				if(isFullDocumentation)
+				{
+					builder.append("</b>");
+				}
 			}
 		}
 		DotNetGenericParameter[] genericParameters = element.getGenericParameters();
@@ -175,7 +174,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 	}
 
 	@RequiredReadAction
-	private static String generateQuickVariableInfo(DotNetVariable element)
+	private static String generateQuickVariableInfo(DotNetVariable element, boolean isFullDocumentation)
 	{
 		StringBuilder builder = new StringBuilder();
 
@@ -184,9 +183,9 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		{
 			builder.append("event ");
 		}
-		builder.append(generateLinksForType(element.toTypeRef(true), element, false));
+		builder.append(generateLinksForType(element.toTypeRef(true), element, isFullDocumentation));
 		builder.append(" ");
-		builder.append(element.getName());
+		appendName(element, builder, isFullDocumentation);
 		DotNetExpression initializer = element.getInitializer();
 		if(initializer != null)
 		{
@@ -198,30 +197,9 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 	}
 
 	@RequiredReadAction
-	private static String generateQuickTypeDeclarationInfo(DotNetTypeDeclaration element)
+	private static String generateQuickTypeDeclarationInfo(DotNetTypeDeclaration element, boolean isFullDocumentation)
 	{
 		StringBuilder builder = new StringBuilder();
-
-		PsiFile containingFile = element.getContainingFile();
-		final ProjectFileIndex fileIndex = ProjectRootManager.getInstance(element.getProject()).getFileIndex();
-		VirtualFile vFile = containingFile == null ? null : containingFile.getVirtualFile();
-		if(vFile != null && (fileIndex.isInLibrarySource(vFile) || fileIndex.isInLibraryClasses(vFile)))
-		{
-			final List<OrderEntry> orderEntries = fileIndex.getOrderEntriesForFile(vFile);
-			if(orderEntries.size() > 0)
-			{
-				final OrderEntry orderEntry = orderEntries.get(0);
-				builder.append("[").append(StringUtil.escapeXml(orderEntry.getPresentableName())).append("] ");
-			}
-		}
-		else
-		{
-			final Module module = containingFile == null ? null : ModuleUtil.findModuleForPsiElement(containingFile);
-			if(module != null)
-			{
-				builder.append('[').append(module.getName()).append("] ");
-			}
-		}
 
 		String presentableParentQName = element.getPresentableParentQName();
 		if(!StringUtil.isEmpty(presentableParentQName))
@@ -238,9 +216,24 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 
 		appendTypeDeclarationType(element, builder);
 
-		builder.append(" ").append(element.getName());
+		builder.append(" ");
+
+		appendName(element, builder, isFullDocumentation);
 
 		return builder.toString();
+	}
+
+	@RequiredReadAction
+	private static void appendName(PsiNamedElement element, StringBuilder builder, boolean isFullDocumentation)
+	{
+		if(isFullDocumentation)
+		{
+			builder.append("<b>").append(element.getName()).append("</b>");
+		}
+		else
+		{
+			builder.append(element.getName());
+		}
 	}
 
 	@Nullable
@@ -263,17 +256,27 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 				element = resolvedElement;
 			}
 		}
+
+		StringBuilder builder = new StringBuilder();
+		String info = getNavigateInfo(element, true);
+		if(info != null)
+		{
+			builder.append(info);
+			builder.append("<br><br>");
+		}
+
 		IDocumentation documentation = DotNetDocumentationCache.getInstance().findDocumentation(element);
 		if(documentation == null)
 		{
 			documentation = tryToFindFromOverrideParent(element);
 		}
 
-		if(documentation == null)
+		if(documentation != null)
 		{
-			return null;
+			builder.append(CodeHierarchyHelper.getFormText(documentation));
 		}
-		return CodeHierarchyHelper.getFormText(documentation);
+
+		return builder.length() > 0 ? builder.toString() : null;
 	}
 
 	@RequiredReadAction
@@ -331,13 +334,6 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		{
 			builder.append(modifier.getPresentableText()).append(" ");
 		}
-	}
-
-	@Nullable
-	@Override
-	public PsiElement getDocumentationElementForLookupItem(PsiManager psiManager, Object o, PsiElement element)
-	{
-		return null;
 	}
 
 	@Nullable
