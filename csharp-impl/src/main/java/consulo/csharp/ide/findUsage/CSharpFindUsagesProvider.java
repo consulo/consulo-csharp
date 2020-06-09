@@ -23,6 +23,9 @@ import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiUtilCore;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.*;
@@ -154,11 +157,12 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		{
 			return "preprocessor variable";
 		}
-		return "getType " + element.getNode().getElementType();
+		return debugText("getType", element);
 	}
 
 	@Nonnull
 	@Override
+	@RequiredReadAction
 	public String getDescriptiveName(@Nonnull PsiElement element)
 	{
 		if(element instanceof CSharpPreprocessorVariable)
@@ -172,9 +176,9 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		}
 		if(element instanceof CSharpLocalVariableDeclarationStatement)
 		{
-			return StringUtil.join(((CSharpLocalVariableDeclarationStatement) element).getVariables(), local -> local.getName(), ", ");
+			return StringUtil.join(((CSharpLocalVariableDeclarationStatement) element).getVariables(), PsiNamedElement::getName, ", ");
 		}
-		return "getDescriptiveName " + element.getNode().getElementType();
+		return debugText("getDescriptiveName", element);
 	}
 
 	@Nonnull
@@ -248,6 +252,14 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 			return nodeText + "." + accessorElement.getText();
 		}
 
-		return "getNodeText : " + element.getClass().getSimpleName();
+		return debugText("getNodeText", element);
+	}
+
+	@Nonnull
+	private String debugText(String prefix, @Nonnull PsiElement element)
+	{
+		IElementType type = PsiUtilCore.getElementType(element);
+		String suffix = type == null ? element.getClass().getSimpleName() : type.toString();
+		return prefix + " : " + suffix;
 	}
 }
