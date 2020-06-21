@@ -328,7 +328,7 @@
 		<idIndexer filetype="C#" implementationClass="consulo.csharp.ide.idCache.CSharpIdIndexer"/>
 		<todoIndexer filetype="C#" implementationClass="consulo.csharp.ide.idCache.CSharpTodoIndexer"/>
 
-		<breadcrumbsInfoProvider implementation="consulo.csharp.ide.breadcrumbs.CSharpBreadcrumbsProvider"/>
+		<navbar implementation="consulo.csharp.ide.navbar.CSharpNavBarExtension" />
 
 		<projectService serviceImplementation="consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent" lazy="false" />
 		<projectService serviceImplementation="consulo.csharp.lang.psi.impl.runtime.AssemblyModuleCache" />

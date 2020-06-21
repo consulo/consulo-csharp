@@ -16,12 +16,15 @@
 
 package consulo.csharp.ide.structureView;
 
-import javax.annotation.Nonnull;
-
-import consulo.csharp.ide.structureView.sorters.CSharpMemberSorter;
 import com.intellij.ide.structureView.StructureViewModelBase;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiFile;
+import consulo.csharp.ide.structureView.sorters.CSharpMemberSorter;
+import consulo.dotnet.psi.DotNetQualifiedElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -29,10 +32,11 @@ import com.intellij.psi.PsiFile;
  */
 public class CSharpStructureViewModel extends StructureViewModelBase
 {
-	public CSharpStructureViewModel(@Nonnull PsiFile psiFile)
+	public CSharpStructureViewModel(@Nonnull PsiFile psiFile, @Nullable Editor editor)
 	{
-		super(psiFile, new CSharpElementStructureViewTreeElement(psiFile));
+		super(psiFile, editor, new CSharpElementStructureViewTreeElement(psiFile));
 
 		withSorters(CSharpMemberSorter.INSTANCE, Sorter.ALPHA_SORTER);
+		withSuitableClasses(DotNetQualifiedElement.class);
 	}
 }

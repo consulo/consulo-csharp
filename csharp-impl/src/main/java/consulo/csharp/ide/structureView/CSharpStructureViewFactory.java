@@ -16,15 +16,16 @@
 
 package consulo.csharp.ide.structureView;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import com.intellij.ide.structureView.StructureViewBuilder;
 import com.intellij.ide.structureView.StructureViewModel;
 import com.intellij.ide.structureView.TreeBasedStructureViewBuilder;
 import com.intellij.lang.PsiStructureViewFactory;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiFile;
+import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -44,7 +45,7 @@ public class CSharpStructureViewFactory implements PsiStructureViewFactory
 				@Override
 				public StructureViewModel createStructureViewModel(@Nullable Editor editor)
 				{
-					return new CSharpStructureViewModel(psiFile);
+					return new CSharpStructureViewModel(psiFile, editor);
 				}
 			};
 		}
