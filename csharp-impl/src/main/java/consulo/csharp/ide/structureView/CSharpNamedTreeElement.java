@@ -16,33 +16,28 @@
 
 package consulo.csharp.ide.structureView;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.ui.annotation.RequiredUIAccess;
-import consulo.csharp.ide.CSharpElementPresentationUtil;
-import consulo.dotnet.ide.DotNetElementPresentationUtil;
-import consulo.dotnet.psi.DotNetFieldDeclaration;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetNamespaceDeclaration;
-import consulo.dotnet.psi.DotNetPropertyDeclaration;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import consulo.csharp.ide.CSharpElementPresentationUtil;
+import consulo.dotnet.ide.DotNetElementPresentationUtil;
+import consulo.dotnet.psi.*;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author VISTALL
  * @since 31.12.13.
  */
-public class CSharpElementStructureViewTreeElement extends PsiTreeElementBase<PsiNamedElement>
+public class CSharpNamedTreeElement extends PsiTreeElementBase<PsiNamedElement>
 {
-	public CSharpElementStructureViewTreeElement(PsiNamedElement psiElement)
+	public CSharpNamedTreeElement(PsiNamedElement psiElement)
 	{
 		super(psiElement);
 	}
@@ -51,12 +46,12 @@ public class CSharpElementStructureViewTreeElement extends PsiTreeElementBase<Ps
 	@Override
 	public Collection<StructureViewTreeElement> getChildrenBase()
 	{
-		List<StructureViewTreeElement> list = new ArrayList<StructureViewTreeElement>();
+		List<StructureViewTreeElement> list = new ArrayList<>();
 		for(PsiElement psiElement : getValue().getChildren())
 		{
 			if(psiElement instanceof DotNetQualifiedElement)
 			{
-				list.add(new CSharpElementStructureViewTreeElement((DotNetQualifiedElement) psiElement));
+				list.add(new CSharpNamedTreeElement((DotNetQualifiedElement) psiElement));
 			}
 		}
 		return list;

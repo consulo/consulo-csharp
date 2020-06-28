@@ -36,20 +36,20 @@ import java.util.stream.Collectors;
  * @author VISTALL
  * @since 2020-06-28
  */
-public class CSharpInheritedMembersNodeProvider extends InheritedMembersNodeProvider<CSharpElementStructureViewTreeElement>
+public class CSharpInheritedMembersNodeProvider extends InheritedMembersNodeProvider<CSharpNamedTreeElement>
 {
 	public static final CSharpInheritedMembersNodeProvider INSTANCE = new CSharpInheritedMembersNodeProvider();
 
 	@Override
 	@RequiredReadAction
-	public Collection<CSharpElementStructureViewTreeElement> provideNodes(TreeElement treeElement)
+	public Collection<CSharpNamedTreeElement> provideNodes(TreeElement treeElement)
 	{
-		if(!(treeElement instanceof CSharpElementStructureViewTreeElement))
+		if(!(treeElement instanceof CSharpNamedTreeElement))
 		{
 			return Collections.emptyList();
 		}
 
-		PsiNamedElement value = ((CSharpElementStructureViewTreeElement) treeElement).getValue();
+		PsiNamedElement value = ((CSharpNamedTreeElement) treeElement).getValue();
 
 		if(!(value instanceof CSharpTypeDeclaration))
 		{
@@ -70,6 +70,6 @@ public class CSharpInheritedMembersNodeProvider extends InheritedMembersNodeProv
 			return true;
 		}, false);
 
-		return elements.stream().map(element -> new CSharpElementStructureViewTreeElement((PsiNamedElement) element)).collect(Collectors.toList());
+		return elements.stream().map(element -> new CSharpNamedTreeElement((PsiNamedElement) element)).collect(Collectors.toList());
 	}
 }

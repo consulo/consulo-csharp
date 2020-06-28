@@ -18,12 +18,16 @@ package consulo.csharp.ide.navbar;
 
 import com.intellij.ide.navigationToolbar.StructureAwareNavBarModelExtension;
 import com.intellij.ide.ui.UISettings;
+import com.intellij.ide.util.treeView.smartTree.NodeProvider;
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.ide.structureView.CSharpLambdaNodeProvider;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpFile;
+import consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
@@ -32,6 +36,8 @@ import consulo.dotnet.psi.DotNetQualifiedElement;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -54,6 +60,13 @@ public class CSharpNavBarExtension extends StructureAwareNavBarModelExtension
 		return getPresentableText(o, false);
 	}
 
+	@Nonnull
+	@Override
+	protected List<NodeProvider<?>> getApplicableNodeProviders()
+	{
+		return Collections.singletonList(CSharpLambdaNodeProvider.INSTANCE);
+	}
+
 	@Nullable
 	@Override
 	@RequiredReadAction
@@ -72,6 +85,14 @@ public class CSharpNavBarExtension extends StructureAwareNavBarModelExtension
 				return qualifiedElement.getName();
 			}
 			return qualifiedElement.getName();
+		}
+		else if(o instanceof CSharpDelegateExpressionImpl)
+		{
+			return "Delegate";
+		}
+		else if(o instanceof CSharpLambdaExpressionImpl)
+		{
+			return "Lambda";
 		}
 
 		return null;

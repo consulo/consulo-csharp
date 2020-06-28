@@ -21,7 +21,7 @@ import java.util.Comparator;
 import javax.annotation.Nonnull;
 
 import consulo.csharp.ide.projectView.CSharpElementTreeNode;
-import consulo.csharp.ide.structureView.CSharpElementStructureViewTreeElement;
+import consulo.csharp.ide.structureView.CSharpNamedTreeElement;
 import com.intellij.ide.util.treeView.smartTree.ActionPresentation;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
 import com.intellij.psi.PsiNamedElement;
@@ -41,10 +41,10 @@ public class CSharpMemberSorter implements Sorter
 		@Override
 		public int compare(Object o1, Object o2)
 		{
-			if(o1 instanceof CSharpElementStructureViewTreeElement && o2 instanceof CSharpElementStructureViewTreeElement)
+			if(o1 instanceof CSharpNamedTreeElement && o2 instanceof CSharpNamedTreeElement)
 			{
-				PsiNamedElement value1 = ((CSharpElementStructureViewTreeElement) o1).getValue();
-				PsiNamedElement value2 = ((CSharpElementStructureViewTreeElement) o2).getValue();
+				PsiNamedElement value1 = ((CSharpNamedTreeElement) o1).getValue();
+				PsiNamedElement value2 = ((CSharpNamedTreeElement) o2).getValue();
 
 				return CSharpElementTreeNode.getWeight(value2) - CSharpElementTreeNode.getWeight(value1);
 			}
