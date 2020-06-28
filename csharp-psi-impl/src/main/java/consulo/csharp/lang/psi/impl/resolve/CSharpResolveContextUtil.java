@@ -16,11 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.resolve;
 
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -30,12 +25,7 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.NotNullFunction;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDefStatement;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
-import consulo.csharp.lang.psi.CSharpUsingTypeStatement;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.dotnet.psi.DotNetGenericParameter;
@@ -44,6 +34,10 @@ import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.resolve.DotNetPsiSearcher;
 import consulo.util.dataholder.Key;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -63,9 +57,9 @@ public class CSharpResolveContextUtil
 	@Nonnull
 	@RequiredReadAction
 	public static CSharpResolveContext createContext(@Nonnull DotNetGenericExtractor genericExtractor,
-			@Nonnull GlobalSearchScope resolveScope,
-			@Nonnull PsiElement element,
-			@Nullable Set<PsiElement> recursiveGuardSet)
+													 @Nonnull GlobalSearchScope resolveScope,
+													 @Nonnull PsiElement element,
+													 @Nullable Set<PsiElement> recursiveGuardSet)
 	{
 		if(element instanceof CSharpTypeDeclaration)
 		{
@@ -106,9 +100,9 @@ public class CSharpResolveContextUtil
 	@Nonnull
 	@RequiredReadAction
 	private static CSharpResolveContext cacheTypeContext(@Nonnull DotNetGenericExtractor genericExtractor,
-			GlobalSearchScope resolveScope,
-			@Nonnull CSharpTypeDeclaration typeDeclaration,
-			@Nullable Set<PsiElement> recursiveGuardSet)
+														 GlobalSearchScope resolveScope,
+														 @Nonnull CSharpTypeDeclaration typeDeclaration,
+														 @Nullable Set<PsiElement> recursiveGuardSet)
 	{
 		if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
 		{
@@ -134,8 +128,8 @@ public class CSharpResolveContextUtil
 	@Nonnull
 	@RequiredReadAction
 	private static CSharpResolveContext cacheTypeContextImpl(@Nonnull DotNetGenericExtractor genericExtractor,
-			@Nonnull final CSharpTypeDeclaration typeDeclaration,
-			@Nullable final Set<PsiElement> recursiveGuardSet)
+															 @Nonnull final CSharpTypeDeclaration typeDeclaration,
+															 @Nullable final Set<PsiElement> recursiveGuardSet)
 	{
 		if(genericExtractor == DotNetGenericExtractor.EMPTY && (recursiveGuardSet == null || recursiveGuardSet.size() == 1 && recursiveGuardSet.contains(typeDeclaration)))
 		{
@@ -152,8 +146,7 @@ public class CSharpResolveContextUtil
 				@RequiredReadAction
 				public Result<CSharpResolveContext> compute()
 				{
-					return Result.<CSharpResolveContext>create(new CSharpTypeResolveContext(typeDeclaration, DotNetGenericExtractor.EMPTY, null), PsiModificationTracker
-							.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+					return Result.<CSharpResolveContext>create(new CSharpTypeResolveContext(typeDeclaration, DotNetGenericExtractor.EMPTY, null), PsiModificationTracker.MODIFICATION_COUNT);
 				}
 			}, false);
 			typeDeclaration.putUserData(RESOLVE_CONTEXT, cachedValue);

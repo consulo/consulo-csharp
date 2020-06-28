@@ -17,6 +17,7 @@
 package consulo.csharp.ide.structureView;
 
 import com.intellij.ide.structureView.StructureViewModelBase;
+import com.intellij.ide.util.treeView.smartTree.NodeProvider;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiFile;
@@ -25,6 +26,8 @@ import consulo.dotnet.psi.DotNetQualifiedElement;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author VISTALL
@@ -38,5 +41,12 @@ public class CSharpStructureViewModel extends StructureViewModelBase
 
 		withSorters(CSharpMemberSorter.INSTANCE, Sorter.ALPHA_SORTER);
 		withSuitableClasses(DotNetQualifiedElement.class);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<NodeProvider> getNodeProviders()
+	{
+		return Collections.singletonList(CSharpInheritedMembersNodeProvider.INSTANCE);
 	}
 }
