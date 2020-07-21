@@ -21,6 +21,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.dotnet.psi.DotNetExpression;
@@ -33,9 +34,11 @@ import javax.annotation.Nullable;
  * @author VISTALL
  * @since 11.02.14
  */
-public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
+public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl implements CSharpOutRefExpression
 {
 	public static final TokenSet ourStartTypes = TokenSet.create(CSharpTokens.OUT_KEYWORD, CSharpTokens.REF_KEYWORD);
+
+	private final ThreadLocal<Boolean> myTypeRefProcessing = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
 	public CSharpOutRefWrapExpressionImpl(@Nonnull ASTNode node)
 	{
@@ -51,6 +54,20 @@ public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl impleme
 	@RequiredReadAction
 	@Nonnull
 	@Override
+	public CSharpRefTypeRef.Type getExpressionType()
+	{
+		PsiElement startElement = getStartElement();
+		CSharpRefTypeRef.Type type = CSharpRefTypeRef.Type.ref;
+		if(startElement.getNode().getElementType() == CSharpTokens.OUT_KEYWORD)
+		{
+			type = CSharpRefTypeRef.Type.out;
+		}
+		return type;
+	}
+
+	@RequiredReadAction
+	@Nonnull
+	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		DotNetExpression innerExpression = getInnerExpression();
@@ -59,13 +76,44 @@ public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl impleme
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
+		CSharpRefTypeRef.Type type = getExpressionType();
+
 		DotNetTypeRef typeRef = innerExpression.toTypeRef(resolveFromParent);
-		PsiElement startElement = getStartElement();
-		CSharpRefTypeRef.Type type = CSharpRefTypeRef.Type.ref;
-		if(startElement.getNode().getElementType() == CSharpTokens.OUT_KEYWORD)
+		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{
-			type = CSharpRefTypeRef.Type.out;
+			boolean isPlaceholder = innerExpression instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) innerExpression).isPlaceholderReference();
+			if(isPlaceholder)
+			{
+				if(resolveFromParent)
+				{
+					if(myTypeRefProcessing.get())
+					{
+						return new CSharpOutRefAutoTypeRef(type);
+					}
+
+					try
+					{
+						myTypeRefProcessing.set(Boolean.TRUE);
+
+						DotNetTypeRef innerType = CSharpOutRefVariableImpl.searchTypeRefFromCall(this);
+
+						return new CSharpRefTypeRef(getProject(), type, innerType);
+					}
+					finally
+					{
+						myTypeRefProcessing.set(Boolean.FALSE);
+					}
+				}
+				else
+				{
+					return new CSharpOutRefAutoTypeRef(type);
+				}
+			}
+
+			return typeRef;
 		}
+
+
 		return new CSharpRefTypeRef(getProject(), type, typeRef);
 	}
 

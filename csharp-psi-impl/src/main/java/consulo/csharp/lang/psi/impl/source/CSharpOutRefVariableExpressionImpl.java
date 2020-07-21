@@ -26,7 +26,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
@@ -36,27 +35,11 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 2019-09-25
  */
-public class CSharpOutRefVariableExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
+public class CSharpOutRefVariableExpressionImpl extends CSharpExpressionImpl implements CSharpOutRefExpression
 {
 	public CSharpOutRefVariableExpressionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
-	}
-
-	@RequiredReadAction
-	@Nonnull
-	public CSharpRefTypeRef.Type getType()
-	{
-		PsiElement element = findNotNullChildByFilter(CSharpOutRefWrapExpressionImpl.ourStartTypes);
-		IElementType type = PsiUtilCore.getElementType(element);
-		if(type == CSharpTokens.REF_KEYWORD)
-		{
-			return CSharpRefTypeRef.Type.ref;
-		}
-		else
-		{
-			return CSharpRefTypeRef.Type.out;
-		}
 	}
 
 	@Nonnull
@@ -88,5 +71,22 @@ public class CSharpOutRefVariableExpressionImpl extends CSharpExpressionImpl imp
 			return false;
 		}
 		return super.processDeclarations(processor, state, lastParent, place);
+	}
+
+	@RequiredReadAction
+	@Nonnull
+	@Override
+	public CSharpRefTypeRef.Type getExpressionType()
+	{
+		PsiElement element = findNotNullChildByFilter(CSharpOutRefWrapExpressionImpl.ourStartTypes);
+		IElementType type = PsiUtilCore.getElementType(element);
+		if(type == CSharpTokens.REF_KEYWORD)
+		{
+			return CSharpRefTypeRef.Type.ref;
+		}
+		else
+		{
+			return CSharpRefTypeRef.Type.out;
+		}
 	}
 }

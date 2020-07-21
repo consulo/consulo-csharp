@@ -16,27 +16,13 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-
-import org.jetbrains.annotations.Contract;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixActionRegistrarImpl;
 import com.intellij.codeInsight.quickfix.UnresolvedReferenceQuickFixProvider;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.ResolveResult;
+import com.intellij.psi.*;
 import com.intellij.ui.ColorUtil;
 import com.intellij.ui.JBColor;
 import com.intellij.xml.util.XmlStringUtil;
@@ -48,19 +34,9 @@ import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
 import consulo.csharp.lang.doc.CSharpDocUtil;
-import consulo.csharp.lang.psi.CSharpAttribute;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpNewExpression;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
+import consulo.csharp.lang.psi.impl.source.*;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
@@ -68,13 +44,17 @@ import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NEr
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetUserType;
-import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.jetbrains.annotations.Contract;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -129,6 +109,14 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		List<HighlightInfoFactory> list = new ArrayList<>(2);
 		if(goodResult == null)
 		{
+			if(callElement instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) callElement).isPlaceholderReference())
+			{
+				if(callElement.getParent() instanceof CSharpOutRefWrapExpressionImpl)
+				{
+					return Collections.emptyList();
+				}
+			}
+
 			if(resolveResults.length == 0)
 			{
 				for(PsiElement range : ranges)
