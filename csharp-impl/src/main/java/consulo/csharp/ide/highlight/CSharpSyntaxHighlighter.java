@@ -24,8 +24,6 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.StringEscapesTokenTypes;
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.cfs.lang.CfsTokens;
-import consulo.csharp.lang.lexer.CSharpLexer;
-import consulo.csharp.lang.lexer._CSharpHighlightLexer;
 import consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -81,13 +79,14 @@ public class CSharpSyntaxHighlighter extends SyntaxHighlighterBase
 
 		// from CfsSyntaxHighlighter
 		safeMap(ourKeys, CfsTokens.FORMAT, DefaultLanguageHighlighterColors.INSTANCE_FIELD);
+		safeMap(ourKeys, CfsTokens.TEXT, CSharpHighlightKey.STRING);
 	}
 
 	@Nonnull
 	@Override
 	public Lexer getHighlightingLexer()
 	{
-		return new CSharpLexer(new _CSharpHighlightLexer());
+		return new CSharpHighlightLexer2();
 	}
 
 	@Nonnull

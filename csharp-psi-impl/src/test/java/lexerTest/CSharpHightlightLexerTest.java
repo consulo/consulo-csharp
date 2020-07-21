@@ -16,28 +16,25 @@
 
 package lexerTest;
 
-import java.io.File;
-import java.net.URISyntaxException;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-
-import org.jetbrains.annotations.NonNls;
 import com.intellij.lexer.Lexer;
-import consulo.disposer.Disposable;
-import consulo.disposer.Disposer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.testFramework.LexerTestCase;
 import consulo.csharp.lang.CSharpCfsElementTypeFactory;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.doc.psi.CSharpDocElementFactory;
 import consulo.csharp.lang.lexer.CSharpLexer;
-import consulo.csharp.lang.lexer._CSharpHighlightLexer;
+import consulo.csharp.lang.lexer._CSharpLexer;
+import consulo.disposer.Disposable;
+import consulo.disposer.Disposer;
 import consulo.injecting.InjectingContainerBuilder;
 import consulo.test.light.LightApplicationBuilder;
 import consulo.testFramework.AssertEx;
 import consulo.testFramework.util.TestUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.net.URISyntaxException;
 
 /**
  * @author VISTALL
@@ -162,7 +159,7 @@ public class CSharpHightlightLexerTest extends LexerTestCase
 	@Override
 	protected Lexer createLexer()
 	{
-		return new CSharpLexer(new _CSharpHighlightLexer());
+		return new CSharpLexer(new _CSharpLexer(true));
 	}
 
 	@Override

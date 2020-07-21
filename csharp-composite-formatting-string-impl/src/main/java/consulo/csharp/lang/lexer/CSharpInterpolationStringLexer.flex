@@ -31,6 +31,8 @@ import consulo.csharp.cfs.lang.CfsTokens;
 
 <YYINITIAL>
 {
+   "{{" { return CfsTokens.TEXT; }
+
    "{" { yybegin(ARGUMENT_WAIT); return CfsTokens.START; }
 
    [^]   { return CfsTokens.TEXT; }

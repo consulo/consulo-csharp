@@ -249,7 +249,6 @@
 		<problemFileHighlightFilter implementation="consulo.csharp.ide.codeInsight.problems.CSharpFileProblemHighlightFilter"/>
 		<problemHighlightFilter implementation="consulo.csharp.ide.codeInsight.problems.CSharpProblemHighlightFilter"/>
 		<highlightErrorFilter implementation="consulo.csharp.lang.doc.inspection.CSharpDocHighlightErrorFilter"/>
-		<editorHighlighterProvider filetype="C#" implementationClass="consulo.csharp.ide.highlight.CSharpEditorHighlighterProvider"/>
 
 		<codeInsight.parameterInfo language="C#" implementationClass="consulo.csharp.ide.parameterInfo.CSharpParameterInfoHandler"/>
 		<codeInsight.parameterInfo language="C#" implementationClass="consulo.csharp.ide.parameterInfo.CSharpGenericParameterInfoHandler"/>

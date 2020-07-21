@@ -90,7 +90,7 @@ public class CSharpLexer extends MergingLexerAdapterBase
 
 	public CSharpLexer()
 	{
-		this(new _CSharpLexer());
+		this(new _CSharpLexer(false));
 	}
 
 	public CSharpLexer(Lexer lexer)

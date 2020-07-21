@@ -3,6 +3,7 @@ package consulo.csharp.lang.lexer;
 import java.util.*;
 import com.intellij.lexer.LexerBase;
 import com.intellij.psi.tree.IElementType;
+import consulo.csharp.cfs.lang.CfsTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTokensImpl;
 import consulo.csharp.lang.psi.CSharpTemplateTokens;
@@ -11,6 +12,51 @@ import consulo.csharp.lang.psi.CSharpTemplateTokens;
 
 %{
   private int myStringInterpolationBalance;
+  private int myInsideStringInterpolationParenthesesBalance;
+  private java.util.ArrayDeque<Boolean> myStates = new java.util.ArrayDeque<>();
+  private java.util.ArrayDeque<Integer> myStacks = new java.util.ArrayDeque<>();
+
+  private final boolean myHighlight;
+
+  public _CSharpLexer(boolean highlight) {
+     myHighlight = highlight;
+  }
+
+  public boolean isInsideInterpolation() {
+     return !myStates.isEmpty();
+  }
+
+  public void beginArgumentExpression() {
+     myStates.addLast(Boolean.TRUE);
+  }
+
+  public void endArgumentExpression() {
+     myStates.removeLast();
+  }
+
+  public void push(int value) {
+     myStacks.add(yystate());
+
+     yybegin(value);
+  }
+
+  public void clear() {
+     myStringInterpolationBalance = 0;
+     myStates.clear();
+     myInsideStringInterpolationParenthesesBalance = 0;
+     myStacks.clear();
+  }
+
+
+  public void back() {
+     if(myStacks.isEmpty()) {
+        yybegin(YYINITIAL);
+     }
+     else {
+        int value = myStacks.removeLast();
+        yybegin(value);
+     }
+  }
 %}
 
 %public
@@ -22,6 +68,8 @@ import consulo.csharp.lang.psi.CSharpTemplateTokens;
 
 %state PREPROCESSOR_DIRECTIVE
 %state STRING_INTERPOLATION
+%state STRING_INTERPOLATION_FORMAT_WAIT
+%state STRING_INTERPOLATION_PARSE
 
 DIGIT=[0-9]
 WHITE_SPACE=[ \n\r\t\f]+
@@ -79,23 +127,68 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 <STRING_INTERPOLATION>
 {
-	"{"
+	"{{"
 	{
-		myStringInterpolationBalance ++;
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
 
-	"}"
+	"{"
 	{
-		myStringInterpolationBalance --;
+		myStringInterpolationBalance ++;
+
+		beginArgumentExpression();
+
+		push(myHighlight ? YYINITIAL : STRING_INTERPOLATION_PARSE);
+
+		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
+	}
+
+	"\\\""
+	{
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
 
 	"\""
 	{
-		if(myStringInterpolationBalance == 0)
+		back();
+
+		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
+	}
+
+	[^]
+	{
+		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
+	}
+}
+
+<STRING_INTERPOLATION_FORMAT_WAIT>
+{
+	"}"
+	{
+		yypushback(yylength());
+
+		yybegin(YYINITIAL);
+	}
+
+	[^]   { return CfsTokens.FORMAT; }
+}
+
+<STRING_INTERPOLATION_PARSE>
+{
+	"$\""
+	{
+		push(STRING_INTERPOLATION);
+		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
+	}
+
+	"}"
+	{
+		endArgumentExpression();
+
+		if(myStringInterpolationBalance != 0)
 		{
-			yybegin(YYINITIAL);
+			myStringInterpolationBalance --;
+			back();
 			return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 		}
 		else
@@ -104,10 +197,25 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 		}
 	}
 
-	[^]
+	"("
 	{
+		if(isInsideInterpolation())
+		{
+			myInsideStringInterpolationParenthesesBalance ++;
+		}
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
+
+	")"
+	{
+		if(isInsideInterpolation())
+		{
+			myInsideStringInterpolationParenthesesBalance --;
+		}
+		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
+	}
+
+	[^]  { return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL; }
 }
 
 <YYINITIAL>
@@ -120,17 +228,20 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"$\""
 	{
-		yybegin(STRING_INTERPOLATION);
+		push(STRING_INTERPOLATION);
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
 
 	"$@\""
 	{
-		yybegin(STRING_INTERPOLATION);
+		push(STRING_INTERPOLATION);
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
 
-	{VERBATIM_STRING_LITERAL} { return CSharpTokens.VERBATIM_STRING_LITERAL; }
+	{VERBATIM_STRING_LITERAL}
+	{
+		return CSharpTokens.VERBATIM_STRING_LITERAL;
+	}
 
 	"__arglist"               { return CSharpTokens.__ARGLIST_KEYWORD; }
 
@@ -297,15 +408,43 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 //
 	"{"                       { return CSharpTokens.LBRACE; }
 
-	"}"                       { return CSharpTokens.RBRACE; }
+	"}"
+	{
+		if(myStringInterpolationBalance != 0)
+		{
+			endArgumentExpression();
+
+			myStringInterpolationBalance --;
+			back();
+			return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
+		}
+		else
+		{
+			return CSharpTokens.RBRACE;
+		}
+	}
 
 	"["                       { return CSharpTokens.LBRACKET; }
 
 	"]"                       { return CSharpTokens.RBRACKET; }
 
-	"("                       { return CSharpTokens.LPAR; }
+	"("
+	{
+		if(isInsideInterpolation())
+		{
+			myInsideStringInterpolationParenthesesBalance ++;
+		}
+		return CSharpTokens.LPAR;
+	}
 
-	")"                       { return CSharpTokens.RPAR; }
+	")"
+	{
+		if(isInsideInterpolation())
+		{
+			myInsideStringInterpolationParenthesesBalance --;
+		}
+		return CSharpTokens.RPAR;
+	}
 
 	"*="                      { return CSharpTokens.MULEQ; }
 
@@ -337,7 +476,15 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"="                       { return CSharpTokens.EQ; }
 
-	":"                       { return CSharpTokens.COLON; }
+	":"
+	{
+		if(isInsideInterpolation() && myInsideStringInterpolationParenthesesBalance == 0)
+		{
+			yybegin(STRING_INTERPOLATION_FORMAT_WAIT);
+			return CfsTokens.COLON;
+		}
+		return CSharpTokens.COLON;
+	}
 
 	"::"                      { return CSharpTokens.COLONCOLON; }
 

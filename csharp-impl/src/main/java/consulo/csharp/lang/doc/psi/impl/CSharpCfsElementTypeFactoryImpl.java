@@ -16,16 +16,7 @@
 
 package consulo.csharp.lang.doc.psi.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Singleton;
-
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
-import com.intellij.lang.LanguageParserDefinitions;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilderFactory;
-import com.intellij.lang.PsiParser;
+import com.intellij.lang.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.LazyParseablePsiElement;
@@ -36,6 +27,10 @@ import consulo.csharp.lang.CSharpCfsElementTypeFactory;
 import consulo.csharp.lang.CSharpCfsLanguageVersion;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.lang.LanguageVersion;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Singleton;
 
 /**
  * @author VISTALL
