@@ -16,12 +16,16 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -34,14 +38,24 @@ public class CSharpExpressionStatementImpl extends CSharpElementImpl implements 
 		super(node);
 	}
 
+	@Nonnull
+	@RequiredReadAction
 	public DotNetExpression getExpression()
 	{
-		return findChildByClass(DotNetExpression.class);
+		return findNotNullChildByClass(DotNetExpression.class);
 	}
 
 	@Override
 	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
 		visitor.visitExpressionStatement(this);
+	}
+
+	@Override
+	@RequiredReadAction
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	{
+		DotNetExpression expression = getExpression();
+		return expression.processDeclarations(processor, state, lastParent, place);
 	}
 }
