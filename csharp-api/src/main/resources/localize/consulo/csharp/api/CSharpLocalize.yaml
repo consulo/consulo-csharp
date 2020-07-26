@@ -1,0 +1,46 @@
+action.CSharp.File.text:
+  text: C# File
+action.CSharp.GenerateConstructor.text:
+  text: Constructor
+action.CSharp.GenerateProperty.text:
+  text: Property
+action.CSharp.GenerateReadOnlyProperty.text:
+  text: Readonly Property
+action.CSharp.GenerateImplementMember.text:
+  text: Implement Member
+action.CSharp.Internal.OpenTypeFromVariable.text:
+  text: Open type from variable (C#)
+csharp.version._1_0:
+  text: ''
+csharp.version._2_0:
+  text: generics, iterators, etc
+csharp.version._3_0:
+  text: '''var'', lambda, etc'
+csharp.version._4_0:
+  text: named / optional arguments, etc
+csharp.version._5_0:
+  text: '''async'', etc'
+csharp.version._6_0:
+  text: property initializer, etc
+csharp.version._7_0:
+  text: tuples, local methods, ref return, etc
+csharp.version._7_1:
+  text: default, etc
+csharp.version._7_2:
+  text: ''
+csharp.version._7_3:
+  text: ''
+csharp.version._8_0:
+  text: ''
+livetemplates.cwl:
+  text: Print object to console
+livetemplates.psvm:
+  text: Main() method
+livetemplates.psvms:
+  text: Main(string[]) method
+livetemplates.prop:
+  text: Auto-property
+livetemplates.forv:
+  text: iter with foreach(var in ...)
+livetemplates.fort:
+  text: iter with foreach(... in ...)

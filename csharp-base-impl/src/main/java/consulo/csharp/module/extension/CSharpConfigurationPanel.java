@@ -16,19 +16,6 @@
 
 package consulo.csharp.module.extension;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-
-
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -41,11 +28,7 @@ import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.ColoredListCellRendererWrapper;
-import com.intellij.ui.DocumentAdapter;
-import com.intellij.ui.SimpleTextAttributes;
-import com.intellij.ui.TextFieldWithHistory;
-import com.intellij.ui.TitledSeparator;
+import com.intellij.ui.*;
 import com.intellij.ui.components.JBCheckBox;
 import consulo.csharp.compiler.CSharpCompilerProvider;
 import consulo.csharp.compiler.CSharpPlatform;
@@ -53,6 +36,18 @@ import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;
 import consulo.roots.ui.configuration.SdkComboBox;
 import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -74,18 +69,18 @@ public class CSharpConfigurationPanel extends JPanel
 	public CSharpConfigurationPanel(final CSharpMutableModuleExtension<?> ext)
 	{
 		super(new VerticalFlowLayout());
-		final ComboBox levelComboBox = new ComboBox();
-		levelComboBox.setRenderer(new ColoredListCellRendererWrapper<Object>()
+		final ComboBox<Object> levelComboBox = new ComboBox<>();
+		levelComboBox.setRenderer(new ColoredListCellRenderer<Object>()
 		{
 			@Override
-			protected void doCustomize(JList list, Object value, int index, boolean selected, boolean hasFocus)
+			protected void customizeCellRenderer(@Nonnull JList list, Object value, int i, boolean b, boolean b1)
 			{
 				if(value instanceof CSharpLanguageVersion)
 				{
 					final CSharpLanguageVersion languageLevel = (CSharpLanguageVersion) value;
 					append(languageLevel.getPresentableName(), SimpleTextAttributes.REGULAR_ATTRIBUTES);
 					append(" ");
-					append(languageLevel.getDescription(), SimpleTextAttributes.GRAY_ATTRIBUTES);
+					append(languageLevel.getDescriptionValue().getValue(), SimpleTextAttributes.GRAY_ATTRIBUTES);
 				}
 				else if(value instanceof Module)
 				{
@@ -149,6 +144,7 @@ public class CSharpConfigurationPanel extends JPanel
 		levelComboBox.addItemListener(new ItemListener()
 		{
 			@Override
+			@RequiredUIAccess
 			public void itemStateChanged(ItemEvent e)
 			{
 				final Object selectedItem = levelComboBox.getSelectedItem();

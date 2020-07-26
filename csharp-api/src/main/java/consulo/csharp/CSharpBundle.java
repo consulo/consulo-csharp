@@ -16,6 +16,7 @@
 
 package consulo.csharp;
 
+import consulo.annotation.DeprecationInfo;
 import org.jetbrains.annotations.PropertyKey;
 import com.intellij.AbstractBundle;
 
@@ -23,6 +24,8 @@ import com.intellij.AbstractBundle;
  * @author VISTALL
  * @since 15.05.14
  */
+@Deprecated
+@DeprecationInfo("Use CSharpLocalize")
 public class CSharpBundle extends AbstractBundle
 {
 	private static final CSharpBundle ourInstance = new CSharpBundle();
