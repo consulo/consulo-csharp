@@ -35,9 +35,12 @@ public enum CSharpLanguageVersion implements Named, NamedPointer<CSharpLanguageV
 	_5_0,
 	_6_0,
 	_7_0,
-	_7_1;
+	_7_1,
+	_7_2,
+	_7_3,
+	_8_0;
 
-	public static final CSharpLanguageVersion HIGHEST = _7_1;
+	public static final CSharpLanguageVersion HIGHEST = _8_0;
 
 	public boolean isAtLeast(@Nonnull CSharpLanguageVersion languageVersion)
 	{
