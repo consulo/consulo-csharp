@@ -16,38 +16,28 @@
 
 package consulo.csharp.lang.psi;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.BitUtil;
 import com.intellij.util.PairFunction;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
-import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpEmptyGenericWrapperTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTupleTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
+import consulo.csharp.lang.psi.impl.source.resolve.type.*;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetPointerTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
-import consulo.msil.lang.psi.impl.type.MsilTypeResolveResult;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -82,6 +72,7 @@ public class CSharpTypeRefPresentationUtil
 	public static final int NO_GENERIC_ARGUMENTS = 1 << 2;
 	public static final int NO_REF = 1 << 3;
 	public static final int NULL = 1 << 4;
+	public static final int NULLABLE = 1 << 5;
 
 	public static final int QUALIFIED_NAME_WITH_KEYWORD = QUALIFIED_NAME | TYPE_KEYWORD;
 
@@ -90,7 +81,7 @@ public class CSharpTypeRefPresentationUtil
 	public static String buildShortText(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
-		appendTypeRef(scope, builder, typeRef, TYPE_KEYWORD);
+		appendTypeRef(scope, builder, typeRef, TYPE_KEYWORD | NULLABLE);
 		return builder.toString();
 	}
 
@@ -99,7 +90,7 @@ public class CSharpTypeRefPresentationUtil
 	public static String buildText(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
-		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME);
+		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME | NULLABLE);
 		return builder.toString();
 	}
 
@@ -117,7 +108,7 @@ public class CSharpTypeRefPresentationUtil
 	public static String buildTextWithKeyword(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
-		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD);
+		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD | NULLABLE);
 		return builder.toString();
 	}
 
@@ -126,7 +117,7 @@ public class CSharpTypeRefPresentationUtil
 	public static String buildTextWithKeywordAndNull(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
-		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD | NULL);
+		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD | NULL | NULLABLE);
 		return builder.toString();
 	}
 
@@ -205,10 +196,36 @@ public class CSharpTypeRefPresentationUtil
 		else
 		{
 			DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
+			DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 
 			PsiElement element = typeResolveResult.getElement();
-			boolean isNullable = CSharpTypeUtil.isNullableElement(element);
-			boolean isExpectedNullable = typeResolveResult instanceof MsilTypeResolveResult || typeResolveResult.isNullable();
+
+			if(BitUtil.isSet(flags, NULLABLE))
+			{
+				if(element instanceof DotNetTypeDeclaration)
+				{
+					String vmQName = ((DotNetTypeDeclaration) element).getVmQName();
+
+					if(DotNetTypes.System.Nullable$1.equals(vmQName))
+					{
+						DotNetGenericParameter[] genericParameters = ((DotNetTypeDeclaration) element).getGenericParameters();
+
+						if(genericParameters.length > 0)
+						{
+							DotNetGenericParameter firstParameter = genericParameters[0];
+
+							DotNetTypeRef firstTypeRef = genericExtractor.extract(firstParameter);
+
+							if(firstTypeRef != null)
+							{
+								appendTypeRef(scope, builder, firstTypeRef, flags);
+								builder.append("?");
+								return;
+							}
+						}
+					}
+				}
+			}
 
 			if(element instanceof DotNetQualifiedElement)
 			{
@@ -253,7 +270,6 @@ public class CSharpTypeRefPresentationUtil
 					DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) element).getGenericParameters();
 					if(genericParameters.length > 0)
 					{
-						final DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 						builder.append("<");
 						StubBlockUtil.join(builder, genericParameters, new PairFunction<StringBuilder, DotNetGenericParameter, Void>()
 						{
@@ -274,10 +290,6 @@ public class CSharpTypeRefPresentationUtil
 						builder.append(">");
 					}
 				}
-			}
-			if(isExpectedNullable && !isNullable)
-			{
-				builder.append("?");
 			}
 		}
 	}
