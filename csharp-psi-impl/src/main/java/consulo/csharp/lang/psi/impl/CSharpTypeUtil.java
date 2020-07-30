@@ -119,7 +119,6 @@ public class CSharpTypeUtil
 			}
 			if(DotNetTypes.System.Enum.equals(vmQName))
 			{
-				// special case - compiler box element in new Nullable<int>(null);
 				return true;
 			}
 			return !((DotNetTypeDeclaration) element).isStruct() && !((DotNetTypeDeclaration) element).isEnum();
