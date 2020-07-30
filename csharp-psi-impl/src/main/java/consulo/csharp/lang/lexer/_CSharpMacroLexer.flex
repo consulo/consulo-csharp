@@ -34,6 +34,7 @@ ILLEGAL_DIRECTIVE={MACRO_START}{IDENTIFIER}
 MACRO_ELSE={MACRO_START}"else"
 MACRO_ELIF={MACRO_START}"elif"
 MACRO_PRAGMA={MACRO_START}"pragma"
+MACRO_NULLABLE={MACRO_START}"nullable"
 MACRO_WARNING={MACRO_START}"warning"
 MACRO_ERROR={MACRO_START}"error"
 %%
@@ -92,6 +93,8 @@ MACRO_ERROR={MACRO_START}"error"
 	{MACRO_ENDREGION}    { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD; }
 
 	{MACRO_PRAGMA}       { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.PRAGMA_KEYWORD; }
+
+	{MACRO_NULLABLE}     { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.NULLABLE_KEYWORD; }
 
 	{MACRO_WARNING}      { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.WARNING_KEYWORD; }
 

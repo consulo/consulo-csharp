@@ -16,16 +16,6 @@
 
 package consulo.csharp.compiler;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.openapi.compiler.CompilerMessageCategory;
 import com.intellij.openapi.diagnostic.Logger;
@@ -38,14 +28,21 @@ import com.intellij.openapi.vfs.StandardFileSystems;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import consulo.application.ApplicationProperties;
+import consulo.csharp.module.CSharpNullableOption;
 import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.dotnet.DotNetTarget;
-import consulo.dotnet.compiler.DotNetCompileFailedException;
-import consulo.dotnet.compiler.DotNetCompilerMessage;
-import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
-import consulo.dotnet.compiler.DotNetCompilerUtil;
-import consulo.dotnet.compiler.DotNetMacroUtil;
+import consulo.dotnet.compiler.*;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author VISTALL
@@ -188,6 +185,11 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		if(csharpExtension.isOptimizeCode())
 		{
 			addArgument("/optimize+");
+		}
+
+		if(csharpExtension.getNullableOption() != CSharpNullableOption.UNSPECIFIED)
+		{
+			addArgument("/nullable:" + csharpExtension.getNullableOption().name().toLowerCase(Locale.ROOT));
 		}
 
 		switch(csharpExtension.getPlatform())

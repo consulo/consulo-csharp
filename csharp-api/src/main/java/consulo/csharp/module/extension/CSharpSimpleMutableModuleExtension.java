@@ -16,10 +16,11 @@
 
 package consulo.csharp.module.extension;
 
-import javax.annotation.Nonnull;
-
+import consulo.csharp.module.CSharpNullableOption;
 import consulo.module.extension.MutableModuleExtension;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,4 +33,8 @@ public interface CSharpSimpleMutableModuleExtension<T extends CSharpSimpleModule
 	void setLanguageVersion(@Nonnull CSharpLanguageVersion version);
 
 	void setAllowUnsafeCode(boolean value);
+
+	default void setNullableOption(@Nonnull CSharpNullableOption option)
+	{
+	}
 }

@@ -44,3 +44,13 @@ livetemplates.forv:
   text: iter with foreach(var in ...)
 livetemplates.fort:
   text: iter with foreach(... in ...)
+nullable.option.unspecified:
+  text: unspecified
+nullable.option.disable:
+  text: disable
+nullable.option.enable:
+  text: enable
+nullable.option.annotations:
+  text: annotations
+nullable.option.warnings:
+  text: warnings

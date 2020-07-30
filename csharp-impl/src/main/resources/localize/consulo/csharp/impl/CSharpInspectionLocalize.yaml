@@ -1,0 +1,4 @@
+target.is.obsolete:
+  text: '''''{0}'''' is obsolete'
+expected.namespace.inspection:
+  text: Namespace doesn''t match file system. Expected ''{0}''

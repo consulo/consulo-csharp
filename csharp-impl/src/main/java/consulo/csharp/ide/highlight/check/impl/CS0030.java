@@ -16,13 +16,16 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.csharp.ide.CSharpErrorBundle;
+import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
+import com.intellij.openapi.util.Ref;
+import com.intellij.psi.PsiElement;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.CSharpHighlightKey;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.ide.highlight.quickFix.ReplaceTypeQuickFix;
+import consulo.csharp.impl.localize.CSharpErrorLocalize;
+import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -30,16 +33,14 @@ import consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.PsiElement;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.CSharpCastType;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.ide.eap.EarlyAccessProgramDescriptor;
 import consulo.ide.eap.EarlyAccessProgramManager;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -150,7 +151,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 					{
 						CompilerCheckBuilder builder = newBuilder(innerExpression);
 						builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
-						builder.setText(CSharpErrorBundle.message("impicit.cast.from.0.to.1", formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression)));
+						builder.setText(CSharpErrorLocalize.impicitCastFrom0To1(formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression)).getValue());
 						builder.setHighlightInfoType(HighlightInfoType.INFORMATION);
 						ref.set(builder);
 					}
@@ -159,7 +160,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				{
 					CompilerCheckBuilder builder = newBuilder(type);
 					builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
-					builder.setText(CSharpErrorBundle.message("explicit.cast.from.0.to.1", formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression)));
+					builder.setText(CSharpErrorLocalize.impicitCastFrom0To1(formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression)).getValue());
 					builder.setHighlightInfoType(HighlightInfoType.INFORMATION);
 					ref.set(builder);
 				}

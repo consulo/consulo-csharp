@@ -27,7 +27,6 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.ApplicationProperties;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
-import consulo.csharp.ide.CSharpErrorBundle;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -35,6 +34,8 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.localize.LocalizeKey;
+import consulo.localize.LocalizeValue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -169,28 +170,28 @@ public abstract class CompilerCheck<T extends PsiElement>
 
 	@Nonnull
 	@RequiredReadAction
-	public CompilerCheckBuilder newBuilder(@Nonnull PsiElement range, String... args)
+	public CompilerCheckBuilder newBuilder(@Nonnull PsiElement range, Object... args)
 	{
 		return newBuilderImpl(getClass(), range, args);
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public CompilerCheckBuilder newBuilder(@Nonnull TextRange range, String... args)
+	public CompilerCheckBuilder newBuilder(@Nonnull TextRange range, Object... args)
 	{
 		return newBuilderImpl(getClass(), range, args);
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public static CompilerCheckBuilder newBuilderImpl(@Nonnull Class<?> clazz, @Nonnull PsiElement range, String... args)
+	public static CompilerCheckBuilder newBuilderImpl(@Nonnull Class<?> clazz, @Nonnull PsiElement range, Object... args)
 	{
 		return newBuilderImpl(clazz, range.getTextRange(), args);
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public static CompilerCheckBuilder newBuilderImpl(@Nonnull Class<?> clazz, @Nonnull TextRange range, String... args)
+	public static CompilerCheckBuilder newBuilderImpl(@Nonnull Class<?> clazz, @Nonnull TextRange range, Object... args)
 	{
 		CompilerCheckBuilder result = new CompilerCheckBuilder();
 		result.setText(message(clazz, args));
@@ -199,15 +200,51 @@ public abstract class CompilerCheck<T extends PsiElement>
 	}
 
 	@Nonnull
-	public static String message(@Nonnull Class<?> aClass, String... args)
+	public static String message(@Nonnull Class<?> aClass, Object... args)
 	{
 		String id = aClass.getSimpleName();
-		String message = CSharpErrorBundle.message(id, args);
+
+		LocalizeValue value = getValue(LocalizeKey.of("consulo.csharp.impl.CSharpErrorLocalize", id), args);
+
 		if(ApplicationProperties.isInSandbox())
 		{
-			message = id + ": " + message;
+		 	return value.map((localizeManager, s) -> id + ": " + s).getValue();
 		}
-		return message;
+		else
+		{
+			return value.getValue();
+		}
+	}
+
+	@Nonnull
+	private static LocalizeValue getValue(LocalizeKey key, Object... args)
+	{
+		if(args.length == 0)
+		{
+			return key.getValue();
+		}
+		else if(args.length == 1)
+		{
+			return key.getValue(args[0]);
+		}
+		else if(args.length == 2)
+		{
+			return key.getValue(args[0], args[1]);
+		}
+		else if(args.length == 3)
+		{
+			return key.getValue(args[0], args[1], args[2]);
+		}
+		else if(args.length == 4)
+		{
+			return key.getValue(args[0], args[1], args[2], args[3]);
+		}
+		else if(args.length == 5)
+		{
+			return key.getValue(args[0], args[1], args[2], args[3], args[4]);
+		}
+
+		throw new UnsupportedOperationException("Size " + args.length);
 	}
 
 	@Nonnull

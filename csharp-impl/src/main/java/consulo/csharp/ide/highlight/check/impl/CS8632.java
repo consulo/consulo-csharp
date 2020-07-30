@@ -16,11 +16,15 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
+import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
+import consulo.csharp.ide.highlight.check.CSharpNullableContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpNullableType;
+import consulo.csharp.module.CSharpNullableOption;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -53,7 +57,18 @@ public class CS8632 extends CompilerCheck<CSharpNullableType>
 			return null;
 		}
 
-		// todo check module extension options
+		CSharpSimpleModuleExtension<?> extension = highlightContext.getCSharpModuleExtension();
+		if(extension == null)
+		{
+			return null;
+		}
+
+		CSharpNullableOption nullable = CSharpNullableContext.get(highlightContext.getFile()).getNullable(element, extension.getNullableOption());
+		if(nullable == CSharpNullableOption.UNSPECIFIED || nullable == CSharpNullableOption.DISABLE || nullable == CSharpNullableOption.WARNINGS)
+		{
+			PsiElement questElement = element.getQuestElement();
+			return newBuilder(questElement, formatTypeRef(dotNetTypeRef, element)).addQuickFix(new CS0453.DeleteQuestMarkQuickFix(element));
+		}
 		return null;
 	}
 }

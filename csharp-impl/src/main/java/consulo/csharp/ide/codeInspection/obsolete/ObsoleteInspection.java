@@ -16,10 +16,6 @@
 
 package consulo.csharp.ide.codeInspection.obsolete;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -28,16 +24,10 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.codeInspection.CSharpInspectionBundle;
 import consulo.csharp.ide.projectView.CSharpElementTreeNode;
+import consulo.csharp.impl.localize.CSharpInspectionLocalize;
 import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
-import consulo.csharp.lang.psi.CSharpAttribute;
-import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
-import consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTokenSets;
+import consulo.csharp.lang.psi.*;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetAttributeUtil;
@@ -46,6 +36,10 @@ import consulo.msil.lang.psi.MsilCustomAttribute;
 import consulo.msil.lang.stubbing.MsilCustomAttributeArgumentList;
 import consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
 import consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -105,7 +99,7 @@ public class ObsoleteInspection extends LocalInspectionTool
 			String message = getMessage(attribute);
 			if(message == null)
 			{
-				message = CSharpInspectionBundle.message("target.is.obsolete", CSharpElementTreeNode.getPresentableText((PsiNamedElement) target));
+				message = CSharpInspectionLocalize.targetIsObsolete(CSharpElementTreeNode.getPresentableText((PsiNamedElement) target)).getValue();
 			}
 
 			holder.registerProblem(range, message, ProblemHighlightType.LIKE_DEPRECATED);

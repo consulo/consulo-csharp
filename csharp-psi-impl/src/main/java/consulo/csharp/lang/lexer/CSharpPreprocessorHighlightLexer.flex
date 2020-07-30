@@ -36,6 +36,7 @@ MACRO_ELSE={MACRO_START}"else"
 MACRO_ELIF={MACRO_START}"elif"
 MACRO_PRAGMA={MACRO_START}"pragma"
 MACRO_WARNING={MACRO_START}"warning"
+MACRO_NULLABLE={MACRO_START}"nullable"
 MACRO_ERROR={MACRO_START}"error"
 %%
 
@@ -60,6 +61,8 @@ MACRO_ERROR={MACRO_START}"error"
 	{MACRO_ENDREGION}    { return CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD; }
 
 	{MACRO_PRAGMA}       { return CSharpPreprocesorTokens.PRAGMA_KEYWORD; }
+
+	{MACRO_NULLABLE}     { return CSharpPreprocesorTokens.NULLABLE_KEYWORD; }
 
 	{MACRO_WARNING}      { return CSharpPreprocesorTokens.WARNING_KEYWORD; }
 

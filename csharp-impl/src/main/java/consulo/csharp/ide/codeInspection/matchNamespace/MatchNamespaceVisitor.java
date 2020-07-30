@@ -20,7 +20,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.codeInspection.CSharpInspectionBundle;
+import consulo.csharp.impl.localize.CSharpInspectionLocalize;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.dotnet.module.DotNetNamespaceGeneratePolicy;
@@ -85,7 +85,7 @@ class MatchNamespaceVisitor extends CSharpElementVisitor
 		{
 			PsiFile file = myHolder.getFile();
 
-			myHolder.registerProblem(file, CSharpInspectionBundle.message("expected.namespace.inspection", myExpectedNamespace));
+			myHolder.registerProblem(file, CSharpInspectionLocalize.expectedNamespaceInspection(myExpectedNamespace).getValue());
 		}
 		else if(myRootNamespaces.size() == 1)
 		{
@@ -97,7 +97,8 @@ class MatchNamespaceVisitor extends CSharpElementVisitor
 			{
 				DotNetReferenceExpression namespaceReference = declaration.getNamespaceReference();
 				assert namespaceReference != null;
-				myHolder.registerProblem(namespaceReference, CSharpInspectionBundle.message("expected.namespace.inspection", myExpectedNamespace), new ChangeNamespaceFix(declaration, myExpectedNamespace));
+				myHolder.registerProblem(namespaceReference, CSharpInspectionLocalize.expectedNamespaceInspection(myExpectedNamespace).getValue(), new ChangeNamespaceFix(declaration,
+						myExpectedNamespace));
 			}
 		}
 	}

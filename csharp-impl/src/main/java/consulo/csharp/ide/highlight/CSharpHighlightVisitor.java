@@ -31,10 +31,10 @@ import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.CSharpErrorBundle;
 import consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
 import consulo.csharp.ide.highlight.util.ConstructorHighlightUtil;
 import consulo.csharp.ide.highlight.util.GenericParameterHighlightUtil;
+import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.*;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
@@ -350,8 +350,8 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			ImplicitCastInfo implicitCastInfo = nCallArgument.getUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO);
 			if(implicitCastInfo != null)
 			{
-				String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getFromTypeRef(), scope),
-						CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getToTypeRef(), scope));
+				String text = CSharpErrorLocalize.impicitCastFrom0To1(CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getFromTypeRef(), scope),
+						CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getToTypeRef(), scope)).getValue();
 
 				HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION);
 				builder = builder.range(argumentExpression.getTextRange());

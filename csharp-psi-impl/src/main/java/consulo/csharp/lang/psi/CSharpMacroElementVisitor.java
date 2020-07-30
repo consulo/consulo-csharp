@@ -80,6 +80,11 @@ public class CSharpMacroElementVisitor extends PsiElementVisitor
 		visitElement(element);
 	}
 
+	public void visitNullable(CSharpPreprocessorNullableImpl element)
+	{
+		visitElement(element);
+	}
+
 	public void visitWarning(CSharpPreprocessorWarningImpl element)
 	{
 		visitElement(element);

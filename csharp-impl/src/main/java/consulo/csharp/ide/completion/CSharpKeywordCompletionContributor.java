@@ -61,6 +61,7 @@ class CSharpKeywordCompletionContributor
 		ourPreprocessorDirectives.put("else", Boolean.TRUE);
 		ourPreprocessorDirectives.put("endif", Boolean.FALSE);
 		ourPreprocessorDirectives.put("pragma", Boolean.TRUE);
+		ourPreprocessorDirectives.put("nullable", Boolean.TRUE);
 		ourPreprocessorDirectives.put("warning", Boolean.TRUE);
 	}
 
@@ -92,6 +93,7 @@ class CSharpKeywordCompletionContributor
 				{
 					return;
 				}
+
 				for(Map.Entry<String, Boolean> entry : ourPreprocessorDirectives.entrySet())
 				{
 					LookupElementBuilder element = LookupElementBuilder.create(entry.getKey()).withPresentableText("#" + entry.getKey());

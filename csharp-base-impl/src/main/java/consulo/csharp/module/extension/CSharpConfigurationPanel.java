@@ -32,6 +32,7 @@ import com.intellij.ui.*;
 import com.intellij.ui.components.JBCheckBox;
 import consulo.csharp.compiler.CSharpCompilerProvider;
 import consulo.csharp.compiler.CSharpPlatform;
+import consulo.csharp.module.CSharpNullableOption;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;
 import consulo.roots.ui.configuration.SdkComboBox;
@@ -40,8 +41,6 @@ import consulo.ui.annotation.RequiredUIAccess;
 import javax.annotation.Nonnull;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Arrays;
@@ -62,6 +61,14 @@ public class CSharpConfigurationPanel extends JPanel
 			"4",
 			"5",
 			"6",
+			"7",
+			"7.1",
+			"7.2",
+			"7.3",
+			"8",
+			"preview",
+			"latest",
+			"latestmajor",
 			"default"
 	};
 
@@ -163,7 +170,7 @@ public class CSharpConfigurationPanel extends JPanel
 			}
 		});
 
-		add(LabeledComponent.left(levelComboBox, "Language Version: "));
+		add(LabeledComponent.create(levelComboBox, "Language Version: "));
 
 		final TextFieldWithHistory compileLevelField = new TextFieldWithHistory();
 		compileLevelField.setHistory(Arrays.asList(ourCompileLevels));
@@ -230,17 +237,17 @@ public class CSharpConfigurationPanel extends JPanel
 			}
 		});
 
-		add(LabeledComponent.left(compilerComboBox, "Compiler"));
-		add(LabeledComponent.left(compileLevelField, "Compiler Target (/langversion):"));
+		add(LabeledComponent.create(compilerComboBox, "Compiler"));
+		add(LabeledComponent.create(compileLevelField, "Compiler Target (/langversion):"));
 
-		final ComboBox platformComboBox = new ComboBox(CSharpPlatform.values());
+		final ComboBox<CSharpPlatform> platformComboBox = new ComboBox<>(CSharpPlatform.values());
 		platformComboBox.setSelectedItem(ext.getPlatform());
-		platformComboBox.setRenderer(new ColoredListCellRendererWrapper<CSharpPlatform>()
+		platformComboBox.setRenderer(new ColoredListCellRenderer<CSharpPlatform>()
 		{
 			@Override
-			protected void doCustomize(JList jList, CSharpPlatform cSharpPlatform, int i, boolean b, boolean b2)
+			protected void customizeCellRenderer(@Nonnull JList jList, CSharpPlatform platform, int i, boolean b, boolean b1)
 			{
-				switch(cSharpPlatform)
+				switch(platform)
 				{
 					case ANY_CPU:
 						append("Any CPU");
@@ -265,41 +272,40 @@ public class CSharpConfigurationPanel extends JPanel
 			}
 		});
 
-		platformComboBox.addItemListener(new ItemListener()
-		{
-			@Override
-			public void itemStateChanged(ItemEvent e)
+		platformComboBox.addItemListener(e -> {
+			if(e.getStateChange() == ItemEvent.SELECTED)
 			{
-				if(e.getStateChange() == ItemEvent.SELECTED)
-				{
-					ext.setPlatform((CSharpPlatform) platformComboBox.getSelectedItem());
-				}
+				ext.setPlatform((CSharpPlatform) platformComboBox.getSelectedItem());
 			}
 		});
 
-		add(LabeledComponent.left(platformComboBox, "Platform (/platform): "));
+		add(LabeledComponent.create(platformComboBox, "Platform (/platform): "));
 
 		final JBCheckBox allowUnsafeCode = new JBCheckBox("Allow unsafe code (/unsafe)", ext.isAllowUnsafeCode());
-		allowUnsafeCode.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				ext.setAllowUnsafeCode(allowUnsafeCode.isSelected());
-			}
-		});
+		allowUnsafeCode.addActionListener(e -> ext.setAllowUnsafeCode(allowUnsafeCode.isSelected()));
 
 		add(allowUnsafeCode);
 
 		final JBCheckBox optimizeCode = new JBCheckBox("Optimize Code (/optimize+)", ext.isOptimizeCode());
-		optimizeCode.addActionListener(new ActionListener()
+		optimizeCode.addActionListener(e -> ext.setOptimizeCode(optimizeCode.isSelected()));
+		add(optimizeCode);
+
+		ComboBox<CSharpNullableOption> nullableBox = new ComboBox<>(CSharpNullableOption.values());
+		nullableBox.setRenderer(new ColoredListCellRenderer<CSharpNullableOption>()
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			protected void customizeCellRenderer(@Nonnull JList jList, CSharpNullableOption option, int i, boolean b, boolean b1)
 			{
-				ext.setOptimizeCode(optimizeCode.isSelected());
+				append(option.getDescription().getValue());
 			}
 		});
-		add(optimizeCode);
+		nullableBox.addItemListener(e -> {
+			if(e.getStateChange() == ItemEvent.SELECTED)
+			{
+				ext.setNullableOption((CSharpNullableOption) nullableBox.getSelectedItem());
+			}
+		});
+		nullableBox.setSelectedItem(ext.getNullableOption());
+		add(LabeledComponent.create(nullableBox, "Nullable C# 8+ (/nullable)"));
 	}
 }

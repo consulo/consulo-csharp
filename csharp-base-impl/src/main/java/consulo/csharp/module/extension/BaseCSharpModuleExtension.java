@@ -16,14 +16,6 @@
 
 package consulo.csharp.module.extension;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.jdom.Element;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -42,17 +34,21 @@ import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
 import consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
+import consulo.csharp.module.CSharpNullableOption;
 import consulo.dotnet.DotNetRunUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import consulo.dotnet.module.extension.DotNetModuleLangExtension;
-import consulo.dotnet.psi.DotNetAttributeTargetType;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetMethodDeclaration;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.*;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;
 import consulo.roots.ModuleRootLayer;
+import org.jdom.Element;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -64,6 +60,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	protected CSharpPlatform myPlatform = CSharpPlatform.ANY_CPU;
 	protected String myCompilerTarget;
 	protected CSharpCustomCompilerSdkPointer myCustomCompilerSdkPointer;
+	protected CSharpNullableOption myNullableOption = CSharpNullableOption.UNSPECIFIED;
 
 	public BaseCSharpModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer layer)
 	{
@@ -89,7 +86,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	@RequiredReadAction
 	public PsiElement[] getEntryPointElements()
 	{
-		final List<DotNetTypeDeclaration> typeDeclarations = new ArrayList<DotNetTypeDeclaration>();
+		final List<DotNetTypeDeclaration> typeDeclarations = new ArrayList<>();
 		Collection<DotNetLikeMethodDeclaration> methods = MethodIndex.getInstance().get("Main", getProject(), GlobalSearchScope.moduleScope(getModule()));
 		for(DotNetLikeMethodDeclaration method : methods)
 		{
@@ -175,8 +172,12 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	@Override
 	public boolean isModifiedImpl(@Nonnull T mutableModuleExtension)
 	{
-		return super.isModifiedImpl(mutableModuleExtension) || myOptimizeCode != mutableModuleExtension.myOptimizeCode || myPlatform != mutableModuleExtension.myPlatform ||
-				!myCustomCompilerSdkPointer.equals(mutableModuleExtension.myCustomCompilerSdkPointer) || !Comparing.equal(myCompilerTarget, mutableModuleExtension.myCompilerTarget);
+		return super.isModifiedImpl(mutableModuleExtension) ||
+				myOptimizeCode != mutableModuleExtension.myOptimizeCode ||
+				myPlatform != mutableModuleExtension.myPlatform ||
+				myNullableOption != mutableModuleExtension.myNullableOption ||
+				!myCustomCompilerSdkPointer.equals(mutableModuleExtension.myCustomCompilerSdkPointer) ||
+				!Comparing.equal(myCompilerTarget, mutableModuleExtension.myCompilerTarget);
 	}
 
 	@RequiredReadAction
@@ -187,6 +188,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 
 		myOptimizeCode = Boolean.valueOf(element.getAttributeValue("optimize-code", "false"));
 		myPlatform = CSharpPlatform.valueOf(element.getAttributeValue("platform", CSharpPlatform.ANY_CPU.name()));
+		myNullableOption = CSharpNullableOption.valueOf(element.getAttributeValue("nullable-option", CSharpNullableOption.UNSPECIFIED.name()));
 		myCompilerTarget = element.getAttributeValue("compiler-target");
 		myCustomCompilerSdkPointer.fromXml(element);
 	}
@@ -202,14 +204,32 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		{
 			element.setAttribute("compiler-target", myCompilerTarget);
 		}
+		if(myNullableOption != CSharpNullableOption.UNSPECIFIED)
+		{
+			element.setAttribute("nullable-option", myNullableOption.name());
+		}
 		myCustomCompilerSdkPointer.toXml(element);
 	}
 
+	@Nonnull
+	@Override
+	public CSharpNullableOption getNullableOption()
+	{
+		return myNullableOption;
+	}
+
+	public void setNullableOption(@Nonnull CSharpNullableOption nullableOption)
+	{
+		myNullableOption = nullableOption;
+	}
+
+	@RequiredReadAction
 	@Override
 	public void commit(@Nonnull T mutableModuleExtension)
 	{
 		super.commit(mutableModuleExtension);
 
+		myNullableOption = mutableModuleExtension.myNullableOption;
 		myOptimizeCode = mutableModuleExtension.myOptimizeCode;
 		myPlatform = mutableModuleExtension.myPlatform;
 		myCompilerTarget = mutableModuleExtension.myCompilerTarget;

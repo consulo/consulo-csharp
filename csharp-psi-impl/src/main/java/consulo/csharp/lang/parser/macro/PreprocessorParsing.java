@@ -92,6 +92,18 @@ public class PreprocessorParsing implements CSharpPreprocesorTokens, CSharpPrepr
 			mark.done(PRAGMA_DIRECTIVE);
 			return true;
 		}
+		else if(token == NULLABLE_KEYWORD)
+		{
+			builder.advanceLexer();
+
+			while(!builder.eof())
+			{
+				builder.advanceLexer();
+			}
+
+			mark.done(NULLABLE_DIRECTIVE);
+			return true;
+		}
 		else if(token == WARNING_KEYWORD)
 		{
 			builder.advanceLexer();
