@@ -16,10 +16,6 @@
 
 package consulo.csharp.lang.psi.impl;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
@@ -27,10 +23,14 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
-import consulo.csharp.lang.psi.impl.runtime.AssemblyModule;
+import consulo.dotnet.assembly.AssemblyModule;
+import consulo.dotnet.assembly.AssemblyModuleService;
 import consulo.dotnet.psi.DotNetInheritUtil;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -55,8 +55,10 @@ public class CSharpVisibilityUtil
 			case PROTECTED_INTERNAL:
 				return isVisible(target, place, CSharpAccessModifier.INTERNAL);
 			case INTERNAL:
-				AssemblyModule targetModule = AssemblyModule.resolve(target);
-				AssemblyModule placeModule = AssemblyModule.resolve(place);
+				AssemblyModuleService assemblyModuleService = AssemblyModuleService.getInstance(place.getProject());
+
+				AssemblyModule targetModule = assemblyModuleService.resolve(target);
+				AssemblyModule placeModule = assemblyModuleService.resolve(place);
 
 				if(targetModule.equals(placeModule))
 				{
