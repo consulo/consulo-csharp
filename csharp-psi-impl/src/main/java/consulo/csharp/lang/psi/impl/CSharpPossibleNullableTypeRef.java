@@ -68,7 +68,7 @@ public class CSharpPossibleNullableTypeRef extends DotNetTypeRefWithCachedResult
 				return result;
 			}
 			DotNetGenericExtractor extractor = CSharpGenericExtractor.create(nullableType.getGenericParameters(), new DotNetTypeRef[]{myInnerTypeRef});
-			return new SimpleTypeResolveResult(nullableType, extractor);
+			return new SimpleTypeResolveResult(nullableType, extractor, true);
 		}
 	}
 
