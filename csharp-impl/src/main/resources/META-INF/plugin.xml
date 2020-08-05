@@ -20,7 +20,8 @@
 	<category>Custom Languages</category>
 	<version>SNAPSHOT</version>
 	<vendor>consulo.io</vendor>
-	<resource-bundle>messages.CSharpBundle</resource-bundle>
+	<localize>consulo.csharp.api.CSharpLocalize</localize>
+
 	<depends>consulo.dotnet</depends>
 	<depends>com.intellij.xml</depends>
 	<depends config-file="CSharpSpellchecker.xml" optional="true">com.intellij.spellchecker</depends>
@@ -330,6 +331,5 @@
 		<navbar implementation="consulo.csharp.ide.navbar.CSharpNavBarExtension" />
 
 		<projectService serviceImplementation="consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent" lazy="false" />
-		<projectService serviceImplementation="consulo.csharp.lang.psi.impl.runtime.AssemblyModuleCache" />
 	</extensions>
 </consulo-plugin>

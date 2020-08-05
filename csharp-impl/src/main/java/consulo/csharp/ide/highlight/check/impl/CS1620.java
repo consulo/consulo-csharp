@@ -29,6 +29,7 @@ import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpOutRefAutoTypeRef;
 import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
@@ -104,7 +105,7 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 
 		MethodResolvePriorityInfo calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
 
-		List<CompilerCheckBuilder> results = new SmartList<CompilerCheckBuilder>();
+		List<CompilerCheckBuilder> results = new SmartList<>();
 
 		List<NCallArgument> arguments = calcResult.getArguments();
 		for(NCallArgument argument : arguments)
@@ -142,14 +143,18 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 				continue;
 			}
 
-			if(argumentExpression instanceof CSharpOutRefVariableExpressionImpl && ((CSharpOutRefVariableExpressionImpl) argumentExpression).getType() == type)
+			DotNetTypeRef typeRef = argument.getTypeRef();
+			if(typeRef instanceof CSharpOutRefAutoTypeRef && ((CSharpOutRefAutoTypeRef) typeRef).getType() == type)
 			{
 				continue;
 			}
 
-			DotNetTypeRef typeRef = argument.getTypeRef();
-			if(!(typeRef instanceof CSharpRefTypeRef) ||
-					((CSharpRefTypeRef) typeRef).getType() != type)
+			if(argumentExpression instanceof CSharpOutRefVariableExpressionImpl)
+			{
+				continue;
+			}
+
+			if(!(typeRef instanceof CSharpRefTypeRef) || ((CSharpRefTypeRef) typeRef).getType() != type)
 			{
 				results.add(newBuilder(argumentExpression, String.valueOf(parameter.getIndex() + 1), type.name()).addQuickFix(new BaseUseTypeFix(argumentExpression, type)));
 			}

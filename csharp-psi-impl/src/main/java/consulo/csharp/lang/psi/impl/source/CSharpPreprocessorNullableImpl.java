@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2020 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package consulo.csharp.lang.psi.impl.msil;
+package consulo.csharp.lang.psi.impl.source;
 
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.msil.lang.psi.MsilGenericParameter;
-import com.intellij.psi.impl.light.LightElement;
+import com.intellij.lang.ASTNode;
+import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
- * @since 13.12.14
+ * @since 2020-07-30
  */
-public class MsilGenericParameterAsCSharpGenericConstraint extends LightElement
+public class CSharpPreprocessorNullableImpl extends CSharpPreprocessorElementImpl
 {
-	public MsilGenericParameterAsCSharpGenericConstraint(MsilGenericParameter parameter)
+	public CSharpPreprocessorNullableImpl(@Nonnull ASTNode node)
 	{
-		super(parameter.getManager(), CSharpLanguage.INSTANCE);
+		super(node);
 	}
 
 	@Override
-	public String toString()
+	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
 	{
-		return "MsilGenericParameterAsCSharpGenericConstraint";
+		visitor.visitNullable(this);
 	}
 }

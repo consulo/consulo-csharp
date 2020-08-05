@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2020 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,21 @@
  * limitations under the License.
  */
 
-package consulo.csharp.module.extension;
+package consulo.csharp.lang.psi.impl.source;
 
-import consulo.csharp.module.CSharpNullableOption;
-import consulo.module.extension.ModuleExtension;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import consulo.dotnet.psi.DotNetExpression;
 
 import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
- * @since 07.06.2015
+ * @since 2020-07-22
  */
-public interface CSharpSimpleModuleExtension<T extends ModuleExtension<T>> extends ModuleExtension<T>
+public interface CSharpOutRefExpression extends DotNetExpression
 {
-	boolean isAllowUnsafeCode();
-
 	@Nonnull
-	CSharpLanguageVersion getLanguageVersion();
-
-	boolean isSupportedLanguageVersion(@Nonnull CSharpLanguageVersion languageVersion);
-
-	@Nonnull
-	default CSharpNullableOption getNullableOption()
-	{
-		return CSharpNullableOption.UNSPECIFIED;
-	}
+	@RequiredReadAction
+	CSharpRefTypeRef.Type getExpressionType();
 }

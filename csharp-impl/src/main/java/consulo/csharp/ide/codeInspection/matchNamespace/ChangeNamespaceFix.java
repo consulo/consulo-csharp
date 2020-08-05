@@ -33,7 +33,7 @@ public class ChangeNamespaceFix extends LocalQuickFixOnPsiElement
 {
 	private final String myExpectedNamespace;
 
-	public ChangeNamespaceFix(@Nonnull CSharpNamespaceDeclaration element, String expectedNamespace)
+	public ChangeNamespaceFix(@Nonnull CSharpNamespaceDeclaration element, @Nonnull String expectedNamespace)
 	{
 		super(element);
 		myExpectedNamespace = expectedNamespace;

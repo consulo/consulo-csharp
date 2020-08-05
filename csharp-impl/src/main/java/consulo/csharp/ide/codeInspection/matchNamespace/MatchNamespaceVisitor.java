@@ -16,22 +16,21 @@
 
 package consulo.csharp.ide.codeInspection.matchNamespace;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.codeInspection.CSharpInspectionBundle;
+import consulo.csharp.impl.localize.CSharpInspectionLocalize;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.dotnet.module.DotNetNamespaceGeneratePolicy;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.dotnet.psi.DotNetReferenceExpression;
+import consulo.util.lang.StringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author VISTALL
@@ -76,16 +75,17 @@ class MatchNamespaceVisitor extends CSharpElementVisitor
 	@RequiredReadAction
 	public void report()
 	{
+		// we can't change to root namespace
+		if(StringUtil.isEmpty(myExpectedNamespace))
+		{
+			return;
+		}
+
 		if(myRootNamespaces.isEmpty())
 		{
 			PsiFile file = myHolder.getFile();
 
-			if(StringUtil.isEmpty(myExpectedNamespace))
-			{
-				return;
-			}
-
-			myHolder.registerProblem(file, CSharpInspectionBundle.message("expected.namespace.inspection", myExpectedNamespace));
+			myHolder.registerProblem(file, CSharpInspectionLocalize.expectedNamespaceInspection(myExpectedNamespace).getValue());
 		}
 		else if(myRootNamespaces.size() == 1)
 		{
@@ -97,7 +97,8 @@ class MatchNamespaceVisitor extends CSharpElementVisitor
 			{
 				DotNetReferenceExpression namespaceReference = declaration.getNamespaceReference();
 				assert namespaceReference != null;
-				myHolder.registerProblem(namespaceReference, CSharpInspectionBundle.message("expected.namespace.inspection", myExpectedNamespace), new ChangeNamespaceFix(declaration, myExpectedNamespace));
+				myHolder.registerProblem(namespaceReference, CSharpInspectionLocalize.expectedNamespaceInspection(myExpectedNamespace).getValue(), new ChangeNamespaceFix(declaration,
+						myExpectedNamespace));
 			}
 		}
 	}

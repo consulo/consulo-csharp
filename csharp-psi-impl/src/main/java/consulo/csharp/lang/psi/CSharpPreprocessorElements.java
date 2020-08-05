@@ -16,15 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NonNls;
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
-import com.intellij.lang.LanguageParserDefinitions;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilderFactory;
-import com.intellij.lang.PsiParser;
+import com.intellij.lang.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -35,6 +27,9 @@ import consulo.csharp.lang.lexer._CSharpMacroLexer;
 import consulo.csharp.lang.psi.impl.source.*;
 import consulo.lang.LanguageVersion;
 import consulo.psi.tree.ElementTypeAsPsiFactory;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -83,6 +78,8 @@ public interface CSharpPreprocessorElements
 	IElementType ENDREGION_DIRECTIVE = new ElementTypeAsPsiFactory("ENDREGION_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorEndRegionImpl.class);
 
 	IElementType PRAGMA_DIRECTIVE = new ElementTypeAsPsiFactory("PRAGMA_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorPragmaImpl.class);
+
+	IElementType NULLABLE_DIRECTIVE = new ElementTypeAsPsiFactory("NULLABLE_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorNullableImpl.class);
 
 	IElementType WARNING_DIRECTIVE = new ElementTypeAsPsiFactory("WARNING_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorWarningImpl.class);
 

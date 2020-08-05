@@ -22,7 +22,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.CSharpErrorBundle;
 import consulo.csharp.ide.codeInsight.actions.AddModifierFix;
 import consulo.csharp.ide.codeInsight.actions.CastExpressionToTypeRef;
 import consulo.csharp.ide.codeInsight.actions.ChangeReturnToTypeRefFix;
@@ -30,6 +29,7 @@ import consulo.csharp.ide.codeInsight.actions.ChangeVariableToTypeRefFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.CSharpHighlightKey;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
@@ -206,8 +206,9 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		}
 		else if(conversionResultTypeRef != null)
 		{
-			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(actualTypeRef, element),
-					CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(conversionResultTypeRef, element));
+			String text = CSharpErrorLocalize.impicitCastFrom0To1(CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(actualTypeRef, element),
+					CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(conversionResultTypeRef, element)).getValue();
+
 			return newBuilder(elementToHighlight).setText(text).setHighlightInfoType(HighlightInfoType.INFORMATION).setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
 		}
 

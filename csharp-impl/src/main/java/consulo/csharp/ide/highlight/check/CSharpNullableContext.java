@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2020 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.*;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.parser.preprocessor.PragmaWarningPreprocessorDirective;
+import consulo.csharp.lang.parser.preprocessor.NullableDirective;
 import consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.PreprocessorLightParser;
 import consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import consulo.csharp.lang.psi.impl.source.CSharpPreprocessorPragmaImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpPreprocessorNullableImpl;
+import consulo.csharp.module.CSharpNullableOption;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -35,29 +36,31 @@ import java.util.List;
 
 /**
  * @author VISTALL
- * @since 06-Nov-17
+ * @since 2020-07-30
+ *
+ * @see CSharpPragmaContext
  */
-public class CSharpPragmaContext
+public class CSharpNullableContext
 {
-	private static class PragmaSuppressAction
+	private static class NullableEntry
 	{
-		private String id;
+		private CSharpNullableOption option;
 		private int startOffset;
 		private int endOffset = -1;
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public static CSharpPragmaContext get(PsiFile file)
+	public static CSharpNullableContext get(PsiFile file)
 	{
 		return CachedValuesManager.getCachedValue(file, () -> CachedValueProvider.Result.create(build(file), PsiModificationTracker.MODIFICATION_COUNT));
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	private static CSharpPragmaContext build(PsiFile file)
+	private static CSharpNullableContext build(PsiFile file)
 	{
-		List<PragmaSuppressAction> actions = new ArrayList<>();
+		List<NullableEntry> actions = new ArrayList<>();
 		file.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override
@@ -68,37 +71,33 @@ public class CSharpPragmaContext
 
 				if(PsiUtilCore.getElementType(element) == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE)
 				{
-					CSharpPreprocessorPragmaImpl pragma = PsiTreeUtil.findChildOfType(element, CSharpPreprocessorPragmaImpl.class);
-					if(pragma != null)
+					CSharpPreprocessorNullableImpl nullable = PsiTreeUtil.findChildOfType(element, CSharpPreprocessorNullableImpl.class);
+					if(nullable != null)
 					{
-						PreprocessorDirective directive = PreprocessorLightParser.parse(pragma.getNode().getChars());
+						PreprocessorDirective directive = PreprocessorLightParser.parse(nullable.getNode().getChars());
 
-						if(directive instanceof PragmaWarningPreprocessorDirective)
+						if(directive instanceof NullableDirective)
 						{
-							switch(((PragmaWarningPreprocessorDirective) directive).getAction())
+							String value = ((NullableDirective) directive).getValue();
+							switch(value)
 							{
 								case "restore":
-									for(String id : ((PragmaWarningPreprocessorDirective) directive).getArguments())
+									for(NullableEntry action : ContainerUtil.iterateBackward(actions))
 									{
-										for(PragmaSuppressAction action : ContainerUtil.iterateBackward(actions))
+										if(action.endOffset == -1)
 										{
-											if(action.id.equalsIgnoreCase(id) && action.endOffset == -1)
-											{
-												action.endOffset = element.getTextRange().getEndOffset();
-												break;
-											}
+											action.endOffset = element.getTextRange().getEndOffset();
+											break;
 										}
 									}
 									break;
+								case "enable":
 								case "disable":
-									for(String id : ((PragmaWarningPreprocessorDirective) directive).getArguments())
-									{
-										PragmaSuppressAction action = new PragmaSuppressAction();
-										actions.add(action);
+									NullableEntry action = new NullableEntry();
+									actions.add(action);
 
-										action.id = id;
-										action.startOffset = element.getTextOffset();
-									}
+									action.option = value.equals("enable") ? CSharpNullableOption.ENABLE : CSharpNullableOption.DISABLE;
+									action.startOffset = element.getTextOffset();
 									break;
 							}
 						}
@@ -107,7 +106,7 @@ public class CSharpPragmaContext
 			}
 		});
 
-		for(PragmaSuppressAction action : actions)
+		for(NullableEntry action : actions)
 		{
 			if(action.endOffset == -1)
 			{
@@ -115,36 +114,29 @@ public class CSharpPragmaContext
 			}
 		}
 		Collections.reverse(actions);
-		return new CSharpPragmaContext(actions);
+		return new CSharpNullableContext(actions);
 	}
 
-	private final List<PragmaSuppressAction> myActions;
+	private final List<NullableEntry> myStates;
 
-	public CSharpPragmaContext(List<PragmaSuppressAction> actions)
+	public CSharpNullableContext(List<NullableEntry> states)
 	{
-		myActions = actions;
+		myStates = states;
 	}
 
-	public boolean isSuppressed(CSharpCompilerChecks classEntry, PsiElement element)
+	@Nonnull
+	public CSharpNullableOption getNullable(@Nonnull PsiElement element, @Nonnull CSharpNullableOption defaultValue)
 	{
-		if(!classEntry.isSuppressable())
-		{
-			return false;
-		}
-
-		String checkId = classEntry.name();
 		int textOffset = element.getTextOffset();
 
-		for(PragmaSuppressAction action : myActions)
+		for(NullableEntry action : myStates)
 		{
-			if(checkId.equalsIgnoreCase(action.id))
+			if(textOffset >= action.startOffset && textOffset <= action.endOffset)
 			{
-				if(textOffset >= action.startOffset && textOffset <= action.endOffset)
-				{
-					return true;
-				}
+				return action.option;
 			}
 		}
-		return false;
+
+		return defaultValue;
 	}
 }

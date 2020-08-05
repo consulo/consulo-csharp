@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2020 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,37 +14,32 @@
  * limitations under the License.
  */
 
-package consulo.csharp.lang.psi.impl.runtime;
-
-import javax.annotation.Nonnull;
-import consulo.annotation.access.RequiredReadAction;
+package consulo.csharp.lang.parser.preprocessor;
 
 /**
  * @author VISTALL
- * @since 14-Jun-17
+ * @since 2020-07-30
  */
-class UnknownAssemblyModule implements AssemblyModule
+public class NullableDirective extends PreprocessorDirective
 {
-	static final UnknownAssemblyModule INSTANCE = new UnknownAssemblyModule();
+	private String myValue;
 
-	@RequiredReadAction
-	@Nonnull
-	@Override
-	public String getName()
+	public NullableDirective(String value)
 	{
-		return "??";
+		myValue = value;
 	}
 
-	@RequiredReadAction
-	@Override
-	public boolean isAllowedAssembly(@Nonnull String assemblyName)
+	public String getValue()
 	{
-		return true;
+		return myValue;
 	}
 
 	@Override
-	public boolean equals(@Nonnull AssemblyModule module)
+	public String toString()
 	{
-		return module instanceof UnknownAssemblyModule;
+		final StringBuilder sb = new StringBuilder("NullableDirective{");
+		sb.append("myValue='").append(myValue).append('\'');
+		sb.append('}');
+		return sb.toString();
 	}
 }

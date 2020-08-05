@@ -50,6 +50,7 @@ public class PreprocessorLightParser
 		REGION,
 		ENDREGION,
 		PRAGMA,
+		NULLABLE,
 		WARNING,
 		ERROR
 	}
@@ -85,6 +86,11 @@ public class PreprocessorLightParser
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.PRAGMA;
+					}
+					else if(elementType == CSharpPreprocesorTokens.NULLABLE_KEYWORD)
+					{
+						state = State.DIRECTIVE;
+						directive = Directive.NULLABLE;
 					}
 					else if(elementType == CSharpPreprocesorTokens.WARNING_KEYWORD)
 					{
@@ -139,6 +145,7 @@ public class PreprocessorLightParser
 						case ELIF:
 						case IF:
 						case REGION:
+						case NULLABLE:
 						case PRAGMA:
 						case WARNING:
 						case ERROR:
@@ -174,6 +181,8 @@ public class PreprocessorLightParser
 					return new IfPreprocessorDirective(value, directive == Directive.ELIF);
 				case PRAGMA:
 					return parsePragma(value);
+				case NULLABLE:
+					return new NullableDirective(StringUtil.notNullize(value.trim()));
 				case REGION:
 					return new RegionPreprocessorDirective(text);
 				case ELSE:

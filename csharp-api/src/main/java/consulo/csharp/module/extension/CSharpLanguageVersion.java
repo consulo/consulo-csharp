@@ -16,7 +16,8 @@
 
 package consulo.csharp.module.extension;
 
-import consulo.csharp.CSharpBundle;
+import consulo.csharp.api.localize.CSharpLocalize;
+import consulo.localize.LocalizeValue;
 import consulo.util.pointers.Named;
 import consulo.util.pointers.NamedPointer;
 
@@ -28,16 +29,26 @@ import javax.annotation.Nonnull;
  */
 public enum CSharpLanguageVersion implements Named, NamedPointer<CSharpLanguageVersion>
 {
-	_1_0,
-	_2_0,
-	_3_0,
-	_4_0,
-	_5_0,
-	_6_0,
-	_7_0,
-	_7_1;
+	_1_0(CSharpLocalize.csharpVersion_1_0()),
+	_2_0(CSharpLocalize.csharpVersion_2_0()),
+	_3_0(CSharpLocalize.csharpVersion_3_0()),
+	_4_0(CSharpLocalize.csharpVersion_4_0()),
+	_5_0(CSharpLocalize.csharpVersion_5_0()),
+	_6_0(CSharpLocalize.csharpVersion_6_0()),
+	_7_0(CSharpLocalize.csharpVersion_7_0()),
+	_7_1(CSharpLocalize.csharpVersion_7_1()),
+	_7_2(CSharpLocalize.csharpVersion_7_2()),
+	_7_3(CSharpLocalize.csharpVersion_7_3()),
+	_8_0(CSharpLocalize.csharpVersion_8_0());
 
-	public static final CSharpLanguageVersion HIGHEST = _7_1;
+	public static final CSharpLanguageVersion HIGHEST = _8_0;
+
+	private final LocalizeValue myDescriptionValue;
+
+	CSharpLanguageVersion(@Nonnull LocalizeValue descriptionValue)
+	{
+		myDescriptionValue = descriptionValue;
+	}
 
 	public boolean isAtLeast(@Nonnull CSharpLanguageVersion languageVersion)
 	{
@@ -54,9 +65,9 @@ public enum CSharpLanguageVersion implements Named, NamedPointer<CSharpLanguageV
 	}
 
 	@Nonnull
-	public String getDescription()
+	public LocalizeValue getDescriptionValue()
 	{
-		return CSharpBundle.message("csharp.version." + name());
+		return myDescriptionValue;
 	}
 
 	@Nonnull

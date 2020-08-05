@@ -16,16 +16,16 @@
 
 package consulo.csharp.ide.highlight.util;
 
-import consulo.csharp.ide.CSharpErrorBundle;
-import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetModifierList;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
 import com.intellij.psi.PsiElement;
+import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
+import consulo.csharp.impl.localize.CSharpErrorLocalize;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.dotnet.psi.DotNetGenericParameter;
+import consulo.dotnet.psi.DotNetModifierList;
 
 /**
  * @author VISTALL
@@ -57,8 +57,7 @@ public class GenericParameterHighlightUtil
 	{
 		CSharpModifier revertModifier = modifier == CSharpModifier.IN ? CSharpModifier.OUT : CSharpModifier.IN;
 		HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR);
-		builder.descriptionAndTooltip(CSharpErrorBundle.message("conflicting.0.modifier.with.1.modifier", modifier.getPresentableText(),
-				revertModifier.getPresentableText()));
+		builder.descriptionAndTooltip(CSharpErrorLocalize.conflicting0ModifierWith1Modifier(modifier.getPresentableText(), revertModifier.getPresentableText()).getValue());
 		builder.range(modifierElement);
 
 		HighlightInfo info = builder.create();

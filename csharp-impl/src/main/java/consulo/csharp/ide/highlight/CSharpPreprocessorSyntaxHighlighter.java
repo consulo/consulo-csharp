@@ -16,16 +16,16 @@
 
 package consulo.csharp.ide.highlight;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.lexer.CSharpPreprocessorHightlightLexer;
 import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
+
+import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -47,6 +47,7 @@ public class CSharpPreprocessorSyntaxHighlighter extends SyntaxHighlighterBase
 		safeMap(ourKeys, CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
 		safeMap(ourKeys, CSharpPreprocesorTokens.PRAGMA_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
 		safeMap(ourKeys, CSharpPreprocesorTokens.WARNING_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocesorTokens.NULLABLE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
 		safeMap(ourKeys, CSharpPreprocesorTokens.ERROR_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
 		//FIXME [VISTALL] highlight bug safeMap(ourKeys, CSharpPreprocesorTokens.LINE_COMMENT, CSharpHighlightKey.LINE_COMMENT);
 	}

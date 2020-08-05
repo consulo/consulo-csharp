@@ -16,21 +16,37 @@
 
 package consulo.csharp.module.extension;
 
-import javax.annotation.Nonnull;
-
-import org.jdom.Element;
-
-import javax.annotation.Nullable;
 import com.intellij.openapi.fileTypes.LanguageFileType;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpFileType;
+import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
+import consulo.csharp.lang.psi.CSharpAttribute;
+import consulo.csharp.lang.psi.CSharpAttributeList;
+import consulo.csharp.lang.psi.impl.DotNetTypes2;
+import consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
 import consulo.csharp.module.CSharpLanguageVersionPointer;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import consulo.dotnet.module.extension.DotNetModuleLangExtension;
+import consulo.dotnet.psi.DotNetAttributeTargetType;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.module.extension.impl.ModuleExtensionImpl;
 import consulo.roots.ModuleRootLayer;
+import org.jdom.Element;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -45,6 +61,53 @@ public class BaseCSharpSimpleModuleExtension<T extends BaseCSharpSimpleModuleExt
 	{
 		super(id, layer);
 		myLanguageVersionPointer = new CSharpLanguageVersionPointer(layer, id);
+	}
+
+	@RequiredReadAction
+	@Nonnull
+	@Override
+	public Set<String> getInternalsVisibleToAssemblies()
+	{
+		return CachedValuesManager.getManager(getProject()).getCachedValue(getProject(), () -> CachedValueProvider.Result.create(calcSourceAllowedAssemblies(getModule()), PsiModificationTracker
+				.MODIFICATION_COUNT));
+	}
+
+	@RequiredReadAction
+	private static Set<String> calcSourceAllowedAssemblies(Module module)
+	{
+		Set<String> assemblies = new HashSet<>();
+
+		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, module.getProject(), GlobalSearchScope.moduleScope(module));
+
+		for(CSharpAttributeList attributeList : attributeLists)
+		{
+			for(CSharpAttribute attribute : attributeList.getAttributes())
+			{
+				DotNetTypeDeclaration dotNetTypeDeclaration = attribute.resolveToType();
+				if(dotNetTypeDeclaration == null)
+				{
+					continue;
+				}
+
+				if(DotNetTypes2.System.Runtime.CompilerServices.InternalsVisibleToAttribute.equalsIgnoreCase(dotNetTypeDeclaration.getVmQName()))
+				{
+					Module attributeModule = ModuleUtilCore.findModuleForPsiElement(attribute);
+					if(attributeModule == null || !attributeModule.equals(module))
+					{
+						continue;
+					}
+
+					DotNetExpression[] parameterExpressions = attribute.getParameterExpressions();
+					if(parameterExpressions.length == 0)
+					{
+						continue;
+					}
+					String valueAs = new ConstantExpressionEvaluator(parameterExpressions[0]).getValueAs(String.class);
+					assemblies.add(valueAs);
+				}
+			}
+		}
+		return assemblies;
 	}
 
 	@Override

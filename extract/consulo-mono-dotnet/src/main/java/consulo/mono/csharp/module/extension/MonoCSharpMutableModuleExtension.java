@@ -16,10 +16,6 @@
 
 package consulo.mono.csharp.module.extension;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.swing.*;
-
 import consulo.csharp.module.extension.CSharpConfigurationPanel;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.disposer.Disposable;
@@ -29,6 +25,10 @@ import consulo.ui.Component;
 import consulo.ui.Label;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.layout.VerticalLayout;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
 
 /**
  * @author VISTALL

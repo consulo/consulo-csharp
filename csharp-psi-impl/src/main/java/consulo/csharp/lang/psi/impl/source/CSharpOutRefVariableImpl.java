@@ -28,6 +28,7 @@ import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
@@ -79,7 +80,7 @@ public class CSharpOutRefVariableImpl extends CSharpVariableImpl
 			try
 			{
 				myTypeRefProcessing.set(Boolean.TRUE);
-				return searchTypeRefFromCall();
+				return searchTypeRefFromCall((DotNetExpression) getParent());
 			}
 			finally
 			{
@@ -97,13 +98,12 @@ public class CSharpOutRefVariableImpl extends CSharpVariableImpl
 	private CSharpRefTypeRef.Type getExpressionType()
 	{
 		CSharpOutRefVariableExpressionImpl parent = (CSharpOutRefVariableExpressionImpl) getParent();
-		return parent.getType();
+		return parent.getExpressionType();
 	}
 
 	@Nonnull
-	private DotNetTypeRef searchTypeRefFromCall()
+	public static DotNetTypeRef searchTypeRefFromCall(DotNetExpression expression)
 	{
-		CSharpOutRefVariableExpressionImpl expression = (CSharpOutRefVariableExpressionImpl) getParent();
 		PsiElement exprParent = expression.getParent();
 		if(!(exprParent instanceof CSharpCallArgument))
 		{

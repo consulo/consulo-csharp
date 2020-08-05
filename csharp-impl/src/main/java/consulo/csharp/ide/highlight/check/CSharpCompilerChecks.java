@@ -16,18 +16,16 @@
 
 package consulo.csharp.ide.highlight.check;
 
-import java.lang.reflect.ParameterizedType;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+
+import javax.annotation.Nonnull;
+import java.lang.reflect.ParameterizedType;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -143,6 +141,7 @@ public enum CSharpCompilerChecks
 	CS1985(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside catch statements
 	CS1998(CSharpLanguageVersion._4_0, HighlightInfoType.UNUSED_SYMBOL), // async modifer - then no await
 	CS4009(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // async modifier cant be at entry point
+	CS8632(CSharpLanguageVersion._8_0, HighlightInfoType.WARNING), // nullable type check
 
 	CC0001(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //reference checks
 	CC0002(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //operator reference checks

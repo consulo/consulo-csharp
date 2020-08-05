@@ -77,7 +77,20 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		public static final AccessType[] VALUES = values();
 	}
 
+	String PLACEHOLDER = "_";
+
 	CharFilter DEFAULT_REF_FILTER = ch -> !Character.isWhitespace(ch) && ch != '@';
+
+	@RequiredReadAction
+	default boolean isPlaceholderReference()
+	{
+		if(getQualifier() != null)
+		{
+			return false;
+		}
+
+		return PLACEHOLDER.equals(getReferenceName()) && resolve() == null;
+	}
 
 	@Nullable
 	@Override

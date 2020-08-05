@@ -16,9 +16,6 @@
 
 package consulo.csharp.lang.parser.exp;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -33,6 +30,9 @@ import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ExpressionParsing extends SharedParsingHelpers
 {
@@ -1116,7 +1116,8 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		PsiBuilder.Marker possibleVarMark = builder.mark();
 
-		if(parseType(builder, VAR_SUPPORT) != null && builder.getTokenType() == CSharpTokens.IDENTIFIER)
+		TypeInfo type = parseType(builder, VAR_SUPPORT);
+		if(type != null && !type.isArrayError && builder.getTokenType() == CSharpTokens.IDENTIFIER)
 		{
 			doneIdentifier(builder, NONE);
 
