@@ -19,6 +19,8 @@ package consulo.csharp.lang.psi.impl.source;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.tree.IElementType;
@@ -308,5 +310,22 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 	public DotNetType getSelfType()
 	{
 		return findChildByClass(DotNetType.class);
+	}
+
+	@Override
+	@RequiredReadAction
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	{
+		if(!processor.execute(this, state))
+		{
+			return false;
+		}
+
+		DotNetExpression initializer = getInitializer();
+		if(initializer != null && !initializer.processDeclarations(processor, state, lastParent, place))
+		{
+			return false;
+		}
+		return super.processDeclarations(processor, state, lastParent, place);
 	}
 }
