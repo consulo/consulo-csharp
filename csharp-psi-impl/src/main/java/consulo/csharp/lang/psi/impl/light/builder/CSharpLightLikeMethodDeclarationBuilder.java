@@ -83,6 +83,7 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return myReturnType;
 	}
 
+	@RequiredReadAction
 	@Nonnull
 	@Override
 	public CSharpCodeBodyProxy getCodeBlock()

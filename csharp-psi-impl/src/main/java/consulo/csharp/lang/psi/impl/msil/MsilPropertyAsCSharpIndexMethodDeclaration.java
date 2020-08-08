@@ -223,6 +223,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return myParameters;
 	}
 
+	@RequiredReadAction
 	@Nonnull
 	@Override
 	public CSharpCodeBodyProxy getCodeBlock()

@@ -80,6 +80,7 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 		return myParameterList == null ? DotNetTypeRef.EMPTY_ARRAY : myParameterList.getParameterTypeRefs();
 	}
 
+	@RequiredReadAction
 	@Nonnull
 	@Override
 	public CSharpCodeBodyProxy getCodeBlock()

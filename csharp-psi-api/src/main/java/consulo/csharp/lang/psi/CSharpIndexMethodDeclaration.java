@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetMemberOwner;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
@@ -29,7 +30,14 @@ import javax.annotation.Nonnull;
 public interface CSharpIndexMethodDeclaration extends DotNetLikeMethodDeclaration, DotNetVirtualImplementOwner, DotNetMemberOwner,
 		CSharpSimpleLikeMethodAsElement, CSharpBodyWithBraces, CSharpXAccessorOwner
 {
+	@RequiredReadAction
+	default boolean isAutoGet()
+	{
+		return false;
+	}
+
 	@Nonnull
 	@Override
+	@RequiredReadAction
 	CSharpCodeBodyProxy getCodeBlock();
 }

@@ -24,7 +24,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
-import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,7 +35,7 @@ import java.io.IOException;
  */
 public abstract class CSharpBaseVariableStubElementType<V extends DotNetVariable> extends CSharpAbstractStubElementType<CSharpVariableDeclStub<V>, V>
 {
-	public CSharpBaseVariableStubElementType(@Nonnull @NonNls String debugName)
+	public CSharpBaseVariableStubElementType(@Nonnull String debugName)
 	{
 		super(debugName);
 	}

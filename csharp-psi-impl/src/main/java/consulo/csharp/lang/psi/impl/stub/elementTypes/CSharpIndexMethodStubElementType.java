@@ -16,10 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -29,6 +25,10 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.impl.source.CSharpIndexMethodDeclarationImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpIndexMethodDeclStub;
+import consulo.util.lang.BitUtil;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
 
 /**
  * @author VISTALL
@@ -54,18 +54,22 @@ public class CSharpIndexMethodStubElementType extends CSharpAbstractStubElementT
 		return new CSharpIndexMethodDeclarationImpl(methodStub);
 	}
 
+	@Nonnull
 	@RequiredReadAction
 	@Override
 	public CSharpIndexMethodDeclStub createStub(@Nonnull CSharpIndexMethodDeclaration declaration, StubElement stubElement)
 	{
 		String parentQName = declaration.getPresentableParentQName();
-		return new CSharpIndexMethodDeclStub(stubElement, parentQName);
+		int otherModifiers = 0;
+		otherModifiers = BitUtil.set(otherModifiers, CSharpIndexMethodDeclStub.AUTO_GET, declaration.isAutoGet());
+		return new CSharpIndexMethodDeclStub(stubElement, parentQName, otherModifiers);
 	}
 
 	@Override
 	public void serialize(@Nonnull CSharpIndexMethodDeclStub methodStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(methodStub.getParentQName());
+		stubOutputStream.writeVarInt(methodStub.getOtherModifierMask());
 	}
 
 	@Nonnull
@@ -73,6 +77,7 @@ public class CSharpIndexMethodStubElementType extends CSharpAbstractStubElementT
 	public CSharpIndexMethodDeclStub deserialize(@Nonnull StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
 		StringRef qname = inputStream.readName();
-		return new CSharpIndexMethodDeclStub(stubElement, StringRef.toString(qname));
+		int otherModifiers = inputStream.readVarInt();
+		return new CSharpIndexMethodDeclStub(stubElement, StringRef.toString(qname), otherModifiers);
 	}
 }

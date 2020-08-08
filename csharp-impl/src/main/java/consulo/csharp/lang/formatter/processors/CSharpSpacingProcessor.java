@@ -148,7 +148,7 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		spaceIfNoBlankLines(myBuilder.beforeInside(LBRACE, TYPE_DECLARATION), commonSettings.SPACE_BEFORE_CLASS_LBRACE);
 		spaceIfNoBlankLines(myBuilder.beforeInside(LBRACE, PROPERTY_DECLARATION), customSettings.SPACE_BEFORE_PROPERTY_LBRACE);
 		spaceIfNoBlankLines(myBuilder.beforeInside(LBRACE, EVENT_DECLARATION), customSettings.SPACE_BEFORE_EVENT_LBRACE);
-		spaceIfNoBlankLines(myBuilder.beforeInside(LBRACE, ARRAY_METHOD_DECLARATION), customSettings.SPACE_BEFORE_INDEX_METHOD_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(LBRACE, INDEX_METHOD_DECLARATION), customSettings.SPACE_BEFORE_INDEX_METHOD_LBRACE);
 		spaceIfNoBlankLines(myBuilder.beforeInside(LBRACE, NAMESPACE_DECLARATION), customSettings.SPACE_BEFORE_NAMESPACE_LBRACE);
 
 		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, METHOD_DECLARATION), commonSettings.SPACE_BEFORE_METHOD_LBRACE);
@@ -172,13 +172,13 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		{
 			spaceIfNoBlankLines(myBuilder.afterInside(LBRACE, PROPERTY_DECLARATION), true);
 			spaceIfNoBlankLines(myBuilder.afterInside(LBRACE, EVENT_DECLARATION), true);
-			spaceIfNoBlankLines(myBuilder.afterInside(LBRACE, ARRAY_METHOD_DECLARATION), true);
+			spaceIfNoBlankLines(myBuilder.afterInside(LBRACE, INDEX_METHOD_DECLARATION), true);
 
 			spaceIfNoBlankLines(myBuilder.between(XXX_ACCESSOR, XXX_ACCESSOR), true);
 
 			spaceIfNoBlankLines(myBuilder.beforeInside(RBRACE, PROPERTY_DECLARATION), true);
 			spaceIfNoBlankLines(myBuilder.beforeInside(RBRACE, EVENT_DECLARATION), true);
-			spaceIfNoBlankLines(myBuilder.beforeInside(RBRACE, ARRAY_METHOD_DECLARATION), true);
+			spaceIfNoBlankLines(myBuilder.beforeInside(RBRACE, INDEX_METHOD_DECLARATION), true);
 		}
 
 		// between members - one line
@@ -279,8 +279,8 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.betweenInside(CSharpTokens.DOT, CSharpStubElements.IDENTIFIER, METHOD_DECLARATION).none();
 		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, METHOD_DECLARATION).spaces(1);
 		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, CONSTRUCTOR_DECLARATION).spaces(1);
-		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.THIS_KEYWORD, ARRAY_METHOD_DECLARATION).none();
-		myBuilder.beforeInside(CSharpTokens.THIS_KEYWORD, ARRAY_METHOD_DECLARATION).spaces(1);
+		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.THIS_KEYWORD, INDEX_METHOD_DECLARATION).none();
+		myBuilder.beforeInside(CSharpTokens.THIS_KEYWORD, INDEX_METHOD_DECLARATION).spaces(1);
 
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CSharpElements.PARAMETER).spaces(1);
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CSharpStubElements.PARAMETER).spaces(1);

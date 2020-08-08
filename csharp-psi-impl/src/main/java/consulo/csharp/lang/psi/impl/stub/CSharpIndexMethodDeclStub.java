@@ -16,11 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.stub;
 
-import javax.annotation.Nullable;
-
 import com.intellij.psi.stubs.StubElement;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpStubElements;
+
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -28,8 +28,10 @@ import consulo.csharp.lang.psi.CSharpStubElements;
  */
 public class CSharpIndexMethodDeclStub extends MemberStub<CSharpIndexMethodDeclaration>
 {
-	public CSharpIndexMethodDeclStub(StubElement parent, @Nullable String qname)
+	public static final int AUTO_GET = 1 << 1;
+
+	public CSharpIndexMethodDeclStub(StubElement parent, @Nullable String qname, int otherModifiers)
 	{
-		super(parent, CSharpStubElements.INDEX_METHOD_DECLARATION, qname, 0);
+		super(parent, CSharpStubElements.INDEX_METHOD_DECLARATION, qname, otherModifiers);
 	}
 }

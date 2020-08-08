@@ -21,6 +21,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.util.BitUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.stub.CSharpIndexMethodDeclStub;
@@ -52,6 +53,32 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 		visitor.visitIndexMethodDeclaration(this);
 	}
 
+	@Override
+	@RequiredReadAction
+	public boolean isAutoGet()
+	{
+		CSharpIndexMethodDeclStub stub = getGreenStub();
+		if(stub != null)
+		{
+			return BitUtil.isSet(stub.getOtherModifierMask(), CSharpIndexMethodDeclStub.AUTO_GET);
+		}
+
+		return findChildByType(CSharpElements.EXPRESSION_METHOD_BODY) != null;
+	}
+
+	@RequiredReadAction
+	@Nonnull
+	@Override
+	public CSharpCodeBodyProxy getCodeBlock()
+	{
+		if(isAutoGet())
+		{
+			return new CSharpCodeBodyProxyImpl(this);
+		}
+		return CSharpCodeBodyProxy.EMPTY;
+	}
+
+	@RequiredReadAction
 	@Nonnull
 	@Override
 	public DotNetXAccessor[] getAccessors()
@@ -59,6 +86,7 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 		return getStubOrPsiChildren(CSharpStubElements.XACCESSOR, DotNetXAccessor.ARRAY_FACTORY);
 	}
 
+	@RequiredReadAction
 	@Nonnull
 	@Override
 	public DotNetType getReturnType()
@@ -83,6 +111,7 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
 	}
 
+	@RequiredReadAction
 	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
@@ -129,13 +158,6 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 		.IndexerName, String.class);  */
 		//TODO [VISTALL] fix stackoverflow and uncomment
 		return StringUtil.notNullize(singleAttributeValue, "Item");
-	}
-
-	@Nonnull
-	@Override
-	public CSharpCodeBodyProxy getCodeBlock()
-	{
-		return CSharpCodeBodyProxy.EMPTY;
 	}
 
 	@Nullable

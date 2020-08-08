@@ -110,20 +110,29 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 		}
 	}
 
-	public static void parseArrayAfterThis(CSharpBuilderWrapper builderWrapper, PsiBuilder.Marker marker, ModifierSet set)
+	public static void parseArrayAfterThis(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set)
 	{
-		if(builderWrapper.getTokenType() == LBRACKET)
+		if(builder.getTokenType() == LBRACKET)
 		{
-			MethodParsing.parseParameterList(builderWrapper, STUB_SUPPORT, RBRACKET, set);
+			MethodParsing.parseParameterList(builder, STUB_SUPPORT, RBRACKET, set);
 		}
 		else
 		{
-			builderWrapper.error("'[' expected");
+			builder.error("'[' expected");
 		}
 
-		parseAccessors(builderWrapper, XXX_ACCESSOR, PROPERTY_ACCESSOR_START);
+		boolean autoProperty = builder.getTokenType() == DARROW;
 
-		done(marker, ARRAY_METHOD_DECLARATION);
+		if(autoProperty)
+		{
+			MethodParsing.parseExpressionCodeBlock(builder);
+		}
+		else
+		{
+			parseAccessors(builder, XXX_ACCESSOR, PROPERTY_ACCESSOR_START);
+		}
+
+		done(marker, INDEX_METHOD_DECLARATION);
 	}
 
 	public static void parseFieldOrPropertyAfterName(CSharpBuilderWrapper builderWrapper, PsiBuilder.Marker marker, ModifierSet set)

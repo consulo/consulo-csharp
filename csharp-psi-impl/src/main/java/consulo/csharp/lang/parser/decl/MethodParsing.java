@@ -16,9 +16,6 @@
 
 package consulo.csharp.lang.parser.decl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
@@ -30,6 +27,9 @@ import consulo.csharp.lang.parser.stmt.StatementParsing;
 import consulo.csharp.lang.psi.CSharpElements;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokens;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -201,31 +201,7 @@ public class MethodParsing extends MemberWithBodyParsing
 		}
 		else if(tokenType == DARROW)
 		{
-			PsiBuilder.Marker marker = builder.mark();
-
-			int braceLevel = 0;
-
-			while(!builder.eof())
-			{
-				IElementType nextToken = builder.getTokenType();
-				if(nextToken == LBRACE)
-				{
-					braceLevel++;
-				}
-				else if(nextToken == RBRACE)
-				{
-					braceLevel--;
-				}
-				else if(nextToken == SEMICOLON && braceLevel <= 0)
-				{
-					builder.advanceLexer();
-					break;
-				}
-
-				builder.advanceLexer();
-			}
-
-			marker.collapse(CSharpElements.EXPRESSION_METHOD_BODY);
+			parseExpressionCodeBlock(builder);
 		}
 		else if(tokenType == SEMICOLON)
 		{
@@ -237,6 +213,35 @@ public class MethodParsing extends MemberWithBodyParsing
 		{
 			builder.error("';' expected");
 		}
+	}
+
+	public  static void parseExpressionCodeBlock(PsiBuilder builder)
+	{
+		PsiBuilder.Marker marker = builder.mark();
+
+		int braceLevel = 0;
+
+		while(!builder.eof())
+		{
+			IElementType nextToken = builder.getTokenType();
+			if(nextToken == LBRACE)
+			{
+				braceLevel++;
+			}
+			else if(nextToken == RBRACE)
+			{
+				braceLevel--;
+			}
+			else if(nextToken == SEMICOLON && braceLevel <= 0)
+			{
+				builder.advanceLexer();
+				break;
+			}
+
+			builder.advanceLexer();
+		}
+
+		marker.collapse(CSharpElements.EXPRESSION_METHOD_BODY);
 	}
 
 	@Deprecated
