@@ -48,7 +48,7 @@ import java.util.Set;
  */
 public abstract class BaseMethodBodyLazyElementType extends ILazyParseableElementType
 {
-	public BaseMethodBodyLazyElementType(@Nonnull @NonNls String debugName)
+	public BaseMethodBodyLazyElementType(@Nonnull String debugName)
 	{
 		super(debugName, CSharpLanguage.INSTANCE);
 	}
