@@ -16,17 +16,8 @@
 
 package consulo.csharp.ide.parameterInfo;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.lang.parameterInfo.CreateParameterInfoContext;
-import com.intellij.lang.parameterInfo.ParameterInfoContext;
-import com.intellij.lang.parameterInfo.ParameterInfoHandler;
-import com.intellij.lang.parameterInfo.ParameterInfoUIContext;
-import com.intellij.lang.parameterInfo.ParameterInfoUtils;
-import com.intellij.lang.parameterInfo.UpdateParameterInfoContext;
+import com.intellij.lang.parameterInfo.*;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -36,27 +27,22 @@ import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ArrayFactory;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.ui.annotation.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
-import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpDictionaryInitializerImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.psi.DotNetAttributeUtil;
-import consulo.dotnet.psi.DotNetElement;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -142,7 +128,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		if(object instanceof DotNetVariable)
 		{
 			DotNetVariable variable = (DotNetVariable) object;
-			DotNetTypeRef dotNetTypeRef = variable.toTypeRef(tracksParameterIndex());
+			DotNetTypeRef dotNetTypeRef = variable.toTypeRef(true);
 
 			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve();
 			if(typeResolveResult instanceof CSharpLambdaResolveResult)
@@ -151,13 +137,6 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 			}
 		}
 		return ItemToShow.EMPTY_ARRAY;
-	}
-
-	@Nullable
-	@Override
-	public Object[] getParametersForDocumentation(ItemToShow p, ParameterInfoContext context)
-	{
-		return new Object[0];
 	}
 
 	@Nullable
@@ -258,11 +237,12 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	@RequiredReadAction
 	public PsiElement findElementForUpdatingParameterInfo(UpdateParameterInfoContext context)
 	{
-		return context.getFile().findElementAt(context.getEditor().getCaretModel().getOffset());
+		PsiElement elementAt = context.getFile().findElementAt(context.getEditor().getCaretModel().getOffset());
+		return elementAt == null ? null : resolveCallArgumentListOwner(elementAt);
 	}
 
 	@Override
-	public void updateParameterInfo(@Nonnull PsiElement place, UpdateParameterInfoContext context)
+	public void updateParameterInfo(@Nonnull PsiElement place, @Nonnull UpdateParameterInfoContext context)
 	{
 		CSharpCallArgumentListOwner owner = resolveCallArgumentListOwner(place);
 		int parameterIndex = -1;
@@ -299,9 +279,9 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	@Nullable
 	private static CSharpCallArgumentListOwner resolveCallArgumentListOwner(@Nullable PsiElement place)
 	{
-		if(place == null)
+		if(place == null || place instanceof CSharpCallArgumentListOwner)
 		{
-			return null;
+			return (CSharpCallArgumentListOwner) place;
 		}
 
 		boolean isDelegateKeyword = PsiUtilCore.getElementType(place) == CSharpTokens.DELEGATE_KEYWORD;
@@ -323,19 +303,6 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		}
 
 		return null;
-	}
-
-	@Nullable
-	@Override
-	public String getParameterCloseChars()
-	{
-		return ",)";
-	}
-
-	@Override
-	public boolean tracksParameterIndex()
-	{
-		return true;
 	}
 
 	@Override
