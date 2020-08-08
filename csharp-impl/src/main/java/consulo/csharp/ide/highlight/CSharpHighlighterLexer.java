@@ -43,7 +43,6 @@ public class CSharpHighlighterLexer extends CSharpLexer implements RestartableLe
 	@Override
 	public boolean isRestartableState(int state)
 	{
-		System.out.println(state);
 		return false;
 	}
 
