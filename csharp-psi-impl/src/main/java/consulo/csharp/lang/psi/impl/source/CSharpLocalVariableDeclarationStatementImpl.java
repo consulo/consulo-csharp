@@ -16,15 +16,15 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -56,7 +56,7 @@ public class CSharpLocalVariableDeclarationStatementImpl extends CSharpElementIm
 	{
 		for(CSharpLocalVariable variable : getVariables())
 		{
-			if(!processor.execute(variable, state))
+			if(!variable.processDeclarations(processor, state, lastParent, place))
 			{
 				return false;
 			}

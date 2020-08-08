@@ -16,15 +16,6 @@
 
 package consulo.csharp.lang;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.codeInsight.folding.CodeFoldingSettings;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.CustomFoldingBuilder;
@@ -32,11 +23,7 @@ import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.TokenType;
+import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.containers.ContainerUtil;
@@ -48,7 +35,10 @@ import consulo.csharp.lang.parser.preprocessor.PreprocessorLightParser;
 import consulo.csharp.lang.parser.preprocessor.RegionPreprocessorDirective;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.csharp.lang.psi.impl.source.CSharpMethodBodyImpl;
+
+import javax.annotation.Nonnull;
+import java.util.*;
 
 /**
  * @author VISTALL
@@ -187,7 +177,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 			{
 				super.visitBlockStatement(statement);
 
-				if(!(statement.getParent() instanceof DotNetLikeMethodDeclaration))
+				if(!(statement.getParent() instanceof CSharpMethodBodyImpl))
 				{
 					return;
 				}
