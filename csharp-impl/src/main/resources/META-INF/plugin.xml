@@ -285,6 +285,7 @@
 		<codeStyleSettingsProvider implementation="consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettingsProvider"/>
 		<langCodeStyleSettingsProvider implementation="consulo.csharp.ide.codeStyle.CSharpLanguageCodeStyleSettingsProvider"/>
 
+		<editorHighlighterProvider filetype="C#" implementationClass="consulo.csharp.ide.highlight.CSharpEditorHighlighterProvider"/>
 		<readWriteAccessDetector implementation="consulo.csharp.ide.codeInsight.highlighting.CSharpReadWriteAccessDetector"/>
 		<quoteHandler fileType="C#" className="consulo.csharp.ide.CSharpQuoteHandler"/>
 		<colorSettingsPage implementation="consulo.csharp.ide.highlight.CSharpColorSettingsPage"/>

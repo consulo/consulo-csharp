@@ -86,7 +86,7 @@ public class CSharpSyntaxHighlighter extends SyntaxHighlighterBase
 	@Override
 	public Lexer getHighlightingLexer()
 	{
-		return new CSharpHighlightLexer2();
+		return new CSharpHighlighterLexer();
 	}
 
 	@Nonnull
