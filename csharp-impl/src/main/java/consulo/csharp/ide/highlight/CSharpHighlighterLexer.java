@@ -49,5 +49,6 @@ public class CSharpHighlighterLexer extends CSharpLexer implements RestartableLe
 	@Override
 	public void start(@Nonnull CharSequence buffer, int startOffset, int endOffset, int initialState, TokenIterator tokenIterator)
 	{
+		start(buffer, startOffset, endOffset, initialState);
 	}
 }
