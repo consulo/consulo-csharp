@@ -16,16 +16,6 @@
 
 package consulo.csharp.ide.completion.smartEnter;
 
-import javax.annotation.Nonnull;
-
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.dotnet.psi.DotNetStatement;
-import consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.editorActions.smartEnter.SmartEnterProcessor;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.editor.Document;
@@ -37,6 +27,15 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import consulo.dotnet.psi.DotNetFieldDeclaration;
+import consulo.dotnet.psi.DotNetStatement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -50,15 +49,15 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 		boolean process(@Nonnull Editor editor, @Nonnull PsiFile psiFile);
 	}
 
-	public class VariableSemicolonFixer implements Fixer
+	public class FieldSemicolonFixer implements Fixer
 	{
 		@RequiredReadAction
 		@Override
 		public boolean process(@Nonnull Editor editor, @Nonnull PsiFile psiFile)
 		{
 			PsiElement statementAtCaret = getStatementAtCaret(editor, psiFile);
-			DotNetVariable variable = PsiTreeUtil.getParentOfType(statementAtCaret, DotNetVariable.class);
-			if(variable == null || variable instanceof CSharpLocalVariable || variable.getNameIdentifier() == null)
+			DotNetFieldDeclaration variable = PsiTreeUtil.getParentOfType(statementAtCaret, DotNetFieldDeclaration.class);
+			if(variable == null || variable.getNameIdentifier() == null)
 			{
 				return false;
 			}
@@ -126,7 +125,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 	}
 
 	private Fixer[] myFixers = new Fixer[]{
-			new VariableSemicolonFixer(),
+			new FieldSemicolonFixer(),
 			new StatementSemicolonFixer()
 	};
 
