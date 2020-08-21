@@ -95,7 +95,7 @@ public class CSharpUsingNamespaceOrTypeResolveContext implements CSharpResolveCo
 
 	@RequiredReadAction
 	@Override
-	public boolean processExtensionMethodGroups(@Nonnull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
+	public boolean processExtensionMethodGroups(@Nonnull Processor<CSharpMethodDeclaration> processor)
 	{
 		return myContextValue.getValue().processExtensionMethodGroups(processor);
 	}

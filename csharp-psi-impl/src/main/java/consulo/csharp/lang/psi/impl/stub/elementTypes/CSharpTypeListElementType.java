@@ -16,14 +16,14 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NonNls;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.IndexSink;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.stubs.StubInputStream;
+import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.ArrayUtil;
+import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.io.StringRef;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpUserType;
@@ -32,13 +32,12 @@ import consulo.csharp.lang.psi.impl.stub.CSharpTypeListStub;
 import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeList;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.stubs.IndexSink;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.io.StringRef;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -64,6 +63,7 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 		return new CSharpStubTypeListImpl(cSharpTypeListStub, this);
 	}
 
+	@Nonnull
 	@RequiredReadAction
 	@Override
 	public CSharpTypeListStub createStub(@Nonnull DotNetTypeList dotNetTypeList, StubElement stubElement)
@@ -112,7 +112,7 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 		{
 			for(String ref : cSharpTypeListStub.geShortReferences())
 			{
-				indexSink.occurrence(CSharpIndexKeys.EXTENDS_LIST_INDEX, ref);
+				indexSink.occurrence(CSharpIndexKeys.EXTENDS_LIST_INDEX, ref.hashCode());
 			}
 		}
 	}

@@ -16,13 +16,6 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayFactory;
@@ -34,6 +27,11 @@ import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.util.dataholder.UserDataHolder;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author VISTALL
@@ -90,7 +88,7 @@ public interface CSharpResolveContext
 	}
 
 	@RequiredReadAction
-	default boolean processExtensionMethodGroups(@Nonnull @RequiredReadAction Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
+	default boolean processExtensionMethodGroups(@Nonnull @RequiredReadAction Processor<CSharpMethodDeclaration> processor)
 	{
 		return true;
 	}

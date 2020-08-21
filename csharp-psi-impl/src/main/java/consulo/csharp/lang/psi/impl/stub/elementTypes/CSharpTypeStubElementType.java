@@ -22,7 +22,6 @@ import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.util.BitUtil;
 import com.intellij.util.io.StringRef;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -99,11 +98,6 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 			if(!stub.isNested())
 			{
 				DotNetNamespaceStubUtil.indexStub(indexSink, CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX, parentQName, name);
-
-				if(BitUtil.isSet(stub.getOtherModifierMask(), CSharpTypeDeclStub.HAVE_EXTENSIONS))
-				{
-					indexSink.occurrence(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, DotNetNamespaceStubUtil.getIndexableNamespace(parentQName));
-				}
 			}
 
 			indexSink.occurrence(CSharpIndexKeys.TYPE_BY_VMQNAME_INDEX, stub.getVmQName().hashCode());

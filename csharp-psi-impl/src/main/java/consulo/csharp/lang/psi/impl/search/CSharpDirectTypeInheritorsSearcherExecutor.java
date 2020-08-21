@@ -15,10 +15,8 @@
  */
 package consulo.csharp.lang.psi.impl.search;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
-import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.search.EverythingGlobalScope;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -90,7 +88,9 @@ public class CSharpDirectTypeInheritorsSearcherExecutor implements QueryExecutor
 			return true;
 		}
 
-		Collection<DotNetTypeList> candidates = ApplicationManager.getApplication().runReadAction((Computable<Collection<DotNetTypeList>>) () -> ExtendsListIndex.getInstance().get(searchKey, p.getProject(), scope));
+		int hashKey = searchKey.hashCode();
+
+		Collection<DotNetTypeList> candidates = ReadAction.compute(() -> ExtendsListIndex.getInstance().get(hashKey, p.getProject(), scope));
 
 		Map<String, List<DotNetTypeDeclaration>> classes = new HashMap<>();
 
@@ -131,6 +131,6 @@ public class CSharpDirectTypeInheritorsSearcherExecutor implements QueryExecutor
 			final String vmQName,
 			final DotNetTypeDeclaration candidate)
 	{
-		return ApplicationManager.getApplication().runReadAction((Computable<Boolean>) () -> !p.isCheckInheritance() || candidate.isInheritor(vmQName, false));
+		return ReadAction.compute(() -> !p.isCheckInheritance() || candidate.isInheritor(vmQName, false));
 	}
 }

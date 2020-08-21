@@ -256,7 +256,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 		DotNetTypeRef qualifierTypeRef = callQualifier.toTypeRef(true);
 
-		Collection<DotNetLikeMethodDeclaration> list = ExtensionMethodIndex.getInstance().get(referenceName, ref.getProject(), ref.getResolveScope());
+		Collection<DotNetLikeMethodDeclaration> list = ExtensionMethodIndex.getInstance().get(referenceName.hashCode(), ref.getProject(), ref.getResolveScope());
 
 		for(DotNetLikeMethodDeclaration it : list)
 		{

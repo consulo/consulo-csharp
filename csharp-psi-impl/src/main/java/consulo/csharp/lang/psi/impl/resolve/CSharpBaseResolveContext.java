@@ -308,33 +308,6 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 	@RequiredReadAction
 	@Override
-	public boolean processExtensionMethodGroups(@Nonnull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
-	{
-		Map<String, CSharpElementGroup<PsiElement>> map = myOtherCollectorValue.getValue().toMap();
-		if(map == null)
-		{
-			return true;
-		}
-
-		for(CSharpElementGroup<PsiElement> elementGroup : map.values())
-		{
-			CSharpElementGroup<CSharpMethodDeclaration> group = filterElementGroupToExtensionGroup(elementGroup);
-			if(group == null)
-			{
-				continue;
-			}
-
-			if(!processor.process(group))
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	@RequiredReadAction
-	@Override
 	@Nonnull
 	public Collection<PsiElement> findByName(@Nonnull String name, boolean deep, @Nonnull UserDataHolder holder)
 	{

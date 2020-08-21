@@ -28,6 +28,8 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodDeclarationImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
+import consulo.csharp.lang.psi.impl.stub.CSharpMsilStubIndexer;
+import consulo.csharp.lang.psi.impl.stub.CSharpTypeDeclStub;
 import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
 
@@ -108,7 +110,7 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 
 			if(BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.EXTENSION_MASK))
 			{
-				indexSink.occurrence(CSharpIndexKeys.EXTENSION_METHOD_BY_NAME_INDEX, name);
+				indexExtensionMethod(indexSink, stub, name);
 			}
 
 			if(BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.DELEGATE_MASK))
@@ -116,5 +118,28 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 				indexSink.occurrence(CSharpIndexKeys.DELEGATE_METHOD_BY_NAME_INDEX, name);
 			}
 		}
+	}
+
+	private void indexExtensionMethod(IndexSink indexSink, CSharpMethodDeclStub stub, String name)
+	{
+		indexSink.occurrence(CSharpIndexKeys.EXTENSION_METHOD_BY_NAME_INDEX, name.hashCode());
+
+		StubElement parentStub = stub.getParentStub();
+		if(!(parentStub instanceof CSharpTypeDeclStub))
+		{
+			return;
+		}
+
+		CSharpTypeDeclStub typeStub = (CSharpTypeDeclStub) parentStub;
+		if(typeStub.isNested())
+		{
+			return;
+		}
+
+		String namespace = typeStub.getParentQName();
+		indexSink.occurrence(CSharpIndexKeys.EXTENSION_METHOD_BY_NAMESPACE, DotNetNamespaceStubUtil.getIndexableNamespace(StringUtil.notNullize(namespace)).hashCode());
+	
+		int indexKey = CSharpMsilStubIndexer.makeExtensionMethodIndexKey(namespace, name);
+		indexSink.occurrence(CSharpIndexKeys.EXTENSION_METHOD_BY_NAMESPACE_AND_NAME_INDEX, indexKey);
 	}
 }

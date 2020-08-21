@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2020 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,29 @@
 
 package consulo.csharp.lang.psi.impl.stub.index;
 
-import javax.annotation.Nonnull;
-import com.intellij.psi.stubs.StringStubIndexExtension;
+import com.intellij.psi.stubs.IntStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
- * @since 24.10.14
+ * @since 2020-08-21
  */
-public class TypeWithExtensionMethodsIndex extends StringStubIndexExtension<DotNetTypeDeclaration>
+public class ExtensionMethodByNamespaceIndex extends IntStubIndexExtension<DotNetLikeMethodDeclaration>
 {
 	@Nonnull
-	public static TypeWithExtensionMethodsIndex getInstance()
+	public static ExtensionMethodByNamespaceIndex getInstance()
 	{
-		return StubIndexExtension.EP_NAME.findExtension(TypeWithExtensionMethodsIndex.class);
+		return StubIndexExtension.EP_NAME.findExtensionOrFail(ExtensionMethodByNamespaceIndex.class);
 	}
 
 	@Nonnull
 	@Override
-	public StubIndexKey<String, DotNetTypeDeclaration> getKey()
+	public StubIndexKey<Integer, DotNetLikeMethodDeclaration> getKey()
 	{
-		return CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX;
+		return CSharpIndexKeys.EXTENSION_METHOD_BY_NAMESPACE;
 	}
 }

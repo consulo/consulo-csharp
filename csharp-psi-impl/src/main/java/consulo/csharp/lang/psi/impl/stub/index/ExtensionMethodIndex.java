@@ -16,27 +16,28 @@
 
 package consulo.csharp.lang.psi.impl.stub.index;
 
-import javax.annotation.Nonnull;
-
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import com.intellij.psi.stubs.StringStubIndexExtension;
+import com.intellij.psi.stubs.IntStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 25.03.14
  */
-public class ExtensionMethodIndex extends StringStubIndexExtension<DotNetLikeMethodDeclaration>
+public class ExtensionMethodIndex extends IntStubIndexExtension<DotNetLikeMethodDeclaration>
 {
+	@Nonnull
 	public static ExtensionMethodIndex getInstance()
 	{
-		return StubIndexExtension.EP_NAME.findExtension(ExtensionMethodIndex.class);
+		return StubIndexExtension.EP_NAME.findExtensionOrFail(ExtensionMethodIndex.class);
 	}
 
 	@Nonnull
 	@Override
-	public StubIndexKey<String, DotNetLikeMethodDeclaration> getKey()
+	public StubIndexKey<Integer, DotNetLikeMethodDeclaration> getKey()
 	{
 		return CSharpIndexKeys.EXTENSION_METHOD_BY_NAME_INDEX;
 	}

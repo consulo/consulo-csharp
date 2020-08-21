@@ -16,13 +16,14 @@
 
 package consulo.csharp.lang.psi.impl.stub;
 
-import javax.annotation.Nullable;
-
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.BitUtil;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
+
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -34,8 +35,7 @@ public class CSharpTypeDeclStub extends MemberStub<CSharpTypeDeclaration>
 	public static final int STRUCT = 1 << 1;
 	public static final int ENUM = 1 << 2;
 
-	public static final int HAVE_EXTENSIONS = 1 << 10;
-
+	@RequiredReadAction
 	public static int getOtherModifiers(CSharpTypeDeclaration typeDeclaration)
 	{
 		int mask = 0;
@@ -50,11 +50,6 @@ public class CSharpTypeDeclStub extends MemberStub<CSharpTypeDeclaration>
 		else if(typeDeclaration.isStruct())
 		{
 			mask |= STRUCT;
-		}
-
-		if(CSharpTypeDeclarationImplUtil.hasExtensions(typeDeclaration))
-		{
-			mask |= HAVE_EXTENSIONS;
 		}
 		return mask;
 	}

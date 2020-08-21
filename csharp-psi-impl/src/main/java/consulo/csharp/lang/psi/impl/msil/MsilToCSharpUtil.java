@@ -16,11 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -34,19 +29,9 @@ import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.impl.DotNetTypes2;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightNamespaceDeclarationBuilder;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.psi.impl.source.resolve.type.*;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.psi.DotNetAttribute;
-import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import consulo.dotnet.psi.DotNetInheritUtil;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import consulo.dotnet.resolve.DotNetPointerTypeRef;
 import consulo.dotnet.resolve.DotNetRefTypeRef;
@@ -59,6 +44,11 @@ import consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import consulo.msil.lang.psi.impl.type.MsilNativeTypeRefImpl;
 import consulo.msil.lang.psi.impl.type.MsilPointerTypeRefImpl;
 import consulo.msil.lang.psi.impl.type.MsilRefTypeRefImpl;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -214,7 +204,7 @@ public class MsilToCSharpUtil
 						wrapElement = new MsilClassAsCSharpTypeDefinition(thisParent, (MsilClassEntry) element, context);
 					}
 
-					return CachedValueProvider.Result.create(wrapElement, PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+					return CachedValueProvider.Result.create(wrapElement, PsiModificationTracker.MODIFICATION_COUNT);
 				});
 			}
 		}

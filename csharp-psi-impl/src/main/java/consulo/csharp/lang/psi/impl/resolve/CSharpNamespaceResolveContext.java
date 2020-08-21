@@ -18,41 +18,39 @@ package consulo.csharp.lang.psi.impl.resolve;
 
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.Processor;
-import com.intellij.util.Processors;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ConcurrentFactoryMap;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.ToNativeElementTransformers;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
 import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
+import consulo.csharp.lang.psi.impl.stub.CSharpMsilStubIndexer;
 import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import consulo.csharp.lang.psi.impl.stub.index.TypeWithExtensionMethodsIndex;
+import consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodByNamespacePlusNameIndex;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import consulo.msil.lang.psi.MsilClassEntry;
+import consulo.msil.lang.psi.MsilEntry;
 import consulo.util.dataholder.UserDataHolder;
-import gnu.trove.THashSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -69,8 +67,6 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		CSharpElementGroup<CSharpMethodDeclaration> group = findExtensionMethodGroupByName0(name);
 		return group == null ? ObjectUtil.NULL : group;
 	});
-
-	private NotNullLazyValue<List<CSharpResolveContext>> myExtensionContexts = NotNullLazyValue.createValue(this::collectResolveContexts);
 
 	public CSharpNamespaceResolveContext(DotNetNamespaceAsElement namespaceAsElement, GlobalSearchScope resolveScope)
 	{
@@ -91,98 +87,73 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	@RequiredReadAction
 	private CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName0(@Nonnull String name)
 	{
-		String presentableName = DotNetNamespaceStubUtil.getIndexableNamespace(myNamespaceAsElement.getPresentableQName());
+		int indexKey = CSharpMsilStubIndexer.makeExtensionMethodIndexKey(myNamespaceAsElement.getPresentableQName(), name);
+		Collection<DotNetLikeMethodDeclaration> declarations = ExtensionMethodByNamespacePlusNameIndex.getInstance().get(indexKey, myNamespaceAsElement.getProject(), myResolveScope);
 
-		Collection<DotNetTypeDeclaration> decls = TypeWithExtensionMethodsIndex.getInstance().get(presentableName, myNamespaceAsElement.getProject(), myResolveScope);
-
-		if(decls.isEmpty())
+		if(declarations.isEmpty())
 		{
 			return null;
 		}
-		List<CSharpElementGroup<CSharpMethodDeclaration>> list = new SmartList<>();
-		Set<String> processed = new THashSet<>();
-		for(DotNetTypeDeclaration typeDeclaration : decls)
+
+		List<CSharpMethodDeclaration> methodDeclarations = new SmartList<>();
+		for(DotNetLikeMethodDeclaration methodDeclaration : declarations)
 		{
 			ProgressManager.checkCanceled();
 
-			PsiElement wrappedDeclaration = ToNativeElementTransformers.transform(typeDeclaration);
-
-			if(typeDeclaration instanceof CSharpTypeDeclaration && typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
-			{
-				String vmQName = typeDeclaration.getVmQName();
-				if(processed.contains(vmQName))
-				{
-					continue;
-				}
-				processed.add(vmQName);
-			}
-
-			CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, myResolveScope, wrappedDeclaration);
-
-			CSharpElementGroup<CSharpMethodDeclaration> extensionMethodByName = context.findExtensionMethodGroupByName(name);
-			if(extensionMethodByName != null)
-			{
-				list.add(extensionMethodByName);
-			}
+			ContainerUtil.addIfNotNull(methodDeclarations, convertMethodIfNeed(methodDeclaration));
 		}
-		return new CSharpCompositeElementGroupImpl<>(myNamespaceAsElement.getProject(), list);
+		return new CSharpElementGroupImpl<>(myNamespaceAsElement.getProject(), name, methodDeclarations);
 	}
 
 	@RequiredReadAction
 	@Override
-	public boolean processExtensionMethodGroups(@Nonnull final Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
+	public boolean processExtensionMethodGroups(@Nonnull final Processor<CSharpMethodDeclaration> processor)
 	{
-		for(CSharpResolveContext context : myExtensionContexts.getValue())
-		{
-			if(!context.processExtensionMethodGroups(processor))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@RequiredReadAction
-	public List<CSharpResolveContext> collectResolveContexts()
-	{
-		String qName = myNamespaceAsElement.getPresentableQName();
-		if(qName == null)
-		{
-			return Collections.emptyList();
-		}
+		int indexKey = DotNetNamespaceStubUtil.getIndexableNamespace(StringUtil.notNullize(myNamespaceAsElement.getPresentableQName())).hashCode();
 
 		Project project = myNamespaceAsElement.getProject();
-		String indexableName = DotNetNamespaceStubUtil.getIndexableNamespace(qName);
-
-		Set<DotNetTypeDeclaration> result = new THashSet<>();
-
-		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, indexableName, project, myResolveScope, DotNetTypeDeclaration.class, Processors
-				.cancelableCollectProcessor(result));
-
-		Set<String> processed = new THashSet<>();
-
-		List<CSharpResolveContext> list = new SmartList<>();
-		for(DotNetTypeDeclaration typeDeclaration : result)
+		return StubIndex.getInstance().processElements(CSharpIndexKeys.EXTENSION_METHOD_BY_NAMESPACE, indexKey, project, myResolveScope, DotNetLikeMethodDeclaration.class, it ->
 		{
-			ProgressManager.checkCanceled();
-
-			PsiElement wrappedDeclaration = ToNativeElementTransformers.transform(typeDeclaration);
-
-			if(typeDeclaration instanceof CSharpTypeDeclaration && typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
+			CSharpMethodDeclaration declaration = convertMethodIfNeed(it);
+			if(declaration == null)
 			{
-				String vmQName = typeDeclaration.getVmQName();
-				if(processed.contains(vmQName))
-				{
-					continue;
-				}
-				processed.add(vmQName);
+				return true;
 			}
 
-			CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, myResolveScope, wrappedDeclaration);
+			// just return not grouped
+			return processor.process(declaration);
+		});
+	}
 
-			list.add(context);
+	@Nullable
+	@RequiredReadAction
+	private CSharpMethodDeclaration convertMethodIfNeed(@Nonnull DotNetLikeMethodDeclaration methodDeclaration)
+	{
+		if(methodDeclaration instanceof MsilEntry)
+		{
+			PsiElement parent = methodDeclaration.getParent();
+
+			if(parent instanceof MsilClassEntry)
+			{
+				PsiElement maybeClassEntry = ToNativeElementTransformers.transform(parent);
+
+				if(maybeClassEntry instanceof CSharpTypeDeclaration)
+				{
+					for(DotNetNamedElement element : ((CSharpTypeDeclaration) maybeClassEntry).getMembers())
+					{
+						if(element instanceof CSharpMethodDeclaration && element.getOriginalElement().isEquivalentTo(methodDeclaration))
+						{
+							return (CSharpMethodDeclaration) element;
+						}
+					}
+				}
+			}
 		}
-		return list.isEmpty() ? Collections.emptyList() : list;
+		else if(methodDeclaration instanceof CSharpMethodDeclaration)
+		{
+			return (CSharpMethodDeclaration) methodDeclaration;
+		}
+		return null;
 	}
 
 	@RequiredReadAction

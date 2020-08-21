@@ -16,11 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.stub;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
 import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
@@ -31,6 +27,11 @@ import consulo.msil.lang.psi.impl.elementType.stub.MsilClassEntryStub;
 import consulo.msil.lang.psi.impl.elementType.stub.MsilCustomAttributeStub;
 import consulo.msil.lang.psi.impl.elementType.stub.MsilMethodEntryStub;
 import consulo.msil.lang.psi.impl.elementType.stub.MsilStubIndexer;
+import consulo.util.lang.StringUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -38,50 +39,56 @@ import consulo.msil.lang.psi.impl.elementType.stub.MsilStubIndexer;
  */
 public class CSharpMsilStubIndexer extends MsilStubIndexer
 {
-	@Override
-	public void indexClass(@Nonnull MsilClassEntryStub stub, @Nonnull IndexSink indexSink)
+	public static int makeExtensionMethodIndexKey(@Nullable String namespace, @Nonnull String name)
 	{
-		String name = stub.getName();
-		if(StringUtil.isEmpty(name))
-		{
-			return;
-		}
-
-		if(stub.isNested())
-		{
-			return;
-		}
-
-		List<StubElement> childrenStubs = stub.getChildrenStubs();
-		for(StubElement childrenStub : childrenStubs)
-		{
-			if(childrenStub instanceof MsilCustomAttributeStub && Comparing.equal(((MsilCustomAttributeStub) childrenStub).getTypeRef(), DotNetTypes.System.Runtime.CompilerServices
-					.ExtensionAttribute))
-			{
-				indexSink.occurrence(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, DotNetNamespaceStubUtil.getIndexableNamespace(stub.getNamespace()));
-				break;
-			}
-		}
+		return (DotNetNamespaceStubUtil.getIndexableNamespace(StringUtil.notNullize(namespace)) + "|" + name).hashCode();
 	}
 
 	@Override
 	public void indexMethod(@Nonnull MsilMethodEntryStub stub, @Nonnull IndexSink indexSink)
 	{
+		boolean isExtension = false;
+
 		List<StubElement> childrenStubs = stub.getChildrenStubs();
 		for(StubElement childrenStub : childrenStubs)
 		{
 			if(childrenStub instanceof MsilCustomAttributeStub && Comparing.equal(((MsilCustomAttributeStub) childrenStub).getTypeRef(), DotNetTypes.System.Runtime.CompilerServices
 					.ExtensionAttribute))
 			{
-				indexSink.occurrence(CSharpIndexKeys.EXTENSION_METHOD_BY_NAME_INDEX, stub.getNameFromBytecode());
+				isExtension = true;
 				break;
 			}
 		}
+
+		if(!isExtension)
+		{
+			return;
+		}
+
+		indexSink.occurrence(CSharpIndexKeys.EXTENSION_METHOD_BY_NAME_INDEX, stub.getNameFromBytecode().hashCode());
+
+		StubElement parentStub = stub.getParentStub();
+		if(!(parentStub instanceof MsilClassEntryStub))
+		{
+			return;
+		}
+
+		if(((MsilClassEntryStub) parentStub).isNested())
+		{
+			return;
+		}
+
+		String namespace = ((MsilClassEntryStub) parentStub).getNamespace();
+
+		indexSink.occurrence(CSharpIndexKeys.EXTENSION_METHOD_BY_NAMESPACE, DotNetNamespaceStubUtil.getIndexableNamespace(StringUtil.notNullize(namespace)).hashCode());
+
+		int key = makeExtensionMethodIndexKey(namespace, MsilHelper.cutGenericMarker(stub.getNameFromBytecode()));
+		indexSink.occurrence(CSharpIndexKeys.EXTENSION_METHOD_BY_NAMESPACE_AND_NAME_INDEX, key);
 	}
 
 	@Override
 	public int getVersion()
 	{
-		return 4;
+		return 6;
 	}
 }

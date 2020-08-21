@@ -16,9 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.msil.transformer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
@@ -27,8 +24,12 @@ import consulo.csharp.lang.psi.impl.msil.MsilMethodAsCSharpMethodDeclaration;
 import consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import consulo.dotnet.psi.DotNetMemberOwner;
 import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.logging.Logger;
 import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilFile;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -36,7 +37,7 @@ import consulo.msil.lang.psi.MsilFile;
  */
 public class MsilToNativeElementTransformer implements ToNativeElementTransformer
 {
-	private static final Logger LOGGER = Logger.getInstance(MsilToNativeElementTransformer.class);
+	private static final Logger LOG = Logger.getInstance(MsilToNativeElementTransformer.class);
 
 	@RequiredReadAction
 	@Nullable
@@ -60,7 +61,7 @@ public class MsilToNativeElementTransformer implements ToNativeElementTransforme
 					}
 					else
 					{
-						LOGGER.warn("We cant find by original element class: " + rootClassEntry.getVmQName() + "/" + ((MsilClassEntry) element).getVmQName());
+						LOG.warn("We cant find by original element class: " + rootClassEntry.getVmQName() + "/" + ((MsilClassEntry) element).getVmQName());
 					}
 				}
 			}

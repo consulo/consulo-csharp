@@ -231,9 +231,10 @@
 
 		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.TypeIndex"/>
 		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.TypeByVmQNameIndex"/>
-		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.TypeWithExtensionMethodsIndex"/>
 		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.MethodIndex"/>
 		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodByNamespaceIndex"/>
+		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodByNamespacePlusNameIndex"/>
 		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.DelegateMethodIndex"/>
 		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.MemberByNamespaceQNameIndex"/>
 		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.MemberByAllNamespaceQNameIndex"/>

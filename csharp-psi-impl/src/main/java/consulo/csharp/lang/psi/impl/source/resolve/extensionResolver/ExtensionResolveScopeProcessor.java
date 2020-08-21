@@ -16,12 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.extensionResolver;
 
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
@@ -30,11 +24,7 @@ import com.intellij.psi.ResolveState;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.SmartList;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.light.CSharpLightMethodDeclaration;
@@ -55,6 +45,11 @@ import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -106,37 +101,33 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 
 			CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myExpression.getResolveScope(), element);
 
-			context.processExtensionMethodGroups(elementGroup ->
+			context.processExtensionMethodGroups(psiElement ->
 			{
-				Collection<CSharpMethodDeclaration> elements = elementGroup.getElements();
-				for(CSharpMethodDeclaration psiElement : elements)
+				ProgressManager.checkCanceled();
+
+				if(isAlreadyAdded(psiElement))
 				{
-					ProgressManager.checkCanceled();
-
-					if(isAlreadyAdded(psiElement))
-					{
-						continue;
-					}
-
-					// if we typing inside file with extension methods, and extension method from this file is resolved to qualifier
-					// it will show twice, from completion file copy and original file
-					// skip completion copy
-					if(isCompletionCopy(psiElement))
-					{
-						continue;
-					}
-
-					GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(psiElement);
-
-					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, inferenceResult.getExtractor());
-
-					if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
-					{
-						continue;
-					}
-
-					myProcessor.pushResultExternally(new CSharpResolveResult(transform(psiElement, inferenceResult, null)));
+					return true;
 				}
+
+				// if we typing inside file with extension methods, and extension method from this file is resolved to qualifier
+				// it will show twice, from completion file copy and original file
+				// skip completion copy
+				if(isCompletionCopy(psiElement))
+				{
+					return true;
+				}
+
+				GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(psiElement);
+
+				DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, inferenceResult.getExtractor());
+
+				if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
+				{
+					return true;
+				}
+
+				myProcessor.pushResultExternally(new CSharpResolveResult(transform(psiElement, inferenceResult, null)));
 				return true;
 			});
 		}

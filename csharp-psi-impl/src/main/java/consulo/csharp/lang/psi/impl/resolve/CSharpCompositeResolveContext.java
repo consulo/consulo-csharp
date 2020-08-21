@@ -157,7 +157,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@RequiredReadAction
 	@Override
-	public boolean processExtensionMethodGroups(@Nonnull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
+	public boolean processExtensionMethodGroups(@Nonnull Processor<CSharpMethodDeclaration> processor)
 	{
 		for(CSharpResolveContext context : myContexts)
 		{

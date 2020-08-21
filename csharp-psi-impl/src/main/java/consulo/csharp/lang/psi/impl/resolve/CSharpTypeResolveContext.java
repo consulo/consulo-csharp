@@ -16,23 +16,24 @@
 
 package consulo.csharp.lang.psi.impl.resolve;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.Processor;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -55,6 +56,23 @@ public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTyp
 
 			element.accept(visitor);
 		}
+	}
+
+	@RequiredReadAction
+	@Override
+	public boolean processExtensionMethodGroups(@Nonnull Processor<CSharpMethodDeclaration> processor)
+	{
+		for(DotNetNamedElement element : myElement.getMembers())
+		{
+			if(element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isExtension())
+			{
+				if(!processor.process((CSharpMethodDeclaration) element))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	@RequiredReadAction
