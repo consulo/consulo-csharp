@@ -44,10 +44,10 @@ import consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import consulo.dotnet.roots.orderEntry.DotNetLibraryOrderEntryImpl;
 import consulo.roots.impl.ModuleRootLayerImpl;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.image.Image;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.*;
 import java.util.Set;
 
 /**
@@ -97,7 +97,7 @@ public class AddUsingAction implements QuestionAction
 			BaseListPopupStep<NamespaceReference> step = new BaseListPopupStep<NamespaceReference>(DotNetBundle.message("add.using"), myElements.toArray(new NamespaceReference[myElements.size()]))
 			{
 				@Override
-				public Icon getIconFor(NamespaceReference aValue)
+				public Image getIconFor(NamespaceReference aValue)
 				{
 					return AllIcons.Nodes.Package;
 				}
