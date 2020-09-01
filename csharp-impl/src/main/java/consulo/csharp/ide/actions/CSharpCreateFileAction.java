@@ -43,6 +43,7 @@ import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.psi.PsiPackage;
 import consulo.psi.PsiPackageManager;
@@ -66,7 +67,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 
 	public CSharpCreateFileAction()
 	{
-		super(null, null, CSharpFileType.INSTANCE.getIcon());
+		super(LocalizeValue.empty(), LocalizeValue.empty(), CSharpFileType.INSTANCE.getIcon());
 	}
 
 	@Override
