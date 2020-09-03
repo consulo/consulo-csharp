@@ -21,8 +21,6 @@ import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.intention.HighPriorityAction;
 import com.intellij.codeInspection.HintAction;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Condition;
@@ -49,7 +47,6 @@ import consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
 import consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import consulo.dotnet.DotNetBundle;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent;
 import consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -184,11 +181,11 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			collectAvailableNamespacesForMethodExtensions(ref, resultSet, referenceName);
 		}
 
-		Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(ref);
-		if(moduleForPsiElement != null)
-		{
-			resultSet.addAll(DotNetLibraryAnalyzerComponent.getInstance(moduleForPsiElement.getProject()).get(moduleForPsiElement, referenceName));
-		}
+//		Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(ref);
+//		if(moduleForPsiElement != null)
+//		{
+//			resultSet.addAll(DotNetLibraryAnalyzerComponent.getInstance(moduleForPsiElement.getProject()).get(moduleForPsiElement, referenceName));
+//		}
 		return resultSet;
 	}
 

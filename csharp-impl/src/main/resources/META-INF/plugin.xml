@@ -332,6 +332,6 @@
 
 		<navbar implementation="consulo.csharp.ide.navbar.CSharpNavBarExtension" />
 
-		<projectService serviceImplementation="consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent" lazy="false" />
+		<!--<projectService serviceImplementation="consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent" lazy="false" />-->
 	</extensions>
 </consulo-plugin>
