@@ -74,6 +74,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	public static final int WITHOUT_NULLABLE = 1 << 4;
 	public static final int ALLOW_EMPTY_TYPE_ARGUMENTS = 1 << 5;
 	public static final int INSIDE_DOC = 1 << 6;
+	public static final int UNEXPECTED_TUPLE = 1 << 7;
 
 	public static class TypeInfo
 	{
@@ -380,12 +381,23 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 					}
 				}
 
-				if(count < 2)
+				if(BitUtil.isSet(flags, UNEXPECTED_TUPLE))
 				{
-					builder.error("Expected comma");
+					if(count < 2)
+					{
+						marker.rollbackTo();
+						return null;
+					}
 				}
+				else
+				{
+					if(count < 2)
+					{
+						builder.error("Expected comma");
+					}
 
-				expect(builder, CSharpTokens.RPAR, "Expected ')'");
+					expect(builder, CSharpTokens.RPAR, "Expected ')'");
+				}
 			}
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.TUPLE_TYPE : CSharpElements.TUPLE_TYPE);
 		}

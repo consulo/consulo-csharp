@@ -736,7 +736,7 @@ public class StatementParsing extends SharedParsingHelpers
 	{
 		PsiBuilder.Marker patternVarMarker = builder.mark();
 
-		TypeInfo typeInfo = parseType(builder);
+		TypeInfo typeInfo = parseType(builder, UNEXPECTED_TUPLE);
 		if(typeInfo == null)
 		{
 			patternVarMarker.rollbackTo();
