@@ -77,6 +77,16 @@ public class CSharpTypeUtil
 			return myConversion;
 		}
 
+		public boolean isExplicit()
+		{
+			return myConversionMethod != null && !myConversionMethod.isImplicit();
+		}
+
+		public boolean isImplicit()
+		{
+			return myConversionMethod != null && myConversionMethod.isImplicit();
+		}
+
 		@Nullable
 		public CSharpConversionMethodDeclaration getConversionMethod()
 		{

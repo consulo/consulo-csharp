@@ -151,7 +151,14 @@ public class CS0030 extends CompilerCheck<PsiElement>
 					{
 						CompilerCheckBuilder builder = newBuilder(innerExpression);
 						builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
-						builder.setText(CSharpErrorLocalize.impicitCastFrom0To1(formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression)).getValue());
+						if(inheritResult.isImplicit())
+						{
+							builder.setText(CSharpErrorLocalize.impicitCastFrom0To1(formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression)).getValue());
+						}
+						else
+						{
+							builder.setText(CSharpErrorLocalize.explicitCastFrom0To1(formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression)).getValue());
+						}
 						builder.setHighlightInfoType(HighlightInfoType.INFORMATION);
 						ref.set(builder);
 					}
