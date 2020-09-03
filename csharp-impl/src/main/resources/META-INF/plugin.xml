@@ -318,7 +318,7 @@
 		<highlightUsagesHandlerFactory implementation="consulo.csharp.ide.highlight.CSharpHighlightUsagesHandlerFactory"/>
 		<newModuleBuilder implementation="consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder"/>
 
-		<eapDescriptor implementation="consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent$EapDescriptor"/>
+		<!--<eapDescriptor implementation="consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent$EapDescriptor"/>-->
 		<eapDescriptor implementation="consulo.csharp.ide.highlight.check.impl.CS0030$CS0030TypeCast"/>
 
 		<xdebugger.lineBreakpointTypeResolver filetype="C#"
