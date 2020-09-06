@@ -16,17 +16,6 @@
 
 package consulo.csharp.ide.actions.generate;
 
-import java.awt.BorderLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.swing.Icon;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-
 import com.intellij.codeInsight.CodeInsightActionHandler;
 import com.intellij.ide.util.ChooseElementsDialog;
 import com.intellij.ide.util.PropertiesComponent;
@@ -46,9 +35,7 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Function;
 import com.intellij.util.Processor;
 import com.intellij.util.Query;
-import consulo.ui.annotation.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.awt.TargetAWT;
 import consulo.csharp.ide.codeInsight.actions.AddAccessModifierFix;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
@@ -58,6 +45,16 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.ide.IconDescriptorUpdaters;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.image.Image;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -118,9 +115,9 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 
 			@Nullable
 			@Override
-			protected Icon getItemIcon(DotNetFieldDeclaration item)
+			protected Image getItemIcon(DotNetFieldDeclaration item)
 			{
-				return TargetAWT.to(IconDescriptorUpdaters.getIcon(item, Iconable.ICON_FLAG_VISIBILITY));
+				return IconDescriptorUpdaters.getIcon(item, Iconable.ICON_FLAG_VISIBILITY);
 			}
 		};
 
