@@ -45,7 +45,7 @@ public class NEmptyParamsCallArgument extends NParamsCallArgument
 
 	@RequiredReadAction
 	@Override
-	public int calcValid(@Nonnull PsiElement scope)
+	public int calcValid(@Nonnull PsiElement scope, boolean disableNullableElementCheck)
 	{
 		return PARAMS;
 	}

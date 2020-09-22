@@ -44,7 +44,7 @@ public class NNamedParamsCallArgument extends NNamedCallArgument
 
 	@RequiredReadAction
 	@Override
-	public int calcValid(@Nonnull PsiElement scope)
+	public int calcValid(@Nonnull PsiElement scope, boolean disableNullableElementCheck)
 	{
 		if(myParamsInnerTypeRef != null)
 		{

@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
@@ -27,7 +26,9 @@ import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -75,12 +76,12 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRefWithCachedResult imp
 				{
 					DotNetTypeRef[] methodParameterTypeRef = ((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs();
 
-					MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(parameterTypeRefs, methodParameterTypeRef, scope);
+					MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(parameterTypeRefs, methodParameterTypeRef, scope, true);
 
 					if(calc.isValidResult())
 					{
-						return new CSharpLambdaTypeRef(scope, null, CSharpLikeMethodDeclarationImplUtil.getParametersInfos((DotNetLikeMethodDeclaration) psiElement),
-								((DotNetLikeMethodDeclaration) psiElement).getReturnTypeRef());
+						return new CSharpLambdaTypeRef(scope, null, CSharpLikeMethodDeclarationImplUtil.getParametersInfos((DotNetLikeMethodDeclaration) psiElement), ((DotNetLikeMethodDeclaration)
+								psiElement).getReturnTypeRef());
 					}
 				}
 			}

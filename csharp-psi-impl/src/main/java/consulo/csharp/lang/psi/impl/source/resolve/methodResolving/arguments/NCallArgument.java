@@ -21,6 +21,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import consulo.csharp.lang.psi.impl.CSharpInheritableChecker;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitCastInfo;
 import consulo.dotnet.psi.DotNetParameter;
@@ -117,7 +118,7 @@ public class NCallArgument extends UserDataHolderBase
 	}
 
 	@RequiredReadAction
-	public int calcValid(@Nonnull PsiElement scope)
+	public int calcValid(@Nonnull PsiElement scope, boolean disableNullableElementCheck)
 	{
 		DotNetTypeRef parameterTypeRef = getParameterTypeRef();
 		int newVal = FAIL;
@@ -130,7 +131,14 @@ public class NCallArgument extends UserDataHolderBase
 			}
 			else
 			{
-				CSharpTypeUtil.InheritResult inheritable = CSharpTypeUtil.isInheritable(parameterTypeRef, typeRef, scope, CSharpCastType.IMPLICIT);
+				CSharpInheritableChecker checker = CSharpInheritableChecker.create(parameterTypeRef, typeRef, scope);
+				checker = checker.withCastType(CSharpCastType.IMPLICIT);
+				if(disableNullableElementCheck)
+				{
+					checker = checker.withDisableNullableCheck();
+				}
+				
+				CSharpTypeUtil.InheritResult inheritable = checker.check();
 				if(inheritable.isSuccess())
 				{
 					if(inheritable.isConversion())

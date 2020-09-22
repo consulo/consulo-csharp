@@ -16,10 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
+import com.intellij.openapi.util.NotNullLazyValue;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.openapi.util.NotNullLazyValue;
 
 /**
  * @author VISTALL
@@ -27,16 +26,7 @@ import com.intellij.openapi.util.NotNullLazyValue;
  */
 public abstract class SingleNullableStateResolveResult implements DotNetTypeResolveResult
 {
-	private NotNullLazyValue<Boolean> myNullalbeCacheValue = new NotNullLazyValue<Boolean>()
-	{
-		@Nonnull
-		@Override
-		@RequiredReadAction
-		protected Boolean compute()
-		{
-			return isNullableImpl();
-		}
-	};
+	private NotNullLazyValue<Boolean> myNullalbeCacheValue = NotNullLazyValue.createValue(this::isNullableImpl);
 
 	@RequiredReadAction
 	public abstract boolean isNullableImpl();

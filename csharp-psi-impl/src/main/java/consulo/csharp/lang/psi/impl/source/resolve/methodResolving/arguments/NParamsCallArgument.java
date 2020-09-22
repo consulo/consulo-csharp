@@ -70,7 +70,7 @@ public class NParamsCallArgument extends NCallArgument
 
 	@Override
 	@RequiredReadAction
-	public int calcValid(@Nonnull PsiElement scope)
+	public int calcValid(@Nonnull PsiElement scope, boolean disableNullableElementCheck)
 	{
 		myValid = validate(getParameterTypeRef(), getTypeRef(), this, scope);
 		return myValid;
