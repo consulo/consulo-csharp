@@ -28,7 +28,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.ProcessingContext;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.CSharpIcons;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.actions.generate.GenerateImplementMemberHandler;
 import consulo.csharp.ide.actions.generate.GenerateOverrideMemberHandler;
@@ -37,6 +36,7 @@ import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.csharp.psi.icon.CSharpPsiIconGroup;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -184,7 +184,7 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 		{
 			if(hide)
 			{
-				rightIcon = CSharpIcons.Gutter.HidingMethod;
+				rightIcon = CSharpPsiIconGroup.gutterHidingMethod();
 			}
 			else if(element.hasModifier(DotNetModifier.ABSTRACT))
 			{

@@ -16,13 +16,13 @@
 
 package consulo.csharp.lang;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.fileTypes.TemplateLanguageFileType;
-import consulo.csharp.CSharpIcons;
+import consulo.csharp.psi.icon.CSharpPsiIconGroup;
 import consulo.ui.image.Image;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -65,6 +65,6 @@ public class CSharpFileType extends LanguageFileType implements TemplateLanguage
 	@Override
 	public Image getIcon()
 	{
-		return CSharpIcons.FileType;
+		return CSharpPsiIconGroup.csharp();
 	}
 }

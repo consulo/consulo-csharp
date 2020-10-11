@@ -16,11 +16,6 @@
 
 package consulo.csharp.ide.lineMarkerProvider;
 
-import java.awt.event.MouseEvent;
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -31,15 +26,19 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ConstantFunction;
 import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.ui.annotation.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.CSharpIcons;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.csharp.psi.icon.CSharpPsiIconGroup;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
+
+import javax.annotation.Nonnull;
+import java.awt.event.MouseEvent;
+import java.util.Collection;
 
 /**
  * @author VISTALL
@@ -103,7 +102,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 				return;
 			}
 
-			Image icon = CSharpIcons.Gutter.HidedMethod;
+			Image icon = CSharpPsiIconGroup.gutterHidedMethod();
 			for(DotNetVirtualImplementOwner overrideElement : overrideElements)
 			{
 				if(overrideElement.getTypeForImplement() == null)

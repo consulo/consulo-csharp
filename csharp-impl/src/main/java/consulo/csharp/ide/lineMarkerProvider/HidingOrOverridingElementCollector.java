@@ -27,8 +27,8 @@ import com.intellij.util.ConstantFunction;
 import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.CSharpIcons;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.csharp.psi.icon.CSharpPsiIconGroup;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -105,7 +105,7 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 			Image icon = null;
 			if(virtualImplementOwner.getTypeForImplement() != null)
 			{
-				icon = CSharpIcons.Gutter.HidingMethod;
+				icon = CSharpPsiIconGroup.gutterHidingMethod();
 			}
 			else
 			{
