@@ -19,7 +19,7 @@
 		<moduleExtensionProvider key="mono-csharp"
 								 parentKey="mono-dotnet"
 								 name="C#"
-								 icon="/icons/mono.png"
+								 icon="consulo.dotnet.mono.MonoDotNetIconGroup@mono"
 								 immutableClass="consulo.mono.csharp.module.extension.MonoCSharpModuleExtension"
 								 mutableClass="consulo.mono.csharp.module.extension.MonoCSharpMutableModuleExtension"/>
 	</extensions>

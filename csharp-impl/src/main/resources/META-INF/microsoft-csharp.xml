@@ -19,7 +19,7 @@
 		<moduleExtensionProvider key="microsoft-csharp"
 								 parentKey="microsoft-dotnet"
 								 name="C#"
-								 icon="/icons/dotnet.png"
+								 icon="consulo.dotnet.microsoft.MicrosoftDotNetIconGroup@dotnet"
 								 immutableClass="consulo.microsoft.csharp.module.extension.MicrosoftCSharpModuleExtension"
 								 mutableClass="consulo.microsoft.csharp.module.extension.MicrosoftCSharpMutableModuleExtension"/>
 	</extensions>
