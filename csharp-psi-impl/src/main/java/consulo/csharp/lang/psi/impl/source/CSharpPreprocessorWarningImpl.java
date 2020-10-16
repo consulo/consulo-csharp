@@ -16,11 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import consulo.dotnet.psi.DotNetElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -28,9 +28,9 @@ import consulo.dotnet.psi.DotNetElement;
  */
 public class CSharpPreprocessorWarningImpl extends CSharpPreprocessorElementImpl implements DotNetElement
 {
-	public CSharpPreprocessorWarningImpl(@Nonnull ASTNode node)
+	public CSharpPreprocessorWarningImpl(IElementType type)
 	{
-		super(node);
+		super(type);
 	}
 
 	@Override

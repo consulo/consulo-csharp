@@ -16,14 +16,14 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.TokenSet;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -31,9 +31,9 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class CSharpPreprocessorBlockStopImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpPreprocessorBlockStopImpl(@Nonnull ASTNode node)
+	public CSharpPreprocessorBlockStopImpl(IElementType type)
 	{
-		super(node);
+		super(type);
 	}
 
 	public PsiElement getKeywordElement()
@@ -45,7 +45,7 @@ public class CSharpPreprocessorBlockStopImpl extends CSharpPreprocessorElementIm
 	@Nullable
 	public PsiElement getStopElement()
 	{
-		return findChildByType(CSharpPreprocesorTokens.MACRO_STOP);
+		return findPsiChildByType(CSharpPreprocesorTokens.MACRO_STOP);
 	}
 
 	@Override

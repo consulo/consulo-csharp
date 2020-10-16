@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import com.intellij.lang.ASTNode;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -27,9 +27,9 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpPreprocessorPrefixExpressionImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorExpression
 {
-	public CSharpPreprocessorPrefixExpressionImpl(@Nonnull ASTNode node)
+	public CSharpPreprocessorPrefixExpressionImpl(IElementType type)
 	{
-		super(node);
+		super(type);
 	}
 
 	@Override

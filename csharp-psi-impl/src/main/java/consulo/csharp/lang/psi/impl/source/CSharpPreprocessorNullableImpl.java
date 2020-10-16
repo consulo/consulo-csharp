@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 
 import javax.annotation.Nonnull;
@@ -27,9 +27,9 @@ import javax.annotation.Nonnull;
  */
 public class CSharpPreprocessorNullableImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpPreprocessorNullableImpl(@Nonnull ASTNode node)
+	public CSharpPreprocessorNullableImpl(IElementType type)
 	{
-		super(node);
+		super(type);
 	}
 
 	@Override

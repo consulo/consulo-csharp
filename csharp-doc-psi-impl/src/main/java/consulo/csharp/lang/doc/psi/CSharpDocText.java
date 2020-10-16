@@ -16,20 +16,21 @@
 
 package consulo.csharp.lang.doc.psi;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.IElementType;
+import consulo.csharp.lang.psi.impl.source.AdvancedCompositePsiElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 03.03.2015
  */
-public class CSharpDocText extends ASTWrapperPsiElement
+public class CSharpDocText extends AdvancedCompositePsiElement
 {
-	public CSharpDocText(@Nonnull ASTNode node)
+	public CSharpDocText(IElementType type)
 	{
-		super(node);
+		super(type);
 	}
 
 	@Nonnull

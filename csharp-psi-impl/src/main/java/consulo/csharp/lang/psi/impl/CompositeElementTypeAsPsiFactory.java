@@ -23,7 +23,6 @@ import com.intellij.psi.tree.ICompositeElementType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ReflectionUtil;
 import consulo.logging.Logger;
-import consulo.psi.tree.ElementTypeAsPsiFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,7 +34,7 @@ import java.lang.reflect.Constructor;
  */
 public class CompositeElementTypeAsPsiFactory extends IElementType implements ICompositeElementType
 {
-	private static final Logger LOGGER = Logger.getInstance(ElementTypeAsPsiFactory.class);
+	private static final Logger LOG = Logger.getInstance(CompositeElementTypeAsPsiFactory.class);
 
 	private Constructor<? extends CompositePsiElement> myConstructor;
 
@@ -57,7 +56,7 @@ public class CompositeElementTypeAsPsiFactory extends IElementType implements IC
 		}
 		catch(NoSuchMethodException e)
 		{
-			LOGGER.error("Can't find constructor for " + clazz.getName() + " with argument: " + IElementType.class.getName() + ", or it not public.", e);
+			LOG.error("Can't find constructor for " + clazz.getName() + " with argument: " + IElementType.class.getName() + ", or it not public.", e);
 		}
 	}
 

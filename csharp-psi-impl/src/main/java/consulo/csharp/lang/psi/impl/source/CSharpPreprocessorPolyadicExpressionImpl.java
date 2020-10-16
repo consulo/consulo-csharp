@@ -16,9 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import com.intellij.lang.ASTNode;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -26,9 +27,9 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpPreprocessorPolyadicExpressionImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorExpression
 {
-	public CSharpPreprocessorPolyadicExpressionImpl(@Nonnull ASTNode node)
+	public CSharpPreprocessorPolyadicExpressionImpl(IElementType type)
 	{
-		super(node);
+		super(type);
 	}
 
 	@Override

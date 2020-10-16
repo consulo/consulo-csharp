@@ -16,32 +16,23 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.tree.IElementType;
+import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 24.01.14
  */
-public abstract class CSharpPreprocessorElementImpl extends ASTWrapperPsiElement
+public abstract class CSharpPreprocessorElementImpl extends AdvancedCompositePsiElement
 {
-	public CSharpPreprocessorElementImpl(@Nonnull ASTNode node)
+	public CSharpPreprocessorElementImpl(IElementType type)
 	{
-		super(node);
-	}
-
-	@Nonnull
-	@Override
-	public GlobalSearchScope getResolveScope()
-	{
-		return super.getResolveScope();
+		super(type);
 	}
 
 	@Override

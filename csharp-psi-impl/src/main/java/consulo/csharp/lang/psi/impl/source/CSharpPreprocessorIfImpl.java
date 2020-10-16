@@ -16,10 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import com.intellij.psi.tree.IElementType;
+import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
@@ -27,9 +28,9 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpPreprocessorIfImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpPreprocessorIfImpl(@Nonnull ASTNode node)
+	public CSharpPreprocessorIfImpl(IElementType type)
 	{
-		super(node);
+		super(type);
 	}
 
 	@Nullable

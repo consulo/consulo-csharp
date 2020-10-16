@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -27,9 +27,9 @@ import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
  */
 public class CSharpPreprocessorEndRegionImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpPreprocessorEndRegionImpl(@Nonnull ASTNode node)
+	public CSharpPreprocessorEndRegionImpl(IElementType type)
 	{
-		super(node);
+		super(type);
 	}
 
 	@Override

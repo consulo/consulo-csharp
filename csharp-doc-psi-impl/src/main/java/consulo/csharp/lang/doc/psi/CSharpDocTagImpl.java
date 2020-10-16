@@ -16,28 +16,28 @@
 
 package consulo.csharp.lang.doc.psi;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
 import consulo.csharp.lang.doc.validation.CSharpDocTagManager;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.csharp.lang.psi.impl.source.AdvancedCompositePsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author VISTALL
  * @since 03.03.2015
  */
-public class CSharpDocTagImpl extends ASTWrapperPsiElement implements CSharpDocTag
+public class CSharpDocTagImpl extends AdvancedCompositePsiElement implements CSharpDocTag
 {
-	public CSharpDocTagImpl(@Nonnull ASTNode node)
+	public CSharpDocTagImpl(IElementType type)
 	{
-		super(node);
+		super(type);
 	}
 
 	@Nullable

@@ -16,11 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
@@ -28,15 +25,18 @@ import consulo.csharp.lang.psi.CSharpPreprocessorDefine;
 import consulo.csharp.lang.psi.CSharpPreprocessorVariable;
 import consulo.csharp.lang.psi.impl.light.CSharpPreprocessorLightVariable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * @author VISTALL
  * @since 18.12.13.
  */
 public class CSharpPreprocessorDefineImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorDefine
 {
-	public CSharpPreprocessorDefineImpl(@Nonnull ASTNode node)
+	public CSharpPreprocessorDefineImpl(IElementType type)
 	{
-		super(node);
+		super(type);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class CSharpPreprocessorDefineImpl extends CSharpPreprocessorElementImpl 
 	@Override
 	public PsiElement getVarElement()
 	{
-		return findChildByType(CSharpPreprocesorTokens.IDENTIFIER);
+		return findPsiChildByType(CSharpPreprocesorTokens.IDENTIFIER);
 	}
 
 	@RequiredReadAction

@@ -24,9 +24,9 @@ import com.intellij.psi.tree.ILazyParseableElementType;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.CSharpPreprocessorLanguage;
 import consulo.csharp.lang.lexer._CSharpMacroLexer;
+import consulo.csharp.lang.psi.impl.CompositeElementTypeAsPsiFactory;
 import consulo.csharp.lang.psi.impl.source.*;
 import consulo.lang.LanguageVersion;
-import consulo.psi.tree.ElementTypeAsPsiFactory;
 import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nonnull;
@@ -67,33 +67,33 @@ public interface CSharpPreprocessorElements
 
 	IElementType DISABLED_PREPROCESSOR_DIRECTIVE = new DirectiveElementType("DISABLED_PREPROCESSOR_DIRECTIVE");
 
-	IElementType MACRO_DEFINE = new ElementTypeAsPsiFactory("MACRO_DEFINE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorDefineImpl.class);
+	IElementType MACRO_DEFINE = new CompositeElementTypeAsPsiFactory("MACRO_DEFINE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorDefineImpl.class);
 
-	IElementType MACRO_UNDEF = new ElementTypeAsPsiFactory("MACRO_UNDEF", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorDefineImpl.class);
+	IElementType MACRO_UNDEF = new CompositeElementTypeAsPsiFactory("MACRO_UNDEF", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorDefineImpl.class);
 
-	IElementType MACRO_IF = new ElementTypeAsPsiFactory("MACRO_IF", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorIfImpl.class);
+	IElementType MACRO_IF = new CompositeElementTypeAsPsiFactory("MACRO_IF", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorIfImpl.class);
 
-	IElementType REGION_DIRECTIVE = new ElementTypeAsPsiFactory("REGION_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorRegionImpl.class);
+	IElementType REGION_DIRECTIVE = new CompositeElementTypeAsPsiFactory("REGION_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorRegionImpl.class);
 
-	IElementType ENDREGION_DIRECTIVE = new ElementTypeAsPsiFactory("ENDREGION_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorEndRegionImpl.class);
+	IElementType ENDREGION_DIRECTIVE = new CompositeElementTypeAsPsiFactory("ENDREGION_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorEndRegionImpl.class);
 
-	IElementType PRAGMA_DIRECTIVE = new ElementTypeAsPsiFactory("PRAGMA_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorPragmaImpl.class);
+	IElementType PRAGMA_DIRECTIVE = new CompositeElementTypeAsPsiFactory("PRAGMA_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorPragmaImpl.class);
 
-	IElementType NULLABLE_DIRECTIVE = new ElementTypeAsPsiFactory("NULLABLE_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorNullableImpl.class);
+	IElementType NULLABLE_DIRECTIVE = new CompositeElementTypeAsPsiFactory("NULLABLE_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorNullableImpl.class);
 
-	IElementType WARNING_DIRECTIVE = new ElementTypeAsPsiFactory("WARNING_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorWarningImpl.class);
+	IElementType WARNING_DIRECTIVE = new CompositeElementTypeAsPsiFactory("WARNING_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorWarningImpl.class);
 
-	IElementType ERROR_DIRECTIVE = new ElementTypeAsPsiFactory("ERROR_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorErrorImpl.class);
+	IElementType ERROR_DIRECTIVE = new CompositeElementTypeAsPsiFactory("ERROR_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorErrorImpl.class);
 
-	IElementType MACRO_STOP_DIRECTIVE = new ElementTypeAsPsiFactory("MACRO_STOP_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorBlockStopImpl.class);
+	IElementType MACRO_STOP_DIRECTIVE = new CompositeElementTypeAsPsiFactory("MACRO_STOP_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorBlockStopImpl.class);
 
-	IElementType PREFIX_EXPRESSION = new ElementTypeAsPsiFactory("PREFIX_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorPrefixExpressionImpl.class);
+	IElementType PREFIX_EXPRESSION = new CompositeElementTypeAsPsiFactory("PREFIX_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorPrefixExpressionImpl.class);
 
-	IElementType POLYADIC_EXPRESSION = new ElementTypeAsPsiFactory("POLYADIC_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorPolyadicExpressionImpl.class);
+	IElementType POLYADIC_EXPRESSION = new CompositeElementTypeAsPsiFactory("POLYADIC_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorPolyadicExpressionImpl.class);
 
-	IElementType BINARY_EXPRESSION = new ElementTypeAsPsiFactory("BINARY_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorBinaryExpressionImpl.class);
+	IElementType BINARY_EXPRESSION = new CompositeElementTypeAsPsiFactory("BINARY_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorBinaryExpressionImpl.class);
 
-	IElementType REFERENCE_EXPRESSION = new ElementTypeAsPsiFactory("REFERENCE_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorReferenceExpressionImpl.class);
+	IElementType REFERENCE_EXPRESSION = new CompositeElementTypeAsPsiFactory("REFERENCE_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorReferenceExpressionImpl.class);
 
-	IElementType PARENTHESES_EXPRESSION = new ElementTypeAsPsiFactory("PARENTHESES_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorParenthesesExpressionImpl.class);
+	IElementType PARENTHESES_EXPRESSION = new CompositeElementTypeAsPsiFactory("PARENTHESES_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorParenthesesExpressionImpl.class);
 }

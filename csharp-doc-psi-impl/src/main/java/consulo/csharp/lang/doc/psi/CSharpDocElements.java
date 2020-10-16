@@ -16,14 +16,7 @@
 
 package consulo.csharp.lang.doc.psi;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
-import com.intellij.lang.LanguageParserDefinitions;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilderFactory;
-import com.intellij.lang.PsiParser;
+import com.intellij.lang.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -40,11 +33,14 @@ import consulo.csharp.lang.parser.exp.ExpressionParsing;
 import consulo.csharp.lang.psi.CSharpElements;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.impl.CompositeElementTypeAsPsiFactory;
 import consulo.csharp.lang.psi.impl.source.injection.CSharpForInjectionFragmentHolder;
 import consulo.csharp.lang.psi.impl.source.injection.CSharpInjectExpressionElementType;
 import consulo.lang.LanguageVersion;
 import consulo.lang.util.LanguageVersionUtil;
-import consulo.psi.tree.ElementTypeAsPsiFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -52,10 +48,10 @@ import consulo.psi.tree.ElementTypeAsPsiFactory;
  */
 public interface CSharpDocElements
 {
-	ElementTypeAsPsiFactory TAG = new ElementTypeAsPsiFactory("TAG", CSharpDocLanguage.INSTANCE, CSharpDocTagImpl.class);
-	ElementTypeAsPsiFactory ATTRIBUTE = new ElementTypeAsPsiFactory("ATTRIBUTE", CSharpDocLanguage.INSTANCE, CSharpDocAttribute.class);
-	ElementTypeAsPsiFactory ATTRIBUTE_VALUE = new ElementTypeAsPsiFactory("ATTRIBUTE_VALUE", CSharpDocLanguage.INSTANCE, CSharpDocAttributeValue.class);
-	ElementTypeAsPsiFactory TEXT = new ElementTypeAsPsiFactory("TEXT", CSharpDocLanguage.INSTANCE, CSharpDocText.class);
+	IElementType TAG = new CompositeElementTypeAsPsiFactory("TAG", CSharpDocLanguage.INSTANCE, CSharpDocTagImpl.class);
+	IElementType ATTRIBUTE = new CompositeElementTypeAsPsiFactory("ATTRIBUTE", CSharpDocLanguage.INSTANCE, CSharpDocAttribute.class);
+	IElementType ATTRIBUTE_VALUE = new CompositeElementTypeAsPsiFactory("ATTRIBUTE_VALUE", CSharpDocLanguage.INSTANCE, CSharpDocAttributeValue.class);
+	IElementType TEXT = new CompositeElementTypeAsPsiFactory("TEXT", CSharpDocLanguage.INSTANCE, CSharpDocText.class);
 
 	IElementType LINE_DOC_COMMENT = new ILazyParseableElementType("LINE_DOC_COMMENT", CSharpDocLanguage.INSTANCE)
 	{

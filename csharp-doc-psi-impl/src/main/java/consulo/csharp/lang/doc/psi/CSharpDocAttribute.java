@@ -16,29 +16,28 @@
 
 package consulo.csharp.lang.doc.psi;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
-import consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
-import consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
+import consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
+import consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
+import consulo.csharp.lang.psi.impl.source.AdvancedCompositePsiElement;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 03.03.2015
  */
-public class CSharpDocAttribute extends ASTWrapperPsiElement implements PsiNameIdentifierOwner
+public class CSharpDocAttribute extends AdvancedCompositePsiElement implements PsiNameIdentifierOwner
 {
-	public CSharpDocAttribute(@Nonnull ASTNode node)
+	public CSharpDocAttribute(IElementType type)
 	{
-		super(node);
+		super(type);
 	}
 
 	@Override
@@ -85,11 +84,11 @@ public class CSharpDocAttribute extends ASTWrapperPsiElement implements PsiNameI
 	@Override
 	public PsiElement getNameIdentifier()
 	{
-		return findChildByType(CSharpDocTokenType.XML_NAME);
+		return findPsiChildByType(CSharpDocTokenType.XML_NAME);
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
+	public PsiElement setName(@Nonnull String name) throws IncorrectOperationException
 	{
 		return null;
 	}

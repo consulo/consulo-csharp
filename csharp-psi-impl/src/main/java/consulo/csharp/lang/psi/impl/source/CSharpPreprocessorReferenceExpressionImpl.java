@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Ref;
@@ -25,6 +24,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.Processor;
@@ -48,9 +48,9 @@ import java.util.Map;
  */
 public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorExpression, PsiReference
 {
-	public CSharpPreprocessorReferenceExpressionImpl(@Nonnull ASTNode node)
+	public CSharpPreprocessorReferenceExpressionImpl(IElementType type)
 	{
-		super(node);
+		super(type);
 	}
 
 	@Override
