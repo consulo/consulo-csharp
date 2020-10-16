@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.ResolveState;
@@ -53,9 +52,9 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 {
 	private static final Logger LOG = Logger.getInstance(CSharpLocalVariableImpl.class);
 
-	public CSharpLocalVariableImpl(@Nonnull ASTNode node)
+	public CSharpLocalVariableImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override
@@ -185,7 +184,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 	@Override
 	public PsiElement getConstantKeywordElement()
 	{
-		return findChildByType(CSharpTokens.CONST_KEYWORD);
+		return findPsiChildByType(CSharpTokens.CONST_KEYWORD);
 	}
 
 	@Nonnull

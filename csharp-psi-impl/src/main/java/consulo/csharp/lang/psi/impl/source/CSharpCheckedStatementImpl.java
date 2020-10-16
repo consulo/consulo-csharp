@@ -16,13 +16,13 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
-import com.intellij.lang.ASTNode;
 import consulo.dotnet.psi.DotNetStatement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,9 +30,9 @@ import consulo.dotnet.psi.DotNetStatement;
  */
 public class CSharpCheckedStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpCheckedStatementImpl(@Nonnull ASTNode node)
+	public CSharpCheckedStatementImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@RequiredReadAction

@@ -16,16 +16,16 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -33,9 +33,9 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpNullCoalescingExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpNullCoalescingExpressionImpl(@Nonnull ASTNode node)
+	public CSharpNullCoalescingExpressionImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

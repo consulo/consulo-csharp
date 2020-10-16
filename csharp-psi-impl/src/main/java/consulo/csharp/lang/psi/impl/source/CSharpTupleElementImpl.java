@@ -16,9 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
@@ -28,7 +28,6 @@ import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.CSharpTupleTypeDeclaration;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetNamedElement;
-import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,9 +38,9 @@ import javax.annotation.Nullable;
  */
 public class CSharpTupleElementImpl extends CSharpElementImpl implements PsiNameIdentifierOwner, DotNetNamedElement
 {
-	public CSharpTupleElementImpl(@Nonnull ASTNode node)
+	public CSharpTupleElementImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@RequiredReadAction

@@ -16,14 +16,15 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.tree.IElementType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -31,9 +32,9 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  */
 public class CSharpLinqQueryContinuationImpl extends CSharpElementImpl
 {
-	public CSharpLinqQueryContinuationImpl(@Nonnull ASTNode node)
+	public CSharpLinqQueryContinuationImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nonnull

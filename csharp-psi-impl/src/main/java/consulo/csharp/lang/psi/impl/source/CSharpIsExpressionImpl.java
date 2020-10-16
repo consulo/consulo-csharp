@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -37,9 +37,9 @@ import javax.annotation.Nullable;
  */
 public class CSharpIsExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpIsExpressionImpl(@Nonnull ASTNode node)
+	public CSharpIsExpressionImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nonnull

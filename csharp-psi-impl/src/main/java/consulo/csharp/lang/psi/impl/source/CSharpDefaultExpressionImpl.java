@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -33,9 +33,9 @@ import javax.annotation.Nullable;
  */
 public class CSharpDefaultExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpDefaultExpressionImpl(@Nonnull ASTNode node)
+	public CSharpDefaultExpressionImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

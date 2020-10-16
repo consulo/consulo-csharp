@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
@@ -46,9 +45,9 @@ public class CSharpBinaryExpressionImpl extends CSharpExpressionWithOperatorImpl
 		}
 	}
 
-	public CSharpBinaryExpressionImpl(@Nonnull ASTNode node)
+	public CSharpBinaryExpressionImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

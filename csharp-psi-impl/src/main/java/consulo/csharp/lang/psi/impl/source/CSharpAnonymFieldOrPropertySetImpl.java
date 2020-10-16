@@ -16,14 +16,15 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpAnonymFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import consulo.dotnet.psi.DotNetExpression;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -31,9 +32,9 @@ import consulo.dotnet.psi.DotNetExpression;
  */
 public class CSharpAnonymFieldOrPropertySetImpl extends CSharpElementImpl implements CSharpAnonymFieldOrPropertySet
 {
-	public CSharpAnonymFieldOrPropertySetImpl(@Nonnull ASTNode node)
+	public CSharpAnonymFieldOrPropertySetImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nullable

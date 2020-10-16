@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
@@ -30,9 +30,9 @@ import javax.annotation.Nullable;
  */
 public class CSharpCaseOrDefaultStatementImpl extends CSharpElementImpl implements CSharpSwitchLabelStatement
 {
-	public CSharpCaseOrDefaultStatementImpl(@Nonnull ASTNode node)
+	public CSharpCaseOrDefaultStatementImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nullable

@@ -16,14 +16,15 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.IElementType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.csharp.lang.psi.CSharpTokens;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import consulo.annotation.access.RequiredReadAction;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -31,9 +32,9 @@ import consulo.annotation.access.RequiredReadAction;
  */
 public class CSharpIdentifierImpl extends CSharpElementImpl implements CSharpIdentifier
 {
-	public CSharpIdentifierImpl(@Nonnull ASTNode node)
+	public CSharpIdentifierImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class CSharpIdentifierImpl extends CSharpElementImpl implements CSharpIde
 	@Override
 	public String getValue()
 	{
-		PsiElement childByType = findChildByType(CSharpTokens.IDENTIFIER);
+		ASTNode childByType = findChildByType(CSharpTokens.IDENTIFIER);
 		return childByType != null ? childByType.getText() : null;
 	}
 }

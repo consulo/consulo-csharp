@@ -16,16 +16,16 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.tree.IElementType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpArrayType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import com.intellij.lang.ASTNode;
-import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -33,9 +33,9 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpArrayTypeImpl extends CSharpTypeElementImpl implements CSharpArrayType
 {
-	public CSharpArrayTypeImpl(@Nonnull ASTNode node)
+	public CSharpArrayTypeImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@RequiredReadAction

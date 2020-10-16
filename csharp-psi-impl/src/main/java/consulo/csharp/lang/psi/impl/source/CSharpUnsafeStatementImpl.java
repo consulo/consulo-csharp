@@ -16,12 +16,13 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetStatement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -29,9 +30,9 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpUnsafeStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpUnsafeStatementImpl(@Nonnull ASTNode node)
+	public CSharpUnsafeStatementImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nonnull

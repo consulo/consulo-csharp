@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
@@ -34,7 +34,10 @@ import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.dotnet.psi.DotNetStatement;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -43,9 +46,9 @@ import java.util.stream.Collectors;
  */
 public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpBodyWithBraces
 {
-	public CSharpBlockStatementImpl(@Nonnull ASTNode node)
+	public CSharpBlockStatementImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override
@@ -58,14 +61,14 @@ public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNe
 	@Override
 	public PsiElement getLeftBrace()
 	{
-		return findChildByType(CSharpTokens.LBRACE);
+		return findPsiChildByType(CSharpTokens.LBRACE);
 	}
 
 	@RequiredReadAction
 	@Override
 	public PsiElement getRightBrace()
 	{
-		return findChildByType(CSharpTokens.RBRACE);
+		return findPsiChildByType(CSharpTokens.RBRACE);
 	}
 
 	@Nonnull

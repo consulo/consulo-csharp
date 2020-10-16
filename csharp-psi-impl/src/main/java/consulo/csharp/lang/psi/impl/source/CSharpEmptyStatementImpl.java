@@ -16,11 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
-import com.intellij.lang.ASTNode;
 import consulo.dotnet.psi.DotNetStatement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -28,9 +28,9 @@ import consulo.dotnet.psi.DotNetStatement;
  */
 public class CSharpEmptyStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpEmptyStatementImpl(@Nonnull ASTNode node)
+	public CSharpEmptyStatementImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

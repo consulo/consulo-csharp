@@ -16,14 +16,14 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -31,9 +31,9 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpNewArrayLengthImpl extends CSharpElementImpl
 {
-	public CSharpNewArrayLengthImpl(@Nonnull ASTNode node)
+	public CSharpNewArrayLengthImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	public int getDimensionSize()

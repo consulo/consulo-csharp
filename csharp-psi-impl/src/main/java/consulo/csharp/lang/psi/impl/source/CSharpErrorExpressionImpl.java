@@ -16,13 +16,13 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,9 +30,9 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpErrorExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpErrorExpressionImpl(@Nonnull ASTNode node)
+	public CSharpErrorExpressionImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

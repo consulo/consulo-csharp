@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -33,9 +33,9 @@ import javax.annotation.Nullable;
  */
 public class CSharpReturnStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpReturnStatementImpl(@Nonnull ASTNode node)
+	public CSharpReturnStatementImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nonnull

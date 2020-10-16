@@ -16,15 +16,15 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,9 +32,9 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpSizeOfExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpSizeOfExpressionImpl(@Nonnull ASTNode node)
+	public CSharpSizeOfExpressionImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

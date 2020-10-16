@@ -16,14 +16,14 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,9 +31,9 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpParameterListImpl extends CSharpElementImpl implements DotNetParameterList
 {
-	public CSharpParameterListImpl(@Nonnull ASTNode node)
+	public CSharpParameterListImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

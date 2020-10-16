@@ -16,27 +16,21 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
-import consulo.csharp.lang.psi.CSharpNamedCallArgument;
-import consulo.csharp.lang.psi.CSharpTokens;
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceService;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetExpression;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -47,9 +41,9 @@ public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSh
 	private static final TokenSet ourOpenSet = TokenSet.create(CSharpTokens.LPAR, CSharpTokens.LBRACKET);
 	private static final TokenSet ourCloseSet = TokenSet.create(CSharpTokens.RPAR, CSharpTokens.RBRACKET);
 
-	public CSharpCallArgumentListImpl(@Nonnull ASTNode node)
+	public CSharpCallArgumentListImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nonnull

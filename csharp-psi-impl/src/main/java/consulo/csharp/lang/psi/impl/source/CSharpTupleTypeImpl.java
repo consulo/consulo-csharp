@@ -16,9 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTupleType;
@@ -26,15 +24,17 @@ import consulo.csharp.lang.psi.CSharpTupleVariable;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTupleTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author VISTALL
  * @since 26-Nov-16.
  */
 public class CSharpTupleTypeImpl extends CSharpTypeElementImpl implements CSharpTupleType
 {
-	public CSharpTupleTypeImpl(@Nonnull ASTNode node)
+	public CSharpTupleTypeImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@RequiredReadAction

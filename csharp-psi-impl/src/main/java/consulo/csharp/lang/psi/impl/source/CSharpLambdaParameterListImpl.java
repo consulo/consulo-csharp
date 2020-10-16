@@ -16,13 +16,13 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpLambdaParameter;
 import consulo.csharp.lang.psi.CSharpLambdaParameterList;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,9 +30,9 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpLambdaParameterListImpl extends CSharpElementImpl implements CSharpLambdaParameterList
 {
-	public CSharpLambdaParameterListImpl(@Nonnull ASTNode node)
+	public CSharpLambdaParameterListImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

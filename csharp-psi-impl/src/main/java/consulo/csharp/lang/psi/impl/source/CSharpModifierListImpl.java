@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpAttributeList;
@@ -39,9 +38,9 @@ import java.util.List;
  */
 public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpModifierList
 {
-	public CSharpModifierListImpl(@Nonnull ASTNode node)
+	public CSharpModifierListImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override
@@ -104,7 +103,7 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpM
 	public PsiElement getModifierElement(DotNetModifier modifier)
 	{
 		IElementType iElementType = CSharpModifierListImplUtil.asElementType(modifier);
-		return findChildByType(iElementType);
+		return findPsiChildByType(iElementType);
 	}
 
 	@Nonnull

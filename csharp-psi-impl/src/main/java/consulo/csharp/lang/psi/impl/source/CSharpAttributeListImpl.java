@@ -16,21 +16,15 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
+import consulo.csharp.lang.psi.*;
+import consulo.dotnet.psi.DotNetAttributeTargetType;
 import gnu.trove.THashMap;
-
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.csharp.lang.psi.CSharpAttribute;
-import consulo.csharp.lang.psi.CSharpAttributeList;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpSoftTokens;
-import consulo.csharp.lang.psi.CSharpTokenSets;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import consulo.dotnet.psi.DotNetAttributeTargetType;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -53,9 +47,9 @@ public class CSharpAttributeListImpl extends CSharpElementImpl implements CSharp
 		}
 	};
 
-	public CSharpAttributeListImpl(@Nonnull ASTNode node)
+	public CSharpAttributeListImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override
@@ -68,7 +62,7 @@ public class CSharpAttributeListImpl extends CSharpElementImpl implements CSharp
 	@Override
 	public DotNetAttributeTargetType getTargetType()
 	{
-		return getAttributeType(findChildByType(CSharpTokenSets.ATTRIBUTE_TARGETS));
+		return getAttributeType(findPsiChildByType(CSharpTokenSets.ATTRIBUTE_TARGETS));
 	}
 
 	@Nullable

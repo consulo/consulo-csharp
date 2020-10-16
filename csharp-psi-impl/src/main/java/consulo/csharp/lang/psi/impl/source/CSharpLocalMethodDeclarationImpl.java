@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
@@ -37,9 +36,9 @@ import javax.annotation.Nullable;
  */
 public class CSharpLocalMethodDeclarationImpl extends CSharpMemberImpl implements CSharpMethodDeclaration
 {
-	public CSharpLocalMethodDeclarationImpl(@Nonnull ASTNode node)
+	public CSharpLocalMethodDeclarationImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nonnull

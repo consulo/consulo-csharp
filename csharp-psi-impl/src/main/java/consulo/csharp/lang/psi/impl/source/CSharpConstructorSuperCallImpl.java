@@ -16,17 +16,14 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.CSharpConstructorSuperCall;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import com.intellij.psi.tree.IElementType;
+import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetExpression;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -34,9 +31,9 @@ import consulo.dotnet.psi.DotNetExpression;
  */
 public class CSharpConstructorSuperCallImpl extends CSharpElementImpl implements CSharpConstructorSuperCall
 {
-	public CSharpConstructorSuperCallImpl(@Nonnull ASTNode node)
+	public CSharpConstructorSuperCallImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

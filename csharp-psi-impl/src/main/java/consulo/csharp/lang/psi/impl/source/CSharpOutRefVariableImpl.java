@@ -16,9 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ObjectUtil;
 import consulo.annotation.access.RequiredReadAction;
@@ -42,9 +42,9 @@ import java.util.List;
  */
 public class CSharpOutRefVariableImpl extends CSharpVariableImpl
 {
-	public CSharpOutRefVariableImpl(@Nonnull ASTNode node)
+	public CSharpOutRefVariableImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

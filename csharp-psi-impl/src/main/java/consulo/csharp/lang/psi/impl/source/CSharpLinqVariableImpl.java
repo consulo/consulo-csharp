@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
@@ -61,9 +61,9 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		}
 	};
 
-	public CSharpLinqVariableImpl(@Nonnull ASTNode node)
+	public CSharpLinqVariableImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

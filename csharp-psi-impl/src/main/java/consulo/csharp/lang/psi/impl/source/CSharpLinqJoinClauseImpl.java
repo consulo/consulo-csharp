@@ -16,15 +16,16 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.util.ArrayUtil2;
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.tree.IElementType;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.util.ArrayUtil2;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -32,9 +33,9 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  */
 public class CSharpLinqJoinClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqJoinClauseImpl(@Nonnull ASTNode node)
+	public CSharpLinqJoinClauseImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nullable

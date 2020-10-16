@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
-import com.intellij.lang.ASTNode;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -27,9 +27,9 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpLinqWhereClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqWhereClauseImpl(@Nonnull ASTNode node)
+	public CSharpLinqWhereClauseImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

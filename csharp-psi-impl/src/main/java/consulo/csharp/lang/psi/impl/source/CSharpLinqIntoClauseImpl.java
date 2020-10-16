@@ -19,6 +19,7 @@ package consulo.csharp.lang.psi.impl.source;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -31,9 +32,9 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  */
 public class CSharpLinqIntoClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqIntoClauseImpl(@Nonnull ASTNode node)
+	public CSharpLinqIntoClauseImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nullable

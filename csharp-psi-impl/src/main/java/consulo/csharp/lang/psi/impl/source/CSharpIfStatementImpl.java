@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -35,9 +35,9 @@ import javax.annotation.Nullable;
  */
 public class CSharpIfStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpIfStatementImpl(@Nonnull ASTNode node)
+	public CSharpIfStatementImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nullable
@@ -55,7 +55,7 @@ public class CSharpIfStatementImpl extends CSharpElementImpl implements DotNetSt
 	@Nullable
 	public PsiElement getElseKeywordElement()
 	{
-		return findChildByType(CSharpTokens.ELSE_KEYWORD);
+		return findPsiChildByType(CSharpTokens.ELSE_KEYWORD);
 	}
 
 	@Nullable

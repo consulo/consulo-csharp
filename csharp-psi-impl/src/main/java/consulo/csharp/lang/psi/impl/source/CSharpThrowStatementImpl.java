@@ -16,13 +16,13 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
-import com.intellij.lang.ASTNode;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -30,9 +30,9 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpThrowStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpThrowStatementImpl(@Nonnull ASTNode node)
+	public CSharpThrowStatementImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nullable

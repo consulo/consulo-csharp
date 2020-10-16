@@ -17,7 +17,6 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import com.google.common.collect.ImmutableMap;
-import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
@@ -149,9 +148,9 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			.put(CSharpTokens.XOREQ, CSharpTokens.XOR)
 			.build();
 
-	public CSharpOperatorReferenceImpl(@Nonnull ASTNode node)
+	public CSharpOperatorReferenceImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

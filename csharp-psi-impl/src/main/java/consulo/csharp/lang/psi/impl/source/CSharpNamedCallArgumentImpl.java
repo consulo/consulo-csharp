@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamedCallArgument;
@@ -36,9 +36,9 @@ import javax.annotation.Nullable;
  */
 public class CSharpNamedCallArgumentImpl extends CSharpElementImpl implements CSharpNamedCallArgument
 {
-	public CSharpNamedCallArgumentImpl(@Nonnull ASTNode node)
+	public CSharpNamedCallArgumentImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

@@ -16,9 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.CommonProcessors;
 import consulo.annotation.access.RequiredReadAction;
@@ -40,9 +40,9 @@ import javax.annotation.Nullable;
 public class CSharpArrayInitializerCompositeValueImpl extends CSharpElementImpl implements CSharpArrayInitializerValue, CSharpCallArgumentList,
 		CSharpCallArgumentListOwner
 {
-	public CSharpArrayInitializerCompositeValueImpl(@Nonnull ASTNode node)
+	public CSharpArrayInitializerCompositeValueImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override
@@ -133,14 +133,14 @@ public class CSharpArrayInitializerCompositeValueImpl extends CSharpElementImpl 
 	@Override
 	public PsiElement getOpenElement()
 	{
-		return findChildByType(CSharpTokens.LBRACE);
+		return findPsiChildByType(CSharpTokens.LBRACE);
 	}
 
 	@Nullable
 	@Override
 	public PsiElement getCloseElement()
 	{
-		return findChildByType(CSharpTokens.RBRACE);
+		return findPsiChildByType(CSharpTokens.RBRACE);
 	}
 
 	@RequiredReadAction

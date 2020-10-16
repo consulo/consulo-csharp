@@ -16,14 +16,14 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.tree.IElementType;
+import com.intellij.util.NotNullFunction;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.lang.psi.impl.DotNetTypeRefCacheUtil;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
-import com.intellij.util.NotNullFunction;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -44,9 +44,9 @@ public abstract class CSharpTypeElementImpl extends CSharpElementImpl implements
 		}
 	}
 
-	public CSharpTypeElementImpl(@Nonnull ASTNode node)
+	public CSharpTypeElementImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nonnull

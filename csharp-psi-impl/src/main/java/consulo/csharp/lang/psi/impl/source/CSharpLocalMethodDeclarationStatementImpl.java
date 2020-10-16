@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.dotnet.psi.DotNetStatement;
@@ -32,9 +32,9 @@ import javax.annotation.Nonnull;
  */
 public class CSharpLocalMethodDeclarationStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpLocalMethodDeclarationStatementImpl(@Nonnull ASTNode node)
+	public CSharpLocalMethodDeclarationStatementImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

@@ -16,14 +16,15 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,9 +32,9 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpTypeListImpl extends CSharpElementImpl implements DotNetTypeList
 {
-	public CSharpTypeListImpl(@Nonnull ASTNode node)
+	public CSharpTypeListImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@RequiredReadAction

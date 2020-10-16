@@ -16,16 +16,15 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNativeType;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -33,9 +32,9 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpNativeTypeImpl extends CSharpTypeElementImpl implements CSharpNativeType
 {
-	public CSharpNativeTypeImpl(@Nonnull ASTNode node)
+	public CSharpNativeTypeImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override

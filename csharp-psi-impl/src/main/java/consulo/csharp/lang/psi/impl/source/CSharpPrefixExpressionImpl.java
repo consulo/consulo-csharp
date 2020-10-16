@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
@@ -62,9 +61,9 @@ public class CSharpPrefixExpressionImpl extends CSharpExpressionWithOperatorImpl
 		}
 	}
 
-	public CSharpPrefixExpressionImpl(@Nonnull ASTNode node)
+	public CSharpPrefixExpressionImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Nonnull

@@ -16,9 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -26,16 +24,19 @@ import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpUserTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author VISTALL
  * @since 28.11.13.
  */
 public class CSharpUserTypeImpl extends CSharpTypeElementImpl implements CSharpUserType
 {
-	public CSharpUserTypeImpl(@Nonnull ASTNode node)
+	public CSharpUserTypeImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
+
 	@Override
 	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{

@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
@@ -40,9 +39,9 @@ import javax.annotation.Nullable;
  */
 public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implements CSharpReferenceExpressionEx
 {
-	public CSharpReferenceExpressionImpl(@Nonnull ASTNode node)
+	public CSharpReferenceExpressionImpl(@Nonnull IElementType elementType)
 	{
-		super(node);
+		super(elementType);
 	}
 
 	@Override
@@ -56,7 +55,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 	@Nullable
 	public PsiElement getReferenceElement()
 	{
-		return findChildByType(CSharpReferenceExpressionImplUtil.ourReferenceElements);
+		return findPsiChildByType(CSharpReferenceExpressionImplUtil.ourReferenceElements);
 	}
 
 	@Override
@@ -222,7 +221,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 	@RequiredReadAction
 	public PsiElement getMemberAccessElement()
 	{
-		return findChildByType(CSharpReferenceExpressionImplUtil.ourAccessTokens);
+		return findPsiChildByType(CSharpReferenceExpressionImplUtil.ourAccessTokens);
 	}
 
 	@Nonnull
