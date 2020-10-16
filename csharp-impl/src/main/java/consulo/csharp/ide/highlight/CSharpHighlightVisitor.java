@@ -250,7 +250,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	{
 		super.visitLinqExpression(expression);
 
-		myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(expression).textAttributes(EditorColors.INJECTED_LANGUAGE_FRAGMENT).create());
+		myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range((PsiElement) expression).textAttributes(EditorColors.INJECTED_LANGUAGE_FRAGMENT).create());
 	}
 
 	@Override
