@@ -21,7 +21,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.lineMarkerProvider.HidedOrOverridedElementCollector;

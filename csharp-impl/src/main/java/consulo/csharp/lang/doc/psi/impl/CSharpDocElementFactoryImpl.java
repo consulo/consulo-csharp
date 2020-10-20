@@ -17,7 +17,7 @@
 package consulo.csharp.lang.doc.psi.impl;
 
 import javax.annotation.Nonnull;
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.doc.psi.CSharpDocElementFactory;

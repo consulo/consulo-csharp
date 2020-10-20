@@ -36,8 +36,9 @@ import consulo.module.extension.ModuleExtension;
 import consulo.module.extension.ModuleExtensionChangeListener;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;

@@ -20,8 +20,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 import com.intellij.ProjectTopics;
 import consulo.disposer.Disposable;

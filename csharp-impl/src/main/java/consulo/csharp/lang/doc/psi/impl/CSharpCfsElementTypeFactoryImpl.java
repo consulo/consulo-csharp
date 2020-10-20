@@ -27,10 +27,10 @@ import consulo.csharp.lang.CSharpCfsElementTypeFactory;
 import consulo.csharp.lang.CSharpCfsLanguageVersion;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.lang.LanguageVersion;
+import jakarta.inject.Singleton;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.inject.Singleton;
 
 /**
  * @author VISTALL

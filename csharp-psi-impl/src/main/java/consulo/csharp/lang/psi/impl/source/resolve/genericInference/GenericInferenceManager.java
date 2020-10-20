@@ -22,10 +22,10 @@ import com.intellij.openapi.util.SimpleModificationTracker;
 import com.intellij.psi.PsiElement;
 import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import jakarta.inject.Singleton;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.inject.Singleton;
 import java.util.function.Function;
 
 /**
