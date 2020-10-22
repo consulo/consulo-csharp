@@ -18,7 +18,6 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import com.intellij.codeInsight.actions.OptimizeImportsProcessor;
 import com.intellij.codeInsight.hint.QuestionAction;
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.diagnostic.Logger;
@@ -42,6 +41,7 @@ import consulo.csharp.lang.psi.impl.source.using.AddUsingUtil;
 import consulo.dotnet.DotNetBundle;
 import consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import consulo.dotnet.roots.orderEntry.DotNetLibraryOrderEntryImpl;
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.roots.impl.ModuleRootLayerImpl;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
@@ -99,7 +99,7 @@ public class AddUsingAction implements QuestionAction
 				@Override
 				public Image getIconFor(NamespaceReference aValue)
 				{
-					return AllIcons.Nodes.Package;
+					return PlatformIconGroup.nodesNamespace();
 				}
 
 				@Nonnull

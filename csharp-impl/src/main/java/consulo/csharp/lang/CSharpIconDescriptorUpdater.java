@@ -42,6 +42,7 @@ import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.ide.IconDescriptor;
 import consulo.ide.IconDescriptorUpdater;
 import consulo.ide.IconDescriptorUpdaters;
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.ui.image.Image;
 
 import javax.annotation.Nonnull;
@@ -58,7 +59,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 	{
 		if(element instanceof DotNetNamespaceAsElement)
 		{
-			iconDescriptor.setMainIcon(AllIcons.Nodes.Package);
+			iconDescriptor.setMainIcon(PlatformIconGroup.nodesNamespace());
 			return;
 		}
 		else if(element instanceof CSharpAnonymousMethodExpression)
@@ -188,7 +189,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		}
 		else if(element instanceof CSharpNamespaceDeclaration)
 		{
-			iconDescriptor.setMainIcon(AllIcons.Nodes.Package);  //TODO [VISTALL] icon
+			iconDescriptor.setMainIcon(PlatformIconGroup.nodesNamespace());
 		}
 		else if(element instanceof DotNetXAccessor)
 		{
