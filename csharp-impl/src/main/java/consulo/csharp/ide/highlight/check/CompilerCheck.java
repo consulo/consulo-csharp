@@ -320,8 +320,8 @@ public abstract class CompilerCheck<T extends PsiElement>
 	}
 
 	@RequiredReadAction
-	public static String formatTypeRef(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
+	public static String formatTypeRef(@Nonnull DotNetTypeRef typeRef)
 	{
-		return CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(typeRef, scope);
+		return CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(typeRef);
 	}
 }

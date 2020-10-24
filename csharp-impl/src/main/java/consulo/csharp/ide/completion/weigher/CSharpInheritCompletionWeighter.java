@@ -16,11 +16,6 @@
 
 package consulo.csharp.ide.completion.weigher;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.codeInsight.completion.CompletionLocation;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionWeigher;
@@ -38,12 +33,7 @@ import consulo.csharp.ide.completion.CSharpCompletionUtil;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
-import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
-import consulo.csharp.lang.psi.CSharpSoftTokens;
-import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
@@ -54,6 +44,11 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -181,7 +176,7 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 		if(psiElement instanceof CSharpMethodDeclaration)
 		{
 			CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) psiElement;
-			typeOfElement = GenericUnwrapTool.exchangeTypeRef(methodDeclaration.getReturnTypeRef(), extractor, psiElement);
+			typeOfElement = GenericUnwrapTool.exchangeTypeRef(methodDeclaration.getReturnTypeRef(), extractor);
 
 			for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
 			{
@@ -190,7 +185,7 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 					continue;
 				}
 
-				if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement, referenceExpressionEx))
+				if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement))
 				{
 					return upPosition;
 				}
@@ -211,7 +206,7 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 		}
 		else
 		{
-			typeOfElement = CSharpReferenceExpressionImplUtil.toTypeRef(psiElement, extractor);
+			typeOfElement = CSharpReferenceExpressionImplUtil.toTypeRef(psiElement.getResolveScope(), psiElement, extractor);
 
 			for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
 			{
@@ -220,7 +215,7 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 					return Position.DOWN;
 				}
 
-				if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement, referenceExpressionEx))
+				if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement))
 				{
 					return upPosition;
 				}

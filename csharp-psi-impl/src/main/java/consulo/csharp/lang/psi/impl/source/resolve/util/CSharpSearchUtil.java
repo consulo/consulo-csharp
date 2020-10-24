@@ -16,10 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.util;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveState;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -31,17 +29,15 @@ import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.MemberByNameSelector;
-import consulo.dotnet.psi.DotNetMemberOwner;
-import consulo.dotnet.psi.DotNetMethodDeclaration;
-import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.psi.DotNetPropertyDeclaration;
-import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
 
 /**
  * @author VISTALL
@@ -118,7 +114,7 @@ public class CSharpSearchUtil
 							name.equals(dotNetNamedElement.getName()))
 					{
 						DotNetTypeRef typeRefForImplement = ((CSharpMethodDeclaration) dotNetNamedElement).getTypeRefForImplement();
-						if(DotNetTypeRefUtil.isVmQNameEqual(typeRefForImplement, owner, parentQName))
+						if(DotNetTypeRefUtil.isVmQNameEqual(typeRefForImplement, parentQName))
 						{
 							return (DotNetMethodDeclaration) GenericUnwrapTool.extract(dotNetNamedElement, extractor);
 						}

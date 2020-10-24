@@ -49,7 +49,7 @@ public class CS0173 extends CompilerCheck<CSharpConditionalExpressionImpl>
 		DotNetTypeRef typeRef = element.toTypeRef(true);
 		if(typeRef instanceof CSharpNullTypeRef)
 		{
-			return newBuilder(element, formatTypeRef(trueExpression.toTypeRef(true), element), formatTypeRef(falseExpression.toTypeRef(true), element));
+			return newBuilder(element, formatTypeRef(trueExpression.toTypeRef(true)), formatTypeRef(falseExpression.toTypeRef(true)));
 		}
 		return null;
 	}

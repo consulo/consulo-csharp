@@ -16,19 +16,16 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.psi.PsiElement;
+import consulo.dotnet.resolve.*;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -39,9 +36,9 @@ public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult i
 	private final DotNetTypeRef myInnerTypeRef;
 	private final DotNetTypeRef[] myArguments;
 
-	public CSharpGenericWrapperTypeRef(Project project, @Nonnull DotNetTypeRef innerTypeRef, @Nonnull DotNetTypeRef... rArguments)
+	public CSharpGenericWrapperTypeRef(Project project, @Nonnull GlobalSearchScope scope, @Nonnull DotNetTypeRef innerTypeRef, @Nonnull DotNetTypeRef... rArguments)
 	{
-		super(project);
+		super(project, scope);
 		myInnerTypeRef = innerTypeRef;
 		myArguments = rArguments;
 	}
@@ -80,11 +77,11 @@ public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult i
 			CSharpMethodDeclaration target = ((CSharpLambdaResolveResult) typeResolveResult).getTarget();
 			if(target == null)
 			{
-				return new CSharpUserTypeRef.Result<PsiElement>(element, getGenericExtractor(element));
+				return new CSharpUserTypeRef.Result<>(element, getGenericExtractor(element));
 			}
-			return new CSharpUserTypeRef.LambdaResult(target, target, getGenericExtractor(target));
+			return new CSharpUserTypeRef.LambdaResult(target.getProject(), target.getResolveScope(), target, getGenericExtractor(target));
 		}
-		return new CSharpUserTypeRef.Result<PsiElement>(element, getGenericExtractor(element));
+		return new CSharpUserTypeRef.Result<>(element, getGenericExtractor(element));
 	}
 
 	public DotNetGenericExtractor getGenericExtractor(PsiElement resolved)

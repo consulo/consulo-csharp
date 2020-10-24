@@ -16,12 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.Consumer;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -42,11 +41,11 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.Consumer;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -69,7 +68,7 @@ public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 			DotNetTypeRef selfTypeRef;
 			if(methodDeclaration != null)
 			{
-				selfTypeRef = new CSharpLambdaTypeRef(element, methodDeclaration, extractor);
+				selfTypeRef = new CSharpLambdaTypeRef(element.getProject(), element.getResolveScope(), methodDeclaration, extractor);
 			}
 			else
 			{

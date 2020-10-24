@@ -33,6 +33,7 @@ import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
+import consulo.csharp.lang.psi.impl.CSharpInheritableChecker;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.*;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
@@ -149,7 +150,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 
 		for(DotNetTypeRef expectedTypeRef : expectedTypeRefs)
 		{
-			CSharpTypeUtil.InheritResult result = CSharpTypeUtil.isInheritable(expectedTypeRef, actualTypeRef, element, CSharpCastType.IMPLICIT);
+			CSharpTypeUtil.InheritResult result = CSharpInheritableChecker.create(expectedTypeRef, actualTypeRef).withCastType(CSharpCastType.IMPLICIT, element.getResolveScope()).check();
 
 			if(result.isSuccess())
 			{
@@ -167,7 +168,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		{
 			DotNetTypeRef firstExpectedTypeRef = ContainerUtil.getFirstItem(expectedTypeRefs);
 
-			CompilerCheckBuilder builder = newBuilder(elementToHighlight, formatTypeRef(actualTypeRef, element), formatTypeRef(firstExpectedTypeRef, element));
+			CompilerCheckBuilder builder = newBuilder(elementToHighlight, formatTypeRef(actualTypeRef), formatTypeRef(firstExpectedTypeRef));
 
 			if(elementToHighlight instanceof DotNetExpression)
 			{
@@ -195,7 +196,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 					{
 						DotNetGenericParameter[] genericParameters = ((CSharpTypeDeclaration) firstElement).getGenericParameters();
 						DotNetTypeRef genericParameterTypeRef = typeResolveResult.getGenericExtractor().extract(genericParameters[0]);
-						if(genericParameterTypeRef != null && CSharpTypeUtil.isInheritable(genericParameterTypeRef, actualTypeRef, element))
+						if(genericParameterTypeRef != null && CSharpTypeUtil.isInheritable(genericParameterTypeRef, actualTypeRef))
 						{
 							builder.addQuickFix(new AddModifierFix(CSharpModifier.ASYNC, methodElement));
 						}
@@ -206,8 +207,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		}
 		else if(conversionResultTypeRef != null)
 		{
-			String text = CSharpErrorLocalize.impicitCastFrom0To1(CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(actualTypeRef, element),
-					CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(conversionResultTypeRef, element)).getValue();
+			String text = CSharpErrorLocalize.impicitCastFrom0To1(CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(actualTypeRef),
+					CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(conversionResultTypeRef)).getValue();
 
 			return newBuilder(elementToHighlight).setText(text).setHighlightInfoType(HighlightInfoType.INFORMATION).setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
 		}
@@ -240,7 +241,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 					if(((CSharpArrayTypeRef) initializerTypeRef).getDimensions() == 0)
 					{
 						DotNetTypeRef innerTypeRef = ((CSharpArrayTypeRef) initializerTypeRef).getInnerTypeRef();
-						initializerTypeRef = new CSharpPointerTypeRef(element, innerTypeRef);
+						initializerTypeRef = new CSharpPointerTypeRef(innerTypeRef);
 					}
 				}
 			}
@@ -367,7 +368,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				returnTypeRef = model.extractTypeRef(returnTypeRef, element);
 
 				// void type allow any type if used expression body
-				if(DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, element, DotNetTypes.System.Void))
+				if(DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, DotNetTypes.System.Void))
 				{
 					return null;
 				}

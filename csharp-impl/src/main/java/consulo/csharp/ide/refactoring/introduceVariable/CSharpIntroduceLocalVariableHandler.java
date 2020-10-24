@@ -327,12 +327,12 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 					List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(initializer);
 					if(!expectedTypeRefs.isEmpty())
 					{
-						CSharpTypeRefPresentationUtil.appendTypeRef(initializer, builder, expectedTypeRefs.get(0).getTypeRef(), CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
+						CSharpTypeRefPresentationUtil.appendTypeRef(builder, expectedTypeRefs.get(0).getTypeRef(), CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 						return;
 					}
 				}
 
-				CSharpTypeRefPresentationUtil.appendTypeRef(initializer, builder, initalizerTypeRef, CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
+				CSharpTypeRefPresentationUtil.appendTypeRef(builder, initalizerTypeRef, CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 			}
 		}
 	}

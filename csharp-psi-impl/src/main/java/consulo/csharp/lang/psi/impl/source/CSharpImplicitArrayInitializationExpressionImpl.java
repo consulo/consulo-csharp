@@ -17,7 +17,7 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -39,9 +39,9 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 {
 	private static class ImplicitArrayInitializationTypeRef extends DotNetTypeRefWithCachedResult implements CSharpFastImplicitTypeRef
 	{
-		protected ImplicitArrayInitializationTypeRef(Project project)
+		protected ImplicitArrayInitializationTypeRef(Project project, GlobalSearchScope scope)
 		{
-			super(project);
+			super(project, scope);
 		}
 
 		@RequiredReadAction
@@ -63,7 +63,7 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 		@RequiredReadAction
 		@Nullable
 		@Override
-		public DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another, PsiElement scope)
+		public DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another)
 		{
 			if(another instanceof DotNetArrayTypeRef)
 			{
@@ -101,7 +101,7 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
-		return new ImplicitArrayInitializationTypeRef(getProject());
+		return new ImplicitArrayInitializationTypeRef(getProject(), getResolveScope());
 	}
 
 	@Nullable

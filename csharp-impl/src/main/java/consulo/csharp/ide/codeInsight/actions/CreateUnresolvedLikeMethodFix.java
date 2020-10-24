@@ -105,7 +105,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 			if(argumentExpression != null)
 			{
 				DotNetTypeRef typeRef = argumentExpression.toTypeRef(false);
-				builder.append(CSharpTypeRefPresentationUtil.buildShortText(typeRef, element));
+				builder.append(CSharpTypeRefPresentationUtil.buildShortText(typeRef));
 			}
 			else
 			{
@@ -142,7 +142,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 				parameterTypeRef = argumentExpression.toTypeRef(false);
 			}
 
-			template.addVariable(new ConstantNode(CSharpTypeRefPresentationUtil.buildShortText(parameterTypeRef, context.getExpression())), true);
+			template.addVariable(new ConstantNode(CSharpTypeRefPresentationUtil.buildShortText(parameterTypeRef)), true);
 
 			template.addTextSegment(" ");
 			if(callArgument instanceof CSharpNamedCallArgument)

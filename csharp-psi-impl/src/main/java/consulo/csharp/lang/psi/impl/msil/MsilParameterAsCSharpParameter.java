@@ -16,12 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.openapi.util.Comparing;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpModifier;
@@ -30,28 +27,20 @@ import consulo.csharp.lang.psi.impl.DotNetTypes2;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.externalAttributes.ExternalAttributeArgumentNode;
-import consulo.dotnet.externalAttributes.ExternalAttributeHolder;
-import consulo.dotnet.externalAttributes.ExternalAttributeNode;
-import consulo.dotnet.externalAttributes.ExternalAttributeSimpleNode;
-import consulo.dotnet.externalAttributes.ExternalAttributeWithChildrenNode;
+import consulo.dotnet.externalAttributes.*;
 import consulo.dotnet.externalAttributes.nodes.ExternalAttributeNodeImpl;
-import consulo.dotnet.psi.DotNetAttributeUtil;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetParameterListOwner;
-import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetRefTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.util.ArrayUtil2;
 import consulo.msil.lang.psi.MsilTokens;
 import consulo.msil.lang.psi.impl.MsilTypeByRefImpl;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -176,7 +165,8 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 					{
 						DotNetTypeRef parameterTypeRef = parameterTypeRefs[i];
 						ExternalAttributeSimpleNode externalAttributeSimpleNode = children.get(i);
-						if(!CSharpTypeUtil.isTypeEqual(parameterTypeRef, new CSharpTypeRefByQName(myMethodDeclaration, externalAttributeSimpleNode.getName()), myMethodDeclaration))
+						if(!CSharpTypeUtil.isTypeEqual(parameterTypeRef, new CSharpTypeRefByQName(myMethodDeclaration.getProject(), myMethodDeclaration.getResolveScope(), externalAttributeSimpleNode
+								.getName())))
 						{
 							continue topLoop;
 						}
@@ -217,7 +207,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 				return typeRef;
 			}
 
-			return new CSharpRefTypeRef(getProject(), CSharpRefTypeRef.Type.out, ((DotNetRefTypeRef) typeRef).getInnerTypeRef());
+			return new CSharpRefTypeRef(getProject(), getResolveScope(), CSharpRefTypeRef.Type.out, ((DotNetRefTypeRef) typeRef).getInnerTypeRef());
 		}
 		return typeRef;
 	}

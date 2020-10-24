@@ -47,7 +47,7 @@ public class CS0161 extends CompilerCheck<CSharpMethodDeclaration>
 	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpMethodDeclaration element)
 	{
 		DotNetTypeRef returnTypeRef = element.getReturnTypeRef();
-		if(DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, element, DotNetTypes.System.Void))
+		if(DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, DotNetTypes.System.Void))
 		{
 			return null;
 		}

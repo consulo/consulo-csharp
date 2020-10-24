@@ -16,13 +16,13 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -44,18 +44,18 @@ public class NNamedParamsCallArgument extends NNamedCallArgument
 
 	@RequiredReadAction
 	@Override
-	public int calcValid(@Nonnull PsiElement scope, boolean disableNullableElementCheck)
+	public int calcValid(@Nonnull GlobalSearchScope implicitCastResolveScope, boolean disableNullableElementCheck)
 	{
 		if(myParamsInnerTypeRef != null)
 		{
-			int result = NParamsCallArgument.validate(myParamsInnerTypeRef, getTypeRef(), this, scope);
+			int result = NParamsCallArgument.validate(myParamsInnerTypeRef, getTypeRef(), this, implicitCastResolveScope);
 			if(result != FAIL)
 			{
 				return myValid = result;
 			}
 		}
 
-		myValid = NParamsCallArgument.validate(getParameterTypeRef(), getTypeRef(), this, scope);
+		myValid = NParamsCallArgument.validate(getParameterTypeRef(), getTypeRef(), this, implicitCastResolveScope);
 		return myValid;
 	}
 }

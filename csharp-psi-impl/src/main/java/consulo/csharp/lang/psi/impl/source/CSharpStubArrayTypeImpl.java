@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.IStubElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpArrayType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -27,8 +27,8 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.stubs.IStubElementType;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -53,7 +53,7 @@ public class CSharpStubArrayTypeImpl extends CSharpStubTypeElementImpl<CSharpWit
 	{
 		DotNetType innerType = getInnerType();
 
-		return new CSharpArrayTypeRef(this, innerType.toTypeRef(), getDimensions());
+		return new CSharpArrayTypeRef(innerType.toTypeRef(), getDimensions());
 	}
 
 	@RequiredReadAction

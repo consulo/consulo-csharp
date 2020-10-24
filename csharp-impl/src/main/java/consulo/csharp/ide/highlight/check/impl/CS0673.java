@@ -16,9 +16,7 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -31,7 +29,9 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -65,7 +65,7 @@ public class CS0673 extends CompilerCheck<CSharpUserType>
 
 		if(parent instanceof DotNetLikeMethodDeclaration || parent instanceof DotNetVariable)
 		{
-			if(DotNetTypeRefUtil.isVmQNameEqual(element.toTypeRef(), element, DotNetTypes.System.Void))
+			if(DotNetTypeRefUtil.isVmQNameEqual(element.toTypeRef(), DotNetTypes.System.Void))
 			{
 				return newBuilder(element);
 			}

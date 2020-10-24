@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.BitUtil;
@@ -78,52 +79,53 @@ public class CSharpTypeRefPresentationUtil
 
 	@Nonnull
 	@RequiredReadAction
-	public static String buildShortText(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
+	public static String buildShortText(@Nonnull DotNetTypeRef typeRef)
 	{
 		StringBuilder builder = new StringBuilder();
-		appendTypeRef(scope, builder, typeRef, TYPE_KEYWORD | NULLABLE);
+		appendTypeRef(builder, typeRef, TYPE_KEYWORD | NULLABLE);
 		return builder.toString();
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public static String buildText(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
+	public static String buildText(@Nonnull DotNetTypeRef typeRef)
 	{
 		StringBuilder builder = new StringBuilder();
-		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME | NULLABLE);
+		appendTypeRef(builder, typeRef, QUALIFIED_NAME | NULLABLE);
 		return builder.toString();
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public static String buildText(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope, int flags)
+	public static String buildText(@Nonnull DotNetTypeRef typeRef, int flags)
 	{
 		StringBuilder builder = new StringBuilder();
-		appendTypeRef(scope, builder, typeRef, flags);
+		appendTypeRef(builder, typeRef, flags);
 		return builder.toString();
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public static String buildTextWithKeyword(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
+	public static String buildTextWithKeyword(@Nonnull DotNetTypeRef typeRef)
 	{
 		StringBuilder builder = new StringBuilder();
-		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD | NULLABLE);
+		appendTypeRef(builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD | NULLABLE);
 		return builder.toString();
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public static String buildTextWithKeywordAndNull(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
+	public static String buildTextWithKeywordAndNull(@Nonnull final DotNetTypeRef typeRef)
 	{
 		StringBuilder builder = new StringBuilder();
-		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD | NULL | NULLABLE);
+		appendTypeRef(builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD | NULL | NULLABLE);
 		return builder.toString();
 	}
 
 	@RequiredReadAction
-	public static void appendTypeRef(@Nonnull final PsiElement scope, @Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef, final int flags)
+	public static void appendTypeRef(@Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef, final int flags)
 	{
+		Project project = typeRef.getProject();
 		if(typeRef == DotNetTypeRef.AUTO_TYPE)
 		{
 			builder.append("var");
@@ -141,7 +143,7 @@ public class CSharpTypeRefPresentationUtil
 		}
 		else if(typeRef instanceof CSharpArrayTypeRef)
 		{
-			appendTypeRef(scope, builder, ((CSharpArrayTypeRef) typeRef).getInnerTypeRef(), flags);
+			appendTypeRef(builder, ((CSharpArrayTypeRef) typeRef).getInnerTypeRef(), flags);
 			builder.append("[");
 			for(int i = 0; i < ((CSharpArrayTypeRef) typeRef).getDimensions(); i++)
 			{
@@ -156,11 +158,11 @@ public class CSharpTypeRefPresentationUtil
 				builder.append(((CSharpRefTypeRef) typeRef).getType().name());
 				builder.append(" ");
 			}
-			appendTypeRef(scope, builder, ((CSharpRefTypeRef) typeRef).getInnerTypeRef(), flags);
+			appendTypeRef(builder, ((CSharpRefTypeRef) typeRef).getInnerTypeRef(), flags);
 		}
 		else if(typeRef instanceof CSharpEmptyGenericWrapperTypeRef)
 		{
-			appendTypeRef(scope, builder, ((CSharpEmptyGenericWrapperTypeRef) typeRef).getInnerTypeRef(), flags | NO_GENERIC_ARGUMENTS);
+			appendTypeRef(builder, ((CSharpEmptyGenericWrapperTypeRef) typeRef).getInnerTypeRef(), flags | NO_GENERIC_ARGUMENTS);
 			builder.append("<>");
 		}
 		else if(typeRef instanceof CSharpTupleTypeRef)
@@ -181,7 +183,7 @@ public class CSharpTypeRefPresentationUtil
 					builder.append(", ");
 				}
 
-				appendTypeRef(scope, builder, tuplePartTypeRef, flags);
+				appendTypeRef(builder, tuplePartTypeRef, flags);
 				builder.append(" ");
 				String name = tuplePartVar.getName();
 				builder.append(name == null ? "Item" + (i + 1) : name);
@@ -190,7 +192,7 @@ public class CSharpTypeRefPresentationUtil
 		}
 		else if(typeRef instanceof DotNetPointerTypeRef)
 		{
-			appendTypeRef(scope, builder, ((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), flags);
+			appendTypeRef(builder, ((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), flags);
 			builder.append("*");
 		}
 		else
@@ -218,7 +220,7 @@ public class CSharpTypeRefPresentationUtil
 
 							if(firstTypeRef != null)
 							{
-								appendTypeRef(scope, builder, firstTypeRef, flags);
+								appendTypeRef(builder, firstTypeRef, flags);
 								builder.append("?");
 								return;
 							}
@@ -232,7 +234,7 @@ public class CSharpTypeRefPresentationUtil
 				String qName = ((DotNetQualifiedElement) element).getPresentableQName();
 				String name = ((DotNetQualifiedElement) element).getName();
 
-				String typeAsKeyword = CSharpCodeGenerationSettings.getInstance(scope.getProject()).USE_LANGUAGE_DATA_TYPES ? ourTypesAsKeywords.get(qName) : null;
+				String typeAsKeyword = CSharpCodeGenerationSettings.getInstance(project).USE_LANGUAGE_DATA_TYPES ? ourTypesAsKeywords.get(qName) : null;
 
 				if(BitUtil.isSet(flags, QUALIFIED_NAME))
 				{
@@ -283,7 +285,7 @@ public class CSharpTypeRefPresentationUtil
 								{
 									extractedTypeRef = new CSharpTypeRefFromGenericParameter(v);
 								}
-								appendTypeRef(scope, t, extractedTypeRef, flags);
+								appendTypeRef(t, extractedTypeRef, flags);
 								return null;
 							}
 						}, ", ");

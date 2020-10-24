@@ -92,7 +92,7 @@ public class CS0077 extends CompilerCheck<CSharpAsExpressionImpl>
 		{
 			DotNetType type = element.getType();
 			assert type != null;
-			return newBuilder(element.getAsKeyword(), "as", formatTypeRef(typeRef, element)).addQuickFix(new AddQuestMarkQuickFix(type));
+			return newBuilder(element.getAsKeyword(), "as", formatTypeRef(typeRef)).addQuickFix(new AddQuestMarkQuickFix(type));
 		}
 		return super.checkImpl(languageVersion, highlightContext, element);
 	}

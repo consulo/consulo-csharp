@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
@@ -232,37 +234,40 @@ public class MsilToCSharpUtil
 
 	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef extractToCSharp(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
+	public static DotNetTypeRef extractToCSharp(@Nonnull DotNetTypeRef typeRef)
 	{
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
+		Project project = typeRef.getProject();
+		GlobalSearchScope resolveScope = typeRef.getResolveScope();
+
 		if(typeRef instanceof MsilNativeTypeRefImpl)
 		{
-			return new CSharpTypeRefByQName(scope, typeRef.toString());
+			return new CSharpTypeRefByQName(project, resolveScope, typeRef.toString());
 		}
 		else if(typeRef instanceof MsilArrayTypRefImpl)
 		{
 			int[] lowerValues = ((MsilArrayTypRefImpl) typeRef).getLowerValues();
-			return new CSharpArrayTypeRef(scope, extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef(), scope), lowerValues.length == 0 ? 0 : lowerValues.length - 1);
+			return new CSharpArrayTypeRef(extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef()), lowerValues.length == 0 ? 0 : lowerValues.length - 1);
 		}
 		else if(typeRef instanceof MsilPointerTypeRefImpl)
 		{
-			return new CSharpPointerTypeRef(scope, extractToCSharp(((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), scope));
+			return new CSharpPointerTypeRef(extractToCSharp(((DotNetPointerTypeRef) typeRef).getInnerTypeRef()));
 		}
 		else if(typeRef instanceof MsilRefTypeRefImpl)
 		{
-			DotNetTypeRef innerTypeRef = extractToCSharp(((DotNetRefTypeRef) typeRef).getInnerTypeRef(), scope);
-			return new CSharpRefTypeRef(scope.getProject(), CSharpRefTypeRef.Type.ref, innerTypeRef);
+			DotNetTypeRef innerTypeRef = extractToCSharp(((DotNetRefTypeRef) typeRef).getInnerTypeRef());
+			return new CSharpRefTypeRef(project, resolveScope, CSharpRefTypeRef.Type.ref, innerTypeRef);
 		}
 		else if(typeRef instanceof DotNetGenericWrapperTypeRef)
 		{
 			DotNetTypeRef innerTypeRef = ((DotNetGenericWrapperTypeRef) typeRef).getInnerTypeRef();
 			DotNetTypeRef[] arguments = ((DotNetGenericWrapperTypeRef) typeRef).getArgumentTypeRefs();
 
-			DotNetTypeRef inner = extractToCSharp(innerTypeRef, scope);
+			DotNetTypeRef inner = extractToCSharp(innerTypeRef);
 
 			PsiElement element = inner.resolve().getElement();
 			if(element instanceof DotNetGenericParameterListOwner)
@@ -277,24 +282,24 @@ public class MsilToCSharpUtil
 				List<DotNetTypeRef> list = new ArrayList<>(genericParametersCount);
 				for(int i = 0; i < genericParametersCount; i++)
 				{
-					list.add(extractToCSharp(anotherArray[i], scope));
+					list.add(extractToCSharp(anotherArray[i]));
 				}
 
 				list = ContainerUtil.reverse(list);
 
-				return new CSharpGenericWrapperTypeRef(scope.getProject(), inner, ContainerUtil.toArray(list, DotNetTypeRef.ARRAY_FACTORY));
+				return new CSharpGenericWrapperTypeRef(project, resolveScope, inner, ContainerUtil.toArray(list, DotNetTypeRef.ARRAY_FACTORY));
 			}
 			else  // fallback
 			{
 				DotNetTypeRef[] newArguments = new DotNetTypeRef[arguments.length];
 				for(int i = 0; i < newArguments.length; i++)
 				{
-					newArguments[i] = extractToCSharp(arguments[i], scope);
+					newArguments[i] = extractToCSharp(arguments[i]);
 				}
 
-				return new CSharpGenericWrapperTypeRef(scope.getProject(), inner, newArguments);
+				return new CSharpGenericWrapperTypeRef(project, resolveScope, inner, newArguments);
 			}
 		}
-		return new MsilDelegateTypeRef(scope, typeRef);
+		return new MsilDelegateTypeRef(typeRef);
 	}
 }

@@ -16,8 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.psi.stubs.IStubElementType;
@@ -28,6 +26,8 @@ import consulo.csharp.lang.psi.CSharpTupleType;
 import consulo.csharp.lang.psi.CSharpTupleVariable;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTupleTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -58,7 +58,7 @@ public class CSharpStubTupleTypeImpl extends CSharpStubTypeElementImpl<EmptyStub
 			CSharpTupleVariable variable = variables[i];
 			typeRefs[i] = variable.toTypeRef(true);
 		}
-		return new CSharpTupleTypeRef(this, typeRefs, variables);
+		return new CSharpTupleTypeRef(getProject(), getResolveScope(), typeRefs, variables);
 	}
 
 	@Nonnull

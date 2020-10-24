@@ -65,7 +65,7 @@ public class CSharpStubNullableTypeImpl extends CSharpStubTypeElementImpl<EmptyS
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return CSharpNullableTypeUtil.box(this, innerType.toTypeRef());
+		return CSharpNullableTypeUtil.box(innerType.toTypeRef());
 	}
 
 	@RequiredReadAction

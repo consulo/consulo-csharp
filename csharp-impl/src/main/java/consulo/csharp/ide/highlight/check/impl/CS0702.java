@@ -16,12 +16,14 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import gnu.trove.THashMap;
-
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.SmartPointerManager;
+import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -35,15 +37,12 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.util.IncorrectOperationException;
+import consulo.util.lang.Pair;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -101,7 +100,7 @@ public class CS0702 extends CompilerCheck<CSharpGenericConstraintTypeValue>
 		}
 	}
 
-	private static final Map<String, String> ourErrorMap = new THashMap<String, String>()
+	private static final Map<String, String> ourErrorMap = new HashMap<String, String>()
 	{
 		{
 			put(DotNetTypes.System.Object, "class");

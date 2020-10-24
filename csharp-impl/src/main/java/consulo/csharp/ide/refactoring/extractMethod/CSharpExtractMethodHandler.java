@@ -284,10 +284,9 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 		builder.append("{\n");
 		builder.append(statementsText);
 
-		if(!(statements[statements.length - 1] instanceof CSharpReturnStatementImpl) && !DotNetTypeRefUtil.isVmQNameEqual(methodDeclaration.getReturnTypeRef(), statements[0],
-				DotNetTypes.System.Void))
+		if(!(statements[statements.length - 1] instanceof CSharpReturnStatementImpl) && !DotNetTypeRefUtil.isVmQNameEqual(methodDeclaration.getReturnTypeRef(), DotNetTypes.System.Void))
 		{
-			String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(methodDeclaration.getReturnTypeRef(), statements[0]);
+			String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(methodDeclaration.getReturnTypeRef());
 			if(defaultValueForType != null)
 			{
 				builder.append("\nreturn ").append(defaultValueForType).append(";");

@@ -89,7 +89,7 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
 
 			CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
 
-			builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameterInfo.getTypeRef(), element));
+			builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameterInfo.getTypeRef()));
 		}
 		return builder.toString();
 	}
@@ -178,7 +178,7 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
 
 			CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
 
-			template.addVariable(new ConstantNode(CSharpTypeRefPresentationUtil.buildShortText(parameterInfo.getTypeRef(), context.getExpression())), true);
+			template.addVariable(new ConstantNode(CSharpTypeRefPresentationUtil.buildShortText(parameterInfo.getTypeRef())), true);
 			template.addTextSegment(" ");
 			template.addVariable(new ConstantNode(parameterInfo.getNotNullName()), true);
 

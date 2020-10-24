@@ -16,19 +16,9 @@
 
 package consulo.csharp.ide.completion;
 
-import static com.intellij.patterns.StandardPatterns.or;
-import static com.intellij.patterns.StandardPatterns.psiElement;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
@@ -42,11 +32,7 @@ import consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandler;
 import consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
 import consulo.csharp.ide.completion.util.SpaceInsertHandler;
-import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import consulo.csharp.lang.psi.CSharpSoftTokens;
-import consulo.csharp.lang.psi.CSharpTokenSets;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.UsefulPsiTreeUtil;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import consulo.csharp.lang.psi.impl.source.*;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -55,6 +41,11 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
+
+import javax.annotation.Nonnull;
+
+import static com.intellij.patterns.StandardPatterns.or;
+import static com.intellij.patterns.StandardPatterns.psiElement;
 
 /**
  * @author VISTALL
@@ -77,7 +68,7 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 		{
 			Editor editor = insertionContext.getEditor();
 			int offset = editor.getCaretModel().getOffset();
-			boolean isVoidReturnType = DotNetTypeRefUtil.isVmQNameEqual(myPseudoMethod.getReturnTypeRef(), myPseudoMethod, DotNetTypes.System.Void);
+			boolean isVoidReturnType = DotNetTypeRefUtil.isVmQNameEqual(myPseudoMethod.getReturnTypeRef(), DotNetTypes.System.Void);
 
 			if(isVoidReturnType)
 			{

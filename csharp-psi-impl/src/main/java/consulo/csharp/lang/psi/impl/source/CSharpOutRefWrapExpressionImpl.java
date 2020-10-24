@@ -97,7 +97,7 @@ public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl impleme
 
 						DotNetTypeRef innerType = CSharpOutRefVariableImpl.searchTypeRefFromCall(this);
 
-						return new CSharpRefTypeRef(getProject(), type, innerType);
+						return new CSharpRefTypeRef(getProject(), getResolveScope(), type, innerType);
 					}
 					finally
 					{
@@ -114,7 +114,7 @@ public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl impleme
 		}
 
 
-		return new CSharpRefTypeRef(getProject(), type, typeRef);
+		return new CSharpRefTypeRef(getProject(), getResolveScope(), type, typeRef);
 	}
 
 	@Nonnull

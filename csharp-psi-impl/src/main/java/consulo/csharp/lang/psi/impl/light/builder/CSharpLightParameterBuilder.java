@@ -16,9 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.light.builder;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpModifier;
@@ -27,8 +26,9 @@ import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -56,11 +56,11 @@ public class CSharpLightParameterBuilder extends CSharpLightVariableBuilder<CSha
 		DotNetTypeRef typeRef = super.toTypeRef(resolveFromInitializer);
 		if(hasModifier(CSharpModifier.REF))
 		{
-			return new CSharpRefTypeRef(getProject(), CSharpRefTypeRef.Type.ref, typeRef);
+			return new CSharpRefTypeRef(getProject(), getResolveScope(), CSharpRefTypeRef.Type.ref, typeRef);
 		}
 		else if(hasModifier(CSharpModifier.OUT))
 		{
-			return new CSharpRefTypeRef(getProject(), CSharpRefTypeRef.Type.out, typeRef);
+			return new CSharpRefTypeRef(getProject(), getResolveScope(), CSharpRefTypeRef.Type.out, typeRef);
 		}
 		return typeRef;
 	}

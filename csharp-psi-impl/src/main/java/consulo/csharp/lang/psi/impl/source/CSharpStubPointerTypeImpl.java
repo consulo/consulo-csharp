@@ -16,8 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.EmptyStub;
+import com.intellij.psi.stubs.IStubElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpStubElements;
@@ -26,10 +28,9 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
 import consulo.dotnet.psi.DotNetPointerType;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.stubs.EmptyStub;
-import com.intellij.psi.stubs.IStubElementType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -42,8 +43,7 @@ public class CSharpStubPointerTypeImpl extends CSharpStubTypeElementImpl<EmptySt
 		super(node);
 	}
 
-	public CSharpStubPointerTypeImpl(@Nonnull EmptyStub<DotNetPointerType> stub,
-			@Nonnull IStubElementType<? extends EmptyStub<DotNetPointerType>, ?> nodeType)
+	public CSharpStubPointerTypeImpl(@Nonnull EmptyStub<DotNetPointerType> stub, @Nonnull IStubElementType<? extends EmptyStub<DotNetPointerType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -64,7 +64,7 @@ public class CSharpStubPointerTypeImpl extends CSharpStubTypeElementImpl<EmptySt
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return new CSharpPointerTypeRef(this, innerType.toTypeRef());
+		return new CSharpPointerTypeRef(innerType.toTypeRef());
 	}
 
 	@Nullable

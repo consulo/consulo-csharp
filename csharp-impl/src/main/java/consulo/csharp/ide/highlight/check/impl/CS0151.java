@@ -74,7 +74,7 @@ public class CS0151 extends CompilerCheck<DotNetExpression>
 				return null;
 			}
 
-			return newBuilder(element, formatTypeRef(typeRef, element));
+			return newBuilder(element, formatTypeRef(typeRef));
 		}
 
 		return null;

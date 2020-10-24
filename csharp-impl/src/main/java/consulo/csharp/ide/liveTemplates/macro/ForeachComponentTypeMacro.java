@@ -16,19 +16,9 @@
 
 package consulo.csharp.ide.liveTemplates.macro;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.codeInsight.template.Expression;
-import com.intellij.codeInsight.template.ExpressionContext;
-import com.intellij.codeInsight.template.Macro;
-import com.intellij.codeInsight.template.Result;
-import com.intellij.codeInsight.template.TextResult;
+import com.intellij.codeInsight.template.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
@@ -42,6 +32,10 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -135,11 +129,11 @@ public class ForeachComponentTypeMacro extends Macro
 			return null;
 		}
 
-		DotNetTypeRef typeRef = CSharpResolveUtil.resolveIterableType(place, expression.toTypeRef(false));
+		DotNetTypeRef typeRef = CSharpResolveUtil.resolveIterableType(expression.toTypeRef(false));
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{
 			return null;
 		}
-		return new TextResult(CSharpTypeRefPresentationUtil.buildShortText(typeRef, place));
+		return new TextResult(CSharpTypeRefPresentationUtil.buildShortText(typeRef));
 	}
 }

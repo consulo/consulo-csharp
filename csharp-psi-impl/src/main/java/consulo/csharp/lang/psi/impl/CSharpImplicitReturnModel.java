@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.ObjectUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
@@ -30,9 +30,10 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.util.ArrayUtil2;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ObjectUtil;
+import consulo.util.lang.Pair;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -55,8 +56,8 @@ public enum CSharpImplicitReturnModel
 				@Override
 				public boolean canHandle(CSharpSimpleLikeMethodAsElement methodAsElement, CSharpReturnStatementImpl returnStatement)
 				{
-					return returnStatement.getParent() instanceof CSharpYieldStatementImpl && extractTypeRefImpl(methodAsElement.getReturnTypeRef(),
-							returnStatement) != null;
+					return returnStatement.getParent() instanceof CSharpYieldStatementImpl && extractTypeRefImpl(methodAsElement.getReturnTypeRef()
+					) != null;
 				}
 			},
 	YieldEnumerable(DotNetTypes2.System.Collections.Generic.IEnumerable$1, DotNetTypes2.System.Collections.IEnumerable, DotNetTypes.System.Object)
@@ -65,8 +66,8 @@ public enum CSharpImplicitReturnModel
 				@Override
 				public boolean canHandle(CSharpSimpleLikeMethodAsElement methodAsElement, CSharpReturnStatementImpl returnStatement)
 				{
-					return returnStatement.getParent() instanceof CSharpYieldStatementImpl && extractTypeRefImpl(methodAsElement.getReturnTypeRef(),
-							returnStatement) != null;
+					return returnStatement.getParent() instanceof CSharpYieldStatementImpl && extractTypeRefImpl(methodAsElement.getReturnTypeRef()
+					) != null;
 				}
 			},
 	None(null, null, null)
@@ -117,12 +118,12 @@ public enum CSharpImplicitReturnModel
 	@RequiredReadAction
 	public DotNetTypeRef extractTypeRef(@Nonnull DotNetTypeRef expectedTypeRef, @Nonnull PsiElement scope)
 	{
-		return ObjectUtil.notNull(extractTypeRefImpl(expectedTypeRef, scope), DotNetTypeRef.ERROR_TYPE);
+		return ObjectUtil.notNull(extractTypeRefImpl(expectedTypeRef), DotNetTypeRef.ERROR_TYPE);
 	}
 
 	@Nullable
 	@RequiredReadAction
-	public DotNetTypeRef extractTypeRefImpl(@Nonnull DotNetTypeRef expectedTypeRef, @Nonnull PsiElement scope)
+	public DotNetTypeRef extractTypeRefImpl(@Nonnull DotNetTypeRef expectedTypeRef)
 	{
 		Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, myGenericVmQName);
 		if(typeInSuper != null)
@@ -144,7 +145,7 @@ public enum CSharpImplicitReturnModel
 		typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, myVmQName);
 		if(typeInSuper != null)
 		{
-			return new CSharpTypeRefByQName(scope, myNoGenericTypeVmQName);
+			return new CSharpTypeRefByQName(expectedTypeRef.getProject(), expectedTypeRef.getResolveScope(), myNoGenericTypeVmQName);
 		}
 		return null;
 	}

@@ -16,8 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
@@ -26,7 +24,9 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRe
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -39,7 +39,7 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRefWithCachedR
 
 	public CSharpConstantBaseTypeRef(CSharpConstantExpressionImpl expression, DotNetTypeRef delegate)
 	{
-		super(expression.getProject());
+		super(expression.getProject(), expression.getResolveScope());
 		myExpression = expression;
 		myDelegate = delegate;
 	}
@@ -55,13 +55,13 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRefWithCachedR
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another, PsiElement scope)
+	public DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another)
 	{
-		DotNetTypeRef anotherTypeRef = CSharpConstantTypeRef.testNumberConstant(myExpression, getPrefix(), another, scope);
+		DotNetTypeRef anotherTypeRef = CSharpConstantTypeRef.testNumberConstant(myExpression, getPrefix(), another);
 		if(anotherTypeRef != null)
 		{
 			DotNetTypeRef defaultConstantTypeRef = myExpression.getDefaultConstantTypeRef();
-			if(defaultConstantTypeRef != null && CSharpTypeUtil.isTypeEqual(anotherTypeRef, defaultConstantTypeRef, myExpression))
+			if(defaultConstantTypeRef != null && CSharpTypeUtil.isTypeEqual(anotherTypeRef, defaultConstantTypeRef))
 			{
 				return null;
 			}

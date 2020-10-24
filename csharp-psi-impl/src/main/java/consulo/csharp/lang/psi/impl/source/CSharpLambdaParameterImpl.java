@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
@@ -81,11 +80,11 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 		DotNetTypeRef typeRef = toTypeRefImpl0(resolveFromInitializer);
 		if(hasModifier(CSharpModifier.REF))
 		{
-			return new CSharpRefTypeRef(getProject(), CSharpRefTypeRef.Type.ref, typeRef);
+			return new CSharpRefTypeRef(getProject(), getResolveScope(), CSharpRefTypeRef.Type.ref, typeRef);
 		}
 		else if(hasModifier(CSharpModifier.OUT))
 		{
-			return new CSharpRefTypeRef(getProject(), CSharpRefTypeRef.Type.out, typeRef);
+			return new CSharpRefTypeRef(getProject(), getResolveScope(), CSharpRefTypeRef.Type.out, typeRef);
 		}
 		return typeRef;
 	}

@@ -139,7 +139,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 			{
 				declaration = GenericUnwrapTool.extract(declaration, typeResolveResult.getGenericExtractor());
 
-				MethodResolvePriorityInfo calcResult = NCallArgumentBuilder.calc(this, declaration, this);
+				MethodResolvePriorityInfo calcResult = NCallArgumentBuilder.calc(this, declaration, getResolveScope());
 
 				return new ResolveResult[]{MethodResolveResult.createResult(calcResult, declaration, null)};
 			}
@@ -155,7 +155,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 		DotNetTypeRef ref = toTypeRef0(resolveFromParent);
 		if(CSharpNullableTypeUtil.containsNullableCalls(getCallExpression()))
 		{
-			return CSharpNullableTypeUtil.boxIfNeed(ref, this);
+			return CSharpNullableTypeUtil.boxIfNeed(ref);
 		}
 		return ref;
 	}
@@ -178,7 +178,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 		{
 			return ((CSharpSimpleLikeMethodAsElement) resolvedElement).getReturnTypeRef();
 		}
-		return CSharpReferenceExpressionImplUtil.toTypeRef(resolvedElement);
+		return CSharpReferenceExpressionImplUtil.toTypeRef(getResolveScope(), resolvedElement);
 	}
 
 	@Override

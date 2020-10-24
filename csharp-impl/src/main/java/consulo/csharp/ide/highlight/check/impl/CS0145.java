@@ -16,9 +16,14 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.ui.annotation.RequiredUIAccess;
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
+import com.intellij.lang.ASTNode;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
+import com.intellij.psi.impl.source.tree.TreeElement;
+import com.intellij.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -30,19 +35,10 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
-import com.intellij.psi.impl.source.tree.TreeElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -141,7 +137,7 @@ public class CS0145 extends CompilerCheck<DotNetVariable>
 
 			PsiDocumentManager.getInstance(project).commitAllDocuments();
 
-			String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(element.toTypeRef(false), element);
+			String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(element.toTypeRef(false));
 
 			if(defaultValueForType == null)
 			{
@@ -187,7 +183,7 @@ public class CS0145 extends CompilerCheck<DotNetVariable>
 			if(element.getInitializer() == null)
 			{
 				// special case for void type
-				if(DotNetTypeRefUtil.isVmQNameEqual(element.toTypeRef(false), element, DotNetTypes.System.Void))
+				if(DotNetTypeRefUtil.isVmQNameEqual(element.toTypeRef(false), DotNetTypes.System.Void))
 				{
 					return null;
 				}

@@ -49,7 +49,7 @@ public class CSharpTupleTypeImpl extends CSharpTypeElementImpl implements CSharp
 			CSharpTupleVariable variable = variables[i];
 			typeRefs[i] = variable.toTypeRef(true);
 		}
-		return new CSharpTupleTypeRef(this, typeRefs, variables);
+		return new CSharpTupleTypeRef(getProject(), getResolveScope(), typeRefs, variables);
 	}
 
 	@Override

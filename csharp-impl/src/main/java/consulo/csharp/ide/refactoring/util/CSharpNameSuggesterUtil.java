@@ -16,20 +16,6 @@
 
 package consulo.csharp.ide.refactoring.util;
 
-import gnu.trove.THashSet;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
@@ -39,26 +25,24 @@ import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.lang.lexer.CSharpLexer;
-import consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTokenSets;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import gnu.trove.THashSet;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Fedor.Korotkov
@@ -167,9 +151,9 @@ public class CSharpNameSuggesterUtil
 
 		boolean enumerable = false;
 		// string is enumerable of chars, and it will provide name 'chars' skip it
-		if(!DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.String))
+		if(!DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.String))
 		{
-			DotNetTypeResolveResult resolveResult = CSharpTypeUtil.findTypeRefFromExtends(typeRef, new CSharpTypeRefByQName(scope, DotNetTypes.System.Collections.Generic.IEnumerable$1), scope);
+			DotNetTypeResolveResult resolveResult = CSharpTypeUtil.findTypeRefFromExtends(typeRef, new CSharpTypeRefByQName(scope, DotNetTypes.System.Collections.Generic.IEnumerable$1));
 			if(resolveResult != null)
 			{
 				PsiElement element = resolveResult.getElement();
@@ -179,7 +163,7 @@ public class CSharpNameSuggesterUtil
 					DotNetTypeRef insideTypeRef = resolveResult.getGenericExtractor().extract(genericParameter);
 					if(insideTypeRef != null)
 					{
-						candidates.addAll(generateNames(StringUtil.pluralize(CSharpTypeRefPresentationUtil.buildShortText(insideTypeRef, scope))));
+						candidates.addAll(generateNames(StringUtil.pluralize(CSharpTypeRefPresentationUtil.buildShortText(insideTypeRef))));
 						enumerable = true;
 					}
 				}
@@ -188,7 +172,7 @@ public class CSharpNameSuggesterUtil
 
 		if(!enumerable)
 		{
-			candidates.addAll(generateNames(CSharpTypeRefPresentationUtil.buildShortText(typeRef, scope)));
+			candidates.addAll(generateNames(CSharpTypeRefPresentationUtil.buildShortText(typeRef)));
 		}
 
 		final Set<String> usedNames = CSharpRefactoringUtil.collectUsedNames(scope, scope);

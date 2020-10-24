@@ -104,7 +104,7 @@ public class CSharpLikeMethodDeclarationImplUtil
 		{
 			namedElement = GenericUnwrapTool.extract(namedElement, genericExtractor);
 
-			if(CSharpElementCompareUtil.isEqual(namedElement, owner, scope))
+			if(CSharpElementCompareUtil.isEqual(namedElement, owner))
 			{
 				return Pair.<ResolveVirtualImplementResult, PsiElement>create(ResolveVirtualImplementResult.FOUND, namedElement);
 			}

@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi.impl.source.resolve.handlers;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.Processor;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImplUtil;
@@ -46,13 +47,14 @@ public class AnyMemberKindProcessor implements KindProcessor
 	@RequiredReadAction
 	@Override
 	public void process(@Nonnull CSharpResolveOptions options,
-			@Nonnull DotNetGenericExtractor defaultExtractor,
-			@Nullable PsiElement forceQualifierElement,
-			@Nonnull Processor<ResolveResult> processor)
+						@Nonnull DotNetGenericExtractor defaultExtractor,
+						@Nullable PsiElement forceQualifierElement,
+						@Nonnull Processor<ResolveResult> processor)
 	{
 		final PsiElement element = options.getElement();
+		GlobalSearchScope resolveScope = element.getResolveScope();
 		final boolean resolveFromParent = options.isResolveFromParent();
-		final List<MethodResolveResult> methodResolveResults = new ArrayList<MethodResolveResult>();
+		final List<MethodResolveResult> methodResolveResults = new ArrayList<>();
 
 		CSharpReferenceExpressionImplUtil.processAnyMember(options, defaultExtractor, forceQualifierElement, new Processor<ResolveResult>()
 		{
@@ -70,7 +72,8 @@ public class AnyMemberKindProcessor implements KindProcessor
 						{
 							if(psiElement instanceof DotNetLikeMethodDeclaration)
 							{
-								MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(lambdaResolveResult.getParameterTypeRefs(), ((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs(), element);
+								MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(lambdaResolveResult.getParameterTypeRefs(), ((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs
+										(), resolveScope);
 
 								methodResolveResults.add(MethodResolveResult.createResult(calc, psiElement, result));
 							}

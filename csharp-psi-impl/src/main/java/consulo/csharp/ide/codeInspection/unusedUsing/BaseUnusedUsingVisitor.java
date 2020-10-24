@@ -57,7 +57,7 @@ public abstract class BaseUnusedUsingVisitor extends CSharpElementVisitor
 
 			if(key instanceof CSharpUsingTypeStatement)
 			{
-				if(DotNetTypeRefUtil.isVmQNameEqual(((CSharpUsingTypeStatement) key).getTypeRef(), expression, DotNetTypes2.System.Linq.Enumerable))
+				if(DotNetTypeRefUtil.isVmQNameEqual(((CSharpUsingTypeStatement) key).getTypeRef(), DotNetTypes2.System.Linq.Enumerable))
 				{
 					putElement(key, expression);
 					break;

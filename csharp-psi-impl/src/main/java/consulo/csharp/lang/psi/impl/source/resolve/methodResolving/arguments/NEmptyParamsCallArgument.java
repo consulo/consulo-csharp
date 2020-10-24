@@ -20,6 +20,7 @@ import java.util.Collections;
 
 import javax.annotation.Nonnull;
 
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.dotnet.psi.DotNetParameter;
@@ -45,7 +46,7 @@ public class NEmptyParamsCallArgument extends NParamsCallArgument
 
 	@RequiredReadAction
 	@Override
-	public int calcValid(@Nonnull PsiElement scope, boolean disableNullableElementCheck)
+	public int calcValid(@Nonnull GlobalSearchScope implicitCastType, boolean disableNullableElementCheck)
 	{
 		return PARAMS;
 	}

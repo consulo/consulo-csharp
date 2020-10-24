@@ -196,7 +196,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 			}
 			else
 			{
-				builder.append(CSharpTypeRefPresentationUtil.buildShortText(method.getReturnTypeRef(), method)).append(" ");
+				builder.append(CSharpTypeRefPresentationUtil.buildShortText(method.getReturnTypeRef())).append(" ");
 			}
 		}
 		builder.append(method.getName());

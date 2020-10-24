@@ -50,6 +50,6 @@ public class CastNArgumentToTypeRefFix extends CastExpressionToTypeRef
 			return "invalid";
 		}
 		return BundleBase.format("Cast ''{0}'' argument to ''{1}''", myParameterName, CSharpTypeRefPresentationUtil.buildTextWithKeyword
-				(myExpectedTypeRef, element));
+				(myExpectedTypeRef));
 	}
 }

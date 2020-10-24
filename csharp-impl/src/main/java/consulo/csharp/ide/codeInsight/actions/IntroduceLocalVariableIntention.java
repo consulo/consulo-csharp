@@ -16,16 +16,6 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import javax.annotation.Nonnull;
-
-import consulo.ui.annotation.RequiredUIAccess;
-import consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceLocalVariableHandler;
-import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
-import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.codeInsight.CodeInsightBundle;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -34,6 +24,16 @@ import com.intellij.psi.SyntheticElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.BaseRefactoringIntentionAction;
 import com.intellij.util.IncorrectOperationException;
+import consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceLocalVariableHandler;
+import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.resolve.DotNetTypeRefUtil;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author michael.shumenko
@@ -66,7 +66,7 @@ public class IntroduceLocalVariableIntention extends BaseRefactoringIntentionAct
 		}
 
 		DotNetTypeRef ref = expression.toTypeRef(true);
-		return !(ref == DotNetTypeRef.ERROR_TYPE || DotNetTypeRefUtil.isVmQNameEqual(ref, expression, DotNetTypes.System.Void));
+		return !(ref == DotNetTypeRef.ERROR_TYPE || DotNetTypeRefUtil.isVmQNameEqual(ref, DotNetTypes.System.Void));
 	}
 
 	@Nonnull

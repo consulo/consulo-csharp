@@ -16,20 +16,19 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetPsiSearcher;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.psi.PsiElement;
+import consulo.dotnet.resolve.*;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -39,11 +38,13 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 {
 	private class Result implements CSharpLambdaResolveResult
 	{
-		private final PsiElement myScope;
+		private final Project myProject;
+		private final GlobalSearchScope myResolveScope;
 
-		public Result(PsiElement scope)
+		public Result(Project project, GlobalSearchScope resolveScope)
 		{
-			myScope = scope;
+			myProject = project;
+			myResolveScope = resolveScope;
 		}
 
 		@Nullable
@@ -53,7 +54,7 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 		{
 			if(myTarget == null)
 			{
-				return DotNetPsiSearcher.getInstance(myScope.getProject()).findType(DotNetTypes.System.MulticastDelegate, myScope.getResolveScope(), CSharpTransform.INSTANCE);
+				return DotNetPsiSearcher.getInstance(myProject).findType(DotNetTypes.System.MulticastDelegate, myResolveScope, CSharpTransform.INSTANCE);
 			}
 			return CSharpLambdaResolveResultUtil.createTypeFromDelegate(myTarget, myExtractor);
 		}
@@ -85,7 +86,7 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 			for(int i = 0; i < parameterInfos.length; i++)
 			{
 				CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
-				DotNetTypeRef typeRef = GenericUnwrapTool.exchangeTypeRef(parameterInfo.getTypeRef(), getGenericExtractor(), myScope);
+				DotNetTypeRef typeRef = GenericUnwrapTool.exchangeTypeRef(parameterInfo.getTypeRef(), getGenericExtractor());
 				temp[i] = new CSharpSimpleParameterInfo(parameterInfo.getIndex(), parameterInfo.getName(), parameterInfo.getElement(), typeRef);
 			}
 			return temp;
@@ -103,7 +104,7 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 		@Override
 		public DotNetTypeRef getReturnTypeRef()
 		{
-			return GenericUnwrapTool.exchangeTypeRef(myReturnType, getGenericExtractor(), myScope);
+			return GenericUnwrapTool.exchangeTypeRef(myReturnType, getGenericExtractor());
 		}
 
 		@Nullable
@@ -114,7 +115,6 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 		}
 	}
 
-	private final PsiElement myElement;
 	private final CSharpMethodDeclaration myTarget;
 	private final CSharpSimpleParameterInfo[] myParameterInfos;
 	private final DotNetTypeRef myReturnType;
@@ -124,27 +124,35 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 	@RequiredReadAction
 	public CSharpLambdaTypeRef(@Nonnull CSharpMethodDeclaration method)
 	{
-		this(method, method, method.getParameterInfos(), method.getReturnTypeRef());
+		this(method.getProject(), method.getResolveScope(), method, method.getParameterInfos(), method.getReturnTypeRef());
 	}
 
 	@RequiredReadAction
-	public CSharpLambdaTypeRef(@Nonnull PsiElement scope, @Nonnull CSharpMethodDeclaration method, @Nonnull DotNetGenericExtractor extractor)
+	public CSharpLambdaTypeRef(@Nonnull Project project, @Nonnull GlobalSearchScope scope, @Nonnull CSharpMethodDeclaration method, @Nonnull DotNetGenericExtractor extractor)
 	{
-		this(scope, method, method.getParameterInfos(), method.getReturnTypeRef());
+		this(project, scope, method, method.getParameterInfos(), method.getReturnTypeRef());
 		myExtractor = extractor;
 	}
 
 	@RequiredReadAction
-	public CSharpLambdaTypeRef(@Nonnull PsiElement scope, @Nullable CSharpMethodDeclaration target, @Nonnull CSharpSimpleParameterInfo[] parameterInfos, @Nonnull DotNetTypeRef returnType)
+	public CSharpLambdaTypeRef(@Nonnull Project project,
+							   @Nonnull GlobalSearchScope scope,
+							   @Nullable CSharpMethodDeclaration target,
+							   @Nonnull CSharpSimpleParameterInfo[] parameterInfos,
+							   @Nonnull DotNetTypeRef returnType)
 	{
-		this(scope, target, parameterInfos, returnType, false);
+		this(project, scope, target, parameterInfos, returnType, false);
 	}
 
 	@RequiredReadAction
-	public CSharpLambdaTypeRef(@Nonnull PsiElement scope, @Nullable CSharpMethodDeclaration target, @Nonnull CSharpSimpleParameterInfo[] parameterInfos, @Nonnull DotNetTypeRef returnType, boolean inheritParameters)
+	public CSharpLambdaTypeRef(@Nonnull Project project,
+							   @Nonnull GlobalSearchScope scope,
+							   @Nullable CSharpMethodDeclaration target,
+							   @Nonnull CSharpSimpleParameterInfo[] parameterInfos,
+							   @Nonnull DotNetTypeRef returnType,
+							   boolean inheritParameters)
 	{
-		super(scope.getProject());
-		myElement = scope;
+		super(project, scope);
 		myTarget = target;
 		myParameterInfos = parameterInfos;
 		myReturnType = returnType;
@@ -202,6 +210,6 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
-		return new Result(myElement);
+		return new Result(getProject(), getResolveScope());
 	}
 }

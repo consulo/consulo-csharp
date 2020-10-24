@@ -16,7 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
@@ -34,7 +36,6 @@ import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -111,7 +112,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 
 			DotNetTypeRef typeRef = inExpression.toTypeRef(true);
 
-			return CSharpResolveUtil.resolveIterableType(this, typeRef);
+			return CSharpResolveUtil.resolveIterableType(typeRef);
 		}
 		else if(parent instanceof CSharpLinqLetClauseImpl)
 		{
@@ -128,18 +129,20 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 
 			DotNetTypeRef typeRef = inExpression.toTypeRef(true);
 
-			return CSharpResolveUtil.resolveIterableType(this, typeRef);
+			return CSharpResolveUtil.resolveIterableType(typeRef);
 		}
 		else if(parent instanceof CSharpLinqIntoClauseImpl)
 		{
 			PsiElement nextParent = parent.getParent();
-			String text = nextParent.getText();
 			if(nextParent instanceof CSharpLinqJoinClauseImpl)
 			{
 				CSharpLinqVariableImpl variable = ((CSharpLinqJoinClauseImpl) nextParent).getVariable();
 				if(variable != null)
 				{
-					return new CSharpGenericWrapperTypeRef(getProject(), new CSharpTypeRefByQName(this, DotNetTypes2.System.Collections.Generic.IEnumerable$1), variable.toTypeRef(true));
+					Project project = getProject();
+					GlobalSearchScope resolveScope = getResolveScope();
+
+					return new CSharpGenericWrapperTypeRef(project, resolveScope, new CSharpTypeRefByQName(project, resolveScope, DotNetTypes2.System.Collections.Generic.IEnumerable$1), variable.toTypeRef(true));
 				}
 			}
 			else if(nextParent instanceof CSharpLinqQueryContinuationImpl)
@@ -169,7 +172,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 				else if(bodyParent instanceof CSharpLinqQueryContinuationImpl)
 				{
 					DotNetTypeRef bodyTypeRef = body.calcTypeRef(true);
-					return bodyTypeRef == DotNetTypeRef.ERROR_TYPE ? DotNetTypeRef.ERROR_TYPE : CSharpResolveUtil.resolveIterableType(this, bodyTypeRef);
+					return bodyTypeRef == DotNetTypeRef.ERROR_TYPE ? DotNetTypeRef.ERROR_TYPE : CSharpResolveUtil.resolveIterableType(bodyTypeRef);
 				}
 				return DotNetTypeRef.ERROR_TYPE;
 			}
@@ -226,7 +229,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
+	public PsiElement setName(@Nonnull String name) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, name);
 		return this;

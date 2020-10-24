@@ -32,13 +32,11 @@ import javax.annotation.Nonnull;
  */
 public class CSharpPossibleNullableTypeRef extends DotNetTypeRefWithCachedResult
 {
-	private final PsiElement myScope;
 	private final DotNetTypeRef myInnerTypeRef;
 
-	public CSharpPossibleNullableTypeRef(PsiElement scope, DotNetTypeRef innerTypeRef)
+	public CSharpPossibleNullableTypeRef(DotNetTypeRef innerTypeRef)
 	{
-		super(scope.getProject());
-		myScope = scope;
+		super(innerTypeRef.getProject(), innerTypeRef.getResolveScope());
 		myInnerTypeRef = innerTypeRef;
 	}
 
@@ -62,7 +60,7 @@ public class CSharpPossibleNullableTypeRef extends DotNetTypeRefWithCachedResult
 		}
 		else
 		{
-			DotNetTypeDeclaration nullableType = DotNetPsiSearcher.getInstance(element.getProject()).findType(DotNetTypes.System.Nullable$1, myScope.getResolveScope(), CSharpTransform.INSTANCE);
+			DotNetTypeDeclaration nullableType = DotNetPsiSearcher.getInstance(element.getProject()).findType(DotNetTypes.System.Nullable$1, getResolveScope(), CSharpTransform.INSTANCE);
 			if(nullableType == null)
 			{
 				return result;

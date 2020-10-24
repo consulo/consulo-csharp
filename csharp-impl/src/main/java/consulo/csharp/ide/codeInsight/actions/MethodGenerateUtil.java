@@ -16,11 +16,6 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-
-import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTupleTypeRef;
@@ -28,6 +23,9 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -37,7 +35,7 @@ public class MethodGenerateUtil
 {
 	@Nullable
 	@RequiredReadAction
-	public static String getDefaultValueForType(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
+	public static String getDefaultValueForType(@Nonnull DotNetTypeRef typeRef)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 
@@ -61,66 +59,66 @@ public class MethodGenerateUtil
 					}
 
 					DotNetTypeRef tuplePartTypeRef = typeRefs[i];
-					builder.append(getDefaultValueForType(tuplePartTypeRef, scope));
+					builder.append(getDefaultValueForType(tuplePartTypeRef));
 				}
 				builder.append(")");
 
 				return builder.toString();
 			}
 
-			if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Void))
+			if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.Void))
 			{
 				return null;
 			}
-			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Byte))
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.Byte))
 			{
 				return "0";
 			}
-			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.SByte))
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.SByte))
 			{
 				return "0";
 			}
-			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Int16))
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.Int16))
 			{
 				return "0";
 			}
-			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.UInt16))
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.UInt16))
 			{
 				return "0";
 			}
-			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Int32))
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.Int32))
 			{
 				return "0";
 			}
-			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.UInt32))
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.UInt32))
 			{
 				return "0";
 			}
-			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Int64))
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.Int64))
 			{
 				return "0";
 			}
-			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.UInt64))
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.UInt64))
 			{
 				return "0";
 			}
-			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Decimal))
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.Decimal))
 			{
 				return "0";
 			}
-			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Single))
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.Single))
 			{
 				return "0";
 			}
-			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Double))
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.Double))
 			{
 				return "0";
 			}
-			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Boolean))
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.Boolean))
 			{
 				return "false";
 			}
-			return "default(" + CSharpTypeRefPresentationUtil.buildShortText(typeRef, scope) + ")";
+			return "default(" + CSharpTypeRefPresentationUtil.buildShortText(typeRef) + ")";
 		}
 	}
 }

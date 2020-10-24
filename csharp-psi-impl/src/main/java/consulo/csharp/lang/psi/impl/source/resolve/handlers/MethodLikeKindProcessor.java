@@ -90,7 +90,7 @@ public class MethodLikeKindProcessor implements KindProcessor
 							psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor());
 						}
 
-						MethodResolvePriorityInfo calcResult = NCallArgumentBuilder.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement, element);
+						MethodResolvePriorityInfo calcResult = NCallArgumentBuilder.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement, element.getResolveScope());
 
 						if(inferenceResult == null || inferenceResult.isSuccess())
 						{
@@ -114,7 +114,7 @@ public class MethodLikeKindProcessor implements KindProcessor
 				{
 					CSharpLambdaResolveResult lambdaTypeResolveResult = (CSharpLambdaResolveResult) maybeLambdaResolveResult;
 
-					MethodResolvePriorityInfo calcResult = NCallArgumentBuilder.calc(callArgumentListOwner, lambdaTypeResolveResult.getParameterInfos(), element);
+					MethodResolvePriorityInfo calcResult = NCallArgumentBuilder.calc(callArgumentListOwner, lambdaTypeResolveResult.getParameterInfos(), element.getResolveScope());
 
 					methodResolveResults.add(MethodResolveResult.createResult(calcResult, maybeElementGroup, result));
 				}

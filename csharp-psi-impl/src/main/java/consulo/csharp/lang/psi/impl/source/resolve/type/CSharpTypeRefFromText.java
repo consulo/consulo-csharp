@@ -16,15 +16,16 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -37,7 +38,7 @@ public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 
 	public CSharpTypeRefFromText(final String text, final PsiElement owner)
 	{
-		super(owner.getProject());
+		super(owner.getProject(), owner.getResolveScope());
 		myText = text;
 		myOwner = owner;
 	}

@@ -16,14 +16,15 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.resolve.DotNetRefTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -38,11 +39,11 @@ public class CSharpRefTypeRef extends DotNetTypeRefWithCachedResult implements D
 	}
 
 	private final Type myType;
-	private DotNetTypeRef myTypeRef;
+	private final DotNetTypeRef myTypeRef;
 
-	public CSharpRefTypeRef(Project project, @Nonnull Type type, @Nonnull DotNetTypeRef typeRef)
+	public CSharpRefTypeRef(@Nonnull Project project, @Nonnull GlobalSearchScope scope, @Nonnull Type type, @Nonnull DotNetTypeRef typeRef)
 	{
-		super(project);
+		super(project, scope);
 		myType = type;
 		myTypeRef = typeRef;
 	}

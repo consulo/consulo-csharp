@@ -60,7 +60,7 @@ public class ChangeReturnToTypeRefFix extends BaseIntentionAction
 			return "invalid";
 		}
 		return BundleBase.format("Make ''{0}'' return to ''{1}''", element.getName(), CSharpTypeRefPresentationUtil.buildTextWithKeyword
-				(myToTypeRef, element));
+				(myToTypeRef));
 	}
 
 	@Nonnull
@@ -93,7 +93,7 @@ public class ChangeReturnToTypeRefFix extends BaseIntentionAction
 		{
 			return;
 		}
-		String typeText = CSharpTypeRefPresentationUtil.buildShortText(myToTypeRef, element);
+		String typeText = CSharpTypeRefPresentationUtil.buildShortText(myToTypeRef);
 
 		DotNetType type = CSharpFileFactory.createMaybeStubType(project, typeText, typeOfVariable);
 

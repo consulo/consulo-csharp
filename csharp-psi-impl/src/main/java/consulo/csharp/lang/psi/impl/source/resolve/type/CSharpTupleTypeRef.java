@@ -16,20 +16,17 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.CSharpTupleTypeDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetPsiSearcher;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.resolve.*;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -37,14 +34,12 @@ import consulo.dotnet.resolve.DotNetTypeResolveResult;
  */
 public class CSharpTupleTypeRef extends DotNetTypeRefWithCachedResult
 {
-	private PsiElement myScope;
 	private DotNetTypeRef[] myTypeRefs;
 	private PsiNameIdentifierOwner[] myVariables;
 
-	public CSharpTupleTypeRef(PsiElement scope, DotNetTypeRef[] typeRefs, @Nonnull PsiNameIdentifierOwner[] variables)
+	public CSharpTupleTypeRef(Project project, GlobalSearchScope resolveScope, DotNetTypeRef[] typeRefs, @Nonnull PsiNameIdentifierOwner[] variables)
 	{
-		super(scope.getProject());
-		myScope = scope;
+		super(project, resolveScope);
 		myTypeRefs = typeRefs;
 		myVariables = variables;
 	}
@@ -64,7 +59,7 @@ public class CSharpTupleTypeRef extends DotNetTypeRefWithCachedResult
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(myScope.getProject()).findType("System.ValueTuple`" + myVariables.length, myScope.getResolveScope(), CSharpTransform.INSTANCE);
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(myProject).findType("System.ValueTuple`" + myVariables.length, myResolveScope, CSharpTransform.INSTANCE);
 		if(type == null)
 		{
 			return DotNetTypeResolveResult.EMPTY;

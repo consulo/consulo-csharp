@@ -94,7 +94,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 			DotNetTypeRef returnTypeRef = ((CSharpIndexMethodDeclaration) resolve).getReturnTypeRef();
 			if(CSharpNullableTypeUtil.containsNullableCalls(this))
 			{
-				return CSharpNullableTypeUtil.boxIfNeed(returnTypeRef, this);
+				return CSharpNullableTypeUtil.boxIfNeed(returnTypeRef);
 			}
 			return returnTypeRef;
 		}

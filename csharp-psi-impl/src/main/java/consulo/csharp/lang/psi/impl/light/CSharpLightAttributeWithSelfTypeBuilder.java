@@ -16,15 +16,16 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -39,11 +40,11 @@ public class CSharpLightAttributeWithSelfTypeBuilder extends CSharpAbstractLight
 	public CSharpLightAttributeWithSelfTypeBuilder(PsiElement scope, String qualifiedName)
 	{
 		super(scope.getProject());
-		myType = new CSharpLightTypeDeclarationBuilder(scope);
+		myType = new CSharpLightTypeDeclarationBuilder(scope.getProject(), scope.getResolveScope());
 		myType.withParentQName(StringUtil.getPackageName(qualifiedName)) ;
 		myType.withName(StringUtil.getShortName(qualifiedName));
 
-		myTypeRef = new CSharpTypeRefByQName(scope, qualifiedName);
+		myTypeRef = new CSharpTypeRefByQName(scope.getProject(), scope.getResolveScope(), qualifiedName);
 	}
 
 	@Nullable

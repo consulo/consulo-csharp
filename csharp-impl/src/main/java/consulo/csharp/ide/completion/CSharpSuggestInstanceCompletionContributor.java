@@ -16,28 +16,12 @@
 
 package consulo.csharp.ide.completion;
 
-import gnu.trove.THashSet;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.completion.PrioritizedLookupElement;
+import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.Iconable;
-import consulo.util.dataholder.Key;
-import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
@@ -56,14 +40,7 @@ import consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import consulo.csharp.ide.completion.weigher.CSharpInheritCompletionWeighter;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
-import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
@@ -74,15 +51,19 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResul
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
-import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.ide.IconDescriptorUpdaters;
 import consulo.ui.image.Image;
+import consulo.util.dataholder.Key;
+import consulo.util.lang.Pair;
+import gnu.trove.THashSet;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -212,7 +193,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 					{
 						builder.append(", ");
 					}
-					builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameterInfo.getTypeRef(), parent));
+					builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameterInfo.getTypeRef()));
 					builder.append(" ");
 					Set<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(parameterInfo.getTypeRef(), parent, alreadyUsedNames);
 					if(suggestedNames.isEmpty())
@@ -234,7 +215,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 				}
 
 				DotNetTypeRef returnTypeRef = typeResolveResult.getReturnTypeRef();
-				String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(returnTypeRef, parent);
+				String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(returnTypeRef);
 				builder.append(" { ");
 				if(defaultValueForType != null)
 				{
@@ -342,12 +323,12 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 								throw new UnsupportedOperationException();
 							}
 
-							if(CSharpTypeUtil.isInheritable(expectedTypeRef.getTypeRef(), returnTypeRef, expression) && CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) member, expression))
+							if(CSharpTypeUtil.isInheritable(expectedTypeRef.getTypeRef(), returnTypeRef) && CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) member, expression))
 							{
 								LookupElementBuilder builder = LookupElementBuilder.create(member, declaration.getName() + "." + member.getName());
 								builder = builder.withLookupString(declaration.getName());
 								builder = builder.withLookupString(member.getName());
-								builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(returnTypeRef, expression));
+								builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(returnTypeRef));
 								builder = builder.withIcon(IconDescriptorUpdaters.getIcon(member, Iconable.ICON_FLAG_VISIBILITY));
 								builder = builder.withInsertHandler(new CSharpParenthesesWithSemicolonInsertHandler(member));
 
@@ -357,8 +338,8 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 
 									String genericText = DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) member);
 
-									String parameterText = genericText + "(" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(),
-											member) + " " + parameter.getNotNullName(), ", ") + ")";
+									String parameterText = genericText + "(" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef()
+									) + " " + parameter.getNotNullName(), ", ") + ")";
 
 									builder = builder.withTailText(parameterText, false);
 								}
@@ -398,7 +379,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 							{
 								continue;
 							}
-							String typeText = CSharpTypeRefPresentationUtil.buildShortText(typeRef, position);
+							String typeText = CSharpTypeRefPresentationUtil.buildShortText(typeRef);
 
 							LookupElementBuilder builder = LookupElementBuilder.create(typeRef, typeText);
 							builder = builder.withIcon(getIconForInnerTypeRef((CSharpArrayTypeRef) typeRef, position));

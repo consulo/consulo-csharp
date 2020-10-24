@@ -16,18 +16,9 @@
 
 package consulo.csharp.ide.actions.generate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.DotNetTypes;
@@ -37,7 +28,11 @@ import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -77,7 +72,7 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 		{
 			CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) item;
 			DotNetTypeRef returnTypeRef = methodDeclaration.getReturnTypeRef();
-			if(DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, item, DotNetTypes.System.Void))
+			if(DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, DotNetTypes.System.Void))
 			{
 				return;
 			}

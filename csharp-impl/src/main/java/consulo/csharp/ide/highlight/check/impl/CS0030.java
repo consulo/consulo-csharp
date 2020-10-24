@@ -28,6 +28,7 @@ import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.impl.CSharpInheritableChecker;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
@@ -99,10 +100,10 @@ public class CS0030 extends CompilerCheck<PsiElement>
 					return;
 				}
 
-				boolean success = CSharpTypeUtil.isInheritable(iterableTypeRef, variableTypeRef, statement) || CSharpTypeUtil.isInheritable(variableTypeRef, iterableTypeRef, statement);
+				boolean success = CSharpTypeUtil.isInheritable(iterableTypeRef, variableTypeRef) || CSharpTypeUtil.isInheritable(variableTypeRef, iterableTypeRef);
 				if(!success)
 				{
-					CompilerCheckBuilder builder = newBuilder(type, formatTypeRef(iterableTypeRef, statement), formatTypeRef(variableTypeRef, statement));
+					CompilerCheckBuilder builder = newBuilder(type, formatTypeRef(iterableTypeRef), formatTypeRef(variableTypeRef));
 
 					if(languageVersion.isAtLeast(CSharpLanguageVersion._3_0))
 					{
@@ -132,15 +133,16 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				}
 				DotNetTypeRef expressionTypeRef = innerExpression.toTypeRef(false);
 
-				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef, castTypeRef, expression, CSharpCastType.EXPLICIT);
+				CSharpTypeUtil.InheritResult inheritResult = CSharpInheritableChecker.create(expressionTypeRef, castTypeRef).withCastType(CSharpCastType.EXPLICIT, expression.getResolveScope())
+						.check();
 
 				if(!inheritResult.isSuccess())
 				{
-					inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef, castTypeRef, expression, CSharpCastType.IMPLICIT);
+					inheritResult = CSharpInheritableChecker.create(expressionTypeRef, castTypeRef).withCastType(CSharpCastType.IMPLICIT, expression.getResolveScope()).check();
 
 					if(!inheritResult.isSuccess())
 					{
-						CompilerCheckBuilder builder = newBuilder(type, formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression));
+						CompilerCheckBuilder builder = newBuilder(type, formatTypeRef(expressionTypeRef), formatTypeRef(castTypeRef));
 
 						if(EarlyAccessProgramManager.is(CS0030TypeCast.class))
 						{
@@ -153,11 +155,11 @@ public class CS0030 extends CompilerCheck<PsiElement>
 						builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
 						if(inheritResult.isImplicit())
 						{
-							builder.setText(CSharpErrorLocalize.impicitCastFrom0To1(formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression)).getValue());
+							builder.setText(CSharpErrorLocalize.impicitCastFrom0To1(formatTypeRef(expressionTypeRef), formatTypeRef(castTypeRef)).getValue());
 						}
 						else
 						{
-							builder.setText(CSharpErrorLocalize.explicitCastFrom0To1(formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression)).getValue());
+							builder.setText(CSharpErrorLocalize.explicitCastFrom0To1(formatTypeRef(expressionTypeRef), formatTypeRef(castTypeRef)).getValue());
 						}
 						builder.setHighlightInfoType(HighlightInfoType.INFORMATION);
 						ref.set(builder);
@@ -167,7 +169,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				{
 					CompilerCheckBuilder builder = newBuilder(type);
 					builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
-					builder.setText(CSharpErrorLocalize.impicitCastFrom0To1(formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression)).getValue());
+					builder.setText(CSharpErrorLocalize.impicitCastFrom0To1(formatTypeRef(expressionTypeRef), formatTypeRef(castTypeRef)).getValue());
 					builder.setHighlightInfoType(HighlightInfoType.INFORMATION);
 					ref.set(builder);
 				}

@@ -101,7 +101,7 @@ public class CSharpConditionalExpressionImpl extends CSharpExpressionImpl implem
 			return trueType;
 		}
 
-		if(CSharpTypeUtil.isInheritableWithImplicit(falseType, trueType, this))
+		if(CSharpTypeUtil.isInheritableWithImplicit(falseType, trueType, getResolveScope()))
 		{
 			return trueType;
 		}

@@ -16,12 +16,7 @@
 
 package consulo.csharp.ide.msil.representation.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -40,6 +35,12 @@ import consulo.internal.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import consulo.msil.lang.psi.MsilConstantValue;
 import consulo.msil.lang.psi.MsilCustomAttribute;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * @author VISTALL
@@ -79,7 +80,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		StringBuilder builder = new StringBuilder();
 		processAttributeListAsLine(declaration, myBlocks);
 		processModifierList(builder, declaration);
-		appendTypeRef(declaration, builder, declaration.toTypeRef(false));
+		appendTypeRef(declaration.getProject(), builder, declaration.toTypeRef(false));
 		builder.append(" ");
 		appendName(declaration, builder);
 		StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
@@ -142,7 +143,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			builder.append("const ");
 		}
-		appendTypeRef(declaration, builder, declaration.toTypeRef(false));
+		appendTypeRef(declaration.getProject(), builder, declaration.toTypeRef(false));
 		builder.append(" ");
 		appendValidName(builder, declaration.getName());
 		appendInitializer(builder, declaration);
@@ -158,7 +159,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		processAttributeListAsLine(declaration, myBlocks);
 		processModifierList(builder, declaration);
 		builder.append("event ");
-		appendTypeRef(declaration, builder, declaration.toTypeRef(false));
+		appendTypeRef(declaration.getProject(), builder, declaration.toTypeRef(false));
 		builder.append(" ");
 		appendName(declaration, builder);
 
@@ -178,7 +179,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		processAttributeListAsLine(declaration, myBlocks);
 		processModifierList(builder, declaration);
-		appendTypeRef(declaration, builder, declaration.getReturnTypeRef());
+		appendTypeRef(declaration.getProject(), builder, declaration.getReturnTypeRef());
 		builder.append(" ");
 		appendName(declaration, builder);
 		processParameterList(declaration, builder, '[', ']');
@@ -199,10 +200,10 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		processAttributeListAsLine(declaration, myBlocks);
 		processModifierList(builder, declaration);
-		appendTypeRef(declaration, builder, declaration.getConversionTypeRef());
+		appendTypeRef(declaration.getProject(), builder, declaration.getConversionTypeRef());
 		builder.append(" ");
 		builder.append("operator ");
-		appendTypeRef(declaration, builder, declaration.getReturnTypeRef());
+		appendTypeRef(declaration.getProject(), builder, declaration.getReturnTypeRef());
 		processParameterList(declaration, builder, '(', ')');
 		builder.append("; //compiled code\n");
 		myBlocks.add(new LineStubBlock(builder));
@@ -243,7 +244,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			builder.append("delegate ");
 		}
-		appendTypeRef(declaration, builder, declaration.getReturnTypeRef());
+		appendTypeRef(declaration.getProject(), builder, declaration.getReturnTypeRef());
 		builder.append(" ");
 		if(declaration.isOperator())
 		{
@@ -301,10 +302,10 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		if(declaration.isEnum())
 		{
 			DotNetTypeRef typeRefForEnumConstants = declaration.getTypeRefForEnumConstants();
-			if(!DotNetTypeRefUtil.isVmQNameEqual(typeRefForEnumConstants, declaration, DotNetTypes.System.Int32))
+			if(!DotNetTypeRefUtil.isVmQNameEqual(typeRefForEnumConstants, DotNetTypes.System.Int32))
 			{
 				builder.append(" : ");
-				appendTypeRef(declaration, builder, typeRefForEnumConstants);
+				appendTypeRef(declaration.getProject(), builder, typeRefForEnumConstants);
 			}
 		}
 		else
@@ -316,7 +317,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				@RequiredReadAction
 				public boolean value(DotNetTypeRef typeRef)
 				{
-					return !DotNetTypeRefUtil.isVmQNameEqual(typeRef, declaration, DotNetTypes.System.Object) && !DotNetTypeRefUtil.isVmQNameEqual(typeRef, declaration, DotNetTypes.System.ValueType);
+					return !DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.Object) && !DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.ValueType);
 				}
 			});
 
@@ -331,7 +332,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 					@RequiredReadAction
 					public Void fun(StringBuilder builder, DotNetTypeRef typeRef)
 					{
-						appendTypeRef(declaration, builder, typeRef);
+						appendTypeRef(declaration.getProject(), builder, typeRef);
 						return null;
 					}
 				}, ", ");
@@ -348,9 +349,9 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@RequiredReadAction
-	public static void appendTypeRef(@Nonnull final PsiElement scope, @Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef)
+	public static void appendTypeRef(@Nonnull Project project, @Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef)
 	{
-		CSharpTypeRefPresentationUtil.appendTypeRef(scope, builder, typeRef, CSharpTypeRefPresentationUtil.QUALIFIED_NAME | CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
+		CSharpTypeRefPresentationUtil.appendTypeRef(builder, typeRef, CSharpTypeRefPresentationUtil.QUALIFIED_NAME | CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 	}
 
 	@RequiredReadAction
@@ -359,7 +360,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		DotNetTypeRef typeRefForImplement = element.getTypeRefForImplement();
 		if(typeRefForImplement != DotNetTypeRef.ERROR_TYPE)
 		{
-			appendTypeRef(element, builder, typeRefForImplement);
+			appendTypeRef(element.getProject(), builder, typeRefForImplement);
 			builder.append(".");
 			if(element instanceof CSharpIndexMethodDeclaration)
 			{
@@ -463,7 +464,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 						@RequiredReadAction
 						public void visitGenericConstraintTypeValue(CSharpGenericConstraintTypeValue value)
 						{
-							appendTypeRef(owner, builder, value.toTypeRef());
+							appendTypeRef(owner.getProject(), builder, value.toTypeRef());
 						}
 					});
 				}
@@ -485,7 +486,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				appendAttributeList(t, v);
 				processModifierList(t, v);
 				DotNetTypeRef typeRef = v.toTypeRef(false);
-				appendTypeRef(declaration, t, typeRef);
+				appendTypeRef(declaration.getProject(), t, typeRef);
 				if(typeRef != CSharpStaticTypeRef.__ARGLIST_TYPE)
 				{
 					t.append(" ");
@@ -521,7 +522,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			{
 				builder.append(targetType.name().toLowerCase(Locale.US)).append(": ");
 			}
-			appendTypeRef(scope, builder, dotNetAttribute.toTypeRef());
+			appendTypeRef(scope.getProject(), builder, dotNetAttribute.toTypeRef());
 
 			if(dotNetAttribute instanceof CSharpAttribute)
 			{
@@ -585,7 +586,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			@RequiredReadAction
 			public Void fun(StringBuilder builder, DotNetAttribute dotNetAttribute)
 			{
-				appendTypeRef(scope, builder, dotNetAttribute.toTypeRef());
+				appendTypeRef(scope.getProject(), builder, dotNetAttribute.toTypeRef());
 
 				if(dotNetAttribute instanceof CSharpAttribute)
 				{

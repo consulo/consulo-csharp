@@ -64,7 +64,7 @@ public class CSharpElementPresentationUtil
 		StringBuilder builder = new StringBuilder();
 		builder.append(fieldDeclaration.getName());
 		builder.append(":");
-		CSharpTypeRefPresentationUtil.appendTypeRef(fieldDeclaration, builder, fieldDeclaration.toTypeRef(true), typeRefMask(flags));
+		CSharpTypeRefPresentationUtil.appendTypeRef(builder, fieldDeclaration.toTypeRef(true), typeRefMask(flags));
 		return builder.toString();
 	}
 
@@ -79,7 +79,7 @@ public class CSharpElementPresentationUtil
 			DotNetTypeRef typeRefForImplement = propertyDeclaration.getTypeRefForImplement();
 			if(typeRefForImplement != DotNetTypeRef.ERROR_TYPE)
 			{
-				CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, typeRefForImplement, typeRefMask(flags));
+				CSharpTypeRefPresentationUtil.appendTypeRef(builder, typeRefForImplement, typeRefMask(flags));
 				builder.append(".");
 			}
 		}
@@ -88,12 +88,12 @@ public class CSharpElementPresentationUtil
 		{
 			builder.append(propertyDeclaration.getName());
 			builder.append(":");
-			CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, propertyDeclaration.toTypeRef(true), typeRefMask(flags));
+			CSharpTypeRefPresentationUtil.appendTypeRef(builder, propertyDeclaration.toTypeRef(true), typeRefMask(flags));
 
 		}
 		else
 		{
-			CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, propertyDeclaration.toTypeRef(true), typeRefMask(flags));
+			CSharpTypeRefPresentationUtil.appendTypeRef(builder, propertyDeclaration.toTypeRef(true), typeRefMask(flags));
 
 			builder.append(" ");
 			builder.append(propertyDeclaration.getName());
@@ -111,7 +111,7 @@ public class CSharpElementPresentationUtil
 		{
 			if(!(methodDeclaration instanceof DotNetConstructorDeclaration))
 			{
-				CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(), typeRefMask(flags));
+				CSharpTypeRefPresentationUtil.appendTypeRef(builder, methodDeclaration.getReturnTypeRef(), typeRefMask(flags));
 				builder.append(" ");
 			}
 		}
@@ -128,7 +128,7 @@ public class CSharpElementPresentationUtil
 				DotNetTypeRef typeRefForImplement = ((DotNetVirtualImplementOwner) methodDeclaration).getTypeRefForImplement();
 				if(typeRefForImplement != DotNetTypeRef.ERROR_TYPE)
 				{
-					CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, typeRefForImplement, typeRefMask(flags));
+					CSharpTypeRefPresentationUtil.appendTypeRef(builder, typeRefForImplement, typeRefMask(flags));
 					builder.append(".");
 				}
 			}
@@ -166,7 +166,7 @@ public class CSharpElementPresentationUtil
 				@RequiredReadAction
 				public String fun(DotNetParameter parameter)
 				{
-					String text = CSharpTypeRefPresentationUtil.buildTextWithKeyword(parameter.toTypeRef(true), parameter);
+					String text = CSharpTypeRefPresentationUtil.buildTextWithKeyword(parameter.toTypeRef(true));
 
 					if(!BitUtil.isSet(flags, METHOD_PARAMETER_NAME))
 					{
@@ -191,7 +191,7 @@ public class CSharpElementPresentationUtil
 			if(!(methodDeclaration instanceof DotNetConstructorDeclaration))
 			{
 				builder.append(":");
-				CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(), typeRefMask(flags));
+				CSharpTypeRefPresentationUtil.appendTypeRef(builder, methodDeclaration.getReturnTypeRef(), typeRefMask(flags));
 			}
 		}
 	}
@@ -241,7 +241,7 @@ public class CSharpElementPresentationUtil
 				DotNetTypeRef extract = extractor.extract(genericParameter);
 				if(extract != null)
 				{
-					return CSharpTypeRefPresentationUtil.buildShortText(extract, owner);
+					return CSharpTypeRefPresentationUtil.buildShortText(extract);
 				}
 				return genericParameter.getName();
 			}

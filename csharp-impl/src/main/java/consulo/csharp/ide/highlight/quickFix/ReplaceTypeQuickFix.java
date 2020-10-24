@@ -45,7 +45,7 @@ public class ReplaceTypeQuickFix extends BaseIntentionAction
 	{
 		myPointer = SmartPointerManager.getInstance(type.getProject()).createSmartPsiElementPointer(type);
 
-		myTypeText = CSharpTypeRefPresentationUtil.buildShortText(typeRef, type);
+		myTypeText = CSharpTypeRefPresentationUtil.buildShortText(typeRef);
 		setText("Replace '" + type.getText() + "' by '" + myTypeText + "'");
 	}
 

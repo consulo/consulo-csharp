@@ -248,11 +248,11 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 			DotNetTypeRef[] typeRefs = new DotNetTypeRef[extendTypeRefs.length];
 			for(int i = 0; i < typeRefs.length; i++)
 			{
-				typeRefs[i] = MsilToCSharpUtil.extractToCSharp(extendTypeRefs[i], myOriginal);
+				typeRefs[i] = MsilToCSharpUtil.extractToCSharp(extendTypeRefs[i]);
 			}
 			return typeRefs;
 		});
-		myTypeRefForEnumConstantsValue = NotNullLazyValue.createValue(() -> MsilToCSharpUtil.extractToCSharp(myOriginal.getTypeRefForEnumConstants(), myOriginal));
+		myTypeRefForEnumConstantsValue = NotNullLazyValue.createValue(() -> MsilToCSharpUtil.extractToCSharp(myOriginal.getTypeRefForEnumConstants()));
 	}
 
 	@Override

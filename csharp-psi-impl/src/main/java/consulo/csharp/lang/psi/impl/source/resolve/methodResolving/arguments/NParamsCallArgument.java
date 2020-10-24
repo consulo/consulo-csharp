@@ -17,10 +17,11 @@
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments;
 
 import com.intellij.openapi.util.NotNullLazyValue;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.CSharpCallArgument;
+import consulo.csharp.lang.psi.impl.CSharpInheritableChecker;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitCastInfo;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
@@ -64,31 +65,31 @@ public class NParamsCallArgument extends NCallArgument
 				typeRefs.add(argumentExpression.toTypeRef(false));
 			}
 
-			return new CSharpArrayTypeRef(myCallArguments.get(0), typeRefs.get(0), 0);
+			return new CSharpArrayTypeRef(typeRefs.get(0), 0);
 		});
 	}
 
 	@Override
 	@RequiredReadAction
-	public int calcValid(@Nonnull PsiElement scope, boolean disableNullableElementCheck)
+	public int calcValid(@Nonnull GlobalSearchScope implicitCastType, boolean disableNullableElementCheck)
 	{
-		myValid = validate(getParameterTypeRef(), getTypeRef(), this, scope);
+		myValid = validate(getParameterTypeRef(), getTypeRef(), this, implicitCastType);
 		return myValid;
 	}
 
 	@RequiredReadAction
-	protected static int validate(@Nullable DotNetTypeRef parameterTypeRef, @Nonnull DotNetTypeRef typeRef, @Nonnull UserDataHolderBase holder, @Nonnull PsiElement scope)
+	protected static int validate(@Nullable DotNetTypeRef parameterTypeRef, @Nonnull DotNetTypeRef typeRef, @Nonnull UserDataHolderBase holder, @Nonnull GlobalSearchScope impilictCastResolveScope)
 	{
 		int newVal = FAIL;
 		if(parameterTypeRef != null)
 		{
-			if(CSharpTypeUtil.isTypeEqual(parameterTypeRef, typeRef, scope))
+			if(CSharpTypeUtil.isTypeEqual(parameterTypeRef, typeRef))
 			{
 				newVal = PARAMS;
 			}
 			else
 			{
-				CSharpTypeUtil.InheritResult inheritable = CSharpTypeUtil.isInheritable(parameterTypeRef, typeRef, scope, CSharpCastType.IMPLICIT);
+				CSharpTypeUtil.InheritResult inheritable = CSharpInheritableChecker.create(parameterTypeRef, typeRef).withCastType(CSharpCastType.IMPLICIT, impilictCastResolveScope).check();
 				if(inheritable.isSuccess())
 				{
 					if(inheritable.isConversion())

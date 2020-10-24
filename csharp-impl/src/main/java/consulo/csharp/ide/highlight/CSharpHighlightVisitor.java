@@ -350,8 +350,8 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			ImplicitCastInfo implicitCastInfo = nCallArgument.getUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO);
 			if(implicitCastInfo != null)
 			{
-				String text = CSharpErrorLocalize.impicitCastFrom0To1(CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getFromTypeRef(), scope),
-						CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getToTypeRef(), scope)).getValue();
+				String text = CSharpErrorLocalize.impicitCastFrom0To1(CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getFromTypeRef()),
+						CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getToTypeRef())).getValue();
 
 				HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION);
 				builder = builder.range(argumentExpression.getTextRange());

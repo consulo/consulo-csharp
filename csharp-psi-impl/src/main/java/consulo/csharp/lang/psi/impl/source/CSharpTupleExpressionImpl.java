@@ -56,7 +56,7 @@ public class CSharpTupleExpressionImpl extends CSharpExpressionImpl
 			DotNetExpression expression = element.getExpression();
 			typeRefs[i] = expression == null ? DotNetTypeRef.ERROR_TYPE : expression.toTypeRef(resolveFromParent);
 		}
-		return new CSharpTupleTypeRef(this, typeRefs, elements);
+		return new CSharpTupleTypeRef(getProject(), getResolveScope(), typeRefs, elements);
 	}
 
 	@Override

@@ -83,7 +83,7 @@ public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetCons
 				builder.append(", ");
 			}
 			DotNetVariable parameter = targets.get(i);
-			CSharpTypeRefPresentationUtil.appendTypeRef(myDeclaration, builder, parameter.toTypeRef(true), CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
+			CSharpTypeRefPresentationUtil.appendTypeRef(builder, parameter.toTypeRef(true), CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 			builder.append(" ");
 			builder.append(getParameterName(parameter));
 		}

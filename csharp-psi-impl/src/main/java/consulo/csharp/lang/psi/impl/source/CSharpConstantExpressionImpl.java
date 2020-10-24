@@ -71,13 +71,13 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 			{
 				if(elementType == CSharpTokens.INTEGER_LITERAL)
 				{
-					CSharpTypeRefByQName another = new CSharpTypeRefByQName(this, DotNetTypes.System.Int32);
-					if(CSharpConstantTypeRef.testNumberConstant(this, "", another, this) != null)
+					CSharpTypeRefByQName another = new CSharpTypeRefByQName(getProject(), getResolveScope(), DotNetTypes.System.Int32);
+					if(CSharpConstantTypeRef.testNumberConstant(this, "", another) != null)
 					{
 						return another;
 					}
-					another = new CSharpTypeRefByQName(this, DotNetTypes.System.Int64);
-					if(CSharpConstantTypeRef.testNumberConstant(this, "", another, this) != null)
+					another = new CSharpTypeRefByQName(getProject(), getResolveScope(), DotNetTypes.System.Int64);
+					if(CSharpConstantTypeRef.testNumberConstant(this, "", another) != null)
 					{
 						return another;
 					}
@@ -148,7 +148,7 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 		}
 		else if(elementType == CSharpTokens.NULL_LITERAL)
 		{
-			return new CSharpNullTypeRef(this);
+			return new CSharpNullTypeRef(getProject(), getResolveScope());
 		}
 		else if(elementType == CSharpTokens.TRUE_KEYWORD || elementType == CSharpTokens.FALSE_KEYWORD)
 		{

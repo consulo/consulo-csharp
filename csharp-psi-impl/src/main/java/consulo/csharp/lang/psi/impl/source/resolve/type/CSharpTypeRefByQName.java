@@ -37,18 +37,16 @@ import javax.annotation.Nonnull;
 public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
 {
 	@Nonnull
-	private final GlobalSearchScope mySearchScope;
-	@Nonnull
 	private final String myQualifiedName;
 
 	public CSharpTypeRefByQName(@Nonnull Project project, @Nonnull GlobalSearchScope searchScope, @Nonnull String qualifiedName)
 	{
-		super(project);
-		mySearchScope = searchScope;
+		super(project, searchScope);
 		myQualifiedName = qualifiedName;
 	}
 
 	@RequiredReadAction
+	@Deprecated
 	public CSharpTypeRefByQName(@Nonnull PsiElement scope, @Nonnull String qualifiedName)
 	{
 		this(scope.getProject(), scope.getResolveScope(), qualifiedName);
@@ -64,7 +62,7 @@ public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
 			return DotNetTypeResolveResult.EMPTY;
 		}
 
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(getProject()).findType(myQualifiedName, mySearchScope, CSharpTransform.INSTANCE);
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(getProject()).findType(myQualifiedName, myResolveScope, CSharpTransform.INSTANCE);
 
 		if(type == null)
 		{

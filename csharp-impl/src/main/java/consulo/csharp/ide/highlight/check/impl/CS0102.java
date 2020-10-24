@@ -92,8 +92,8 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 				if(searchName.equals(targetName))
 				{
 					// skip type declarations if partial
-					if(searchElement instanceof CSharpTypeDeclaration && mayDuplicate instanceof CSharpTypeDeclaration && CSharpElementCompareUtil.isEqualWithVirtualImpl(searchElement, mayDuplicate,
-							searchElement) && isPartial(searchElement) && isPartial(mayDuplicate))
+					if(searchElement instanceof CSharpTypeDeclaration && mayDuplicate instanceof CSharpTypeDeclaration && CSharpElementCompareUtil.isEqualWithVirtualImpl(searchElement, mayDuplicate
+					) && isPartial(searchElement) && isPartial(mayDuplicate))
 					{
 						continue;
 					}
@@ -105,13 +105,13 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 					}
 
 					if(searchElement instanceof DotNetLikeMethodDeclaration && mayDuplicate instanceof DotNetLikeMethodDeclaration && !CSharpElementCompareUtil.isEqualWithVirtualImpl(searchElement,
-							mayDuplicate, searchElement))
+							mayDuplicate))
 					{
 						continue;
 					}
 
 					if(searchElement instanceof CSharpPropertyDeclaration && mayDuplicate instanceof CSharpPropertyDeclaration && !CSharpElementCompareUtil.isEqualWithVirtualImpl(searchElement,
-							mayDuplicate, searchElement))
+							mayDuplicate))
 					{
 						continue;
 					}

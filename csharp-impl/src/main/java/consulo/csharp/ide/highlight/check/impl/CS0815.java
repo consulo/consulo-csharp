@@ -16,9 +16,6 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -30,6 +27,9 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -56,7 +56,7 @@ public class CS0815 extends CompilerCheck<CSharpLocalVariable>
 			}
 			DotNetTypeRef initializerType = initializer.toTypeRef(false);
 
-			if(DotNetTypeRefUtil.isVmQNameEqual(initializerType, localVariable, DotNetTypes.System.Void))
+			if(DotNetTypeRefUtil.isVmQNameEqual(initializerType, DotNetTypes.System.Void))
 			{
 				return newBuilder(localVariable.getInitializer(), "void");
 			}

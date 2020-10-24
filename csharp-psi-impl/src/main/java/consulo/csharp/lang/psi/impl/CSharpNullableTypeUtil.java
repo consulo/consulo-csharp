@@ -16,8 +16,10 @@
 
 package consulo.csharp.lang.psi.impl;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -75,21 +77,23 @@ public class CSharpNullableTypeUtil
 
 	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef boxIfNeed(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
+	public static DotNetTypeRef boxIfNeed(@Nonnull DotNetTypeRef typeRef)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		if(typeResolveResult.isNullable())
 		{
 			return typeRef;
 		}
-		return new CSharpGenericWrapperTypeRef(scope.getProject(), new CSharpTypeRefByQName(scope, DotNetTypes.System.Nullable$1), typeRef);
+		Project project = typeRef.getProject();
+		GlobalSearchScope resolveScope = typeRef.getResolveScope();
+		return new CSharpGenericWrapperTypeRef(project, resolveScope, new CSharpTypeRefByQName(project, resolveScope, DotNetTypes.System.Nullable$1), typeRef);
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef box(@Nonnull PsiElement scope, @Nonnull DotNetTypeRef typeRef)
+	public static DotNetTypeRef box(@Nonnull DotNetTypeRef typeRef)
 	{
-		return new CSharpPossibleNullableTypeRef(scope, typeRef);
+		return new CSharpPossibleNullableTypeRef(typeRef);
 	}
 
 	@Nonnull

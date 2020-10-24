@@ -41,7 +41,7 @@ public class TypeRefExpression extends Expression
 
 	public TypeRefExpression(DotNetTypeRef typeRef, PsiElement scope)
 	{
-		myTypeRefText = new SmartList<String>(CSharpTypeRefPresentationUtil.buildShortText(typeRef, scope));
+		myTypeRefText = new SmartList<String>(CSharpTypeRefPresentationUtil.buildShortText(typeRef));
 	}
 
 	public TypeRefExpression(List<ExpectedTypeInfo> expectedTypeInfos, PsiElement scope)
@@ -50,7 +50,7 @@ public class TypeRefExpression extends Expression
 		myTypeRefText = new ArrayList<String>(expectedTypeInfos.size());
 		for(ExpectedTypeInfo expectedTypeInfo : expectedTypeInfos)
 		{
-			myTypeRefText.add(CSharpTypeRefPresentationUtil.buildShortText(expectedTypeInfo.getTypeRef(), scope));
+			myTypeRefText.add(CSharpTypeRefPresentationUtil.buildShortText(expectedTypeInfo.getTypeRef()));
 		}
 	}
 

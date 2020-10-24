@@ -78,11 +78,11 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 		DotNetTypeRef typeRef = type.toTypeRef();
 		if(hasModifier(CSharpModifier.REF))
 		{
-			return new CSharpRefTypeRef(getProject(), CSharpRefTypeRef.Type.ref, typeRef);
+			return new CSharpRefTypeRef(getProject(), getResolveScope(), CSharpRefTypeRef.Type.ref, typeRef);
 		}
 		else if(hasModifier(CSharpModifier.OUT))
 		{
-			return new CSharpRefTypeRef(getProject(), CSharpRefTypeRef.Type.out, typeRef);
+			return new CSharpRefTypeRef(getProject(), getResolveScope(), CSharpRefTypeRef.Type.out, typeRef);
 		}
 		return typeRef;
 	}

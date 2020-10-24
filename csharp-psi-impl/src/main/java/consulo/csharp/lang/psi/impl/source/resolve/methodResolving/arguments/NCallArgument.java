@@ -17,6 +17,7 @@
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.CSharpCallArgument;
@@ -118,21 +119,21 @@ public class NCallArgument extends UserDataHolderBase
 	}
 
 	@RequiredReadAction
-	public int calcValid(@Nonnull PsiElement scope, boolean disableNullableElementCheck)
+	public int calcValid(@Nonnull GlobalSearchScope implicitCastResolveScope, boolean disableNullableElementCheck)
 	{
 		DotNetTypeRef parameterTypeRef = getParameterTypeRef();
 		int newVal = FAIL;
 		if(parameterTypeRef != null)
 		{
 			DotNetTypeRef typeRef = getTypeRef();
-			if(CSharpTypeUtil.isTypeEqual(parameterTypeRef, typeRef, scope))
+			if(CSharpTypeUtil.isTypeEqual(parameterTypeRef, typeRef))
 			{
 				newVal = EQUAL;
 			}
 			else
 			{
-				CSharpInheritableChecker checker = CSharpInheritableChecker.create(parameterTypeRef, typeRef, scope);
-				checker = checker.withCastType(CSharpCastType.IMPLICIT);
+				CSharpInheritableChecker checker = CSharpInheritableChecker.create(parameterTypeRef, typeRef);
+				checker = checker.withCastType(CSharpCastType.IMPLICIT, implicitCastResolveScope);
 				if(disableNullableElementCheck)
 				{
 					checker = checker.withDisableNullableCheck();

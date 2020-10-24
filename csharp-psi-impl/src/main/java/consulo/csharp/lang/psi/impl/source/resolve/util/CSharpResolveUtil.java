@@ -16,20 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiInvalidElementAccessException;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.ResolveState;
+import com.intellij.psi.*;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -37,12 +27,7 @@ import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpCodeFragment;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDefStatement;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.csharp.lang.psi.CSharpUsingListOwner;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.DotNetTypes2;
 import consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
@@ -55,24 +40,17 @@ import consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import consulo.dotnet.psi.DotNetInheritUtil;
-import consulo.dotnet.psi.DotNetMethodDeclaration;
-import consulo.dotnet.psi.DotNetNamespaceDeclaration;
-import consulo.dotnet.psi.DotNetPropertyDeclaration;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.resolve.DotNetArrayTypeRef;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import consulo.dotnet.resolve.DotNetPsiSearcher;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.psi.*;
+import consulo.dotnet.resolve.*;
 import consulo.dotnet.util.ArrayUtil2;
 import consulo.logging.Logger;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.KeyWithDefaultValue;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -451,12 +429,12 @@ public class CSharpResolveUtil
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		return resolveIterableType(iterableExpression, iterableExpression.toTypeRef(false));
+		return resolveIterableType(iterableExpression.toTypeRef(false));
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef resolveIterableType(@Nonnull PsiElement scope, @Nonnull DotNetTypeRef typeRef)
+	public static DotNetTypeRef resolveIterableType(@Nonnull DotNetTypeRef typeRef)
 	{
 		if(typeRef instanceof DotNetArrayTypeRef)
 		{
@@ -474,9 +452,9 @@ public class CSharpResolveUtil
 			return current.toTypeRef(false);
 		}
 
-		if(DotNetInheritUtil.isParentOrSelf(DotNetTypes2.System.Collections.IEnumerable, typeRef, scope, true))
+		if(DotNetInheritUtil.isParentOrSelf(DotNetTypes2.System.Collections.IEnumerable, typeRef, true))
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Object);
+			return new CSharpTypeRefByQName(typeRef.getProject(), typeRef.getResolveScope(), DotNetTypes.System.Object);
 		}
 		else
 		{

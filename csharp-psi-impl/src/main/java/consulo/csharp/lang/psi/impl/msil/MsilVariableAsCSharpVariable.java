@@ -105,7 +105,7 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 	@Nonnull
 	public DotNetTypeRef toTypeRefImpl()
 	{
-		return MsilToCSharpUtil.extractToCSharp(myOriginal.toTypeRef(false), myOriginal);
+		return MsilToCSharpUtil.extractToCSharp(myOriginal.toTypeRef(false));
 	}
 
 	@RequiredReadAction

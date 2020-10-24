@@ -65,7 +65,7 @@ public class CSharpParameterInfo implements ParameterInfo
 	{
 		myParameter = parameter;
 		myName = parameter.getName();
-		myTypeText = CSharpTypeRefPresentationUtil.buildText(parameter.toTypeRef(false), parameter, CSharpTypeRefPresentationUtil.TYPE_KEYWORD | CSharpTypeRefPresentationUtil.NO_REF);
+		myTypeText = CSharpTypeRefPresentationUtil.buildText(parameter.toTypeRef(false), CSharpTypeRefPresentationUtil.TYPE_KEYWORD | CSharpTypeRefPresentationUtil.NO_REF);
 		myTypeRef = parameter.toTypeRef(false);
 		myNewIndex = newIndex;
 		myOldIndex = parameter.getIndex();

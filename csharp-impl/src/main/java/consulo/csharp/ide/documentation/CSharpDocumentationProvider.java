@@ -448,7 +448,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 			}
 			else
 			{
-				builder.append(CSharpTypeRefPresentationUtil.buildShortText(typeRef, element));
+				builder.append(CSharpTypeRefPresentationUtil.buildShortText(typeRef));
 			}
 		}
 

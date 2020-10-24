@@ -16,23 +16,24 @@
 
 package consulo.csharp.lang.psi.impl.msil.typeParsing;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProcessCanceledException;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.IntArrayList;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -75,7 +76,9 @@ public class SomeTypeParser
 					typeRefs.add(convert(argument, scope));
 				}
 
-				typeRefRef.set(new CSharpGenericWrapperTypeRef(scope.getProject(), convert(genericWrapperType.getTarget(), scope), typeRefs.toArray(new DotNetTypeRef[typeRefs.size()])));
+				Project project = scope.getProject();
+				GlobalSearchScope resolveScope = scope.getResolveScope();
+				typeRefRef.set(new CSharpGenericWrapperTypeRef(project, resolveScope, convert(genericWrapperType.getTarget(), scope), typeRefs.toArray(new DotNetTypeRef[typeRefs.size()])));
 			}
 		});
 		return typeRefRef.get();

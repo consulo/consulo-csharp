@@ -16,9 +16,6 @@
 
 package consulo.csharp.ide.codeInspection.unnecessaryEnumUnderlyingType;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.Nls;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
 import com.intellij.codeInspection.ProblemHighlightType;
@@ -36,6 +33,9 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import org.jetbrains.annotations.Nls;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -98,7 +98,7 @@ public class UnnecessaryEnumUnderlyingTypeInspection extends LocalInspectionTool
 					DotNetType type = types[0];
 
 					DotNetTypeRef typeRef = type.toTypeRef();
-					if(CSharpTypeUtil.isTypeEqual(typeRef, new CSharpTypeRefByQName(declaration, DotNetTypes.System.Int32), declaration))
+					if(CSharpTypeUtil.isTypeEqual(typeRef, new CSharpTypeRefByQName(declaration, DotNetTypes.System.Int32)))
 					{
 						holder.registerProblem(type, "Unnecessary enum underlying type", ProblemHighlightType.LIKE_UNUSED_SYMBOL, new RemoveFix(extendList));
 					}

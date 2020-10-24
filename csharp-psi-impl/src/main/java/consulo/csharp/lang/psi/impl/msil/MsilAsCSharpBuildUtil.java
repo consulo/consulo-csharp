@@ -16,10 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
@@ -32,6 +28,10 @@ import consulo.dotnet.psi.DotNetGenericParameterList;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.msil.lang.psi.MsilGenericParameter;
 import consulo.msil.lang.psi.MsilUserType;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -87,7 +87,7 @@ public class MsilAsCSharpBuildUtil
 
 			for(DotNetTypeRef extendTypeRef : extendTypeRefs)
 			{
-				builder.addTypeConstraint(MsilToCSharpUtil.extractToCSharp(extendTypeRef, msilGenericParameter));
+				builder.addTypeConstraint(MsilToCSharpUtil.extractToCSharp(extendTypeRef));
 			}
 
 			if(!builder.isEmpty())

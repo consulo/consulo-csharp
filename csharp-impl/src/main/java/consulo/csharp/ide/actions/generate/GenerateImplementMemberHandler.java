@@ -89,7 +89,7 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 	@RequiredReadAction
 	private static void generateReturnForTypeRef(@Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement item)
 	{
-		String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(typeRef, item);
+		String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(typeRef);
 		if(defaultValueForType != null)
 		{
 			builder.append("return ").append(defaultValueForType).append(";\n");

@@ -53,6 +53,6 @@ public class CSharpStackAllocExpressionImpl extends CSharpExpressionImpl impleme
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return new CSharpPointerTypeRef(this, childByType.toTypeRef());
+		return new CSharpPointerTypeRef(childByType.toTypeRef());
 	}
 }

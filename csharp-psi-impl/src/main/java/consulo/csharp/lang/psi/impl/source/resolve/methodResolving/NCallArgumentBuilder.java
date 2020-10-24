@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi.impl.source.resolve.methodResolving;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Trinity;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.SmartList;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
@@ -65,7 +65,7 @@ public class NCallArgumentBuilder
 
 	@Nonnull
 	@RequiredReadAction
-	public static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull CSharpSimpleParameterInfo[] parameterInfos, @Nonnull PsiElement scope)
+	public static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull CSharpSimpleParameterInfo[] parameterInfos, @Nonnull GlobalSearchScope scope)
 	{
 		return buildCallArguments(callArguments, scope, new SimpleParameterResolveContext(parameterInfos));
 	}
@@ -73,23 +73,25 @@ public class NCallArgumentBuilder
 	@Nonnull
 	@RequiredReadAction
 	public static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments,
-			@Nonnull DotNetParameterListOwner parameterListOwner,
-			@Nonnull PsiElement scope,
-			boolean resolveFromParent)
+														 @Nonnull DotNetParameterListOwner parameterListOwner,
+														 @Nonnull GlobalSearchScope scope,
+														 boolean resolveFromParent)
 	{
-		return buildCallArguments(callArguments, scope, new MethodParameterResolveContext(parameterListOwner, scope, resolveFromParent));
+		return buildCallArguments(callArguments, scope, new MethodParameterResolveContext(parameterListOwner, resolveFromParent));
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope)
+	public static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull GlobalSearchScope scope)
 	{
 		return buildCallArguments(callArguments, parameterListOwner, scope, false);
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	private static <T> List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull PsiElement scope, @Nonnull ParameterResolveContext<T> context)
+	private static <T> List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments,
+															  @Nonnull GlobalSearchScope implicitCastResolveScope,
+															  @Nonnull ParameterResolveContext<T> context)
 	{
 		List<NCallArgument> list = new ArrayList<>(context.getParametersSize());
 
@@ -148,13 +150,13 @@ public class NCallArgumentBuilder
 						else
 						{
 							// if expression is like inner params type
-							if(CSharpTypeUtil.isInheritableWithImplicit(context.getInnerParamsParameterTypeRef(), expressionTypeRef, scope))
+							if(CSharpTypeUtil.isInheritableWithImplicit(context.getInnerParamsParameterTypeRef(), expressionTypeRef, implicitCastResolveScope))
 							{
 								// store to params list
 								paramsArguments.add(argument);
 							}
 							// if params type equal expression parameter pull it as argument of parameter
-							else if(CSharpTypeUtil.isInheritableWithImplicit(context.getParamsParameterTypeRef(), expressionTypeRef, scope))
+							else if(CSharpTypeUtil.isInheritableWithImplicit(context.getParamsParameterTypeRef(), expressionTypeRef, implicitCastResolveScope))
 							{
 								list.add(new NCallArgument(expressionTypeRef, argument, paramsParameter));
 							}
@@ -183,13 +185,13 @@ public class NCallArgumentBuilder
 						else
 						{
 							// if expression is like inner params type
-							if(CSharpTypeUtil.isInheritableWithImplicit(context.getInnerParamsParameterTypeRef(), expressionTypeRef, scope))
+							if(CSharpTypeUtil.isInheritableWithImplicit(context.getInnerParamsParameterTypeRef(), expressionTypeRef, implicitCastResolveScope))
 							{
 								// store to params list
 								paramsArguments.add(argument);
 							}
 							// if params type equal expression parameter pull it as argument of parameter
-							else if(CSharpTypeUtil.isInheritableWithImplicit(context.getParamsParameterTypeRef(), expressionTypeRef, scope))
+							else if(CSharpTypeUtil.isInheritableWithImplicit(context.getParamsParameterTypeRef(), expressionTypeRef, implicitCastResolveScope))
 							{
 								list.add(new NCallArgument(expressionTypeRef, argument, paramsParameter));
 							}
@@ -293,7 +295,10 @@ public class NCallArgumentBuilder
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope, boolean resolveFromParent)
+	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgument[] callArguments,
+												 @Nonnull DotNetParameterListOwner parameterListOwner,
+												 @Nonnull GlobalSearchScope scope,
+												 boolean resolveFromParent)
 	{
 		List<NCallArgument> list = buildCallArguments(callArguments, parameterListOwner, scope, resolveFromParent);
 		return calc(list, scope);
@@ -301,14 +306,14 @@ public class NCallArgumentBuilder
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope)
+	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull GlobalSearchScope scope)
 	{
 		return calc(callArguments, parameterListOwner, scope, false);
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull CSharpSimpleParameterInfo[] p, @Nonnull PsiElement scope)
+	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull CSharpSimpleParameterInfo[] p, @Nonnull GlobalSearchScope scope)
 	{
 		List<NCallArgument> list = buildCallArguments(callArgumentListOwner.getCallArguments(), scope, new SimpleParameterResolveContext(p));
 		return calc(list, scope);
@@ -316,7 +321,7 @@ public class NCallArgumentBuilder
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull DotNetTypeRef[] expressionTypeRefs, @Nonnull DotNetTypeRef[] parameterTypeRefs, @Nonnull PsiElement scope)
+	public static MethodResolvePriorityInfo calc(@Nonnull DotNetTypeRef[] expressionTypeRefs, @Nonnull DotNetTypeRef[] parameterTypeRefs, @Nonnull GlobalSearchScope scope)
 	{
 		List<NCallArgument> list = buildCallArguments(expressionTypeRefs, parameterTypeRefs);
 		return calc(list, scope);
@@ -324,7 +329,10 @@ public class NCallArgumentBuilder
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull DotNetTypeRef[] expressionTypeRefs, @Nonnull DotNetTypeRef[] parameterTypeRefs, @Nonnull PsiElement scope, boolean disableNullableCheck)
+	public static MethodResolvePriorityInfo calc(@Nonnull DotNetTypeRef[] expressionTypeRefs,
+												 @Nonnull DotNetTypeRef[] parameterTypeRefs,
+												 @Nonnull GlobalSearchScope scope,
+												 boolean disableNullableCheck)
 	{
 		List<NCallArgument> list = buildCallArguments(expressionTypeRefs, parameterTypeRefs);
 		return calc(list, scope, disableNullableCheck);
@@ -332,7 +340,7 @@ public class NCallArgumentBuilder
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull PsiElement scope)
+	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull GlobalSearchScope scope)
 	{
 		List<NCallArgument> list = buildCallArguments(callArgumentListOwner.getCallArguments(), parameterListOwner, scope);
 		return calc(list, scope);
@@ -340,21 +348,21 @@ public class NCallArgumentBuilder
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull List<NCallArgument> arguments, @Nonnull PsiElement scope)
+	public static MethodResolvePriorityInfo calc(@Nonnull List<NCallArgument> arguments, @Nonnull GlobalSearchScope scope)
 	{
 		return calc(arguments, scope, false);
 	}
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull List<NCallArgument> arguments, @Nonnull PsiElement scope, boolean disableNullElementCheck)
+	public static MethodResolvePriorityInfo calc(@Nonnull List<NCallArgument> arguments, @Nonnull GlobalSearchScope castResolveScope, boolean disableNullElementCheck)
 	{
 		int weight = 0;
 		boolean valid = true;
 
 		for(NCallArgument argument : arguments)
 		{
-			switch(argument.calcValid(scope, disableNullElementCheck))
+			switch(argument.calcValid(castResolveScope, disableNullElementCheck))
 			{
 				case NCallArgument.EQUAL:
 					weight -= 50000;

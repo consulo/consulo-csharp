@@ -16,7 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
@@ -38,9 +40,9 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRefWithCachedResult imp
 {
 	private final CSharpElementGroup<?> myElementGroup;
 
-	public CSharpElementGroupTypeRef(CSharpElementGroup<?> elementGroup)
+	public CSharpElementGroupTypeRef(Project project, GlobalSearchScope scope, CSharpElementGroup<?> elementGroup)
 	{
-		super(elementGroup.getProject());
+		super(project, scope);
 		myElementGroup = elementGroup;
 	}
 
@@ -63,7 +65,7 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRefWithCachedResult imp
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another, PsiElement scope)
+	public DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another)
 	{
 		DotNetTypeResolveResult typeResolveResult = another.resolve();
 		if(typeResolveResult instanceof CSharpLambdaResolveResult)
@@ -76,11 +78,11 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRefWithCachedResult imp
 				{
 					DotNetTypeRef[] methodParameterTypeRef = ((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs();
 
-					MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(parameterTypeRefs, methodParameterTypeRef, scope, true);
+					MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(parameterTypeRefs, methodParameterTypeRef, getResolveScope(), true);
 
 					if(calc.isValidResult())
 					{
-						return new CSharpLambdaTypeRef(scope, null, CSharpLikeMethodDeclarationImplUtil.getParametersInfos((DotNetLikeMethodDeclaration) psiElement), ((DotNetLikeMethodDeclaration)
+						return new CSharpLambdaTypeRef(myProject, getResolveScope(), null, CSharpLikeMethodDeclarationImplUtil.getParametersInfos((DotNetLikeMethodDeclaration) psiElement), ((DotNetLikeMethodDeclaration)
 								psiElement).getReturnTypeRef());
 					}
 				}

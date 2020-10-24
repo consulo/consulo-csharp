@@ -53,7 +53,7 @@ public class ReturnStatementExpression extends Expression
 			return new TextResult("");
 		}
 
-		String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(element.getReturnTypeRef(), element);
+		String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(element.getReturnTypeRef());
 		if(defaultValueForType != null)
 		{
 			return new TextResult("return " + defaultValueForType + ";");

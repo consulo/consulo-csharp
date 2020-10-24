@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAnonymFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
@@ -31,9 +32,8 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.resolve.SimpleTypeResolveResult;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -68,11 +68,11 @@ public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	private final PsiFile myContainingFile;
-	private CSharpFieldOrPropertySet[] mySets;
+	private final CSharpFieldOrPropertySet[] mySets;
 
 	public CSharpAnonymTypeRef(PsiFile containingFile, CSharpFieldOrPropertySet[] sets)
 	{
-		super(containingFile.getProject());
+		super(containingFile.getProject(), containingFile.getResolveScope());
 		myContainingFile = containingFile;
 		mySets = sets;
 	}
@@ -109,11 +109,11 @@ public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 	@RequiredReadAction
 	private DotNetTypeDeclaration createTypeDeclaration()
 	{
-		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(myContainingFile);
+		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(getProject(), getResolveScope());
 		builder.addModifier(CSharpModifier.PUBLIC);
 		builder.withParent(myContainingFile);
 		builder.withType(CSharpLightTypeDeclarationBuilder.Type.STRUCT);
-		builder.addExtendType(new CSharpTypeRefByQName(myContainingFile, DotNetTypes.System.ValueType));
+		builder.addExtendType(new CSharpTypeRefByQName(getProject(), getResolveScope(), DotNetTypes.System.ValueType));
 
 		for(CSharpFieldOrPropertySet set : mySets)
 		{
@@ -125,11 +125,11 @@ public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 
 			DotNetExpression valueReferenceExpression = set.getValueExpression();
 
-			SetField fieldBuilder = new SetField(myContainingFile.getProject(), set);
+			SetField fieldBuilder = new SetField(getProject(), set);
 
 			if(valueReferenceExpression == null)
 			{
-				fieldBuilder.withTypeRef(new CSharpTypeRefByQName(myContainingFile, DotNetTypes.System.Object));
+				fieldBuilder.withTypeRef(new CSharpTypeRefByQName(getProject(), getResolveScope(), DotNetTypes.System.Object));
 			}
 			else
 			{

@@ -103,7 +103,7 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
-		return new CSharpLambdaTypeRef(this, null, getParameterInfos(), DotNetTypeRef.AUTO_TYPE, getParameterList() == null);
+		return new CSharpLambdaTypeRef(getProject(), getResolveScope(), null, getParameterInfos(), DotNetTypeRef.AUTO_TYPE, getParameterList() == null);
 	}
 
 	@RequiredReadAction

@@ -66,7 +66,7 @@ public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
 			}
 			CSharpLambdaParameter parameter = parameters[i];
 
-			builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameter.toTypeRef(true), lambdaExpression)).append(" ").append(parameter.getName());
+			builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameter.toTypeRef(true))).append(" ").append(parameter.getName());
 		}
 		builder.append(") { ");
 

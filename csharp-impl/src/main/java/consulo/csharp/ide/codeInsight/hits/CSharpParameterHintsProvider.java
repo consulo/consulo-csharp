@@ -98,7 +98,7 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 	}
 
 	@RequiredReadAction
-	private static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull PsiElement callable, @Nonnull PsiElement scope)
+	private static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull PsiElement callable, @Nonnull PsiElement scopedElement)
 	{
 		if(callable instanceof DotNetVariable)
 		{
@@ -106,12 +106,12 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 			DotNetTypeResolveResult resolve = ref.resolve();
 			if(resolve instanceof CSharpLambdaResolveResult)
 			{
-				return NCallArgumentBuilder.buildCallArguments(callArguments, ((CSharpLambdaResolveResult) resolve).getParameterInfos(), scope);
+				return NCallArgumentBuilder.buildCallArguments(callArguments, ((CSharpLambdaResolveResult) resolve).getParameterInfos(), scopedElement.getResolveScope());
 			}
 		}
 		else if(callable instanceof DotNetParameterListOwner)
 		{
-			return NCallArgumentBuilder.buildCallArguments(callArguments, (DotNetParameterListOwner) callable, scope);
+			return NCallArgumentBuilder.buildCallArguments(callArguments, (DotNetParameterListOwner) callable, scopedElement.getResolveScope());
 		}
 
 		return Collections.emptyList();

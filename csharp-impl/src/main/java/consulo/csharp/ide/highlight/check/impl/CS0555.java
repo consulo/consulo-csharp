@@ -16,9 +16,7 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -27,7 +25,9 @@ import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.util.ArrayUtil2;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -47,7 +47,7 @@ public class CS0555 extends CompilerCheck<CSharpConversionMethodDeclaration>
 			return null;
 		}
 
-		if(CSharpTypeUtil.isTypeEqual(typeRef1, typeRef2, element))
+		if(CSharpTypeUtil.isTypeEqual(typeRef1, typeRef2))
 		{
 			PsiElement operatorElement = element.getOperatorElement();
 			if(operatorElement == null)

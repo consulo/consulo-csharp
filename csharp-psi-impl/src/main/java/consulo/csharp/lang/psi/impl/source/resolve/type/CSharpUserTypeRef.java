@@ -16,11 +16,10 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -34,6 +33,9 @@ import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -80,13 +82,17 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		private final NotNullLazyValue<CSharpSimpleParameterInfo[]> myParameterInfosValue;
 		private final NotNullLazyValue<PsiElement> myElementValue;
 		private final NotNullLazyValue<DotNetTypeRef> myReturnTypRefValue;
-		private final PsiElement myScope;
+		@Nonnull
+		private final Project myProject;
+		@Nonnull
+		private final GlobalSearchScope myResolveScope;
 
 		@RequiredReadAction
-		public LambdaResult(@Nonnull PsiElement scope, @Nonnull CSharpMethodDeclaration element, @Nonnull DotNetGenericExtractor extractor)
+		public LambdaResult(@Nonnull Project project, @Nonnull GlobalSearchScope resolveScope, @Nonnull CSharpMethodDeclaration element, @Nonnull DotNetGenericExtractor extractor)
 		{
 			super(element, extractor);
-			myScope = scope;
+			myProject = project;
+			myResolveScope = resolveScope;
 			myParameterInfosValue = NotNullLazyValue.createValue(() ->
 			{
 				CSharpSimpleParameterInfo[] parameterInfos = myElement.getParameterInfos();
@@ -98,13 +104,13 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 				for(int i = 0; i < parameterInfos.length; i++)
 				{
 					CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
-					DotNetTypeRef typeRef = GenericUnwrapTool.exchangeTypeRef(parameterInfo.getTypeRef(), getGenericExtractor(), myScope);
+					DotNetTypeRef typeRef = GenericUnwrapTool.exchangeTypeRef(parameterInfo.getTypeRef(), getGenericExtractor());
 					temp[i] = new CSharpSimpleParameterInfo(parameterInfo.getIndex(), parameterInfo.getName(), parameterInfo.getElement(), typeRef);
 				}
 				return temp;
 			});
 			myElementValue = NotNullLazyValue.createValue(() -> CSharpLambdaResolveResultUtil.createTypeFromDelegate(myElement, myExtractor));
-			myReturnTypRefValue = NotNullLazyValue.createValue(() -> GenericUnwrapTool.exchangeTypeRef(myElement.getReturnTypeRef(), getGenericExtractor(), scope));
+			myReturnTypRefValue = NotNullLazyValue.createValue(() -> GenericUnwrapTool.exchangeTypeRef(myElement.getReturnTypeRef(), getGenericExtractor()));
 		}
 
 		@Nonnull
@@ -156,7 +162,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 
 	public CSharpUserTypeRef(@Nonnull CSharpReferenceExpression referenceExpression)
 	{
-		super(referenceExpression.getProject());
+		super(referenceExpression.getProject(), referenceExpression.getResolveScope());
 		myReferenceExpression = referenceExpression;
 	}
 
@@ -195,7 +201,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		PsiElement resolve = myReferenceExpression.resolve();
 		if(resolve instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) resolve).isDelegate())
 		{
-			return new LambdaResult(myReferenceExpression, (CSharpMethodDeclaration) resolve, createExtractor(resolve));
+			return new LambdaResult(myReferenceExpression.getProject(), myReferenceExpression.getResolveScope(), (CSharpMethodDeclaration) resolve, createExtractor(resolve));
 		}
 		else if(resolve instanceof CSharpTypeDefStatement)
 		{

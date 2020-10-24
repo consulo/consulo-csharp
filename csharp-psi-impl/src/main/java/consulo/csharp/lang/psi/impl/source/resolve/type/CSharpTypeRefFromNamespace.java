@@ -16,12 +16,14 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.resolve.SimpleTypeResolveResult;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,9 +33,9 @@ public class CSharpTypeRefFromNamespace extends DotNetTypeRefWithCachedResult
 {
 	private DotNetNamespaceAsElement myNamespaceAsElement;
 
-	public CSharpTypeRefFromNamespace(DotNetNamespaceAsElement namespaceAsElement)
+	public CSharpTypeRefFromNamespace(DotNetNamespaceAsElement namespaceAsElement, GlobalSearchScope resolveScope)
 	{
-		super(namespaceAsElement.getProject());
+		super(namespaceAsElement.getProject(), resolveScope);
 		myNamespaceAsElement = namespaceAsElement;
 	}
 

@@ -16,20 +16,16 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.BitUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetParameterListOwner;
-import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -41,19 +37,19 @@ public class CSharpElementCompareUtil
 	public static final int CHECK_VIRTUAL_IMPL_TYPE = 1 << 1;
 
 	@RequiredReadAction
-	public static boolean isEqual(@Nonnull PsiElement element, @Nonnull PsiElement element2, @Nonnull PsiElement scope)
+	public static boolean isEqual(@Nonnull PsiElement element, @Nonnull PsiElement element2)
 	{
-		return isEqual(element, element2, 0, scope);
+		return isEqual(element, element2, 0);
 	}
 
 	@RequiredReadAction
-	public static boolean isEqualWithVirtualImpl(@Nonnull PsiElement element, @Nonnull PsiElement element2, @Nonnull PsiElement scope)
+	public static boolean isEqualWithVirtualImpl(@Nonnull PsiElement element, @Nonnull PsiElement element2)
 	{
-		return isEqual(element, element2, CHECK_VIRTUAL_IMPL_TYPE, scope);
+		return isEqual(element, element2, CHECK_VIRTUAL_IMPL_TYPE);
 	}
 
 	@RequiredReadAction
-	public static boolean isEqual(@Nonnull PsiElement element, @Nonnull PsiElement element2, int flags, @Nonnull PsiElement scope)
+	public static boolean isEqual(@Nonnull PsiElement element, @Nonnull PsiElement element2, int flags)
 	{
 		if(element == element2)
 		{
@@ -69,13 +65,12 @@ public class CSharpElementCompareUtil
 				return false;
 			}
 
-			if(!compareVirtualImpl(element, element2, flags, scope))
+			if(!compareVirtualImpl(element, element2, flags))
 			{
 				return false;
 			}
 
-			if(BitUtil.isSet(flags, CHECK_RETURN_TYPE) && !CSharpTypeUtil.isTypeEqual(((CSharpPropertyDeclaration) element).toTypeRef(false), ((CSharpPropertyDeclaration) element2).toTypeRef(false),
-					scope))
+			if(BitUtil.isSet(flags, CHECK_RETURN_TYPE) && !CSharpTypeUtil.isTypeEqual(((CSharpPropertyDeclaration) element).toTypeRef(false), ((CSharpPropertyDeclaration) element2).toTypeRef(false)))
 			{
 				return false;
 			}
@@ -90,13 +85,12 @@ public class CSharpElementCompareUtil
 				return false;
 			}
 
-			if(!compareVirtualImpl(element, element2, flags, scope))
+			if(!compareVirtualImpl(element, element2, flags))
 			{
 				return false;
 			}
 
-			if(BitUtil.isSet(flags, CHECK_RETURN_TYPE) && !CSharpTypeUtil.isTypeEqual(((CSharpEventDeclaration) element).toTypeRef(false), ((CSharpEventDeclaration) element2).toTypeRef(false),
-					scope))
+			if(BitUtil.isSet(flags, CHECK_RETURN_TYPE) && !CSharpTypeUtil.isTypeEqual(((CSharpEventDeclaration) element).toTypeRef(false), ((CSharpEventDeclaration) element2).toTypeRef(false)))
 			{
 				return false;
 			}
@@ -130,35 +124,35 @@ public class CSharpElementCompareUtil
 			{
 				return false;
 			}
-			return compareParameterList(element, element2, scope);
+			return compareParameterList(element, element2);
 		}
 
 		if(element instanceof CSharpIndexMethodDeclaration && element2 instanceof CSharpIndexMethodDeclaration)
 		{
-			if(!compareVirtualImpl(element, element2, flags, scope))
+			if(!compareVirtualImpl(element, element2, flags))
 			{
 				return false;
 			}
 
-			if(!compareReturnTypeRef(element, element2, flags, scope))
+			if(!compareReturnTypeRef(element, element2, flags))
 			{
 				return false;
 			}
 
-			return compareParameterList(element, element2, scope);
+			return compareParameterList(element, element2);
 		}
 
 		if(element instanceof CSharpConversionMethodDeclaration && element2 instanceof CSharpConversionMethodDeclaration)
 		{
-			if(!CSharpTypeUtil.isTypeEqual(((CSharpConversionMethodDeclaration) element).getConversionTypeRef(), ((CSharpConversionMethodDeclaration) element2).getConversionTypeRef(), scope))
+			if(!CSharpTypeUtil.isTypeEqual(((CSharpConversionMethodDeclaration) element).getConversionTypeRef(), ((CSharpConversionMethodDeclaration) element2).getConversionTypeRef()))
 			{
 				return false;
 			}
-			if(!CSharpTypeUtil.isTypeEqual(((CSharpConversionMethodDeclaration) element).getReturnTypeRef(), ((CSharpConversionMethodDeclaration) element2).getReturnTypeRef(), scope))
+			if(!CSharpTypeUtil.isTypeEqual(((CSharpConversionMethodDeclaration) element).getReturnTypeRef(), ((CSharpConversionMethodDeclaration) element2).getReturnTypeRef()))
 			{
 				return false;
 			}
-			return compareParameterList(element, element2, scope);
+			return compareParameterList(element, element2);
 		}
 
 		if(element instanceof CSharpMethodDeclaration && element2 instanceof CSharpMethodDeclaration)
@@ -173,23 +167,23 @@ public class CSharpElementCompareUtil
 				return false;
 			}
 
-			if(!compareReturnTypeRef(element, element2, flags, scope))
+			if(!compareReturnTypeRef(element, element2, flags))
 			{
 				return false;
 			}
 
-			if(!compareVirtualImpl(element, element2, flags, scope))
+			if(!compareVirtualImpl(element, element2, flags))
 			{
 				return false;
 			}
 
-			return compareParameterList(element, element2, scope);
+			return compareParameterList(element, element2);
 		}
 		return false;
 	}
 
 	@RequiredReadAction
-	private static boolean compareReturnTypeRef(@Nonnull PsiElement o1, @Nonnull PsiElement o2, int flags, @Nonnull PsiElement scope)
+	private static boolean compareReturnTypeRef(@Nonnull PsiElement o1, @Nonnull PsiElement o2, int flags)
 	{
 		if(!BitUtil.isSet(flags, CHECK_RETURN_TYPE))
 		{
@@ -197,11 +191,11 @@ public class CSharpElementCompareUtil
 		}
 		DotNetTypeRef returnTypeRef1 = ((DotNetLikeMethodDeclaration) o1).getReturnTypeRef();
 		DotNetTypeRef returnTypeRef2 = ((DotNetLikeMethodDeclaration) o2).getReturnTypeRef();
-		return CSharpTypeUtil.isTypeEqual(returnTypeRef1, returnTypeRef2, scope);
+		return CSharpTypeUtil.isTypeEqual(returnTypeRef1, returnTypeRef2);
 	}
 
 	@RequiredReadAction
-	private static boolean compareVirtualImpl(@Nonnull PsiElement o1, @Nonnull PsiElement o2, int flags, @Nonnull PsiElement scope)
+	private static boolean compareVirtualImpl(@Nonnull PsiElement o1, @Nonnull PsiElement o2, int flags)
 	{
 		if(!BitUtil.isSet(flags, CHECK_VIRTUAL_IMPL_TYPE))
 		{
@@ -220,11 +214,11 @@ public class CSharpElementCompareUtil
 			return false;
 		}
 		// we need call getTypeRefForImplement() due light element have ref for original DotNetType but getTypeRefForImplement() ill return another
-		return CSharpTypeUtil.isTypeEqual(((DotNetVirtualImplementOwner) o1).getTypeRefForImplement(), ((DotNetVirtualImplementOwner) o2).getTypeRefForImplement(), scope);
+		return CSharpTypeUtil.isTypeEqual(((DotNetVirtualImplementOwner) o1).getTypeRefForImplement(), ((DotNetVirtualImplementOwner) o2).getTypeRefForImplement());
 	}
 
 	@RequiredReadAction
-	private static boolean compareParameterList(@Nonnull PsiElement listOwner, @Nonnull PsiElement listOwner2, @Nonnull PsiElement scope)
+	private static boolean compareParameterList(@Nonnull PsiElement listOwner, @Nonnull PsiElement listOwner2)
 	{
 		DotNetTypeRef[] parameterTypeRefs = ((DotNetParameterListOwner) listOwner).getParameterTypeRefs();
 		DotNetTypeRef[] parameterTypeRefs1 = ((DotNetParameterListOwner) listOwner2).getParameterTypeRefs();
@@ -238,7 +232,7 @@ public class CSharpElementCompareUtil
 			DotNetTypeRef parameterTypeRef = parameterTypeRefs[i];
 			DotNetTypeRef parameterTypeRef1 = parameterTypeRefs1[i];
 
-			if(!CSharpTypeUtil.isTypeEqual(parameterTypeRef, parameterTypeRef1, scope))
+			if(!CSharpTypeUtil.isTypeEqual(parameterTypeRef, parameterTypeRef1))
 			{
 				return false;
 			}

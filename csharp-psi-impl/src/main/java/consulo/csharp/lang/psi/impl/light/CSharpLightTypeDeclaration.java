@@ -139,7 +139,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 		for(int i = 0; i < extendTypeRefs.length; i++)
 		{
 			DotNetTypeRef extendTypeRef = extendTypeRefs[i];
-			typeRefs[i] = GenericUnwrapTool.exchangeTypeRef(extendTypeRef, myExtractor, myOriginal);
+			typeRefs[i] = GenericUnwrapTool.exchangeTypeRef(extendTypeRef, myExtractor);
 		}
 		return typeRefs;
 	}

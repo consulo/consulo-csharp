@@ -16,11 +16,12 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -41,7 +42,7 @@ public class NErrorCallArgument extends NCallArgument
 
 	@RequiredReadAction
 	@Override
-	public int calcValid(@Nonnull PsiElement scope, boolean disableNullableElementCheck)
+	public int calcValid(@Nonnull GlobalSearchScope implicitCastResolveScope, boolean disableNullableElementCheck)
 	{
 		return FAIL;
 	}

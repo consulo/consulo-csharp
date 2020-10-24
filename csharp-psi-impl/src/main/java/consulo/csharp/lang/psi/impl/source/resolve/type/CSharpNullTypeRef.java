@@ -16,20 +16,15 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetPsiSearcher;
-import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import consulo.dotnet.resolve.SimpleTypeResolveResult;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
+import consulo.dotnet.resolve.*;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -37,19 +32,10 @@ import com.intellij.psi.search.GlobalSearchScope;
  */
 public class CSharpNullTypeRef extends DotNetTypeRefWithCachedResult
 {
-	private GlobalSearchScope myScope;
-
-	@RequiredReadAction
-	public CSharpNullTypeRef(@Nonnull PsiElement element)
-	{
-		this(element.getProject(), element.getResolveScope());
-	}
-
 	@RequiredReadAction
 	public CSharpNullTypeRef(@Nonnull Project project, @Nonnull GlobalSearchScope scope)
 	{
-		super(project);
-		myScope = scope;
+		super(project, scope);
 	}
 
 	@RequiredReadAction
@@ -57,7 +43,7 @@ public class CSharpNullTypeRef extends DotNetTypeRefWithCachedResult
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(getProject()).findType(DotNetTypes.System.Object, myScope, CSharpTransform.INSTANCE);
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(getProject()).findType(DotNetTypes.System.Object, myResolveScope, CSharpTransform.INSTANCE);
 		if(type == null)
 		{
 			return DotNetTypeResolveResult.EMPTY;

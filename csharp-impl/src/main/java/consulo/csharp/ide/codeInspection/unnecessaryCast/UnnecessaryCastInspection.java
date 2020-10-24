@@ -16,8 +16,11 @@
 
 package consulo.csharp.ide.codeInspection.unnecessaryCast;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.codeInspection.LocalInspectionTool;
+import com.intellij.codeInspection.LocalInspectionToolSession;
+import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.psi.PsiElementVisitor;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -26,11 +29,8 @@ import consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.LocalInspectionToolSession;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.psi.PsiElementVisitor;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -57,7 +57,7 @@ public class UnnecessaryCastInspection extends LocalInspectionTool
 				DotNetTypeRef innerType = innerExpression.toTypeRef(false);
 				DotNetTypeRef castType = expression.toTypeRef(false);
 
-				if(CSharpTypeUtil.isInheritable(innerType, castType, expression) && CSharpTypeUtil.isInheritable(castType, innerType, expression))
+				if(CSharpTypeUtil.isInheritable(innerType, castType) && CSharpTypeUtil.isInheritable(castType, innerType))
 				{
 					holder.registerProblem(expression.getType(), "Unnecessary cast", ProblemHighlightType.LIKE_UNUSED_SYMBOL);
 				}
@@ -79,7 +79,7 @@ public class UnnecessaryCastInspection extends LocalInspectionTool
 					return;
 				}
 
-				if(CSharpTypeUtil.isTypeEqual(innerExpression.toTypeRef(true), type.toTypeRef(), expression))
+				if(CSharpTypeUtil.isTypeEqual(innerExpression.toTypeRef(true), type.toTypeRef()))
 				{
 					holder.registerProblem(expression.getAsKeyword(), "Unnecessary 'as' expression", ProblemHighlightType.LIKE_UNUSED_SYMBOL);
 				}

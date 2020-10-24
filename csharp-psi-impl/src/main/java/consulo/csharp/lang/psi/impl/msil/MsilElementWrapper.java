@@ -79,7 +79,7 @@ public abstract class MsilElementWrapper<T extends PsiElement> extends CSharpLig
 
 	protected boolean isEquivalentTo(PsiElement o1, PsiElement o2)
 	{
-		return CSharpElementCompareUtil.isEqual(o1, o2, CSharpElementCompareUtil.CHECK_RETURN_TYPE | CSharpElementCompareUtil.CHECK_VIRTUAL_IMPL_TYPE, myOriginal);
+		return CSharpElementCompareUtil.isEqual(o1, o2, CSharpElementCompareUtil.CHECK_RETURN_TYPE | CSharpElementCompareUtil.CHECK_VIRTUAL_IMPL_TYPE);
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public abstract class MsilElementWrapper<T extends PsiElement> extends CSharpLig
 							// check if parent type is equal to self type
 							if(elementParent instanceof CSharpTypeDeclaration && wrapperParent instanceof CSharpTypeDeclaration)
 							{
-								if(!CSharpElementCompareUtil.isEqual(elementParent, wrapperParent, myOriginal))
+								if(!CSharpElementCompareUtil.isEqual(elementParent, wrapperParent))
 								{
 									return;
 								}

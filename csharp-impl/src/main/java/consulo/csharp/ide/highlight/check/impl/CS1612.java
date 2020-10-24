@@ -161,8 +161,8 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 
 			StringBuilder builder = new StringBuilder();
 			String varName = ContainerUtil.getFirstItem(suggestedVariableNames);
-			builder.append(CSharpTypeRefPresentationUtil.buildShortText(targetSet.toTypeRef(true), element)).append(" ").append(varName).append(" = ");
-			builder.append("new ").append(CSharpTypeRefPresentationUtil.buildShortText(targetSet.toTypeRef(true), element)).append("();\n");
+			builder.append(CSharpTypeRefPresentationUtil.buildShortText(targetSet.toTypeRef(true))).append(" ").append(varName).append(" = ");
+			builder.append("new ").append(CSharpTypeRefPresentationUtil.buildShortText(targetSet.toTypeRef(true))).append("();\n");
 
 			builder.append(varName).append(".").append(element.getName()).append(" ").append(myOperatorText).append(" ").append(value.getText()).append(";\n");
 

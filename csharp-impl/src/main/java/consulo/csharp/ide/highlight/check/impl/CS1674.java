@@ -16,8 +16,7 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -29,7 +28,9 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -66,10 +67,10 @@ public class CS1674 extends CompilerCheck<CSharpUsingStatementImpl>
 			return null;
 		}
 
-		if(!CSharpTypeUtil.isInheritable(new CSharpTypeRefByQName(element, DotNetTypes.System.IDisposable), usingTypeRef, element))
+		if(!CSharpTypeUtil.isInheritable(new CSharpTypeRefByQName(element, DotNetTypes.System.IDisposable), usingTypeRef))
 		{
 			assert highlightElement != null;
-			return newBuilder(highlightElement, formatTypeRef(usingTypeRef, element));
+			return newBuilder(highlightElement, formatTypeRef(usingTypeRef));
 		}
 		return null;
 	}

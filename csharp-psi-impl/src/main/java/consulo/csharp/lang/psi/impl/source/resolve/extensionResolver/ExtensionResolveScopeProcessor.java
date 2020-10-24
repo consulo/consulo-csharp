@@ -122,7 +122,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 
 				DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, inferenceResult.getExtractor());
 
-				if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
+				if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression.getResolveScope()))
 				{
 					return true;
 				}
@@ -165,7 +165,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 
 					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(methodDeclaration, inferenceResult.getExtractor());
 
-					if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
+					if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression.getResolveScope()))
 					{
 						continue;
 					}
@@ -251,7 +251,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 		DotNetParameter[] parameters = owner.getParameters();
 		assert parameters.length != 0;
 		assert parameters[0].hasModifier(CSharpModifier.THIS);
-		return GenericUnwrapTool.exchangeTypeRef(parameters[0].toTypeRef(false), extractor, myExpression);
+		return GenericUnwrapTool.exchangeTypeRef(parameters[0].toTypeRef(false), extractor);
 	}
 
 	@RequiredReadAction

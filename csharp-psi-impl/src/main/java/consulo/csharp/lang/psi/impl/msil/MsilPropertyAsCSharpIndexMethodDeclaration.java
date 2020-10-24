@@ -95,7 +95,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 			return null;
 		});
 
-		myReturnTypeRefValue = NotNullLazyValue.createValue(() -> MsilToCSharpUtil.extractToCSharp(myOriginal.toTypeRef(false), myOriginal));
+		myReturnTypeRefValue = NotNullLazyValue.createValue(() -> MsilToCSharpUtil.extractToCSharp(myOriginal.toTypeRef(false)));
 		myParameterTypeRefsValue = NotNullLazyValue.createValue(() ->
 		{
 			DotNetParameter[] parameters = getParameters();

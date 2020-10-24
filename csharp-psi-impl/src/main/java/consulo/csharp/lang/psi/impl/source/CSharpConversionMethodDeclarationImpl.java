@@ -16,21 +16,17 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
-import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -67,7 +63,7 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpStubLikeMethodD
 			return null;
 		}
 
-		return CSharpTypeRefPresentationUtil.buildText(getReturnTypeRef(), this);
+		return CSharpTypeRefPresentationUtil.buildText(getReturnTypeRef());
 	}
 
 	@Override

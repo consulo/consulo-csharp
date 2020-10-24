@@ -101,7 +101,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 					arguments = ((CSharpUserType) type).getReferenceExpression().getTypeArgumentListRefs();
 					PsiElement psiElement = CSharpReferenceExpressionImplUtil.resolveByTypeKind(((CSharpUserType) type).getReferenceExpression(),
 							false);
-					typeRef = CSharpReferenceExpressionImplUtil.toTypeRef(psiElement);
+					typeRef = CSharpReferenceExpressionImplUtil.toTypeRef(getResolveScope(), psiElement);
 				}
 				else
 				{
@@ -110,7 +110,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 
 				if(arguments.length != 0)
 				{
-					typeRef = new CSharpGenericWrapperTypeRef(getProject(), typeRef, arguments);
+					typeRef = new CSharpGenericWrapperTypeRef(getProject(), getResolveScope(), typeRef, arguments);
 				}
 			}
 			else
@@ -120,7 +120,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 
 			for(CSharpNewArrayLengthImpl length : arrayLengths)
 			{
-				typeRef = new CSharpArrayTypeRef(this, typeRef, length.getDimensionSize());
+				typeRef = new CSharpArrayTypeRef(typeRef, length.getDimensionSize());
 			}
 			return typeRef;
 		}
@@ -170,7 +170,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 		}
 		//TODO [VISTALL] better calc
 		DotNetTypeRef firstItem = ContainerUtil.getFirstItem(typeRefs);
-		return new CSharpArrayTypeRef(newExpression, firstItem, 0);
+		return new CSharpArrayTypeRef(firstItem, 0);
 	}
 
 	@Override

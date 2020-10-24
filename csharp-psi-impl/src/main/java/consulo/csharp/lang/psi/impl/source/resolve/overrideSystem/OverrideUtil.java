@@ -149,7 +149,7 @@ public class OverrideUtil
 
 					ProgressManager.checkCanceled();
 
-					if(CSharpElementCompareUtil.isEqual(tempIterateElement, element, CSharpElementCompareUtil.CHECK_RETURN_TYPE, scopeElement))
+					if(CSharpElementCompareUtil.isEqual(tempIterateElement, element, CSharpElementCompareUtil.CHECK_RETURN_TYPE))
 					{
 						if(!overrideProcessor.elementOverride(virtualImplementOwner, (DotNetVirtualImplementOwner) tempIterateElement))
 						{
@@ -291,7 +291,7 @@ public class OverrideUtil
 			ProgressManager.checkCanceled();
 
 			DotNetVirtualImplementOwner next = listIterator.next();
-			if(!CSharpElementCompareUtil.isEqual(next, target, CSharpElementCompareUtil.CHECK_RETURN_TYPE, target))
+			if(!CSharpElementCompareUtil.isEqual(next, target, CSharpElementCompareUtil.CHECK_RETURN_TYPE))
 			{
 				listIterator.remove();
 			}
@@ -349,7 +349,7 @@ public class OverrideUtil
 					{
 						continue;
 					}
-					if(CSharpElementCompareUtil.isEqual(element, target, CSharpElementCompareUtil.CHECK_RETURN_TYPE, target))
+					if(CSharpElementCompareUtil.isEqual(element, target, CSharpElementCompareUtil.CHECK_RETURN_TYPE))
 					{
 						list.add((DotNetVirtualImplementOwner) element);
 					}

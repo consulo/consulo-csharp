@@ -432,7 +432,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		}
 		else
 		{
-			builder.append(XmlStringUtil.escapeString(CSharpTypeRefPresentationUtil.buildText(typeRef, scope)));
+			builder.append(XmlStringUtil.escapeString(CSharpTypeRefPresentationUtil.buildText(typeRef)));
 		}
 	}
 

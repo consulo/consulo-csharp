@@ -83,8 +83,8 @@ public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner>
 
 			StringBuilder builder = new StringBuilder();
 			builder.append("{\n");
-			String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(((CSharpSimpleLikeMethodAsElement) element).getReturnTypeRef(),
-					element);
+			String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(((CSharpSimpleLikeMethodAsElement) element).getReturnTypeRef()
+			);
 			if(defaultValueForType != null)
 			{
 				builder.append("return ").append(defaultValueForType).append(";\n");

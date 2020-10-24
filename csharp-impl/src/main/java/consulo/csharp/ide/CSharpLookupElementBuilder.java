@@ -143,7 +143,7 @@ public class CSharpLookupElementBuilder
 
 				String genericText = DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element);
 
-				String parameterText = genericText + "(" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), element) + " " +
+				String parameterText = genericText + "(" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef()) + " " +
 						parameter.getNotNullName(), ", ") + ")";
 
 				builder = decapitalizeLookup(builder, name);
@@ -166,7 +166,7 @@ public class CSharpLookupElementBuilder
 				{
 					builder = builder.withItemTextUnderlined(true);
 				}
-				builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(methodDeclaration.getReturnTypeRef(), element));
+				builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(methodDeclaration.getReturnTypeRef()));
 				builder = builder.withTailText(parameterText, false);
 			}
 			else
@@ -179,9 +179,9 @@ public class CSharpLookupElementBuilder
 			builder = LookupElementBuilder.create(element, "[]");
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 			final CSharpSimpleParameterInfo[] parameterInfos = ((CSharpIndexMethodDeclaration) element).getParameterInfos();
-			String parameterText = "[" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), element) + " " + parameter.getNotNullName()
+			String parameterText = "[" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef()) + " " + parameter.getNotNullName()
 					, ", ") + "]";
-			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(((CSharpIndexMethodDeclaration) element).getReturnTypeRef(), element));
+			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(((CSharpIndexMethodDeclaration) element).getReturnTypeRef()));
 			builder = builder.withPresentableText(parameterText);
 			builder = builder.withInsertHandler((context, item) ->
 			{
@@ -318,7 +318,7 @@ public class CSharpLookupElementBuilder
 			builder = LookupElementBuilder.create(name);
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
-			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(typeDefStatement.toTypeRef(), typeDefStatement));
+			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(typeDefStatement.toTypeRef()));
 		}
 		else if(element instanceof CSharpLabeledStatementImpl)
 		{
@@ -362,7 +362,7 @@ public class CSharpLookupElementBuilder
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 
-			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(variable.toTypeRef(true), variable));
+			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(variable.toTypeRef(true)));
 
 			CSharpRefTypeRef.Type refType = null;
 			if(completionParent != null)

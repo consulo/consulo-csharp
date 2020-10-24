@@ -16,18 +16,12 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.resolve.DotNetPointerTypeRef;
-import consulo.dotnet.resolve.DotNetPsiSearcher;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import consulo.dotnet.resolve.SimpleTypeResolveResult;
-import com.intellij.psi.PsiElement;
+import consulo.dotnet.resolve.*;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -35,13 +29,11 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpPointerTypeRef extends DotNetTypeRefWithCachedResult implements DotNetPointerTypeRef
 {
-	private PsiElement myScope;
-	private DotNetTypeRef myInnerTypeRef;
+	private final DotNetTypeRef myInnerTypeRef;
 
-	public CSharpPointerTypeRef(@Nonnull PsiElement scope, @Nonnull DotNetTypeRef innerTypeRef)
+	public CSharpPointerTypeRef(@Nonnull DotNetTypeRef innerTypeRef)
 	{
-		super(scope.getProject());
-		myScope = scope;
+		super(innerTypeRef.getProject(), innerTypeRef.getResolveScope());
 		myInnerTypeRef = innerTypeRef;
 	}
 
@@ -50,12 +42,12 @@ public class CSharpPointerTypeRef extends DotNetTypeRefWithCachedResult implemen
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(myScope.getProject()).findType(DotNetTypes.System.Object, myScope.getResolveScope());
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(myProject).findType(DotNetTypes.System.Object, myResolveScope);
 		if(type == null)
 		{
 			return DotNetTypeResolveResult.EMPTY;
 		}
-		return new SimpleTypeResolveResult(myScope);
+		return new SimpleTypeResolveResult(type);
 	}
 
 	@RequiredReadAction

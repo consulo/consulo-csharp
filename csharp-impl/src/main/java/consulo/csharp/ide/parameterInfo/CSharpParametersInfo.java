@@ -81,7 +81,7 @@ public class CSharpParametersInfo
 			}
 			else if(callable instanceof PsiNamedElement)
 			{
-				builder.add(CSharpTypeRefPresentationUtil.buildShortText(returnType, scope));
+				builder.add(CSharpTypeRefPresentationUtil.buildShortText(returnType));
 
 				builder.addSpace();
 
@@ -126,7 +126,7 @@ public class CSharpParametersInfo
 	@RequiredReadAction
 	private static void buildParameter(@NonLeaked ParameterPresentationBuilder<CSharpSimpleParameterInfo> builder, @Nonnull CSharpSimpleParameterInfo o, @Nonnull PsiElement scope)
 	{
-		String text = CSharpTypeRefPresentationUtil.buildShortText(o.getTypeRef(), scope);
+		String text = CSharpTypeRefPresentationUtil.buildShortText(o.getTypeRef());
 		builder.add(text);
 
 		if(o.getTypeRef() != CSharpStaticTypeRef.__ARGLIST_TYPE)

@@ -16,9 +16,7 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -34,7 +32,9 @@ import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -63,7 +63,7 @@ public class CS0155 extends CompilerCheck<DotNetElement>
 				return null;
 			}
 
-			if(!CSharpTypeUtil.isInheritable(new CSharpTypeRefByQName(element, DotNetTypes.System.Exception), expressionTypeRef, expression))
+			if(!CSharpTypeUtil.isInheritable(new CSharpTypeRefByQName(element, DotNetTypes.System.Exception), expressionTypeRef))
 			{
 				return newBuilder(element);
 			}
@@ -79,7 +79,7 @@ public class CS0155 extends CompilerCheck<DotNetElement>
 
 			DotNetTypeRef exceptionTypeRef = new CSharpTypeRefByQName(element, DotNetTypes.System.Exception);
 
-			if(!CSharpTypeUtil.isInheritable(exceptionTypeRef, ((CSharpLocalVariable) parent).toTypeRef(true), element))
+			if(!CSharpTypeUtil.isInheritable(exceptionTypeRef, ((CSharpLocalVariable) parent).toTypeRef(true)))
 			{
 				return newBuilder(element).addQuickFix(new ReplaceTypeQuickFix((DotNetType) element, exceptionTypeRef));
 			}

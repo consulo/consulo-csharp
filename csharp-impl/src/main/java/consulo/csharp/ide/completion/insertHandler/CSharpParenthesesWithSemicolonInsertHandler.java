@@ -58,8 +58,7 @@ public class CSharpParenthesesWithSemicolonInsertHandler implements InsertHandle
 		}
 
 		// for void method we always insert semicolon
-		if(isMethodLike && !(myDeclaration instanceof CSharpConstructorDeclaration) && DotNetTypeRefUtil.isVmQNameEqual(((DotNetLikeMethodDeclaration) myDeclaration).getReturnTypeRef(),
-				myDeclaration, DotNetTypes.System.Void))
+		if(isMethodLike && !(myDeclaration instanceof CSharpConstructorDeclaration) && DotNetTypeRefUtil.isVmQNameEqual(((DotNetLikeMethodDeclaration) myDeclaration).getReturnTypeRef(), DotNetTypes.System.Void))
 		{
 			if(TailType.SEMICOLON.isApplicable(context))
 			{

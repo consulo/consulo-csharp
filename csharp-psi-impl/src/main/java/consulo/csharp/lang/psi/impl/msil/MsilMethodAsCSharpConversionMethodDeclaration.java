@@ -16,9 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
@@ -29,6 +26,9 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.msil.lang.psi.MsilMethodEntry;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -41,7 +41,7 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	public MsilMethodAsCSharpConversionMethodDeclaration(PsiElement parent, MsilMethodEntry methodEntry)
 	{
 		super(parent, methodEntry);
-		myReturnTypeRefValue = NotNullLazyValue.createValue(() -> MsilToCSharpUtil.extractToCSharp(myOriginal.getReturnTypeRef(), myOriginal));
+		myReturnTypeRefValue = NotNullLazyValue.createValue(() -> MsilToCSharpUtil.extractToCSharp(myOriginal.getReturnTypeRef()));
 	}
 
 	@Override

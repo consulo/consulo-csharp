@@ -308,7 +308,7 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 		{
 			CSharpPropertyDeclaration propertyDeclaration = (CSharpPropertyDeclaration) element;
 
-			CSharpTypeRefPresentationUtil.appendTypeRef(element, builder, propertyDeclaration.toTypeRef(true), CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
+			CSharpTypeRefPresentationUtil.appendTypeRef(builder, propertyDeclaration.toTypeRef(true), CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 
 			builder.append(" ");
 
@@ -324,7 +324,7 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 		{
 			DotNetLikeMethodDeclaration likeMethodDeclaration = (DotNetLikeMethodDeclaration) element;
 
-			CSharpTypeRefPresentationUtil.appendTypeRef(element, builder, likeMethodDeclaration.getReturnTypeRef(), CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
+			CSharpTypeRefPresentationUtil.appendTypeRef(builder, likeMethodDeclaration.getReturnTypeRef(), CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 			builder.append(" ");
 
 			if(hide)

@@ -16,15 +16,6 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import javax.annotation.Nonnull;
-
-import consulo.ui.annotation.RequiredUIAccess;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.BundleBase;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
@@ -33,6 +24,15 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.util.IncorrectOperationException;
+import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.resolve.DotNetTypeRefUtil;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -61,7 +61,7 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 		{
 			return "invalid";
 		}
-		return BundleBase.format("Cast to ''{0}''", CSharpTypeRefPresentationUtil.buildTextWithKeyword(myExpectedTypeRef, element));
+		return BundleBase.format("Cast to ''{0}''", CSharpTypeRefPresentationUtil.buildTextWithKeyword(myExpectedTypeRef));
 	}
 
 	@Nonnull
@@ -85,7 +85,7 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 			return false;
 		}
 
-		if(DotNetTypeRefUtil.isVmQNameEqual(myExpectedTypeRef, element, DotNetTypes.System.Void))
+		if(DotNetTypeRefUtil.isVmQNameEqual(myExpectedTypeRef, DotNetTypes.System.Void))
 		{
 			return false;
 		}
@@ -102,7 +102,7 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 			return;
 		}
 
-		String typeText = CSharpTypeRefPresentationUtil.buildShortText(myExpectedTypeRef, element);
+		String typeText = CSharpTypeRefPresentationUtil.buildShortText(myExpectedTypeRef);
 
 		DotNetExpression expression = CSharpFileFactory.createExpression(project, "(" + typeText + ") " + element.getText());
 

@@ -316,9 +316,9 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 				extractor = CSharpGenericExtractor.create(map);
 			}
 
-			DotNetTypeRef extractedParameterTypeRef = GenericUnwrapTool.exchangeTypeRef(parameter.toTypeRef(true), extractor, qualifier);
+			DotNetTypeRef extractedParameterTypeRef = GenericUnwrapTool.exchangeTypeRef(parameter.toTypeRef(true), extractor);
 
-			if(CSharpTypeUtil.isInheritable(extractedParameterTypeRef, qualifierTypeRef, qualifier))
+			if(CSharpTypeUtil.isInheritable(extractedParameterTypeRef, qualifierTypeRef))
 			{
 				PsiElement parentOfMethod = method.getParent();
 				if(parentOfMethod instanceof DotNetQualifiedElement)

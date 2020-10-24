@@ -56,7 +56,7 @@ public class CSharpNullableTypeImpl extends CSharpTypeElementImpl implements CSh
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return CSharpNullableTypeUtil.box(this, innerType.toTypeRef());
+		return CSharpNullableTypeUtil.box(innerType.toTypeRef());
 	}
 
 	@RequiredReadAction

@@ -204,7 +204,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 		if(qualifiedElement instanceof DotNetMethodDeclaration)
 		{
 			DotNetTypeRef returnTypeRef = ((DotNetMethodDeclaration) qualifiedElement).getReturnTypeRef();
-			if(!DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, qualifiedElement, DotNetTypes.System.Void))
+			if(!DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, DotNetTypes.System.Void))
 			{
 				builder.append(lineIndent).append("/// <returns></returns>");
 			}

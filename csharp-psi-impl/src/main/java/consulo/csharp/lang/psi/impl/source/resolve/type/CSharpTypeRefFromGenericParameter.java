@@ -16,14 +16,14 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -35,7 +35,7 @@ public class CSharpTypeRefFromGenericParameter extends DotNetTypeRefWithCachedRe
 
 	public CSharpTypeRefFromGenericParameter(DotNetGenericParameter genericParameter)
 	{
-		super(genericParameter.getProject());
+		super(genericParameter.getProject(), genericParameter.getResolveScope());
 		myGenericParameter = genericParameter;
 	}
 

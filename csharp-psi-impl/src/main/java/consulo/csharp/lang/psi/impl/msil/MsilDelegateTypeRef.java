@@ -182,9 +182,9 @@ public class MsilDelegateTypeRef extends DotNetTypeRefWithCachedResult
 
 	private final DotNetTypeRef myTypeRef;
 
-	public MsilDelegateTypeRef(@Nonnull PsiElement scope, @Nonnull DotNetTypeRef typeRef)
+	public MsilDelegateTypeRef(@Nonnull DotNetTypeRef typeRef)
 	{
-		super(scope.getProject());
+		super(typeRef.getProject(), typeRef.getResolveScope());
 		myTypeRef = typeRef;
 	}
 

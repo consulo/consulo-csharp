@@ -434,12 +434,12 @@ class CSharpExpressionCompletionContributor
 									continue;
 								}
 
-								if(!CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement, expression))
+								if(!CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement))
 								{
 									DotNetTypeResolveResult typeResolveResult = expectedTypeInfo.getTypeRef().resolve();
 									if(typeResolveResult instanceof CSharpLambdaResolveResult)
 									{
-										if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), new CSharpLambdaTypeRef(methodDeclaration), expression))
+										if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), new CSharpLambdaTypeRef(methodDeclaration)))
 										{
 											result.consume(buildForMethodReference(methodDeclaration, contextType, expression));
 											return true;
@@ -747,7 +747,7 @@ class CSharpExpressionCompletionContributor
 			@RequiredReadAction
 			public String fun(DotNetTypeRef parameter)
 			{
-				return CSharpTypeRefPresentationUtil.buildShortText(parameter, methodDeclaration);
+				return CSharpTypeRefPresentationUtil.buildShortText(parameter);
 			}
 		}, ", ") + ")";
 
@@ -755,7 +755,7 @@ class CSharpExpressionCompletionContributor
 		{
 			builder = builder.withItemTextUnderlined(true);
 		}
-		builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(methodDeclaration.getReturnTypeRef(), methodDeclaration), true);
+		builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(methodDeclaration.getReturnTypeRef()), true);
 		builder = builder.withTailText(parameterText, true);
 		if(DotNetAttributeUtil.hasAttribute(methodDeclaration, DotNetTypes.System.ObsoleteAttribute))
 		{

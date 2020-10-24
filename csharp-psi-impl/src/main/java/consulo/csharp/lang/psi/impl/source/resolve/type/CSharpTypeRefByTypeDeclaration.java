@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -25,7 +24,8 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -44,7 +44,7 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResul
 
 	public CSharpTypeRefByTypeDeclaration(@Nonnull DotNetTypeDeclaration element, @Nonnull DotNetGenericExtractor extractor)
 	{
-		super(element.getProject());
+		super(element.getProject(), element.getResolveScope());
 		myElement = element;
 		myExtractor = extractor;
 	}
@@ -57,7 +57,7 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResul
 		CSharpMethodDeclaration methodDeclaration = myElement.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE);
 		if(methodDeclaration != null)
 		{
-			return new CSharpUserTypeRef.LambdaResult(myElement, methodDeclaration, myExtractor);
+			return new CSharpUserTypeRef.LambdaResult(getProject(), getResolveScope(), methodDeclaration, myExtractor);
 		}
 		return new CSharpUserTypeRef.Result<PsiElement>(myElement, myExtractor);
 	}

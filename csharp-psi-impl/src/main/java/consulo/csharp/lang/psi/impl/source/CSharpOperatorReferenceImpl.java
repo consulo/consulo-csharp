@@ -222,7 +222,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				{
 					return DotNetTypeRef.ERROR_TYPE;
 				}
-				return new CSharpPointerTypeRef(this, dotNetExpression.toTypeRef(true));
+				return new CSharpPointerTypeRef(dotNetExpression.toTypeRef(true));
 			}
 			else if(elementType == CSharpTokens.MUL)
 			{
@@ -364,7 +364,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		}
 		else
 		{
-			return CSharpReferenceExpressionImplUtil.toTypeRef(element);
+			return CSharpReferenceExpressionImplUtil.toTypeRef(getResolveScope(), element);
 		}
 	}
 
@@ -386,7 +386,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		List<DotNetLikeMethodDeclaration> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
 		for(DotNetLikeMethodDeclaration psiElement : elements)
 		{
-			MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(arguments, psiElement, this, true);
+			MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(arguments, psiElement, getResolveScope(), true);
 			if(implicitExpression != null)
 			{
 				calc = calc.dupWithResult(-3000000);

@@ -16,13 +16,9 @@
 
 package consulo.csharp.ide.msil.representation.builder;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.PairFunction;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
@@ -31,19 +27,19 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperType
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.internal.dotnet.asm.signature.ArrayShapeSignature;
-import consulo.internal.dotnet.asm.signature.ArrayTypeSignature;
-import consulo.internal.dotnet.asm.signature.ClassTypeSignature;
-import consulo.internal.dotnet.asm.signature.TypeSignature;
-import consulo.internal.dotnet.asm.signature.TypeSignatureWithGenericParameters;
-import consulo.internal.dotnet.asm.signature.ValueTypeSignature;
+import consulo.internal.dotnet.asm.signature.*;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
+import consulo.logging.Logger;
 import consulo.msil.lang.psi.MsilCustomAttribute;
 import consulo.msil.lang.stubbing.MsilCustomAttributeArgumentList;
 import consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
 import consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
 import consulo.msil.lang.stubbing.values.MsilCustomAttributeEnumValue;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -73,7 +69,7 @@ public class CSharpAttributeStubBuilder
 				builder.append(", ");
 			}
 
-			appendValue(builder, constructorArguments.get(i), attribute);
+			appendValue(builder, constructorArguments.get(i), attribute.getProject(), attribute.getResolveScope());
 		}
 
 		if(!constructorArguments.isEmpty() && !namedArguments.isEmpty())
@@ -94,17 +90,17 @@ public class CSharpAttributeStubBuilder
 			}
 
 			builder.append(entry.getKey()).append(" = ");
-			appendValue(builder, entry.getValue(), attribute);
+			appendValue(builder, entry.getValue(), attribute.getProject(), attribute.getResolveScope());
 		}
 		builder.append(")");
 	}
 
 	@RequiredReadAction
-	private static void appendValue(StringBuilder builder, MsiCustomAttributeValue value, final PsiElement scope)
+	private static void appendValue(StringBuilder builder, MsiCustomAttributeValue value, final Project project, GlobalSearchScope scope)
 	{
 		if(value instanceof MsilCustomAttributeEnumValue)
 		{
-			final DotNetTypeRef typeRef = toTypeRef(scope, value.getTypeSignature(), true);
+			final DotNetTypeRef typeRef = toTypeRef(project, scope, value.getTypeSignature(), true);
 
 			assert typeRef != null;
 
@@ -117,7 +113,7 @@ public class CSharpAttributeStubBuilder
 				@RequiredReadAction
 				public Void fun(StringBuilder builder, String s)
 				{
-					CSharpStubBuilderVisitor.appendTypeRef(scope, builder, typeRef);
+					CSharpStubBuilderVisitor.appendTypeRef(project, builder, typeRef);
 					builder.append(".").append(s);
 					return null;
 				}
@@ -134,10 +130,10 @@ public class CSharpAttributeStubBuilder
 			}
 			else if(realValue instanceof TypeSignature)
 			{
-				DotNetTypeRef typeRef = toTypeRef(scope, (TypeSignature) realValue, true);
+				DotNetTypeRef typeRef = toTypeRef(project, scope, (TypeSignature) realValue, true);
 				assert typeRef != null;
 				builder.append("typeof(");
-				CSharpStubBuilderVisitor.appendTypeRef(scope, builder, typeRef);
+				CSharpStubBuilderVisitor.appendTypeRef(project, builder, typeRef);
 				builder.append(")");
 			}
 			else
@@ -149,7 +145,7 @@ public class CSharpAttributeStubBuilder
 
 	@Nullable
 	@RequiredReadAction
-	private static DotNetTypeRef toTypeRef(PsiElement scope, TypeSignature typeSignature, boolean firstEnter)
+	private static DotNetTypeRef toTypeRef(Project project, GlobalSearchScope scope, TypeSignature typeSignature, boolean firstEnter)
 	{
 		if(typeSignature == null)
 		{
@@ -157,55 +153,55 @@ public class CSharpAttributeStubBuilder
 		}
 		if(typeSignature == TypeSignature.BOOLEAN)
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Boolean);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.Boolean);
 		}
 		else if(typeSignature == TypeSignature.STRING)
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.String);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.String);
 		}
 		else if(typeSignature == TypeSignature.U1)
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Byte);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.Byte);
 		}
 		else if(typeSignature == TypeSignature.I1)
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.SByte);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.SByte);
 		}
 		if(typeSignature == TypeSignature.U2)
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.UInt16);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.UInt16);
 		}
 		else if(typeSignature == TypeSignature.I2)
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Int16);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.Int16);
 		}
 		else if(typeSignature == TypeSignature.U4)
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.UInt32);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.UInt32);
 		}
 		else if(typeSignature == TypeSignature.I4)
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Int32);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.Int32);
 		}
 		else if(typeSignature == TypeSignature.U8)
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.UInt64);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.UInt64);
 		}
 		else if(typeSignature == TypeSignature.I8)
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Int64);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.Int64);
 		}
 		else if(typeSignature == TypeSignature.R4)
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Single);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.Single);
 		}
 		else if(typeSignature == TypeSignature.R8)
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Double);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.Double);
 		}
 		else if(typeSignature == TypeSignature.CHAR)
 		{
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Char);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.Char);
 		}
 		else if(typeSignature instanceof TypeSignatureWithGenericParameters)
 		{
@@ -214,28 +210,28 @@ public class CSharpAttributeStubBuilder
 			DotNetTypeRef[] innerTypeRefs = new DotNetTypeRef[genericArguments.size()];
 			for(int i = 0; i < innerTypeRefs.length; i++)
 			{
-				innerTypeRefs[i] = toTypeRef(scope, genericArguments.get(i), false);
+				innerTypeRefs[i] = toTypeRef(project, scope, genericArguments.get(i), false);
 			}
-			return new CSharpGenericWrapperTypeRef(scope.getProject(), toTypeRef(scope, typeSignatureWithGenericParameters.getSignature(), false), innerTypeRefs);
+			return new CSharpGenericWrapperTypeRef(project, scope, toTypeRef(project, scope, typeSignatureWithGenericParameters.getSignature(), false), innerTypeRefs);
 		}
 		else if(typeSignature instanceof ArrayTypeSignature)
 		{
 			ArrayShapeSignature arrayShape = ((ArrayTypeSignature) typeSignature).getArrayShape();
-			return new CSharpArrayTypeRef(scope, toTypeRef(scope, ((ArrayTypeSignature) typeSignature).getElementType(), false), arrayShape.getRank());
+			return new CSharpArrayTypeRef(toTypeRef(project, scope, ((ArrayTypeSignature) typeSignature).getElementType(), false), arrayShape.getRank());
 		}
 		else if(typeSignature instanceof ValueTypeSignature)
 		{
-			return new CSharpTypeRefByQName(scope, ((ValueTypeSignature) typeSignature).getValueType().getFullName());
+			return new CSharpTypeRefByQName(project, scope, ((ValueTypeSignature) typeSignature).getValueType().getFullName());
 		}
 		else if(typeSignature instanceof ClassTypeSignature)
 		{
 			String fullName = ((ClassTypeSignature) typeSignature).getClassType().getFullName();
-			CSharpTypeRefByQName innerTypeRef = new CSharpTypeRefByQName(scope, fullName);
+			CSharpTypeRefByQName innerTypeRef = new CSharpTypeRefByQName(project, scope, fullName);
 			if(firstEnter)
 			{
 				if(StringUtil.containsChar(fullName, MsilHelper.GENERIC_MARKER_IN_NAME))
 				{
-					return new CSharpEmptyGenericWrapperTypeRef(scope.getProject(), innerTypeRef);
+					return new CSharpEmptyGenericWrapperTypeRef(innerTypeRef);
 				}
 			}
 			return innerTypeRef;
@@ -243,7 +239,7 @@ public class CSharpAttributeStubBuilder
 		else
 		{
 			LOGGER.error("Unknown how convert: " + typeSignature.toString() + ":0x" + Integer.toHexString(typeSignature.getType()));
-			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Object);
+			return new CSharpTypeRefByQName(project, scope, DotNetTypes.System.Object);
 		}
 	}
 }

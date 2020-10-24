@@ -19,7 +19,6 @@ package consulo.csharp.ide.highlight.check.impl;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.SmartPointerManager;
@@ -44,6 +43,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.util.lang.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -157,7 +157,7 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl>
 				return null;
 			}
 
-			boolean applicable = CSharpTypeUtil.isInheritableWithImplicit(leftType, rightType, element) || CSharpTypeUtil.isInheritableWithImplicit(rightType, leftType, element);
+			boolean applicable = CSharpTypeUtil.isInheritableWithImplicit(leftType, rightType, element.getResolveScope()) || CSharpTypeUtil.isInheritableWithImplicit(rightType, leftType, element.getResolveScope());
 
 			if(!applicable)
 			{
@@ -180,7 +180,7 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl>
 					}
 				}
 
-				return newBuilder(operatorElement, operatorElement.getCanonicalText(), formatTypeRef(leftType, element), formatTypeRef(rightType, element)).addQuickFix(new ReplaceByEqualsCallFix
+				return newBuilder(operatorElement, operatorElement.getCanonicalText(), formatTypeRef(leftType), formatTypeRef(rightType)).addQuickFix(new ReplaceByEqualsCallFix
 						(element));
 			}
 		}

@@ -16,16 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import java.math.BigInteger;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.joou.UByte;
-import org.joou.UInteger;
-import org.joou.ULong;
-import org.joou.UShort;
 import com.intellij.openapi.progress.ProcessCanceledException;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -34,8 +29,14 @@ import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpConstantBaseTypeRef;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
+import org.joou.UByte;
+import org.joou.UInteger;
+import org.joou.ULong;
+import org.joou.UShort;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigInteger;
 
 /**
  * @author VISTALL
@@ -63,9 +64,8 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 	@Nullable
 	@RequiredReadAction
 	public static DotNetTypeRef testNumberConstant(@Nonnull CSharpConstantExpressionImpl expression,
-			@Nonnull String prefix,
-			@Nonnull DotNetTypeRef another,
-			@Nonnull PsiElement scope)
+												   @Nonnull String prefix,
+												   @Nonnull DotNetTypeRef another)
 	{
 		if(isNumberLiteral(expression))
 		{
@@ -90,7 +90,7 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 				return null;
 			}
 
-			DotNetTypeRef anotherRef = testNumber(value, qName, another, scope);
+			DotNetTypeRef anotherRef = testNumber(value, qName, another, expression.getProject(), expression.getResolveScope());
 			if(anotherRef != null)
 			{
 				return anotherRef;
@@ -106,7 +106,7 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetTypeRef testNumber(@Nullable Object value, @Nonnull String qName, @Nonnull DotNetTypeRef another, @Nonnull PsiElement scope)
+	public static DotNetTypeRef testNumber(@Nullable Object value, @Nonnull String qName, @Nonnull DotNetTypeRef another, @Nonnull Project project, @Nonnull GlobalSearchScope resolveScope)
 	{
 		if(value instanceof Number)
 		{
@@ -152,8 +152,8 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 				return another;
 			}
 
-			CSharpTypeRefByQName enumTypeRef = new CSharpTypeRefByQName(scope, DotNetTypes.System.Enum);
-			if(CSharpTypeUtil.isInheritable(enumTypeRef, another, scope) && numberValue.longValue() == 0)
+			CSharpTypeRefByQName enumTypeRef = new CSharpTypeRefByQName(project, resolveScope, DotNetTypes.System.Enum);
+			if(CSharpTypeUtil.isInheritable(enumTypeRef, another) && numberValue.longValue() == 0)
 			{
 				return another;
 			}

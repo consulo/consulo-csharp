@@ -107,7 +107,7 @@ public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 			CSharpUsingListChild key = entry.getKey();
 			if(key instanceof CSharpUsingTypeStatement)
 			{
-				if(DotNetTypeRefUtil.isVmQNameEqual(((CSharpUsingTypeStatement) key).getTypeRef(), expression, DotNetTypes2.System.Linq.Enumerable))
+				if(DotNetTypeRefUtil.isVmQNameEqual(((CSharpUsingTypeStatement) key).getTypeRef(), DotNetTypes2.System.Linq.Enumerable))
 				{
 					myUsingContext.put(key, Boolean.TRUE);
 					break;

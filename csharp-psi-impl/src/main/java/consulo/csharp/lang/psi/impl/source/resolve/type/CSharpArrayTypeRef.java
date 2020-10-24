@@ -16,9 +16,8 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -27,11 +26,9 @@ import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.resolve.DotNetArrayTypeRef;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.resolve.*;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -62,15 +59,13 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 		}
 	}
 
-	private final PsiElement myScope;
 	private final DotNetTypeRef myInnerTypeRef;
 	private final int myDimensions;
 
 	@RequiredReadAction
-	public CSharpArrayTypeRef(@Nonnull PsiElement scope, @Nonnull DotNetTypeRef innerTypeRef, int dimensions)
+	public CSharpArrayTypeRef(@Nonnull DotNetTypeRef innerTypeRef, int dimensions)
 	{
-		super(scope.getProject());
-		myScope = scope;
+		super(innerTypeRef.getProject(), innerTypeRef.getResolveScope());
 		myInnerTypeRef = innerTypeRef;
 		myDimensions = dimensions;
 	}
@@ -80,30 +75,30 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
-		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(myScope);
+		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(myProject, myResolveScope);
 		builder.withParentQName("System");
-		builder.withName("ArrayImpl[" + CSharpTypeRefPresentationUtil.buildText(myInnerTypeRef, myScope) + "]");
+		builder.withName("ArrayImpl[" + CSharpTypeRefPresentationUtil.buildText(myInnerTypeRef) + "]");
 		builder.addModifier(DotNetModifier.PUBLIC);
 
-		builder.addExtendType(new CSharpTypeRefByQName(myScope, "System.Array"));
+		builder.addExtendType(new CSharpTypeRefByQName(myProject, myResolveScope, "System.Array"));
 
 		if(myDimensions == 0)
 		{
-			builder.addExtendType(new CSharpGenericWrapperTypeRef(myScope.getProject(), new CSharpTypeRefByQName(myScope, DotNetTypes.System.Collections.Generic.IEnumerable$1), myInnerTypeRef));
+			builder.addExtendType(new CSharpGenericWrapperTypeRef(myProject, myResolveScope, new CSharpTypeRefByQName(myProject, myResolveScope , DotNetTypes.System.Collections.Generic.IEnumerable$1), myInnerTypeRef));
 
-			builder.addExtendType(new CSharpGenericWrapperTypeRef(myScope.getProject(), new CSharpTypeRefByQName(myScope, DotNetTypes.System.Collections.Generic.IList$1), myInnerTypeRef));
+			builder.addExtendType(new CSharpGenericWrapperTypeRef(myProject, myResolveScope, new CSharpTypeRefByQName(myProject, myResolveScope, DotNetTypes.System.Collections.Generic.IList$1), myInnerTypeRef));
 		}
 
-		addIndexMethodWithType(DotNetTypes.System.Int32, builder, myScope, myDimensions, myInnerTypeRef);
-		addIndexMethodWithType(DotNetTypes.System.UInt32, builder, myScope, myDimensions, myInnerTypeRef);
-		addIndexMethodWithType(DotNetTypes.System.Int64, builder, myScope, myDimensions, myInnerTypeRef);
-		addIndexMethodWithType(DotNetTypes.System.UInt64, builder, myScope, myDimensions, myInnerTypeRef);
+		addIndexMethodWithType(DotNetTypes.System.Int32, builder, myProject, myResolveScope, myDimensions, myInnerTypeRef);
+		addIndexMethodWithType(DotNetTypes.System.UInt32, builder, myProject, myResolveScope, myDimensions, myInnerTypeRef);
+		addIndexMethodWithType(DotNetTypes.System.Int64, builder, myProject, myResolveScope, myDimensions, myInnerTypeRef);
+		addIndexMethodWithType(DotNetTypes.System.UInt64, builder, myProject, myResolveScope, myDimensions, myInnerTypeRef);
 
 		return new ArrayResolveResult(builder, myDimensions, myInnerTypeRef);
 	}
 
 	@RequiredReadAction
-	private static void addIndexMethodWithType(String parameterQName, CSharpLightTypeDeclarationBuilder builder, PsiElement scope, int dimensions, DotNetTypeRef innerType)
+	private static void addIndexMethodWithType(String parameterQName, CSharpLightTypeDeclarationBuilder builder, Project project, GlobalSearchScope scope, int dimensions, DotNetTypeRef innerType)
 	{
 		int parameterCount = dimensions + 1;
 
@@ -112,9 +107,9 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 
 		for(int i = 0; i < parameterCount; i++)
 		{
-			CSharpLightParameterBuilder parameter = new CSharpLightParameterBuilder(scope);
+			CSharpLightParameterBuilder parameter = new CSharpLightParameterBuilder(project);
 			parameter.withName("index" + i);
-			parameter.withTypeRef(new CSharpTypeRefByQName(scope, parameterQName));
+			parameter.withTypeRef(new CSharpTypeRefByQName(project, scope, parameterQName));
 
 			methodDeclarationBuilder.addParameter(parameter);
 		}
@@ -145,6 +140,12 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	public DotNetTypeRef getInnerTypeRef()
 	{
 		return myInnerTypeRef;
+	}
+
+	@Nonnull
+	public GlobalSearchScope getResolveScope()
+	{
+		return myResolveScope;
 	}
 
 	public int getDimensions()

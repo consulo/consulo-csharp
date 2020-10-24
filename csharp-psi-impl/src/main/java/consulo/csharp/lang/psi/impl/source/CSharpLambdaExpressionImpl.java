@@ -16,10 +16,12 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
@@ -132,7 +134,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 		{
 			return forceTypeRef;
 		}
-		return new CSharpLambdaTypeRef(this, null, getParameterInfos(resolveFromParent), resolveFromParent ? getReturnTypeRef() : DotNetTypeRef.AUTO_TYPE);
+		return new CSharpLambdaTypeRef(getProject(), getResolveScope(), null, getParameterInfos(resolveFromParent), resolveFromParent ? getReturnTypeRef() : DotNetTypeRef.AUTO_TYPE);
 	}
 
 	@Nonnull
@@ -145,7 +147,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 		{
 			returnType = DotNetTypeRef.ERROR_TYPE;
 		}
-		return new CSharpLambdaTypeRef(this, null, getParameterInfos(true), returnType);
+		return new CSharpLambdaTypeRef(getProject(), getResolveScope(), null, getParameterInfos(true), returnType);
 	}
 
 	@Nonnull
@@ -188,12 +190,15 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 			@RequiredReadAction
 			public void visitReturnStatement(CSharpReturnStatementImpl statement)
 			{
+				Project project = statement.getProject();
+				GlobalSearchScope resolveScope = statement.getResolveScope();
+				
 				CSharpImplicitReturnModel implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel(statement, CSharpLambdaExpressionImpl.this);
 
 				DotNetExpression expression = statement.getExpression();
 				DotNetTypeRef expectedTypeRef;
 
-				expectedTypeRef = expression == null ? new CSharpTypeRefByQName(statement, DotNetTypes.System.Void) : expression.toTypeRef(false);
+				expectedTypeRef = expression == null ? new CSharpTypeRefByQName(project, resolveScope, DotNetTypes.System.Void) : expression.toTypeRef(false);
 				if(expectedTypeRef == DotNetTypeRef.ERROR_TYPE)
 				{
 					return;
@@ -205,13 +210,13 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 				}
 				else
 				{
-					if(DotNetTypeRefUtil.isVmQNameEqual(expectedTypeRef, statement, DotNetTypes.System.Void))
+					if(DotNetTypeRefUtil.isVmQNameEqual(expectedTypeRef, DotNetTypes.System.Void))
 					{
-						typeRefs.add(new CSharpTypeRefByQName(statement, implicitReturnModel.getNoGenericTypeVmQName()));
+						typeRefs.add(new CSharpTypeRefByQName(project, resolveScope, implicitReturnModel.getNoGenericTypeVmQName()));
 					}
 					else
 					{
-						typeRefs.add(new CSharpGenericWrapperTypeRef(statement.getProject(), new CSharpTypeRefByQName(statement, implicitReturnModel.getGenericVmQName()), expectedTypeRef));
+						typeRefs.add(new CSharpGenericWrapperTypeRef(project, resolveScope, new CSharpTypeRefByQName(project, resolveScope, implicitReturnModel.getGenericVmQName()), expectedTypeRef));
 					}
 				}
 			}
@@ -219,7 +224,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 
 		if(typeRefs.isEmpty())
 		{
-			return new CSharpTypeRefByQName(this, DotNetTypes.System.Void);
+			return new CSharpTypeRefByQName(getProject(), getResolveScope(), DotNetTypes.System.Void);
 		}
 		return typeRefs.get(0);
 	}

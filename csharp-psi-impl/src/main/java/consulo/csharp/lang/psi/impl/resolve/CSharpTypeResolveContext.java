@@ -85,7 +85,7 @@ public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTyp
 
 		for(DotNetTypeRef typeRef : typeRefs)
 		{
-			DotNetTypeRef ref = RecursionManager.doPreventingRecursion(this, false, () -> GenericUnwrapTool.exchangeTypeRef(typeRef, myExtractor, myElement));
+			DotNetTypeRef ref = RecursionManager.doPreventingRecursion(this, false, () -> GenericUnwrapTool.exchangeTypeRef(typeRef, myExtractor));
 			if(ref == null)
 			{
 				continue;

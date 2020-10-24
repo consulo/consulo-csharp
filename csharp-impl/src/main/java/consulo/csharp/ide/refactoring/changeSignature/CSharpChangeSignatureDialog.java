@@ -456,7 +456,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	@RequiredReadAction
 	private String typeText(@Nonnull DotNetTypeRef typeRef)
 	{
-		return CSharpTypeRefPresentationUtil.buildShortText(typeRef, myDefaultValueContext);
+		return CSharpTypeRefPresentationUtil.buildShortText(typeRef);
 	}
 
 	@Override
@@ -490,7 +490,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	@RequiredUIAccess
 	protected PsiCodeFragment createReturnTypeCodeFragment()
 	{
-		String text = CSharpTypeRefPresentationUtil.buildShortText(myMethod.getMethod().getReturnTypeRef(), myDefaultValueContext);
+		String text = CSharpTypeRefPresentationUtil.buildShortText(myMethod.getMethod().getReturnTypeRef());
 		CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(getProject(), text, myDefaultValueContext);
 		typeFragment.putUserData(CS1547.ourReturnTypeFlag, Boolean.TRUE);
 		return typeFragment;

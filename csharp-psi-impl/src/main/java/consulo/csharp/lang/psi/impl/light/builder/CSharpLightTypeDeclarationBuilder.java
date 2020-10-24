@@ -16,33 +16,24 @@
 
 package consulo.csharp.lang.psi.impl.light.builder;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpGenericConstraint;
-import consulo.csharp.lang.psi.CSharpGenericConstraintList;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterList;
-import consulo.dotnet.psi.DotNetInheritUtil;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetTypeDeclarationUtil;
-import consulo.dotnet.psi.DotNetTypeList;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -68,10 +59,10 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	private DotNetTypeRef myEnumConstantTypeRef;
 
 	@RequiredReadAction
-	public CSharpLightTypeDeclarationBuilder(PsiElement element)
+	public CSharpLightTypeDeclarationBuilder(Project project, GlobalSearchScope scope)
 	{
-		super(element);
-		myEnumConstantTypeRef = new CSharpTypeRefByQName(element, DotNetTypes.System.Int32);
+		super(project);
+		myEnumConstantTypeRef = new CSharpTypeRefByQName(project, scope, DotNetTypes.System.Int32);
 	}
 
 	@Override
