@@ -61,8 +61,6 @@ public class CSharpInheritableChecker
 	private Pair<CSharpCastType, GlobalSearchScope> myCastTypeResolver;
 	private Boolean myDisableNullableCheck;
 
-	private CSharpTypeUtil.InheritResult myCheckValue;
-
 	private CSharpInheritableChecker(@Nonnull DotNetTypeRef top, @Nonnull DotNetTypeRef target)
 	{
 		myTop = top;
@@ -72,11 +70,6 @@ public class CSharpInheritableChecker
 	@Nonnull
 	public CSharpInheritableChecker withCastType(@Nonnull CSharpCastType castType, @Nonnull GlobalSearchScope resolveScope)
 	{
-		if(myCheckValue != null)
-		{
-			throw new IllegalArgumentException("already checked");
-		}
-
 		if(myCastTypeResolver != null)
 		{
 			throw new IllegalArgumentException("already set");
@@ -88,11 +81,6 @@ public class CSharpInheritableChecker
 
 	public CSharpInheritableChecker withDisableNullableCheck()
 	{
-		if(myCheckValue != null)
-		{
-			throw new IllegalArgumentException("already checked");
-		}
-
 		if(myDisableNullableCheck != null)
 		{
 			throw new IllegalArgumentException("already set");
@@ -105,30 +93,38 @@ public class CSharpInheritableChecker
 	@RequiredReadAction
 	public CSharpTypeUtil.InheritResult check()
 	{
-		if(myCheckValue != null)
-		{
-			return myCheckValue;
-		}
-
-		return myCheckValue = isInheritable(myTop, myTarget, myCastTypeResolver, myDisableNullableCheck == Boolean.TRUE);
-	}
-
-	@Nonnull
-	@RequiredReadAction
-	private static CSharpTypeUtil.InheritResult isInheritable(@Nonnull DotNetTypeRef top,
-															  @Nonnull DotNetTypeRef target,
-															  @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo,
-															  boolean disableNullableCheck)
-	{
-		if(top == DotNetTypeRef.ERROR_TYPE || target == DotNetTypeRef.ERROR_TYPE)
+		if(myTop == DotNetTypeRef.ERROR_TYPE || myTarget == DotNetTypeRef.ERROR_TYPE)
 		{
 			return fail();
 		}
 
-		if(top.equals(target))
+		if(myTop instanceof DotNetTypeRef.AdapterInternal || myTarget instanceof DotNetTypeRef.AdapterInternal)
+		{
+			throw new IllegalArgumentException("Auto type?");
+		}
+
+		if(myTop.equals(myTarget))
 		{
 			return CSharpTypeUtil.SIMPLE_SUCCESS;
 		}
+
+		if(myTop.getProject() != myTarget.getProject())
+		{
+			throw new IllegalArgumentException("different projects");
+		}
+
+		CSharpInheritableCheckerCacher checkerCacher = CSharpInheritableCheckerCacher.getInstance(myTop.getProject());
+
+		return checkerCacher.getOrCheck(myTop, myTarget, myCastTypeResolver, myDisableNullableCheck == Boolean.TRUE);
+	}
+
+	@Nonnull
+	@RequiredReadAction
+	static CSharpTypeUtil.InheritResult isInheritable(@Nonnull DotNetTypeRef top,
+													  @Nonnull DotNetTypeRef target,
+													  @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo,
+													  boolean disableNullableCheck)
+	{
 
 		if(target instanceof CSharpFastImplicitTypeRef)
 		{
@@ -290,7 +286,7 @@ public class CSharpInheritableChecker
 			if(targetElement instanceof DotNetTypeDeclaration)
 			{
 				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) targetElement, targetTypeResolveResult
-								.getGenericExtractor(), castResolvingInfo);
+						.getGenericExtractor(), castResolvingInfo);
 
 				if(inheritResult.isSuccess())
 				{
