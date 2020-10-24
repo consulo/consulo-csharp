@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.BitUtil;
@@ -125,7 +124,6 @@ public class CSharpTypeRefPresentationUtil
 	@RequiredReadAction
 	public static void appendTypeRef(@Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef, final int flags)
 	{
-		Project project = typeRef.getProject();
 		if(typeRef == DotNetTypeRef.AUTO_TYPE)
 		{
 			builder.append("var");
@@ -234,7 +232,7 @@ public class CSharpTypeRefPresentationUtil
 				String qName = ((DotNetQualifiedElement) element).getPresentableQName();
 				String name = ((DotNetQualifiedElement) element).getName();
 
-				String typeAsKeyword = CSharpCodeGenerationSettings.getInstance(project).USE_LANGUAGE_DATA_TYPES ? ourTypesAsKeywords.get(qName) : null;
+				String typeAsKeyword = CSharpCodeGenerationSettings.getInstance(typeRef.getProject()).USE_LANGUAGE_DATA_TYPES ? ourTypesAsKeywords.get(qName) : null;
 
 				if(BitUtil.isSet(flags, QUALIFIED_NAME))
 				{
