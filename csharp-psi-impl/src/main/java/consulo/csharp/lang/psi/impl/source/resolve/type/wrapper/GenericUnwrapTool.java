@@ -290,6 +290,11 @@ public class GenericUnwrapTool
 			return DotNetTypeRef.AUTO_TYPE;
 		}
 
+		if(typeRef == CSharpStaticTypeRef.__ARGLIST_TYPE)
+		{
+			return CSharpStaticTypeRef.__ARGLIST_TYPE;
+		}
+
 		Project project = typeRef.getProject();
 		GlobalSearchScope resolveScope = typeRef.getResolveScope();
 
@@ -309,8 +314,6 @@ public class GenericUnwrapTool
 		}
 		else if(typeRef instanceof CSharpPointerTypeRef)
 		{
-			GlobalSearchScope scope = typeRef.getResolveScope();
-
 			return new CSharpPointerTypeRef(exchangeTypeRef(((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), func));
 		}
 		else if(typeRef instanceof CSharpRefTypeRef)
