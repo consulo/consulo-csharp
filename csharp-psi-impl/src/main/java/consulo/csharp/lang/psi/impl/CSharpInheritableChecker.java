@@ -103,6 +103,11 @@ public class CSharpInheritableChecker
 			throw new IllegalArgumentException("Auto type? " + myTop + "<>" + myTarget);
 		}
 
+		if(myTop == DotNetTypeRef.AUTO_TYPE || myTarget == DotNetTypeRef.AUTO_TYPE)
+		{
+			return CSharpTypeUtil.SIMPLE_SUCCESS;
+		}
+
 		if(myTop.equals(myTarget))
 		{
 			return CSharpTypeUtil.SIMPLE_SUCCESS;
