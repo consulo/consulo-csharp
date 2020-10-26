@@ -249,8 +249,10 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 	private DotNetTypeRef getFirstTypeRefOrParameter(DotNetParameterListOwner owner, DotNetGenericExtractor extractor)
 	{
 		DotNetParameter[] parameters = owner.getParameters();
-		assert parameters.length != 0;
-		assert parameters[0].hasModifier(CSharpModifier.THIS);
+		if(parameters.length == 0)
+		{
+			return DotNetTypeRef.UNKNOWN_TYPE;
+		}
 		return GenericUnwrapTool.exchangeTypeRef(parameters[0].toTypeRef(false), extractor);
 	}
 
