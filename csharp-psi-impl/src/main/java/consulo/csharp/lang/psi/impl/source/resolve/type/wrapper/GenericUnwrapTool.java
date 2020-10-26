@@ -23,6 +23,7 @@ import com.intellij.util.ObjectUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.light.*;
+import consulo.csharp.lang.psi.impl.source.CSharpOutRefAutoTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.*;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.*;
@@ -293,6 +294,11 @@ public class GenericUnwrapTool
 		if(typeRef == CSharpStaticTypeRef.__ARGLIST_TYPE)
 		{
 			return CSharpStaticTypeRef.__ARGLIST_TYPE;
+		}
+
+		if(typeRef instanceof CSharpOutRefAutoTypeRef)
+		{
+			return typeRef;
 		}
 
 		Project project = typeRef.getProject();

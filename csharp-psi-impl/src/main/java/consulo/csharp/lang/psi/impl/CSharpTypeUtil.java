@@ -406,6 +406,11 @@ public class CSharpTypeUtil
 		t1 = GenericUnwrapTool.exchangeTypeRef(t1, GenericUnwrapTool.TypeDefCleanFunction.INSTANCE);
 		t2 = GenericUnwrapTool.exchangeTypeRef(t2, GenericUnwrapTool.TypeDefCleanFunction.INSTANCE);
 
+		if(t1.equals(t2))
+		{
+			return true;
+		}
+
 		if(t1 instanceof CSharpRefTypeRef && !(t2 instanceof CSharpRefTypeRef) || t2 instanceof CSharpRefTypeRef && !(t1 instanceof CSharpRefTypeRef))
 		{
 			return false;
