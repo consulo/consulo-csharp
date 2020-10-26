@@ -100,7 +100,7 @@ public class CSharpInheritableChecker
 
 		if(myTop instanceof DotNetTypeRef.AdapterInternal || myTarget instanceof DotNetTypeRef.AdapterInternal)
 		{
-			throw new IllegalArgumentException("Auto type?");
+			throw new IllegalArgumentException("Auto type? " + myTop + "<>" + myTarget);
 		}
 
 		if(myTop.equals(myTarget))
