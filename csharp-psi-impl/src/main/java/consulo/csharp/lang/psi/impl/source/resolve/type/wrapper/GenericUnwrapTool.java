@@ -23,7 +23,6 @@ import com.intellij.util.ObjectUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.light.*;
-import consulo.csharp.lang.psi.impl.source.CSharpOutRefAutoTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.*;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.*;
@@ -281,22 +280,7 @@ public class GenericUnwrapTool
 	@RequiredReadAction
 	public static DotNetTypeRef exchangeTypeRef(@Nonnull DotNetTypeRef typeRef, @Nonnull UnwrapTypeRefProcessor func)
 	{
-		if(typeRef == DotNetTypeRef.ERROR_TYPE)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-
-		if(typeRef == DotNetTypeRef.AUTO_TYPE)
-		{
-			return DotNetTypeRef.AUTO_TYPE;
-		}
-
-		if(typeRef == CSharpStaticTypeRef.__ARGLIST_TYPE)
-		{
-			return CSharpStaticTypeRef.__ARGLIST_TYPE;
-		}
-
-		if(typeRef instanceof CSharpOutRefAutoTypeRef)
+		if(typeRef instanceof DotNetTypeRef.AdapterInternal)
 		{
 			return typeRef;
 		}
