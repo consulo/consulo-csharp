@@ -20,18 +20,14 @@ import com.intellij.ide.projectView.SelectableTreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.ide.util.treeView.AbstractTreeUi;
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.codeInsight.problems.CSharpLocationUtil;
-import consulo.csharp.lang.psi.CSharpFile;
-import consulo.csharp.lang.psi.impl.source.CSharpDummyDeclarationImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetMemberOwner;
-import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.ui.annotation.RequiredUIAccess;
 import jakarta.inject.Inject;
 
@@ -82,33 +78,14 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 
 			if(value instanceof PsiFile)
 			{
-				CSharpFile file = CSharpPsiUtilImpl.findCSharpFile((PsiFile) value);
-				if(file != null)
+				for(CSharpProjectTreeNodeExpander expander : CSharpProjectTreeNodeExpander.EP_NAME.getExtensionList(Application.get()))
 				{
-					if(CSharpLocationUtil.isValidLocation(myProject, ((PsiFile) value).getVirtualFile()))
+					AbstractTreeNode<?> node = expander.expandFile(myProject, settings, treeNode);
+					if(node != null)
 					{
-						DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElementNoNameCheck(file);
-						if(singleElement instanceof CSharpDummyDeclarationImpl)
-						{
-							nodes.add(new CSharpElementTreeNode(file, settings, 0));
-						}
-						else if(singleElement != null)
-						{
-							nodes.add(new CSharpElementTreeNode(singleElement, settings, CSharpElementTreeNode.ALLOW_GRAY_FILE_NAME));
-						}
-						else
-						{
-							nodes.add(new CSharpElementTreeNode(file, settings, CSharpElementTreeNode.FORCE_EXPAND));
-						}
+						nodes.add(node);
+						break;
 					}
-					else
-					{
-						nodes.add(treeNode);
-					}
-				}
-				else
-				{
-					nodes.add(treeNode);
 				}
 			}
 			else

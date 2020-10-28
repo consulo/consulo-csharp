@@ -58,6 +58,8 @@
 						interface="consulo.csharp.lang.psi.ToNativeElementTransformer"/>
 		<extensionPoint name="memberAddByCompletionContributor"
 						interface="consulo.csharp.ide.completion.CSharpMemberAddByCompletionContributor"/>
+
+		<extensionPoint name="projectTreeNodeExpander" interface="consulo.csharp.ide.projectView.CSharpProjectTreeNodeExpander"/>
 	</extensionPoints>
 
 	<extensions defaultExtensionNs="consulo.csharp">
@@ -74,6 +76,8 @@
 		<toNativeElementTransformer implementation="consulo.csharp.lang.psi.impl.msil.transformer.MsilToNativeElementTransformer"/>
 
 		<memberAddByCompletionContributor implementation="consulo.csharp.ide.completion.CSharpOverrideOrImplementCompletionContributor"/>
+
+		<projectTreeNodeExpander implementation="consulo.csharp.ide.projectView.impl.DefaultCSharpProjectTreeNodeExpander"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="consulo.dotnet">
