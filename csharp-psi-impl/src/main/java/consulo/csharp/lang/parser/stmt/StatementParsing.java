@@ -25,6 +25,7 @@ import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.ModifierSet;
 import consulo.csharp.lang.parser.SharedParsingHelpers;
 import consulo.csharp.lang.parser.decl.FieldOrPropertyParsing;
+import consulo.csharp.lang.parser.decl.GenericParameterParsing;
 import consulo.csharp.lang.parser.decl.MethodParsing;
 import consulo.csharp.lang.parser.exp.ExpressionParsing;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
@@ -256,9 +257,15 @@ public class StatementParsing extends SharedParsingHelpers
 		}
 
 		// name (
-		if(builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == LPAR)
+		IElementType nextElement = builder.lookAhead(1);
+		if(builder.getTokenType() == CSharpTokens.IDENTIFIER && (nextElement == LPAR || nextElement == LT))
 		{
 			doneIdentifier(builder, NONE);
+
+			if(nextElement == LT)
+			{
+				GenericParameterParsing.parseList(builder);
+			}
 
 			MethodParsing.parseParameterList(builder, SharedParsingHelpers.NONE, RPAR, modifierSet);
 
@@ -411,7 +418,8 @@ public class StatementParsing extends SharedParsingHelpers
 					return LocalVarType.WITH_NAME;
 				}
 
-				if(builder.lookAhead(1) == LPAR)
+				IElementType nextElement = builder.lookAhead(1);
+				if(nextElement == LPAR || nextElement == LT)
 				{
 					return LocalVarType.LOCAL_METHOD;
 				}

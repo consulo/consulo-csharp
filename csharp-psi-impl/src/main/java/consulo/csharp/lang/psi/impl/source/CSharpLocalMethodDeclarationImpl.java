@@ -101,7 +101,7 @@ public class CSharpLocalMethodDeclarationImpl extends CSharpMemberImpl implement
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
-		return CSharpSimpleParameterInfo.EMPTY_ARRAY;
+		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
 	}
 
 	@Override
@@ -136,22 +136,25 @@ public class CSharpLocalMethodDeclarationImpl extends CSharpMemberImpl implement
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public DotNetGenericParameterList getGenericParameterList()
 	{
-		return null;
+		return findChildByClass(DotNetGenericParameterList.class);
 	}
 
 	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
-		return DotNetGenericParameter.EMPTY_ARRAY;
+		DotNetGenericParameterList genericParameterList = getGenericParameterList();
+		return genericParameterList == null ? DotNetGenericParameter.EMPTY_ARRAY : genericParameterList.getParameters();
 	}
 
 	@Override
 	public int getGenericParametersCount()
 	{
-		return 0;
+		DotNetGenericParameterList genericParameterList = getGenericParameterList();
+		return genericParameterList == null ? 0 : genericParameterList.getGenericParametersCount();
 	}
 
 	@Nullable
