@@ -98,17 +98,17 @@ public class CSharpInheritableChecker
 			return fail();
 		}
 
-		if(myTop instanceof DotNetTypeRef.AdapterInternal || myTarget instanceof DotNetTypeRef.AdapterInternal)
-		{
-			throw new IllegalArgumentException("Auto type? " + myTop + "<>" + myTarget);
-		}
-
 		if(myTop == DotNetTypeRef.AUTO_TYPE || myTarget == DotNetTypeRef.AUTO_TYPE)
 		{
 			return CSharpTypeUtil.SIMPLE_SUCCESS;
 		}
 
 		if(myTop.equals(myTarget))
+		{
+			return CSharpTypeUtil.SIMPLE_SUCCESS;
+		}
+
+		if(myTop instanceof DotNetTypeRef.AdapterInternal || myTarget instanceof DotNetTypeRef.AdapterInternal)
 		{
 			return CSharpTypeUtil.SIMPLE_SUCCESS;
 		}
