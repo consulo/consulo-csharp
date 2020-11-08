@@ -16,30 +16,18 @@
 
 package consulo.csharp.lang.formatter.processors;
 
-import javax.annotation.Nullable;
-import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.CSharpElements;
-import consulo.csharp.lang.psi.CSharpEventDeclaration;
-import consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
-import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerCompositeValueImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerValue;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpImplicitArrayInitializationExpressionImpl;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetStatement;
 import com.intellij.formatting.Wrap;
 import com.intellij.formatting.WrapType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
+import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.*;
+import consulo.dotnet.psi.DotNetStatement;
+
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -101,9 +89,16 @@ public class CSharpWrappingProcessor
 			{
 				braceStyle = myCustomSettings.INDEX_METHOD_BRACE_STYLE;
 			}
-			else if(parentPsi instanceof CSharpBlockStatementImpl && parentPsi.getParent() instanceof DotNetLikeMethodDeclaration)
+			else if(parentPsi instanceof CSharpBlockStatementImpl)
 			{
-				braceStyle = myCodeStyleSettings.METHOD_BRACE_STYLE;
+				if(parentPsi.getParent() instanceof CSharpCodeBodyProxy)
+				{
+					braceStyle = myCodeStyleSettings.METHOD_BRACE_STYLE;
+				}
+				else
+				{
+					braceStyle = myCodeStyleSettings.BRACE_STYLE;
+				}
 			}
 			else if(parentPsi instanceof CSharpImplicitArrayInitializationExpressionImpl ||
 					parentPsi instanceof CSharpArrayInitializerImpl ||

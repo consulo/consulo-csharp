@@ -16,19 +16,6 @@
 
 package consulo.csharp.lang.formatter.processors;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
-import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
-import consulo.csharp.lang.formatter.CSharpFormattingBlock;
-import consulo.csharp.lang.psi.CSharpElements;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.CSharpTokenSets;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import com.intellij.formatting.ASTBlock;
 import com.intellij.formatting.Spacing;
 import com.intellij.formatting.SpacingBuilder;
@@ -38,6 +25,19 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiUtilCore;
+import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
+import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
+import consulo.csharp.lang.formatter.CSharpFormattingBlock;
+import consulo.csharp.lang.psi.CSharpElements;
+import consulo.csharp.lang.psi.CSharpStubElements;
+import consulo.csharp.lang.psi.CSharpTokenSets;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -335,6 +335,8 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(CSharpTokens.SEMICOLON, CSharpElements.FOR_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_SEMICOLON);
 		myBuilder.afterInside(CSharpTokens.SEMICOLON, CSharpElements.FOR_STATEMENT).spaceIf(commonSettings.SPACE_AFTER_SEMICOLON);
 		myBuilder.before(CSharpTokens.SEMICOLON).spaces(0);
+
+		spaceIfNoBlankLines(myBuilder.between(CSharpStubElements.PARAMETER_LIST, CSharpElements.STATEMENT_METHOD_BODY), commonSettings.METHOD_BRACE_STYLE == CommonCodeStyleSettings.END_OF_LINE);
 	}
 
 	private void spaceIfNoBlankLines(SpacingBuilder.RuleBuilder builder, boolean config)
