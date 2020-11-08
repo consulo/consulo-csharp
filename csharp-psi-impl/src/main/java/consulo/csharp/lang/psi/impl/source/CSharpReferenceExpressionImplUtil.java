@@ -101,8 +101,6 @@ public class CSharpReferenceExpressionImplUtil
 
 	private static final KindProcessor[] ourProcessors = new KindProcessor[ResolveToKind.VALUES.length];
 
-	private static final Key<ParameterizedCachedValue<ResolveResult[], PsiElement>> ourFromQualifierKey = Key.create("ourFromQualifierKey");
-
 	static
 	{
 		for(int i = 0; i < ResolveToKind.VALUES.length; i++)
