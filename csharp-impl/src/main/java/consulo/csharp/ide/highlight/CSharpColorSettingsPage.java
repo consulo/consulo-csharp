@@ -63,6 +63,7 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 			new AttributesDescriptor("Class Fieds & Properties & Events//Static field or property", CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY),
 			new AttributesDescriptor("Class Fieds & Properties & Events//Static event", CSharpHighlightKey.STATIC_EVENT),
 			new AttributesDescriptor("Class Fieds & Properties & Events//Instance event", CSharpHighlightKey.INSTANCE_EVENT),
+			new AttributesDescriptor("Class Fieds & Properties & Events//Constant", CSharpHighlightKey.CONSTANT),
 			new AttributesDescriptor("Parameters//Generic parameter name", CSharpHighlightKey.GENERIC_PARAMETER_NAME),
 			new AttributesDescriptor("Parameters//Parameter", CSharpHighlightKey.PARAMETER),
 			new AttributesDescriptor("Implicit or explicit cast", CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST),
@@ -99,6 +100,7 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 			put("static_call", CSharpHighlightKey.STATIC_METHOD_CALL);
 			put("instance_call", CSharpHighlightKey.INSTANCE_METHOD_CALL);
 			put("static_field", CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY);
+			put("constant", CSharpHighlightKey.CONSTANT);
 			put("instance_field", CSharpHighlightKey.INSTANCE_FIELD_OR_PROPERTY);
 			put("parameter", CSharpHighlightKey.PARAMETER);
 			put("method_ref", CSharpHighlightKey.METHOD_REF);

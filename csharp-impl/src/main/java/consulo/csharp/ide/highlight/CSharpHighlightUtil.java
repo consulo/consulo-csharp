@@ -27,12 +27,14 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.*;
+import consulo.csharp.lang.psi.impl.source.CSharpCaseVariableImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpIsVariableImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
-import org.jetbrains.annotations.PropertyKey;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -178,7 +180,14 @@ public class CSharpHighlightUtil
 		}
 		else if(element instanceof DotNetVariable)
 		{
-			key = ((DotNetVariable) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY : CSharpHighlightKey.INSTANCE_FIELD_OR_PROPERTY;
+			if(((DotNetVariable) element).isConstant())
+			{
+				key = CSharpHighlightKey.CONSTANT;
+			}
+			else
+			{
+				key = ((DotNetVariable) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY : CSharpHighlightKey.INSTANCE_FIELD_OR_PROPERTY;
+			}
 		}
 		return key;
 	}
@@ -198,11 +207,5 @@ public class CSharpHighlightUtil
 		{
 			return false;
 		}
-	}
-
-	@Nullable
-	public static HighlightInfo createError(PsiElement element, @PropertyKey(resourceBundle = "messages.CSharpErrorBundle") String b)
-	{
-		return HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).descriptionAndTooltip(b).range(element).create();
 	}
 }
