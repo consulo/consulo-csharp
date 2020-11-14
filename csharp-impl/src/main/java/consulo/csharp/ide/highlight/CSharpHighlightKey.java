@@ -41,13 +41,13 @@ public interface CSharpHighlightKey
 	TextAttributesKey CONSTRUCTOR_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_CONSTRUCTOR_NAME", METHOD_NAME);
 	TextAttributesKey DELEGATE_METHOD_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_DELEGATE_METHOD_NAME",
 			DefaultLanguageHighlighterColors.IDENTIFIER);
-	TextAttributesKey STATIC_FIELD_OR_PROPERTY = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
-			DefaultLanguageHighlighterColors.STATIC_FIELD);
+	TextAttributesKey STATIC_FIELD = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.STATIC_FIELD);
 	TextAttributesKey CONSTANT = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.CONSTANT);
-	TextAttributesKey STATIC_EVENT = TextAttributesKey.createTextAttributesKey("CSHARP_STATIC_EVENT", STATIC_FIELD_OR_PROPERTY);
-	TextAttributesKey INSTANCE_FIELD_OR_PROPERTY = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
-			DefaultLanguageHighlighterColors.INSTANCE_FIELD);
-	TextAttributesKey INSTANCE_EVENT = TextAttributesKey.createTextAttributesKey("CSHARP_INSTANCE_EVENT", INSTANCE_FIELD_OR_PROPERTY);
+	TextAttributesKey STATIC_EVENT = TextAttributesKey.createTextAttributesKey("CSHARP_STATIC_EVENT", STATIC_FIELD);
+	TextAttributesKey STATIC_PROPERTY = TextAttributesKey.createTextAttributesKey("CSHARP_STATIC_PROPERTY", STATIC_FIELD);
+	TextAttributesKey INSTANCE_FIELD = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.INSTANCE_FIELD);
+	TextAttributesKey INSTANCE_EVENT = TextAttributesKey.createTextAttributesKey("CSHARP_INSTANCE_EVENT", INSTANCE_FIELD);
+	TextAttributesKey INSTANCE_PROPERTY = TextAttributesKey.createTextAttributesKey("CSHARP_INSTANCE_PROPERTY", INSTANCE_FIELD);
 	TextAttributesKey STATIC_METHOD_CALL = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
 			DefaultLanguageHighlighterColors.STATIC_METHOD);
 	TextAttributesKey EXTENSION_METHOD_CALL = TextAttributesKey.createTextAttributesKey("CSHARP_EXTENSION_METHOD_CALL",

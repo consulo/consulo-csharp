@@ -59,8 +59,10 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 			new AttributesDescriptor("Methods//Static method call", CSharpHighlightKey.STATIC_METHOD_CALL),
 			new AttributesDescriptor("Methods//Instance method call", CSharpHighlightKey.INSTANCE_METHOD_CALL),
 			new AttributesDescriptor("Methods//Method reference", CSharpHighlightKey.METHOD_REF),
-			new AttributesDescriptor("Class Fieds & Properties & Events//Instance field or property", CSharpHighlightKey.INSTANCE_FIELD_OR_PROPERTY),
-			new AttributesDescriptor("Class Fieds & Properties & Events//Static field or property", CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY),
+			new AttributesDescriptor("Class Fieds & Properties & Events//Instance field", CSharpHighlightKey.INSTANCE_FIELD),
+			new AttributesDescriptor("Class Fieds & Properties & Events//Static field", CSharpHighlightKey.STATIC_FIELD),
+			new AttributesDescriptor("Class Fieds & Properties & Events//Instance property", CSharpHighlightKey.INSTANCE_PROPERTY),
+			new AttributesDescriptor("Class Fieds & Properties & Events//Static property", CSharpHighlightKey.STATIC_PROPERTY),
 			new AttributesDescriptor("Class Fieds & Properties & Events//Static event", CSharpHighlightKey.STATIC_EVENT),
 			new AttributesDescriptor("Class Fieds & Properties & Events//Instance event", CSharpHighlightKey.INSTANCE_EVENT),
 			new AttributesDescriptor("Class Fieds & Properties & Events//Constant", CSharpHighlightKey.CONSTANT),
@@ -99,9 +101,11 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 			put("extension_call", CSharpHighlightKey.EXTENSION_METHOD_CALL);
 			put("static_call", CSharpHighlightKey.STATIC_METHOD_CALL);
 			put("instance_call", CSharpHighlightKey.INSTANCE_METHOD_CALL);
-			put("static_field", CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY);
+			put("static_field", CSharpHighlightKey.STATIC_FIELD);
+			put("static_property", CSharpHighlightKey.STATIC_PROPERTY);
 			put("constant", CSharpHighlightKey.CONSTANT);
-			put("instance_field", CSharpHighlightKey.INSTANCE_FIELD_OR_PROPERTY);
+			put("instance_field", CSharpHighlightKey.INSTANCE_FIELD);
+			put("instance_property", CSharpHighlightKey.INSTANCE_PROPERTY);
 			put("parameter", CSharpHighlightKey.PARAMETER);
 			put("method_ref", CSharpHighlightKey.METHOD_REF);
 			put("static_event_name", CSharpHighlightKey.STATIC_EVENT);

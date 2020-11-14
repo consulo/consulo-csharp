@@ -7,7 +7,10 @@ public class <class_name>MyClass</class_name> {
     public event <delegate_method_name>MyDelegateMethod</delegate_method_name> <instance_event_name>InstanceEvent</instance_event_name>
 
     public static <class_name>String</class_name> <static_field>HELLO</static_field> = "Hello";
-    public static int <static_field>INT_VALUE</static_field> = 1;
+    public int <instance_field>INT_VALUE</instance_field> = 1;
+
+    public static <class_name>String</class_name> <static_property>StaticProperty</static_property> => "Called";
+    public int <instance_property>InstanceProperty</instance_property> => 1;
 
     public unsafe void <method_name>Main</method_name>(<class_name>String</class_name>[] args) {
         "ExtensionCall".<extension_call>Call</extension_call>();

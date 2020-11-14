@@ -184,9 +184,13 @@ public class CSharpHighlightUtil
 			{
 				key = CSharpHighlightKey.CONSTANT;
 			}
+			else if(element instanceof DotNetPropertyDeclaration)
+			{
+				key = ((DotNetVariable) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_PROPERTY : CSharpHighlightKey.INSTANCE_PROPERTY;
+			}
 			else
 			{
-				key = ((DotNetVariable) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY : CSharpHighlightKey.INSTANCE_FIELD_OR_PROPERTY;
+				key = ((DotNetVariable) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_FIELD : CSharpHighlightKey.INSTANCE_FIELD;
 			}
 		}
 		return key;
