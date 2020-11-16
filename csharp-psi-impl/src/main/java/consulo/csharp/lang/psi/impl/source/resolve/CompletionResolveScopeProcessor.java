@@ -16,22 +16,25 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import javax.annotation.Nonnull;
-
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpContextUtil;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.Processor;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpContextUtil;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
+import consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -80,23 +83,37 @@ public class CompletionResolveScopeProcessor extends StubScopeProcessor
 		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
 		assert extractor != null;
 
-		for(PsiElement psiElement : OverrideUtil.getAllMembers(element, myScope, extractor, true, false))
+		if(element instanceof CSharpTypeDeclaration)
 		{
-			ProgressManager.checkCanceled();
-
-			if(!ExecuteTargetUtil.isMyElement(this, psiElement))
+			for(PsiElement psiElement : OverrideUtil.getAllMembers(element, myScope, extractor, true, false))
 			{
-				continue;
-			}
+				ProgressManager.checkCanceled();
 
-			processElement(psiElement);
+				processElement(psiElement);
+			}
 		}
+		else
+		{
+			CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myScope, element);
+
+			return context.processElements(it ->
+			{
+				processElement(it);
+				return true;
+			}, true);
+		}
+
 		return true;
 	}
 
 	@RequiredReadAction
 	private void processElement(@Nonnull PsiElement element)
 	{
+		if(!ExecuteTargetUtil.isMyElement(this, element))
+		{
+			return;
+		}
+
 		if(element instanceof DotNetModifierListOwner && !CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) element, myPlace))
 		{
 			return;

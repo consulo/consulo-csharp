@@ -29,6 +29,7 @@ import com.intellij.util.containers.ConcurrentFactoryMap;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.ToNativeElementTransformers;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
@@ -42,6 +43,7 @@ import consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilEntry;
@@ -50,7 +52,9 @@ import consulo.util.dataholder.UserDataHolder;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -179,18 +183,30 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		{
 			filter = DotNetNamespaceAsElement.ChildrenFilter.NONE;
 		}
-		Collection<PsiElement> children = myNamespaceAsElement.getChildren(myResolveScope, CSharpTransformer.INSTANCE, filter);
-		children = CSharpCompositeTypeDeclaration.wrapPartialTypes(myResolveScope, myNamespaceAsElement.getProject(), children);
 
-		for(PsiElement element : children)
+		Set<String> partialTypesVisit = new HashSet<>();
+		return myNamespaceAsElement.processChildren(myResolveScope, CSharpTransformer.INSTANCE, filter, element ->
 		{
 			ProgressManager.checkCanceled();
-			if(!processor.process(element))
+
+			if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).hasModifier(CSharpModifier.PARTIAL))
 			{
-				return false;
+				// already processed
+				if(!partialTypesVisit.add(((CSharpTypeDeclaration) element).getVmQName()))
+				{
+					return true;
+				}
+
+				DotNetTypeDeclaration type = CSharpCompositeTypeDeclaration.selectCompositeOrSelfType((CSharpTypeDeclaration) element);
+
+				if(!processor.process(type))
+				{
+					return false;
+				}
 			}
-		}
-		return true;
+
+			return processor.process(element);
+		});
 	}
 
 	@Nonnull
