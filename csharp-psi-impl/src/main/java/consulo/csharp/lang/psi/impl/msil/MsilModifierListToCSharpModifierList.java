@@ -16,12 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.msil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
@@ -45,6 +39,11 @@ import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.msil.lang.psi.MsilTokens;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * @author VISTALL
  * @since 23.05.14
@@ -63,6 +62,8 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	private List<DotNetAttribute> myAdditionalAttributes = Collections.emptyList();
 
 	private NullableLazyValue<ExternalAttributeHolder> myAttributeHolderValue;
+
+	private final Map<CSharpModifier, Boolean> myModifiersState = new ConcurrentHashMap<>();
 
 	@RequiredReadAction
 	public MsilModifierListToCSharpModifierList(@Nonnull PsiElement parent, @Nonnull DotNetModifierList modifierList)
@@ -124,18 +125,19 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 
 	@Nonnull
 	@Override
+	@RequiredReadAction
 	public DotNetModifier[] getModifiers()
 	{
-		List<CSharpModifier> list = new ArrayList<>();
+		Set<CSharpModifier> all = new HashSet<>();
 		for(CSharpModifier cSharpModifier : CSharpModifier.values())
 		{
 			if(MsilToCSharpUtil.hasCSharpInMsilModifierList(cSharpModifier, myModifierList))
 			{
-				list.add(cSharpModifier);
+				all.add(cSharpModifier);
 			}
 		}
-		Collections.addAll(list, myAdditional);
-		return list.toArray(new DotNetModifier[list.size()]);
+		Collections.addAll(all, myAdditional);
+		return all.toArray(CSharpModifier[]::new);
 	}
 
 	@RequiredReadAction
@@ -185,7 +187,7 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	@RequiredReadAction
 	public boolean hasModifier(@Nonnull DotNetModifier modifier)
 	{
-		return CSharpModifierListImplUtil.getModifiersCached(this).contains(CSharpModifier.as(modifier));
+		return myModifiersState.computeIfAbsent(CSharpModifier.as(modifier), it -> CSharpModifierListImplUtil.hasModifier(this, it));
 	}
 
 	@Override
