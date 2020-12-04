@@ -19,7 +19,6 @@ package consulo.csharp.ide.highlight;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
-import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.CodeInsightColors;
 import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
@@ -167,12 +166,12 @@ public class CSharpHighlightUtil
 			}
 			else
 			{
-				key = DefaultLanguageHighlighterColors.LOCAL_VARIABLE;
+				key = CSharpHighlightKey.LOCAL_VARIABLE;
 			}
 		}
 		else if(element instanceof CSharpLinqVariable || element instanceof CSharpOutRefVariableImpl || element instanceof CSharpIsVariableImpl || element instanceof CSharpCaseVariableImpl)
 		{
-			key = DefaultLanguageHighlighterColors.LOCAL_VARIABLE;
+			key = CSharpHighlightKey.LOCAL_VARIABLE;
 		}
 		else if(element instanceof CSharpEventDeclaration)
 		{

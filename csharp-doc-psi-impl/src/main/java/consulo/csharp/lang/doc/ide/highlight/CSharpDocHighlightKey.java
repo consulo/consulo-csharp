@@ -16,9 +16,9 @@
 
 package consulo.csharp.lang.doc.ide.highlight;
 
-import consulo.csharp.lang.doc.CSharpDocLanguage;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import consulo.csharp.lang.CSharpLanguage;
 
 /**
  * @author VISTALL
@@ -26,10 +26,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
  */
 public interface CSharpDocHighlightKey
 {
-	TextAttributesKey DOC_COMMENT = TextAttributesKey.createTextAttributesKey(CSharpDocLanguage.INSTANCE,
-			DefaultLanguageHighlighterColors.DOC_COMMENT);
-	TextAttributesKey DOC_COMMENT_TAG = TextAttributesKey.createTextAttributesKey(CSharpDocLanguage.INSTANCE,
-			DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP);
-	TextAttributesKey DOC_COMMENT_ATTRIBUTE = TextAttributesKey.createTextAttributesKey(CSharpDocLanguage.INSTANCE,
-			DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP);
+	TextAttributesKey DOC_COMMENT = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.DOC_COMMENT);
+	TextAttributesKey DOC_COMMENT_TAG = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP);
+	TextAttributesKey DOC_COMMENT_ATTRIBUTE = TextAttributesKey.createTextAttributesKey("CSHARP_DOC_ATTRIBUTE", DOC_COMMENT_TAG);
 }

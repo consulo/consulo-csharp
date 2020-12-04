@@ -81,6 +81,7 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.operation"), CSharpHighlightKey.OPERATION_SIGN),
 			new AttributesDescriptor("Braces and Operators//Colon", CSharpHighlightKey.COLON),
 			new AttributesDescriptor("Braces and Operators//Arrows (->, =>)", CSharpHighlightKey.ARROW),
+			new AttributesDescriptor("Variables//Local variable", CSharpHighlightKey.LOCAL_VARIABLE),
 	};
 
 	private static final Map<String, TextAttributesKey> ourAdditionalTags = new HashMap<String, TextAttributesKey>()
@@ -111,8 +112,10 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 			put("static_event_name", CSharpHighlightKey.STATIC_EVENT);
 			put("instance_event_name", CSharpHighlightKey.INSTANCE_EVENT);
 			put("implicit_or_explicit", CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
+			put("doc_comment", CSharpDocHighlightKey.DOC_COMMENT);
 			put("doc_tag", CSharpDocHighlightKey.DOC_COMMENT_TAG);
 			put("doc_attribute", CSharpDocHighlightKey.DOC_COMMENT_ATTRIBUTE);
+			put("local_var", CSharpHighlightKey.LOCAL_VARIABLE);
 		}
 	};
 
