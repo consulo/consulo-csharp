@@ -16,6 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -51,7 +54,7 @@ public class CSharpConditionalExpressionImpl extends CSharpExpressionImpl implem
 	}
 
 	@Nonnull
-	public DotNetExpression getCondition()
+	public DotNetExpression getConditionExpression()
 	{
 		return ArrayUtil2.safeGet(getExpressions(), 0);
 	}
@@ -109,5 +112,16 @@ public class CSharpConditionalExpressionImpl extends CSharpExpressionImpl implem
 		{
 			return falseType;
 		}
+	}
+
+	@Override
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	{
+		DotNetExpression conditionExpression = getConditionExpression();
+		if(!conditionExpression.processDeclarations(processor, state, lastParent, place))
+		{
+			return false;
+		}
+		return super.processDeclarations(processor, state, lastParent, place);
 	}
 }
