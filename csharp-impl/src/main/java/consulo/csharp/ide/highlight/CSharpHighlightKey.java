@@ -33,6 +33,7 @@ public interface CSharpHighlightKey
 	TextAttributesKey ENUM_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_ENUM_NAME", CLASS_NAME);
 	TextAttributesKey INTERFACE_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_INTERFACE_NAME", CLASS_NAME);
 	TextAttributesKey ATTRIBUTE_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_ATTRIBUTE_NAME", DefaultLanguageHighlighterColors.METADATA);
+	TextAttributesKey STRUCT_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_STRUCT_NAME", CLASS_NAME);
 
 	TextAttributesKey GENERIC_PARAMETER_NAME = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.TYPE_ALIAS_NAME);
 

@@ -52,6 +52,7 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 			new AttributesDescriptor("Classes and Interfaces//Attribute name", CSharpHighlightKey.ATTRIBUTE_NAME),
 			new AttributesDescriptor("Classes and Interfaces//Enum name", CSharpHighlightKey.ENUM_NAME),
 			new AttributesDescriptor("Classes and Interfaces//Inteface name", CSharpHighlightKey.INTERFACE_NAME),
+			new AttributesDescriptor("Classes and Interfaces//Struct name", CSharpHighlightKey.STRUCT_NAME),
 			new AttributesDescriptor("Methods//Constructor declaration", CSharpHighlightKey.CONSTRUCTOR_NAME),
 			new AttributesDescriptor("Methods//Method declaration", CSharpHighlightKey.METHOD_NAME),
 			new AttributesDescriptor("Methods//Delegate method name", CSharpHighlightKey.DELEGATE_METHOD_NAME),
@@ -89,6 +90,7 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 		{
 			put("class_name", CSharpHighlightKey.CLASS_NAME);
 			put("attribute_name", CSharpHighlightKey.ATTRIBUTE_NAME);
+			put("struct_name", CSharpHighlightKey.STRUCT_NAME);
 			put("interface_name", CSharpHighlightKey.INTERFACE_NAME);
 			put("enum_name", CSharpHighlightKey.ENUM_NAME);
 			put("generic_parameter_name", CSharpHighlightKey.GENERIC_PARAMETER_NAME);

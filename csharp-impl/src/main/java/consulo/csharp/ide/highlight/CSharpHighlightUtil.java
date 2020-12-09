@@ -104,6 +104,10 @@ public class CSharpHighlightUtil
 			{
 				key = CSharpHighlightKey.ATTRIBUTE_NAME;
 			}
+			else if(((CSharpTypeDeclaration) element).isStruct())
+			{
+				key = CSharpHighlightKey.STRUCT_NAME;
+			}
 			else
 			{
 				key = CSharpHighlightKey.CLASS_NAME;
