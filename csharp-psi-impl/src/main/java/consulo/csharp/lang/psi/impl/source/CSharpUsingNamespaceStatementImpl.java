@@ -17,12 +17,12 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.psi.util.QualifiedName;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
@@ -69,7 +69,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 		}
 
 		DotNetReferenceExpression namespaceReference = getNamespaceReference();
-		return namespaceReference == null ? null : StringUtil.strip(namespaceReference.getText(), CharFilter.NOT_WHITESPACE_FILTER);
+		return namespaceReference == null ? null : StringUtil.strip(namespaceReference.getText(), CSharpReferenceExpression.DEFAULT_REF_FILTER);
 	}
 
 	@RequiredReadAction
@@ -77,7 +77,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 	@Nullable
 	public DotNetNamespaceAsElement resolve()
 	{
-		return CachedValuesManager.getCachedValue(this, () -> CachedValueProvider.Result.create(resolveInner(), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT));
+		return CachedValuesManager.getCachedValue(this, () -> CachedValueProvider.Result.create(resolveInner(), PsiModificationTracker.MODIFICATION_COUNT));
 	}
 
 	@Nullable
@@ -96,8 +96,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 		DotNetPsiSearcher psiSearcher = DotNetPsiSearcher.getInstance(getProject());
 		if(parent instanceof CSharpNamespaceDeclaration)
 		{
-			String newNamespaceName = ((CSharpNamespaceDeclaration) parent).getPresentableQName() + "." + qName;
-			DotNetNamespaceAsElement namespace = psiSearcher.findNamespace(newNamespaceName, getResolveScope());
+			DotNetNamespaceAsElement namespace = tryResolveRelativeNamespace((CSharpNamespaceDeclaration) parent, qName, psiSearcher);
 			if(namespace != null)
 			{
 				return namespace;
@@ -105,6 +104,37 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 		}
 
 		return psiSearcher.findNamespace(qName, getResolveScope());
+	}
+
+	@Nullable
+	@RequiredReadAction
+	private DotNetNamespaceAsElement tryResolveRelativeNamespace(@Nonnull CSharpNamespaceDeclaration parent, @Nonnull String text, @Nonnull DotNetPsiSearcher psiSearcher)
+	{
+		DotNetReferenceExpression namespaceReference = parent.getNamespaceReference();
+		if(namespaceReference == null)
+		{
+			return null;
+		}
+
+		QualifiedName target = QualifiedName.fromDottedString(StringUtil.strip(namespaceReference.getText(), CSharpReferenceExpression.DEFAULT_REF_FILTER));
+
+		while(true)
+		{
+			DotNetNamespaceAsElement namespace = psiSearcher.findNamespace(target.append(text).join("."), getResolveScope());
+			if(namespace != null)
+			{
+			 	return namespace;
+			}
+
+			target = target.getParent();
+			
+			if(target == null || target == QualifiedName.ROOT)
+			{
+				break;
+			}
+		}
+
+		return null;
 	}
 
 	@Override
