@@ -38,11 +38,11 @@ import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.util.ArrayUtil2;
 import consulo.util.lang.Pair;
-import gnu.trove.THashSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -213,42 +213,60 @@ public class CSharpTypeUtil
 			return null;
 		}
 
-		return findTypeRefFromExtends(typeRef, (DotNetTypeDeclaration) element,  new THashSet<>());
+		return findTypeRefFromExtends(typeRef, (DotNetTypeDeclaration) element,  new HashSet<>());
 	}
 
 	@Nullable
 	@RequiredReadAction
 	public static DotNetTypeResolveResult findTypeRefFromExtends(@Nonnull final DotNetTypeRef typeRef,
 																 @Nonnull final DotNetTypeDeclaration typeDeclaration,
-																 @Nonnull Set<String> processed)
+																 @Nonnull Set<PsiElement> processed)
 	{
 		final DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		final PsiElement resolvedElement = typeResolveResult.getElement();
-		if(!(resolvedElement instanceof DotNetTypeDeclaration))
-		{
-			return null;
-		}
-
 		if(typeDeclaration.isEquivalentTo(resolvedElement))
 		{
 			return typeResolveResult;
 		}
 
-		if(!processed.add(((DotNetTypeDeclaration) resolvedElement).getVmQName()))
+		if(resolvedElement instanceof DotNetTypeDeclaration)
 		{
-			return null;
-		}
-
-		DotNetTypeRef[] extendTypeRefs = ((DotNetTypeDeclaration) resolvedElement).getExtendTypeRefs();
-
-		for(DotNetTypeRef extendTypeRef : extendTypeRefs)
-		{
-			extendTypeRef = GenericUnwrapTool.exchangeTypeRef(extendTypeRef, typeResolveResult.getGenericExtractor());
-
-			DotNetTypeResolveResult findTypeRefFromExtends = findTypeRefFromExtends(extendTypeRef, typeDeclaration, processed);
-			if(findTypeRefFromExtends != null)
+			if(!processed.add(resolvedElement))
 			{
-				return findTypeRefFromExtends;
+				return null;
+			}
+
+			DotNetTypeRef[] extendTypeRefs = ((DotNetTypeDeclaration) resolvedElement).getExtendTypeRefs();
+
+			for(DotNetTypeRef extendTypeRef : extendTypeRefs)
+			{
+				extendTypeRef = GenericUnwrapTool.exchangeTypeRef(extendTypeRef, typeResolveResult.getGenericExtractor());
+
+				DotNetTypeResolveResult findTypeRefFromExtends = findTypeRefFromExtends(extendTypeRef, typeDeclaration, processed);
+				if(findTypeRefFromExtends != null)
+				{
+					return findTypeRefFromExtends;
+				}
+			}
+		}
+		else if(resolvedElement instanceof CSharpGenericParameter)
+		{
+			if(!processed.add(resolvedElement))
+			{
+				return null;
+			}
+
+			DotNetTypeRef[] extendTypeRefs = ((CSharpGenericParameter) resolvedElement).getExtendTypeRefs();
+
+			for(DotNetTypeRef extendTypeRef : extendTypeRefs)
+			{
+				extendTypeRef = GenericUnwrapTool.exchangeTypeRef(extendTypeRef, typeResolveResult.getGenericExtractor());
+
+				DotNetTypeResolveResult findTypeRefFromExtends = findTypeRefFromExtends(extendTypeRef, typeDeclaration, processed);
+				if(findTypeRefFromExtends != null)
+				{
+					return findTypeRefFromExtends;
+				}
 			}
 		}
 		return null;
