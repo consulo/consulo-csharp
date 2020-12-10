@@ -24,12 +24,12 @@ import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightKey;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -85,41 +85,38 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 			new AttributesDescriptor("Variables//Local variable", CSharpHighlightKey.LOCAL_VARIABLE),
 	};
 
-	private static final Map<String, TextAttributesKey> ourAdditionalTags = new HashMap<String, TextAttributesKey>()
-	{
-		{
-			put("class_name", CSharpHighlightKey.CLASS_NAME);
-			put("attribute_name", CSharpHighlightKey.ATTRIBUTE_NAME);
-			put("struct_name", CSharpHighlightKey.STRUCT_NAME);
-			put("interface_name", CSharpHighlightKey.INTERFACE_NAME);
-			put("enum_name", CSharpHighlightKey.ENUM_NAME);
-			put("generic_parameter_name", CSharpHighlightKey.GENERIC_PARAMETER_NAME);
-			put("delegate_method_name", CSharpHighlightKey.DELEGATE_METHOD_NAME);
-			put("soft_keyword", CSharpHighlightKey.SOFT_KEYWORD);
-			put("method_name", CSharpHighlightKey.METHOD_NAME);
-			put("constructor_name", CSharpHighlightKey.CONSTRUCTOR_NAME);
-			put("macro_keyword", CSharpHighlightKey.MACRO_KEYWORD);
-			put("macro_variable", CSharpHighlightKey.MACRO_VARIABLE);
-			put("disabled_block", CSharpHighlightKey.DISABLED_BLOCK);
-			put("extension_call", CSharpHighlightKey.EXTENSION_METHOD_CALL);
-			put("static_call", CSharpHighlightKey.STATIC_METHOD_CALL);
-			put("instance_call", CSharpHighlightKey.INSTANCE_METHOD_CALL);
-			put("static_field", CSharpHighlightKey.STATIC_FIELD);
-			put("static_property", CSharpHighlightKey.STATIC_PROPERTY);
-			put("constant", CSharpHighlightKey.CONSTANT);
-			put("instance_field", CSharpHighlightKey.INSTANCE_FIELD);
-			put("instance_property", CSharpHighlightKey.INSTANCE_PROPERTY);
-			put("parameter", CSharpHighlightKey.PARAMETER);
-			put("method_ref", CSharpHighlightKey.METHOD_REF);
-			put("static_event_name", CSharpHighlightKey.STATIC_EVENT);
-			put("instance_event_name", CSharpHighlightKey.INSTANCE_EVENT);
-			put("implicit_or_explicit", CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
-			put("doc_comment", CSharpDocHighlightKey.DOC_COMMENT);
-			put("doc_tag", CSharpDocHighlightKey.DOC_COMMENT_TAG);
-			put("doc_attribute", CSharpDocHighlightKey.DOC_COMMENT_ATTRIBUTE);
-			put("local_var", CSharpHighlightKey.LOCAL_VARIABLE);
-		}
-	};
+	private static final Map<String, TextAttributesKey> ourAdditionalTags = ContainerUtil.<String, TextAttributesKey>immutableMapBuilder()
+			.put("class_name", CSharpHighlightKey.CLASS_NAME)
+			.put("attribute_name", CSharpHighlightKey.ATTRIBUTE_NAME)
+			.put("struct_name", CSharpHighlightKey.STRUCT_NAME)
+			.put("interface_name", CSharpHighlightKey.INTERFACE_NAME)
+			.put("enum_name", CSharpHighlightKey.ENUM_NAME)
+			.put("generic_parameter_name", CSharpHighlightKey.GENERIC_PARAMETER_NAME)
+			.put("delegate_method_name", CSharpHighlightKey.DELEGATE_METHOD_NAME)
+			.put("soft_keyword", CSharpHighlightKey.SOFT_KEYWORD)
+			.put("method_name", CSharpHighlightKey.METHOD_NAME)
+			.put("constructor_name", CSharpHighlightKey.CONSTRUCTOR_NAME)
+			.put("macro_keyword", CSharpHighlightKey.MACRO_KEYWORD)
+			.put("macro_variable", CSharpHighlightKey.MACRO_VARIABLE)
+			.put("disabled_block", CSharpHighlightKey.DISABLED_BLOCK)
+			.put("extension_call", CSharpHighlightKey.EXTENSION_METHOD_CALL)
+			.put("static_call", CSharpHighlightKey.STATIC_METHOD_CALL)
+			.put("instance_call", CSharpHighlightKey.INSTANCE_METHOD_CALL)
+			.put("static_field", CSharpHighlightKey.STATIC_FIELD)
+			.put("static_property", CSharpHighlightKey.STATIC_PROPERTY)
+			.put("constant", CSharpHighlightKey.CONSTANT)
+			.put("instance_field", CSharpHighlightKey.INSTANCE_FIELD)
+			.put("instance_property", CSharpHighlightKey.INSTANCE_PROPERTY)
+			.put("parameter", CSharpHighlightKey.PARAMETER)
+			.put("method_ref", CSharpHighlightKey.METHOD_REF)
+			.put("static_event_name", CSharpHighlightKey.STATIC_EVENT)
+			.put("instance_event_name", CSharpHighlightKey.INSTANCE_EVENT)
+			.put("implicit_or_explicit", CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST)
+			.put("doc_comment", CSharpDocHighlightKey.DOC_COMMENT)
+			.put("doc_tag", CSharpDocHighlightKey.DOC_COMMENT_TAG)
+			.put("doc_attribute", CSharpDocHighlightKey.DOC_COMMENT_ATTRIBUTE)
+			.put("local_var", CSharpHighlightKey.LOCAL_VARIABLE)
+			.build();
 
 	private final NotNullLazyValue<String> myDemoTextValue = NotNullLazyValue.createValue(() ->
 	{
