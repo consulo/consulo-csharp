@@ -19,7 +19,7 @@ package consulo.csharp.ide.codeInsight.moveUpDown;
 import com.intellij.codeInsight.editorActions.moveUpDown.LineMover;
 import com.intellij.codeInsight.editorActions.moveUpDown.LineRange;
 import com.intellij.codeInsight.editorActions.moveUpDown.StatementUpDownMover;
-import com.intellij.openapi.diagnostic.Logger;
+import consulo.logging.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;

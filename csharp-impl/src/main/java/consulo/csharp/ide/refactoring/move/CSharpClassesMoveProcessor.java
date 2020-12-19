@@ -18,7 +18,7 @@ package consulo.csharp.ide.refactoring.move;
 
 import com.intellij.ide.util.EditorHelper;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
+import consulo.logging.Logger;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.paths.PsiDynaReference;
 import com.intellij.openapi.project.DumbService;

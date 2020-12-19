@@ -18,7 +18,7 @@ package consulo.csharp.lang.doc.ide.codeInsight.editorActions;
 import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
 import com.intellij.codeInsight.highlighting.BraceMatchingUtil;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
+import consulo.logging.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.editor.ex.EditorEx;

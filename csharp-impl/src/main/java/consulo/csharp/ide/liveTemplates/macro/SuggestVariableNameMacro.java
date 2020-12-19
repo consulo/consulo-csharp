@@ -20,7 +20,6 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.template.*;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
@@ -33,6 +32,7 @@ import consulo.csharp.ide.lineMarkerProvider.CSharpLineMarkerUtil;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetVariable;
+import consulo.logging.Logger;
 import consulo.ui.annotation.RequiredUIAccess;
 
 import javax.annotation.Nonnull;

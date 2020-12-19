@@ -24,7 +24,7 @@ import java.util.ListIterator;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.openapi.diagnostic.Logger;
+import consulo.logging.Logger;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;

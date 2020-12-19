@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.msil.typeParsing;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Ref;
@@ -29,6 +28,7 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperType
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.logging.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

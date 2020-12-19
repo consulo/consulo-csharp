@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import com.intellij.codeInsight.CodeInsightUtilBase;
 import com.intellij.codeInsight.editorActions.moveUpDown.LineMover;
 import com.intellij.codeInsight.editorActions.moveUpDown.LineRange;
-import com.intellij.openapi.diagnostic.Logger;
+import consulo.logging.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
