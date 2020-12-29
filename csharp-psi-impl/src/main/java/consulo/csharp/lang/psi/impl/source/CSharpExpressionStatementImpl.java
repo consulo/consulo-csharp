@@ -26,6 +26,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -38,11 +39,11 @@ public class CSharpExpressionStatementImpl extends CSharpElementImpl implements 
 		super(elementType);
 	}
 
-	@Nonnull
+	@Nullable
 	@RequiredReadAction
 	public DotNetExpression getExpression()
 	{
-		return findNotNullChildByClass(DotNetExpression.class);
+		return findChildByClass(DotNetExpression.class);
 	}
 
 	@Override
@@ -56,6 +57,6 @@ public class CSharpExpressionStatementImpl extends CSharpElementImpl implements 
 	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
 	{
 		DotNetExpression expression = getExpression();
-		return expression.processDeclarations(processor, state, lastParent, place);
+		return expression != null && expression.processDeclarations(processor, state, lastParent, place);
 	}
 }
