@@ -31,6 +31,7 @@ import com.intellij.util.ProcessingContext;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.codeInsight.completion.CompletionProvider;
+import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodByLambdaTypeFix;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
@@ -44,6 +45,7 @@ import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
+import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImplUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
@@ -55,7 +57,9 @@ import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.ide.IconDescriptorUpdaters;
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.ui.image.Image;
+import consulo.ui.image.ImageEffects;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.Pair;
 import gnu.trove.THashSet;
@@ -116,8 +120,39 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 						{
 							addDelegateExpressionLookup((CSharpLambdaResolveResult) typeResolveResult, result, parent, true);
 						}
+
+						addPrivatMethodImpl((CSharpLambdaResolveResult) typeResolveResult, parameters, result, parent);
 					}
 				}
+			}
+
+			private void addPrivatMethodImpl(CSharpLambdaResolveResult typeResolveResult, @Nonnull CompletionParameters parameters, CompletionResultSet result, CSharpReferenceExpressionEx parent)
+			{
+				PsiElement maybeAssign = parent.getParent();
+				if(!(maybeAssign instanceof CSharpAssignmentExpressionImpl))
+				{
+					return;
+				}
+
+
+				String methodName = ((CSharpAssignmentExpressionImpl) maybeAssign).getLeftExpression().getText().replace(".", "_");
+				LookupElementBuilder builder = LookupElementBuilder.create(methodName);
+				builder = builder.withIcon(ImageEffects.layered(PlatformIconGroup.nodesMethod(), PlatformIconGroup.nodesTabPin()));
+				builder = builder.withInsertHandler((insertionContext, lookupElement) ->
+				{
+					insertionContext.commitDocument();
+					insertionContext.setLaterRunnable(() -> {
+						PsiElement originalPosition = parameters.getOriginalPosition();
+
+						CSharpReferenceExpression ref = PsiTreeUtil.getParentOfType(originalPosition, CSharpReferenceExpression.class);
+
+						if(ref != null)
+						{
+							new CreateUnresolvedMethodByLambdaTypeFix(ref, typeResolveResult).invoke(ref.getProject(), insertionContext.getEditor(), ref.getContainingFile());
+						}
+					});
+				});
+				result.addElement(builder);
 			}
 
 			@RequiredReadAction

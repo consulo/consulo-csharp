@@ -351,7 +351,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	@RequiredReadAction
 	public static void appendTypeRef(@Nonnull Project project, @Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef)
 	{
-		CSharpTypeRefPresentationUtil.appendTypeRef(builder, typeRef, CSharpTypeRefPresentationUtil.QUALIFIED_NAME | CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
+		CSharpTypeRefPresentationUtil.appendTypeRef(builder, typeRef, CSharpTypeRefPresentationUtil.QUALIFIED_NAME | CSharpTypeRefPresentationUtil.FORCE_TYPE_KEYWORD);
 	}
 
 	@RequiredReadAction

@@ -68,11 +68,12 @@ public class CSharpTypeRefPresentationUtil
 	};
 
 	public static final int QUALIFIED_NAME = 1 << 0;
-	public static final int TYPE_KEYWORD = 1 << 1;
+	public static final int TYPE_KEYWORD = 1 << 1;  // replacing types as keywords if in project set
 	public static final int NO_GENERIC_ARGUMENTS = 1 << 2;
 	public static final int NO_REF = 1 << 3;
 	public static final int NULL = 1 << 4;
 	public static final int NULLABLE = 1 << 5;
+	public static final int FORCE_TYPE_KEYWORD = 1 << 6; // same as TYPE_KEYWORD but without project checking
 
 	public static final int QUALIFIED_NAME_WITH_KEYWORD = QUALIFIED_NAME | TYPE_KEYWORD;
 
@@ -232,11 +233,11 @@ public class CSharpTypeRefPresentationUtil
 				String qName = ((DotNetQualifiedElement) element).getPresentableQName();
 				String name = ((DotNetQualifiedElement) element).getName();
 
-				String typeAsKeyword = CSharpCodeGenerationSettings.getInstance(typeRef.getProject()).USE_LANGUAGE_DATA_TYPES ? ourTypesAsKeywords.get(qName) : null;
+				String typeAsKeyword = BitUtil.isSet(flags, FORCE_TYPE_KEYWORD) || CSharpCodeGenerationSettings.getInstance(typeRef.getProject()).USE_LANGUAGE_DATA_TYPES ? ourTypesAsKeywords.get(qName) : null;
 
 				if(BitUtil.isSet(flags, QUALIFIED_NAME))
 				{
-					if(BitUtil.isSet(flags, TYPE_KEYWORD) && typeAsKeyword != null)
+					if((BitUtil.isSet(flags, TYPE_KEYWORD) || BitUtil.isSet(flags, FORCE_TYPE_KEYWORD)) && typeAsKeyword != null)
 					{
 						builder.append(typeAsKeyword);
 					}
@@ -247,7 +248,7 @@ public class CSharpTypeRefPresentationUtil
 				}
 				else
 				{
-					if(BitUtil.isSet(flags, TYPE_KEYWORD) && typeAsKeyword != null)
+					if((BitUtil.isSet(flags, TYPE_KEYWORD) || BitUtil.isSet(flags, FORCE_TYPE_KEYWORD)) &&typeAsKeyword != null)
 					{
 						builder.append(typeAsKeyword);
 					}

@@ -141,7 +141,7 @@ public abstract class CreateUnresolvedElementFix extends BaseIntentionAction
 	}
 
 	@Nullable
-	protected static Editor openEditor(@Nonnull PsiElement anchor, int offset)
+	protected Editor openEditor(@Nonnull PsiElement anchor, int offset)
 	{
 		PsiFile containingFile = anchor.getContainingFile();
 		if(containingFile == null)
