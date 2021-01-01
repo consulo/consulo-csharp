@@ -16,10 +16,6 @@
 
 package consulo.csharp.ide.highlight.check;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
@@ -37,7 +33,10 @@ import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetElement;
-import consulo.msil.representation.MsilFileRepresentationVirtualFile;
+import consulo.msil.representation.fileSystem.MsilFileRepresentationVirtualFile;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * @author VISTALL

@@ -16,11 +16,11 @@
 
 package consulo.csharp.ide.refactoring.rename;
 
-import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import consulo.msil.representation.MsilFileRepresentationVirtualFile;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+import consulo.msil.representation.fileSystem.MsilFileRepresentationVirtualFile;
 
 /**
  * @author VISTALL

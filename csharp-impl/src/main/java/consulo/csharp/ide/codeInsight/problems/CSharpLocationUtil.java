@@ -16,20 +16,20 @@
 
 package consulo.csharp.ide.codeInsight.problems;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
-import consulo.dotnet.module.extension.DotNetModuleExtension;
-import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import consulo.msil.representation.MsilFileRepresentationVirtualFile;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleFileIndex;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.csharp.lang.CSharpFileType;
+import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
+import consulo.dotnet.module.extension.DotNetModuleExtension;
+import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import consulo.msil.representation.fileSystem.MsilFileRepresentationVirtualFile;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
