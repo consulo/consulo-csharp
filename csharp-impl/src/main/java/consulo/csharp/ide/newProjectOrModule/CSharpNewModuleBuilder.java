@@ -18,10 +18,11 @@ package consulo.csharp.ide.newProjectOrModule;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
-import com.intellij.openapi.project.DumbService;
+import com.intellij.openapi.project.DumbAwareRunnable;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
@@ -32,6 +33,8 @@ import consulo.ide.impl.UnzipNewModuleBuilderProcessor;
 import consulo.ide.newProject.NewModuleBuilder;
 import consulo.ide.newProject.NewModuleBuilderProcessor;
 import consulo.ide.newProject.NewModuleContext;
+import consulo.ide.newProject.node.NewModuleContextGroup;
+import consulo.localize.LocalizeValue;
 import consulo.roots.ModifiableModuleRootLayer;
 import consulo.roots.impl.ModuleRootLayerImpl;
 import consulo.ui.wizard.WizardStep;
@@ -68,9 +71,9 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 	@Override
 	public void setupContext(@Nonnull NewModuleContext context)
 	{
-		NewModuleContext.Group group = context.createGroup("csharp", "C#");
+		NewModuleContextGroup group = context.addGroup("csharp", LocalizeValue.localizeTODO("C#"));
 
-		group.add("Empty", AllIcons.FileTypes.Any_type, new NewModuleBuilderProcessor<CSharpNewModuleContext>()
+		group.add(LocalizeValue.localizeTODO("Empty"), AllIcons.FileTypes.Any_type, new NewModuleBuilderProcessor<CSharpNewModuleContext>()
 		{
 			@Nonnull
 			@Override
@@ -93,7 +96,7 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 			}
 		});
 
-		group.add("Console Application", AllIcons.RunConfigurations.Application, new UnzipNewModuleBuilderProcessor<CSharpNewModuleContext>("/moduleTemplates/#CSharpConsoleApplication.zip")
+		group.add(LocalizeValue.localizeTODO("Console Application"), AllIcons.RunConfigurations.Application, new UnzipNewModuleBuilderProcessor<CSharpNewModuleContext>("/moduleTemplates/#CSharpConsoleApplication.zip")
 		{
 			@Nonnull
 			@Override
@@ -116,22 +119,17 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 
 				defaultSetup(context, modifiableRootModel);
 
-				DumbService.getInstance(modifiableRootModel.getProject()).smartInvokeLater(new Runnable()
-				{
-					@Override
-					public void run()
+				StartupManager.getInstance(modifiableRootModel.getProject()).registerPostStartupActivity(((DumbAwareRunnable) () -> {
+					VirtualFile dir = contentEntry.getFile();
+					if(dir != null)
 					{
-						VirtualFile dir = contentEntry.getFile();
-						if(dir != null)
+						VirtualFile mainFile = dir.findFileByRelativePath("Program.cs");
+						if(mainFile != null)
 						{
-							VirtualFile mainFile = dir.findFileByRelativePath("Program.cs");
-							if(mainFile != null)
-							{
-								FileEditorManagerEx.getInstanceEx(modifiableRootModel.getProject()).openFile(mainFile, false);
-							}
+							FileEditorManagerEx.getInstanceEx(modifiableRootModel.getProject()).openFile(mainFile, false);
 						}
 					}
-				});
+				}));
 			}
 		});
 	}
