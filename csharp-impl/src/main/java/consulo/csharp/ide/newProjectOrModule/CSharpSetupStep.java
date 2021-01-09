@@ -17,21 +17,21 @@
 package consulo.csharp.ide.newProjectOrModule;
 
 import com.intellij.openapi.projectRoots.SdkTable;
-import com.intellij.openapi.ui.ComboBox;
-import com.intellij.openapi.ui.LabeledComponent;
-import com.intellij.openapi.ui.VerticalFlowLayout;
-import com.intellij.ui.ColoredListCellRenderer;
-import com.intellij.util.SmartList;
+import consulo.bundle.ui.BundleBox;
+import consulo.bundle.ui.BundleBoxBuilder;
+import consulo.disposer.Disposable;
 import consulo.dotnet.DotNetTarget;
-import consulo.ide.newProject.ui.ProjectOrModuleNameStep;
+import consulo.ide.newProject.ui.UnifiedProjectOrModuleNameStep;
+import consulo.localize.LocalizeValue;
 import consulo.module.extension.ModuleExtensionProviderEP;
 import consulo.module.extension.impl.ModuleExtensionProviders;
-import consulo.roots.ui.configuration.SdkComboBox;
+import consulo.ui.ComboBox;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.model.ListModel;
+import consulo.ui.util.FormBuilder;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ItemEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,38 +39,38 @@ import java.util.Map;
  * @author VISTALL
  * @since 05.06.14
  */
-public class CSharpSetupStep extends ProjectOrModuleNameStep<CSharpNewModuleContext>
+public class CSharpSetupStep extends UnifiedProjectOrModuleNameStep<CSharpNewModuleContext>
 {
-	private ComboBox<DotNetTarget> myTargetComboBox;
-	private SdkComboBox myComboBox;
+	private DotNetTarget myForceTarget;
 
-	private JComponent myTargetComponent;
+	private Disposable myUiDisposable;
+
+	private ComboBox<DotNetTarget> myTargetComboBox;
+	private BundleBox myBundleBox;
 
 	public CSharpSetupStep(CSharpNewModuleContext context)
 	{
 		super(context);
+	}
 
-		JPanel panel = new JPanel(new VerticalFlowLayout());
+	@RequiredUIAccess
+	@Override
+	protected void extend(@Nonnull FormBuilder builder)
+	{
+		super.extend(builder);
 
-		myTargetComboBox = new ComboBox<>(DotNetTarget.values());
-		myTargetComboBox.setRenderer(new ColoredListCellRenderer<DotNetTarget>()
+		if(myForceTarget == null)
 		{
-			@Override
-			protected void customizeCellRenderer(@Nonnull JList<? extends DotNetTarget> jList, DotNetTarget target, int i, boolean b, boolean b1)
-			{
-				append(target.getDescription());
-			}
-		});
-		myTargetComboBox.addItemListener(e -> {
-			if(e.getStateChange() == ItemEvent.SELECTED)
-			{
-				context.setTarget((DotNetTarget) myTargetComboBox.getSelectedItem());
-			}
-		});
+			myTargetComboBox = ComboBox.create(DotNetTarget.values());
+			myTargetComboBox.setValue(DotNetTarget.EXECUTABLE);
+			myTargetComboBox.setTextRender(DotNetTarget::getDescription);
 
-		panel.add(myTargetComponent = LabeledComponent.create(myTargetComboBox, "Target"));
+			builder.addLabeled(LocalizeValue.localizeTODO("Target:"), myTargetComboBox);
+		}
 
-		List<String> validSdkTypes = new SmartList<>();
+		myUiDisposable = Disposable.newDisposable();
+
+		List<String> validSdkTypes = new ArrayList<>();
 		for(Map.Entry<String, String[]> entry : CSharpNewModuleBuilder.ourExtensionMapping.entrySet())
 		{
 			// need check C# extension
@@ -82,31 +82,45 @@ public class CSharpSetupStep extends ProjectOrModuleNameStep<CSharpNewModuleCont
 			validSdkTypes.add(entry.getKey());
 		}
 
-		myComboBox = new SdkComboBox(SdkTable.getInstance(), sdkTypeId -> validSdkTypes.contains(sdkTypeId.getName()), false);
-		myComboBox.addItemListener(e -> {
-			if(e.getStateChange() == ItemEvent.SELECTED)
-			{
-				context.setSdk(myComboBox.getSelectedSdk());
-			}
-		});
-		context.setSdk(myComboBox.getSelectedSdk());
+		BundleBoxBuilder boxBuilder = BundleBoxBuilder.create(myUiDisposable);
+		boxBuilder.withSdkTypeFilter(sdkTypeId -> validSdkTypes.contains(sdkTypeId.getId()));
 
-		panel.add(LabeledComponent.create(myComboBox, ".NET SDK"));
+		myBundleBox = boxBuilder.build();
+		ListModel<BundleBox.BundleBoxItem> listModel = myBundleBox.getComponent().getListModel();
+		// select first
+		if(listModel.getSize() > 0)
+		{
+			myBundleBox.getComponent().setValue(listModel.get(0));
+		}
+		builder.addLabeled(LocalizeValue.localizeTODO(".NET SDK:"), myBundleBox.getComponent());
+	}
 
-		myAdditionalContentPanel.add(panel, BorderLayout.NORTH);
+	@Override
+	public void onStepLeave(@Nonnull CSharpNewModuleContext context)
+	{
+		super.onStepLeave(context);
+
+		context.setTarget(myForceTarget != null ? myForceTarget : myTargetComboBox.getValueOrError());
+
+		context.setSdk(SdkTable.getInstance().findSdk(myBundleBox.getSelectedBundleName()));
 	}
 
 	@Nonnull
 	public CSharpSetupStep disableTargetComboBox(@Nonnull DotNetTarget target)
 	{
-		myTargetComboBox.setSelectedItem(target);
-		myTargetComponent.setVisible(false);
+		myForceTarget = target;
 		return this;
 	}
 
-	@Nonnull
-	public DotNetTarget getTarget()
+	@Override
+	public void disposeUIResources()
 	{
-		return (DotNetTarget) myTargetComboBox.getSelectedItem();
+		super.disposeUIResources();
+
+		if(myUiDisposable != null)
+		{
+			myUiDisposable.disposeWithTree();
+			myUiDisposable = null;
+		}
 	}
 }

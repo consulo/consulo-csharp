@@ -144,7 +144,7 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 			return;
 		}
 
-		String[] pair = ourExtensionMapping.get(sdk.getSdkType().getName());
+		String[] pair = ourExtensionMapping.get(sdk.getSdkType().getId());
 
 		for(String layerName : new String[]{
 				RELEASE,
