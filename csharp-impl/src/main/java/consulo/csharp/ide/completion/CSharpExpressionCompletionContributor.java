@@ -26,6 +26,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -475,7 +476,7 @@ class CSharpExpressionCompletionContributor
 			}
 		});
 
-		contributor.extend(CompletionType.BASIC, CSharpPatterns.expressionStart(), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, StandardPatterns.psiElement(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -497,6 +498,12 @@ class CSharpExpressionCompletionContributor
 			{
 				PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
 				if(prev == null)
+				{
+					return false;
+				}
+
+				PsiElement parent = position.getParent();
+				if(parent instanceof CSharpIdentifier && parent.getParent() instanceof DotNetVariable)
 				{
 					return false;
 				}

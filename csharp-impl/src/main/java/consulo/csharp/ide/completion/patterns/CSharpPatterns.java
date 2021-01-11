@@ -41,7 +41,7 @@ public class CSharpPatterns
 	@Nonnull
 	public static PsiElementPattern.Capture<PsiElement> expressionStart()
 	{
-		return StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class).with(new PatternCondition<PsiElement>("error validator")
+		return StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class).with(new PatternCondition<PsiElement>("csharp-expression")
 		{
 			@Override
 			public boolean accepts(@Nonnull PsiElement element, ProcessingContext processingContext)
@@ -68,6 +68,13 @@ public class CSharpPatterns
 				{
 					return false;
 				}
+
+				if(parent instanceof CSharpExpressionStatementImpl)
+				{
+					PsiElement previous = PsiTreeUtil.skipWhitespacesBackward(parent);
+					return previous == null || !(previous.getLastChild() instanceof PsiErrorElement);
+				}
+				
 				return true;
 			}
 		});
@@ -76,7 +83,7 @@ public class CSharpPatterns
 	@Nonnull
 	public static PsiElementPattern.Capture<PsiElement> statementStart()
 	{
-		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).with(new PatternCondition<PsiElement>("statement-validator")
+		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).with(new PatternCondition<PsiElement>("csharp-statement")
 		{
 			@Override
 			@RequiredReadAction
@@ -88,6 +95,12 @@ public class CSharpPatterns
 				if(parent3 instanceof CSharpLocalVariable)
 				{
 					return validateLocalVariable((CSharpLocalVariable) parent3);
+				}
+
+				if(parent2 instanceof CSharpExpressionStatementImpl)
+				{
+					PsiElement previous = PsiTreeUtil.skipWhitespacesBackward(parent2);
+					return previous == null || !(previous.getLastChild() instanceof PsiErrorElement);
 				}
 
 				if(parent instanceof CSharpReferenceExpression && parent2 instanceof CSharpExpressionStatementImpl)
