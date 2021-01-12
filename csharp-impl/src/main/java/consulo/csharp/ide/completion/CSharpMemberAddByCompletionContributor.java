@@ -16,7 +16,6 @@
 
 package consulo.csharp.ide.completion;
 
-import javax.annotation.Nonnull;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -36,6 +35,8 @@ import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import consulo.dotnet.psi.DotNetModifierList;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -89,7 +90,7 @@ public interface CSharpMemberAddByCompletionContributor
 					}
 				};
 
-				for(CSharpMemberAddByCompletionContributor completionContributor : EP_NAME.getExtensions())
+				for(CSharpMemberAddByCompletionContributor completionContributor : EP_NAME.getExtensionList())
 				{
 					completionContributor.processCompletion(parameters, context, delegate, typeDeclaration);
 				}
