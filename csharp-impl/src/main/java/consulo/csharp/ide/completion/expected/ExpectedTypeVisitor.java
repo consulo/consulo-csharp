@@ -16,16 +16,12 @@
 
 package consulo.csharp.ide.completion.expected;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import consulo.util.dataholder.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.*;
@@ -42,6 +38,11 @@ import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.util.ArrayUtil2;
+import consulo.util.dataholder.Key;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -50,13 +51,31 @@ import consulo.dotnet.util.ArrayUtil2;
 public class ExpectedTypeVisitor extends CSharpElementVisitor
 {
 	public static final Key<List<ExpectedTypeInfo>> EXPECTED_TYPE_INFOS = Key.create("ExpectedTypeInfo");
+
 	@Nonnull
 	public static List<ExpectedTypeInfo> findExpectedTypeRefs(@Nonnull PsiElement psiElement)
+	{
+		if(!psiElement.isValid())
+		{
+			return List.of();
+		}
+		
+		PsiElement parent = psiElement.getParent();
+		if(parent == null)
+		{
+			return List.of();
+		}
+
+		return CachedValuesManager.getCachedValue(psiElement, () -> CachedValueProvider.Result.create(findExpectedTypeRefsImpl(psiElement), PsiModificationTracker.MODIFICATION_COUNT));
+	}
+
+	@Nonnull
+	private static List<ExpectedTypeInfo> findExpectedTypeRefsImpl(PsiElement psiElement)
 	{
 		PsiElement parent = psiElement.getParent();
 		if(parent == null)
 		{
-			return Collections.emptyList();
+			return List.of();
 		}
 
 		ExpectedTypeVisitor expectedTypeVisitor = new ExpectedTypeVisitor(psiElement);
@@ -66,7 +85,7 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 		return ContainerUtil.filter(expectedTypeVisitor.getExpectedTypeInfos(), it -> it.getTypeRef() != DotNetTypeRef.ERROR_TYPE);
 	}
 
-	private List<ExpectedTypeInfo> myExpectedTypeInfos = new SmartList<ExpectedTypeInfo>();
+	private List<ExpectedTypeInfo> myExpectedTypeInfos = new ArrayList<>();
 
 	private PsiElement myCurrentElement;
 
