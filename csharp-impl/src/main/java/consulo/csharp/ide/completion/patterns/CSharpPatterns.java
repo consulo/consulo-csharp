@@ -97,28 +97,28 @@ public class CSharpPatterns
 					return validateLocalVariable((CSharpLocalVariable) parent3);
 				}
 
+				if(parent instanceof CSharpReferenceExpression && parent2 instanceof CSharpExpressionStatementImpl)
+				{
+					CSharpReferenceExpression expression = (CSharpReferenceExpression) parent;
+					if(expression.getQualifier() != null)
+					{
+						return false;
+					}
+
+					CSharpReferenceExpression.ResolveToKind kind = expression.kind();
+					if(kind != CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
+					{
+						return false;
+					}
+				}
+
 				if(parent2 instanceof CSharpExpressionStatementImpl)
 				{
 					PsiElement previous = PsiTreeUtil.skipWhitespacesBackward(parent2);
 					return previous == null || !(previous.getLastChild() instanceof PsiErrorElement);
 				}
 
-				if(parent instanceof CSharpReferenceExpression && parent2 instanceof CSharpExpressionStatementImpl)
-				{
-					return validateReferenceExpression((CSharpReferenceExpression) parent);
-				}
 				return false;
-			}
-
-			@RequiredReadAction
-			private boolean validateReferenceExpression(CSharpReferenceExpression expression)
-			{
-				if(expression.getQualifier() != null)
-				{
-					return false;
-				}
-				CSharpReferenceExpression.ResolveToKind kind = expression.kind();
-				return kind == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER;
 			}
 
 			@RequiredReadAction
