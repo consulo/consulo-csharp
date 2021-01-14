@@ -33,6 +33,7 @@ import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.ToNativeElementTransformers;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
+import consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.impl.stub.CSharpMsilStubIndexer;
 import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
@@ -178,18 +179,19 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	@Override
 	public boolean processElements(@Nonnull Processor<PsiElement> processor, boolean deep)
 	{
-		DotNetNamespaceAsElement.ChildrenFilter filter = DotNetNamespaceAsElement.ChildrenFilter.ONLY_ELEMENTS;
-		if(StringUtil.isEmpty(myNamespaceAsElement.getPresentableQName()))
-		{
-			filter = DotNetNamespaceAsElement.ChildrenFilter.NONE;
-		}
-
 		Set<String> partialTypesVisit = new HashSet<>();
-		return myNamespaceAsElement.processChildren(myResolveScope, CSharpTransformer.INSTANCE, filter, element ->
+		return myNamespaceAsElement.processChildren(myResolveScope, CSharpTransformer.INSTANCE, DotNetNamespaceAsElement.ChildrenFilter.NONE, element ->
 		{
 			ProgressManager.checkCanceled();
 
-			if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).hasModifier(CSharpModifier.PARTIAL))
+			if(element instanceof MsilClassEntry)
+			{
+				if(!processor.process(MsilToCSharpUtil.wrap(element, null)))
+				{
+					return false;
+				}
+			}
+			else if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).hasModifier(CSharpModifier.PARTIAL))
 			{
 				// already processed
 				if(!partialTypesVisit.add(((CSharpTypeDeclaration) element).getVmQName()))
