@@ -20,6 +20,8 @@ import com.intellij.lang.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.OrderEntry;
+import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
@@ -44,10 +46,7 @@ import consulo.util.dataholder.Key;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author VISTALL
@@ -129,10 +128,10 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 			virtualFile = psi.getUserData(IndexingDataKeys.VIRTUAL_FILE);
 		}
 
-		Set<String> defVariables = Collections.emptySet();
+		Set<String> defVariables = Set.of();
 		if(virtualFile != null)
 		{
-			List<String> variables = findVariables(virtualFile, psi.getProject());
+			Collection<String> variables = findVariables(virtualFile, psi.getProject());
 
 			if(variables != null)
 			{
@@ -144,17 +143,34 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 
 	@Nullable
 	@RequiredReadAction
-	private static List<String> findVariables(@Nonnull VirtualFile virtualFile, @Nonnull Project project)
+	private static Collection<String> findVariables(@Nonnull VirtualFile virtualFile, @Nonnull Project project)
 	{
 		Module module = ModuleUtilCore.findModuleForFile(virtualFile, project);
 		if(module == null)
 		{
-			return null;
+			List<OrderEntry> orderEntriesForFile = ProjectFileIndex.getInstance(project).getOrderEntriesForFile(virtualFile);
+
+			Set<String> variables = new HashSet<>();
+
+			for(OrderEntry orderEntry : orderEntriesForFile)
+			{
+				Module ownerModule = orderEntry.getOwnerModule();
+
+				DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(ownerModule, DotNetSimpleModuleExtension.class);
+				if(extension != null)
+				{
+					variables.addAll(extension.getVariables());
+				}
+			}
+			return variables;
 		}
-		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(module, DotNetSimpleModuleExtension.class);
-		if(extension != null)
+		else
 		{
-			return extension.getVariables();
+			DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(module, DotNetSimpleModuleExtension.class);
+			if(extension != null)
+			{
+				return extension.getVariables();
+			}
 		}
 		return null;
 	}
@@ -169,7 +185,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	@Override
 	public int getStubVersion()
 	{
-		return 111;
+		return 112;
 	}
 
 	@Nonnull
