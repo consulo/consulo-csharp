@@ -152,15 +152,15 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		{
 			CSharpTypeUtil.InheritResult result = CSharpInheritableChecker.create(expectedTypeRef, actualTypeRef).withCastType(CSharpCastType.IMPLICIT, element.getResolveScope()).check();
 
+			if(result.isConversion())
+			{
+				conversionResultTypeRef = expectedTypeRef;
+			}
+			
 			if(result.isSuccess())
 			{
 				successResult = result;
 				break;
-			}
-
-			if(result.isConversion())
-			{
-				conversionResultTypeRef = expectedTypeRef;
 			}
 		}
 
