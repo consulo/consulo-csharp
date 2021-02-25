@@ -23,6 +23,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.ParameterizedCachedValue;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
@@ -46,6 +47,7 @@ import consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import consulo.msil.lang.psi.impl.type.MsilNativeTypeRefImpl;
 import consulo.msil.lang.psi.impl.type.MsilPointerTypeRefImpl;
 import consulo.msil.lang.psi.impl.type.MsilRefTypeRefImpl;
+import consulo.util.dataholder.Key;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,6 +60,8 @@ import java.util.List;
  */
 public class MsilToCSharpUtil
 {
+	private static final Key<ParameterizedCachedValue<PsiElement, GenericParameterContext>> WRAP_TYPE_KEY = Key.create("WRAP_TYPE_CACHE");
+
 	@RequiredReadAction
 	public static boolean hasCSharpInMsilModifierList(CSharpModifier modifier, DotNetModifierList modifierList)
 	{
@@ -191,8 +195,7 @@ public class MsilToCSharpUtil
 			}
 			else
 			{
-				return CachedValuesManager.getCachedValue(element, () ->
-				{
+				return CachedValuesManager.getManager(element.getProject()).getParameterizedCachedValue(element, WRAP_TYPE_KEY, paramContext -> {
 					PsiElement thisParent = null;
 					String parentQName = ((MsilClassEntry) element).getPresentableParentQName();
 					if(!StringUtil.isEmpty(parentQName))
@@ -200,14 +203,14 @@ public class MsilToCSharpUtil
 						thisParent = new CSharpLightNamespaceDeclarationBuilder(element.getProject(), parentQName);
 					}
 
-					PsiElement wrapElement = wrapToDelegateMethod((MsilClassEntry) element, thisParent, context);
+					PsiElement wrapElement = wrapToDelegateMethod((MsilClassEntry) element, thisParent, paramContext);
 					if(wrapElement == null)
 					{
-						wrapElement = new MsilClassAsCSharpTypeDefinition(thisParent, (MsilClassEntry) element, context);
+						wrapElement = new MsilClassAsCSharpTypeDefinition(thisParent, (MsilClassEntry) element, paramContext);
 					}
 
 					return CachedValueProvider.Result.create(wrapElement, PsiModificationTracker.MODIFICATION_COUNT);
-				});
+				}, false, context);
 			}
 		}
 		return element;

@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi.impl.msil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * @author VISTALL
@@ -54,5 +55,36 @@ public class GenericParameterContext
 			return i < count;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this == o)
+		{
+			return true;
+		}
+		if(o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+		GenericParameterContext that = (GenericParameterContext) o;
+		return myCount == that.myCount &&
+				Objects.equals(myParent, that.myParent);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(myParent, myCount);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "GenericParameterContext{" +
+				"myParent=" + myParent +
+				", myCount=" + myCount +
+				'}';
 	}
 }
