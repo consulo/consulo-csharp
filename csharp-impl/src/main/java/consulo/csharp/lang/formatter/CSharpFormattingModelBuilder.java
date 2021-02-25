@@ -16,9 +16,6 @@
 
 package consulo.csharp.lang.formatter;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.formatting.Block;
 import com.intellij.formatting.DelegatingFormattingModelBuilder;
 import com.intellij.formatting.FormattingModel;
@@ -27,8 +24,15 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
+import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.formatter.FormattingDocumentModelImpl;
 import com.intellij.psi.formatter.PsiBasedFormattingModel;
+import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.formatter.processors.CSharpSpacingSettings;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -46,9 +50,17 @@ public class CSharpFormattingModelBuilder implements DelegatingFormattingModelBu
 	@Override
 	public FormattingModel createModel(PsiElement element, CodeStyleSettings settings)
 	{
-		final PsiFile file = element.getContainingFile();
+		PsiFile file = element.getContainingFile();
+
 		FormattingDocumentModelImpl model = FormattingDocumentModelImpl.createOn(element.getContainingFile());
-		Block rootBlock = new CSharpFormattingBlock(file.getNode(), null, null, settings);
+
+		CommonCodeStyleSettings commonSettings = settings.getCommonSettings(CSharpLanguage.INSTANCE);
+		CSharpCodeStyleSettings customSettings = settings.getCustomSettings(CSharpCodeStyleSettings.class);
+
+		CSharpSpacingSettings spacingSettings = new CSharpSpacingSettings(commonSettings, customSettings);
+		
+		Block rootBlock = new CSharpFormattingBlock(file.getNode(), null, null, settings, spacingSettings);
+
 		return new PsiBasedFormattingModel(file, rootBlock, model);
 	}
 

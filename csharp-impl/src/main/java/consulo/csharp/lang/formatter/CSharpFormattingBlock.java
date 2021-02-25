@@ -33,7 +33,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.formatter.processors.CSharpIndentProcessor;
-import consulo.csharp.lang.formatter.processors.CSharpSpacingProcessor;
+import consulo.csharp.lang.formatter.processors.CSharpSpacingSettings;
 import consulo.csharp.lang.formatter.processors.CSharpWrappingProcessor;
 import consulo.csharp.lang.psi.CSharpElements;
 import consulo.csharp.lang.psi.CSharpTokenSets;
@@ -51,13 +51,13 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 {
 	private final CSharpWrappingProcessor myWrappingProcessor;
 	private final CSharpIndentProcessor myIndentProcessor;
-	private final CSharpSpacingProcessor mySpacingProcessor;
-	private CodeStyleSettings mySettings;
+	private final CSharpSpacingSettings mySpacingSettings;
+	private final CodeStyleSettings mySettings;
 
 	private List<ASTNode> myAdditionalNodes = Collections.emptyList();
 	private CSharpFormattingBlock myParent;
 
-	public CSharpFormattingBlock(@Nonnull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment, @Nonnull CodeStyleSettings settings)
+	public CSharpFormattingBlock(@Nonnull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment, @Nonnull CodeStyleSettings settings, @Nonnull CSharpSpacingSettings spacingSettings)
 	{
 		super(node, wrap, alignment);
 		mySettings = settings;
@@ -66,7 +66,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 
 		myWrappingProcessor = new CSharpWrappingProcessor(node, commonSettings, customSettings);
 		myIndentProcessor = new CSharpIndentProcessor(this, commonSettings, customSettings);
-		mySpacingProcessor = new CSharpSpacingProcessor(this, commonSettings, customSettings);
+		mySpacingSettings = spacingSettings;
 	}
 
 	@Nullable
@@ -77,7 +77,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 		{
 			return null;
 		}
-		return mySpacingProcessor.getSpacing((ASTBlock) child1, (ASTBlock) child2);
+		return mySpacingSettings.getSpacing(this, (ASTBlock) child1, (ASTBlock) child2);
 	}
 
 	@Override
@@ -99,6 +99,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 	}
 
 	@Override
+	@RequiredReadAction
 	protected List<Block> buildChildren()
 	{
 		if(isLeaf())
@@ -197,7 +198,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 			}
 			else
 			{
-				final CSharpFormattingBlock childBlock = new CSharpFormattingBlock(next, null, null, mySettings);
+				final CSharpFormattingBlock childBlock = new CSharpFormattingBlock(next, null, null, mySettings, mySpacingSettings);
 				blockWithParent = childBlock;
 
 				IElementType elementType = next.getElementType();

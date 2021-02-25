@@ -27,7 +27,6 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiUtilCore;
 import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
-import consulo.csharp.lang.formatter.CSharpFormattingBlock;
 import consulo.csharp.lang.psi.CSharpElements;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokenSets;
@@ -43,7 +42,7 @@ import java.util.List;
  * @author VISTALL
  * @since 11.11.14
  */
-public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
+public class CSharpSpacingSettings implements CSharpTokens, CSharpElements
 {
 	private static class OperatorReferenceSpacingBuilder
 	{
@@ -103,15 +102,13 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 
 	private static TokenSet ourMultiDeclarationSet = TokenSet.create(CSharpStubElements.FIELD_DECLARATION, CSharpElements.LOCAL_VARIABLE, CSharpStubElements.EVENT_DECLARATION);
 
-	private final CSharpFormattingBlock myParent;
 	private final CommonCodeStyleSettings myCommonSettings;
 
 	private SpacingBuilder myBuilder;
-	private List<OperatorReferenceSpacingBuilder> myOperatorReferenceSpacingBuilders = new ArrayList<OperatorReferenceSpacingBuilder>();
+	private List<OperatorReferenceSpacingBuilder> myOperatorReferenceSpacingBuilders = new ArrayList<>();
 
-	public CSharpSpacingProcessor(CSharpFormattingBlock parent, CommonCodeStyleSettings commonSettings, CSharpCodeStyleSettings customSettings)
+	public CSharpSpacingSettings(CommonCodeStyleSettings commonSettings, CSharpCodeStyleSettings customSettings)
 	{
-		myParent = parent;
 		myCommonSettings = commonSettings;
 
 		myBuilder = new SpacingBuilder(commonSettings);
@@ -356,7 +353,7 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 	}
 
 	@Nullable
-	public Spacing getSpacing(@Nullable ASTBlock child1, @Nonnull ASTBlock child2)
+	public Spacing getSpacing(@Nonnull ASTBlock parent, @Nullable ASTBlock child1, @Nonnull ASTBlock child2)
 	{
 		IElementType elementType1 = PsiUtilCore.getElementType(child1 == null ? null : child1.getNode());
 		IElementType elementType2 = PsiUtilCore.getElementType(child2.getNode());
@@ -381,6 +378,6 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 				return Spacing.createSpacing(1, 1, 0, false, 0);
 			}
 		}
-		return myBuilder.getSpacing(myParent, child1, child2);
+		return myBuilder.getSpacing(parent, child1, child2);
 	}
 }
