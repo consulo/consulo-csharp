@@ -23,7 +23,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.Processor;
 import com.intellij.util.QueryExecutor;
-import com.intellij.util.containers.HashMap;
 import consulo.csharp.lang.psi.impl.stub.index.ExtendsListIndex;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetTypeList;
@@ -31,10 +30,7 @@ import consulo.dotnet.psi.search.searches.DirectTypeInheritorsSearch;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author max
