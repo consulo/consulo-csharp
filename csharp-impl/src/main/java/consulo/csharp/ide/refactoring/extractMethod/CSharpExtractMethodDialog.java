@@ -51,7 +51,7 @@ public class CSharpExtractMethodDialog extends CSharpChangeSignatureDialog
 	private Processor<DotNetLikeMethodDeclaration> myProcessor;
 
 	public CSharpExtractMethodDialog(Project project, CSharpMethodDescriptor method, boolean allowDelegation, PsiElement defaultValueContext,
-			@Nonnull Processor<DotNetLikeMethodDeclaration> processor)
+			@Nonnull @RequiredUIAccess Processor<DotNetLikeMethodDeclaration> processor)
 	{
 		super(project, method, allowDelegation, defaultValueContext);
 		myProcessor = processor;

@@ -32,12 +32,10 @@ import com.intellij.refactoring.RefactoringBundle;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.PairFunction;
-import com.intellij.util.Processor;
 import com.intellij.util.containers.ArrayListSet;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
@@ -46,6 +44,7 @@ import consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBu
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpMethodBodyImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
@@ -201,77 +200,67 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 
 		CSharpMethodDescriptor descriptor = new CSharpMethodDescriptor(builder);
 
-		new CSharpExtractMethodDialog(project, descriptor, false, statements[0], new Processor<DotNetLikeMethodDeclaration>()
-		{
-			@Override
-			public boolean process(final DotNetLikeMethodDeclaration builder)
+		new CSharpExtractMethodDialog(project, descriptor, false, statements[0], it -> {
+			final Document document = PsiDocumentManager.getInstance(project).getDocument(file);
+
+			assert document != null;
+
+			WriteCommandAction.runWriteCommandAction(project, "Extract method", null, () ->
 			{
-				final Document document = PsiDocumentManager.getInstance(project).getDocument(file);
+				selectionModel.removeSelection();
 
-				assert document != null;
+				String text = document.getText(extractRange);
 
-				new WriteCommandAction.Simple<Object>(project, "Extract method", file)
+				document.deleteString(extractRange.getStartOffset(), extractRange.getEndOffset());
+
+				StringBuilder callStatementBuilder = new StringBuilder();
+				if(returnTypeRef.get() != null && !(UsefulPsiTreeUtil.getNextSiblingSkippingWhiteSpacesAndComments(ArrayUtil.getLastElement(statements)) instanceof DotNetStatement))
 				{
+					callStatementBuilder.append("return ");
+				}
+				callStatementBuilder.append(it.getName());
+				callStatementBuilder.append("(");
+				StubBlockUtil.join(callStatementBuilder, variables.keySet().toArray(DotNetVariable[]::new), new PairFunction<StringBuilder, DotNetVariable, Void>()
+				{
+					@Nullable
 					@Override
-					@RequiredWriteAction
-					protected void run() throws Throwable
+					public Void fun(StringBuilder stringBuilder, DotNetVariable o)
 					{
-						selectionModel.removeSelection();
-
-						String text = document.getText(extractRange);
-
-						document.deleteString(extractRange.getStartOffset(), extractRange.getEndOffset());
-
-						StringBuilder callStatementBuilder = new StringBuilder();
-						if(returnTypeRef.get() != null && !(UsefulPsiTreeUtil.getNextSiblingSkippingWhiteSpacesAndComments(ArrayUtil.getLastElement(statements)) instanceof DotNetStatement))
+						if(assignmentVariables.contains(o))
 						{
-							callStatementBuilder.append("return ");
+							stringBuilder.append("ref ");
 						}
-						callStatementBuilder.append(builder.getName());
-						callStatementBuilder.append("(");
-						StubBlockUtil.join(callStatementBuilder, variables.keySet().toArray(new DotNetVariable[]{}), new PairFunction<StringBuilder, DotNetVariable, Void>()
-						{
-							@Nullable
-							@Override
-							public Void fun(StringBuilder stringBuilder, DotNetVariable o)
-							{
-								if(assignmentVariables.contains(o))
-								{
-									stringBuilder.append("ref ");
-								}
-								stringBuilder.append(o.getName());
-								return null;
-							}
-						}, ", ");
-						callStatementBuilder.append(");");
-
-						document.insertString(extractRange.getStartOffset(), callStatementBuilder);
-
-						CharSequence methodText = buildText(builder, statements, text);
-
-						// insert method
-						PsiElement qualifiedParent = qualifiedElement.getParent();
-
-						DotNetLikeMethodDeclaration method = CSharpFileFactory.createMethod(project, methodText);
-
-						PsiDocumentManager.getInstance(project).commitDocument(document);
-
-						qualifiedParent.addAfter(PsiParserFacade.SERVICE.getInstance(file.getProject()).createWhiteSpaceFromText("\n\n"), qualifiedElement);
-
-						PsiElement nextSibling = qualifiedElement.getNextSibling();
-
-						PsiElement newMethod = qualifiedParent.addAfter(method, nextSibling);
-
-						PsiDocumentManager.getInstance(getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
-
-						PsiDocumentManager.getInstance(project).commitDocument(document);
-
-						CodeStyleManager.getInstance(getProject()).reformat(newMethod);
+						stringBuilder.append(o.getName());
+						return null;
 					}
-				}.execute();
+				}, ", ");
+				callStatementBuilder.append(");");
 
-				return true;
-			}
+				document.insertString(extractRange.getStartOffset(), callStatementBuilder);
+
+				CharSequence methodText = buildText(it, statements, text);
+
+				// insert method
+				PsiElement qualifiedParent = qualifiedElement.getParent();
+
+				DotNetLikeMethodDeclaration method = CSharpFileFactory.createMethod(project, methodText);
+
+				PsiDocumentManager.getInstance(project).commitDocument(document);
+
+				qualifiedParent.addAfter(PsiParserFacade.SERVICE.getInstance(file.getProject()).createWhiteSpaceFromText("\n\n"), qualifiedElement);
+
+				PsiElement nextSibling = qualifiedElement.getNextSibling();
+
+				PsiElement newMethod = qualifiedParent.addAfter(method, nextSibling);
+
+				PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+
+				PsiDocumentManager.getInstance(project).commitDocument(document);
+
+				CodeStyleManager.getInstance(project).reformat(newMethod);
+			}, file);
+
+			return true;
 		}).show();
 	}
 
@@ -357,7 +346,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 			{
 				break;
 			}
-			if(next instanceof CSharpBlockStatementImpl && next.getParent() instanceof DotNetLikeMethodDeclaration)
+			if(next instanceof CSharpBlockStatementImpl && next.getParent() instanceof CSharpMethodBodyImpl)
 			{
 				return answer;
 			}
