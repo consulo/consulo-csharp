@@ -80,7 +80,7 @@ public class CS1676 extends CompilerCheck<CSharpLambdaParameter>
 		{
 			if(realParameter.hasModifier(modifier) && !element.hasModifier(modifier))
 			{
-				return newBuilder(element, String.valueOf(element.getIndex() + 1), modifier.getPresentableText()).addQuickFix(new AddModifierFix(modifier, element));
+				return newBuilder(element, String.valueOf(element.getIndex() + 1), modifier.getPresentableText()).withQuickFix(new AddModifierFix(modifier, element));
 			}
 		}
 

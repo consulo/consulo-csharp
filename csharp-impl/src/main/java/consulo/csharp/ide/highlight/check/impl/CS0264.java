@@ -66,7 +66,7 @@ public class CS0264 extends CompilerCheck<DotNetGenericParameter>
 				{
 					PsiElement nameIdentifier = element.getNameIdentifier();
 					assert nameIdentifier != null;
-					return newBuilder(nameIdentifier, formatElement(listOwner)).addQuickFix(new RenameQuickFix(anotherGenericParameter.getName(), element));
+					return newBuilder(nameIdentifier, formatElement(listOwner)).withQuickFix(new RenameQuickFix(anotherGenericParameter.getName(), element));
 				}
 			}
 		}

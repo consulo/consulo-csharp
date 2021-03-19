@@ -16,9 +16,6 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
 import consulo.annotation.access.RequiredReadAction;
@@ -27,6 +24,10 @@ import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.psi.impl.source.CSharpPreprocessorErrorImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.localize.LocalizeValue;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -44,7 +45,7 @@ public class CS1029 extends CompilerCheck<CSharpPreprocessorErrorImpl>
 		{
 			return null;
 		}
-		return newBuilder(element).setText(element.getText());
+		return newBuilder(element).withText(LocalizeValue.of(element.getText()));
 	}
 }
 

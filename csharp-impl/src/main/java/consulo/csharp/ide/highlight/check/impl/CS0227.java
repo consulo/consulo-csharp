@@ -113,10 +113,10 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 
 		if(extension != null && !extension.isAllowUnsafeCode())
 		{
-			CompilerCheckBuilder builder = newBuilder(targetElement).addQuickFix(new AllowUnsafeCodeFix());
+			CompilerCheckBuilder builder = newBuilder(targetElement).withQuickFix(new AllowUnsafeCodeFix());
 			if(targetElement.getParent() instanceof CSharpModifierList)
 			{
-				builder.addQuickFix(new RemoveModifierFix(CSharpModifier.UNSAFE, (DotNetModifierListOwner) element));
+				builder.withQuickFix(new RemoveModifierFix(CSharpModifier.UNSAFE, (DotNetModifierListOwner) element));
 			}
 
 			return builder;

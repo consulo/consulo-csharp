@@ -68,7 +68,7 @@ public class CS0107 extends CompilerCheck<DotNetModifierListOwner>
 
 			for(Map.Entry<CSharpModifier, PsiElement> psiElement : entry.getValue().entrySet())
 			{
-				list.add(newBuilder(psiElement.getValue()).addQuickFix(modifierFix));
+				list.add(newBuilder(psiElement.getValue()).withQuickFix(modifierFix));
 			}
 		}
 		return list;

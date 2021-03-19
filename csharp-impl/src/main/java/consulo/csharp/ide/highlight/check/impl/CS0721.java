@@ -47,7 +47,7 @@ public class CS0721 extends CompilerCheck<DotNetParameter>
 		PsiElement resolved = DotNetTypeRefUtil.resolve(type);
 		if(resolved instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) resolved).hasModifier(DotNetModifier.STATIC))
 		{
-			return newBuilder(type, formatElement(resolved)).addQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolved));
+			return newBuilder(type, formatElement(resolved)).withQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolved));
 		}
 		return null;
 	}

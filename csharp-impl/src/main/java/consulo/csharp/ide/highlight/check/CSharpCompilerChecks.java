@@ -193,7 +193,7 @@ public enum CSharpCompilerChecks
 				CompilerCheck.CompilerCheckBuilder checkResult = (CompilerCheck.CompilerCheckBuilder) result;
 				if(checkResult.getHighlightInfoType() == null)
 				{
-					checkResult.setHighlightInfoType(myType);
+					checkResult.withHighlightInfoType(myType);
 				}
 			}
 		}

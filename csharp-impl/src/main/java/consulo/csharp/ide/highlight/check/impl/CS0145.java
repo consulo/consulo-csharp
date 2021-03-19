@@ -187,7 +187,7 @@ public class CS0145 extends CompilerCheck<DotNetVariable>
 				{
 					return null;
 				}
-				return newBuilder(nameIdentifier).addQuickFix(new RemoveConstKeywordFix(element)).addQuickFix(new InitializeConstantFix(element));
+				return newBuilder(nameIdentifier).withQuickFix(new RemoveConstKeywordFix(element)).withQuickFix(new InitializeConstantFix(element));
 			}
 		}
 		return null;

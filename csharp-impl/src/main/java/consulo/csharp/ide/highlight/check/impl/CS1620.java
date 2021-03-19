@@ -156,7 +156,7 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 
 			if(!(typeRef instanceof CSharpRefTypeRef) || ((CSharpRefTypeRef) typeRef).getType() != type)
 			{
-				results.add(newBuilder(argumentExpression, String.valueOf(parameter.getIndex() + 1), type.name()).addQuickFix(new BaseUseTypeFix(argumentExpression, type)));
+				results.add(newBuilder(argumentExpression, String.valueOf(parameter.getIndex() + 1), type.name()).withQuickFix(new BaseUseTypeFix(argumentExpression, type)));
 			}
 			return results;
 		}

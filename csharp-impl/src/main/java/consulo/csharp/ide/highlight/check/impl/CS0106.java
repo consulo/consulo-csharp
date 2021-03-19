@@ -122,7 +122,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 					list = new ArrayList<>(2);
 				}
 
-				list.add(newBuilder(modifierElement, modifier.getPresentableText()).addQuickFix(new RemoveModifierFix(modifier, element)));
+				list.add(newBuilder(modifierElement, modifier.getPresentableText()).withQuickFix(new RemoveModifierFix(modifier, element)));
 			}
 		}
 		return list;

@@ -52,7 +52,7 @@ public class CS0723 extends CompilerCheck<DotNetVariable>
 		PsiElement resolve = DotNetTypeRefUtil.resolve(type);
 		if(resolve instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) resolve).hasModifier(DotNetModifier.STATIC))
 		{
-			return newBuilder(type, formatElement(element)).addQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolve));
+			return newBuilder(type, formatElement(element)).withQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolve));
 		}
 		return null;
 	}

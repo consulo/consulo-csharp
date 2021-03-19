@@ -124,7 +124,7 @@ public class CS0702 extends CompilerCheck<CSharpGenericConstraintTypeValue>
 		{
 			DotNetType type = element.getType();
 			assert type != null;
-			return newBuilder(type, pair.getFirst()).addQuickFix(new ReplaceConstraintFix(element, keywordForReplace));
+			return newBuilder(type, pair.getFirst()).withQuickFix(new ReplaceConstraintFix(element, keywordForReplace));
 		}
 		return null;
 	}

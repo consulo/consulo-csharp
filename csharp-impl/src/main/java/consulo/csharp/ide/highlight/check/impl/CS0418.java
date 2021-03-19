@@ -63,7 +63,7 @@ public class CS0418 extends CompilerCheck<DotNetTypeDeclaration>
 				{
 					continue;
 				}
-				factories.add(newBuilder(modifierElement, formatElement(element)).addQuickFix(new RemoveModifierFix(modifier, element)));
+				factories.add(newBuilder(modifierElement, formatElement(element)).withQuickFix(new RemoveModifierFix(modifier, element)));
 			}
 			return factories;
 		}

@@ -129,7 +129,7 @@ public class CS1722 extends CompilerCheck<DotNetTypeList>
 		if(i != 0)
 		{
 			CSharpTypeDeclaration parent = (CSharpTypeDeclaration) element.getParent();
-			return newBuilder(baseType, formatElement(parent), formatElement(resolvedElement)).addQuickFix(new MoveToFirstPositionFix(baseType));
+			return newBuilder(baseType, formatElement(parent), formatElement(resolvedElement)).withQuickFix(new MoveToFirstPositionFix(baseType));
 		}
 		return null;
 	}

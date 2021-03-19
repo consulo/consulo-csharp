@@ -135,7 +135,7 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
 				compilerCheckBuilder = newBuilder(nameIdentifier, formatElement(element), formatElement(firstItem));
 			}
 
-			compilerCheckBuilder.addQuickFix(new ImplementMembersQuickFix());
+			compilerCheckBuilder.withQuickFix(new ImplementMembersQuickFix());
 			return compilerCheckBuilder;
 		}
 		return null;

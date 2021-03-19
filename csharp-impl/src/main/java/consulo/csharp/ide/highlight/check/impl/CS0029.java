@@ -50,6 +50,7 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.localize.LocalizeValue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -156,7 +157,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				conversionResultTypeRef = expectedTypeRef;
 			}
-			
+
 			if(result.isSuccess())
 			{
 				successResult = result;
@@ -172,12 +173,12 @@ public class CS0029 extends CompilerCheck<PsiElement>
 
 			if(elementToHighlight instanceof DotNetExpression)
 			{
-				builder.addQuickFix(new CastExpressionToTypeRef((DotNetExpression) elementToHighlight, firstExpectedTypeRef));
+				builder.withQuickFix(new CastExpressionToTypeRef((DotNetExpression) elementToHighlight, firstExpectedTypeRef));
 			}
 
 			if(element instanceof DotNetVariable)
 			{
-				builder.addQuickFix(new ChangeVariableToTypeRefFix((DotNetVariable) element, actualTypeRef));
+				builder.withQuickFix(new ChangeVariableToTypeRefFix((DotNetVariable) element, actualTypeRef));
 			}
 
 			if(element instanceof CSharpReturnStatementImpl)
@@ -185,7 +186,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				CSharpSimpleLikeMethodAsElement methodElement = PsiTreeUtil.getParentOfType(element, CSharpSimpleLikeMethodAsElement.class);
 				if(methodElement instanceof CSharpConversionMethodDeclaration || methodElement instanceof CSharpMethodDeclaration)
 				{
-					builder.addQuickFix(new ChangeReturnToTypeRefFix((DotNetLikeMethodDeclaration) methodElement, actualTypeRef));
+					builder.withQuickFix(new ChangeReturnToTypeRefFix((DotNetLikeMethodDeclaration) methodElement, actualTypeRef));
 				}
 
 				if(CSharpModuleUtil.findLanguageVersion(element).isAtLeast(CSharpLanguageVersion._4_0))
@@ -198,7 +199,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 						DotNetTypeRef genericParameterTypeRef = typeResolveResult.getGenericExtractor().extract(genericParameters[0]);
 						if(genericParameterTypeRef != null && CSharpTypeUtil.isInheritable(genericParameterTypeRef, actualTypeRef))
 						{
-							builder.addQuickFix(new AddModifierFix(CSharpModifier.ASYNC, methodElement));
+							builder.withQuickFix(new AddModifierFix(CSharpModifier.ASYNC, methodElement));
 						}
 					}
 				}
@@ -207,10 +208,10 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		}
 		else if(conversionResultTypeRef != null)
 		{
-			String text = CSharpErrorLocalize.impicitCastFrom0To1(CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(actualTypeRef),
-					CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(conversionResultTypeRef)).getValue();
+			LocalizeValue text = CSharpErrorLocalize.impicitCastFrom0To1(CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(actualTypeRef), CSharpTypeRefPresentationUtil
+					.buildTextWithKeywordAndNull(conversionResultTypeRef));
 
-			return newBuilder(elementToHighlight).setText(text).setHighlightInfoType(HighlightInfoType.INFORMATION).setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
+			return newBuilder(elementToHighlight).withText(text).withHighlightInfoType(HighlightInfoType.INFORMATION).withTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
 		}
 
 		return null;

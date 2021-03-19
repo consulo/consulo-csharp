@@ -89,7 +89,7 @@ public class CS0157 extends CompilerCheck<CSharpReturnStatementImpl>
 		CSharpFinallyStatementImpl finallyStatement = PsiTreeUtil.getParentOfType(element, CSharpFinallyStatementImpl.class);
 		if(finallyStatement != null)
 		{
-			return newBuilder(element).addQuickFix(new RemoveReturnStatementFix(element));
+			return newBuilder(element).withQuickFix(new RemoveReturnStatementFix(element));
 		}
 		return null;
 	}

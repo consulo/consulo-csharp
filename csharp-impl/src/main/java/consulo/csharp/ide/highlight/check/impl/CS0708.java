@@ -52,7 +52,7 @@ public class CS0708 extends CompilerCheck<DotNetModifierListOwner>
 			if(!element.hasModifier(DotNetModifier.STATIC))
 			{
 				PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
-				return newBuilder(ObjectUtil.notNull(nameIdentifier, element), formatElement(element)).addQuickFix(new AddModifierFix
+				return newBuilder(ObjectUtil.notNull(nameIdentifier, element), formatElement(element)).withQuickFix(new AddModifierFix
 						(DotNetModifier.STATIC, element));
 			}
 		}

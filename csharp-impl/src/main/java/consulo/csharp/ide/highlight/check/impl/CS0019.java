@@ -180,7 +180,7 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl>
 					}
 				}
 
-				return newBuilder(operatorElement, operatorElement.getCanonicalText(), formatTypeRef(leftType), formatTypeRef(rightType)).addQuickFix(new ReplaceByEqualsCallFix
+				return newBuilder(operatorElement, operatorElement.getCanonicalText(), formatTypeRef(leftType), formatTypeRef(rightType)).withQuickFix(new ReplaceByEqualsCallFix
 						(element));
 			}
 		}

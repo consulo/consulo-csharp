@@ -46,6 +46,7 @@ import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetParameter;
+import consulo.localize.LocalizeValue;
 import gnu.trove.TIntHashSet;
 
 import javax.annotation.Nonnull;
@@ -350,8 +351,8 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			ImplicitCastInfo implicitCastInfo = nCallArgument.getUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO);
 			if(implicitCastInfo != null)
 			{
-				String text = CSharpErrorLocalize.impicitCastFrom0To1(CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getFromTypeRef()),
-						CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getToTypeRef())).getValue();
+				LocalizeValue text = CSharpErrorLocalize.impicitCastFrom0To1(CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getFromTypeRef()), CSharpTypeRefPresentationUtil
+						.buildTextWithKeyword(implicitCastInfo.getToTypeRef()));
 
 				HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION);
 				builder = builder.range(argumentExpression.getTextRange());

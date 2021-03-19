@@ -57,7 +57,7 @@ public class CS1100 extends CompilerCheck<CSharpMethodDeclaration>
 			PsiElement modifierElement = modifierList.getModifierElement(CSharpModifier.THIS);
 			if(modifierElement != null)
 			{
-				return newBuilder(modifierElement, formatElement(methodDeclaration)).addQuickFix(new RemoveModifierFix(CSharpModifier.THIS,
+				return newBuilder(modifierElement, formatElement(methodDeclaration)).withQuickFix(new RemoveModifierFix(CSharpModifier.THIS,
 						parameter));
 			}
 		}

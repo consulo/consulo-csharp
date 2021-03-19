@@ -17,7 +17,6 @@
 package consulo.csharp.ide.highlight.check.impl;
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -39,6 +38,7 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.ide.eap.EarlyAccessProgramDescriptor;
 import consulo.ide.eap.EarlyAccessProgramManager;
+import consulo.util.lang.ref.SimpleReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -71,7 +71,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 	@Override
 	public CompilerCheckBuilder checkImpl(@Nonnull final CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull PsiElement element)
 	{
-		final Ref<CompilerCheckBuilder> ref = new Ref<CompilerCheckBuilder>();
+		final SimpleReference<CompilerCheckBuilder> ref = SimpleReference.create();
 		element.accept(new CSharpElementVisitor()
 		{
 			@Override
@@ -107,9 +107,9 @@ public class CS0030 extends CompilerCheck<PsiElement>
 
 					if(languageVersion.isAtLeast(CSharpLanguageVersion._3_0))
 					{
-						builder.addQuickFix(new ReplaceTypeQuickFix(type, DotNetTypeRef.AUTO_TYPE));
+						builder.withQuickFix(new ReplaceTypeQuickFix(type, DotNetTypeRef.AUTO_TYPE));
 					}
-					builder.addQuickFix(new ReplaceTypeQuickFix(type, iterableTypeRef));
+					builder.withQuickFix(new ReplaceTypeQuickFix(type, iterableTypeRef));
 
 					ref.set(builder);
 				}
@@ -152,25 +152,25 @@ public class CS0030 extends CompilerCheck<PsiElement>
 					else if(inheritResult.isConversion())
 					{
 						CompilerCheckBuilder builder = newBuilder(innerExpression);
-						builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
+						builder.withTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
 						if(inheritResult.isImplicit())
 						{
-							builder.setText(CSharpErrorLocalize.impicitCastFrom0To1(formatTypeRef(expressionTypeRef), formatTypeRef(castTypeRef)).getValue());
+							builder.withText(CSharpErrorLocalize.impicitCastFrom0To1(formatTypeRef(expressionTypeRef), formatTypeRef(castTypeRef)));
 						}
 						else
 						{
-							builder.setText(CSharpErrorLocalize.explicitCastFrom0To1(formatTypeRef(expressionTypeRef), formatTypeRef(castTypeRef)).getValue());
+							builder.withText(CSharpErrorLocalize.explicitCastFrom0To1(formatTypeRef(expressionTypeRef), formatTypeRef(castTypeRef)));
 						}
-						builder.setHighlightInfoType(HighlightInfoType.INFORMATION);
+						builder.withHighlightInfoType(HighlightInfoType.INFORMATION);
 						ref.set(builder);
 					}
 				}
 				else if(inheritResult.isConversion())
 				{
 					CompilerCheckBuilder builder = newBuilder(type);
-					builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
-					builder.setText(CSharpErrorLocalize.impicitCastFrom0To1(formatTypeRef(expressionTypeRef), formatTypeRef(castTypeRef)).getValue());
-					builder.setHighlightInfoType(HighlightInfoType.INFORMATION);
+					builder.withTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
+					builder.withText(CSharpErrorLocalize.impicitCastFrom0To1(formatTypeRef(expressionTypeRef), formatTypeRef(castTypeRef)));
+					builder.withHighlightInfoType(HighlightInfoType.INFORMATION);
 					ref.set(builder);
 				}
 			}

@@ -64,7 +64,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 
 	public static class CompilerCheckBuilder implements HighlightInfoFactory
 	{
-		private String myText;
+		private LocalizeValue myTextValue = LocalizeValue.empty();
 		private TextRange myTextRange;
 		private HighlightInfoType myHighlightInfoType;
 		private TextAttributesKey myTextAttributesKey;
@@ -76,20 +76,20 @@ public abstract class CompilerCheck<T extends PsiElement>
 			return myTextRange;
 		}
 
-		public CompilerCheckBuilder setTextRange(TextRange textRange)
+		public CompilerCheckBuilder withTextRange(TextRange textRange)
 		{
 			myTextRange = textRange;
 			return this;
 		}
 
-		public String getText()
+		public LocalizeValue getText()
 		{
-			return myText;
+			return myTextValue;
 		}
 
-		public CompilerCheckBuilder setText(String text)
+		public CompilerCheckBuilder withText(LocalizeValue text)
 		{
-			myText = text;
+			myTextValue = text;
 			return this;
 		}
 
@@ -103,19 +103,19 @@ public abstract class CompilerCheck<T extends PsiElement>
 			return myTextAttributesKey;
 		}
 
-		public CompilerCheckBuilder setTextAttributesKey(TextAttributesKey textAttributesKey)
+		public CompilerCheckBuilder withTextAttributesKey(TextAttributesKey textAttributesKey)
 		{
 			myTextAttributesKey = textAttributesKey;
 			return this;
 		}
 
-		public CompilerCheckBuilder setHighlightInfoType(HighlightInfoType highlightInfoType)
+		public CompilerCheckBuilder withHighlightInfoType(HighlightInfoType highlightInfoType)
 		{
 			myHighlightInfoType = highlightInfoType;
 			return this;
 		}
 
-		public CompilerCheckBuilder addQuickFix(IntentionAction a)
+		public CompilerCheckBuilder withQuickFix(IntentionAction a)
 		{
 			if(myQuickFixes.isEmpty())
 			{
@@ -194,26 +194,19 @@ public abstract class CompilerCheck<T extends PsiElement>
 	public static CompilerCheckBuilder newBuilderImpl(@Nonnull Class<?> clazz, @Nonnull TextRange range, Object... args)
 	{
 		CompilerCheckBuilder result = new CompilerCheckBuilder();
-		result.setText(message(clazz, args));
-		result.setTextRange(range);
+		result.withText(message(clazz, args));
+		result.withTextRange(range);
 		return result;
 	}
 
 	@Nonnull
-	public static String message(@Nonnull Class<?> aClass, Object... args)
+	public static LocalizeValue message(@Nonnull Class<?> aClass, Object... args)
 	{
 		String id = aClass.getSimpleName();
 
 		LocalizeValue value = getValue(LocalizeKey.of("consulo.csharp.impl.CSharpErrorLocalize", id), args);
 
-		if(ApplicationProperties.isInSandbox())
-		{
-		 	return value.map((localizeManager, s) -> id + ": " + s).getValue();
-		}
-		else
-		{
-			return value.getValue();
-		}
+		return ApplicationProperties.isInSandbox() ? value.map((localizeManager, s) -> id + ": " + s) : value;
 	}
 
 	@Nonnull

@@ -42,7 +42,7 @@ public class CS1738 extends CompilerCheck<CSharpNamedCallArgument>
 	{
 		if(argumentIsInWrongPosition(element))
 		{
-			return newBuilder(element.getArgumentNameReference()).addQuickFix(new ConvertNamedToSimpleArgumentFix(element));
+			return newBuilder(element.getArgumentNameReference()).withQuickFix(new ConvertNamedToSimpleArgumentFix(element));
 		}
 		return null;
 	}

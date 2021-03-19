@@ -145,8 +145,8 @@ public class CS1614 extends CompilerCheck<CSharpAttribute>
 				referenceNameWithAt + AttributeByNameSelector.AttributeSuffix)) != null)
 		{
 			CompilerCheckBuilder compilerCheckBuilder = newBuilder(referenceExpression, referenceNameWithAt);
-			compilerCheckBuilder.addQuickFix(new UseTypeWithAtFix(referenceExpression, atType));
-			compilerCheckBuilder.addQuickFix(new UseTypeWithSuffixFix(referenceExpression, suffixType));
+			compilerCheckBuilder.withQuickFix(new UseTypeWithAtFix(referenceExpression, atType));
+			compilerCheckBuilder.withQuickFix(new UseTypeWithSuffixFix(referenceExpression, suffixType));
 			return compilerCheckBuilder;
 		}
 		return super.checkImpl(languageVersion, highlightContext, element);

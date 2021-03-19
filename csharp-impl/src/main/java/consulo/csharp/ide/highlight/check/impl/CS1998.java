@@ -70,7 +70,7 @@ public class CS1998 extends CompilerCheck<CSharpSimpleLikeMethodAsElement>
 
 		if(visitor.getValue() == null)
 		{
-			return newBuilder(modifierElement).addQuickFix(new RemoveModifierFix(CSharpModifier.ASYNC, element));
+			return newBuilder(modifierElement).withQuickFix(new RemoveModifierFix(CSharpModifier.ASYNC, element));
 		}
 
 		return null;

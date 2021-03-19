@@ -49,7 +49,7 @@ public class CS4009 extends CompilerCheck<CSharpMethodDeclaration>
 
 		if(modifierElement != null && DotNetRunUtil.isEntryPoint(element))
 		{
-			return newBuilder(modifierElement, formatElement(element)).addQuickFix(new RemoveModifierFix(CSharpModifier.ASYNC, element));
+			return newBuilder(modifierElement, formatElement(element)).withQuickFix(new RemoveModifierFix(CSharpModifier.ASYNC, element));
 		}
 		return null;
 	}

@@ -127,7 +127,7 @@ public class CS0017 extends CompilerCheck<CSharpMethodDeclaration>
 				assert nameIdentifier != null;
 
 				PsiElement parent = element.getParent();
-				return newBuilder(nameIdentifier).addQuickFix(new SetMainTypeFix((DotNetTypeDeclaration) parent));
+				return newBuilder(nameIdentifier).withQuickFix(new SetMainTypeFix((DotNetTypeDeclaration) parent));
 			}
 		}
 		return null;

@@ -57,7 +57,7 @@ public class GenericParameterHighlightUtil
 	{
 		CSharpModifier revertModifier = modifier == CSharpModifier.IN ? CSharpModifier.OUT : CSharpModifier.IN;
 		HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR);
-		builder.descriptionAndTooltip(CSharpErrorLocalize.conflicting0ModifierWith1Modifier(modifier.getPresentableText(), revertModifier.getPresentableText()).getValue());
+		builder.descriptionAndTooltip(CSharpErrorLocalize.conflicting0ModifierWith1Modifier(modifier.getPresentableText(), revertModifier.getPresentableText()));
 		builder.range(modifierElement);
 
 		HighlightInfo info = builder.create();

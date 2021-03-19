@@ -47,8 +47,8 @@ public class CS1741 extends CompilerCheck<DotNetParameter>
 			{
 				boolean isRef = element.hasModifier(CSharpModifier.REF);
 				CompilerCheckBuilder builder = newBuilder(initializer, isRef ? "ref" : "out");
-				builder.addQuickFix(new RemoveVariableInitializer(element));
-				builder.addQuickFix(new RemoveModifierFix(isRef ? CSharpModifier.REF : CSharpModifier.OUT, element));
+				builder.withQuickFix(new RemoveVariableInitializer(element));
+				builder.withQuickFix(new RemoveModifierFix(isRef ? CSharpModifier.REF : CSharpModifier.OUT, element));
 				return builder;
 			}
 		} return super.checkImpl(languageVersion, highlightContext, element);

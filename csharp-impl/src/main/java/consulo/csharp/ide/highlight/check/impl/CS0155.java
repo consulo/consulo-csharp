@@ -81,7 +81,7 @@ public class CS0155 extends CompilerCheck<DotNetElement>
 
 			if(!CSharpTypeUtil.isInheritable(exceptionTypeRef, ((CSharpLocalVariable) parent).toTypeRef(true)))
 			{
-				return newBuilder(element).addQuickFix(new ReplaceTypeQuickFix((DotNetType) element, exceptionTypeRef));
+				return newBuilder(element).withQuickFix(new ReplaceTypeQuickFix((DotNetType) element, exceptionTypeRef));
 			}
 		}
 		return null;

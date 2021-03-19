@@ -60,7 +60,7 @@ public class CS1004 extends CompilerCheck<DotNetModifierListOwner>
 
 			for(PsiElement modifierElement : modifierElements)
 			{
-				results.add(newBuilder(modifierElement, modifier.getPresentableText()).addQuickFix(new RemoveModifierFix(modifier, element)));
+				results.add(newBuilder(modifierElement, modifier.getPresentableText()).withQuickFix(new RemoveModifierFix(modifier, element)));
 			}
 		}
 		return results;

@@ -47,6 +47,7 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.annotations.Contract;
 
 import javax.annotation.Nonnull;
@@ -152,21 +153,21 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 							return highlightInfo;
 						}
 					};
-					result.setHighlightInfoType(insideDoc ? HighlightInfoType.WEAK_WARNING : HighlightInfoType.WRONG_REF);
+					result.withHighlightInfoType(insideDoc ? HighlightInfoType.WEAK_WARNING : HighlightInfoType.WRONG_REF);
 
 					String unresolvedText = getUnresolvedText(callElement, range);
 					if(isCalleInsideCalle(callElement))
 					{
-						result.setText("Expression cant be invoked");
+						result.withText(LocalizeValue.localizeTODO("Expression cant be invoked"));
 						// remap to error, due we want make all exp red
-						result.setHighlightInfoType(insideDoc ? HighlightInfoType.WEAK_WARNING : HighlightInfoType.ERROR);
+						result.withHighlightInfoType(insideDoc ? HighlightInfoType.WEAK_WARNING : HighlightInfoType.ERROR);
 					}
 					else
 					{
-						result.setText("'" + StringUtil.unescapeXml(unresolvedText) + "' is not resolved");
+						result.withText(LocalizeValue.localizeTODO("'" + StringUtil.unescapeXml(unresolvedText) + "' is not resolved"));
 					}
 
-					result.setTextRange(range.getTextRange());
+					result.withTextRange(range.getTextRange());
 					list.add(result);
 				}
 			}

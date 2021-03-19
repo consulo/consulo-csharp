@@ -125,18 +125,18 @@ public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner>
 			CompilerCheckBuilder result = newBuilder(highlight, formatElement(element));
 			if(element instanceof CSharpConstructorDeclaration)
 			{
-				result.addQuickFix(new CreateEmptyCodeBlockFix(element));
+				result.withQuickFix(new CreateEmptyCodeBlockFix(element));
 			}
 			else if(element instanceof CSharpMethodDeclaration && !(((CSharpMethodDeclaration) element).isDelegate()))
 			{
-				result.addQuickFix(new CreateEmptyCodeBlockFix(element));
-				result.addQuickFix(new AddModifierFix(CSharpModifier.ABSTRACT, (DotNetModifierListOwner) element));
-				result.addQuickFix(new AddModifierFix(CSharpModifier.EXTERN, (DotNetModifierListOwner) element));
-				result.addQuickFix(new AddModifierFix(CSharpModifier.PARTIAL, (DotNetModifierListOwner) element));
+				result.withQuickFix(new CreateEmptyCodeBlockFix(element));
+				result.withQuickFix(new AddModifierFix(CSharpModifier.ABSTRACT, (DotNetModifierListOwner) element));
+				result.withQuickFix(new AddModifierFix(CSharpModifier.EXTERN, (DotNetModifierListOwner) element));
+				result.withQuickFix(new AddModifierFix(CSharpModifier.PARTIAL, (DotNetModifierListOwner) element));
 			}
 			else if(element instanceof DotNetXAccessor)
 			{
-				result.addQuickFix(new CreateEmptyCodeBlockFix(element));
+				result.withQuickFix(new CreateEmptyCodeBlockFix(element));
 			}
 			return result;
 		}

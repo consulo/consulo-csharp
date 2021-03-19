@@ -92,10 +92,10 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 		if((element.hasModifier(CSharpModifier.ABSTRACT) || element.isDelegate()) && element.getCodeBlock().isNotSemicolonAndNotEmpty())
 		{
 			CompilerCheckBuilder compilerCheckBuilder = newBuilder(nameIdentifier, formatElement(element));
-			compilerCheckBuilder.addQuickFix(new RemoveCodeBlockFix(element));
+			compilerCheckBuilder.withQuickFix(new RemoveCodeBlockFix(element));
 			if(element.hasModifier(CSharpModifier.ABSTRACT))
 			{
-				compilerCheckBuilder.addQuickFix(new RemoveModifierFix(CSharpModifier.ABSTRACT, element));
+				compilerCheckBuilder.withQuickFix(new RemoveModifierFix(CSharpModifier.ABSTRACT, element));
 			}
 			return compilerCheckBuilder;
 		}

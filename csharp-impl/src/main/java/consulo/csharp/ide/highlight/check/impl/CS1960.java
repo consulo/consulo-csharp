@@ -65,7 +65,7 @@ public class CS1960 extends CompilerCheck<DotNetGenericParameter>
 					return null;
 				}
 
-				return newBuilder(modifierElement).addQuickFix(new RemoveModifierFix(ourModifier, element));
+				return newBuilder(modifierElement).withQuickFix(new RemoveModifierFix(ourModifier, element));
 			}
 		}
 		return null;

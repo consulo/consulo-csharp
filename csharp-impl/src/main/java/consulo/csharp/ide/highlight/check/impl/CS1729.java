@@ -147,7 +147,7 @@ public class CS1729 extends CompilerCheck<DotNetQualifiedElement>
 
 			if(!result.getFirst())
 			{
-				return newBuilder(getNameIdentifier(t), formatElement(result.getSecond()), "0").addQuickFix(new GenerateConstructorFix(t));
+				return newBuilder(getNameIdentifier(t), formatElement(result.getSecond()), "0").withQuickFix(new GenerateConstructorFix(t));
 			}
 		}
 

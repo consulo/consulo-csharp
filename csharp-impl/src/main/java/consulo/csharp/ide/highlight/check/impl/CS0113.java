@@ -66,7 +66,7 @@ public class CS0113 extends CompilerCheck<DotNetVirtualImplementOwner>
 				PsiElement modifierElement = modifierList.getModifierElement(modifier);
 				if(modifierElement != null)
 				{
-					return newBuilder(modifierElement, formatElement(element)).addQuickFix(new RemoveModifierFix(modifier, owner));
+					return newBuilder(modifierElement, formatElement(element)).withQuickFix(new RemoveModifierFix(modifier, owner));
 				}
 			}
 		}

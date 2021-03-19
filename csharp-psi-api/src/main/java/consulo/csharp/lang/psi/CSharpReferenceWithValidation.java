@@ -1,10 +1,11 @@
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.localize.LocalizeValue;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -14,8 +15,8 @@ public interface CSharpReferenceWithValidation extends PsiReference
 {
 	@Nonnull
 	@RequiredReadAction
-	default String getErrorMessage(@Nonnull PsiElement element)
+	default LocalizeValue getErrorMessage(@Nonnull PsiElement element)
 	{
-		return "Not resolved";
+		return LocalizeValue.localizeTODO("Not resolved");
 	}
 }

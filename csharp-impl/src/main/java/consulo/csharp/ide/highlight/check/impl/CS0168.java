@@ -84,7 +84,7 @@ public class CS0168 extends CompilerCheck<CSharpLocalVariable>
 			CompilerCheckBuilder builder = newBuilder(element.getNameIdentifier(), formatElement(element));
 			if(!(element.getParent() instanceof CSharpForeachStatementImpl))
 			{
-				builder.addQuickFix(new DeleteLocalVariable(element));
+				builder.withQuickFix(new DeleteLocalVariable(element));
 			}
 			return builder;
 		}

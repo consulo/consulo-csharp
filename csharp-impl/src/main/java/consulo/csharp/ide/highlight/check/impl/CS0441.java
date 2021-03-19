@@ -54,8 +54,8 @@ public class CS0441 extends CompilerCheck<DotNetTypeDeclaration>
 		{
 			List<HighlightInfoFactory> list = new ArrayList<HighlightInfoFactory>(2);
 			String name = formatElement(element);
-			list.add(newBuilder(sealedModifierElement, name).addQuickFix(new RemoveModifierFix(DotNetModifier.SEALED, element)));
-			list.add(newBuilder(staticModifierElement, name).addQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, element)));
+			list.add(newBuilder(sealedModifierElement, name).withQuickFix(new RemoveModifierFix(DotNetModifier.SEALED, element)));
+			list.add(newBuilder(staticModifierElement, name).withQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, element)));
 			return list;
 		}
 		return super.check(languageVersion, highlightContext, element);

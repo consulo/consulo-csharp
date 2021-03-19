@@ -62,7 +62,7 @@ public class CS0214 extends CompilerCheck<DotNetElement>
 				CompilerCheckBuilder builder = newBuilder(target);
 				if(pair.getSecond() != null)
 				{
-					builder.addQuickFix(new AddModifierFix(CSharpModifier.UNSAFE, pair.getSecond())).setHighlightInfoType(HighlightInfoType
+					builder.withQuickFix(new AddModifierFix(CSharpModifier.UNSAFE, pair.getSecond())).withHighlightInfoType(HighlightInfoType
 							.WRONG_REF);
 				}
 				return builder;
@@ -84,7 +84,7 @@ public class CS0214 extends CompilerCheck<DotNetElement>
 					CompilerCheckBuilder builder = newBuilder(selfType);
 					if(pair.getSecond() != null)
 					{
-						builder.addQuickFix(new AddModifierFix(CSharpModifier.UNSAFE, pair.getSecond()));
+						builder.withQuickFix(new AddModifierFix(CSharpModifier.UNSAFE, pair.getSecond()));
 					}
 					return builder;
 				}
@@ -105,7 +105,7 @@ public class CS0214 extends CompilerCheck<DotNetElement>
 				CompilerCheckBuilder builder = newBuilder(element);
 				if(pair.getSecond() != null)
 				{
-					builder.addQuickFix(new AddModifierFix(CSharpModifier.UNSAFE, pair.getSecond()));
+					builder.withQuickFix(new AddModifierFix(CSharpModifier.UNSAFE, pair.getSecond()));
 				}
 				return builder;
 			}

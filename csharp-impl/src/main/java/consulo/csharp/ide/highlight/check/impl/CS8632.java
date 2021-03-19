@@ -67,7 +67,7 @@ public class CS8632 extends CompilerCheck<CSharpNullableType>
 		if(nullable == CSharpNullableOption.UNSPECIFIED || nullable == CSharpNullableOption.DISABLE || nullable == CSharpNullableOption.WARNINGS)
 		{
 			PsiElement questElement = element.getQuestElement();
-			return newBuilder(questElement, formatTypeRef(dotNetTypeRef)).addQuickFix(new CS0453.DeleteQuestMarkQuickFix(element));
+			return newBuilder(questElement, formatTypeRef(dotNetTypeRef)).withQuickFix(new CS0453.DeleteQuestMarkQuickFix(element));
 		}
 		return null;
 	}

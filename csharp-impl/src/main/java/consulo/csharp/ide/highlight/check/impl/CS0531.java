@@ -59,7 +59,7 @@ public class CS0531 extends CompilerCheck<DotNetCodeBlockOwner>
 			{
 				return null;
 			}
-			return newBuilder(nameIdentifier, formatElement(element)).addQuickFix(new CS0500.RemoveCodeBlockFix(element));
+			return newBuilder(nameIdentifier, formatElement(element)).withQuickFix(new CS0500.RemoveCodeBlockFix(element));
 		}
 		return null;
 	}

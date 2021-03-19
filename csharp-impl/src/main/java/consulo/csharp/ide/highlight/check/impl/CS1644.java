@@ -399,7 +399,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 
 				CompilerCheckBuilder result = newBuilder(fun, feature.myName, languageVersion.getPresentableName());
 
-				result.addQuickFix(new SetLanguageVersionFix(feature.myLanguageVersion));
+				result.withQuickFix(new SetLanguageVersionFix(feature.myLanguageVersion));
 
 				IElementType elementType = fun.getNode().getElementType();
 				if(!myAllKeywords.contains(elementType))
@@ -425,12 +425,12 @@ public class CS1644 extends CompilerCheck<PsiElement>
 
 					if(foundKeywordAndItSolo)
 					{
-						result.setHighlightInfoType(HighlightInfoType.WRONG_REF);
+						result.withHighlightInfoType(HighlightInfoType.WRONG_REF);
 					}
 				}
 				else
 				{
-					result.setHighlightInfoType(HighlightInfoType.WRONG_REF);
+					result.withHighlightInfoType(HighlightInfoType.WRONG_REF);
 				}
 				return result;
 			}

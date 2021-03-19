@@ -264,7 +264,7 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 						PsiElement qualifierNext = ((CSharpReferenceExpression) qualifier).resolve();
 						if(qualifierNext instanceof CSharpPropertyDeclaration)
 						{
-							return newBuilder(qualifier, formatElement(qualifierNext)).addQuickFix(new IntroduceTempVariableFix(qualifier, (CSharpFieldDeclaration) targetField, rightExpression,
+							return newBuilder(qualifier, formatElement(qualifierNext)).withQuickFix(new IntroduceTempVariableFix(qualifier, (CSharpFieldDeclaration) targetField, rightExpression,
 									operatorText));
 						}
 					}

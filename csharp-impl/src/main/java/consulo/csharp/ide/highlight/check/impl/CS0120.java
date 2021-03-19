@@ -141,7 +141,7 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 		}
 		else if(contextForResolved == CSharpContextUtil.ContextType.STATIC && !parentContextType.isAllowStatic())
 		{
-			return newBuilderImpl(CS0176.class, referenceElement, formatElement(resolvedElement)).addQuickFix(new ReplaceQualifierByTypeFix(element));
+			return newBuilderImpl(CS0176.class, referenceElement, formatElement(resolvedElement)).withQuickFix(new ReplaceQualifierByTypeFix(element));
 		}
 		return null;
 	}
