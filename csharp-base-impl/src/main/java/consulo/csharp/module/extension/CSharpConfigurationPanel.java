@@ -20,10 +20,10 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkModel;
 import com.intellij.openapi.projectRoots.SdkType;
-import com.intellij.openapi.roots.ui.configuration.ProjectStructureConfigurable;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.VerticalFlowLayout;
@@ -34,6 +34,7 @@ import consulo.csharp.compiler.CSharpCompilerProvider;
 import consulo.csharp.compiler.CSharpPlatform;
 import consulo.csharp.module.CSharpNullableOption;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import consulo.ide.settings.impl.ProjectStructureSettingsUtil;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;
 import consulo.roots.ui.configuration.SdkComboBox;
 import consulo.ui.annotation.RequiredUIAccess;
@@ -77,7 +78,7 @@ public class CSharpConfigurationPanel extends JPanel
 	{
 		super(new VerticalFlowLayout());
 		final ComboBox<Object> levelComboBox = new ComboBox<>();
-		levelComboBox.setRenderer(new ColoredListCellRenderer<Object>()
+		levelComboBox.setRenderer(new ColoredListCellRenderer<>()
 		{
 			@Override
 			protected void customizeCellRenderer(@Nonnull JList list, Object value, int i, boolean b, boolean b1)
@@ -193,7 +194,7 @@ public class CSharpConfigurationPanel extends JPanel
 
 		List<CSharpCompilerProvider> extensions = CSharpCompilerProvider.EP_NAME.getExtensionList();
 		DotNetSimpleModuleExtension netExtension = ext.getModuleRootLayer().getExtension(DotNetSimpleModuleExtension.class);
-		final Set<SdkType> compilerBundleTypes = new LinkedHashSet<SdkType>();
+		final Set<SdkType> compilerBundleTypes = new LinkedHashSet<>();
 		if(netExtension != null)
 		{
 			for(CSharpCompilerProvider typeProvider : extensions)
@@ -206,9 +207,9 @@ public class CSharpConfigurationPanel extends JPanel
 			}
 		}
 
-		final SdkModel projectSdksModel = ProjectStructureConfigurable.getInstance(ext.getProject()).getProjectSdksModel();
-
-		final SdkComboBox compilerComboBox = new SdkComboBox(projectSdksModel, compilerBundleTypes::contains, null, "Auto Select", AllIcons.Actions.FindPlain);
+		ProjectStructureSettingsUtil settingsUtil = (ProjectStructureSettingsUtil) ShowSettingsUtil.getInstance();
+		SdkModel model = settingsUtil.getSdksModel();
+		SdkComboBox compilerComboBox = new SdkComboBox(model, compilerBundleTypes::contains, null, "Auto Select", AllIcons.Actions.FindPlain);
 
 		for(CSharpCompilerProvider provider : extensions)
 		{
@@ -225,15 +226,10 @@ public class CSharpConfigurationPanel extends JPanel
 			compilerComboBox.setSelectedSdk(customCompilerSdkPointer.getName());
 		}
 
-		compilerComboBox.addItemListener(new ItemListener()
-		{
-			@Override
-			public void itemStateChanged(ItemEvent e)
+		compilerComboBox.addItemListener(e -> {
+			if(e.getStateChange() == ItemEvent.SELECTED)
 			{
-				if(e.getStateChange() == ItemEvent.SELECTED)
-				{
-					customCompilerSdkPointer.set(compilerComboBox.getSelectedModuleName(), compilerComboBox.getSelectedSdkName());
-				}
+				customCompilerSdkPointer.set(compilerComboBox.getSelectedModuleName(), compilerComboBox.getSelectedSdkName());
 			}
 		});
 
