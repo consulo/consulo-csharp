@@ -89,7 +89,7 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 	@RequiredReadAction
 	public void indexStub(@Nonnull CSharpTypeDeclStub stub, @Nonnull IndexSink indexSink)
 	{
-		String name = getName(stub);
+		String name = getNameWithoutAt(stub);
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.TYPE_INDEX, name);

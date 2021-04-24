@@ -53,7 +53,7 @@ public class CSharpEnumConstantStubElementType extends CSharpQVariableStubElemen
 	@RequiredReadAction
 	public void indexStub(@Nonnull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> stub, @Nonnull IndexSink indexSink)
 	{
-		String name = getName(stub);
+		String name = getNameWithoutAt(stub);
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.FIELD_INDEX, name);

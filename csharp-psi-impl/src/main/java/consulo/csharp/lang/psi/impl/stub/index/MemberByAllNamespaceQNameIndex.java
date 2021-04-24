@@ -41,4 +41,10 @@ public class MemberByAllNamespaceQNameIndex extends StringStubIndexExtension<Dot
 	{
 		return CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX;
 	}
+
+	@Override
+	public int getVersion()
+	{
+		return super.getVersion() + 1;
+	}
 }

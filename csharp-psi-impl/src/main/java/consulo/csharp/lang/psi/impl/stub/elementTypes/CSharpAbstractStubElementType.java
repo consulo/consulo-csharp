@@ -23,6 +23,7 @@ import com.intellij.psi.stubs.StubElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpStubElements;
+import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.csharp.lang.psi.impl.stub.CSharpIdentifierStub;
 import consulo.psi.tree.IElementTypeAsPsiFactory;
 import org.jetbrains.annotations.NonNls;
@@ -51,14 +52,14 @@ public abstract class CSharpAbstractStubElementType<S extends StubElement, P ext
 
 	@Nullable
 	@RequiredReadAction
-	public static String getName(StubElement<?> element)
+	public static String getNameWithoutAt(StubElement<?> element)
 	{
 		CSharpIdentifierStub identifierStub = element.findChildStubByType(CSharpStubElements.IDENTIFIER);
 		if(identifierStub == null)
 		{
 			return null;
 		}
-		return identifierStub.getValue();
+		return CSharpPsiUtilImpl.getNameWithoutAt(identifierStub.getValue());
 	}
 
 	@Override

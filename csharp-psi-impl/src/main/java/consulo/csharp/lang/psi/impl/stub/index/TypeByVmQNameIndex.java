@@ -41,4 +41,10 @@ public class TypeByVmQNameIndex extends IntStubIndexExtension<DotNetTypeDeclarat
 	{
 		return CSharpIndexKeys.TYPE_BY_VMQNAME_INDEX;
 	}
+
+	@Override
+	public int getVersion()
+	{
+		return super.getVersion() + 1;
+	}
 }

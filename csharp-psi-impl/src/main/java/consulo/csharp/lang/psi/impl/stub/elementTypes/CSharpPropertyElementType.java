@@ -54,7 +54,7 @@ public class CSharpPropertyElementType extends CSharpQVariableStubElementType<CS
 	@RequiredReadAction
 	public void indexStub(@Nonnull CSharpVariableDeclStub<CSharpPropertyDeclarationImpl> stub, @Nonnull IndexSink indexSink)
 	{
-		String name = getName(stub);
+		String name = getNameWithoutAt(stub);
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.PROPERTY_INDEX, name);

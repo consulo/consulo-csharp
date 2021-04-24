@@ -93,7 +93,7 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 	@RequiredReadAction
 	public void indexStub(@Nonnull CSharpMethodDeclStub stub, @Nonnull IndexSink indexSink)
 	{
-		String name = getName(stub);
+		String name = getNameWithoutAt(stub);
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.METHOD_INDEX, name);

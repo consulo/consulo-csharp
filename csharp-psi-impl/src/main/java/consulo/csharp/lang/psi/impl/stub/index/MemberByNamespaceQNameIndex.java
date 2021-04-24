@@ -16,11 +16,12 @@
 
 package consulo.csharp.lang.psi.impl.stub.index;
 
-import javax.annotation.Nonnull;
-import consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
+import consulo.dotnet.psi.DotNetQualifiedElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -38,5 +39,11 @@ public class MemberByNamespaceQNameIndex extends StringStubIndexExtension<DotNet
 	public StubIndexKey<String, DotNetQualifiedElement> getKey()
 	{
 		return CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX;
+	}
+
+	@Override
+	public int getVersion()
+	{
+		return super.getVersion() + 1;
 	}
 }
