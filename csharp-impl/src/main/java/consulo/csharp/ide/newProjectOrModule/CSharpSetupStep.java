@@ -43,8 +43,6 @@ public class CSharpSetupStep extends UnifiedProjectOrModuleNameStep<CSharpNewMod
 {
 	private DotNetTarget myForceTarget;
 
-	private Disposable myUiDisposable;
-
 	private ComboBox<DotNetTarget> myTargetComboBox;
 	private BundleBox myBundleBox;
 
@@ -55,9 +53,9 @@ public class CSharpSetupStep extends UnifiedProjectOrModuleNameStep<CSharpNewMod
 
 	@RequiredUIAccess
 	@Override
-	protected void extend(@Nonnull FormBuilder builder)
+	protected void extend(@Nonnull FormBuilder builder, @Nonnull Disposable uiDisposable)
 	{
-		super.extend(builder);
+		super.extend(builder, uiDisposable);
 
 		if(myForceTarget == null)
 		{
@@ -67,8 +65,6 @@ public class CSharpSetupStep extends UnifiedProjectOrModuleNameStep<CSharpNewMod
 
 			builder.addLabeled(LocalizeValue.localizeTODO("Target:"), myTargetComboBox);
 		}
-
-		myUiDisposable = Disposable.newDisposable();
 
 		List<String> validSdkTypes = new ArrayList<>();
 		for(Map.Entry<String, String[]> entry : CSharpNewModuleBuilder.ourExtensionMapping.entrySet())
@@ -82,7 +78,7 @@ public class CSharpSetupStep extends UnifiedProjectOrModuleNameStep<CSharpNewMod
 			validSdkTypes.add(entry.getKey());
 		}
 
-		BundleBoxBuilder boxBuilder = BundleBoxBuilder.create(myUiDisposable);
+		BundleBoxBuilder boxBuilder = BundleBoxBuilder.create(uiDisposable);
 		boxBuilder.withSdkTypeFilter(sdkTypeId -> validSdkTypes.contains(sdkTypeId.getId()));
 
 		myBundleBox = boxBuilder.build();
@@ -110,17 +106,5 @@ public class CSharpSetupStep extends UnifiedProjectOrModuleNameStep<CSharpNewMod
 	{
 		myForceTarget = target;
 		return this;
-	}
-
-	@Override
-	public void disposeUIResources()
-	{
-		super.disposeUIResources();
-
-		if(myUiDisposable != null)
-		{
-			myUiDisposable.disposeWithTree();
-			myUiDisposable = null;
-		}
 	}
 }

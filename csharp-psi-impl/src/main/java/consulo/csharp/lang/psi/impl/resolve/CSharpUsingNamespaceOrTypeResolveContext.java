@@ -43,7 +43,7 @@ public class CSharpUsingNamespaceOrTypeResolveContext implements CSharpResolveCo
 {
 	private CSharpUsingListChild myUsingListChild;
 
-	private NotNullLazyValue<CSharpResolveContext> myContextValue = new NotNullLazyValue<CSharpResolveContext>()
+	private NotNullLazyValue<CSharpResolveContext> myContextValue = new NotNullLazyValue<>()
 	{
 		@Nonnull
 		@Override

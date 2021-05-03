@@ -31,7 +31,7 @@ import consulo.util.dataholder.UserDataHolder;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -97,7 +97,7 @@ public interface CSharpResolveContext
 	@Nonnull
 	default Collection<PsiElement> findByName(@Nonnull String name, boolean deep, @Nonnull UserDataHolder holder)
 	{
-		return Collections.emptySet();
+		return Set.of();
 	}
 
 	@RequiredReadAction

@@ -67,14 +67,7 @@ public class CSharpAssemblyFileEditor extends UserDataHolderBase implements File
 		myVirtualFile = virtualFile;
 		myPsiFile = PsiManager.getInstance(project).findFile(virtualFile);
 		assert myPsiFile != null;
-		myIsReadonlyFile = ApplicationManager.getApplication().runReadAction(new Computable<Boolean>()
-		{
-			@Override
-			public Boolean compute()
-			{
-				return !ReadonlyStatusHandler.ensureFilesWritable(project, myVirtualFile);
-			}
-		});
+		myIsReadonlyFile = ApplicationManager.getApplication().runReadAction((Computable<Boolean>) () -> !ReadonlyStatusHandler.ensureFilesWritable(project, myVirtualFile));
 
 		myBlocks.add(new CSharpSimpleStringAssemblyBlock("Name", DotNetTypes.System.Reflection.AssemblyProductAttribute));
 		myBlocks.add(new CSharpSimpleStringAssemblyBlock("Title", DotNetTypes.System.Reflection.AssemblyTitleAttribute));
