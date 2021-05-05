@@ -36,7 +36,6 @@ import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import gnu.trove.THashSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,8 +45,8 @@ import java.util.regex.Pattern;
 
 /**
  * @author Fedor.Korotkov
- *         <p>
- *         from google-dart
+ * <p>
+ * from google-dart
  */
 public class CSharpNameSuggesterUtil
 {
@@ -275,12 +274,12 @@ public class CSharpNameSuggesterUtil
 			result.add("o"); // never empty
 		}
 
-		return new THashSet<>(result);
+		return new HashSet<>(result);
 	}
 
 	private static void filterKeywords(Collection<String> candidates)
 	{
-		Set<String> keywords = new THashSet<>();
+		Set<String> keywords = new HashSet<>();
 		for(String candidate : candidates)
 		{
 			if(isKeyword(candidate))

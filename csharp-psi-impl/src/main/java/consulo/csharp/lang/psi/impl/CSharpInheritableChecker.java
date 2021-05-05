@@ -31,10 +31,10 @@ import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.*;
 import consulo.util.lang.Pair;
-import gnu.trove.THashSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashSet;
 
 /**
  * @author VISTALL
@@ -312,7 +312,7 @@ public class CSharpInheritableChecker
 		if(topGenericExtractor != DotNetGenericExtractor.EMPTY && topElement instanceof DotNetTypeDeclaration)
 		{
 			DotNetTypeDeclaration topTypeDeclaration = (DotNetTypeDeclaration) topElement;
-			DotNetTypeResolveResult typeFromSuper = CSharpTypeUtil.findTypeRefFromExtends(target, topTypeDeclaration, new THashSet<>());
+			DotNetTypeResolveResult typeFromSuper = CSharpTypeUtil.findTypeRefFromExtends(target, topTypeDeclaration, new HashSet<>());
 
 			if(typeFromSuper == null)
 			{

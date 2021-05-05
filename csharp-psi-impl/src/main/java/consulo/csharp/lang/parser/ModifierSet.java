@@ -16,14 +16,12 @@
 
 package consulo.csharp.lang.parser;
 
-import gnu.trove.THashSet;
-
-import java.util.Arrays;
-import java.util.Set;
+import com.intellij.psi.tree.IElementType;
 
 import javax.annotation.Nonnull;
-
-import com.intellij.psi.tree.IElementType;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -36,7 +34,7 @@ public class ModifierSet
 	@Nonnull
 	public static ModifierSet create(IElementType... set)
 	{
-		return set.length == 0 ? EMPTY : new ModifierSet(new THashSet<>(Arrays.asList(set)));
+		return set.length == 0 ? EMPTY : new ModifierSet(new HashSet<>(Arrays.asList(set)));
 	}
 
 	@Nonnull
@@ -57,7 +55,7 @@ public class ModifierSet
 	@Nonnull
 	public ModifierSet setAllowShortObjectInitializer()
 	{
-		ModifierSet set = new ModifierSet(mySet == null ? null : new THashSet<>(mySet));
+		ModifierSet set = new ModifierSet(mySet == null ? null : new HashSet<>(mySet));
 		set.myAllowShortObjectInitializer = true;
 		return set;
 	}
@@ -70,7 +68,7 @@ public class ModifierSet
 	@Nonnull
 	public ModifierSet add(IElementType e)
 	{
-		Set<IElementType> elementTypes = mySet == null ? new THashSet<>() : new THashSet<>(mySet);
+		Set<IElementType> elementTypes = mySet == null ? new HashSet<>() : new HashSet<>(mySet);
 		elementTypes.add(e);
 		return create(elementTypes);
 	}
@@ -83,7 +81,7 @@ public class ModifierSet
 			return EMPTY;
 		}
 
-		Set<IElementType> elementTypes = new THashSet<>(mySet);
+		Set<IElementType> elementTypes = new HashSet<>(mySet);
 		elementTypes.remove(e);
 		return create(elementTypes);
 	}

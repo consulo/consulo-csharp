@@ -26,10 +26,10 @@ import consulo.csharp.lang.psi.impl.light.*;
 import consulo.csharp.lang.psi.impl.source.resolve.type.*;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.*;
-import gnu.trove.THashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -344,7 +344,7 @@ public class GenericUnwrapTool
 				{
 					DotNetGenericExtractor genericExtractor = result.getGenericExtractor();
 
-					Map<DotNetGenericParameter, DotNetTypeRef> newExtractorMap = new THashMap<>();
+					Map<DotNetGenericParameter, DotNetTypeRef> newExtractorMap = new HashMap<>();
 					for(DotNetGenericParameter genericParameter : genericParameters)
 					{
 						DotNetTypeRef extractTypeRef = genericExtractor.extract(genericParameter);

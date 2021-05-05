@@ -36,10 +36,10 @@ import consulo.csharp.lang.psi.CSharpPreprocessorDefine;
 import consulo.csharp.lang.psi.CSharpPreprocessorVariable;
 import consulo.csharp.lang.psi.impl.light.CSharpPreprocessorLightVariable;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import gnu.trove.THashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -150,7 +150,7 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 			return;
 		}
 
-		Map<String, CSharpPreprocessorVariable> map = new THashMap<>();
+		Map<String, CSharpPreprocessorVariable> map = new HashMap<>();
 		for(String name : extension.getVariables())
 		{
 			CSharpPreprocessorLightVariable variable = new CSharpPreprocessorLightVariable(extension.getModule(), getElement(), name);

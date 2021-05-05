@@ -46,7 +46,6 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.util.dataholder.Key;
-import gnu.trove.THashSet;
 import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nonnull;
@@ -298,7 +297,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 
 		if(extendTypeRefs.isEmpty())
 		{
-			Set<String> set = new THashSet<>();
+			Set<String> set = new HashSet<>();
 			for(DotNetTypeDeclaration type : myTypeDeclarations)
 			{
 				ContainerUtil.addIfNotNull(set, CSharpTypeDeclarationImplUtil.getDefaultSuperType(type));

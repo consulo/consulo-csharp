@@ -62,10 +62,10 @@ import consulo.ui.image.Image;
 import consulo.ui.image.ImageEffects;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.Pair;
-import gnu.trove.THashSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -170,7 +170,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 					builder.append("(");
 				}
 
-				Set<String> alreadyUsedNames = new THashSet<>();
+				Set<String> alreadyUsedNames = new HashSet<>();
 				for(int i = 0; i < parameterInfos.length; i++)
 				{
 					CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
@@ -220,7 +220,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 				{
 					builder.append("(");
 				}
-				Set<String> alreadyUsedNames = new THashSet<>();
+				Set<String> alreadyUsedNames = new HashSet<>();
 				for(int i = 0; i < parameterInfos.length; i++)
 				{
 					CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];

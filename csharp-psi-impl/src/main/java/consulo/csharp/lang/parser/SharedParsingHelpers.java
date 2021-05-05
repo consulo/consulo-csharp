@@ -27,10 +27,10 @@ import com.intellij.util.BitUtil;
 import consulo.csharp.lang.parser.exp.ExpressionParsing;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import gnu.trove.THashSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -489,7 +489,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	{
 		PsiBuilder.Marker marker = builder.mark();
 
-		Set<IElementType> set = new THashSet<>();
+		Set<IElementType> set = new HashSet<>();
 		while(!builder.eof())
 		{
 			if(MODIFIERS.contains(builder.getTokenType()))
@@ -515,7 +515,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		}
 		else
 		{
-			Set<IElementType> set = new THashSet<>();
+			Set<IElementType> set = new HashSet<>();
 			PsiBuilder.Marker marker = builder.mark();
 			if(!parseAttributeList(builder, ModifierSet.EMPTY, flags))
 			{

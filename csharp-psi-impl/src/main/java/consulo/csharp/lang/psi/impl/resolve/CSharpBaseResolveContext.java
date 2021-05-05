@@ -36,7 +36,6 @@ import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.util.dataholder.UserDataHolder;
-import gnu.trove.THashSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -133,7 +132,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@RequiredReadAction
 	private CSharpResolveContext getSuperContext()
 	{
-		THashSet<PsiElement> alreadyProcessedItem = new THashSet<>();
+		Set<PsiElement> alreadyProcessedItem = new HashSet<>();
 		if(myRecursiveGuardSet != null)
 		{
 			alreadyProcessedItem.addAll(myRecursiveGuardSet);

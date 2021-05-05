@@ -16,14 +16,6 @@
 
 package consulo.csharp.ide.refactoring.rename;
 
-import gnu.trove.THashSet;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
@@ -33,6 +25,12 @@ import com.intellij.refactoring.rename.RenamePsiElementProcessor;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -86,7 +84,7 @@ public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 	{
 		Collection<DotNetVirtualImplementOwner> temp1 = OverrideUtil.collectOverridingMembers((DotNetVirtualImplementOwner) element);
 		Collection<DotNetVirtualImplementOwner> temp2 = OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) element);
-		Set<DotNetVirtualImplementOwner> set = new THashSet<DotNetVirtualImplementOwner>(temp1.size() + temp1.size());
+		Set<DotNetVirtualImplementOwner> set = new HashSet<DotNetVirtualImplementOwner>(temp1.size() + temp1.size());
 		set.addAll(temp1);
 		set.addAll(temp2);
 		return set;

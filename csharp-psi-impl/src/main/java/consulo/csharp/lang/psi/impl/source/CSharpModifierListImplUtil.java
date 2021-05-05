@@ -27,7 +27,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.*;
-import gnu.trove.THashSet;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -40,35 +39,35 @@ public class CSharpModifierListImplUtil
 {
 	private static final IElementType ourDummyUnregisteredModifier = new IElementType("ourDummyUnregisteredModifier", CSharpLanguage.INSTANCE);
 
-	private static final Map<CSharpModifier, IElementType> ourModifiers = new LinkedHashMap<CSharpModifier, IElementType>()
-	{
-		{
-			put(CSharpModifier.PUBLIC, CSharpTokens.PUBLIC_KEYWORD);
-			put(CSharpModifier.PROTECTED, CSharpTokens.PROTECTED_KEYWORD);
-			put(CSharpModifier.PRIVATE, CSharpTokens.PRIVATE_KEYWORD);
-			put(CSharpModifier.STATIC, CSharpTokens.STATIC_KEYWORD);
-			put(CSharpModifier.SEALED, CSharpTokens.SEALED_KEYWORD);
-			put(CSharpModifier.ABSTRACT, CSharpTokens.ABSTRACT_KEYWORD);
-			put(CSharpModifier.READONLY, CSharpTokens.READONLY_KEYWORD);
-			put(CSharpModifier.UNSAFE, CSharpTokens.UNSAFE_KEYWORD);
-			put(CSharpModifier.PARAMS, CSharpTokens.PARAMS_KEYWORD);
-			put(CSharpModifier.THIS, CSharpTokens.THIS_KEYWORD);
-			put(CSharpModifier.PARTIAL, CSharpSoftTokens.PARTIAL_KEYWORD);
-			put(CSharpModifier.INTERNAL, CSharpTokens.INTERNAL_KEYWORD);
-			put(CSharpModifier.REF, CSharpTokens.REF_KEYWORD);
-			put(CSharpModifier.OUT, CSharpTokens.OUT_KEYWORD);
-			put(CSharpModifier.VIRTUAL, CSharpTokens.VIRTUAL_KEYWORD);
-			put(CSharpModifier.NEW, CSharpTokens.NEW_KEYWORD);
-			put(CSharpModifier.OVERRIDE, CSharpTokens.OVERRIDE_KEYWORD);
-			put(CSharpModifier.ASYNC, CSharpSoftTokens.ASYNC_KEYWORD);
-			put(CSharpModifier.IN, CSharpSoftTokens.IN_KEYWORD);
-			put(CSharpModifier.EXTERN, CSharpSoftTokens.EXTERN_KEYWORD);
+	private static final Map<CSharpModifier, IElementType> ourModifiers = new LinkedHashMap<>();
 
-			// this modifier stored in differed way
-			put(CSharpModifier.INTERFACE_ABSTRACT, ourDummyUnregisteredModifier);
-			put(CSharpModifier.OPTIONAL, ourDummyUnregisteredModifier);
-		}
-	};
+	static
+	{
+		ourModifiers.put(CSharpModifier.PUBLIC, CSharpTokens.PUBLIC_KEYWORD);
+		ourModifiers.put(CSharpModifier.PROTECTED, CSharpTokens.PROTECTED_KEYWORD);
+		ourModifiers.put(CSharpModifier.PRIVATE, CSharpTokens.PRIVATE_KEYWORD);
+		ourModifiers.put(CSharpModifier.STATIC, CSharpTokens.STATIC_KEYWORD);
+		ourModifiers.put(CSharpModifier.SEALED, CSharpTokens.SEALED_KEYWORD);
+		ourModifiers.put(CSharpModifier.ABSTRACT, CSharpTokens.ABSTRACT_KEYWORD);
+		ourModifiers.put(CSharpModifier.READONLY, CSharpTokens.READONLY_KEYWORD);
+		ourModifiers.put(CSharpModifier.UNSAFE, CSharpTokens.UNSAFE_KEYWORD);
+		ourModifiers.put(CSharpModifier.PARAMS, CSharpTokens.PARAMS_KEYWORD);
+		ourModifiers.put(CSharpModifier.THIS, CSharpTokens.THIS_KEYWORD);
+		ourModifiers.put(CSharpModifier.PARTIAL, CSharpSoftTokens.PARTIAL_KEYWORD);
+		ourModifiers.put(CSharpModifier.INTERNAL, CSharpTokens.INTERNAL_KEYWORD);
+		ourModifiers.put(CSharpModifier.REF, CSharpTokens.REF_KEYWORD);
+		ourModifiers.put(CSharpModifier.OUT, CSharpTokens.OUT_KEYWORD);
+		ourModifiers.put(CSharpModifier.VIRTUAL, CSharpTokens.VIRTUAL_KEYWORD);
+		ourModifiers.put(CSharpModifier.NEW, CSharpTokens.NEW_KEYWORD);
+		ourModifiers.put(CSharpModifier.OVERRIDE, CSharpTokens.OVERRIDE_KEYWORD);
+		ourModifiers.put(CSharpModifier.ASYNC, CSharpSoftTokens.ASYNC_KEYWORD);
+		ourModifiers.put(CSharpModifier.IN, CSharpSoftTokens.IN_KEYWORD);
+		ourModifiers.put(CSharpModifier.EXTERN, CSharpSoftTokens.EXTERN_KEYWORD);
+
+		// this modifier stored in differed way
+		ourModifiers.put(CSharpModifier.INTERFACE_ABSTRACT, ourDummyUnregisteredModifier);
+		ourModifiers.put(CSharpModifier.OPTIONAL, ourDummyUnregisteredModifier);
+	}
 
 	@Nonnull
 	public static IElementType asElementType(@Nonnull DotNetModifier modifier)
@@ -90,7 +89,7 @@ public class CSharpModifierListImplUtil
 
 		return CachedValuesManager.getCachedValue(modifierList, () ->
 		{
-			Set<CSharpModifier> modifiers = new THashSet<>();
+			Set<CSharpModifier> modifiers = new HashSet<>();
 			for(CSharpModifier modifier : CSharpModifier.values())
 			{
 				if(hasModifier(modifierList, modifier))

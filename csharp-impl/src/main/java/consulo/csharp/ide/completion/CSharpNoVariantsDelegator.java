@@ -23,7 +23,6 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Iconable;
-import consulo.util.dataholder.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -54,9 +53,10 @@ import consulo.dotnet.resolve.GlobalSearchScopeFilter;
 import consulo.ide.IconDescriptorUpdaters;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
 import consulo.ui.annotation.RequiredUIAccess;
-import gnu.trove.THashSet;
+import consulo.util.dataholder.Key;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -172,7 +172,7 @@ class CSharpNoVariantsDelegator
 
 		final boolean insideUsing = PsiTreeUtil.getParentOfType(parent, CSharpUsingListChild.class) != null;
 
-		final Set<String> names = new THashSet<String>(1000);
+		final Set<String> names = new HashSet<String>(1000);
 		shortNameSearcher.collectTypeNames(new Processor<String>()
 		{
 			private int count = 0;
@@ -193,7 +193,7 @@ class CSharpNoVariantsDelegator
 			}
 		}, resolveScope, projectIdFilter);
 
-		final Set<DotNetTypeDeclaration> targets = new THashSet<DotNetTypeDeclaration>(names.size());
+		final Set<DotNetTypeDeclaration> targets = new HashSet<DotNetTypeDeclaration>(names.size());
 		int i = 0;
 		for(String key : names)
 		{

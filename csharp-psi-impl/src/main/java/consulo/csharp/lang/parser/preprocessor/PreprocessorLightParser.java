@@ -20,9 +20,9 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.lexer._CSharpMacroLexer;
 import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
-import gnu.trove.THashSet;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -235,7 +235,7 @@ public class PreprocessorLightParser
 
 	private static Set<String> formatCheck(List<String> args)
 	{
-		Set<String> list = new THashSet<>(args.size());
+		Set<String> list = new HashSet<>(args.size());
 		for(String arg : args)
 		{
 			arg = arg.trim();

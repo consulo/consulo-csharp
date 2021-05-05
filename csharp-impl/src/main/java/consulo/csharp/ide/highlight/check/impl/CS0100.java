@@ -16,12 +16,7 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import gnu.trove.THashSet;
-
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -30,7 +25,11 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetVariable;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -49,7 +48,7 @@ public class CS0100 extends CompilerCheck<DotNetElement>
 			return null;
 		}
 
-		Set<String> defList = new THashSet<String>();
+		Set<String> defList = new HashSet<>();
 		for(DotNetVariable parameter : parameters)
 		{
 			String name = parameter.getName();

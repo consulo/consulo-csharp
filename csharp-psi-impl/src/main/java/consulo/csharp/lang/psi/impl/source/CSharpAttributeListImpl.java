@@ -20,10 +20,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetAttributeTargetType;
-import gnu.trove.THashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -32,20 +32,20 @@ import java.util.Map;
  */
 public class CSharpAttributeListImpl extends CSharpElementImpl implements CSharpAttributeList
 {
-	private static final Map<IElementType, DotNetAttributeTargetType> ourMap = new THashMap<IElementType, DotNetAttributeTargetType>()
+	private static final Map<IElementType, DotNetAttributeTargetType> ourMap = new HashMap<>();
+
+	static
 	{
-		{
-			put(CSharpSoftTokens.ASSEMBLY_KEYWORD, DotNetAttributeTargetType.ASSEMBLY);
-			put(CSharpSoftTokens.MODULE_KEYWORD, DotNetAttributeTargetType.MODULE);
-			put(CSharpSoftTokens.FIELD_KEYWORD, DotNetAttributeTargetType.FIELD);
-			put(CSharpSoftTokens.EVENT_KEYWORD, DotNetAttributeTargetType.EVENT);
-			put(CSharpSoftTokens.METHOD_KEYWORD, DotNetAttributeTargetType.METHOD);
-			put(CSharpSoftTokens.PARAM_KEYWORD, DotNetAttributeTargetType.PARAMETER);
-			put(CSharpSoftTokens.PROPERTY_KEYWORD, DotNetAttributeTargetType.PROPERTY);
-			put(CSharpSoftTokens.RETURN_KEYWORD, DotNetAttributeTargetType.RETURN);
-			put(CSharpSoftTokens.TYPE_KEYWORD, DotNetAttributeTargetType.TYPE);
-		}
-	};
+		ourMap.put(CSharpSoftTokens.ASSEMBLY_KEYWORD, DotNetAttributeTargetType.ASSEMBLY);
+		ourMap.put(CSharpSoftTokens.MODULE_KEYWORD, DotNetAttributeTargetType.MODULE);
+		ourMap.put(CSharpSoftTokens.FIELD_KEYWORD, DotNetAttributeTargetType.FIELD);
+		ourMap.put(CSharpSoftTokens.EVENT_KEYWORD, DotNetAttributeTargetType.EVENT);
+		ourMap.put(CSharpSoftTokens.METHOD_KEYWORD, DotNetAttributeTargetType.METHOD);
+		ourMap.put(CSharpSoftTokens.PARAM_KEYWORD, DotNetAttributeTargetType.PARAMETER);
+		ourMap.put(CSharpSoftTokens.PROPERTY_KEYWORD, DotNetAttributeTargetType.PROPERTY);
+		ourMap.put(CSharpSoftTokens.RETURN_KEYWORD, DotNetAttributeTargetType.RETURN);
+		ourMap.put(CSharpSoftTokens.TYPE_KEYWORD, DotNetAttributeTargetType.TYPE);
+	}
 
 	public CSharpAttributeListImpl(@Nonnull IElementType elementType)
 	{

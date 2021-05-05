@@ -16,13 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.handlers;
 
-import gnu.trove.THashMap;
-
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -37,6 +30,11 @@ import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -60,7 +58,7 @@ public class ThisKindProcessor implements KindProcessor
 			int genericParametersCount = thisTypeDeclaration.getGenericParametersCount();
 			if(genericParametersCount > 0)
 			{
-				Map<DotNetGenericParameter, DotNetTypeRef> map = new THashMap<>(genericParametersCount);
+				Map<DotNetGenericParameter, DotNetTypeRef> map = new HashMap<>(genericParametersCount);
 				for(DotNetGenericParameter genericParameter : thisTypeDeclaration.getGenericParameters())
 				{
 					map.put(genericParameter, new CSharpTypeRefFromGenericParameter(genericParameter));

@@ -35,15 +35,10 @@ import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
 import consulo.msil.lang.psi.*;
 import consulo.ui.annotation.RequiredUIAccess;
-import gnu.trove.THashSet;
-import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author VISTALL
@@ -67,7 +62,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 			List<DotNetNamedElement> list = new ArrayList<>(temp.length);
 
 			boolean isEnum = isEnum();
-			Set<String> bannedFieldNames = new THashSet<>();
+			Set<String> bannedFieldNames = new HashSet<>();
 			for(DotNetNamedElement element : temp)
 			{
 				if(element instanceof MsilFieldEntry)
@@ -470,7 +465,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(@Nonnull String s) throws IncorrectOperationException
 	{
 		return null;
 	}

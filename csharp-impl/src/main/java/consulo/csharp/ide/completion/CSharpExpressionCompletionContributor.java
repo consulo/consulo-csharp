@@ -71,14 +71,10 @@ import consulo.ide.IconDescriptorUpdaters;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
 import consulo.ui.image.ImageEffects;
-import gnu.trove.THashSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
@@ -245,7 +241,7 @@ class CSharpExpressionCompletionContributor
 				ResolveResult[] resolveResults = argumentListOwner.multiResolve(false);
 
 				boolean visitedNotNamed = false;
-				Set<String> alreadyDeclared = new THashSet<>(5);
+				Set<String> alreadyDeclared = new HashSet<>(5);
 				CSharpCallArgument[] callArguments = argumentListOwner.getCallArguments();
 				for(CSharpCallArgument c : callArguments)
 				{
@@ -264,7 +260,7 @@ class CSharpExpressionCompletionContributor
 				}
 				int thisCallArgumentPosition = visitedNotNamed ? ArrayUtil.indexOf(callArguments, callArgument) : -1;
 
-				Set<String> wantToCompleteParameters = new THashSet<>();
+				Set<String> wantToCompleteParameters = new HashSet<>();
 				for(ResolveResult resolveResult : resolveResults)
 				{
 					PsiElement element = resolveResult.getElement();

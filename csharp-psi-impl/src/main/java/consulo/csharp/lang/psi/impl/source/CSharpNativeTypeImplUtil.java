@@ -16,22 +16,20 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import gnu.trove.THashMap;
-
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpNativeType;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.tree.IElementType;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
+
+import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -39,27 +37,27 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
  */
 public class CSharpNativeTypeImplUtil
 {
-	public static final Map<IElementType, String> ourElementToQTypes = new THashMap<IElementType, String>()
+	public static final Map<IElementType, String> ourElementToQTypes = new HashMap<>();
+
+	static
 	{
-		{
-			put(CSharpTokens.BOOL_KEYWORD, DotNetTypes.System.Boolean);
-			put(CSharpTokens.DOUBLE_KEYWORD, DotNetTypes.System.Double);
-			put(CSharpTokens.FLOAT_KEYWORD, DotNetTypes.System.Single);
-			put(CSharpTokens.CHAR_KEYWORD, DotNetTypes.System.Char);
-			put(CSharpTokens.OBJECT_KEYWORD, DotNetTypes.System.Object);
-			put(CSharpTokens.STRING_KEYWORD, DotNetTypes.System.String);
-			put(CSharpTokens.SBYTE_KEYWORD, DotNetTypes.System.SByte);
-			put(CSharpTokens.BYTE_KEYWORD, DotNetTypes.System.Byte);
-			put(CSharpTokens.INT_KEYWORD, DotNetTypes.System.Int32);
-			put(CSharpTokens.UINT_KEYWORD, DotNetTypes.System.UInt32);
-			put(CSharpTokens.LONG_KEYWORD, DotNetTypes.System.Int64);
-			put(CSharpTokens.ULONG_KEYWORD, DotNetTypes.System.UInt64);
-			put(CSharpTokens.VOID_KEYWORD, DotNetTypes.System.Void);
-			put(CSharpTokens.SHORT_KEYWORD, DotNetTypes.System.Int16);
-			put(CSharpTokens.USHORT_KEYWORD, DotNetTypes.System.UInt16);
-			put(CSharpTokens.DECIMAL_KEYWORD, DotNetTypes.System.Decimal);
-		}
-	};
+		ourElementToQTypes.put(CSharpTokens.BOOL_KEYWORD, DotNetTypes.System.Boolean);
+		ourElementToQTypes.put(CSharpTokens.DOUBLE_KEYWORD, DotNetTypes.System.Double);
+		ourElementToQTypes.put(CSharpTokens.FLOAT_KEYWORD, DotNetTypes.System.Single);
+		ourElementToQTypes.put(CSharpTokens.CHAR_KEYWORD, DotNetTypes.System.Char);
+		ourElementToQTypes.put(CSharpTokens.OBJECT_KEYWORD, DotNetTypes.System.Object);
+		ourElementToQTypes.put(CSharpTokens.STRING_KEYWORD, DotNetTypes.System.String);
+		ourElementToQTypes.put(CSharpTokens.SBYTE_KEYWORD, DotNetTypes.System.SByte);
+		ourElementToQTypes.put(CSharpTokens.BYTE_KEYWORD, DotNetTypes.System.Byte);
+		ourElementToQTypes.put(CSharpTokens.INT_KEYWORD, DotNetTypes.System.Int32);
+		ourElementToQTypes.put(CSharpTokens.UINT_KEYWORD, DotNetTypes.System.UInt32);
+		ourElementToQTypes.put(CSharpTokens.LONG_KEYWORD, DotNetTypes.System.Int64);
+		ourElementToQTypes.put(CSharpTokens.ULONG_KEYWORD, DotNetTypes.System.UInt64);
+		ourElementToQTypes.put(CSharpTokens.VOID_KEYWORD, DotNetTypes.System.Void);
+		ourElementToQTypes.put(CSharpTokens.SHORT_KEYWORD, DotNetTypes.System.Int16);
+		ourElementToQTypes.put(CSharpTokens.USHORT_KEYWORD, DotNetTypes.System.UInt16);
+		ourElementToQTypes.put(CSharpTokens.DECIMAL_KEYWORD, DotNetTypes.System.Decimal);
+	}
 
 	@Nonnull
 	@RequiredReadAction

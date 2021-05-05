@@ -39,9 +39,9 @@ import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.util.ArrayUtil2;
 import consulo.util.dataholder.Key;
-import gnu.trove.THashMap;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -115,7 +115,7 @@ public class GenericInferenceUtil
 			return new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
 		}
 
-		final Map<DotNetGenericParameter, DotNetTypeRef> map = new THashMap<>();
+		final Map<DotNetGenericParameter, DotNetTypeRef> map = new HashMap<>();
 
 		for(NCallArgument nCallArgument : methodCallArguments)
 		{

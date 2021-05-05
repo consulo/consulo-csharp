@@ -16,32 +16,23 @@
 
 package consulo.csharp.ide.refactoring.util;
 
-import gnu.trove.THashSet;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.lang.ASTNode;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.*;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.Function;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author Fedor.Korotkov
@@ -52,12 +43,12 @@ public class CSharpRefactoringUtil
 {
 	public static Set<String> collectUsedNames(@Nonnull PsiElement context, @Nullable PsiElement toSkip)
 	{
-		return new THashSet<>(ContainerUtil.map(collectUsedComponents(context, toSkip), PsiNamedElement::getName));
+		return new HashSet<>(ContainerUtil.map(collectUsedComponents(context, toSkip), PsiNamedElement::getName));
 	}
 
 	public static Set<PsiNamedElement> collectUsedComponents(@Nonnull PsiElement context, @Nullable PsiElement toSkip)
 	{
-		final Set<PsiNamedElement> usedComponentNames = new THashSet<>();
+		final Set<PsiNamedElement> usedComponentNames = new HashSet<>();
 		PsiTreeUtil.treeWalkUp(new ComponentNameScopeProcessor(usedComponentNames, toSkip), context, null, new ResolveState());
 		return usedComponentNames;
 	}

@@ -41,11 +41,11 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.UserDataHolder;
-import gnu.trove.THashSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -142,7 +142,7 @@ public class CSharpCompletionSorting
 		{
 			super("csharpByExpectedNameSorter");
 
-			myExpectedNames = new THashSet<>();
+			myExpectedNames = new HashSet<>();
 			for(ExpectedTypeInfo expectedTypeInfo : expectedTypeInfos)
 			{
 				PsiElement typeProvider = expectedTypeInfo.getTypeProvider();
@@ -170,7 +170,7 @@ public class CSharpCompletionSorting
 				final List<String> wordsNoDigits = NameUtil.nameToWordsLowerCase(truncDigits(targetName));
 				for(String expectedName : myExpectedNames)
 				{
-					final THashSet<String> set = new THashSet<>(NameUtil.nameToWordsLowerCase(truncDigits(expectedName)));
+					final Set<String> set = new HashSet<>(NameUtil.nameToWordsLowerCase(truncDigits(expectedName)));
 					set.retainAll(wordsNoDigits);
 					max = Math.max(max, set.size());
 				}
@@ -340,7 +340,7 @@ public class CSharpCompletionSorting
 		PsiElement position = completionParameters.getPosition();
 
 
-		Set<PsiElement> elements = new THashSet<>();
+		Set<PsiElement> elements = new HashSet<>();
 
 		PsiElement argumentListOwner = PsiTreeUtil.getContextOfType(position, CSharpCallArgumentListOwner.class, DotNetVariable.class);
 		if(argumentListOwner instanceof CSharpMethodCallExpressionImpl)
