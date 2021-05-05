@@ -21,6 +21,7 @@ import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
 import consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpImplicitArrayInitializationExpressionImpl;
 
 import javax.annotation.Nonnull;
 
@@ -42,6 +43,10 @@ public class CSharpMoveElementLeftRightHandler implements MoveElementLeftRightHa
 		else if(psiElement instanceof CSharpArrayInitializerImpl initializer)
 		{
 			return initializer.getValues();
+		}
+		else if(psiElement instanceof CSharpImplicitArrayInitializationExpressionImpl initializer)
+		{
+			return initializer.getExpressions();
 		}
 		return PsiElement.EMPTY_ARRAY;
 	}
