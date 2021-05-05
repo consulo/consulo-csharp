@@ -73,7 +73,7 @@ public class CSharpNameSuggesterUtil
 			DotNetExpression iterableExpression = ((CSharpForeachStatementImpl) parent).getIterableExpression();
 			if(iterableExpression != null)
 			{
-				suggestedNames = getSuggestedNames(iterableExpression, Collections.emptyList(), variable);
+				suggestedNames = getSuggestedNames(iterableExpression, List.of(), true, variable);
 			}
 		}
 
@@ -92,7 +92,7 @@ public class CSharpNameSuggesterUtil
 		DotNetExpression initializer = variable.getInitializer();
 		if(initializer != null)
 		{
-			suggestedNames.addAll(getSuggestedNames(initializer, suggestedNames, variable));
+			suggestedNames.addAll(getSuggestedNames(initializer, suggestedNames, false, variable));
 		}
 
 		if(variable instanceof CSharpPropertyDeclaration)
@@ -205,21 +205,15 @@ public class CSharpNameSuggesterUtil
 	@RequiredReadAction
 	public static Collection<String> getSuggestedNames(final DotNetExpression expression)
 	{
-		return getSuggestedNames(expression, null, null);
+		return getSuggestedNames(expression, null, false, null);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	private static Set<String> getSuggestedNames(@Nonnull DotNetExpression expression, @Nullable Collection<String> additionalUsedNames, @Nullable PsiElement toSkip)
+	@Nonnull
+	private static String getExpressionInnerText(@Nonnull DotNetExpression expression, @Nonnull Set<String> candidates)
 	{
-		Set<String> candidates = new LinkedHashSet<>();
-
-		String text = expression.getText();
-		if(expression.getParent() instanceof CSharpForeachStatementImpl)
-		{
-			text = StringUtil.unpluralize(expression.getText());
-		}
-		else if(expression instanceof CSharpReferenceExpression)
+		String text = null;
+		if(expression instanceof CSharpReferenceExpression)
 		{
 			PsiElement resolvedElement = ((CSharpReferenceExpression) expression).resolve();
 			String name = null;
@@ -243,10 +237,35 @@ public class CSharpNameSuggesterUtil
 			text = StringUtil.unpluralize(((CSharpIndexAccessExpressionImpl) expression).getQualifier().getText());
 		}
 
-		if(text != null)
+		if(text == null)
 		{
-			candidates.addAll(generateNames(text));
+			text = expression.getText();
 		}
+		
+		return text;
+	}
+
+	@Nonnull
+	@RequiredReadAction
+	private static Set<String> getSuggestedNames(@Nonnull DotNetExpression expression, @Nullable Collection<String> additionalUsedNames, boolean unpluralize, @Nullable PsiElement toSkip)
+	{
+		Set<String> candidates = new LinkedHashSet<>();
+
+		String text = getExpressionInnerText(expression, candidates);
+
+		if(unpluralize)
+		{
+			String oldText = text;
+
+			text = StringUtil.unpluralize(oldText);
+
+			if(text == null)
+			{
+				text = oldText;
+			}
+		}
+
+		candidates.addAll(generateNames(text));
 
 		final Set<String> usedNames = CSharpRefactoringUtil.collectUsedNames(expression, toSkip);
 		if(additionalUsedNames != null && !additionalUsedNames.isEmpty())

@@ -37,9 +37,7 @@
 			<add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewClass"/>
 		</action>
 
-		<action id="CSharp.Internal.OpenTypeFromVariable" class="consulo.csharp.ide.actions.internal.OpenTypeFromVariableAction" internal="true">
-			<add-to-group group-id="Internal"/>
-		</action>
+
 		<group id="CSharp.GenerateActions">
 			<action id="CSharp.GenerateReadOnlyProperty" class="consulo.csharp.ide.actions.generate.GenerateReadOnlyPropertyAction"/>
 			<action id="CSharp.GenerateProperty" class="consulo.csharp.ide.actions.generate.GeneratePropertyAction"/>
@@ -338,6 +336,9 @@
 		<navbar implementation="consulo.csharp.ide.navbar.CSharpNavBarExtension"/>
 
 		<moveLeftRightHandler language="C#" implementationClass="consulo.csharp.ide.refactoring.CSharpMoveElementLeftRightHandler"/>
+
+		<codeInsight.typeInfo language="C#" implementationClass="consulo.csharp.lang.CSharpExpressionTypeProvider"/>
+
 		<!--<projectService serviceImplementation="consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent" lazy="false" />-->
 	</extensions>
 </consulo-plugin>
