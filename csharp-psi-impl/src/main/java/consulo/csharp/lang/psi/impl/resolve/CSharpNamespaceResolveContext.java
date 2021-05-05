@@ -53,6 +53,7 @@ import consulo.util.dataholder.UserDataHolder;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -61,14 +62,20 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class CSharpNamespaceResolveContext implements CSharpResolveContext
 {
+	private record NamespaceByNameKey(String name,DotNetNamespaceAsElement.ChildrenFilter filter)
+	{
+	}
+
 	private final DotNetNamespaceAsElement myNamespaceAsElement;
 	private final GlobalSearchScope myResolveScope;
 
-	private ConcurrentMap<String, Object> myExtensionGroups = ConcurrentFactoryMap.<String, Object>createMap(name ->
+	private final ConcurrentMap<String, Object> myExtensionGroups = ConcurrentFactoryMap.<String, Object>createMap(name ->
 	{
 		CSharpElementGroup<CSharpMethodDeclaration> group = findExtensionMethodGroupByName0(name);
 		return group == null ? ObjectUtil.NULL : group;
 	});
+
+	private final Map<NamespaceByNameKey, Collection<PsiElement>> myByNameCache = new ConcurrentHashMap<>();
 
 	public CSharpNamespaceResolveContext(DotNetNamespaceAsElement namespaceAsElement, GlobalSearchScope resolveScope)
 	{
@@ -169,7 +176,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 			filter = DotNetNamespaceAsElement.ChildrenFilter.NONE;
 		}
 
-		return myNamespaceAsElement.findChildren(name, myResolveScope, CSharpTransformer.INSTANCE, filter);
+		return myByNameCache.computeIfAbsent(new NamespaceByNameKey(name, filter), key -> myNamespaceAsElement.findChildren(key.name(), myResolveScope, CSharpTransformer.INSTANCE, key.filter()));
 	}
 
 	@RequiredReadAction
