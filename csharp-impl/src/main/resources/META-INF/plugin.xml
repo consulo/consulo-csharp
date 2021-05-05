@@ -337,6 +337,7 @@
 
 		<navbar implementation="consulo.csharp.ide.navbar.CSharpNavBarExtension"/>
 
+		<moveLeftRightHandler language="C#" implementationClass="consulo.csharp.ide.refactoring.CSharpMoveElementLeftRightHandler"/>
 		<!--<projectService serviceImplementation="consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent" lazy="false" />-->
 	</extensions>
 </consulo-plugin>
