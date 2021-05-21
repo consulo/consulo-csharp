@@ -35,9 +35,8 @@ import consulo.csharp.ide.completion.weigher.CSharpRecursiveGuardWeigher;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.UserDataHolder;
@@ -66,14 +65,16 @@ public class CSharpCompletionSorting
 			delegate,
 			localVariableOrParameter,
 			keyword,
+			fieldPropertyEvent,
 			constants,
-			member,
+			method,
 			parameterInCall,
 			overrideMember,
 			preprocessorKeywords,
 			any,
 			hiddenKeywords,
 			namespace,
+			notImporterSymbol
 		}
 
 		protected KindSorter()
@@ -119,10 +120,14 @@ public class CSharpCompletionSorting
 				return Type.constants;
 			}
 
-			if(psiElement instanceof CSharpPropertyDeclaration || psiElement instanceof CSharpEventDeclaration || psiElement instanceof CSharpFieldDeclaration || psiElement instanceof
-					CSharpMethodDeclaration && !((CSharpMethodDeclaration) psiElement).isDelegate())
+			if(psiElement instanceof CSharpPropertyDeclaration || psiElement instanceof CSharpEventDeclaration || psiElement instanceof CSharpFieldDeclaration)
 			{
-				return Type.member;
+				return Type.fieldPropertyEvent;
+			}
+
+			if(psiElement instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) psiElement).isDelegate())
+			{
+				return Type.method;
 			}
 
 			if(psiElement instanceof DotNetNamespaceAsElement)
@@ -180,6 +185,38 @@ public class CSharpCompletionSorting
 		}
 	}
 
+	private static class PreferAccessible extends LookupElementWeigher
+	{
+		enum Result
+		{
+			NORMAL,
+			OBSOLETE
+		}
+
+		private PreferAccessible()
+		{
+			super("csharpAccessible");
+		}
+
+		@Nullable
+		@Override
+		@RequiredReadAction
+		public Comparable weigh(@Nonnull LookupElement element)
+		{
+			PsiElement psiElement = element.getPsiElement();
+
+			if(psiElement instanceof DotNetElement)
+			{
+				if(DotNetAttributeUtil.hasAttribute(psiElement, DotNetTypes.System.ObsoleteAttribute))
+				{
+					return Result.OBSOLETE;
+				}
+			}
+
+			return Result.NORMAL;
+		}
+	}
+
 	private static class PreferShorter extends LookupElementWeigher
 	{
 		private final List<ExpectedTypeInfo> myExpectedTypes;
@@ -218,23 +255,6 @@ public class CSharpCompletionSorting
 			}
 
 			return res;
-		}
-	}
-
-	private static class NotImportedSorter extends LookupElementWeigher
-	{
-		public NotImportedSorter()
-		{
-			super("notImportedSorter");
-		}
-
-		@Nonnull
-		@Override
-		@RequiredReadAction
-		public Comparable weigh(@Nonnull LookupElement element)
-		{
-			Boolean data = element.getUserData(CSharpNoVariantsDelegator.NOT_IMPORTED);
-			return data != Boolean.TRUE;
 		}
 	}
 
@@ -372,7 +392,7 @@ public class CSharpCompletionSorting
 	@RequiredReadAction
 	public static CompletionResultSet modifyResultSet(CompletionParameters completionParameters, CompletionResultSet result)
 	{
-		CompletionSorter sorter = CompletionSorter.defaultSorter(completionParameters, result.getPrefixMatcher());
+		CompletionSorter sorter = CompletionSorter.emptySorter();
 		List<LookupElementWeigher> afterStats = new ArrayList<>();
 
 		afterStats.add(new KindSorter());
@@ -392,7 +412,7 @@ public class CSharpCompletionSorting
 			afterProximity.add(new PreferShorter(expectedTypeRefs));
 		}
 
-		afterProximity.add(new NotImportedSorter());
+		afterStats.add(new PreferAccessible());
 
 		sorter = sorter.weighAfter("stats", afterStats.toArray(new LookupElementWeigher[afterStats.size()]));
 		sorter = sorter.weighAfter("proximity", afterProximity.toArray(new LookupElementWeigher[afterProximity.size()]));

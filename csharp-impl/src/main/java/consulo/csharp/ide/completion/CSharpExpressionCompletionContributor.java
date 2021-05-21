@@ -789,7 +789,7 @@ class CSharpExpressionCompletionContributor
 			builder = builder.bold();
 		}
 
-		CSharpCompletionSorting.force(builder, CSharpCompletionSorting.KindSorter.Type.member);
+		CSharpCompletionSorting.force(builder, CSharpCompletionSorting.KindSorter.Type.method);
 		return builder;
 	}
 

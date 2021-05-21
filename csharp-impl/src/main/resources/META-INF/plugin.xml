@@ -161,7 +161,6 @@
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpSuggestInstanceCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpCompletionContributor"/>
 
-		<weigher key="proximity" implementationClass="consulo.csharp.ide.completion.weigher.CSharpObsoleteProximityWeigher" id="csharpObsoleteWeighter"/>
 		<weigher key="proximity" implementationClass="consulo.csharp.ide.completion.weigher.CSharpByGenericParameterWeigher" id="csharpByGenericParameterWeigher"/>
 
 		<weigher key="completion" implementationClass="consulo.csharp.ide.completion.weigher.CSharpInheritCompletionWeighter" order="before stats, before csharpKindSorter"/>

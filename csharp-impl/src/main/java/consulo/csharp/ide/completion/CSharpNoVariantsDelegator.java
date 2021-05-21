@@ -66,8 +66,6 @@ import java.util.Set;
  */
 class CSharpNoVariantsDelegator
 {
-	static final Key<Boolean> NOT_IMPORTED = Key.create("CSharpNoVariantsDelegator.NOT_IMPORTED");
-
 	public static class ResultTracker implements Consumer<CompletionResult>
 	{
 		private final CompletionResultSet myResult;
@@ -173,7 +171,7 @@ class CSharpNoVariantsDelegator
 		final boolean insideUsing = PsiTreeUtil.getParentOfType(parent, CSharpUsingListChild.class) != null;
 
 		final Set<String> names = new HashSet<String>(1000);
-		shortNameSearcher.collectTypeNames(new Processor<String>()
+		shortNameSearcher.collectTypeNames(new Processor<>()
 		{
 			private int count = 0;
 
@@ -277,7 +275,7 @@ class CSharpNoVariantsDelegator
 		}
 		else
 		{
-			builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
+			builder = builder.withInsertHandler(new InsertHandler<>()
 			{
 				@Override
 				@RequiredWriteAction
@@ -301,7 +299,7 @@ class CSharpNoVariantsDelegator
 		}
 
 		CSharpTypeLikeLookupElement element = CSharpTypeLikeLookupElement.create(builder, DotNetGenericExtractor.EMPTY, referenceExpression);
-		element.putUserData(CSharpNoVariantsDelegator.NOT_IMPORTED, Boolean.TRUE);
+		CSharpCompletionSorting.force(element, CSharpCompletionSorting.KindSorter.Type.notImporterSymbol);
 		consumer.consume(element);
 	}
 }
