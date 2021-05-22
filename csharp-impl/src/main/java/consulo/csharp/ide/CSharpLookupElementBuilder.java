@@ -16,12 +16,6 @@
 
 package consulo.csharp.ide;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
@@ -32,7 +26,6 @@ import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.ui.annotation.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.completion.CSharpCompletionSorting;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
@@ -41,27 +34,24 @@ import consulo.csharp.ide.completion.insertHandler.CSharpParenthesesWithSemicolo
 import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpOutRefWrapExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
+import consulo.csharp.lang.psi.impl.source.*;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
-import consulo.dotnet.psi.DotNetAttributeUtil;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetParameterListOwner;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetStatement;
-import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.ide.IconDescriptorUpdaters;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.dataholder.Key;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author VISTALL
@@ -69,6 +59,8 @@ import consulo.ide.IconDescriptorUpdaters;
  */
 public class CSharpLookupElementBuilder
 {
+	public static final Key<Boolean> OBSOLETE_FLAG = Key.create("obsolete");
+
 	@Nonnull
 	@RequiredReadAction
 	public static LookupElement[] buildToLookupElements(@Nonnull PsiElement[] arguments)
@@ -427,6 +419,8 @@ public class CSharpLookupElementBuilder
 		if(builder != null && DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
 		{
 			builder = builder.withStrikeoutness(true);
+
+			builder.putCopyableUserData(OBSOLETE_FLAG, Boolean.TRUE);
 		}
 		return builder;
 	}

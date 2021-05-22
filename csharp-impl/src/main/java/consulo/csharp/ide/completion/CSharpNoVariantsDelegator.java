@@ -32,6 +32,7 @@ import com.intellij.util.Processor;
 import com.intellij.util.indexing.IdFilter;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
+import consulo.csharp.ide.CSharpLookupElementBuilder;
 import consulo.csharp.ide.codeInsight.actions.AddUsingAction;
 import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import consulo.csharp.ide.completion.util.LtGtInsertHandler;
@@ -300,6 +301,9 @@ class CSharpNoVariantsDelegator
 
 		CSharpTypeLikeLookupElement element = CSharpTypeLikeLookupElement.create(builder, DotNetGenericExtractor.EMPTY, referenceExpression);
 		CSharpCompletionSorting.force(element, CSharpCompletionSorting.KindSorter.Type.notImporterSymbol);
+
+		element.putCopyableUserData(CSharpLookupElementBuilder.OBSOLETE_FLAG, Boolean.TRUE);
+
 		consumer.consume(element);
 	}
 }

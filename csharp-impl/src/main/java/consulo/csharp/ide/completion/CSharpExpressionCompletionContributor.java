@@ -763,6 +763,7 @@ class CSharpExpressionCompletionContributor
 		if(DotNetAttributeUtil.hasAttribute(methodDeclaration, DotNetTypes.System.ObsoleteAttribute))
 		{
 			builder = builder.withStrikeoutness(true);
+			builder.putCopyableUserData(CSharpLookupElementBuilder.OBSOLETE_FLAG, Boolean.TRUE);
 		}
 		builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
 		{

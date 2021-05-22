@@ -29,14 +29,16 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.ide.CSharpLookupElementBuilder;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.completion.weigher.CSharpRecursiveGuardWeigher;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.psi.*;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.UserDataHolder;
@@ -203,15 +205,18 @@ public class CSharpCompletionSorting
 		@RequiredReadAction
 		public Comparable weigh(@Nonnull LookupElement element)
 		{
-			PsiElement psiElement = element.getPsiElement();
-
-			if(psiElement instanceof DotNetElement)
+			Boolean obsoleteFlag = element.getCopyableUserData(CSharpLookupElementBuilder.OBSOLETE_FLAG);
+			if(obsoleteFlag == Boolean.TRUE)
 			{
-				if(DotNetAttributeUtil.hasAttribute(psiElement, DotNetTypes.System.ObsoleteAttribute))
-				{
-					return Result.OBSOLETE;
-				}
+				return Result.OBSOLETE;
 			}
+
+//			PsiElement psiElement = element.getPsiElement();
+//
+//			if(psiElement instanceof DotNetElement)
+//			{
+//
+//			}
 
 			return Result.NORMAL;
 		}
