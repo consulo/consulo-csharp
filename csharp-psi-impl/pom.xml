@@ -96,6 +96,13 @@
 			<version>${project.parent.version}</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>consulo-util-collection-runtime</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
