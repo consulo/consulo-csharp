@@ -47,7 +47,8 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.localize.LocalizeValue;
-import gnu.trove.TIntHashSet;
+import consulo.util.collection.primitive.ints.IntSet;
+import consulo.util.collection.primitive.ints.IntSets;
 
 import javax.annotation.Nonnull;
 
@@ -58,7 +59,7 @@ import javax.annotation.Nonnull;
 public class CSharpHighlightVisitor extends CSharpElementVisitor implements HighlightVisitor
 {
 	private HighlightInfoHolder myHighlightInfoHolder;
-	private TIntHashSet myProcessedLines = new TIntHashSet();
+	private IntSet myProcessedLines = IntSets.newHashSet();
 	private Document myDocument;
 
 	@Override

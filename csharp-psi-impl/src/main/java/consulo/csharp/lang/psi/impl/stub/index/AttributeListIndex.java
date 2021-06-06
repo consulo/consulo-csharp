@@ -16,18 +16,17 @@
 
 package consulo.csharp.lang.psi.impl.stub.index;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.psi.stubs.AbstractStubIndex;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.intellij.util.io.KeyDescriptor;
 import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.dotnet.psi.DotNetAttributeTargetType;
+
+import javax.annotation.Nonnull;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
 /**
  * @author VISTALL
@@ -40,13 +39,13 @@ public class AttributeListIndex extends AbstractStubIndex<DotNetAttributeTargetT
 		public static final EnumeratorTypeDescriptor INSTANCE = new EnumeratorTypeDescriptor();
 
 		@Override
-		public int getHashCode(final DotNetAttributeTargetType value)
+		public int hashCode(final DotNetAttributeTargetType value)
 		{
 			return value.ordinal();
 		}
 
 		@Override
-		public boolean isEqual(final DotNetAttributeTargetType val1, final DotNetAttributeTargetType val2)
+		public boolean equals(final DotNetAttributeTargetType val1, final DotNetAttributeTargetType val2)
 		{
 			return val1 == val2;
 		}

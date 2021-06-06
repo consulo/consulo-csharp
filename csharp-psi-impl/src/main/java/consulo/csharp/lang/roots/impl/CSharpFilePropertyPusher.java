@@ -31,8 +31,9 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.module.extension.ModuleExtension;
+import consulo.util.collection.primitive.ints.IntSet;
+import consulo.util.collection.primitive.ints.IntSets;
 import consulo.util.dataholder.Key;
-import gnu.trove.TIntHashSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -142,7 +143,7 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
 	private static int varHashCode(@Nonnull Collection<String> vars)
 	{
 		Set<String> sortedSet = new TreeSet<>(vars);
-		TIntHashSet intSet = new TIntHashSet();
+		IntSet intSet = IntSets.newHashSet();
 		for(String varName : sortedSet)
 		{
 			intSet.add(varName.hashCode());
