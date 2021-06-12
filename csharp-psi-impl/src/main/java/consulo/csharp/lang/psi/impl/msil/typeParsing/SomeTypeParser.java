@@ -23,12 +23,13 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.IntArrayList;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.logging.Logger;
+import consulo.util.collection.primitive.ints.IntList;
+import consulo.util.collection.primitive.ints.IntLists;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -124,7 +125,7 @@ public class SomeTypeParser
 
 	private static List<String> splitButIgnoreInsideLtGt(String text)
 	{
-		IntArrayList list = new IntArrayList();
+		IntList list = IntLists.newArrayList();
 
 		int dep = 0;
 
