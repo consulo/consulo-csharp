@@ -310,6 +310,7 @@ class CSharpExpressionCompletionContributor
 			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull final CompletionResultSet result)
 			{
 				final CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
+
 				CSharpReferenceExpression.ResolveToKind kind = expression.kind();
 				if(needRemapToAnyResolving(kind, expression))
 				{
@@ -329,6 +330,12 @@ class CSharpExpressionCompletionContributor
 					PsiElement element = expectedTypeRef.getTypeRef().resolve().getElement();
 					if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isEnum() && !element.isEquivalentTo(contextType))
 					{
+						DotNetExpression qualifier = expression.getQualifier();
+						if(qualifier != null)
+						{
+							continue;
+						}
+
 						DotNetNamedElement[] members = ((CSharpTypeDeclaration) element).getMembers();
 						for(DotNetNamedElement member : members)
 						{
