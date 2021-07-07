@@ -40,6 +40,7 @@ public enum CSharpCompilerChecks
 	CS0027(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), //  this can't used inside field declaration
 	CS0029(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  cant convert A to B with implicit
 	CS0030(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // cant convert A to B
+	CS0070(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // events can not be called outside declaration type
 	CS0077(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // as operator cant be used with notnull types
 	CS0100(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter is duplicate
 	CS0101(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members duplicate in namespace declaration

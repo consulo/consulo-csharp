@@ -18,6 +18,8 @@ CS0029:
   text: Cannot implicitly convert type ''{0}'' to ''{1}''
 CS0030:
   text: Cannot convert type ''{0}'' to ''{1}''
+CS0070:
+  text: The event ''{0}'' can only appear on the left hand side of += or -= (except when used from within the type ''{1}'')
 CS0077:
   text: The ''{0}'' operator cannot be used with a non-nullable value type ''{1}''
 CS0100:
