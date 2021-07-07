@@ -18,6 +18,7 @@ package consulo.csharp.ide.completion.expected;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
@@ -59,7 +60,7 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 		{
 			return List.of();
 		}
-		
+
 		PsiElement parent = psiElement.getParent();
 		if(parent == null)
 		{
@@ -219,6 +220,31 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 		{
 			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(parent, DotNetTypes.System.TypedReference), null));
 		}
+	}
+
+	@Override
+	@RequiredReadAction
+	public void visitBinaryExpression(CSharpBinaryExpressionImpl expression)
+	{
+		IElementType elementType = expression.getOperatorElement().getOperatorElementType();
+		if(elementType != CSharpTokens.EQEQ && elementType != CSharpTokens.NTEQ)
+		{
+			return;
+		}
+
+		DotNetExpression targetElement = expression.getRightExpression();
+
+		if(myCurrentElement == targetElement)
+		{
+			targetElement = expression.getLeftExpression();
+		}
+
+		if(targetElement == null)
+		{
+			return;
+		}
+		
+		myExpectedTypeInfos.add(new ExpectedTypeInfo(targetElement.toTypeRef(true), null));
 	}
 
 	@Override
