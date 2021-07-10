@@ -16,32 +16,31 @@
 
 package consulo.csharp.ide.actions.generate.memberChoose;
 
-import java.util.Locale;
-
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.CSharpXAccessorOwner;
-import consulo.ui.annotation.RequiredUIAccess;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.PairConsumer;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import consulo.csharp.lang.psi.CSharpXAccessorOwner;
 import consulo.dotnet.psi.DotNetPropertyDeclaration;
 import consulo.dotnet.psi.DotNetXAccessor;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.PairConsumer;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
+import java.util.Locale;
 
 /**
  * @author VISTALL
  * @since 02.04.2016
  */
-public class XXXAccessorOwnerChooseMember extends ImplementMemberChooseObject<CSharpXAccessorOwner>
+public class XAccessorOwnerChooseMember extends ImplementMemberChooseObject<CSharpXAccessorOwner>
 {
-	public XXXAccessorOwnerChooseMember(CSharpXAccessorOwner declaration,
-			PairConsumer<PsiElement, StringBuilder> additionalModifiersAppender,
-			PairConsumer<PsiElement, StringBuilder> returnAppender,
-			boolean canGenerateBlock)
+	public XAccessorOwnerChooseMember(CSharpXAccessorOwner declaration,
+									  PairConsumer<PsiElement, StringBuilder> additionalModifiersAppender,
+									  PairConsumer<PsiElement, StringBuilder> returnAppender,
+									  boolean canGenerateBlock)
 	{
 		super(declaration, additionalModifiersAppender, returnAppender, canGenerateBlock);
 	}

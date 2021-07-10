@@ -30,7 +30,7 @@ import consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import consulo.csharp.lang.psi.impl.stub.CSharpXXXAccessorStub;
+import consulo.csharp.lang.psi.impl.stub.CSharpXAccessorStub;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
@@ -46,14 +46,14 @@ import java.util.Locale;
  * @author VISTALL
  * @since 04.12.13.
  */
-public class CSharpXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccessorStub> implements DotNetXAccessor, CSharpSimpleLikeMethodAsElement
+public class CSharpXAccessorImpl extends CSharpStubMemberImpl<CSharpXAccessorStub> implements DotNetXAccessor, CSharpSimpleLikeMethodAsElement
 {
 	public CSharpXAccessorImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpXAccessorImpl(@Nonnull CSharpXXXAccessorStub stub)
+	public CSharpXAccessorImpl(@Nonnull CSharpXAccessorStub stub)
 	{
 		super(stub, CSharpStubElements.XACCESSOR);
 	}
@@ -210,7 +210,7 @@ public class CSharpXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccessorS
 	@Override
 	public Kind getAccessorKind()
 	{
-		CSharpXXXAccessorStub stub = getGreenStub();
+		CSharpXAccessorStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.getAccessorType();

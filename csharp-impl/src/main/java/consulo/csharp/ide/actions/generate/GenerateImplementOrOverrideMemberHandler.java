@@ -32,7 +32,7 @@ import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.actions.generate.memberChoose.CSharpMemberChooseObject;
 import consulo.csharp.ide.actions.generate.memberChoose.MethodChooseMember;
-import consulo.csharp.ide.actions.generate.memberChoose.XXXAccessorOwnerChooseMember;
+import consulo.csharp.ide.actions.generate.memberChoose.XAccessorOwnerChooseMember;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
 import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetNamedElement;
@@ -94,7 +94,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 			}
 			else if(psiElement instanceof CSharpPropertyDeclaration || psiElement instanceof CSharpIndexMethodDeclaration)
 			{
-				memberChooseObjects.add(new XXXAccessorOwnerChooseMember((CSharpXAccessorOwner) psiElement, additionalModifiersAppender, returnAppender, canGenerateBlock));
+				memberChooseObjects.add(new XAccessorOwnerChooseMember((CSharpXAccessorOwner) psiElement, additionalModifiersAppender, returnAppender, canGenerateBlock));
 			}
 		}
 

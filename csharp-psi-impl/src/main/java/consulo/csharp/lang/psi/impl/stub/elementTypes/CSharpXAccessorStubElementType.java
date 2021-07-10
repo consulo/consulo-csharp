@@ -22,7 +22,7 @@ import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.CSharpXAccessorImpl;
-import consulo.csharp.lang.psi.impl.stub.CSharpXXXAccessorStub;
+import consulo.csharp.lang.psi.impl.stub.CSharpXAccessorStub;
 import consulo.dotnet.psi.DotNetXAccessor;
 
 import javax.annotation.Nonnull;
@@ -32,7 +32,7 @@ import java.io.IOException;
  * @author VISTALL
  * @since 20.05.14
  */
-public class CSharpXAccessorStubElementType extends CSharpAbstractStubElementType<CSharpXXXAccessorStub, DotNetXAccessor>
+public class CSharpXAccessorStubElementType extends CSharpAbstractStubElementType<CSharpXAccessorStub, DotNetXAccessor>
 {
 	public CSharpXAccessorStubElementType()
 	{
@@ -47,31 +47,31 @@ public class CSharpXAccessorStubElementType extends CSharpAbstractStubElementTyp
 	}
 
 	@Override
-	public CSharpXAccessorImpl createPsi(@Nonnull CSharpXXXAccessorStub cSharpXXXAccessorStub)
+	public CSharpXAccessorImpl createPsi(@Nonnull CSharpXAccessorStub stub)
 	{
-		return new CSharpXAccessorImpl(cSharpXXXAccessorStub);
+		return new CSharpXAccessorImpl(stub);
 	}
 
 	@Nonnull
 	@RequiredReadAction
 	@Override
-	public CSharpXXXAccessorStub createStub(@Nonnull DotNetXAccessor accessor, StubElement stubElement)
+	public CSharpXAccessorStub createStub(@Nonnull DotNetXAccessor accessor, StubElement stubElement)
 	{
-		int otherModifiers = CSharpXXXAccessorStub.getOtherModifiers(accessor);
-		return new CSharpXXXAccessorStub(stubElement, otherModifiers);
+		int otherModifiers = CSharpXAccessorStub.getOtherModifiers(accessor);
+		return new CSharpXAccessorStub(stubElement, otherModifiers);
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpXXXAccessorStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpXAccessorStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeVarInt(stub.getOtherModifierMask());
 	}
 
 	@Nonnull
 	@Override
-	public CSharpXXXAccessorStub deserialize(@Nonnull StubInputStream inputStream, StubElement stubElement) throws IOException
+	public CSharpXAccessorStub deserialize(@Nonnull StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
 		int otherModifiers = inputStream.readVarInt();
-		return new CSharpXXXAccessorStub(stubElement, otherModifiers);
+		return new CSharpXAccessorStub(stubElement, otherModifiers);
 	}
 }

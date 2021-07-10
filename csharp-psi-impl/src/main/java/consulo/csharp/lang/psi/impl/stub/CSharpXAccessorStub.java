@@ -25,9 +25,9 @@ import com.intellij.util.ArrayUtil;
  * @author VISTALL
  * @since 20.05.14
  */
-public class CSharpXXXAccessorStub extends MemberStub<DotNetXAccessor>
+public class CSharpXAccessorStub extends MemberStub<DotNetXAccessor>
 {
-	public CSharpXXXAccessorStub(StubElement parent, int otherModifiers)
+	public CSharpXAccessorStub(StubElement parent, int otherModifiers)
 	{
 		super(parent, CSharpStubElements.XACCESSOR, null, otherModifiers);
 	}
