@@ -23,13 +23,11 @@ import com.intellij.psi.PsiNamedElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -58,15 +56,29 @@ public class CSharpInheritedMembersNodeProvider extends InheritedMembersNodeProv
 
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, value.getResolveScope(), value);
 
-		List<PsiElement> elements = new ArrayList<>();
+		Set<PsiElement> elements = new LinkedHashSet<>();
 		context.processElements(element -> {
-			elements.add(element);
+			if(element instanceof CSharpElementGroup g)
+			{
+				elements.addAll(g.getElements());
+			}
+			else
+			{
+				elements.add(element);
+			}
 			return true;
 		}, true);
 
 		// remove self elements
 		context.processElements(element -> {
-			elements.remove(element);
+			if(element instanceof CSharpElementGroup g)
+			{
+				elements.removeAll(g.getElements());
+			}
+			else
+			{
+				elements.remove(element);
+			}
 			return true;
 		}, false);
 
