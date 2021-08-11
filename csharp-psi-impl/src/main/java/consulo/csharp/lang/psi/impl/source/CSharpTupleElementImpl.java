@@ -28,6 +28,7 @@ import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.CSharpTupleTypeDeclaration;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.util.collection.ArrayUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,11 +45,23 @@ public class CSharpTupleElementImpl extends CSharpElementImpl implements PsiName
 	}
 
 	@RequiredReadAction
+	public int getPosition()
+	{
+		PsiElement parent = getParent();
+		if(parent instanceof CSharpTupleExpressionImpl tupleExpression)
+		{
+			return ArrayUtil.indexOf(tupleExpression.getElements(), this);
+		}
+		return -1;
+	}
+
+	@RequiredReadAction
 	@Override
 	public String getName()
 	{
 		CSharpIdentifier element = findChildByClass(CSharpIdentifier.class);
-		return element == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(element.getValue());	}
+		return element == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(element.getValue());
+	}
 
 	@Nullable
 	@RequiredReadAction

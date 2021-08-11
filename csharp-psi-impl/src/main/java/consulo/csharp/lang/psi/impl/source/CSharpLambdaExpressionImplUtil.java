@@ -17,32 +17,29 @@
 package consulo.csharp.lang.psi.impl.source;
 
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ObjectUtil;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpUndefinedLambdaResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetGenericParameter;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.util.ArrayUtil2;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -199,6 +196,46 @@ public class CSharpLambdaExpressionImplUtil
 			if(typeResolveResult instanceof CSharpLambdaResolveResult)
 			{
 				return (CSharpLambdaResolveResult) typeResolveResult;
+			}
+		}
+		else if(parent instanceof CSharpTupleElementImpl tupleElement)
+		{
+			if(parent.getParent() instanceof CSharpTupleExpressionImpl && parent.getParent().getParent() instanceof CSharpReturnStatementImpl returnStatement)
+			{
+				int position = tupleElement.getPosition();
+				if(position == -1)
+				{
+					return null;
+				}
+
+				CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(returnStatement, CSharpSimpleLikeMethodAsElement.class);
+				if(methodAsElement == null)
+				{
+					return null;
+				}
+
+				DotNetTypeResolveResult typeResolveResult = methodAsElement.getReturnTypeRef().resolve();
+
+				if(typeResolveResult.getElement() instanceof DotNetTypeDeclaration typeDeclaration)
+				{
+					DotNetGenericParameter parameter = ArrayUtil2.safeGet(typeDeclaration.getGenericParameters(), position);
+
+					if(parameter == null)
+					{
+						return null;
+					}
+
+					DotNetTypeRef targetType = typeResolveResult.getGenericExtractor().extract(parameter);
+
+					if(targetType != null)
+					{
+						DotNetTypeResolveResult targetResolveType = targetType.resolve();
+						if(targetResolveType instanceof CSharpLambdaResolveResult)
+						{
+							return (CSharpLambdaResolveResult) targetResolveType;
+						}
+					}
+				}
 			}
 		}
 		else if(parent instanceof CSharpParenthesesExpressionImpl)

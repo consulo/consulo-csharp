@@ -98,7 +98,7 @@ public interface CSharpElements
 
 	IElementType TUPLE_ELEMENT = new CompositeElementTypeAsPsiFactory("TUPLE_ELEMENT", CSharpLanguage.INSTANCE, CSharpTupleElementImpl.class);
 
-	IElementType TUPLE_EXPRESSION = new CompositeElementTypeAsPsiFactory("TUPLE_ELEMENT", CSharpLanguage.INSTANCE, CSharpTupleExpressionImpl.class);
+	IElementType TUPLE_EXPRESSION = new CompositeElementTypeAsPsiFactory("TUPLE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpTupleExpressionImpl.class);
 
 	IElementType NULLABLE_TYPE = new CompositeElementTypeAsPsiFactory("NULLABLE_TYPE", CSharpLanguage.INSTANCE, CSharpNullableTypeImpl.class);
 
