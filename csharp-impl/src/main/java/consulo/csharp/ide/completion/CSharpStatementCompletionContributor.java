@@ -30,6 +30,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.codeInsight.completion.CompletionProvider;
 import consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandler;
 import consulo.csharp.ide.completion.patterns.CSharpPatterns;
+import consulo.csharp.ide.completion.util.CSharpWeightInsertHandler;
 import consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
 import consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import consulo.csharp.lang.psi.*;
@@ -113,12 +114,7 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, ourContinueAndBreakKeywords, (t, v) ->
 				{
-					t = t.withInsertHandler((insertionContext, item) ->
-					{
-						int offset = insertionContext.getEditor().getCaretModel().getOffset();
-						insertionContext.getDocument().insertString(offset, ";");
-						insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
-					});
+					t = t.withInsertHandler(CSharpWeightInsertHandler.INSTANCE);
 					return t;
 				}, null);
 			}
