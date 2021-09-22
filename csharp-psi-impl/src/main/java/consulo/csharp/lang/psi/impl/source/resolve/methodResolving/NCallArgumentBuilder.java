@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi.impl.source.resolve.methodResolving;
 
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.RecursionManager;
 import com.intellij.openapi.util.Trinity;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.SmartList;
@@ -109,7 +110,11 @@ public class NCallArgumentBuilder
 			DotNetExpression argumentExpression = argument.getArgumentExpression();
 			if(argumentExpression != null)
 			{
-				expressionTypeRef = argumentExpression.toTypeRef(context.isResolveFromParentTypeRef());
+				expressionTypeRef = RecursionManager.doPreventingRecursion(argument, false, () -> argumentExpression.toTypeRef(context.isResolveFromParentTypeRef()));
+				if(expressionTypeRef == null)
+				{
+					expressionTypeRef = DotNetTypeRef.ERROR_TYPE;
+				}
 			}
 
 			if(argument instanceof CSharpNamedCallArgument)
