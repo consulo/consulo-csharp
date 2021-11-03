@@ -21,6 +21,9 @@
 	<version>SNAPSHOT</version>
 	<vendor>consulo.io</vendor>
 	<localize>consulo.csharp.api.CSharpLocalize</localize>
+	<tags>
+		<tag>custom.language</tag>
+	</tags>
 
 	<depends>consulo.dotnet</depends>
 	<depends>com.intellij.xml</depends>
