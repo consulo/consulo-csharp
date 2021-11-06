@@ -17,11 +17,14 @@
 package consulo.csharp.ide.completion;
 
 import com.intellij.codeInsight.AutoPopupController;
+import com.intellij.codeInsight.editorActions.TypedHandler;
 import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
 import com.intellij.codeStyle.CodeStyleFacade;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.editor.ScrollType;
+import com.intellij.openapi.editor.highlighter.HighlighterIterator;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
@@ -30,6 +33,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotation.access.RequiredReadAction;
@@ -38,6 +42,7 @@ import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.UsefulPsiTreeUtil;
+import consulo.csharp.lang.psi.impl.source.CSharpMethodBodyImpl;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetPointerTypeRef;
@@ -82,6 +87,35 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 			if(handleSemicolon(editor))
 			{
 				return Result.STOP;
+			}
+		}
+
+		if(c == '{')
+		{
+			int offset = editor.getCaretModel().getOffset();
+			if(offset == 0)
+			{
+				return Result.CONTINUE;
+			}
+
+			HighlighterIterator iterator = editor.getHighlighter().createIterator(offset - 1);
+			while(!iterator.atEnd() && iterator.getTokenType() == TokenType.WHITE_SPACE)
+			{
+				iterator.retreat();
+			}
+			if(iterator.atEnd() || iterator.getTokenType() == CSharpTokens.RBRACKET || iterator.getTokenType() == CSharpTokens.EQ)
+			{
+				return Result.CONTINUE;
+			}
+			Document doc = editor.getDocument();
+			PsiDocumentManager.getInstance(project).commitDocument(doc);
+			final PsiElement leaf = file.findElementAt(offset);
+
+			if(PsiTreeUtil.getParentOfType(leaf, CSharpMethodBodyImpl.class, false, DotNetModifierListOwner.class) != null)
+			{
+				EditorModificationUtil.insertStringAtCaret(editor, "{");
+				TypedHandler.indentOpenedBrace(project, editor);
+				return Result.STOP; // use case: manually wrapping part of method's code in 'if', 'while', etc
 			}
 		}
 
