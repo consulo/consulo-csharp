@@ -70,7 +70,7 @@ public class ExpressionOrStatementInsertHandler<T extends LookupElement> impleme
 		PsiElement parent = elementAt == null ? null : elementAt.getParent();
 		if(parent != null)
 		{
-			CodeStyleManager.getInstance(parent.getProject()).reformat(parent);
+			CodeStyleManager.getInstance(parent.getProject()).reformatRange(parent, parent.getTextRange().getStartOffset(), editor.getCaretModel().getOffset());
 
 			if(myOpenChar == '{')
 			{
