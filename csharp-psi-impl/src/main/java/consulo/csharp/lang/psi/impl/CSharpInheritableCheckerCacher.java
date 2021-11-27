@@ -25,6 +25,7 @@ import consulo.csharp.lang.CSharpCastType;
 import consulo.disposer.Disposable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.util.lang.Pair;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import javax.annotation.Nonnull;
@@ -99,12 +100,10 @@ public class CSharpInheritableCheckerCacher implements Disposable
 
 	private final Map<CacheKey, CSharpTypeUtil.InheritResult> myCache = new ConcurrentHashMap<>();
 
+	@Inject
 	public CSharpInheritableCheckerCacher(Project project)
 	{
-		project.getMessageBus().connect(this).subscribe(PsiModificationTracker.TOPIC, () ->
-		{
-			myCache.clear();
-		});
+		project.getMessageBus().connect(this).subscribe(PsiModificationTracker.TOPIC, myCache::clear);
 	}
 
 	@Nonnull
