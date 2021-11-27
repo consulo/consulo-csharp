@@ -16,24 +16,29 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTokensImpl;
+import consulo.csharp.lang.psi.impl.DotNetTypes2;
 import consulo.csharp.lang.psi.impl.source.injection.CSharpStringLiteralEscaper;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetConstantExpression;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.resolve.DotNetTypeRefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,6 +50,32 @@ import java.math.BigInteger;
  */
 public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implements DotNetConstantExpression, PsiLanguageInjectionHost, ContributedReferenceHost
 {
+	private static class FormattableStringTypeRef extends CSharpTypeRefByQName implements CSharpFastImplicitTypeRef
+	{
+		public FormattableStringTypeRef(@Nonnull Project project, @Nonnull GlobalSearchScope searchScope, @Nonnull String qualifiedName)
+		{
+			super(project, searchScope, qualifiedName);
+		}
+
+		@RequiredReadAction
+		@Nullable
+		@Override
+		public DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another)
+		{
+			if(DotNetTypeRefUtil.isVmQNameEqual(another, DotNetTypes2.System.FormattableString))
+			{
+				return another;
+			}
+			return null;
+		}
+
+		@Override
+		public boolean isConversion()
+		{
+			return true;
+		}
+	}
+
 	public CSharpConstantExpressionImpl(@Nonnull IElementType elementType)
 	{
 		super(elementType);
@@ -117,8 +148,11 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 
 			return new CSharpConstantTypeRef(this, new CSharpTypeRefByQName(this, DotNetTypes.System.Double));
 		}
-		else if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL ||
-				elementType == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL)
+		else if(elementType == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL)
+		{
+			return new FormattableStringTypeRef(getProject(), getResolveScope(), DotNetTypes.System.String);
+		}
+		else if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL)
 		{
 			return new CSharpTypeRefByQName(this, DotNetTypes.System.String);
 		}
