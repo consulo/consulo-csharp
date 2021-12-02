@@ -309,8 +309,8 @@ public class CSharpTypeUtil
 
 	private static InheritResult fail()
 	{
-		//return FAIL;
-		return new InheritResult(false, null);
+		return FAIL;
+		//return new InheritResult(false, null);
 	}
 
 	@Nonnull
@@ -345,7 +345,7 @@ public class CSharpTypeUtil
 			// extract here
 			declaration = GenericUnwrapTool.extract(declaration, extractor);
 
-			if(!isInheritable(declaration.getReturnTypeRef(), to))
+			if(!CSharpInheritableChecker.create(declaration.getReturnTypeRef(), to).withCastType(CSharpCastType.IMPLICIT, resolveScope).check().isSuccess())
 			{
 				continue;
 			}
