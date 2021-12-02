@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.psi.impl;
 
+import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
@@ -213,7 +214,7 @@ public class CSharpTypeUtil
 			return null;
 		}
 
-		return findTypeRefFromExtends(typeRef, (DotNetTypeDeclaration) element,  new HashSet<>());
+		return findTypeRefFromExtends(typeRef, (DotNetTypeDeclaration) element, new HashSet<>());
 	}
 
 	@Nullable
@@ -345,7 +346,12 @@ public class CSharpTypeUtil
 			// extract here
 			declaration = GenericUnwrapTool.extract(declaration, extractor);
 
-			if(!CSharpInheritableChecker.create(declaration.getReturnTypeRef(), to).withCastType(CSharpCastType.IMPLICIT, resolveScope).check().isSuccess())
+			final CSharpConversionMethodDeclaration finalDeclaration = declaration;
+			final DotNetTypeRef finalTo = to;
+			Boolean result = RecursionManager.doPreventingRecursion(Pair.create(declaration.getReturnTypeRef(), to), false, () ->
+					CSharpInheritableChecker.create(finalDeclaration.getReturnTypeRef(), finalTo).withCastType(CSharpCastType.IMPLICIT, resolveScope).check().isSuccess());
+
+			if(result == null || result == Boolean.FALSE)
 			{
 				continue;
 			}
