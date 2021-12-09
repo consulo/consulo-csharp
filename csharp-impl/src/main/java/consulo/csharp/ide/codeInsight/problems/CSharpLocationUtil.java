@@ -21,7 +21,9 @@ import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleFileIndex;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
@@ -37,6 +39,7 @@ import javax.annotation.Nullable;
  */
 public class CSharpLocationUtil
 {
+	@RequiredReadAction
 	public static boolean isValidLocation(@Nonnull Project project, @Nullable VirtualFile virtualFile)
 	{
 		if(virtualFile == null || virtualFile.getFileType() != CSharpFileType.INSTANCE)
@@ -47,6 +50,12 @@ public class CSharpLocationUtil
 
 		// msil representation highlight always
 		if(virtualFile instanceof MsilFileRepresentationVirtualFile)
+		{
+			return true;
+		}
+
+		ProjectFileIndex projectFileIndex = ProjectFileIndex.getInstance(project);
+		if(projectFileIndex.isInLibrary(virtualFile))
 		{
 			return true;
 		}
