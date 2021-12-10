@@ -19,10 +19,10 @@ package consulo.csharp.lang;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.fileTypes.TemplateLanguageFileType;
 import consulo.csharp.psi.icon.CSharpPsiIconGroup;
+import consulo.localize.LocalizeValue;
 import consulo.ui.image.Image;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -49,9 +49,9 @@ public class CSharpFileType extends LanguageFileType implements TemplateLanguage
 
 	@Nonnull
 	@Override
-	public String getDescription()
+	public LocalizeValue getDescription()
 	{
-		return "C# files";
+		return LocalizeValue.localizeTODO("C# files");
 	}
 
 	@Nonnull
@@ -61,7 +61,7 @@ public class CSharpFileType extends LanguageFileType implements TemplateLanguage
 		return EXTENSION;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public Image getIcon()
 	{
