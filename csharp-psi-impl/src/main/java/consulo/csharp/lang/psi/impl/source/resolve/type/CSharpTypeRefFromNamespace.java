@@ -50,7 +50,7 @@ public class CSharpTypeRefFromNamespace extends DotNetTypeRefWithCachedResult
 	@RequiredReadAction
 	@Nonnull
 	@Override
-	public String toString()
+	public String getVmQName()
 	{
 		return myNamespaceAsElement.getPresentableQName();
 	}

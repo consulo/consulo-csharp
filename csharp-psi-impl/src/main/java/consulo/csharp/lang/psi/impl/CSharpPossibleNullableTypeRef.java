@@ -73,8 +73,8 @@ public class CSharpPossibleNullableTypeRef extends DotNetTypeRefWithCachedResult
 	@RequiredReadAction
 	@Nonnull
 	@Override
-	public String toString()
+	public String getVmQName()
 	{
-		return myInnerTypeRef.toString() + "?";
+		return myInnerTypeRef.getVmQName() + "?";
 	}
 }

@@ -17,10 +17,10 @@
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.CSharpTupleTypeDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -68,11 +68,10 @@ public class CSharpTupleTypeRef extends DotNetTypeRefWithCachedResult
 		return new CSharpUserTypeRef.Result<>(new CSharpTupleTypeDeclaration(type, myVariables, myTypeRefs), extractor);
 	}
 
-	@RequiredReadAction
 	@Nonnull
 	@Override
-	public String toString()
+	public String getVmQName()
 	{
-		return StringUtil.join(myTypeRefs, Object::toString, ",");
+		return CSharpTypeRefPresentationUtil.buildText(this);
 	}
 }

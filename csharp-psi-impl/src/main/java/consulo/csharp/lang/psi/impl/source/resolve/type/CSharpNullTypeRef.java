@@ -54,7 +54,7 @@ public class CSharpNullTypeRef extends DotNetTypeRefWithCachedResult
 	@RequiredReadAction
 	@Nonnull
 	@Override
-	public String toString()
+	public String getVmQName()
 	{
 		return "null";
 	}

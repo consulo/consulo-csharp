@@ -47,7 +47,7 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 		@RequiredReadAction
 		@Nonnull
 		@Override
-		public String toString()
+		public String getVmQName()
 		{
 			return "{...}";
 		}

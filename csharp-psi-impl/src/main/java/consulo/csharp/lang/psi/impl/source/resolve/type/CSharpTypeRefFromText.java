@@ -66,8 +66,8 @@ public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 	@RequiredReadAction
 	@Nonnull
 	@Override
-	public String toString()
+	public String getVmQName()
 	{
-		return getType().toTypeRef().toString();
+		return getType().toTypeRef().getVmQName();
 	}
 }

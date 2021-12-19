@@ -52,6 +52,13 @@ public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
 		this(scope.getProject(), scope.getResolveScope(), qualifiedName);
 	}
 
+	@Nonnull
+	@Override
+	public String getVmQName()
+	{
+		return myQualifiedName;
+	}
+
 	@RequiredReadAction
 	@Nonnull
 	@Override

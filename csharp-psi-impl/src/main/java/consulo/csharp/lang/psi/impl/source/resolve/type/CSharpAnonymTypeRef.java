@@ -88,7 +88,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 	@RequiredReadAction
 	@Nonnull
 	@Override
-	public String toString()
+	public String getVmQName()
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("{");

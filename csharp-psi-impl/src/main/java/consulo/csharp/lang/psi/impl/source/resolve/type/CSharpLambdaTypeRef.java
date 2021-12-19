@@ -162,7 +162,7 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 	@RequiredReadAction
 	@Nonnull
 	@Override
-	public String toString()
+	public String getVmQName()
 	{
 		if(myTarget != null)
 		{

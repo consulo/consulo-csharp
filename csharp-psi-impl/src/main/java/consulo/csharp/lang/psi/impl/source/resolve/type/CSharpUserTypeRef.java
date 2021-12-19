@@ -21,10 +21,7 @@ import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.dotnet.psi.DotNetGenericParameter;
@@ -191,6 +188,13 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 			builder.append(">");
 		}
 		return builder.toString();
+	}
+
+	@Nonnull
+	@Override
+	public String getVmQName()
+	{
+		return CSharpTypeRefPresentationUtil.buildText(this);
 	}
 
 	@Nonnull

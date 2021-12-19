@@ -50,7 +50,7 @@ public class CSharpTypeRefFromGenericParameter extends DotNetTypeRefWithCachedRe
 	@RequiredReadAction
 	@Nonnull
 	@Override
-	public String toString()
+	public String getVmQName()
 	{
 		return myGenericParameter.getName();
 	}

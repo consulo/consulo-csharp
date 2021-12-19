@@ -53,7 +53,7 @@ public class CSharpDynamicTypeRef extends DotNetTypeRefWithCachedResult
 	@RequiredReadAction
 	@Nonnull
 	@Override
-	public String toString()
+	public String getVmQName()
 	{
 		return "dynamic";
 	}

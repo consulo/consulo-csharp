@@ -19,6 +19,7 @@ package consulo.csharp.lang.psi.impl.source.resolve.type;
 import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -65,8 +66,8 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResul
 	@RequiredReadAction
 	@Nonnull
 	@Override
-	public String toString()
+	public String getVmQName()
 	{
-		return myElement.getPresentableQName();
+		return CSharpTypeRefPresentationUtil.buildText(this);
 	}
 }

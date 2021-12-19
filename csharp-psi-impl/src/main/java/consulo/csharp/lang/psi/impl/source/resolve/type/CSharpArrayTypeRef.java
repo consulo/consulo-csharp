@@ -135,6 +135,13 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 		return builder.toString();
 	}
 
+	@Nonnull
+	@Override
+	public String getVmQName()
+	{
+		return CSharpTypeRefPresentationUtil.buildText(this);
+	}
+
 	@Override
 	@Nonnull
 	public DotNetTypeRef getInnerTypeRef()

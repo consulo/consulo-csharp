@@ -21,6 +21,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.resolve.*;
@@ -111,5 +112,12 @@ public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult i
 	public DotNetTypeRef[] getArgumentTypeRefs()
 	{
 		return myArguments;
+	}
+
+	@Nonnull
+	@Override
+	public String getVmQName()
+	{
+		return CSharpTypeRefPresentationUtil.buildText(this);
 	}
 }

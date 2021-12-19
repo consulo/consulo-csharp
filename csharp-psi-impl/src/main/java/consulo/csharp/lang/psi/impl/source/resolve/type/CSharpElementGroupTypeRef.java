@@ -57,7 +57,7 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRefWithCachedResult imp
 	@RequiredReadAction
 	@Nonnull
 	@Override
-	public String toString()
+	public String getVmQName()
 	{
 		return myElementGroup.getName();
 	}

@@ -64,7 +64,7 @@ public class CSharpRefTypeRef extends DotNetTypeRefWithCachedResult implements D
 	@RequiredReadAction
 	@Nonnull
 	@Override
-	public String toString()
+	public String getVmQName()
 	{
 		return myType.name() + " " + myTypeRef.toString();
 	}

@@ -44,6 +44,13 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRefWithCachedR
 		myDelegate = delegate;
 	}
 
+	@Nonnull
+	@Override
+	public String getVmQName()
+	{
+		return myDelegate.getVmQName();
+	}
+
 	@RequiredReadAction
 	@Nonnull
 	@Override
