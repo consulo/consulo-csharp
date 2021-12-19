@@ -20,7 +20,6 @@ import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.ToNativeElementTransformers;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.msil.transformer.MsilToNativeElementTransformer;
@@ -206,6 +205,6 @@ public class MsilDelegateTypeRef extends DotNetTypeRefWithCachedResult
 	@Override
 	public String getVmQName()
 	{
-		return CSharpTypeRefPresentationUtil.buildText(this);
+		return myTypeRef.getVmQName();
 	}
 }
