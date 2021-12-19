@@ -276,30 +276,6 @@ public class CSharpInheritableChecker
 
 		DotNetGenericExtractor topGenericExtractor = topTypeResolveResult.getGenericExtractor();
 
-		if(castResolvingInfo != null)
-		{
-			if(topElement instanceof DotNetTypeDeclaration)
-			{
-				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) topElement, topGenericExtractor,
-						castResolvingInfo);
-				if(inheritResult.isSuccess())
-				{
-					return inheritResult;
-				}
-			}
-
-			if(targetElement instanceof DotNetTypeDeclaration)
-			{
-				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) targetElement, targetTypeResolveResult
-						.getGenericExtractor(), castResolvingInfo);
-
-				if(inheritResult.isSuccess())
-				{
-					return inheritResult;
-				}
-			}
-		}
-
 		if(!disableNullableCheck)
 		{
 			// dont allow not nullable type to nullable
@@ -413,6 +389,30 @@ public class CSharpInheritableChecker
 				if(inheritable.isSuccess())
 				{
 					return inheritable;
+				}
+			}
+		}
+
+		if(castResolvingInfo != null)
+		{
+			if(topElement instanceof DotNetTypeDeclaration)
+			{
+				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) topElement, topGenericExtractor,
+						castResolvingInfo);
+				if(inheritResult.isSuccess())
+				{
+					return inheritResult;
+				}
+			}
+
+			if(targetElement instanceof DotNetTypeDeclaration)
+			{
+				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) targetElement, targetTypeResolveResult
+						.getGenericExtractor(), castResolvingInfo);
+
+				if(inheritResult.isSuccess())
+				{
+					return inheritResult;
 				}
 			}
 		}
