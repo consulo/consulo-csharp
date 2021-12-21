@@ -64,7 +64,7 @@ public class MsilXAccessorAsCSharpXAccessor extends MsilElementWrapper<DotNetXAc
 	@Override
 	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
-		visitor.visitXXXAccessor(this);
+		visitor.visitXAccessor(this);
 	}
 
 	@Nullable

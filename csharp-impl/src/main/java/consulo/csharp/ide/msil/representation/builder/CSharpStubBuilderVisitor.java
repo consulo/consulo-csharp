@@ -93,7 +93,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 	@Override
 	@RequiredReadAction
-	public void visitXXXAccessor(DotNetXAccessor accessor)
+	public void visitXAccessor(DotNetXAccessor accessor)
 	{
 		DotNetXAccessor.Kind accessorKind = accessor.getAccessorKind();
 		if(accessorKind == null)

@@ -189,7 +189,7 @@ public class CSharpXAccessorImpl extends CSharpStubMemberImpl<CSharpXAccessorStu
 	@Override
 	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
-		visitor.visitXXXAccessor(this);
+		visitor.visitXAccessor(this);
 	}
 
 	@Nonnull
