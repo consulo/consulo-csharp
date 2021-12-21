@@ -52,14 +52,12 @@ public class CSharpInheritableCheckerCacher implements Disposable
 		private final DotNetTypeRef myTarget;
 
 		private final Pair<CSharpCastType, GlobalSearchScope> myCastTypeResolver;
-		private final Boolean myDisableNullableCheck;
 
-		private CacheKey(DotNetTypeRef top, DotNetTypeRef target, Pair<CSharpCastType, GlobalSearchScope> castTypeResolver, Boolean disableNullableCheck)
+		private CacheKey(DotNetTypeRef top, DotNetTypeRef target, Pair<CSharpCastType, GlobalSearchScope> castTypeResolver)
 		{
 			myTop = top;
 			myTarget = target;
 			myCastTypeResolver = castTypeResolver;
-			myDisableNullableCheck = disableNullableCheck;
 		}
 
 		@Override
@@ -76,14 +74,13 @@ public class CSharpInheritableCheckerCacher implements Disposable
 			CacheKey cacheKey = (CacheKey) o;
 			return Objects.equals(myTop, cacheKey.myTop) &&
 					Objects.equals(myTarget, cacheKey.myTarget) &&
-					Objects.equals(myCastTypeResolver, cacheKey.myCastTypeResolver) &&
-					Objects.equals(myDisableNullableCheck, cacheKey.myDisableNullableCheck);
+					Objects.equals(myCastTypeResolver, cacheKey.myCastTypeResolver);
 		}
 
 		@Override
 		public int hashCode()
 		{
-			return Objects.hash(myTop, myTarget, myCastTypeResolver, myDisableNullableCheck);
+			return Objects.hash(myTop, myTarget, myCastTypeResolver);
 		}
 
 		@Override
@@ -93,7 +90,6 @@ public class CSharpInheritableCheckerCacher implements Disposable
 					"myTop=" + myTop +
 					", myTarget=" + myTarget +
 					", myCastTypeResolver=" + myCastTypeResolver +
-					", myDisableNullableCheck=" + myDisableNullableCheck +
 					'}';
 		}
 	}
@@ -108,16 +104,16 @@ public class CSharpInheritableCheckerCacher implements Disposable
 
 	@Nonnull
 	@RequiredReadAction
-	public CSharpTypeUtil.InheritResult getOrCheck(DotNetTypeRef top, DotNetTypeRef target, @Nullable Pair<CSharpCastType, GlobalSearchScope> castTypeResolver, Boolean disableNullableCheck)
+	public CSharpTypeUtil.InheritResult getOrCheck(DotNetTypeRef top, DotNetTypeRef target, @Nullable Pair<CSharpCastType, GlobalSearchScope> castTypeResolver)
 	{
-		CacheKey key = new CacheKey(top, target, castTypeResolver, disableNullableCheck == Boolean.TRUE);
+		CacheKey key = new CacheKey(top, target, castTypeResolver);
 		CSharpTypeUtil.InheritResult result = myCache.get(key);
 		if(result != null)
 		{
 			return result;
 		}
 
-		result = CSharpInheritableChecker.isInheritable(key.myTop, key.myTarget, key.myCastTypeResolver, key.myDisableNullableCheck);
+		result = CSharpInheritableChecker.isInheritable(key.myTop, key.myTarget, key.myCastTypeResolver);
 		myCache.putIfAbsent(key, result);
 		return result;
 	}

@@ -42,7 +42,7 @@ public class NErrorCallArgument extends NCallArgument
 
 	@RequiredReadAction
 	@Override
-	public int calcValid(@Nonnull GlobalSearchScope implicitCastResolveScope, boolean disableNullableElementCheck)
+	public int calcValid(@Nonnull GlobalSearchScope implicitCastResolveScope)
 	{
 		return FAIL;
 	}

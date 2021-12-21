@@ -78,7 +78,7 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRefWithCachedResult imp
 				{
 					DotNetTypeRef[] methodParameterTypeRef = ((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs();
 
-					MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(parameterTypeRefs, methodParameterTypeRef, getResolveScope(), true);
+					MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(parameterTypeRefs, methodParameterTypeRef, getResolveScope());
 
 					if(calc.isValidResult())
 					{

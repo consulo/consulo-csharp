@@ -59,7 +59,6 @@ public class CSharpInheritableChecker
 	private final DotNetTypeRef myTarget;
 
 	private Pair<CSharpCastType, GlobalSearchScope> myCastTypeResolver;
-	private Boolean myDisableNullableCheck;
 
 	private CSharpInheritableChecker(@Nonnull DotNetTypeRef top, @Nonnull DotNetTypeRef target)
 	{
@@ -76,16 +75,6 @@ public class CSharpInheritableChecker
 		}
 
 		myCastTypeResolver = Pair.createNonNull(castType, resolveScope);
-		return this;
-	}
-
-	public CSharpInheritableChecker withDisableNullableCheck()
-	{
-		if(myDisableNullableCheck != null)
-		{
-			throw new IllegalArgumentException("already set");
-		}
-		myDisableNullableCheck = true;
 		return this;
 	}
 
@@ -120,15 +109,14 @@ public class CSharpInheritableChecker
 
 		CSharpInheritableCheckerCacher checkerCacher = CSharpInheritableCheckerCacher.getInstance(myTop.getProject());
 
-		return checkerCacher.getOrCheck(myTop, myTarget, myCastTypeResolver, myDisableNullableCheck == Boolean.TRUE);
+		return checkerCacher.getOrCheck(myTop, myTarget, myCastTypeResolver);
 	}
 
 	@Nonnull
 	@RequiredReadAction
 	static CSharpTypeUtil.InheritResult isInheritable(@Nonnull DotNetTypeRef top,
 													  @Nonnull DotNetTypeRef target,
-													  @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo,
-													  boolean disableNullableCheck)
+													  @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo)
 	{
 
 		if(target instanceof CSharpFastImplicitTypeRef)
@@ -146,7 +134,7 @@ public class CSharpInheritableChecker
 			{
 				return fail();
 			}
-			return isInheritable(((CSharpRefTypeRef) top).getInnerTypeRef(), ((CSharpRefTypeRef) target).getInnerTypeRef(), castResolvingInfo, disableNullableCheck);
+			return isInheritable(((CSharpRefTypeRef) top).getInnerTypeRef(), ((CSharpRefTypeRef) target).getInnerTypeRef(), castResolvingInfo);
 		}
 
 		if(top instanceof CSharpRefTypeRef && target instanceof CSharpOutRefAutoTypeRef)
@@ -205,7 +193,7 @@ public class CSharpInheritableChecker
 				DotNetTypeRef topTypeRef = topTypeRefs[i];
 				DotNetTypeRef targetTypeRef = targetTypeRefs[i];
 
-				CSharpTypeUtil.InheritResult inheritable = isInheritable(topTypeRef, targetTypeRef, castResolvingInfo, disableNullableCheck);
+				CSharpTypeUtil.InheritResult inheritable = isInheritable(topTypeRef, targetTypeRef, castResolvingInfo);
 				if(!inheritable.isSuccess())
 				{
 					return fail();
@@ -221,7 +209,7 @@ public class CSharpInheritableChecker
 			{
 				return fail();
 			}
-			return isInheritable(((CSharpArrayTypeRef) top).getInnerTypeRef(), ((CSharpArrayTypeRef) target).getInnerTypeRef(), castResolvingInfo, disableNullableCheck);
+			return isInheritable(((CSharpArrayTypeRef) top).getInnerTypeRef(), ((CSharpArrayTypeRef) target).getInnerTypeRef(), castResolvingInfo);
 		}
 
 		DotNetTypeResolveResult topTypeResolveResult = top.resolve();
@@ -244,7 +232,7 @@ public class CSharpInheritableChecker
 					{
 						continue;
 					}
-					if(!isInheritable(topParameter, targetParameter, castResolvingInfo, disableNullableCheck).isSuccess())
+					if(!isInheritable(topParameter, targetParameter, castResolvingInfo).isSuccess())
 					{
 						return fail();
 					}
@@ -253,7 +241,7 @@ public class CSharpInheritableChecker
 			DotNetTypeRef targetReturnType = ((CSharpLambdaResolveResult) targetTypeResolveResult).getReturnTypeRef();
 			DotNetTypeRef topReturnType = ((CSharpLambdaResolveResult) topTypeResolveResult).getReturnTypeRef();
 
-			boolean result = targetReturnType == DotNetTypeRef.AUTO_TYPE || isInheritable(topReturnType, targetReturnType, castResolvingInfo, disableNullableCheck).isSuccess();
+			boolean result = targetReturnType == DotNetTypeRef.AUTO_TYPE || isInheritable(topReturnType, targetReturnType, castResolvingInfo).isSuccess();
 			return result ? CSharpTypeUtil.SIMPLE_SUCCESS : fail();
 		}
 
@@ -276,67 +264,56 @@ public class CSharpInheritableChecker
 
 		DotNetGenericExtractor topGenericExtractor = topTypeResolveResult.getGenericExtractor();
 
-		if(!disableNullableCheck)
-		{
-			// dont allow not nullable type to nullable
-			if(!topTypeResolveResult.isNullable() && targetTypeResolveResult.isNullable())
-			{
-				return fail();
-			}
-		}
-
 		if(topGenericExtractor != DotNetGenericExtractor.EMPTY && topElement instanceof DotNetTypeDeclaration)
 		{
 			DotNetTypeDeclaration topTypeDeclaration = (DotNetTypeDeclaration) topElement;
 			DotNetTypeResolveResult typeFromSuper = CSharpTypeUtil.findTypeRefFromExtends(target, topTypeDeclaration, new HashSet<>());
 
-			if(typeFromSuper == null)
+			if(typeFromSuper != null)
 			{
-				return fail();
-			}
+				DotNetGenericExtractor superGenericExtractor = typeFromSuper.getGenericExtractor();
 
-			DotNetGenericExtractor superGenericExtractor = typeFromSuper.getGenericExtractor();
-
-			if(targetElement instanceof DotNetTypeDeclaration)
-			{
-				// we already check for equals inside findTypeRefFromExtends
-
-				DotNetGenericParameter[] genericParameters = ((DotNetTypeDeclaration) topElement).getGenericParameters();
-
-				for(DotNetGenericParameter genericParameter : genericParameters)
+				if(targetElement instanceof DotNetTypeDeclaration)
 				{
-					DotNetTypeRef topExtractedTypeRef = topGenericExtractor.extract(genericParameter);
-					DotNetTypeRef superExtractedTypeRef = superGenericExtractor.extract(genericParameter);
+					// we already check for equals inside findTypeRefFromExtends
 
-					if(topExtractedTypeRef == null || superExtractedTypeRef == null)
+					DotNetGenericParameter[] genericParameters = ((DotNetTypeDeclaration) topElement).getGenericParameters();
+
+					for(DotNetGenericParameter genericParameter : genericParameters)
 					{
-						return fail();
+						DotNetTypeRef topExtractedTypeRef = topGenericExtractor.extract(genericParameter);
+						DotNetTypeRef superExtractedTypeRef = superGenericExtractor.extract(genericParameter);
+
+						if(topExtractedTypeRef == null || superExtractedTypeRef == null)
+						{
+							return fail();
+						}
+
+						if(genericParameter.hasModifier(CSharpModifier.OUT))
+						{
+							if(!isInheritable(topExtractedTypeRef, superExtractedTypeRef, null).isSuccess())
+							{
+								return fail();
+							}
+						}
+						else if(genericParameter.hasModifier(CSharpModifier.IN))
+						{
+							if(!isInheritable(superExtractedTypeRef, topExtractedTypeRef, null).isSuccess())
+							{
+								return fail();
+							}
+						}
+						else
+						{
+							if(!CSharpTypeUtil.isTypeEqual(topExtractedTypeRef, superExtractedTypeRef))
+							{
+								return fail();
+							}
+						}
 					}
 
-					if(genericParameter.hasModifier(CSharpModifier.OUT))
-					{
-						if(!isInheritable(topExtractedTypeRef, superExtractedTypeRef, null, disableNullableCheck).isSuccess())
-						{
-							return fail();
-						}
-					}
-					else if(genericParameter.hasModifier(CSharpModifier.IN))
-					{
-						if(!isInheritable(superExtractedTypeRef, topExtractedTypeRef, null, disableNullableCheck).isSuccess())
-						{
-							return fail();
-						}
-					}
-					else
-					{
-						if(!CSharpTypeUtil.isTypeEqual(topExtractedTypeRef, superExtractedTypeRef))
-						{
-							return fail();
-						}
-					}
+					return CSharpTypeUtil.SIMPLE_SUCCESS;
 				}
-
-				return CSharpTypeUtil.SIMPLE_SUCCESS;
 			}
 		}
 		else
@@ -349,12 +326,12 @@ public class CSharpInheritableChecker
 
 		if(topElement instanceof CSharpTypeDefStatement)
 		{
-			return isInheritable(((CSharpTypeDefStatement) topElement).toTypeRef(), target, castResolvingInfo, disableNullableCheck);
+			return isInheritable(((CSharpTypeDefStatement) topElement).toTypeRef(), target, castResolvingInfo);
 		}
 
 		if(targetElement instanceof CSharpTypeDefStatement)
 		{
-			return isInheritable(top, ((CSharpTypeDefStatement) targetElement).toTypeRef(), castResolvingInfo, disableNullableCheck);
+			return isInheritable(top, ((CSharpTypeDefStatement) targetElement).toTypeRef(), castResolvingInfo);
 		}
 
 		if(topElement instanceof DotNetTypeDeclaration && targetElement instanceof DotNetTypeDeclaration)
@@ -371,7 +348,7 @@ public class CSharpInheritableChecker
 
 			for(DotNetTypeRef extendType : extendTypes)
 			{
-				CSharpTypeUtil.InheritResult inheritable = isInheritable(extendType, target, castResolvingInfo, disableNullableCheck);
+				CSharpTypeUtil.InheritResult inheritable = isInheritable(extendType, target, castResolvingInfo);
 				if(inheritable.isSuccess())
 				{
 					return inheritable;
@@ -385,7 +362,7 @@ public class CSharpInheritableChecker
 
 			for(DotNetTypeRef extendType : extendTypes)
 			{
-				CSharpTypeUtil.InheritResult inheritable = isInheritable(extendType, top, castResolvingInfo, disableNullableCheck);
+				CSharpTypeUtil.InheritResult inheritable = isInheritable(extendType, top, castResolvingInfo);
 				if(inheritable.isSuccess())
 				{
 					return inheritable;

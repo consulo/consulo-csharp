@@ -71,7 +71,7 @@ public class NParamsCallArgument extends NCallArgument
 
 	@Override
 	@RequiredReadAction
-	public int calcValid(@Nonnull GlobalSearchScope implicitCastType, boolean disableNullableElementCheck)
+	public int calcValid(@Nonnull GlobalSearchScope implicitCastType)
 	{
 		myValid = validate(getParameterTypeRef(), getTypeRef(), this, implicitCastType);
 		return myValid;

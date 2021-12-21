@@ -334,17 +334,6 @@ public class NCallArgumentBuilder
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull DotNetTypeRef[] expressionTypeRefs,
-												 @Nonnull DotNetTypeRef[] parameterTypeRefs,
-												 @Nonnull GlobalSearchScope scope,
-												 boolean disableNullableCheck)
-	{
-		List<NCallArgument> list = buildCallArguments(expressionTypeRefs, parameterTypeRefs);
-		return calc(list, scope, disableNullableCheck);
-	}
-
-	@Nonnull
-	@RequiredReadAction
 	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull GlobalSearchScope scope)
 	{
 		List<NCallArgument> list = buildCallArguments(callArgumentListOwner.getCallArguments(), parameterListOwner, scope);
@@ -353,21 +342,14 @@ public class NCallArgumentBuilder
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull List<NCallArgument> arguments, @Nonnull GlobalSearchScope scope)
-	{
-		return calc(arguments, scope, false);
-	}
-
-	@Nonnull
-	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull List<NCallArgument> arguments, @Nonnull GlobalSearchScope castResolveScope, boolean disableNullElementCheck)
+	public static MethodResolvePriorityInfo calc(@Nonnull List<NCallArgument> arguments, @Nonnull GlobalSearchScope castResolveScope)
 	{
 		int weight = 0;
 		boolean valid = true;
 
 		for(NCallArgument argument : arguments)
 		{
-			switch(argument.calcValid(castResolveScope, disableNullElementCheck))
+			switch(argument.calcValid(castResolveScope))
 			{
 				case NCallArgument.EQUAL:
 					weight -= 50000;

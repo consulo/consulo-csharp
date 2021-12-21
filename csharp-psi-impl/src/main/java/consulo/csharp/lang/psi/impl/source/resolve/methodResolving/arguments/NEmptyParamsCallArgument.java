@@ -25,7 +25,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -46,7 +45,7 @@ public class NEmptyParamsCallArgument extends NParamsCallArgument
 
 	@RequiredReadAction
 	@Override
-	public int calcValid(@Nonnull GlobalSearchScope implicitCastType, boolean disableNullableElementCheck)
+	public int calcValid(@Nonnull GlobalSearchScope implicitCastType)
 	{
 		return PARAMS;
 	}

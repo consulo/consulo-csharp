@@ -44,7 +44,7 @@ public class NNamedParamsCallArgument extends NNamedCallArgument
 
 	@RequiredReadAction
 	@Override
-	public int calcValid(@Nonnull GlobalSearchScope implicitCastResolveScope, boolean disableNullableElementCheck)
+	public int calcValid(@Nonnull GlobalSearchScope implicitCastResolveScope)
 	{
 		if(myParamsInnerTypeRef != null)
 		{

@@ -119,7 +119,7 @@ public class NCallArgument extends UserDataHolderBase
 	}
 
 	@RequiredReadAction
-	public int calcValid(@Nonnull GlobalSearchScope implicitCastResolveScope, boolean disableNullableElementCheck)
+	public int calcValid(@Nonnull GlobalSearchScope implicitCastResolveScope)
 	{
 		DotNetTypeRef parameterTypeRef = getParameterTypeRef();
 		int newVal = FAIL;
@@ -134,11 +134,7 @@ public class NCallArgument extends UserDataHolderBase
 			{
 				CSharpInheritableChecker checker = CSharpInheritableChecker.create(parameterTypeRef, typeRef);
 				checker = checker.withCastType(CSharpCastType.IMPLICIT, implicitCastResolveScope);
-				if(disableNullableElementCheck)
-				{
-					checker = checker.withDisableNullableCheck();
-				}
-				
+
 				CSharpTypeUtil.InheritResult inheritable = checker.check();
 				if(inheritable.isSuccess())
 				{
