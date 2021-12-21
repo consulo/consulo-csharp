@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.BitUtil;
 import com.intellij.util.PairFunction;
 import consulo.annotation.access.RequiredReadAction;
@@ -248,7 +249,7 @@ public class CSharpTypeRefPresentationUtil
 				}
 				else
 				{
-					if((BitUtil.isSet(flags, TYPE_KEYWORD) || BitUtil.isSet(flags, FORCE_TYPE_KEYWORD)) &&typeAsKeyword != null)
+					if((BitUtil.isSet(flags, TYPE_KEYWORD) || BitUtil.isSet(flags, FORCE_TYPE_KEYWORD)) && typeAsKeyword != null)
 					{
 						builder.append(typeAsKeyword);
 					}
@@ -258,10 +259,13 @@ public class CSharpTypeRefPresentationUtil
 					}
 				}
 			}
+			else if(element instanceof PsiNamedElement)
+			{
+				builder.append(((PsiNamedElement) element).getName());
+			}
 			else
 			{
-				// fallback
-				builder.append(typeRef.toString());
+				builder.append(BitUtil.isSet(flags, TYPE_KEYWORD) ? "object" : "Object");
 			}
 
 			if(!BitUtil.isSet(flags, NO_GENERIC_ARGUMENTS))
@@ -272,7 +276,7 @@ public class CSharpTypeRefPresentationUtil
 					if(genericParameters.length > 0)
 					{
 						builder.append("<");
-						StubBlockUtil.join(builder, genericParameters, new PairFunction<StringBuilder, DotNetGenericParameter, Void>()
+						StubBlockUtil.join(builder, genericParameters, new PairFunction<>()
 						{
 							@Nullable
 							@Override
