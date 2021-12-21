@@ -266,4 +266,32 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		}
 		return builder.toString();
 	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this == o)
+		{
+			return true;
+		}
+		if(o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+
+		CSharpUserTypeRef that = (CSharpUserTypeRef) o;
+
+		if(myReferenceExpression != null ? !myReferenceExpression.equals(that.myReferenceExpression) : that.myReferenceExpression != null)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return myReferenceExpression != null ? myReferenceExpression.hashCode() : 0;
+	}
 }

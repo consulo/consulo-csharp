@@ -27,6 +27,8 @@ import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.resolve.*;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * @author VISTALL
@@ -119,5 +121,39 @@ public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult i
 	public String getVmQName()
 	{
 		return CSharpTypeRefPresentationUtil.buildText(this);
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this == o)
+		{
+			return true;
+		}
+		if(o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+
+		CSharpGenericWrapperTypeRef that = (CSharpGenericWrapperTypeRef) o;
+
+		if(myInnerTypeRef != null ? !myInnerTypeRef.equals(that.myInnerTypeRef) : that.myInnerTypeRef != null)
+		{
+			return false;
+		}
+		if(!Objects.equals(myArguments, that.myArguments))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int result = myInnerTypeRef != null ? myInnerTypeRef.hashCode() : 0;
+		result = 31 * result + (myArguments != null ? Arrays.hashCode(myArguments) : 0);
+		return result;
 	}
 }

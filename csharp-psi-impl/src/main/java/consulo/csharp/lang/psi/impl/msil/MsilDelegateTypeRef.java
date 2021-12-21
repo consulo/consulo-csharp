@@ -207,4 +207,32 @@ public class MsilDelegateTypeRef extends DotNetTypeRefWithCachedResult
 	{
 		return myTypeRef.getVmQName();
 	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this == o)
+		{
+			return true;
+		}
+		if(o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+
+		MsilDelegateTypeRef that = (MsilDelegateTypeRef) o;
+
+		if(myTypeRef != null ? !myTypeRef.equals(that.myTypeRef) : that.myTypeRef != null)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return myTypeRef != null ? myTypeRef.hashCode() : 0;
+	}
 }

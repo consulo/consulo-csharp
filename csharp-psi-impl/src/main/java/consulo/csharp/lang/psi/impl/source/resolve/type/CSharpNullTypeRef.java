@@ -58,4 +58,16 @@ public class CSharpNullTypeRef extends DotNetTypeRefWithCachedResult
 	{
 		return "null";
 	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		return obj instanceof CSharpNullTypeRef;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return 1;
+	}
 }
