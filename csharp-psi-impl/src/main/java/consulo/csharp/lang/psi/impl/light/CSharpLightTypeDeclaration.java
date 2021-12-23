@@ -16,11 +16,6 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
@@ -30,14 +25,13 @@ import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterList;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.psi.DotNetTypeList;
+import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -62,6 +56,12 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 			}
 			return members;
 		});
+	}
+
+	@Nonnull
+	public DotNetGenericExtractor getExtractor()
+	{
+		return myExtractor;
 	}
 
 	@RequiredReadAction

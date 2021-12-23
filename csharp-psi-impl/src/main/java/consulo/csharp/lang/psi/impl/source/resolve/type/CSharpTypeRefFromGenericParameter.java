@@ -54,4 +54,25 @@ public class CSharpTypeRefFromGenericParameter extends DotNetTypeRefWithCachedRe
 	{
 		return myGenericParameter.getName();
 	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this == o)
+		{
+			return true;
+		}
+		if(o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+		CSharpTypeRefFromGenericParameter that = (CSharpTypeRefFromGenericParameter) o;
+		return myGenericParameter.isEquivalentTo(that.myGenericParameter);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return myGenericParameter.hashCode();
+	}
 }

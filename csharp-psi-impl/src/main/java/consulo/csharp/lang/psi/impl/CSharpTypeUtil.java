@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi.impl;
 
-import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
@@ -320,14 +319,15 @@ public class CSharpTypeUtil
 																	@Nonnull DotNetTypeRef from,
 																	@Nonnull DotNetTypeDeclaration typeDeclaration,
 																	@Nonnull DotNetGenericExtractor extractor,
-																	@Nonnull Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo)
+																	@Nonnull Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo,
+																	@Nonnull CSharpInheritableCheckerContext context)
 	{
 		CSharpCastType castType = castResolvingInfo.getFirst();
 		GlobalSearchScope resolveScope = castResolvingInfo.getSecond();
 
-		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, resolveScope, typeDeclaration);
+		CSharpResolveContext resolveContext = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, resolveScope, typeDeclaration);
 
-		CSharpElementGroup<CSharpConversionMethodDeclaration> conversionMethodGroup = context.findConversionMethodGroup(castType, true);
+		CSharpElementGroup<CSharpConversionMethodDeclaration> conversionMethodGroup = resolveContext.findConversionMethodGroup(castType, true);
 		if(conversionMethodGroup == null)
 		{
 			return fail();
@@ -347,11 +347,9 @@ public class CSharpTypeUtil
 			declaration = GenericUnwrapTool.extract(declaration, extractor);
 
 			final CSharpConversionMethodDeclaration finalDeclaration = declaration;
-			final DotNetTypeRef finalTo = to;
-			Boolean result = RecursionManager.doPreventingRecursion(Pair.create(declaration.getReturnTypeRef(), to), false, () ->
-					CSharpInheritableChecker.create(finalDeclaration.getReturnTypeRef(), finalTo).withCastType(CSharpCastType.IMPLICIT, resolveScope).check().isSuccess());
+			Boolean result = CSharpInheritableChecker.create(finalDeclaration.getReturnTypeRef(), to).withCastType(CSharpCastType.IMPLICIT, resolveScope).withContext(context).check().isSuccess();
 
-			if(result == null || result == Boolean.FALSE)
+			if(result == Boolean.FALSE)
 			{
 				continue;
 			}

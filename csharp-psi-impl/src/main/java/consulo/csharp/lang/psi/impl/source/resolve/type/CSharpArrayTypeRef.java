@@ -29,6 +29,7 @@ import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.resolve.*;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 /**
  * @author VISTALL
@@ -158,5 +159,27 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	public int getDimensions()
 	{
 		return myDimensions;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this == o)
+		{
+			return true;
+		}
+		if(o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+		CSharpArrayTypeRef that = (CSharpArrayTypeRef) o;
+		return myDimensions == that.myDimensions &&
+				Objects.equals(myInnerTypeRef, that.myInnerTypeRef);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(myInnerTypeRef, myDimensions);
 	}
 }

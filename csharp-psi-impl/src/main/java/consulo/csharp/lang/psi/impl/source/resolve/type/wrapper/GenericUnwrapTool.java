@@ -137,6 +137,10 @@ public class GenericUnwrapTool
 		}
 		else if(namedElement instanceof CSharpTypeDeclaration)
 		{
+			if(namedElement instanceof CSharpLightTypeDeclaration typeDeclaration && typeDeclaration.getExtractor().equals(extractor))
+			{
+				return namedElement;
+			}
 			return cast(new CSharpLightTypeDeclaration((CSharpTypeDeclaration) namedElement, extractor), parent);
 		}
 		else if(namedElement instanceof CSharpIndexMethodDeclaration)

@@ -79,17 +79,12 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		private final NotNullLazyValue<CSharpSimpleParameterInfo[]> myParameterInfosValue;
 		private final NotNullLazyValue<PsiElement> myElementValue;
 		private final NotNullLazyValue<DotNetTypeRef> myReturnTypRefValue;
-		@Nonnull
-		private final Project myProject;
-		@Nonnull
-		private final GlobalSearchScope myResolveScope;
+
 
 		@RequiredReadAction
 		public LambdaResult(@Nonnull Project project, @Nonnull GlobalSearchScope resolveScope, @Nonnull CSharpMethodDeclaration element, @Nonnull DotNetGenericExtractor extractor)
 		{
 			super(element, extractor);
-			myProject = project;
-			myResolveScope = resolveScope;
 			myParameterInfosValue = NotNullLazyValue.createValue(() ->
 			{
 				CSharpSimpleParameterInfo[] parameterInfos = myElement.getParameterInfos();

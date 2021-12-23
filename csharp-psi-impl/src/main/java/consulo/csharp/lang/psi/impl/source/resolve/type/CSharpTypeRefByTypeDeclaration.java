@@ -70,4 +70,20 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResul
 	{
 		return CSharpTypeRefPresentationUtil.buildText(this);
 	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(obj instanceof CSharpTypeRefByTypeDeclaration other)
+		{
+			return myElement.isEquivalentTo(other.myElement) && myExtractor.equals(other.myExtractor);
+		}
+		return super.equals(obj);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return getVmQName().hashCode() ^ myExtractor.hashCode();
+	}
 }

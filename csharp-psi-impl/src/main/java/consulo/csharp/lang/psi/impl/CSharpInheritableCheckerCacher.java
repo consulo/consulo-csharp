@@ -22,6 +22,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiModificationTracker;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpCastType;
+import consulo.csharp.lang.psi.CSharpInheritableCheckerContext;
 import consulo.disposer.Disposable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.util.lang.Pair;
@@ -104,7 +105,10 @@ public class CSharpInheritableCheckerCacher implements Disposable
 
 	@Nonnull
 	@RequiredReadAction
-	public CSharpTypeUtil.InheritResult getOrCheck(DotNetTypeRef top, DotNetTypeRef target, @Nullable Pair<CSharpCastType, GlobalSearchScope> castTypeResolver)
+	public CSharpTypeUtil.InheritResult getOrCheck(DotNetTypeRef top,
+												   DotNetTypeRef target,
+												   @Nullable Pair<CSharpCastType, GlobalSearchScope> castTypeResolver,
+												   @Nullable CSharpInheritableCheckerContext context)
 	{
 		CacheKey key = new CacheKey(top, target, castTypeResolver);
 		CSharpTypeUtil.InheritResult result = myCache.get(key);
@@ -113,7 +117,7 @@ public class CSharpInheritableCheckerCacher implements Disposable
 			return result;
 		}
 
-		result = CSharpInheritableChecker.isInheritable(key.myTop, key.myTarget, key.myCastTypeResolver);
+		result = CSharpInheritableChecker.isInheritable(key.myTop, key.myTarget, key.myCastTypeResolver, context == null ? CSharpInheritableCheckerContext.create() : context);
 		myCache.putIfAbsent(key, result);
 		return result;
 	}

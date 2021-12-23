@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
+import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -24,7 +25,9 @@ import consulo.dotnet.util.ArrayUtil2;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author VISTALL
@@ -88,5 +91,45 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 		}
 
 		return ArrayUtil2.safeGet(myTypeRefs, index);
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this == o)
+		{
+			return true;
+		}
+		if(o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+		CSharpGenericExtractor that = (CSharpGenericExtractor) o;
+		return isEquivalentTo(myGenericParameters, that.myGenericParameters) && Arrays.equals(myTypeRefs, that.myTypeRefs);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(myGenericParameters, myTypeRefs);
+	}
+
+	private static boolean isEquivalentTo(PsiElement[] elements1, PsiElement[] elements2)
+	{
+		if(elements1.length != elements2.length)
+		{
+			return false;
+		}
+
+		for(int i = 0; i < elements1.length; i++)
+		{
+			PsiElement element1 = elements1[i];
+			PsiElement element2 = elements2[i];
+			if(!element1.isEquivalentTo(element2))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 }

@@ -28,7 +28,6 @@ import consulo.dotnet.resolve.*;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * @author VISTALL
@@ -141,7 +140,8 @@ public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult i
 		{
 			return false;
 		}
-		if(!Objects.equals(myArguments, that.myArguments))
+
+		if(!Arrays.equals(myArguments, that.myArguments))
 		{
 			return false;
 		}
