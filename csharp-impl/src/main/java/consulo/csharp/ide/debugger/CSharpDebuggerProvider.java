@@ -16,19 +16,11 @@
 
 package consulo.csharp.ide.debugger;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
-import consulo.logging.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -49,18 +41,22 @@ import consulo.dotnet.debugger.DotNetDebugContext;
 import consulo.dotnet.debugger.DotNetDebuggerProvider;
 import consulo.dotnet.debugger.nodes.DotNetFieldOrPropertyValueNode;
 import consulo.dotnet.debugger.nodes.DotNetStructValueInfo;
-import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
-import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
-import consulo.dotnet.debugger.proxy.DotNetNotSuspendedException;
-import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
-import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
-import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
+import consulo.dotnet.debugger.proxy.*;
 import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetStructValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetReferenceExpression;
+import consulo.logging.Logger;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.lang.StringUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -78,6 +74,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 	}
 
 	@Override
+	@RequiredUIAccess
 	public void evaluate(@Nonnull DotNetStackFrameProxy frame,
 			@Nonnull DotNetDebugContext debuggerContext,
 			@Nonnull String expression,
@@ -133,38 +130,6 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 		try
 		{
 			expressionPsi.accept(expressionEvaluator);
-
-			CSharpEvaluateContext evaluateContext = new CSharpEvaluateContext(debuggerContext, frame, elementAt);
-
-			List<Evaluator> evaluators = expressionEvaluator.getEvaluators();
-			if(evaluators.isEmpty())
-			{
-				callback.errorOccurred("cant evaluate expression");
-				return;
-			}
-
-			evaluateContext.evaluate(evaluators);
-			DotNetValueProxy targetValue = evaluateContext.popValue();
-			if(targetValue != null)
-			{
-				callback.evaluated(new CSharpWatcherNode(debuggerContext, expression, frame, targetValue));
-			}
-			else
-			{
-				callback.errorOccurred("no value");
-			}
-		}
-		catch(DotNetThrowValueException e)
-		{
-			callback.errorOccurred(StringUtil.notNullize(e.getMessage(), "unknown exception"));
-		}
-		catch(DotNetNotSuspendedException e)
-		{
-			callback.errorOccurred("not suspended");
-		}
-		catch(DotNetInvalidObjectException e)
-		{
-			callback.errorOccurred("invalid object");
 		}
 		catch(Exception e)
 		{
@@ -175,7 +140,57 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 				CSharpDebuggerProvider.LOGGER.error("Exception have null message", e);
 			}
 			callback.errorOccurred(message);
+			return;
 		}
+
+		final PsiElement finalElementAt = elementAt;
+		debuggerContext.invoke(() ->
+		{
+			try
+			{
+				CSharpEvaluateContext evaluateContext = new CSharpEvaluateContext(debuggerContext, frame, finalElementAt);
+
+				List<Evaluator> evaluators = expressionEvaluator.getEvaluators();
+				if(evaluators.isEmpty())
+				{
+					callback.errorOccurred("cant evaluate expression");
+					return;
+				}
+
+				evaluateContext.evaluate(evaluators);
+				DotNetValueProxy targetValue = evaluateContext.popValue();
+				if(targetValue != null)
+				{
+					callback.evaluated(new CSharpWatcherNode(debuggerContext, expression, frame, targetValue));
+				}
+				else
+				{
+					callback.errorOccurred("no value");
+				}
+			}
+			catch(DotNetThrowValueException e)
+			{
+				callback.errorOccurred(StringUtil.notNullize(e.getMessage(), "unknown exception"));
+			}
+			catch(DotNetNotSuspendedException e)
+			{
+				callback.errorOccurred("not suspended");
+			}
+			catch(DotNetInvalidObjectException e)
+			{
+				callback.errorOccurred("invalid object");
+			}
+			catch(Exception e)
+			{
+				String message = e.getMessage();
+				if(message == null)
+				{
+					message = e.getClass().getSimpleName() + " was throw";
+					CSharpDebuggerProvider.LOGGER.error("Exception have null message", e);
+				}
+				callback.errorOccurred(message);
+			}
+		});
 	}
 
 	@Override

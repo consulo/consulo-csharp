@@ -16,23 +16,18 @@
 
 package consulo.csharp.ide.debugger;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
 import consulo.dotnet.debugger.DotNetDebugContext;
-import consulo.dotnet.debugger.proxy.DotNetAbsentInformationException;
-import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
-import consulo.dotnet.debugger.proxy.DotNetInvalidStackFrameException;
-import consulo.dotnet.debugger.proxy.DotNetNotSuspendedException;
-import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
-import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
+import consulo.dotnet.debugger.proxy.*;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -40,7 +35,7 @@ import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
  */
 public class CSharpEvaluateContext
 {
-	private Deque<Pair<DotNetValueProxy, Object>> myStack = new ArrayDeque<Pair<DotNetValueProxy, Object>>();
+	private Deque<Pair<DotNetValueProxy, Object>> myStack = new ArrayDeque<>();
 	private DotNetDebugContext myDebuggerContext;
 	private DotNetStackFrameProxy myFrame;
 	private PsiElement myElementAt;
