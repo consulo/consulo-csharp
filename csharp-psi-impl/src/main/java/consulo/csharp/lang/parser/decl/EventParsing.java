@@ -90,7 +90,7 @@ public class EventParsing extends MemberWithBodyParsing
 			}
 			else
 			{
-				parseAccessors(builder, XXX_ACCESSOR, EVENT_ACCESSOR_START);
+				parseAccessors(builder, XACCESSOR, EVENT_ACCESSOR_START);
 				done(marker, EVENT_DECLARATION);
 			}
 		}

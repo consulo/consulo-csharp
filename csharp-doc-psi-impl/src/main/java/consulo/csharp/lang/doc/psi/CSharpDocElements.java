@@ -48,10 +48,10 @@ import javax.annotation.Nullable;
  */
 public interface CSharpDocElements
 {
-	IElementType TAG = new CompositeElementTypeAsPsiFactory("TAG", CSharpDocLanguage.INSTANCE, CSharpDocTagImpl.class);
-	IElementType ATTRIBUTE = new CompositeElementTypeAsPsiFactory("ATTRIBUTE", CSharpDocLanguage.INSTANCE, CSharpDocAttribute.class);
-	IElementType ATTRIBUTE_VALUE = new CompositeElementTypeAsPsiFactory("ATTRIBUTE_VALUE", CSharpDocLanguage.INSTANCE, CSharpDocAttributeValue.class);
-	IElementType TEXT = new CompositeElementTypeAsPsiFactory("TEXT", CSharpDocLanguage.INSTANCE, CSharpDocText.class);
+	IElementType TAG = new CompositeElementTypeAsPsiFactory("TAG", CSharpDocLanguage.INSTANCE, CSharpDocTagImpl::new);
+	IElementType ATTRIBUTE = new CompositeElementTypeAsPsiFactory("ATTRIBUTE", CSharpDocLanguage.INSTANCE, CSharpDocAttribute::new);
+	IElementType ATTRIBUTE_VALUE = new CompositeElementTypeAsPsiFactory("ATTRIBUTE_VALUE", CSharpDocLanguage.INSTANCE, CSharpDocAttributeValue::new);
+	IElementType TEXT = new CompositeElementTypeAsPsiFactory("TEXT", CSharpDocLanguage.INSTANCE, CSharpDocText::new);
 
 	IElementType LINE_DOC_COMMENT = new ILazyParseableElementType("LINE_DOC_COMMENT", CSharpDocLanguage.INSTANCE)
 	{

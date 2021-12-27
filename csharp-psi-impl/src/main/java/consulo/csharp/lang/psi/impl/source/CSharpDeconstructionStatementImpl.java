@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2021 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,58 +22,55 @@ import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpTupleType;
 import consulo.csharp.lang.psi.CSharpTupleVariable;
-import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.CSharpTupleTypeDeclaration;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetType;
+import consulo.dotnet.psi.DotNetStatement;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
- * @since 26-Nov-16.
+ * @since 26/12/2021
  */
-public class CSharpTupleVariableImpl extends CSharpVariableImpl implements CSharpTupleVariable
+public class CSharpDeconstructionStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpTupleVariableImpl(@Nonnull IElementType elementType)
+	public CSharpDeconstructionStatementImpl(@Nonnull IElementType elementType)
 	{
 		super(elementType);
+	}
+
+	@Nonnull
+	@RequiredReadAction
+	public CSharpTupleType getTupleType()
+	{
+		return findNotNullChildByClass(CSharpTupleType.class);
+	}
+
+	@Nonnull
+	@RequiredReadAction
+	public CSharpTupleVariable[] getVariables()
+	{
+		CSharpTupleType tupleType = getTupleType();
+		return tupleType.getVariables();
 	}
 
 	@Override
 	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
-		visitor.visitTupleVariable(this);
+		visitor.visitDeconstructionStatement(this);
 	}
 
+	@Override
 	@RequiredReadAction
-	@Nullable
-	@Override
-	public DotNetType getType()
-	{
-		return findChildByClass(DotNetType.class);
-	}
-
-	@Override
-	public boolean isEquivalentTo(PsiElement another)
-	{
-		PsiElement tupleElement = another.getOriginalElement().getUserData(CSharpTupleTypeDeclaration.TUPLE_ELEMENT);
-		if(tupleElement != null && super.isEquivalentTo(tupleElement))
-		{
-			return true;
-		}
-		return super.isEquivalentTo(another);
-	}
-
-	@Override
 	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
 	{
-		if(!processor.execute(this, state))
+		for(CSharpTupleVariable variable : getVariables())
 		{
-			return false;
+			if(!variable.processDeclarations(processor, state, lastParent, place))
+			{
+				return false;
+			}
 		}
-
-		return super.processDeclarations(processor, state, lastParent, place);
+		return true;
 	}
 }

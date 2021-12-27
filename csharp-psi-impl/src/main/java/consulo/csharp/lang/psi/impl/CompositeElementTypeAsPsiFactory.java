@@ -21,12 +21,11 @@ import com.intellij.lang.Language;
 import com.intellij.psi.impl.source.tree.CompositePsiElement;
 import com.intellij.psi.tree.ICompositeElementType;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ReflectionUtil;
 import consulo.logging.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.Constructor;
+import java.util.function.Function;
 
 /**
  * @author VISTALL
@@ -34,40 +33,27 @@ import java.lang.reflect.Constructor;
  */
 public class CompositeElementTypeAsPsiFactory extends IElementType implements ICompositeElementType
 {
-	private static final Logger LOG = Logger.getInstance(CompositeElementTypeAsPsiFactory.class);
+	private final Function<IElementType, ? extends CompositePsiElement> myFactory;
 
-	private Constructor<? extends CompositePsiElement> myConstructor;
-
-	public CompositeElementTypeAsPsiFactory(@Nonnull String debugName, @Nullable Language language, @Nonnull Class<? extends CompositePsiElement> clazz)
+	public CompositeElementTypeAsPsiFactory(@Nonnull String debugName, @Nullable Language language, @Nonnull Function<IElementType, ? extends CompositePsiElement> factory)
 	{
-		this(debugName, language, true, clazz);
+		this(debugName, language, true, factory);
 	}
 
 	public CompositeElementTypeAsPsiFactory(@Nonnull String debugName,
 											@Nullable Language language,
 											boolean register,
-											@Nonnull Class<? extends CompositePsiElement> clazz)
+											@Nonnull Function<IElementType, ? extends CompositePsiElement> factory)
 	{
 		super(debugName, language, register);
 
-		try
-		{
-			myConstructor = clazz.getConstructor(IElementType.class);
-		}
-		catch(NoSuchMethodException e)
-		{
-			LOG.error("Can't find constructor for " + clazz.getName() + " with argument: " + IElementType.class.getName() + ", or it not public.", e);
-		}
+		myFactory = factory;
 	}
 
 	@Nonnull
 	@Override
 	public ASTNode createCompositeNode()
 	{
-		if(myConstructor == null)
-		{
-			throw new UnsupportedOperationException(toString() + " can't initialized");
-		}
-		return ReflectionUtil.createInstance(myConstructor, this);
+		return myFactory.apply(this);
 	}
 }

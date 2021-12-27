@@ -32,6 +32,10 @@ csharp.version._7_3:
   text: ''
 csharp.version._8_0:
   text: ''
+csharp.version._9_0:
+  text: ''
+csharp.version._10_0:
+  text: ''
 livetemplates.cwl:
   text: Print object to console
 livetemplates.psvm:

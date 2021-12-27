@@ -74,7 +74,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 				elementType == NAMED_FIELD_OR_PROPERTY_SET ||
 				elementType == INDEX_METHOD_DECLARATION ||
 				elementType == PROPERTY_DECLARATION ||
-				elementType == XXX_ACCESSOR ||
+				elementType == XACCESSOR ||
 				elementType == EVENT_DECLARATION ||
 				elementType == ENUM_CONSTANT_DECLARATION ||
 				elementType == USING_TYPE_STATEMENT ||

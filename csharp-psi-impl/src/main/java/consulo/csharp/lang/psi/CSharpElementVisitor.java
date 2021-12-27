@@ -689,4 +689,9 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(statement);
 	}
+
+	public void visitDeconstructionStatement(CSharpDeconstructionStatementImpl declaration)
+	{
+		visitElement(declaration);
+	}
 }

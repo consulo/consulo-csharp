@@ -48,9 +48,9 @@ public interface CSharpElements
 
 	IElementType CONSTRUCTOR_DECLARATION = CSharpStubElements.CONSTRUCTOR_DECLARATION;
 
-	IElementType PARAMETER_LIST = new CompositeElementTypeAsPsiFactory("PARAMETER_LIST", CSharpLanguage.INSTANCE, CSharpParameterListImpl.class);
+	IElementType PARAMETER_LIST = new CompositeElementTypeAsPsiFactory("PARAMETER_LIST", CSharpLanguage.INSTANCE, CSharpParameterListImpl::new);
 
-	IElementType PARAMETER = new CompositeElementTypeAsPsiFactory("PARAMETER", CSharpLanguage.INSTANCE, CSharpParameterImpl.class);
+	IElementType PARAMETER = new CompositeElementTypeAsPsiFactory("PARAMETER", CSharpLanguage.INSTANCE, CSharpParameterImpl::new);
 
 	IElementType TYPE_DECLARATION = CSharpStubElements.TYPE_DECLARATION;
 
@@ -60,17 +60,17 @@ public interface CSharpElements
 
 	IElementType CONVERSION_METHOD_DECLARATION = CSharpStubElements.CONVERSION_METHOD_DECLARATION;
 
-	IElementType XXX_ACCESSOR = CSharpStubElements.XACCESSOR;
+	IElementType XACCESSOR = CSharpStubElements.XACCESSOR;
 
 	IElementType FIELD_DECLARATION = CSharpStubElements.FIELD_DECLARATION;
 
 	IElementType ENUM_CONSTANT_DECLARATION = CSharpStubElements.ENUM_CONSTANT_DECLARATION;
 
-	IElementType LOCAL_VARIABLE = new CompositeElementTypeAsPsiFactory("LOCAL_VARIABLE", CSharpLanguage.INSTANCE, CSharpLocalVariableImpl.class);
+	IElementType LOCAL_VARIABLE = new CompositeElementTypeAsPsiFactory("LOCAL_VARIABLE", CSharpLanguage.INSTANCE, CSharpLocalVariableImpl::new);
 
-	IElementType LOCAL_METHOD = new CompositeElementTypeAsPsiFactory("LOCAL_METHOD", CSharpLanguage.INSTANCE, CSharpLocalMethodDeclarationImpl.class);
+	IElementType LOCAL_METHOD = new CompositeElementTypeAsPsiFactory("LOCAL_METHOD", CSharpLanguage.INSTANCE, CSharpLocalMethodDeclarationImpl::new);
 
-	IElementType LOCAL_METHOD_STATEMENT = new CompositeElementTypeAsPsiFactory("LOCAL_METHOD_STATEMENT", CSharpLanguage.INSTANCE, CSharpLocalMethodDeclarationStatementImpl.class);
+	IElementType LOCAL_METHOD_STATEMENT = new CompositeElementTypeAsPsiFactory("LOCAL_METHOD_STATEMENT", CSharpLanguage.INSTANCE, CSharpLocalMethodDeclarationStatementImpl::new);
 
 	IElementType PROPERTY_DECLARATION = CSharpStubElements.PROPERTY_DECLARATION;
 
@@ -88,223 +88,225 @@ public interface CSharpElements
 
 	IElementType GENERIC_CONSTRAINT_TYPE_VALUE = CSharpStubElements.GENERIC_CONSTRAINT_TYPE_VALUE;
 
-	IElementType USER_TYPE = new CompositeElementTypeAsPsiFactory("USER_TYPE", CSharpLanguage.INSTANCE, CSharpUserTypeImpl.class);
+	IElementType USER_TYPE = new CompositeElementTypeAsPsiFactory("USER_TYPE", CSharpLanguage.INSTANCE, CSharpUserTypeImpl::new);
 
-	IElementType POINTER_TYPE = new CompositeElementTypeAsPsiFactory("POINTER_TYPE", CSharpLanguage.INSTANCE, CSharpPointerTypeImpl.class);
+	IElementType POINTER_TYPE = new CompositeElementTypeAsPsiFactory("POINTER_TYPE", CSharpLanguage.INSTANCE, CSharpPointerTypeImpl::new);
 
-	IElementType TUPLE_TYPE = new CompositeElementTypeAsPsiFactory("TUPLE_TYPE", CSharpLanguage.INSTANCE, CSharpTupleTypeImpl.class);
+	IElementType TUPLE_TYPE = new CompositeElementTypeAsPsiFactory("TUPLE_TYPE", CSharpLanguage.INSTANCE, CSharpTupleTypeImpl::new);
 
-	IElementType TUPLE_VARIABLE = new CompositeElementTypeAsPsiFactory("TUPLE_VARIABLE", CSharpLanguage.INSTANCE, CSharpTupleVariableImpl.class);
+	IElementType TUPLE_VARIABLE = new CompositeElementTypeAsPsiFactory("TUPLE_VARIABLE", CSharpLanguage.INSTANCE, CSharpTupleVariableImpl::new);
 
-	IElementType TUPLE_ELEMENT = new CompositeElementTypeAsPsiFactory("TUPLE_ELEMENT", CSharpLanguage.INSTANCE, CSharpTupleElementImpl.class);
+	IElementType TUPLE_ELEMENT = new CompositeElementTypeAsPsiFactory("TUPLE_ELEMENT", CSharpLanguage.INSTANCE, CSharpTupleElementImpl::new);
 
-	IElementType TUPLE_EXPRESSION = new CompositeElementTypeAsPsiFactory("TUPLE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpTupleExpressionImpl.class);
+	IElementType TUPLE_EXPRESSION = new CompositeElementTypeAsPsiFactory("TUPLE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpTupleExpressionImpl::new);
 
-	IElementType NULLABLE_TYPE = new CompositeElementTypeAsPsiFactory("NULLABLE_TYPE", CSharpLanguage.INSTANCE, CSharpNullableTypeImpl.class);
+	IElementType NULLABLE_TYPE = new CompositeElementTypeAsPsiFactory("NULLABLE_TYPE", CSharpLanguage.INSTANCE, CSharpNullableTypeImpl::new);
 
-	IElementType NATIVE_TYPE = new CompositeElementTypeAsPsiFactory("NATIVE_TYPE", CSharpLanguage.INSTANCE, CSharpNativeTypeImpl.class);
+	IElementType NATIVE_TYPE = new CompositeElementTypeAsPsiFactory("NATIVE_TYPE", CSharpLanguage.INSTANCE, CSharpNativeTypeImpl::new);
 
-	IElementType ARRAY_TYPE = new CompositeElementTypeAsPsiFactory("ARRAY_TYPE", CSharpLanguage.INSTANCE, CSharpArrayTypeImpl.class);
+	IElementType ARRAY_TYPE = new CompositeElementTypeAsPsiFactory("ARRAY_TYPE", CSharpLanguage.INSTANCE, CSharpArrayTypeImpl::new);
 
-	IElementType MODIFIER_LIST = new CompositeElementTypeAsPsiFactory("MODIFIER_LIST", CSharpLanguage.INSTANCE, CSharpModifierListImpl.class);
+	IElementType MODIFIER_LIST = new CompositeElementTypeAsPsiFactory("MODIFIER_LIST", CSharpLanguage.INSTANCE, CSharpModifierListImpl::new);
 
 	IElementType EXTENDS_LIST = CSharpStubElements.EXTENDS_LIST;
 
-	IElementType TYPE_ARGUMENTS = new CompositeElementTypeAsPsiFactory("TYPE_ARGUMENTS", CSharpLanguage.INSTANCE, CSharpTypeListImpl.class);
+	IElementType TYPE_ARGUMENTS = new CompositeElementTypeAsPsiFactory("TYPE_ARGUMENTS", CSharpLanguage.INSTANCE, CSharpTypeListImpl::new);
 
-	IElementType EMPTY_TYPE_ARGUMENTS = new CompositeElementTypeAsPsiFactory("EMPTY_TYPE_ARGUMENTS", CSharpLanguage.INSTANCE, CSharpEmptyTypeListImpl.class);
+	IElementType EMPTY_TYPE_ARGUMENTS = new CompositeElementTypeAsPsiFactory("EMPTY_TYPE_ARGUMENTS", CSharpLanguage.INSTANCE, CSharpEmptyTypeListImpl::new);
 
-	IElementType CONSTANT_EXPRESSION = new CompositeElementTypeAsPsiFactory("CONSTANT_EXPRESSION", CSharpLanguage.INSTANCE, CSharpConstantExpressionImpl.class);
+	IElementType CONSTANT_EXPRESSION = new CompositeElementTypeAsPsiFactory("CONSTANT_EXPRESSION", CSharpLanguage.INSTANCE, CSharpConstantExpressionImpl::new);
 
-	IElementType REFERENCE_EXPRESSION = new CompositeElementTypeAsPsiFactory("REFERENCE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpReferenceExpressionImpl.class);
+	IElementType REFERENCE_EXPRESSION = new CompositeElementTypeAsPsiFactory("REFERENCE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpReferenceExpressionImpl::new);
 
-	IElementType METHOD_CALL_EXPRESSION = new CompositeElementTypeAsPsiFactory("METHOD_CALL_EXPRESSION", CSharpLanguage.INSTANCE, CSharpMethodCallExpressionImpl.class);
+	IElementType METHOD_CALL_EXPRESSION = new CompositeElementTypeAsPsiFactory("METHOD_CALL_EXPRESSION", CSharpLanguage.INSTANCE, CSharpMethodCallExpressionImpl::new);
 
-	IElementType CONSTRUCTOR_SUPER_CALL_EXPRESSION = new CompositeElementTypeAsPsiFactory("CONSTRUCTOR_SUPER_CALL_EXPRESSION", CSharpLanguage.INSTANCE, CSharpConstructorSuperCallImpl.class);
+	IElementType CONSTRUCTOR_SUPER_CALL_EXPRESSION = new CompositeElementTypeAsPsiFactory("CONSTRUCTOR_SUPER_CALL_EXPRESSION", CSharpLanguage.INSTANCE, CSharpConstructorSuperCallImpl::new);
 
-	IElementType CHECKED_EXPRESSION = new CompositeElementTypeAsPsiFactory("CHECKED_EXPRESSION", CSharpLanguage.INSTANCE, CSharpCheckedExpressionImpl.class);
+	IElementType CHECKED_EXPRESSION = new CompositeElementTypeAsPsiFactory("CHECKED_EXPRESSION", CSharpLanguage.INSTANCE, CSharpCheckedExpressionImpl::new);
 
-	IElementType TYPE_OF_EXPRESSION = new CompositeElementTypeAsPsiFactory("TYPE_OF_EXPRESSION", CSharpLanguage.INSTANCE, CSharpTypeOfExpressionImpl.class);
+	IElementType TYPE_OF_EXPRESSION = new CompositeElementTypeAsPsiFactory("TYPE_OF_EXPRESSION", CSharpLanguage.INSTANCE, CSharpTypeOfExpressionImpl::new);
 
-	IElementType NAMEOF_EXPRESSION = new CompositeElementTypeAsPsiFactory("NAMEOF_EXPRESSION", CSharpLanguage.INSTANCE, CSharpNameOfExpressionImpl.class);
+	IElementType NAMEOF_EXPRESSION = new CompositeElementTypeAsPsiFactory("NAMEOF_EXPRESSION", CSharpLanguage.INSTANCE, CSharpNameOfExpressionImpl::new);
 
-	IElementType AWAIT_EXPRESSION = new CompositeElementTypeAsPsiFactory("AWAIT_EXPRESSION", CSharpLanguage.INSTANCE, CSharpAwaitExpressionImpl.class);
+	IElementType AWAIT_EXPRESSION = new CompositeElementTypeAsPsiFactory("AWAIT_EXPRESSION", CSharpLanguage.INSTANCE, CSharpAwaitExpressionImpl::new);
 
-	IElementType SIZE_OF_EXPRESSION = new CompositeElementTypeAsPsiFactory("SIZE_OF_EXPRESSION", CSharpLanguage.INSTANCE, CSharpSizeOfExpressionImpl.class);
+	IElementType SIZE_OF_EXPRESSION = new CompositeElementTypeAsPsiFactory("SIZE_OF_EXPRESSION", CSharpLanguage.INSTANCE, CSharpSizeOfExpressionImpl::new);
 
-	IElementType DEFAULT_EXPRESSION = new CompositeElementTypeAsPsiFactory("DEFAULT_EXPRESSION", CSharpLanguage.INSTANCE, CSharpDefaultExpressionImpl.class);
+	IElementType DEFAULT_EXPRESSION = new CompositeElementTypeAsPsiFactory("DEFAULT_EXPRESSION", CSharpLanguage.INSTANCE, CSharpDefaultExpressionImpl::new);
 
-	IElementType BINARY_EXPRESSION = new CompositeElementTypeAsPsiFactory("BINARY_EXPRESSION", CSharpLanguage.INSTANCE, CSharpBinaryExpressionImpl.class);
+	IElementType BINARY_EXPRESSION = new CompositeElementTypeAsPsiFactory("BINARY_EXPRESSION", CSharpLanguage.INSTANCE, CSharpBinaryExpressionImpl::new);
 
-	IElementType OPERATOR_REFERENCE = new CompositeElementTypeAsPsiFactory("OPERATOR_REFERENCE", CSharpLanguage.INSTANCE, CSharpOperatorReferenceImpl.class);
+	IElementType OPERATOR_REFERENCE = new CompositeElementTypeAsPsiFactory("OPERATOR_REFERENCE", CSharpLanguage.INSTANCE, CSharpOperatorReferenceImpl::new);
 
-	IElementType IS_EXPRESSION = new CompositeElementTypeAsPsiFactory("IS_EXPRESSION", CSharpLanguage.INSTANCE, CSharpIsExpressionImpl.class);
+	IElementType IS_EXPRESSION = new CompositeElementTypeAsPsiFactory("IS_EXPRESSION", CSharpLanguage.INSTANCE, CSharpIsExpressionImpl::new);
 
-	IElementType IS_VARIABLE = new CompositeElementTypeAsPsiFactory("IS_VARIABLE", CSharpLanguage.INSTANCE, CSharpIsVariableImpl.class);
+	IElementType IS_VARIABLE = new CompositeElementTypeAsPsiFactory("IS_VARIABLE", CSharpLanguage.INSTANCE, CSharpIsVariableImpl::new);
 
-	IElementType CASE_PATTERN_STATEMENT = new CompositeElementTypeAsPsiFactory("CASE_PATTERN_STATEMENT", CSharpLanguage.INSTANCE, CSharpCasePatternStatementImpl.class);
+	IElementType CASE_PATTERN_STATEMENT = new CompositeElementTypeAsPsiFactory("CASE_PATTERN_STATEMENT", CSharpLanguage.INSTANCE, CSharpCasePatternStatementImpl::new);
 
-	IElementType CASE_VARIABLE = new CompositeElementTypeAsPsiFactory("CASE_VARIABLE", CSharpLanguage.INSTANCE, CSharpCaseVariableImpl.class);
+	IElementType CASE_VARIABLE = new CompositeElementTypeAsPsiFactory("CASE_VARIABLE", CSharpLanguage.INSTANCE, CSharpCaseVariableImpl::new);
 
-	IElementType AS_EXPRESSION = new CompositeElementTypeAsPsiFactory("AS_EXPRESSION", CSharpLanguage.INSTANCE, CSharpAsExpressionImpl.class);
+	IElementType AS_EXPRESSION = new CompositeElementTypeAsPsiFactory("AS_EXPRESSION", CSharpLanguage.INSTANCE, CSharpAsExpressionImpl::new);
 
-	IElementType NEW_ARRAY_LENGTH = new CompositeElementTypeAsPsiFactory("NEW_ARRAY_LENGTH", CSharpLanguage.INSTANCE, CSharpNewArrayLengthImpl.class);
+	IElementType NEW_ARRAY_LENGTH = new CompositeElementTypeAsPsiFactory("NEW_ARRAY_LENGTH", CSharpLanguage.INSTANCE, CSharpNewArrayLengthImpl::new);
 
-	IElementType NEW_EXPRESSION = new CompositeElementTypeAsPsiFactory("NEW_EXPRESSION", CSharpLanguage.INSTANCE, CSharpNewExpressionImpl.class);
+	IElementType NEW_EXPRESSION = new CompositeElementTypeAsPsiFactory("NEW_EXPRESSION", CSharpLanguage.INSTANCE, CSharpNewExpressionImpl::new);
 
-	IElementType SHORT_OBJECT_INITIALIZER_EXPRESSION = new CompositeElementTypeAsPsiFactory("SHORT_OBJECT_INITIALIZER_EXPRESSION", CSharpLanguage.INSTANCE, CSharpShortObjectInitializerExpressionImpl.class);
+	IElementType SHORT_OBJECT_INITIALIZER_EXPRESSION = new CompositeElementTypeAsPsiFactory("SHORT_OBJECT_INITIALIZER_EXPRESSION", CSharpLanguage.INSTANCE, CSharpShortObjectInitializerExpressionImpl::new);
 
-	IElementType IDENTIFIER = new CompositeElementTypeAsPsiFactory("IDENTIFIER", CSharpLanguage.INSTANCE, CSharpIdentifierImpl.class);
+	IElementType IDENTIFIER = new CompositeElementTypeAsPsiFactory("IDENTIFIER", CSharpLanguage.INSTANCE, CSharpIdentifierImpl::new);
 
-	IElementType __ARGLIST_EXPRESSION = new CompositeElementTypeAsPsiFactory("__ARGLIST_EXPRESSION", CSharpLanguage.INSTANCE, CSharpArglistExpressionImpl.class);
+	IElementType __ARGLIST_EXPRESSION = new CompositeElementTypeAsPsiFactory("__ARGLIST_EXPRESSION", CSharpLanguage.INSTANCE, CSharpArglistExpressionImpl::new);
 
-	IElementType __MAKEREF_EXPRESSION = new CompositeElementTypeAsPsiFactory("__MAKEREF_EXPRESSION", CSharpLanguage.INSTANCE, CSharpMakeRefExpressionImpl.class);
+	IElementType __MAKEREF_EXPRESSION = new CompositeElementTypeAsPsiFactory("__MAKEREF_EXPRESSION", CSharpLanguage.INSTANCE, CSharpMakeRefExpressionImpl::new);
 
-	IElementType __REFTYPE_EXPRESSION = new CompositeElementTypeAsPsiFactory("__REFTYPE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpRefTypeExpressionImpl.class);
+	IElementType __REFTYPE_EXPRESSION = new CompositeElementTypeAsPsiFactory("__REFTYPE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpRefTypeExpressionImpl::new);
 
-	IElementType __REFVALUE_EXPRESSION = new CompositeElementTypeAsPsiFactory("__REFVALUE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpRefValueExpressionImpl.class);
+	IElementType __REFVALUE_EXPRESSION = new CompositeElementTypeAsPsiFactory("__REFVALUE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpRefValueExpressionImpl::new);
 
-	IElementType STACKALLOC_EXPRESSION = new CompositeElementTypeAsPsiFactory("STACKALLOC_EXPRESSION", CSharpLanguage.INSTANCE, CSharpStackAllocExpressionImpl.class);
+	IElementType STACKALLOC_EXPRESSION = new CompositeElementTypeAsPsiFactory("STACKALLOC_EXPRESSION", CSharpLanguage.INSTANCE, CSharpStackAllocExpressionImpl::new);
 
-	IElementType OUT_REF_WRAP_EXPRESSION = new CompositeElementTypeAsPsiFactory("OUT_REF_WRAP_EXPRESSION", CSharpLanguage.INSTANCE, CSharpOutRefWrapExpressionImpl.class);
+	IElementType OUT_REF_WRAP_EXPRESSION = new CompositeElementTypeAsPsiFactory("OUT_REF_WRAP_EXPRESSION", CSharpLanguage.INSTANCE, CSharpOutRefWrapExpressionImpl::new);
 
-	IElementType OUT_REF_VARIABLE_EXPRESSION = new CompositeElementTypeAsPsiFactory("OUT_REF_VARIABLE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpOutRefVariableExpressionImpl.class);
+	IElementType OUT_REF_VARIABLE_EXPRESSION = new CompositeElementTypeAsPsiFactory("OUT_REF_VARIABLE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpOutRefVariableExpressionImpl::new);
 
-	IElementType OUT_REF_VARIABLE = new CompositeElementTypeAsPsiFactory("OUT_REF_VARIABLE", CSharpLanguage.INSTANCE, CSharpOutRefVariableImpl.class);
+	IElementType OUT_REF_VARIABLE = new CompositeElementTypeAsPsiFactory("OUT_REF_VARIABLE", CSharpLanguage.INSTANCE, CSharpOutRefVariableImpl::new);
 
-	IElementType CONDITIONAL_EXPRESSION = new CompositeElementTypeAsPsiFactory("CONDITIONAL_EXPRESSION", CSharpLanguage.INSTANCE, CSharpConditionalExpressionImpl.class);
+	IElementType CONDITIONAL_EXPRESSION = new CompositeElementTypeAsPsiFactory("CONDITIONAL_EXPRESSION", CSharpLanguage.INSTANCE, CSharpConditionalExpressionImpl::new);
 
-	IElementType NULL_COALESCING_EXPRESSION = new CompositeElementTypeAsPsiFactory("NULL_COALESCING_EXPRESSION", CSharpLanguage.INSTANCE, CSharpNullCoalescingExpressionImpl.class);
+	IElementType NULL_COALESCING_EXPRESSION = new CompositeElementTypeAsPsiFactory("NULL_COALESCING_EXPRESSION", CSharpLanguage.INSTANCE, CSharpNullCoalescingExpressionImpl::new);
 
-	IElementType ASSIGNMENT_EXPRESSION = new CompositeElementTypeAsPsiFactory("ASSIGNMENT_EXPRESSION", CSharpLanguage.INSTANCE, CSharpAssignmentExpressionImpl.class);
+	IElementType ASSIGNMENT_EXPRESSION = new CompositeElementTypeAsPsiFactory("ASSIGNMENT_EXPRESSION", CSharpLanguage.INSTANCE, CSharpAssignmentExpressionImpl::new);
 
-	IElementType TYPE_CAST_EXPRESSION = new CompositeElementTypeAsPsiFactory("TYPE_CAST_EXPRESSION", CSharpLanguage.INSTANCE, CSharpTypeCastExpressionImpl.class);
+	IElementType TYPE_CAST_EXPRESSION = new CompositeElementTypeAsPsiFactory("TYPE_CAST_EXPRESSION", CSharpLanguage.INSTANCE, CSharpTypeCastExpressionImpl::new);
 
-	IElementType IF_STATEMENT = new CompositeElementTypeAsPsiFactory("IF_STATEMENT", CSharpLanguage.INSTANCE, CSharpIfStatementImpl.class);
+	IElementType IF_STATEMENT = new CompositeElementTypeAsPsiFactory("IF_STATEMENT", CSharpLanguage.INSTANCE, CSharpIfStatementImpl::new);
 
-	IElementType BLOCK_STATEMENT = new CompositeElementTypeAsPsiFactory("BLOCK_STATEMENT", CSharpLanguage.INSTANCE, CSharpBlockStatementImpl.class);
+	IElementType BLOCK_STATEMENT = new CompositeElementTypeAsPsiFactory("BLOCK_STATEMENT", CSharpLanguage.INSTANCE, CSharpBlockStatementImpl::new);
 
-	IElementType INDEX_ACCESS_EXPRESSION = new CompositeElementTypeAsPsiFactory("ARRAY_ACCESS_EXPRESSION", CSharpLanguage.INSTANCE, CSharpIndexAccessExpressionImpl.class);
+	IElementType INDEX_ACCESS_EXPRESSION = new CompositeElementTypeAsPsiFactory("ARRAY_ACCESS_EXPRESSION", CSharpLanguage.INSTANCE, CSharpIndexAccessExpressionImpl::new);
 
-	IElementType POSTFIX_EXPRESSION = new CompositeElementTypeAsPsiFactory("POSTFIX_EXPRESSION", CSharpLanguage.INSTANCE, CSharpPostfixExpressionImpl.class);
+	IElementType POSTFIX_EXPRESSION = new CompositeElementTypeAsPsiFactory("POSTFIX_EXPRESSION", CSharpLanguage.INSTANCE, CSharpPostfixExpressionImpl::new);
 
-	IElementType PREFIX_EXPRESSION = new CompositeElementTypeAsPsiFactory("PREFIX_EXPRESSION", CSharpLanguage.INSTANCE, CSharpPrefixExpressionImpl.class);
+	IElementType PREFIX_EXPRESSION = new CompositeElementTypeAsPsiFactory("PREFIX_EXPRESSION", CSharpLanguage.INSTANCE, CSharpPrefixExpressionImpl::new);
 
-	IElementType ERROR_EXPRESSION = new CompositeElementTypeAsPsiFactory("ERROR_EXPRESSION", CSharpLanguage.INSTANCE, CSharpErrorExpressionImpl.class);
+	IElementType ERROR_EXPRESSION = new CompositeElementTypeAsPsiFactory("ERROR_EXPRESSION", CSharpLanguage.INSTANCE, CSharpErrorExpressionImpl::new);
 
-	IElementType PARENTHESES_EXPRESSION = new CompositeElementTypeAsPsiFactory("PARENTHESES_EXPRESSION", CSharpLanguage.INSTANCE, CSharpParenthesesExpressionImpl.class);
+	IElementType PARENTHESES_EXPRESSION = new CompositeElementTypeAsPsiFactory("PARENTHESES_EXPRESSION", CSharpLanguage.INSTANCE, CSharpParenthesesExpressionImpl::new);
 
-	IElementType LINQ_EXPRESSION = new CompositeElementTypeAsPsiFactory("LINQ_EXPRESSION", CSharpLanguage.INSTANCE, CSharpLinqExpressionImpl.class);
+	IElementType LINQ_EXPRESSION = new CompositeElementTypeAsPsiFactory("LINQ_EXPRESSION", CSharpLanguage.INSTANCE, CSharpLinqExpressionImpl::new);
 
-	IElementType LINQ_VARIABLE = new CompositeElementTypeAsPsiFactory("LINQ_VARIABLE", CSharpLanguage.INSTANCE, CSharpLinqVariableImpl.class);
+	IElementType LINQ_VARIABLE = new CompositeElementTypeAsPsiFactory("LINQ_VARIABLE", CSharpLanguage.INSTANCE, CSharpLinqVariableImpl::new);
 
-	IElementType LINQ_QUERY_BODY = new CompositeElementTypeAsPsiFactory("LINQ_QUERY_BODY", CSharpLanguage.INSTANCE, CSharpLinqQueryBodyImpl.class);
+	IElementType LINQ_QUERY_BODY = new CompositeElementTypeAsPsiFactory("LINQ_QUERY_BODY", CSharpLanguage.INSTANCE, CSharpLinqQueryBodyImpl::new);
 
-	IElementType LINQ_FROM_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_FROM_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqFromClauseImpl.class);
+	IElementType LINQ_FROM_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_FROM_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqFromClauseImpl::new);
 
-	IElementType LINQ_WHERE_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_WHERE_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqWhereClauseImpl.class);
+	IElementType LINQ_WHERE_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_WHERE_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqWhereClauseImpl::new);
 
-	IElementType LINQ_ORDERBY_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_ORDERBY_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqOrderByClauseImpl.class);
+	IElementType LINQ_ORDERBY_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_ORDERBY_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqOrderByClauseImpl::new);
 
-	IElementType LINQ_LET_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_LET_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqLetClauseImpl.class);
+	IElementType LINQ_LET_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_LET_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqLetClauseImpl::new);
 
-	IElementType LINQ_JOIN_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_JOIN_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqJoinClauseImpl.class);
+	IElementType LINQ_JOIN_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_JOIN_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqJoinClauseImpl::new);
 
-	IElementType LINQ_INTRO_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_INTRO_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqIntoClauseImpl.class);
+	IElementType LINQ_INTRO_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_INTRO_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqIntoClauseImpl::new);
 
-	IElementType LINQ_QUERY_CONTINUATION = new CompositeElementTypeAsPsiFactory("LINQ_QUERY_CONTINUATION", CSharpLanguage.INSTANCE, CSharpLinqQueryContinuationImpl.class);
+	IElementType LINQ_QUERY_CONTINUATION = new CompositeElementTypeAsPsiFactory("LINQ_QUERY_CONTINUATION", CSharpLanguage.INSTANCE, CSharpLinqQueryContinuationImpl::new);
 
-	IElementType LINQ_ORDERBY_ORDERING = new CompositeElementTypeAsPsiFactory("LINQ_ORDERBY_ORDERING", CSharpLanguage.INSTANCE, CSharpLinqOrderByOrderingImpl.class);
+	IElementType LINQ_ORDERBY_ORDERING = new CompositeElementTypeAsPsiFactory("LINQ_ORDERBY_ORDERING", CSharpLanguage.INSTANCE, CSharpLinqOrderByOrderingImpl::new);
 
-	IElementType LINQ_SELECT_OR_GROUP_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_SELECT_OR_GROUP_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqSelectOrGroupClauseImpl.class);
+	IElementType LINQ_SELECT_OR_GROUP_CLAUSE = new CompositeElementTypeAsPsiFactory("LINQ_SELECT_OR_GROUP_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqSelectOrGroupClauseImpl::new);
 
-	IElementType LAMBDA_EXPRESSION = new CompositeElementTypeAsPsiFactory("LAMBDA_EXPRESSION", CSharpLanguage.INSTANCE, CSharpLambdaExpressionImpl.class);
+	IElementType LAMBDA_EXPRESSION = new CompositeElementTypeAsPsiFactory("LAMBDA_EXPRESSION", CSharpLanguage.INSTANCE, CSharpLambdaExpressionImpl::new);
 
-	IElementType DELEGATE_EXPRESSION = new CompositeElementTypeAsPsiFactory("DELEGATE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpDelegateExpressionImpl.class);
+	IElementType DELEGATE_EXPRESSION = new CompositeElementTypeAsPsiFactory("DELEGATE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpDelegateExpressionImpl::new);
 
-	IElementType LAMBDA_PARAMETER = new CompositeElementTypeAsPsiFactory("LAMBDA_PARAMETER", CSharpLanguage.INSTANCE, CSharpLambdaParameterImpl.class);
+	IElementType LAMBDA_PARAMETER = new CompositeElementTypeAsPsiFactory("LAMBDA_PARAMETER", CSharpLanguage.INSTANCE, CSharpLambdaParameterImpl::new);
 
-	IElementType LAMBDA_PARAMETER_LIST = new CompositeElementTypeAsPsiFactory("LAMBDA_PARAMETER_LIST", CSharpLanguage.INSTANCE, CSharpLambdaParameterListImpl.class);
+	IElementType LAMBDA_PARAMETER_LIST = new CompositeElementTypeAsPsiFactory("LAMBDA_PARAMETER_LIST", CSharpLanguage.INSTANCE, CSharpLambdaParameterListImpl::new);
 
-	IElementType ANONYM_FIELD_OR_PROPERTY_SET = new CompositeElementTypeAsPsiFactory("ANONYM_FIELD_OR_PROPERTY_SET", CSharpLanguage.INSTANCE, CSharpAnonymFieldOrPropertySetImpl.class);
+	IElementType ANONYM_FIELD_OR_PROPERTY_SET = new CompositeElementTypeAsPsiFactory("ANONYM_FIELD_OR_PROPERTY_SET", CSharpLanguage.INSTANCE, CSharpAnonymFieldOrPropertySetImpl::new);
 
-	IElementType NAMED_FIELD_OR_PROPERTY_SET = new CompositeElementTypeAsPsiFactory("NAMED_FIELD_OR_PROPERTY_SET", CSharpLanguage.INSTANCE, CSharpNamedFieldOrPropertySetImpl.class);
+	IElementType NAMED_FIELD_OR_PROPERTY_SET = new CompositeElementTypeAsPsiFactory("NAMED_FIELD_OR_PROPERTY_SET", CSharpLanguage.INSTANCE, CSharpNamedFieldOrPropertySetImpl::new);
 
-	IElementType FIELD_OR_PROPERTY_SET_BLOCK = new CompositeElementTypeAsPsiFactory("FIELD_OR_PROPERTY_SET_BLOCK", CSharpLanguage.INSTANCE, CSharpFieldOrPropertySetBlockImpl.class);
+	IElementType FIELD_OR_PROPERTY_SET_BLOCK = new CompositeElementTypeAsPsiFactory("FIELD_OR_PROPERTY_SET_BLOCK", CSharpLanguage.INSTANCE, CSharpFieldOrPropertySetBlockImpl::new);
 
-	IElementType ARRAY_INITIALIZER = new CompositeElementTypeAsPsiFactory("ARRAY_INITIALIZER", CSharpLanguage.INSTANCE, CSharpArrayInitializerImpl.class);
+	IElementType ARRAY_INITIALIZER = new CompositeElementTypeAsPsiFactory("ARRAY_INITIALIZER", CSharpLanguage.INSTANCE, CSharpArrayInitializerImpl::new);
 
-	IElementType ARRAY_INITIALIZER_SINGLE_VALUE = new CompositeElementTypeAsPsiFactory("ARRAY_INITIALIZER_SINGLE_VALUE", CSharpLanguage.INSTANCE, CSharpArrayInitializerSingleValueImpl.class);
+	IElementType ARRAY_INITIALIZER_SINGLE_VALUE = new CompositeElementTypeAsPsiFactory("ARRAY_INITIALIZER_SINGLE_VALUE", CSharpLanguage.INSTANCE, CSharpArrayInitializerSingleValueImpl::new);
 
-	IElementType ARRAY_INITIALIZER_COMPOSITE_VALUE = new CompositeElementTypeAsPsiFactory("ARRAY_INITIALIZER_COMPOSITE_VALUE", CSharpLanguage.INSTANCE, CSharpArrayInitializerCompositeValueImpl.class);
+	IElementType ARRAY_INITIALIZER_COMPOSITE_VALUE = new CompositeElementTypeAsPsiFactory("ARRAY_INITIALIZER_COMPOSITE_VALUE", CSharpLanguage.INSTANCE, CSharpArrayInitializerCompositeValueImpl::new);
 
 	IElementType IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION = new CompositeElementTypeAsPsiFactory("IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpImplicitArrayInitializationExpressionImpl.class);
+			CSharpImplicitArrayInitializationExpressionImpl::new);
 
-	IElementType DICTIONARY_INITIALIZER_LIST = new CompositeElementTypeAsPsiFactory("DICTIONARY_INITIALIZER_LIST", CSharpLanguage.INSTANCE, CSharpDictionaryInitializerListImpl.class);
+	IElementType DICTIONARY_INITIALIZER_LIST = new CompositeElementTypeAsPsiFactory("DICTIONARY_INITIALIZER_LIST", CSharpLanguage.INSTANCE, CSharpDictionaryInitializerListImpl::new);
 
-	IElementType DICTIONARY_INITIALIZER = new CompositeElementTypeAsPsiFactory("DICTIONARY_INITIALIZER", CSharpLanguage.INSTANCE, CSharpDictionaryInitializerImpl.class);
+	IElementType DICTIONARY_INITIALIZER = new CompositeElementTypeAsPsiFactory("DICTIONARY_INITIALIZER", CSharpLanguage.INSTANCE, CSharpDictionaryInitializerImpl::new);
 
-	IElementType CALL_ARGUMENT_LIST = new CompositeElementTypeAsPsiFactory("CALL_ARGUMENT_LIST", CSharpLanguage.INSTANCE, CSharpCallArgumentListImpl.class);
+	IElementType CALL_ARGUMENT_LIST = new CompositeElementTypeAsPsiFactory("CALL_ARGUMENT_LIST", CSharpLanguage.INSTANCE, CSharpCallArgumentListImpl::new);
 
-	IElementType CALL_ARGUMENT = new CompositeElementTypeAsPsiFactory("CALL_ARGUMENT", CSharpLanguage.INSTANCE, CSharpCallArgumentImpl.class);
+	IElementType CALL_ARGUMENT = new CompositeElementTypeAsPsiFactory("CALL_ARGUMENT", CSharpLanguage.INSTANCE, CSharpCallArgumentImpl::new);
 
-	IElementType DOC_CALL_ARGUMENT = new CompositeElementTypeAsPsiFactory("DOC_CALL_ARGUMENT", CSharpLanguage.INSTANCE, CSharpDocCallArgumentImpl.class);
+	IElementType DOC_CALL_ARGUMENT = new CompositeElementTypeAsPsiFactory("DOC_CALL_ARGUMENT", CSharpLanguage.INSTANCE, CSharpDocCallArgumentImpl::new);
 
-	IElementType NAMED_CALL_ARGUMENT = new CompositeElementTypeAsPsiFactory("NAMED_CALL_ARGUMENT", CSharpLanguage.INSTANCE, CSharpNamedCallArgumentImpl.class);
+	IElementType NAMED_CALL_ARGUMENT = new CompositeElementTypeAsPsiFactory("NAMED_CALL_ARGUMENT", CSharpLanguage.INSTANCE, CSharpNamedCallArgumentImpl::new);
 
 	IElementType LOCAL_VARIABLE_DECLARATION_STATEMENT = new CompositeElementTypeAsPsiFactory("LOCAL_VARIABLE_DECLARATION_STATEMENT", CSharpLanguage.INSTANCE, CSharpLocalVariableDeclarationStatementImpl
-			.class);
+			::new);
 
-	IElementType EXPRESSION_STATEMENT = new CompositeElementTypeAsPsiFactory("EXPRESSION_STATEMENT", CSharpLanguage.INSTANCE, CSharpExpressionStatementImpl.class);
+	IElementType DECONSTRUCTION_STATEMENT = new CompositeElementTypeAsPsiFactory("DECONSTRUCTION_STATEMENT", CSharpLanguage.INSTANCE, CSharpDeconstructionStatementImpl::new);
 
-	IElementType USING_STATEMENT = new CompositeElementTypeAsPsiFactory("USING_STATEMENT", CSharpLanguage.INSTANCE, CSharpUsingStatementImpl.class);
+	IElementType EXPRESSION_STATEMENT = new CompositeElementTypeAsPsiFactory("EXPRESSION_STATEMENT", CSharpLanguage.INSTANCE, CSharpExpressionStatementImpl::new);
 
-	IElementType LABELED_STATEMENT = new CompositeElementTypeAsPsiFactory("LABELED_STATEMENT", CSharpLanguage.INSTANCE, CSharpLabeledStatementImpl.class);
+	IElementType USING_STATEMENT = new CompositeElementTypeAsPsiFactory("USING_STATEMENT", CSharpLanguage.INSTANCE, CSharpUsingStatementImpl::new);
 
-	IElementType GOTO_STATEMENT = new CompositeElementTypeAsPsiFactory("GOTO_STATEMENT", CSharpLanguage.INSTANCE, CSharpGotoStatementImpl.class);
+	IElementType LABELED_STATEMENT = new CompositeElementTypeAsPsiFactory("LABELED_STATEMENT", CSharpLanguage.INSTANCE, CSharpLabeledStatementImpl::new);
 
-	IElementType FIXED_STATEMENT = new CompositeElementTypeAsPsiFactory("FIXED_STATEMENT", CSharpLanguage.INSTANCE, CSharpFixedStatementImpl.class);
+	IElementType GOTO_STATEMENT = new CompositeElementTypeAsPsiFactory("GOTO_STATEMENT", CSharpLanguage.INSTANCE, CSharpGotoStatementImpl::new);
 
-	IElementType LOCK_STATEMENT = new CompositeElementTypeAsPsiFactory("LOCK_STATEMENT", CSharpLanguage.INSTANCE, CSharpLockStatementImpl.class);
+	IElementType FIXED_STATEMENT = new CompositeElementTypeAsPsiFactory("FIXED_STATEMENT", CSharpLanguage.INSTANCE, CSharpFixedStatementImpl::new);
 
-	IElementType EMPTY_STATEMENT = new CompositeElementTypeAsPsiFactory("EMPTY_STATEMENT", CSharpLanguage.INSTANCE, CSharpEmptyStatementImpl.class);
+	IElementType LOCK_STATEMENT = new CompositeElementTypeAsPsiFactory("LOCK_STATEMENT", CSharpLanguage.INSTANCE, CSharpLockStatementImpl::new);
 
-	IElementType FOREACH_STATEMENT = new CompositeElementTypeAsPsiFactory("FOREACH_STATEMENT", CSharpLanguage.INSTANCE, CSharpForeachStatementImpl.class);
+	IElementType EMPTY_STATEMENT = new CompositeElementTypeAsPsiFactory("EMPTY_STATEMENT", CSharpLanguage.INSTANCE, CSharpEmptyStatementImpl::new);
 
-	IElementType FOR_STATEMENT = new CompositeElementTypeAsPsiFactory("FOR_STATEMENT", CSharpLanguage.INSTANCE, CSharpForStatementImpl.class);
+	IElementType FOREACH_STATEMENT = new CompositeElementTypeAsPsiFactory("FOREACH_STATEMENT", CSharpLanguage.INSTANCE, CSharpForeachStatementImpl::new);
 
-	IElementType TRY_STATEMENT = new CompositeElementTypeAsPsiFactory("TRY_STATEMENT", CSharpLanguage.INSTANCE, CSharpTryStatementImpl.class);
+	IElementType FOR_STATEMENT = new CompositeElementTypeAsPsiFactory("FOR_STATEMENT", CSharpLanguage.INSTANCE, CSharpForStatementImpl::new);
 
-	IElementType CATCH_STATEMENT = new CompositeElementTypeAsPsiFactory("CATCH_STATEMENT", CSharpLanguage.INSTANCE, CSharpCatchStatementImpl.class);
+	IElementType TRY_STATEMENT = new CompositeElementTypeAsPsiFactory("TRY_STATEMENT", CSharpLanguage.INSTANCE, CSharpTryStatementImpl::new);
 
-	IElementType FINALLY_STATEMENT = new CompositeElementTypeAsPsiFactory("FINALLY_STATEMENT", CSharpLanguage.INSTANCE, CSharpFinallyStatementImpl.class);
+	IElementType CATCH_STATEMENT = new CompositeElementTypeAsPsiFactory("CATCH_STATEMENT", CSharpLanguage.INSTANCE, CSharpCatchStatementImpl::new);
 
-	IElementType SWITCH_STATEMENT = new CompositeElementTypeAsPsiFactory("SWITCH_STATEMENT", CSharpLanguage.INSTANCE, CSharpSwitchStatementImpl.class);
+	IElementType FINALLY_STATEMENT = new CompositeElementTypeAsPsiFactory("FINALLY_STATEMENT", CSharpLanguage.INSTANCE, CSharpFinallyStatementImpl::new);
 
-	IElementType UNSAFE_STATEMENT = new CompositeElementTypeAsPsiFactory("UNSAFE_STATEMENT", CSharpLanguage.INSTANCE, CSharpUnsafeStatementImpl.class);
+	IElementType SWITCH_STATEMENT = new CompositeElementTypeAsPsiFactory("SWITCH_STATEMENT", CSharpLanguage.INSTANCE, CSharpSwitchStatementImpl::new);
 
-	IElementType CASE_OR_DEFAULT_STATEMENT = new CompositeElementTypeAsPsiFactory("CASE_OR_DEFAULT_STATEMENT", CSharpLanguage.INSTANCE, CSharpCaseOrDefaultStatementImpl.class);
+	IElementType UNSAFE_STATEMENT = new CompositeElementTypeAsPsiFactory("UNSAFE_STATEMENT", CSharpLanguage.INSTANCE, CSharpUnsafeStatementImpl::new);
 
-	IElementType THROW_STATEMENT = new CompositeElementTypeAsPsiFactory("THROW_STATEMENT_STATEMENT", CSharpLanguage.INSTANCE, CSharpThrowStatementImpl.class);
+	IElementType CASE_OR_DEFAULT_STATEMENT = new CompositeElementTypeAsPsiFactory("CASE_OR_DEFAULT_STATEMENT", CSharpLanguage.INSTANCE, CSharpCaseOrDefaultStatementImpl::new);
 
-	IElementType RETURN_STATEMENT = new CompositeElementTypeAsPsiFactory("RETURN_STATEMENT", CSharpLanguage.INSTANCE, CSharpReturnStatementImpl.class);
+	IElementType THROW_STATEMENT = new CompositeElementTypeAsPsiFactory("THROW_STATEMENT_STATEMENT", CSharpLanguage.INSTANCE, CSharpThrowStatementImpl::new);
 
-	IElementType CHECKED_STATEMENT = new CompositeElementTypeAsPsiFactory("CHECKED_STATEMENT", CSharpLanguage.INSTANCE, CSharpCheckedStatementImpl.class);
+	IElementType RETURN_STATEMENT = new CompositeElementTypeAsPsiFactory("RETURN_STATEMENT", CSharpLanguage.INSTANCE, CSharpReturnStatementImpl::new);
 
-	IElementType YIELD_STATEMENT = new CompositeElementTypeAsPsiFactory("YIELD_STATEMENT", CSharpLanguage.INSTANCE, CSharpYieldStatementImpl.class);
+	IElementType CHECKED_STATEMENT = new CompositeElementTypeAsPsiFactory("CHECKED_STATEMENT", CSharpLanguage.INSTANCE, CSharpCheckedStatementImpl::new);
 
-	IElementType WHILE_STATEMENT = new CompositeElementTypeAsPsiFactory("WHILE_STATEMENT", CSharpLanguage.INSTANCE, CSharpWhileStatementImpl.class);
+	IElementType YIELD_STATEMENT = new CompositeElementTypeAsPsiFactory("YIELD_STATEMENT", CSharpLanguage.INSTANCE, CSharpYieldStatementImpl::new);
 
-	IElementType DO_WHILE_STATEMENT = new CompositeElementTypeAsPsiFactory("DO_WHILE_STATEMENT", CSharpLanguage.INSTANCE, CSharpDoWhileStatementImpl.class);
+	IElementType WHILE_STATEMENT = new CompositeElementTypeAsPsiFactory("WHILE_STATEMENT", CSharpLanguage.INSTANCE, CSharpWhileStatementImpl::new);
 
-	IElementType BREAK_STATEMENT = new CompositeElementTypeAsPsiFactory("BREAK_STATEMENT", CSharpLanguage.INSTANCE, CSharpBreakStatementImpl.class);
+	IElementType DO_WHILE_STATEMENT = new CompositeElementTypeAsPsiFactory("DO_WHILE_STATEMENT", CSharpLanguage.INSTANCE, CSharpDoWhileStatementImpl::new);
 
-	IElementType CONTINUE_STATEMENT = new CompositeElementTypeAsPsiFactory("CONTINUE_STATEMENT", CSharpLanguage.INSTANCE, CSharpContinueStatementImpl.class);
+	IElementType BREAK_STATEMENT = new CompositeElementTypeAsPsiFactory("BREAK_STATEMENT", CSharpLanguage.INSTANCE, CSharpBreakStatementImpl::new);
 
-	IElementType ATTRIBUTE_LIST = new CompositeElementTypeAsPsiFactory("ATTRIBUTE_LIST", CSharpLanguage.INSTANCE, CSharpAttributeListImpl.class);
+	IElementType CONTINUE_STATEMENT = new CompositeElementTypeAsPsiFactory("CONTINUE_STATEMENT", CSharpLanguage.INSTANCE, CSharpContinueStatementImpl::new);
 
-	IElementType ATTRIBUTE = new CompositeElementTypeAsPsiFactory("ATTRIBUTE", CSharpLanguage.INSTANCE, CSharpAttributeImpl.class);
+	IElementType ATTRIBUTE_LIST = new CompositeElementTypeAsPsiFactory("ATTRIBUTE_LIST", CSharpLanguage.INSTANCE, CSharpAttributeListImpl::new);
+
+	IElementType ATTRIBUTE = new CompositeElementTypeAsPsiFactory("ATTRIBUTE", CSharpLanguage.INSTANCE, CSharpAttributeImpl::new);
 
 	IElementType STATEMENT_METHOD_BODY = new BaseMethodBodyLazyElementType("CSHARP_STATEMENT_METHOD_BODY")
 	{

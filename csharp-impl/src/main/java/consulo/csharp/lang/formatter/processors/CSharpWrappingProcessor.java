@@ -155,7 +155,7 @@ public class CSharpWrappingProcessor
 			}
 		}
 
-		if(elementType == CSharpElements.XXX_ACCESSOR)
+		if(elementType == CSharpElements.XACCESSOR)
 		{
 			if(CSharpFormattingUtil.isAutoAccessorOwner(parentPsi) && myCustomSettings.KEEP_AUTO_PROPERTY_IN_ONE_LINE)
 			{

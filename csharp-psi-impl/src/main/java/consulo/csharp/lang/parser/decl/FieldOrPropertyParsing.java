@@ -129,7 +129,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 		}
 		else
 		{
-			parseAccessors(builder, XXX_ACCESSOR, PROPERTY_ACCESSOR_START);
+			parseAccessors(builder, XACCESSOR, PROPERTY_ACCESSOR_START);
 		}
 
 		done(marker, INDEX_METHOD_DECLARATION);
@@ -139,7 +139,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 	{
 		if(builderWrapper.getTokenType() == LBRACE)
 		{
-			parseAccessors(builderWrapper, XXX_ACCESSOR, PROPERTY_ACCESSOR_START);
+			parseAccessors(builderWrapper, XACCESSOR, PROPERTY_ACCESSOR_START);
 
 			if(builderWrapper.getTokenType() == EQ)
 			{

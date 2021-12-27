@@ -151,7 +151,7 @@ public class CSharpSpacingSettings implements CSharpTokens, CSharpElements
 		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, METHOD_DECLARATION), commonSettings.SPACE_BEFORE_METHOD_LBRACE);
 		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, CONSTRUCTOR_DECLARATION), commonSettings.SPACE_BEFORE_METHOD_LBRACE);
 		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, CONVERSION_METHOD_DECLARATION), commonSettings.SPACE_BEFORE_METHOD_LBRACE);
-		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, XXX_ACCESSOR), commonSettings.SPACE_BEFORE_METHOD_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, XACCESSOR), commonSettings.SPACE_BEFORE_METHOD_LBRACE);
 
 		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, SWITCH_STATEMENT), commonSettings.SPACE_BEFORE_SWITCH_LBRACE);
 		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, FOR_STATEMENT), commonSettings.SPACE_BEFORE_FOR_LBRACE);
@@ -171,7 +171,7 @@ public class CSharpSpacingSettings implements CSharpTokens, CSharpElements
 			spaceIfNoBlankLines(myBuilder.afterInside(LBRACE, EVENT_DECLARATION), true);
 			spaceIfNoBlankLines(myBuilder.afterInside(LBRACE, INDEX_METHOD_DECLARATION), true);
 
-			spaceIfNoBlankLines(myBuilder.between(XXX_ACCESSOR, XXX_ACCESSOR), true);
+			spaceIfNoBlankLines(myBuilder.between(XACCESSOR, XACCESSOR), true);
 
 			spaceIfNoBlankLines(myBuilder.beforeInside(RBRACE, PROPERTY_DECLARATION), true);
 			spaceIfNoBlankLines(myBuilder.beforeInside(RBRACE, EVENT_DECLARATION), true);

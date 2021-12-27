@@ -147,7 +147,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Advice);
 		}
-		else if(element instanceof CSharpLocalVariable || element instanceof CSharpLinqVariable)
+		else if(element instanceof CSharpLocalVariable || element instanceof CSharpLinqVariable || element instanceof CSharpTupleVariable)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Variable);
 			iconDescriptor.setRightIcon(AllIcons.Nodes.C_plocal);

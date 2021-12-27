@@ -364,6 +364,30 @@ public class StatementParsing extends SharedParsingHelpers
 					statementMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 				}
 				return ParseVariableOrExpressionResult.VARIABLE;
+			case TYPED_DECONSTRUCTION:
+				parseType(builder);
+
+				if(builder.getTokenType() == EQ)
+				{
+					builder.advanceLexer();
+
+					if(ExpressionParsing.parse(builder, ModifierSet.EMPTY) == null)
+					{
+						builder.error("Expression expected");
+					}
+				}
+
+				if(statementMarker != null)
+				{
+					expect(builder, SEMICOLON, "';' expected");
+
+					statementMarker.done(DECONSTRUCTION_STATEMENT);
+				}
+				else
+				{
+					builder.error("Statement expected");
+				}
+				return ParseVariableOrExpressionResult.VARIABLE;
 			default:
 				throw new UnsupportedOperationException();
 		}
@@ -374,7 +398,8 @@ public class StatementParsing extends SharedParsingHelpers
 		NONE,
 		WITH_NAME,
 		LOCAL_METHOD,
-		NO_NAME
+		NO_NAME,
+		TYPED_DECONSTRUCTION
 	}
 
 	@Nonnull
@@ -432,6 +457,11 @@ public class StatementParsing extends SharedParsingHelpers
 			}
 			else
 			{
+				if(typeInfo.isTuple && builder.getTokenType() == CSharpTokens.EQ)
+				{
+					return LocalVarType.TYPED_DECONSTRUCTION;
+				}
+
 				if(StringUtil.containsLineBreak(sequence))
 				{
 					return LocalVarType.NO_NAME;

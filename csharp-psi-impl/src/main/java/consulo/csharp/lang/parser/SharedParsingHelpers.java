@@ -84,6 +84,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		public boolean isArray;
 		public boolean isArrayError;
 		public boolean isMultiArray;
+		public boolean isTuple;
 		public PsiBuilder.Marker marker;
 	}
 
@@ -399,6 +400,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 					expect(builder, CSharpTokens.RPAR, "Expected ')'");
 				}
 			}
+			typeInfo.isTuple = true;
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.TUPLE_TYPE : CSharpElements.TUPLE_TYPE);
 		}
 		else if(builder.getTokenType() == CSharpTokens.IDENTIFIER || builder.getTokenType() == CSharpSoftTokens.GLOBAL_KEYWORD)

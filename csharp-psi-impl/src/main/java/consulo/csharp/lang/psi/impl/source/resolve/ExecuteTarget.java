@@ -160,6 +160,7 @@ public enum ExecuteTarget
 							element instanceof CSharpCaseVariableImpl ||
 							element instanceof CSharpOutRefVariableImpl ||
 							element instanceof CSharpLambdaParameter ||
+							element instanceof CSharpTupleVariable ||
 							element instanceof CSharpElementGroup && isLocalMethodGroup((CSharpElementGroup) element);
 				}
 
