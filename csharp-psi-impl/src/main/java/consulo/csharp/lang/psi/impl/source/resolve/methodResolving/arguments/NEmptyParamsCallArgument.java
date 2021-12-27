@@ -16,15 +16,13 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments;
 
-import java.util.Collections;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetTypeRef;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -32,9 +30,10 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class NEmptyParamsCallArgument extends NParamsCallArgument
 {
+	@RequiredReadAction
 	public NEmptyParamsCallArgument(@Nonnull DotNetParameter parameter)
 	{
-		super(Collections.<CSharpCallArgument>emptyList(), parameter);
+		super(parameter.getProject(), parameter.getResolveScope(), List.of(), parameter);
 	}
 
 	@Override

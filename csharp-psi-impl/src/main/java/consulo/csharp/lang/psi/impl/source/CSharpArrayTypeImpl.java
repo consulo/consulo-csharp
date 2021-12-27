@@ -45,7 +45,7 @@ public class CSharpArrayTypeImpl extends CSharpTypeElementImpl implements CSharp
 	{
 		DotNetType innerType = getInnerType();
 
-		return new CSharpArrayTypeRef(innerType.toTypeRef(), getDimensions());
+		return new CSharpArrayTypeRef(getProject(), getResolveScope(), innerType.toTypeRef(), getDimensions());
 	}
 
 	@RequiredReadAction

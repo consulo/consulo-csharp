@@ -16,15 +16,18 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.Trinity;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.util.ArrayUtil2;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.Trinity;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -33,11 +36,31 @@ import com.intellij.openapi.util.Trinity;
 public class SimpleParameterResolveContext implements ParameterResolveContext<CSharpSimpleParameterInfo>
 {
 	@Nonnull
+	private final Project myProject;
+	@Nonnull
+	private final GlobalSearchScope myResolveScope;
+	@Nonnull
 	private final CSharpSimpleParameterInfo[] myParameterInfos;
 
-	public SimpleParameterResolveContext(@Nonnull CSharpSimpleParameterInfo[] parameterInfos)
+	public SimpleParameterResolveContext(@Nonnull Project project, @Nonnull GlobalSearchScope resolveScope, @Nonnull CSharpSimpleParameterInfo[] parameterInfos)
 	{
+		myProject = project;
+		myResolveScope = resolveScope;
 		myParameterInfos = parameterInfos;
+	}
+
+	@Override
+	@Nonnull
+	public Project getProject()
+	{
+		return myProject;
+	}
+
+	@Override
+	@Nonnull
+	public GlobalSearchScope getResolveScope()
+	{
+		return myResolveScope;
 	}
 
 	@Nullable

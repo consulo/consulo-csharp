@@ -17,6 +17,7 @@
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving;
 
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.RecursionManager;
 import com.intellij.openapi.util.Trinity;
@@ -66,9 +67,9 @@ public class NCallArgumentBuilder
 
 	@Nonnull
 	@RequiredReadAction
-	public static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull CSharpSimpleParameterInfo[] parameterInfos, @Nonnull GlobalSearchScope scope)
+	public static List<NCallArgument> buildCallArguments(@Nonnull Project project, @Nonnull CSharpCallArgument[] callArguments, @Nonnull CSharpSimpleParameterInfo[] parameterInfos, @Nonnull GlobalSearchScope scope)
 	{
-		return buildCallArguments(callArguments, scope, new SimpleParameterResolveContext(parameterInfos));
+		return buildCallArguments(callArguments, scope, new SimpleParameterResolveContext(project, scope, parameterInfos));
 	}
 
 	@Nonnull
@@ -219,7 +220,7 @@ public class NCallArgumentBuilder
 			// if we have params arguments add to list it
 			if(!paramsArguments.isEmpty())
 			{
-				list.add(new NParamsCallArgument(paramsArguments, context.getParamsParameter()));
+				list.add(new NParamsCallArgument(context.getProject(), context.getResolveScope(), paramsArguments, context.getParamsParameter()));
 			}
 			else
 			{
@@ -318,10 +319,10 @@ public class NCallArgumentBuilder
 
 	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull CSharpSimpleParameterInfo[] p, @Nonnull GlobalSearchScope scope)
+	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull CSharpSimpleParameterInfo[] p, @Nonnull GlobalSearchScope resolveScope)
 	{
-		List<NCallArgument> list = buildCallArguments(callArgumentListOwner.getCallArguments(), scope, new SimpleParameterResolveContext(p));
-		return calc(list, scope);
+		List<NCallArgument> list = buildCallArguments(callArgumentListOwner.getCallArguments(), resolveScope, new SimpleParameterResolveContext(callArgumentListOwner.getProject(), resolveScope, p));
+		return calc(list, resolveScope);
 	}
 
 	@Nonnull

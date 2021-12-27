@@ -16,10 +16,12 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
@@ -92,6 +94,8 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 		else
 		{
 			DotNetTypeRef typeRef;
+			Project project = getProject();
+			GlobalSearchScope resolveScope = getResolveScope();
 			if(canResolve())
 			{
 				DotNetTypeRef[] arguments = DotNetTypeRef.EMPTY_ARRAY;
@@ -101,7 +105,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 					arguments = ((CSharpUserType) type).getReferenceExpression().getTypeArgumentListRefs();
 					PsiElement psiElement = CSharpReferenceExpressionImplUtil.resolveByTypeKind(((CSharpUserType) type).getReferenceExpression(),
 							false);
-					typeRef = CSharpReferenceExpressionImplUtil.toTypeRef(getResolveScope(), psiElement);
+					typeRef = CSharpReferenceExpressionImplUtil.toTypeRef(resolveScope, psiElement);
 				}
 				else
 				{
@@ -110,7 +114,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 
 				if(arguments.length != 0)
 				{
-					typeRef = new CSharpGenericWrapperTypeRef(getProject(), getResolveScope(), typeRef, arguments);
+					typeRef = new CSharpGenericWrapperTypeRef(project, resolveScope, typeRef, arguments);
 				}
 			}
 			else
@@ -120,7 +124,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 
 			for(CSharpNewArrayLengthImpl length : arrayLengths)
 			{
-				typeRef = new CSharpArrayTypeRef(typeRef, length.getDimensionSize());
+				typeRef = new CSharpArrayTypeRef(project, resolveScope, typeRef, length.getDimensionSize());
 			}
 			return typeRef;
 		}
@@ -170,7 +174,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 		}
 		//TODO [VISTALL] better calc
 		DotNetTypeRef firstItem = ContainerUtil.getFirstItem(typeRefs);
-		return new CSharpArrayTypeRef(firstItem, 0);
+		return new CSharpArrayTypeRef(newExpression.getProject(), newExpression.getResolveScope(), firstItem, 0);
 	}
 
 	@Override

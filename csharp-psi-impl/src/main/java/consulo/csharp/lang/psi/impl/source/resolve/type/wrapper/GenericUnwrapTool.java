@@ -317,7 +317,7 @@ public class GenericUnwrapTool
 		else if(typeRef instanceof CSharpArrayTypeRef)
 		{
 			CSharpArrayTypeRef arrayType = (CSharpArrayTypeRef) typeRef;
-			return new CSharpArrayTypeRef(exchangeTypeRef(arrayType.getInnerTypeRef(), func), arrayType.getDimensions());
+			return new CSharpArrayTypeRef(project, resolveScope, exchangeTypeRef(arrayType.getInnerTypeRef(), func), arrayType.getDimensions());
 		}
 		else
 		{

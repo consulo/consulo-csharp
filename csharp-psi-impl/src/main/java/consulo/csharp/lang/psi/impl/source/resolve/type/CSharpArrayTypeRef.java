@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
+import consulo.annotation.DeprecationInfo;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -64,6 +65,16 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	private final int myDimensions;
 
 	@RequiredReadAction
+	public CSharpArrayTypeRef(@Nonnull Project project, @Nonnull GlobalSearchScope scope, @Nonnull DotNetTypeRef innerTypeRef, int dimensions)
+	{
+		super(project, scope);
+		myInnerTypeRef = innerTypeRef;
+		myDimensions = dimensions;
+	}
+
+	@RequiredReadAction
+	@Deprecated
+	@DeprecationInfo("Use contructor with project parameter")
 	public CSharpArrayTypeRef(@Nonnull DotNetTypeRef innerTypeRef, int dimensions)
 	{
 		super(innerTypeRef.getProject(), innerTypeRef.getResolveScope());

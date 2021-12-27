@@ -16,13 +16,15 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Trinity;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.util.Trinity;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -61,4 +63,10 @@ public interface ParameterResolveContext<T>
 	@Nonnull
 	@RequiredReadAction
 	Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(@Nonnull T parameter);
+
+	@Nonnull
+	Project getProject();
+
+	@Nonnull
+	GlobalSearchScope getResolveScope();
 }

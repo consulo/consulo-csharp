@@ -254,7 +254,7 @@ public class MsilToCSharpUtil
 		else if(typeRef instanceof MsilArrayTypRefImpl)
 		{
 			int[] lowerValues = ((MsilArrayTypRefImpl) typeRef).getLowerValues();
-			return new CSharpArrayTypeRef(extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef()), lowerValues.length == 0 ? 0 : lowerValues.length - 1);
+			return new CSharpArrayTypeRef(project, resolveScope, extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef()), lowerValues.length == 0 ? 0 : lowerValues.length - 1);
 		}
 		else if(typeRef instanceof MsilPointerTypeRefImpl)
 		{

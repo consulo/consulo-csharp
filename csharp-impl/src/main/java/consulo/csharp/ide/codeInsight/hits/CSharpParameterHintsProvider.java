@@ -106,7 +106,7 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 			DotNetTypeResolveResult resolve = ref.resolve();
 			if(resolve instanceof CSharpLambdaResolveResult)
 			{
-				return NCallArgumentBuilder.buildCallArguments(callArguments, ((CSharpLambdaResolveResult) resolve).getParameterInfos(), scopedElement.getResolveScope());
+				return NCallArgumentBuilder.buildCallArguments(scopedElement.getProject(), callArguments, ((CSharpLambdaResolveResult) resolve).getParameterInfos(), scopedElement.getResolveScope());
 			}
 		}
 		else if(callable instanceof DotNetParameterListOwner)

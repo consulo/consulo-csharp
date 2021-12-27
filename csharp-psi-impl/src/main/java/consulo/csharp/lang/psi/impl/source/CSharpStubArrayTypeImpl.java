@@ -53,7 +53,7 @@ public class CSharpStubArrayTypeImpl extends CSharpStubTypeElementImpl<CSharpWit
 	{
 		DotNetType innerType = getInnerType();
 
-		return new CSharpArrayTypeRef(innerType.toTypeRef(), getDimensions());
+		return new CSharpArrayTypeRef(getProject(), getResolveScope(), innerType.toTypeRef(), getDimensions());
 	}
 
 	@RequiredReadAction

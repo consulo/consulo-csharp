@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.Trinity;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ArrayUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
@@ -37,6 +39,7 @@ import javax.annotation.Nullable;
  */
 public class MethodParameterResolveContext implements ParameterResolveContext<DotNetParameter>
 {
+	private final DotNetParameterListOwner myParameterListOwner;
 	private final boolean myResolveFromParent;
 	private final DotNetParameter[] myParameters;
 	private DotNetParameter myParamsParameter;
@@ -44,8 +47,10 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 	private final NotNullLazyValue<DotNetTypeRef> myInnerParamsParameterTypeRefValue;
 	private final NotNullLazyValue<DotNetTypeRef> myParamsParameterTypeRefValue;
 
+	@RequiredReadAction
 	public MethodParameterResolveContext(DotNetParameterListOwner parameterListOwner, boolean resolveFromParent)
 	{
+		myParameterListOwner = parameterListOwner;
 		myResolveFromParent = resolveFromParent;
 		myParameters = parameterListOwner.getParameters();
 		myParamsParameter = ArrayUtil.getLastElement(myParameters);
@@ -57,6 +62,20 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 		myInnerParamsParameterTypeRefValue = NotNullLazyValue.createValue(() -> myParamsParameter == null ? DotNetTypeRef.ERROR_TYPE : CSharpResolveUtil.resolveIterableType(getParamsParameterTypeRef
 				()));
 		myParamsParameterTypeRefValue = NotNullLazyValue.createValue(() -> myParamsParameter == null ? DotNetTypeRef.ERROR_TYPE : myParamsParameter.toTypeRef(true));
+	}
+
+	@Nonnull
+	@Override
+	public Project getProject()
+	{
+		return myParameterListOwner.getProject();
+	}
+
+	@Nonnull
+	@Override
+	public GlobalSearchScope getResolveScope()
+	{
+		return myParameterListOwner.getResolveScope();
 	}
 
 	@Override

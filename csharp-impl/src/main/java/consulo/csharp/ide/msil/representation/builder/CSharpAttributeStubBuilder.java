@@ -217,7 +217,7 @@ public class CSharpAttributeStubBuilder
 		else if(typeSignature instanceof ArrayTypeSignature)
 		{
 			ArrayShapeSignature arrayShape = ((ArrayTypeSignature) typeSignature).getArrayShape();
-			return new CSharpArrayTypeRef(toTypeRef(project, scope, ((ArrayTypeSignature) typeSignature).getElementType(), false), arrayShape.getRank());
+			return new CSharpArrayTypeRef(project, scope, toTypeRef(project, scope, ((ArrayTypeSignature) typeSignature).getElementType(), false), arrayShape.getRank());
 		}
 		else if(typeSignature instanceof ValueTypeSignature)
 		{

@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotation.access.RequiredReadAction;
@@ -47,7 +48,7 @@ public class NParamsCallArgument extends NCallArgument
 	private final NotNullLazyValue<DotNetTypeRef> myTypeRefValue;
 
 	@RequiredReadAction
-	public NParamsCallArgument(@Nonnull List<CSharpCallArgument> callArguments, @Nullable DotNetParameter parameter)
+	public NParamsCallArgument(@Nonnull Project project, @Nonnull GlobalSearchScope resolveScope, @Nonnull List<CSharpCallArgument> callArguments, @Nullable DotNetParameter parameter)
 	{
 		super(DotNetTypeRef.ERROR_TYPE, null, parameter);
 		myCallArguments = callArguments;
@@ -65,7 +66,7 @@ public class NParamsCallArgument extends NCallArgument
 				typeRefs.add(argumentExpression.toTypeRef(false));
 			}
 
-			return new CSharpArrayTypeRef(typeRefs.get(0), 0);
+			return new CSharpArrayTypeRef(project, resolveScope, typeRefs.get(0), 0);
 		});
 	}
 
