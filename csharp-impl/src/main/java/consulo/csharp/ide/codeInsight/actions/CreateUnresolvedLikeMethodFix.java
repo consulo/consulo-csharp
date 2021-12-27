@@ -71,7 +71,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 	public String buildArgumentTypeRefs()
 	{
 		CSharpReferenceExpression element = myPointer.getElement();
-		if(element == null)
+		if(element == null || !element.isValid())
 		{
 			return null;
 		}
