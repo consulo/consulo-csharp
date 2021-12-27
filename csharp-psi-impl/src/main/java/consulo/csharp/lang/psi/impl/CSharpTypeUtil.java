@@ -346,10 +346,7 @@ public class CSharpTypeUtil
 			// extract here
 			declaration = GenericUnwrapTool.extract(declaration, extractor);
 
-			final CSharpConversionMethodDeclaration finalDeclaration = declaration;
-			Boolean result = CSharpInheritableChecker.create(finalDeclaration.getReturnTypeRef(), to).withCastType(CSharpCastType.IMPLICIT, resolveScope).withContext(context).check().isSuccess();
-
-			if(result == Boolean.FALSE)
+			if(!CSharpInheritableChecker.create(declaration.getReturnTypeRef(), to).withCastType(CSharpCastType.IMPLICIT, resolveScope).withContext(context).check().isSuccess())
 			{
 				continue;
 			}
@@ -361,7 +358,7 @@ public class CSharpTypeUtil
 				continue;
 			}
 
-			if(isInheritable(parameterTypeRef, from))
+			if(CSharpInheritableChecker.create(from, parameterTypeRef).withCastType(CSharpCastType.IMPLICIT, resolveScope).withContext(context).check().isSuccess())
 			{
 				return new InheritResult(true, declaration);
 			}
