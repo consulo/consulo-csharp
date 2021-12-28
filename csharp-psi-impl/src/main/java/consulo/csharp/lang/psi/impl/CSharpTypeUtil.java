@@ -362,6 +362,11 @@ public class CSharpTypeUtil
 			{
 				return new InheritResult(true, declaration);
 			}
+
+			if(CSharpInheritableChecker.create(parameterTypeRef, from).withCastType(CSharpCastType.IMPLICIT, resolveScope).withContext(context).check().isSuccess())
+			{
+				return new InheritResult(true, declaration);
+			}
 		}
 		return fail();
 	}
