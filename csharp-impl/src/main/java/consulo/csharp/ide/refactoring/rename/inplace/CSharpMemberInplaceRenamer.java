@@ -18,16 +18,16 @@ package consulo.csharp.ide.refactoring.rename.inplace;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.refactoring.rename.inplace.MemberInplaceRenamer;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiReference;
+import consulo.util.lang.Comparing;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.editor.refactoring.rename.inplace.MemberInplaceRenamer;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpNamedElement;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetNamedElement;
 
 /**

@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.debugger;
 
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiElement;
+import consulo.util.lang.Pair;
+import consulo.language.psi.PsiElement;
 import consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
 import consulo.dotnet.debugger.DotNetDebugContext;
 import consulo.dotnet.debugger.proxy.*;

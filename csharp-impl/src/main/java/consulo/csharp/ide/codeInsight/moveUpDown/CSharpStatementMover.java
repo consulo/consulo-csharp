@@ -16,32 +16,27 @@
 
 package consulo.csharp.ide.codeInsight.moveUpDown;
 
-import com.intellij.codeInsight.editorActions.moveUpDown.LineMover;
-import com.intellij.codeInsight.editorActions.moveUpDown.LineRange;
-import com.intellij.codeInsight.editorActions.moveUpDown.StatementUpDownMover;
-import consulo.logging.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.LogicalPosition;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.PsiDocumentManagerImpl;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilCore;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.refactoring.util.CSharpRefactoringUtil;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.LogicalPosition;
+import consulo.csharp.lang.impl.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.impl.psi.source.*;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.*;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.psi.DotNetVariable;
+import consulo.language.editor.moveUpDown.LineMover;
+import consulo.language.editor.moveUpDown.LineRange;
+import consulo.language.editor.moveUpDown.StatementUpDownMover;
+import consulo.language.psi.*;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.logging.Logger;
+import consulo.util.lang.Pair;
 
 import javax.annotation.Nonnull;
 
@@ -378,7 +373,7 @@ class CSharpStatementMover extends LineMover
 		if(endOffset > document.getTextLength())
 		{
 			LOG.assertTrue(!PsiDocumentManager.getInstance(file.getProject()).isUncommited(document));
-			LOG.assertTrue(PsiDocumentManagerImpl.checkConsistency(file, document));
+			LOG.assertTrue(PsiDocumentManager.getInstance(file.getProject()).checkConsistency(file, document));
 		}
 		int endLine;
 		if(endOffset == document.getTextLength())

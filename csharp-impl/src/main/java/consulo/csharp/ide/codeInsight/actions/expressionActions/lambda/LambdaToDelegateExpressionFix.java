@@ -16,21 +16,23 @@
 
 package consulo.csharp.ide.codeInsight.actions.expressionActions.lambda;
 
-import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiUtilCore;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
 import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.intention.PsiElementBaseIntentionAction;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 

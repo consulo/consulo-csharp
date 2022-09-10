@@ -16,19 +16,20 @@
 
 package consulo.csharp.ide.completion.patterns;
 
-import com.intellij.patterns.PatternCondition;
-import com.intellij.patterns.PsiElementPattern;
-import com.intellij.patterns.StandardPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ProcessingContext;
+import consulo.language.pattern.PatternCondition;
+import consulo.language.pattern.PsiElementPattern;
+import consulo.language.pattern.StandardPatterns;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiErrorElement;
+import consulo.language.psi.util.PsiTreeUtil;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.psi.UsefulPsiTreeUtil;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpConstructorSuperCallImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpExpressionStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetType;
+import consulo.language.util.ProcessingContext;
 
 import javax.annotation.Nonnull;
 

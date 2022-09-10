@@ -16,26 +16,25 @@
 
 package consulo.csharp.ide.lineMarkerProvider;
 
-import java.awt.event.MouseEvent;
-import java.util.Collection;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
+import consulo.csharp.lang.psi.CSharpIdentifier;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.ui.PsiElementListNavigator;
+import consulo.language.psi.NavigatablePsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.PsiUtilCore;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Comparing;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.intellij.codeInsight.daemon.impl.PsiElementListNavigator;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpIdentifier;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import java.awt.event.MouseEvent;
+import java.util.Collection;
+import java.util.function.Function;
 
 /**
  * @author VISTALL
@@ -43,14 +42,7 @@ import consulo.dotnet.psi.DotNetVirtualImplementOwner;
  */
 public class CSharpLineMarkerUtil
 {
-	public static final Function<PsiElement, PsiElement> BY_PARENT = new Function<PsiElement, PsiElement>()
-	{
-		@Override
-		public PsiElement fun(PsiElement element)
-		{
-			return element.getParent();
-		}
-	};
+	public static final Function<PsiElement, PsiElement> BY_PARENT = element -> element.getParent();
 
 	@RequiredReadAction
 	public static void openTargets(@Nonnull Collection<? extends PsiElement> members, @Nonnull MouseEvent mouseEvent, @Nonnull String text, @Nonnull final Function<PsiElement, PsiElement> map)
@@ -58,8 +50,8 @@ public class CSharpLineMarkerUtil
 		NavigatablePsiElement[] navigatablePsiElements = members.toArray(new NavigatablePsiElement[members.size()]);
 		ContainerUtil.sort(navigatablePsiElements, (o1, o2) ->
 		{
-			PsiElement map1 = map.fun(o1);
-			PsiElement map2 = map.fun(o2);
+			PsiElement map1 = map.apply(o1);
+			PsiElement map2 = map.apply(o2);
 			if(map1 instanceof PsiNamedElement && map2 instanceof PsiNamedElement)
 			{
 				return Comparing.compare(((PsiNamedElement) map1).getName(), ((PsiNamedElement) map2).getName());

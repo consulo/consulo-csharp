@@ -27,7 +27,7 @@ import consulo.csharp.lang.psi.CSharpCallArgumentList;
 import consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.util.ArrayUtil2;
-import com.intellij.util.ArrayUtil;
+import consulo.util.collection.ArrayUtil;
 
 /**
  * @author VISTALL

@@ -16,24 +16,25 @@
 
 package consulo.csharp.ide.highlight.check;
 
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
-import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
-import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.progress.ProgressIndicatorProvider;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.application.progress.ProgressIndicatorProvider;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.lang.doc.CSharpDocUtil;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetElement;
-import consulo.msil.representation.fileSystem.MsilFileRepresentationVirtualFile;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.intention.QuickFixAction;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.language.editor.rawHighlight.HighlightInfoHolder;
+import consulo.language.editor.rawHighlight.HighlightVisitor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.msil.impl.representation.fileSystem.MsilFileRepresentationVirtualFile;
+import consulo.virtualFileSystem.VirtualFile;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -42,6 +43,7 @@ import java.util.List;
  * @author VISTALL
  * @since 18.11.14
  */
+@ExtensionImpl
 public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements HighlightVisitor
 {
 	private HighlightInfoHolder myHighlightInfoHolder;
@@ -123,11 +125,5 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 	public HighlightVisitor clone()
 	{
 		return new CSharpCompilerCheckVisitor();
-	}
-
-	@Override
-	public int order()
-	{
-		return 0;
 	}
 }

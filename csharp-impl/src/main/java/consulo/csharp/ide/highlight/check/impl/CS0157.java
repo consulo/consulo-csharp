@@ -22,17 +22,17 @@ import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.impl.source.CSharpFinallyStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpFinallyStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpReturnStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.project.Project;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
 
 /**
  * @author VISTALL

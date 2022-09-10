@@ -16,14 +16,19 @@
 
 package consulo.csharp.ide.codeInspection.unusedUsing;
 
-import com.intellij.codeInspection.*;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.editor.inspection.LocalInspectionToolSession;
+import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.project.Project;
 import consulo.util.dataholder.Key;
 
 import javax.annotation.Nonnull;
@@ -33,7 +38,7 @@ import java.util.Map;
  * @author VISTALL
  * @since 05.03.2016
  */
-public class UnusedUsingInspection extends LocalInspectionTool
+public abstract class UnusedUsingInspection extends LocalInspectionTool
 {
 	public static final class DeleteStatement extends LocalQuickFixOnPsiElement
 	{

@@ -19,11 +19,11 @@ package consulo.csharp.ide.codeStyle;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import consulo.csharp.lang.CSharpLanguage;
-import com.intellij.lang.Language;
-import com.intellij.openapi.options.Configurable;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CodeStyleSettingsProvider;
-import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
+import consulo.configurable.Configurable;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.Language;
+import consulo.language.codeStyle.CustomCodeStyleSettings;
+import consulo.language.codeStyle.setting.CodeStyleSettingsProvider;
 
 /**
  * @author VISTALL

@@ -19,17 +19,17 @@ package consulo.csharp.ide.liveTemplates.expression;
 import javax.annotation.Nullable;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.template.Expression;
-import com.intellij.codeInsight.template.ExpressionContext;
-import com.intellij.codeInsight.template.Result;
-import com.intellij.codeInsight.template.TextResult;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.template.ExpressionContext;
+import consulo.language.editor.template.TextResult;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.editor.template.Expression;
+import consulo.language.editor.template.Result;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
 
 /**
  * @author VISTALL

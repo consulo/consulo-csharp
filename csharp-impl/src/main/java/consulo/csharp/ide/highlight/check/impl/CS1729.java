@@ -22,13 +22,13 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import consulo.codeEditor.Editor;
+import consulo.language.editor.inspection.LocalQuickFixAndIntentionActionOnPsiElement;
+import consulo.language.psi.PsiFile;
 import org.jetbrains.annotations.Nls;
-import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import consulo.project.Project;
+import consulo.util.lang.Pair;
+import consulo.language.psi.PsiElement;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.actions.generate.GenerateConstructorHandler;
@@ -36,16 +36,16 @@ import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
-import consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
+import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
+import consulo.csharp.lang.impl.psi.resolve.CSharpResolveContextUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpTypeDeclarationImplUtil;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 
 /**
  * @author VISTALL

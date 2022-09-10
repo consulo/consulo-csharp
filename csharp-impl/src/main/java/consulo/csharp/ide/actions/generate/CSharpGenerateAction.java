@@ -20,14 +20,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import com.intellij.codeInsight.CodeInsightActionHandler;
-import com.intellij.codeInsight.actions.CodeInsightAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import consulo.language.editor.action.CodeInsightAction;
+import consulo.language.editor.action.CodeInsightActionHandler;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 
 /**
  * @author VISTALL

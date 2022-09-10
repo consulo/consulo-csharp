@@ -16,15 +16,21 @@
 
 package consulo.csharp.ide.idCache;
 
-import com.intellij.lexer.Lexer;
-import com.intellij.psi.impl.cache.impl.OccurrenceConsumer;
-import com.intellij.psi.impl.cache.impl.id.LexerBasedIdIndexer;
-import consulo.csharp.lang.lexer.CSharpLexer;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpFileType;
+import consulo.language.lexer.Lexer;
+import consulo.language.psi.stub.LexerBasedIdIndexer;
+import consulo.language.psi.stub.OccurrenceConsumer;
+import consulo.csharp.lang.impl.lexer.CSharpLexer;
+import consulo.virtualFileSystem.fileType.FileType;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 07-May-17
  */
+@ExtensionImpl
 public class CSharpIdIndexer extends LexerBasedIdIndexer
 {
 	@Override
@@ -36,5 +42,12 @@ public class CSharpIdIndexer extends LexerBasedIdIndexer
 	public static Lexer createIndexingLexer(OccurrenceConsumer consumer)
 	{
 		return new CSharpIdFilterLexer(new CSharpLexer(), consumer);
+	}
+
+	@Nonnull
+	@Override
+	public FileType getFileType()
+	{
+		return CSharpFileType.INSTANCE;
 	}
 }

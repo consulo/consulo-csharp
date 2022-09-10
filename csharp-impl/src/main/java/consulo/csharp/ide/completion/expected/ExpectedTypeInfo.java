@@ -18,8 +18,8 @@ package consulo.csharp.ide.completion.expected;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.intellij.psi.PsiElement;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.language.psi.PsiElement;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL

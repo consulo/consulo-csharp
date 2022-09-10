@@ -16,18 +16,18 @@
 
 package consulo.csharp.ide.highlight;
 
-import com.intellij.lexer.LayeredLexer;
-import com.intellij.lexer.StringLiteralLexer;
-import com.intellij.psi.tree.IElementType;
-import consulo.csharp.cfs.ide.highlight.CfsSyntaxHighlighter;
-import consulo.csharp.lang.CSharpCfsLanguageVersion;
-import consulo.csharp.lang.doc.lexer.CSharpDocLexer;
-import consulo.csharp.lang.lexer.CSharpLexer;
-import consulo.csharp.lang.lexer.CSharpPreprocessorHightlightLexer;
-import consulo.csharp.lang.lexer._CSharpLexer;
-import consulo.csharp.lang.psi.CSharpTemplateTokens;
+import consulo.csharp.cfs.impl.CSharpCfsLanguageVersion;
+import consulo.csharp.lang.doc.impl.lexer.CSharpDocLexer;
+import consulo.csharp.lang.impl.lexer.CSharpLexer;
+import consulo.csharp.lang.impl.lexer.CSharpPreprocessorHightlightLexer;
+import consulo.csharp.lang.impl.lexer._CSharpLexer;
+import consulo.csharp.lang.impl.psi.CSharpTemplateTokens;
+import consulo.csharp.lang.impl.psi.CSharpTokensImpl;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpTokensImpl;
+import consulo.dotnet.cfs.ide.highlight.CfsSyntaxHighlighter;
+import consulo.language.ast.IElementType;
+import consulo.language.lexer.LayeredLexer;
+import consulo.language.lexer.StringLiteralLexer;
 
 /**
  * @author VISTALL

@@ -18,15 +18,16 @@ package consulo.csharp.ide.highlight.check.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.intellij.psi.util.PsiTreeUtil;
+
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetStatement;
+import consulo.language.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL

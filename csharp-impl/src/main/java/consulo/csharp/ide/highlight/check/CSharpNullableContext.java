@@ -16,18 +16,22 @@
 
 package consulo.csharp.ide.highlight.check;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.*;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.parser.preprocessor.NullableDirective;
-import consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
-import consulo.csharp.lang.parser.preprocessor.PreprocessorLightParser;
-import consulo.csharp.lang.psi.CSharpPreprocessorElements;
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import consulo.csharp.lang.psi.impl.source.CSharpPreprocessorNullableImpl;
+import consulo.application.util.CachedValueProvider;
+import consulo.csharp.lang.impl.parser.preprocessor.NullableDirective;
+import consulo.csharp.lang.impl.parser.preprocessor.PreprocessorDirective;
+import consulo.csharp.lang.impl.parser.preprocessor.PreprocessorLightParser;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
+import consulo.csharp.lang.impl.psi.CSharpRecursiveElementVisitor;
+import consulo.csharp.lang.impl.psi.source.CSharpPreprocessorNullableImpl;
 import consulo.csharp.module.CSharpNullableOption;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.PsiUtilCore;
+import consulo.language.psi.util.LanguageCachedValueUtil;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.Lists;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -53,7 +57,7 @@ public class CSharpNullableContext
 	@RequiredReadAction
 	public static CSharpNullableContext get(PsiFile file)
 	{
-		return CachedValuesManager.getCachedValue(file, () -> CachedValueProvider.Result.create(build(file), PsiModificationTracker.MODIFICATION_COUNT));
+		return LanguageCachedValueUtil.getCachedValue(file, () -> CachedValueProvider.Result.create(build(file), PsiModificationTracker.MODIFICATION_COUNT));
 	}
 
 	@Nonnull
@@ -82,7 +86,7 @@ public class CSharpNullableContext
 							switch(value)
 							{
 								case "restore":
-									for(NullableEntry action : ContainerUtil.iterateBackward(actions))
+									for(NullableEntry action : Lists.iterateBackward(actions))
 									{
 										if(action.endOffset == -1)
 										{

@@ -15,6 +15,5 @@
   -->
 <consulo-plugin>
 	<extensions defaultExtensionNs="com.intellij.spellchecker">
-		<support language="C#" implementationClass="consulo.csharp.spellchecker.CSharpSpellcheckingStrategy" />
 	</extensions>
 </consulo-plugin>

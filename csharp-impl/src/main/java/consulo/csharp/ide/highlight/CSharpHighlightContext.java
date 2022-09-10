@@ -16,14 +16,14 @@
 
 package consulo.csharp.ide.highlight;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.util.NullableLazyValue;
-import com.intellij.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.util.NullableLazyValue;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
 import consulo.util.dataholder.UserDataHolderBase;
 
 import javax.annotation.Nonnull;
@@ -35,7 +35,7 @@ import javax.annotation.Nullable;
  */
 public class CSharpHighlightContext extends UserDataHolderBase
 {
-	private NullableLazyValue<Module> myModuleValue = new NullableLazyValue<Module>()
+	private NullableLazyValue<Module> myModuleValue = new NullableLazyValue<consulo.module.Module>()
 	{
 		@Nullable
 		@Override
@@ -67,7 +67,7 @@ public class CSharpHighlightContext extends UserDataHolderBase
 		@Override
 		protected CSharpSimpleModuleExtension<?> compute()
 		{
-			Module value = myModuleValue.getValue();
+			consulo.module.Module value = myModuleValue.getValue();
 			if(value == null)
 			{
 				return null;
@@ -91,7 +91,7 @@ public class CSharpHighlightContext extends UserDataHolderBase
 
 	@RequiredReadAction
 	@Nullable
-	public Module getModule()
+	public consulo.module.Module getModule()
 	{
 		return myModuleValue.getValue();
 	}

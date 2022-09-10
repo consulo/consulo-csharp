@@ -16,35 +16,34 @@
 
 package consulo.csharp.ide.lineMarkerProvider;
 
-import java.awt.event.MouseEvent;
-import java.util.List;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.application.AllIcons;
+import consulo.codeEditor.markup.GutterIconRenderer;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImplUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.document.util.TextRange;
+import consulo.ide.impl.idea.util.ConstantFunction;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.Pass;
+import consulo.language.editor.gutter.GutterIconNavigationHandler;
+import consulo.language.editor.gutter.LineMarkerInfo;
+import consulo.language.editor.gutter.MergeableLineMarkerInfo;
+import consulo.language.editor.gutter.NavigateAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
+import consulo.navigation.Navigatable;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.action.IdeActions;
+import consulo.ui.image.Image;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.intellij.codeHighlighting.Pass;
-import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
-import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.codeInsight.daemon.MergeableLineMarkerInfo;
-import com.intellij.codeInsight.daemon.NavigateAction;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.IdeActions;
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.pom.Navigatable;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.ConstantFunction;
-import com.intellij.util.Consumer;
-import com.intellij.util.Function;
-import consulo.ui.annotation.RequiredUIAccess;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImplUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
-import consulo.ui.image.Image;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author VISTALL
@@ -124,7 +123,7 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 				}
 			}, GutterIconRenderer.Alignment.RIGHT);
 			NavigateAction.setNavigateAction(markerInfo, "Navigate to lambda delegate", IdeActions.ACTION_GOTO_SUPER);
-			lineMarkerInfos.consume(markerInfo);
+			lineMarkerInfos.accept(markerInfo);
 		}
 	}
 }

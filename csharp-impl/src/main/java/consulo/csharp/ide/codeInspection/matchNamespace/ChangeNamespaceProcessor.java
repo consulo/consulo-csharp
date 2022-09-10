@@ -16,20 +16,20 @@
 
 package consulo.csharp.ide.codeInspection.matchNamespace;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Couple;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.refactoring.BaseRefactoringProcessor;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.usageView.UsageViewDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.usage.UsageInfo;
+import consulo.util.lang.Couple;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.editor.refactoring.BaseRefactoringProcessor;
+import consulo.usage.UsageViewDescriptor;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.ide.refactoring.move.CSharpClassesMoveProcessor;
 import consulo.csharp.ide.refactoring.move.CSharpMoveClassesUtil;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.project.Project;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

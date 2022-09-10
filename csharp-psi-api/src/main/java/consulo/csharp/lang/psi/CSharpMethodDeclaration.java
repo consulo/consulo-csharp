@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.psi;
 
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ArrayFactory;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetMethodDeclaration;
+import consulo.language.ast.IElementType;
+import consulo.util.collection.ArrayFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

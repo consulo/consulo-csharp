@@ -16,17 +16,22 @@
 
 package consulo.csharp.lang.doc.psi.impl;
 
-import com.intellij.lang.*;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.source.tree.LazyParseablePsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.ILazyParseableElementType;
-import consulo.csharp.cfs.lang.CfsLanguage;
-import consulo.csharp.lang.CSharpCfsElementTypeFactory;
-import consulo.csharp.lang.CSharpCfsLanguageVersion;
+import consulo.csharp.cfs.CSharpCfsElementTypeFactory;
+import consulo.csharp.cfs.impl.CSharpCfsLanguageVersion;
 import consulo.csharp.lang.CSharpLanguage;
-import consulo.lang.LanguageVersion;
+import consulo.dotnet.cfs.lang.CfsLanguage;
+import consulo.language.Language;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.ILazyParseableElementType;
+import consulo.language.impl.psi.LazyParseablePsiElement;
+import consulo.language.parser.ParserDefinition;
+import consulo.language.parser.PsiBuilder;
+import consulo.language.parser.PsiBuilderFactory;
+import consulo.language.parser.PsiParser;
+import consulo.language.psi.PsiElement;
+import consulo.language.version.LanguageVersion;
+import consulo.project.Project;
 import jakarta.inject.Singleton;
 
 import javax.annotation.Nonnull;
@@ -52,7 +57,7 @@ public class CSharpCfsElementTypeFactoryImpl implements CSharpCfsElementTypeFact
 				final Language languageForParser = getLanguageForParser(psi);
 				final LanguageVersion languageVersion = CSharpCfsLanguageVersion.getInstance();
 				final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
-				final PsiParser parser = LanguageParserDefinitions.INSTANCE.forLanguage(languageForParser).createParser(languageVersion);
+				final PsiParser parser = ParserDefinition.forLanguage(languageForParser).createParser(languageVersion);
 				return parser.parse(this, builder, languageVersion).getFirstChildNode();
 			}
 

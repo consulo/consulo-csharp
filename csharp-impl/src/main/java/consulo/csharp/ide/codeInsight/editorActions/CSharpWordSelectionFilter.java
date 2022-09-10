@@ -16,19 +16,21 @@
 
 package consulo.csharp.ide.codeInsight.editorActions;
 
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiUtilCore;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.language.editor.action.WordSelectionerFilter;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
 
 /**
  * @author VISTALL
  * @since 14-Nov-17
  */
-public class CSharpWordSelectionFilter implements Condition<PsiElement>
+@ExtensionImpl
+public class CSharpWordSelectionFilter implements WordSelectionerFilter
 {
 	@Override
-	public boolean value(PsiElement element)
+	public boolean canSelect(PsiElement element)
 	{
 		if(PsiUtilCore.getElementType(element) == CSharpTokens.IDENTIFIER)
 		{

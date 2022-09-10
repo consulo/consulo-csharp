@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.dotnet.psi.DotNetModifierListOwner;
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author VISTALL

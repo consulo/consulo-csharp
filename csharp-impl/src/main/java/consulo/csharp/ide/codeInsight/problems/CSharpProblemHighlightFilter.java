@@ -16,16 +16,19 @@
 
 package consulo.csharp.ide.codeInsight.problems;
 
-import javax.annotation.Nonnull;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.psi.CSharpFile;
-import com.intellij.codeInsight.daemon.ProblemHighlightFilter;
-import com.intellij.psi.PsiCodeFragment;
-import com.intellij.psi.PsiFile;
+import consulo.language.editor.ProblemHighlightFilter;
+import consulo.language.psi.PsiCodeFragment;
+import consulo.language.psi.PsiFile;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 13.04.2015
  */
+@ExtensionImpl
 public class CSharpProblemHighlightFilter extends ProblemHighlightFilter
 {
 	@Override

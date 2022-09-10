@@ -18,18 +18,18 @@ package consulo.csharp.ide.highlight.check.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.searches.ReferencesSearch;
+import consulo.language.editor.inspection.LocalQuickFixAndIntentionActionOnPsiElement;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpForeachStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.project.Project;
 
 /**
  * @author VISTALL

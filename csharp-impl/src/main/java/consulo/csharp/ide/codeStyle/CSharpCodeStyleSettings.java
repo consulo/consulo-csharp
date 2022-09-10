@@ -16,13 +16,13 @@
 
 package consulo.csharp.ide.codeStyle;
 
-import javax.annotation.Nonnull;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.codeStyle.CustomCodeStyleSettings;
+import consulo.project.Project;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

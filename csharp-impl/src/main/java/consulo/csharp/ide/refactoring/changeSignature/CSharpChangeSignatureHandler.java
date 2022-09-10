@@ -22,16 +22,16 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
+import consulo.dataContext.DataContext;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.changeSignature.ChangeSignatureHandler;
+import consulo.language.ast.ASTNode;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.editor.refactoring.changeSignature.ChangeSignatureHandler;
 
 /**
  * @author VISTALL

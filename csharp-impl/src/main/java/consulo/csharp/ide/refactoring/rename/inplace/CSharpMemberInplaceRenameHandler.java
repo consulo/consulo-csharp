@@ -16,25 +16,27 @@
 
 package consulo.csharp.ide.refactoring.rename.inplace;
 
-import javax.annotation.Nonnull;
-import com.intellij.codeInsight.lookup.LookupManager;
-import com.intellij.lang.LanguageRefactoringSupport;
-import com.intellij.lang.refactoring.RefactoringSupportProvider;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.rename.inplace.MemberInplaceRenameHandler;
-import com.intellij.refactoring.rename.inplace.MemberInplaceRenamer;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.codeEditor.Editor;
 import consulo.csharp.lang.psi.CSharpNamedElement;
+import consulo.language.editor.completion.lookup.LookupManager;
+import consulo.language.editor.refactoring.RefactoringSupportProvider;
+import consulo.language.editor.refactoring.rename.inplace.MemberInplaceRenameHandler;
+import consulo.language.editor.refactoring.rename.inplace.MemberInplaceRenamer;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiNameIdentifierOwner;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.util.PsiTreeUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 14-Nov-17
  */
+@ExtensionImpl
 public class CSharpMemberInplaceRenameHandler extends MemberInplaceRenameHandler
 {
 	@Override
@@ -46,7 +48,7 @@ public class CSharpMemberInplaceRenameHandler extends MemberInplaceRenameHandler
 		{
 			element = PsiTreeUtil.getParentOfType(nameSuggestionContext, PsiNamedElement.class);
 		}
-		final RefactoringSupportProvider supportProvider = element != null ? LanguageRefactoringSupport.INSTANCE.forLanguage(element.getLanguage()) : null;
+		final RefactoringSupportProvider supportProvider = element != null ? RefactoringSupportProvider.forLanguage(element.getLanguage()) : null;
 		return editor.getSettings().isVariableInplaceRenameEnabled() && supportProvider != null && supportProvider.isMemberInplaceRenameAvailable(element, nameSuggestionContext) && element
 				instanceof CSharpNamedElement;
 	}

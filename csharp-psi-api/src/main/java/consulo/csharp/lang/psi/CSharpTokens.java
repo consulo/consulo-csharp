@@ -16,9 +16,9 @@
 
 package consulo.csharp.lang.psi;
 
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.CSharpLanguage;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenType;
 
 /**
  * @author VISTALL

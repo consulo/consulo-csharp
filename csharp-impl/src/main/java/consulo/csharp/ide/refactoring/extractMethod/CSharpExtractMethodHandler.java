@@ -16,44 +16,49 @@
 
 package consulo.csharp.ide.refactoring.extractMethod;
 
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.SelectionModel;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.RefactoringActionHandler;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.PairFunction;
-import com.intellij.util.containers.ArrayListSet;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.MultiMap;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.SelectionModel;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
-import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
-import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
-import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodBodyImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.CSharpRecursiveElementVisitor;
+import consulo.csharp.lang.impl.psi.UsefulPsiTreeUtil;
+import consulo.csharp.lang.impl.psi.light.builder.CSharpLightMethodDeclarationBuilder;
+import consulo.csharp.lang.impl.psi.light.builder.CSharpLightParameterBuilder;
+import consulo.csharp.lang.impl.psi.source.CSharpAssignmentExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodBodyImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpReturnStatementImpl;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
+import consulo.dataContext.DataContext;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
+import consulo.ide.impl.idea.util.containers.ArrayListSet;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.action.RefactoringActionHandler;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.*;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.MultiMap;
+import consulo.util.lang.function.PairFunction;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.annotations.Contract;
 
 import javax.annotation.Nonnull;
@@ -112,7 +117,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 		final TextRange extractRange = new TextRange(statements[0].getTextRange().getStartOffset(), statements[statements.length - 1].getTextRange().getEndOffset());
 
 		final MultiMap<DotNetVariable, CSharpReferenceExpression> variables = MultiMap.createLinkedSet();
-		final Set<DotNetVariable> assignmentVariables = new ArrayListSet<DotNetVariable>();
+		final Set<DotNetVariable> assignmentVariables = new consulo.ide.impl.idea.util.containers.ArrayListSet<DotNetVariable>();
 
 		final Ref<DotNetTypeRef> returnTypeRef = Ref.create();
 		for(DotNetStatement statement : statements)
@@ -247,7 +252,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 
 				PsiDocumentManager.getInstance(project).commitDocument(document);
 
-				qualifiedParent.addAfter(PsiParserFacade.SERVICE.getInstance(file.getProject()).createWhiteSpaceFromText("\n\n"), qualifiedElement);
+				qualifiedParent.addAfter(PsiParserFacade.getInstance(file.getProject()).createWhiteSpaceFromText("\n\n"), qualifiedElement);
 
 				PsiElement nextSibling = qualifiedElement.getNextSibling();
 
@@ -325,7 +330,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 
 			if(temp == statement2)
 			{
-				return ContainerUtil.toArray(set, EMPTY_ARRAY);
+				return set.toArray(EMPTY_ARRAY);
 			}
 
 			temp = temp.getNextSibling();

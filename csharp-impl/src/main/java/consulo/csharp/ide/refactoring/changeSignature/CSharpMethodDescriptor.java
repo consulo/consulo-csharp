@@ -24,7 +24,7 @@ import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetParameter;
-import com.intellij.refactoring.changeSignature.MethodDescriptor;
+import consulo.ide.impl.idea.refactoring.changeSignature.MethodDescriptor;
 
 /**
  * @author VISTALL

@@ -16,37 +16,37 @@
 
 package consulo.csharp.ide.refactoring.move;
 
-import com.intellij.openapi.command.CommandProcessor;
-import consulo.logging.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.util.Couple;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileSystemItem;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.RefactoringSettings;
-import com.intellij.refactoring.copy.CopyFilesOrDirectoriesHandler;
-import com.intellij.refactoring.move.MoveCallback;
-import com.intellij.refactoring.move.MoveHandler;
-import com.intellij.refactoring.move.moveFilesOrDirectories.MoveFilesOrDirectoriesDialog;
-import com.intellij.refactoring.move.moveFilesOrDirectories.MoveFilesOrDirectoriesUtil;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import consulo.dotnet.resolve.DotNetPsiSearcher;
+import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
+import consulo.dotnet.psi.resolve.DotNetPsiSearcher;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.RefactoringSettings;
+import consulo.language.editor.refactoring.copy.CopyFilesOrDirectoriesHandler;
+import consulo.language.editor.refactoring.move.MoveCallback;
+import consulo.language.editor.refactoring.move.MoveHandler;
+import consulo.language.editor.refactoring.move.fileOrDirectory.MoveFilesOrDirectoriesDialog;
+import consulo.language.editor.refactoring.move.fileOrDirectory.MoveFilesOrDirectoriesUtil;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiFileSystemItem;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.undoRedo.CommandProcessor;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Couple;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * @author VISTALL
@@ -93,7 +93,7 @@ public class CSharpMoveClassesUtil
 			return;
 		}
 
-		final PsiElement[] newElements = adjustElements != null ? adjustElements.fun(elements) : elements;
+		final PsiElement[] newElements = adjustElements != null ? adjustElements.apply(elements) : elements;
 
 		final PsiDirectory initialTargetDirectory = MoveFilesOrDirectoriesUtil.getInitialTargetDirectory(targetDirectory, elements);
 

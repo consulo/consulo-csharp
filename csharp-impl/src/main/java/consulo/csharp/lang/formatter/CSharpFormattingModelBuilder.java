@@ -16,28 +16,22 @@
 
 package consulo.csharp.lang.formatter;
 
-import com.intellij.formatting.Block;
-import com.intellij.formatting.DelegatingFormattingModelBuilder;
-import com.intellij.formatting.FormattingModel;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.formatter.FormattingDocumentModelImpl;
-import com.intellij.psi.formatter.PsiBasedFormattingModel;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.formatter.processors.CSharpSpacingSettings;
+import consulo.language.Language;
+import consulo.language.codeStyle.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 15.12.13.
  */
+@ExtensionImpl
 public class CSharpFormattingModelBuilder implements DelegatingFormattingModelBuilder
 {
 	@Override
@@ -48,26 +42,28 @@ public class CSharpFormattingModelBuilder implements DelegatingFormattingModelBu
 
 	@Nonnull
 	@Override
-	public FormattingModel createModel(PsiElement element, CodeStyleSettings settings)
+	public FormattingModel createModel(@Nonnull FormattingContext formattingContext)
 	{
-		PsiFile file = element.getContainingFile();
+		CodeStyleSettings settings = formattingContext.getCodeStyleSettings();
 
-		FormattingDocumentModelImpl model = FormattingDocumentModelImpl.createOn(element.getContainingFile());
+		PsiFile file = formattingContext.getContainingFile();
+
+		FormattingDocumentModel model = FormattingDocumentModel.create(file);
 
 		CommonCodeStyleSettings commonSettings = settings.getCommonSettings(CSharpLanguage.INSTANCE);
 		CSharpCodeStyleSettings customSettings = settings.getCustomSettings(CSharpCodeStyleSettings.class);
 
 		CSharpSpacingSettings spacingSettings = new CSharpSpacingSettings(commonSettings, customSettings);
-		
+
 		Block rootBlock = new CSharpFormattingBlock(file.getNode(), null, null, settings, spacingSettings);
 
 		return new PsiBasedFormattingModel(file, rootBlock, model);
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public TextRange getRangeAffectingIndent(PsiFile file, int offset, ASTNode elementAtOffset)
+	public Language getLanguage()
 	{
-		return null;
+		return CSharpLanguage.INSTANCE;
 	}
 }

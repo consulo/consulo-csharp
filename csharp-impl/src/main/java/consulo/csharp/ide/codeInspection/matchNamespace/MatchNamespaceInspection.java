@@ -16,26 +16,25 @@
 
 package consulo.csharp.ide.codeInspection.matchNamespace;
 
-import javax.annotation.Nonnull;
-
-
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.LocalInspectionToolSession;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.psi.PsiCodeFragment;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.editor.inspection.LocalInspectionToolSession;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiCodeFragment;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.ModuleUtilCore;
 import consulo.util.dataholder.Key;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 05-Nov-17
  */
-public class MatchNamespaceInspection extends LocalInspectionTool
+public abstract class MatchNamespaceInspection extends LocalInspectionTool
 {
 	private static final Key<MatchNamespaceVisitor> KEY = Key.create("MatchNamespaceVisitor");
 

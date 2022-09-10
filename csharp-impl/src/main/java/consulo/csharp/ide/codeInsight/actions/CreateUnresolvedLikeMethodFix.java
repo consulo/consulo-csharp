@@ -16,22 +16,23 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import com.intellij.BundleBase;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.impl.ConstantNode;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.PsiTreeDebugBuilder;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.language.editor.template.Template;
+import consulo.language.editor.template.ConstantNode;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.component.util.localize.BundleBase;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.impl.DebugUtil;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
 import consulo.logging.Logger;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.collection.ContainerUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,7 +44,7 @@ import java.util.Collection;
  */
 public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElementFix
 {
-	private static final Logger LOGGER = Logger.getInstance(CreateUnresolvedLikeMethodFix.class);
+	private static final Logger LOG = Logger.getInstance(CreateUnresolvedLikeMethodFix.class);
 
 	public CreateUnresolvedLikeMethodFix(CSharpReferenceExpression expression)
 	{
@@ -82,7 +83,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 
 		if(parent == null)
 		{
-			LOGGER.error("Can't find parent by 'CSharpCallArgumentListOwner'. Element: " + new PsiTreeDebugBuilder().psiToString(element));
+			LOG.error("Can't find parent by 'CSharpCallArgumentListOwner'. Element: " + DebugUtil.psiToString(element, true));
 			return null;
 		}
 

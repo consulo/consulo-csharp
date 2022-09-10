@@ -19,10 +19,10 @@ package consulo.csharp.ide.assemblyInfo.blocks;
 import javax.swing.JComponent;
 
 import javax.annotation.Nullable;
-import consulo.csharp.lang.psi.CSharpAttributeUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpDummyDeclarationImpl;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.csharp.lang.impl.psi.CSharpAttributeUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpDummyDeclarationImpl;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.psi.PsiFile;
 
 /**
  * @author VISTALL

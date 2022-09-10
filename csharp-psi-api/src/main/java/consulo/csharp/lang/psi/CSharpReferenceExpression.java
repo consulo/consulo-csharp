@@ -16,14 +16,14 @@
 
 package consulo.csharp.lang.psi;
 
-import com.intellij.openapi.util.text.CharFilter;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPolyVariantReference;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetReferenceExpression;
 import consulo.dotnet.psi.DotNetTypeList;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiPolyVariantReference;
+import consulo.util.lang.CharFilter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

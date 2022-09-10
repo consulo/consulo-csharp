@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.refactoring.changeSignature;
 
-import com.intellij.psi.PsiCodeFragment;
-import com.intellij.refactoring.changeSignature.ParameterTableModelItemBase;
+import consulo.ide.impl.idea.refactoring.changeSignature.ParameterTableModelItemBase;
+import consulo.language.psi.PsiCodeFragment;
 
 /**
  * @author VISTALL

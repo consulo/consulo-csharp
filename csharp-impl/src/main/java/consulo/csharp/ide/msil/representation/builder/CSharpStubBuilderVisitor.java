@@ -16,25 +16,28 @@
 
 package consulo.csharp.ide.msil.representation.builder;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.PairFunction;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpMethodUtil;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpStaticTypeRef;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.block.LineStubBlock;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
 import consulo.msil.lang.psi.MsilConstantValue;
 import consulo.msil.lang.psi.MsilCustomAttribute;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.function.Condition;
+import consulo.util.lang.function.PairFunction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -16,37 +16,42 @@
 
 package consulo.csharp.ide.completion;
 
-import com.intellij.codeInsight.AutoPopupController;
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ProcessingContext;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.codeInsight.completion.CompletionProvider;
+import consulo.codeEditor.Editor;
 import consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandler;
 import consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.ide.completion.util.CSharpWeightInsertHandler;
 import consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
 import consulo.csharp.ide.completion.util.SpaceInsertHandler;
-import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
-import consulo.csharp.lang.psi.impl.source.*;
+import consulo.csharp.lang.impl.psi.CSharpImplicitReturnModel;
+import consulo.csharp.lang.impl.psi.CSharpTokenSets;
+import consulo.csharp.lang.impl.psi.UsefulPsiTreeUtil;
+import consulo.csharp.lang.impl.psi.source.*;
+import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
+import consulo.csharp.lang.psi.CSharpSoftTokens;
+import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetStatement;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.language.editor.AutoPopupController;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.TailType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.ProcessingContext;
 
 import javax.annotation.Nonnull;
 
-import static com.intellij.patterns.StandardPatterns.or;
-import static com.intellij.patterns.StandardPatterns.psiElement;
+import static consulo.language.pattern.StandardPatterns.or;
+import static consulo.language.pattern.StandardPatterns.psiElement;
 
 /**
  * @author VISTALL
@@ -283,19 +288,19 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 
 		contributor.extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.ELSE_KEYWORD)).withSuperParent(2, CSharpExpressionStatementImpl.class), new
 				CompletionProvider()
-		{
-			@RequiredReadAction
-			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
-			{
-				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.IF_KEYWORD, (t, v) ->
 				{
-					t = t.withInsertHandler(buildInsertHandler(v));
+					@RequiredReadAction
+					@Override
+					public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+					{
+						CSharpCompletionUtil.elementToLookup(result, CSharpTokens.IF_KEYWORD, (t, v) ->
+						{
+							t = t.withInsertHandler(buildInsertHandler(v));
 
-					return t;
-				}, null);
-			}
-		});
+							return t;
+						}, null);
+					}
+				});
 
 		contributor.extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new CompletionProvider()
 		{

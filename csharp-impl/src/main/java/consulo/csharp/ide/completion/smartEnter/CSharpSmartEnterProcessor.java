@@ -16,24 +16,27 @@
 
 package consulo.csharp.ide.completion.smartEnter;
 
-import com.intellij.codeInsight.editorActions.smartEnter.SmartEnterProcessor;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.language.Language;
+import consulo.language.ast.ASTNode;
+import consulo.document.Document;
+import consulo.codeEditor.Editor;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.project.Project;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.dotnet.psi.DotNetStatement;
+import consulo.language.editor.action.SmartEnterProcessor;
 
 import javax.annotation.Nonnull;
 
@@ -41,8 +44,16 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 03.01.15
  */
+@ExtensionImpl
 public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 {
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
+	}
+
 	public interface Fixer
 	{
 		@RequiredReadAction

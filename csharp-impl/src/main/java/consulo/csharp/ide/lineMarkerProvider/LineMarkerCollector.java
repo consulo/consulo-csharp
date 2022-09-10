@@ -16,11 +16,12 @@
 
 package consulo.csharp.ide.lineMarkerProvider;
 
-import javax.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
-import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.Consumer;
+import consulo.language.editor.gutter.LineMarkerInfo;
+import consulo.language.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 /**
  * @author VISTALL

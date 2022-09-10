@@ -16,14 +16,19 @@
 
 package consulo.csharp.lang;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
-import com.intellij.lang.refactoring.NamesValidator;
-import com.intellij.openapi.project.Project;
+import consulo.language.Language;
+import consulo.project.Project;
+import consulo.language.editor.refactoring.NamesValidator;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 18.11.14
  */
+@ExtensionImpl
 public class CSharpNamesValidator implements NamesValidator
 {
 	@Override
@@ -36,5 +41,12 @@ public class CSharpNamesValidator implements NamesValidator
 	public boolean isIdentifier(String name, Project project)
 	{
 		return CSharpNameSuggesterUtil.isIdentifier(name);
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

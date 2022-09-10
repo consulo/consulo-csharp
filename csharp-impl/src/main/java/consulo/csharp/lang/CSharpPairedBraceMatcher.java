@@ -16,22 +16,26 @@
 
 package consulo.csharp.lang;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpBodyWithBraces;
-import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import com.intellij.lang.BracePair;
-import com.intellij.lang.PairedBraceMatcher;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.BracePair;
+import consulo.language.Language;
+import consulo.language.PairedBraceMatcher;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 28.11.13.
  */
+@ExtensionImpl
 public class CSharpPairedBraceMatcher implements PairedBraceMatcher
 {
 	private static BracePair[] ourPairs = new BracePair[]{
@@ -78,5 +82,12 @@ public class CSharpPairedBraceMatcher implements PairedBraceMatcher
 			return parent.getTextOffset();
 		}
 		return offset;
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

@@ -16,30 +16,30 @@
 
 package consulo.csharp.ide.parameterInfo;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
+import consulo.document.util.TextRange;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.psi.DotNetTypeList;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.lang.parameterInfo.CreateParameterInfoContext;
-import com.intellij.lang.parameterInfo.ParameterInfoContext;
-import com.intellij.lang.parameterInfo.ParameterInfoHandler;
-import com.intellij.lang.parameterInfo.ParameterInfoUIContext;
-import com.intellij.lang.parameterInfo.ParameterInfoUtils;
-import com.intellij.lang.parameterInfo.UpdateParameterInfoContext;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
+import consulo.dotnet.psi.impl.DotNetPsiCountUtil;
+import consulo.language.Language;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.parameterInfo.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.ResolveResult;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.ArrayUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 12.11.14
  */
+@ExtensionImpl
 public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<PsiElement, DotNetGenericParameterListOwner>
 {
 	@Override
@@ -51,13 +51,6 @@ public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<P
 	@Nullable
 	@Override
 	public Object[] getParametersForLookup(LookupElement item, ParameterInfoContext context)
-	{
-		return ArrayUtil.EMPTY_OBJECT_ARRAY;
-	}
-
-	@Nullable
-	@Override
-	public Object[] getParametersForDocumentation(DotNetGenericParameterListOwner p, ParameterInfoContext context)
 	{
 		return ArrayUtil.EMPTY_OBJECT_ARRAY;
 	}
@@ -202,5 +195,12 @@ public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<P
 
 		context.setupUIComponentPresentation(text, parameterRange.getStartOffset(), parameterRange.getEndOffset(), !context.isUIComponentEnabled(),
 				false, false, context.getDefaultParameterColor());
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

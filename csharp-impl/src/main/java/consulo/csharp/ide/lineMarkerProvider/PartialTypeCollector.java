@@ -16,31 +16,30 @@
 
 package consulo.csharp.ide.lineMarkerProvider;
 
-import com.intellij.codeHighlighting.Pass;
-import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
-import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.codeInsight.daemon.impl.PsiElementListNavigator;
-import com.intellij.icons.AllIcons;
-import com.intellij.ide.util.PsiElementListCellRenderer;
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.presentation.java.SymbolPresentationUtil;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.Consumer;
-import com.intellij.util.Function;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.AllIcons;
+import consulo.codeEditor.markup.GutterIconRenderer;
+import consulo.component.util.Iconable;
+import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.language.editor.Pass;
+import consulo.language.editor.gutter.GutterIconNavigationHandler;
+import consulo.language.editor.gutter.LineMarkerInfo;
+import consulo.language.editor.ui.PsiElementListCellRenderer;
+import consulo.language.editor.ui.PsiElementListNavigator;
+import consulo.language.psi.NavigatablePsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
+import consulo.language.psi.util.SymbolPresentationUtil;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.virtualFileSystem.VirtualFile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.event.MouseEvent;
+import java.util.function.Consumer;
 
 /**
  * @author VISTALL
@@ -98,15 +97,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 			}
 
 			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Nodes.TreeDownArrow, Pass.LINE_MARKERS,
-					new Function<PsiElement, String>()
-
-			{
-				@Override
-				public String fun(PsiElement element)
-				{
-					return "Navigate to partial types";
-				}
-			}, new GutterIconNavigationHandler<PsiElement>()
+					element -> "Navigate to partial types", new GutterIconNavigationHandler<PsiElement>()
 			{
 				@Override
 				@RequiredUIAccess
@@ -132,7 +123,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 				}
 			}, GutterIconRenderer.Alignment.CENTER
 			);
-			consumer.consume(lineMarkerInfo);
+			consumer.accept(lineMarkerInfo);
 		}
 	}
 }

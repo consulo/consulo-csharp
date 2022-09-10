@@ -16,10 +16,6 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -28,8 +24,11 @@ import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.SmartList;
+import consulo.language.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -55,7 +54,7 @@ public class CS0418 extends CompilerCheck<DotNetTypeDeclaration>
 				return super.check(languageVersion, highlightContext, element);
 			}
 
-			List<HighlightInfoFactory> factories = new SmartList<HighlightInfoFactory>();
+			List<HighlightInfoFactory> factories = new ArrayList<>();
 			for(CSharpModifier modifier : ourNotAllowedModifiers)
 			{
 				PsiElement modifierElement = modifierList.getModifierElement(modifier);

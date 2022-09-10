@@ -16,18 +16,17 @@
 
 package consulo.csharp.ide.codeStyle;
 
-import java.io.IOException;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.language.Language;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.codeStyle.setting.CodeStyleSettingsCustomizable;
+import consulo.language.codeStyle.setting.IndentOptionsEditor;
+import consulo.language.codeStyle.setting.LanguageCodeStyleSettingsProvider;
+import consulo.language.codeStyle.ui.setting.SmartIndentOptionsEditor;
+import consulo.util.io.FileUtil;
 
 import javax.annotation.Nonnull;
-
-import com.intellij.application.options.IndentOptionsEditor;
-import com.intellij.application.options.SmartIndentOptionsEditor;
-import com.intellij.lang.Language;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider;
-import consulo.csharp.lang.CSharpLanguage;
+import java.io.IOException;
 
 /**
  * @author VISTALL
@@ -118,7 +117,7 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 					"PARENTHESES_EXPRESSION_LPAREN_WRAP", "PARENTHESES_EXPRESSION_RPAREN_WRAP", "ALIGN_MULTILINE_TERNARY_OPERATION", "ARRAY_INITIALIZER_WRAP",
 					"ARRAY_INITIALIZER_LBRACE_ON_NEXT_LINE", "ARRAY_INITIALIZER_RBRACE_ON_NEXT_LINE", "LINE_COMMENT_AT_FIRST_COLUMN", "BLOCK_COMMENT_AT_FIRST_COLUMN");
 
-			consumer.showCustomOption(CSharpCodeStyleSettings.class, "KEEP_AUTO_PROPERTY_IN_ONE_LINE", "Simple property(event, index methods) in single line", CodeStyleSettingsCustomizable
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "KEEP_AUTO_PROPERTY_IN_ONE_LINE", "Simple property(event, index methods) in single line",CodeStyleSettingsCustomizable
 					.WRAPPING_KEEP);
 
 			consumer.showCustomOption(CSharpCodeStyleSettings.class, "PREPROCESSOR_DIRECTIVES_AT_FIRST_COLUMN", "Preprocessor directives at first column", CodeStyleSettingsCustomizable
@@ -127,7 +126,7 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 			consumer.showCustomOption(CSharpCodeStyleSettings.class, "NAMESPACE_BRACE_STYLE", "In namespace declaration", CodeStyleSettingsCustomizable.WRAPPING_BRACES, CodeStyleSettingsCustomizable
 					.OptionAnchor.BEFORE, "CLASS_BRACE_STYLE", CodeStyleSettingsCustomizable.BRACE_PLACEMENT_OPTIONS, CodeStyleSettingsCustomizable.BRACE_PLACEMENT_VALUES);
 
-			consumer.showCustomOption(CSharpCodeStyleSettings.class, "EVENT_BRACE_STYLE", "In event declaration", CodeStyleSettingsCustomizable.WRAPPING_BRACES, CodeStyleSettingsCustomizable
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "EVENT_BRACE_STYLE", "In event declaration", CodeStyleSettingsCustomizable.WRAPPING_BRACES,CodeStyleSettingsCustomizable
 					.OptionAnchor.AFTER, "METHOD_BRACE_STYLE", CodeStyleSettingsCustomizable.BRACE_PLACEMENT_OPTIONS, CodeStyleSettingsCustomizable.BRACE_PLACEMENT_VALUES);
 
 			consumer.showCustomOption(CSharpCodeStyleSettings.class, "PROPERTY_BRACE_STYLE", "In property declaration", CodeStyleSettingsCustomizable.WRAPPING_BRACES, CodeStyleSettingsCustomizable

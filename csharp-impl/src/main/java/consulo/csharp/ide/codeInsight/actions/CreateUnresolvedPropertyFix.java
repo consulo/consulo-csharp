@@ -24,13 +24,13 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;
-import consulo.csharp.lang.psi.CSharpContextUtil;
+import consulo.csharp.lang.impl.psi.CSharpContextUtil;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
-import com.intellij.BundleBase;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.psi.PsiFile;
+import consulo.component.util.localize.BundleBase;
+import consulo.language.psi.PsiFile;
+import consulo.language.editor.template.Template;
 
 /**
  * @author VISTALL

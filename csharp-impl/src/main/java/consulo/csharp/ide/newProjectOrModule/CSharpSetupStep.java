@@ -16,15 +16,14 @@
 
 package consulo.csharp.ide.newProjectOrModule;
 
-import com.intellij.openapi.projectRoots.SdkTable;
-import consulo.bundle.ui.BundleBox;
-import consulo.bundle.ui.BundleBoxBuilder;
+import consulo.content.bundle.SdkTable;
 import consulo.disposer.Disposable;
 import consulo.dotnet.DotNetTarget;
-import consulo.ide.newProject.ui.UnifiedProjectOrModuleNameStep;
+import consulo.ide.newModule.ui.UnifiedProjectOrModuleNameStep;
 import consulo.localize.LocalizeValue;
-import consulo.module.extension.ModuleExtensionProviderEP;
-import consulo.module.extension.impl.ModuleExtensionProviders;
+import consulo.module.content.layer.ModuleExtensionProvider;
+import consulo.module.ui.BundleBox;
+import consulo.module.ui.BundleBoxBuilder;
 import consulo.ui.ComboBox;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.model.ListModel;
@@ -70,8 +69,8 @@ public class CSharpSetupStep extends UnifiedProjectOrModuleNameStep<CSharpNewMod
 		for(Map.Entry<String, String[]> entry : CSharpNewModuleBuilder.ourExtensionMapping.entrySet())
 		{
 			// need check C# extension
-			ModuleExtensionProviderEP providerEP = ModuleExtensionProviders.findProvider(entry.getValue()[1]);
-			if(providerEP == null)
+			ModuleExtensionProvider provider = ModuleExtensionProvider.findProvider(entry.getValue()[1]);
+			if(provider == null)
 			{
 				continue;
 			}

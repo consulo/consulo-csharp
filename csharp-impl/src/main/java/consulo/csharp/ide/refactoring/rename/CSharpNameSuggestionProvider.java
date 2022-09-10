@@ -16,23 +16,25 @@
 
 package consulo.csharp.ide.refactoring.rename;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.codeStyle.SuggestedNameInfo;
-import com.intellij.refactoring.rename.NameSuggestionProvider;
-import com.intellij.util.ArrayUtil;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.dotnet.psi.DotNetVariable;
+import consulo.language.editor.refactoring.rename.NameSuggestionProvider;
+import consulo.language.editor.refactoring.rename.SuggestedNameInfo;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ArrayUtil;
+
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author VISTALL
  * @since 14-Nov-17
  */
+@ExtensionImpl(order = "last")
 public class CSharpNameSuggestionProvider implements NameSuggestionProvider
 {
 	@Nullable

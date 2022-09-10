@@ -16,12 +16,12 @@
 
 package consulo.csharp.ide.highlight;
 
-import com.intellij.lexer.Lexer;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
-import com.intellij.psi.tree.IElementType;
-import consulo.csharp.lang.lexer.CSharpPreprocessorHightlightLexer;
-import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
+import consulo.colorScheme.TextAttributesKey;
+import consulo.csharp.lang.impl.lexer.CSharpPreprocessorHightlightLexer;
+import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.highlight.SyntaxHighlighterBase;
+import consulo.language.lexer.Lexer;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;

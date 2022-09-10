@@ -17,8 +17,8 @@
 package consulo.csharp.ide.actions.generate.memberChoose;
 
 import consulo.dotnet.psi.DotNetElement;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.PairConsumer;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.function.PairConsumer;
 
 /**
  * @author VISTALL

@@ -16,20 +16,20 @@
 
 package consulo.csharp.ide.actions.navigate;
 
-import com.intellij.codeInsight.navigation.actions.GotoDeclarationHandlerBase;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiUtilCore;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImplUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.CSharpNativeType;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImplUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.navigation.GotoDeclarationHandlerBase;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
 
 import javax.annotation.Nullable;
 

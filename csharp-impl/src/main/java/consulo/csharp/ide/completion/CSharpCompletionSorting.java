@@ -16,30 +16,30 @@
 
 package consulo.csharp.ide.completion;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionSorter;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementWeigher;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.SyntaxTraverser;
-import com.intellij.psi.codeStyle.NameUtil;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.util.matcher.NameUtil;
 import consulo.csharp.ide.CSharpLookupElementBuilder;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.completion.weigher.CSharpRecursiveGuardWeigher;
+import consulo.csharp.lang.impl.psi.source.CSharpForeachStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.completion.CompletionParameters;
+import consulo.language.editor.completion.CompletionResultSet;
+import consulo.language.editor.completion.CompletionSorter;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementWeigher;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.SyntaxTraverser;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.UserDataHolder;
 

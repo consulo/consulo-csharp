@@ -24,10 +24,10 @@ import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpNewExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPrefixExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
 
 /**
  * @author VISTALL

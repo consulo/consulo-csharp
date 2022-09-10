@@ -18,14 +18,14 @@ package consulo.csharp.ide.highlight.quickFix;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.project.Project;
+import consulo.language.util.IncorrectOperationException;
 
 /**
  * @author VISTALL

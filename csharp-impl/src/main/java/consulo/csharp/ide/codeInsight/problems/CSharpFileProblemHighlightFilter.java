@@ -16,17 +16,18 @@
 
 package consulo.csharp.ide.codeInsight.problems;
 
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.editor.wolfAnalyzer.WolfFileProblemFilter;
+import consulo.project.Project;
+import consulo.virtualFileSystem.VirtualFile;
 import jakarta.inject.Inject;
-
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author VISTALL
  * @since 17.01.14
  */
-public class CSharpFileProblemHighlightFilter implements Condition<VirtualFile>
+@ExtensionImpl
+public class CSharpFileProblemHighlightFilter implements WolfFileProblemFilter
 {
 	private final Project myProject;
 
@@ -37,7 +38,7 @@ public class CSharpFileProblemHighlightFilter implements Condition<VirtualFile>
 	}
 
 	@Override
-	public boolean value(VirtualFile virtualFile)
+	public boolean isToBeHighlighted(VirtualFile virtualFile)
 	{
 		return CSharpLocationUtil.isValidLocation(myProject, virtualFile);
 	}

@@ -16,22 +16,23 @@
 
 package consulo.csharp.ide.completion.item;
 
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementDecorator;
-import com.intellij.openapi.editor.CaretModel;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
+import consulo.codeEditor.CaretModel;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementDecorator;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.util.lang.Comparing;
+import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.ide.completion.CSharpCompletionSorting;
+import consulo.csharp.lang.impl.psi.CSharpMethodUtil;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.msil.MsilMethodAsCSharpMethodDeclaration;
+import consulo.csharp.lang.impl.psi.msil.MsilMethodAsCSharpMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.ParenthesesInsertHandler;
 
 import javax.annotation.Nonnull;
 

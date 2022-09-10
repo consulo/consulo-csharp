@@ -16,36 +16,33 @@
 
 package consulo.csharp.ide;
 
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.editor.CaretModel;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.CaretModel;
+import consulo.component.util.Iconable;
 import consulo.csharp.ide.completion.CSharpCompletionSorting;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.completion.insertHandler.CSharpParenthesesWithSemicolonInsertHandler;
 import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import consulo.csharp.ide.completion.util.LtGtInsertHandler;
+import consulo.csharp.lang.impl.psi.CSharpMethodUtil;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.source.*;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpMethodImplUtil;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.*;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.ide.IconDescriptorUpdaters;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.completion.lookup.*;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.psi.PsiElement;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -393,13 +390,13 @@ public class CSharpLookupElementBuilder
 					{
 						case '=':
 							context.setAddCompletionChar(false);
-							TailType.EQ.processTail(context.getEditor(), context.getTailOffset());
+							EqTailType.INSTANCE.processTail(context.getEditor(), context.getTailOffset());
 							break;
 						case ',':
 							if(completionParent != null && completionParent.getParent() instanceof CSharpCallArgument)
 							{
 								context.setAddCompletionChar(false);
-								TailType.COMMA.processTail(context.getEditor(), context.getTailOffset());
+								CommaTailType.INSTANCE.processTail(context.getEditor(), context.getTailOffset());
 							}
 							break;
 					}

@@ -16,23 +16,26 @@
 
 package consulo.csharp.lang.formatter.processors;
 
-import com.intellij.formatting.Indent;
-import com.intellij.formatting.templateLanguages.BlockWithParent;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.codeInsight.CommentUtilCore;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.codeStyle.Indent;
+import consulo.language.codeStyle.template.BlockWithParent;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import consulo.csharp.lang.formatter.CSharpFormattingBlock;
+import consulo.csharp.lang.impl.psi.CSharpElements;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
+import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerCompositeValueImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerSingleValueImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpArrayInitializerCompositeValueImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpArrayInitializerSingleValueImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpIfStatementImpl;
 import consulo.dotnet.psi.DotNetStatement;
+import consulo.language.util.CommentUtilCore;
 
 import javax.annotation.Nonnull;
 

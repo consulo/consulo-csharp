@@ -17,9 +17,10 @@
 package consulo.csharp.ide.actions.generate;
 
 import javax.annotation.Nonnull;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
+
+import consulo.project.Project;
+import consulo.language.psi.PsiFile;
+import consulo.codeEditor.Editor;
 
 /**
  * @author VISTALL

@@ -16,11 +16,11 @@
 
 package consulo.csharp.ide.lineMarkerProvider;
 
-import java.util.Comparator;
-
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiNamedElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.util.lang.StringUtil;
+
+import java.util.Comparator;
 
 /**
  * @author VISTALL

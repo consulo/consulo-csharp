@@ -16,34 +16,37 @@
 
 package consulo.csharp.lang;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.roots.ModuleFileIndex;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.BitUtil;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.application.AllIcons;
+import consulo.component.util.Iconable;
+import consulo.csharp.lang.impl.CSharpAssemblyConstants;
+import consulo.csharp.lang.impl.psi.msil.MsilElementWrapper;
+import consulo.csharp.lang.impl.psi.source.CSharpAnonymousMethodExpression;
+import consulo.csharp.lang.impl.psi.source.CSharpFileImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLabeledStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.msil.MsilElementWrapper;
-import consulo.csharp.lang.psi.impl.source.*;
-import consulo.dotnet.DotNetRunUtil;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import consulo.ide.IconDescriptor;
-import consulo.ide.IconDescriptorUpdater;
-import consulo.ide.IconDescriptorUpdaters;
+import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
+import consulo.language.icon.IconDescriptor;
+import consulo.language.icon.IconDescriptorUpdater;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
+import consulo.module.content.ModuleFileIndex;
+import consulo.module.content.ModuleRootManager;
+import consulo.module.content.ProjectFileIndex;
+import consulo.module.content.ProjectRootManager;
 import consulo.platform.base.icon.PlatformIconGroup;
+import consulo.project.DumbService;
 import consulo.ui.image.Image;
+import consulo.util.lang.BitUtil;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
 
 import javax.annotation.Nonnull;
 
@@ -51,6 +54,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 09.12.13.
  */
+@ExtensionImpl
 public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 {
 	@Override

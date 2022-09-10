@@ -16,13 +16,12 @@
 
 package consulo.csharp.ide.structureView;
 
-import com.intellij.ide.structureView.StructureViewTreeElement;
-import com.intellij.ide.structureView.impl.common.PsiTreeElementBase;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
-import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.*;
+import consulo.fileEditor.structureView.StructureViewTreeElement;
+import consulo.language.editor.structureView.PsiTreeElementBase;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
 import consulo.ui.annotation.RequiredUIAccess;
 
 import javax.annotation.Nonnull;

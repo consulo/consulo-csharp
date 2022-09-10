@@ -16,19 +16,19 @@
 
 package consulo.csharp.ide.projectView;
 
-import com.intellij.ide.projectView.SelectableTreeStructureProvider;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.ide.util.treeView.AbstractTreeUi;
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.Application;
+import consulo.application.dumb.DumbAware;
+import consulo.application.progress.ProgressManager;
 import consulo.dotnet.psi.DotNetMemberOwner;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.project.ui.view.tree.SelectableTreeStructureProvider;
+import consulo.project.ui.view.tree.ViewSettings;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.tree.TreeHelper;
 import jakarta.inject.Inject;
 
 import javax.annotation.Nonnull;
@@ -62,7 +62,7 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 	@RequiredUIAccess
 	public Collection<AbstractTreeNode> modify(AbstractTreeNode parent, Collection<AbstractTreeNode> oldNodes, ViewSettings settings)
 	{
-		return AbstractTreeUi.calculateYieldingToWriteAction(() -> doModify(oldNodes, settings));
+		return TreeHelper.calculateYieldingToWriteAction(() -> doModify(oldNodes, settings));
 	}
 
 	@Nonnull
@@ -78,7 +78,7 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 
 			if(value instanceof PsiFile)
 			{
-				for(CSharpProjectTreeNodeExpander expander : CSharpProjectTreeNodeExpander.EP_NAME.getExtensionList(Application.get()))
+				for(CSharpProjectTreeNodeExpander expander : Application.get().getExtensionPoint(CSharpProjectTreeNodeExpander.class))
 				{
 					AbstractTreeNode<?> node = expander.expandFile(myProject, settings, treeNode);
 					if(node != null)

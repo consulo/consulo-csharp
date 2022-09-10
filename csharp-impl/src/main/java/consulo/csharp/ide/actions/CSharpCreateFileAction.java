@@ -16,39 +16,39 @@
 
 package consulo.csharp.ide.actions;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.ide.IdeView;
-import com.intellij.ide.actions.CreateFileFromTemplateAction;
-import com.intellij.ide.actions.CreateFileFromTemplateDialog;
-import com.intellij.ide.fileTemplates.FileTemplate;
-import com.intellij.ide.fileTemplates.FileTemplateManager;
-import com.intellij.ide.fileTemplates.FileTemplateUtil;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.InputValidatorEx;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileVisitor;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
+import consulo.application.AllIcons;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpFileType;
+import consulo.csharp.lang.impl.CSharpAssemblyConstants;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
+import consulo.dataContext.DataContext;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
+import consulo.fileTemplate.FileTemplate;
+import consulo.fileTemplate.FileTemplateManager;
+import consulo.fileTemplate.FileTemplateUtil;
+import consulo.ide.IdeView;
+import consulo.ide.action.CreateFileFromTemplateAction;
+import consulo.ide.action.CreateFileFromTemplateDialog;
+import consulo.language.editor.CommonDataKeys;
+import consulo.language.editor.LangDataKeys;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiPackage;
+import consulo.language.psi.PsiPackageManager;
+import consulo.language.util.ModuleUtilCore;
 import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
-import consulo.psi.PsiPackage;
-import consulo.psi.PsiPackageManager;
+import consulo.module.Module;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.InputValidatorEx;
 import consulo.ui.image.Image;
+import consulo.util.lang.ref.Ref;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.fileType.FileType;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
+import consulo.virtualFileSystem.util.VirtualFileVisitor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -74,13 +74,13 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 	@RequiredUIAccess
 	protected boolean isAvailable(DataContext dataContext)
 	{
-		Module module = findModule(dataContext);
+		consulo.module.Module module = findModule(dataContext);
 		if(module != null)
 		{
 			DotNetModuleExtension extension = ModuleUtilCore.getExtension(module, DotNetModuleExtension.class);
 			if(extension != null && extension.isAllowSourceRoots())
 			{
-				final IdeView view = dataContext.getData(LangDataKeys.IDE_VIEW);
+				final IdeView view = dataContext.getData(IdeView.KEY);
 				if(view == null)
 				{
 					return false;
@@ -110,7 +110,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 		{
 			return null;
 		}
-		final IdeView view = dataContext.getData(LangDataKeys.IDE_VIEW);
+		final IdeView view = dataContext.getData(IdeView.KEY);
 		if(view == null)
 		{
 			return null;
@@ -122,7 +122,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 			return null;
 		}
 
-		Module resolve = CSharpCreateFromTemplateHandler.findModuleByPsiDirectory(orChooseDirectory);
+		consulo.module.Module resolve = CSharpCreateFromTemplateHandler.findModuleByPsiDirectory(orChooseDirectory);
 		if(resolve != null)
 		{
 			return resolve;
@@ -223,7 +223,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 	@RequiredReadAction
 	private static boolean isCreationOfAssemblyFileAvailable(PsiDirectory directory)
 	{
-		Module module = ModuleUtilCore.findModuleForPsiElement(directory);
+		consulo.module.Module module = ModuleUtilCore.findModuleForPsiElement(directory);
 		if(module != null)
 		{
 			DotNetModuleExtension extension = ModuleUtilCore.getExtension(module, DotNetModuleExtension.class);
@@ -243,7 +243,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction
 		{
 			return false;
 		}
-		VfsUtil.visitChildrenRecursively(moduleDir, new VirtualFileVisitor<Object>()
+		VirtualFileUtil.visitChildrenRecursively(moduleDir, new VirtualFileVisitor<Object>()
 		{
 			@Override
 			public boolean visitFile(@Nonnull VirtualFile file)

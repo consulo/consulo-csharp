@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
-import consulo.csharp.lang.psi.CSharpAttributeUtil;
+import consulo.csharp.lang.impl.psi.CSharpAttributeUtil;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;

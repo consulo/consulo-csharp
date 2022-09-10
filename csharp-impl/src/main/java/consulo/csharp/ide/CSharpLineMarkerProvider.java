@@ -16,45 +16,41 @@
 
 package consulo.csharp.ide;
 
-import java.util.Collection;
-import java.util.List;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.application.ApplicationManager;
+import consulo.application.dumb.DumbAware;
+import consulo.codeEditor.CodeInsightColors;
+import consulo.codeEditor.markup.GutterIconRenderer;
+import consulo.codeEditor.markup.SeparatorPlacement;
+import consulo.colorScheme.EditorColorsManager;
+import consulo.colorScheme.EditorColorsScheme;
+import consulo.csharp.ide.lineMarkerProvider.*;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.dotnet.psi.DotNetMemberOwner;
+import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.language.Language;
+import consulo.language.editor.DaemonCodeAnalyzerSettings;
+import consulo.language.editor.Pass;
+import consulo.language.editor.gutter.LineMarkerInfo;
+import consulo.language.editor.gutter.LineMarkerProvider;
+import consulo.language.psi.PsiElement;
+import consulo.project.DumbService;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.ref.Ref;
+import jakarta.inject.Inject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jakarta.inject.Inject;
-
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.lineMarkerProvider.HidedOrOverridedElementCollector;
-import consulo.csharp.ide.lineMarkerProvider.HidingOrOverridingElementCollector;
-import consulo.csharp.ide.lineMarkerProvider.LambdaLineMarkerCollector;
-import consulo.csharp.ide.lineMarkerProvider.LineMarkerCollector;
-import consulo.csharp.ide.lineMarkerProvider.OverrideTypeCollector;
-import consulo.csharp.ide.lineMarkerProvider.PartialTypeCollector;
-import consulo.csharp.ide.lineMarkerProvider.RecursiveCallCollector;
-import consulo.dotnet.psi.DotNetMemberOwner;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import com.intellij.codeHighlighting.Pass;
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzerSettings;
-import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.codeInsight.daemon.LineMarkerProvider;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.colors.CodeInsightColors;
-import com.intellij.openapi.editor.colors.EditorColorsManager;
-import com.intellij.openapi.editor.colors.EditorColorsScheme;
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.openapi.editor.markup.SeparatorPlacement;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Consumer;
-import com.intellij.util.FunctionUtil;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author VISTALL
  * @since 29.12.13.
  */
+@ExtensionImpl
 public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 {
 	private static final LineMarkerCollector[] ourSingleCollector = {
@@ -102,7 +98,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 				return null;
 			}
 
-			LineMarkerInfo info = new LineMarkerInfo<PsiElement>(element, element.getTextRange(), null, Pass.UPDATE_ALL, FunctionUtil.<Object, String>nullConstant(), null,
+			LineMarkerInfo info = new LineMarkerInfo<PsiElement>(element, element.getTextRange(), null, Pass.UPDATE_ALL, element1 -> null, null,
 					GutterIconRenderer.Alignment.RIGHT);
 			EditorColorsScheme scheme = myEditorColorsManager.getGlobalScheme();
 			info.separatorColor = scheme.getColor(CodeInsightColors.METHOD_SEPARATORS_COLOR);
@@ -111,14 +107,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 		}
 
 		final Ref<LineMarkerInfo> ref = Ref.create();
-		Consumer<LineMarkerInfo> consumer = new Consumer<LineMarkerInfo>()
-		{
-			@Override
-			public void consume(LineMarkerInfo markerInfo)
-			{
-				ref.set(markerInfo);
-			}
-		};
+		Consumer<LineMarkerInfo> consumer = markerInfo -> ref.set(markerInfo);
 
 		//noinspection ForLoopReplaceableByForEach
 		for(int j = 0; j < ourSingleCollector.length; j++)
@@ -141,14 +130,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 			return;
 		}
 
-		Consumer<LineMarkerInfo> consumer = new Consumer<LineMarkerInfo>()
-		{
-			@Override
-			public void consume(LineMarkerInfo lineMarkerInfo)
-			{
-				lineMarkerInfos.add(lineMarkerInfo);
-			}
-		};
+		Consumer<LineMarkerInfo> consumer = lineMarkerInfos::add;
 
 		//noinspection ForLoopReplaceableByForEach
 		for(int i = 0; i < elements.size(); i++)
@@ -162,5 +144,12 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 				ourCollector.collect(psiElement, consumer);
 			}
 		}
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

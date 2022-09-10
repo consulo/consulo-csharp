@@ -16,26 +16,35 @@
 
 package consulo.csharp.lang;
 
-import com.intellij.codeInsight.folding.CodeFoldingSettings;
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.folding.CustomFoldingBuilder;
-import com.intellij.lang.folding.FoldingDescriptor;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.Language;
+import consulo.language.ast.TokenType;
+import consulo.language.editor.folding.CodeFoldingSettings;
+import consulo.language.ast.ASTNode;
+import consulo.language.editor.folding.CustomFoldingBuilder;
+import consulo.language.editor.folding.FoldingDescriptor;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiComment;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiUtilCore;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
-import consulo.csharp.lang.parser.preprocessor.EndRegionPreprocessorDirective;
-import consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
-import consulo.csharp.lang.parser.preprocessor.PreprocessorLightParser;
-import consulo.csharp.lang.parser.preprocessor.RegionPreprocessorDirective;
+import consulo.csharp.lang.impl.parser.preprocessor.EndRegionPreprocessorDirective;
+import consulo.csharp.lang.impl.parser.preprocessor.PreprocessorDirective;
+import consulo.csharp.lang.impl.parser.preprocessor.PreprocessorLightParser;
+import consulo.csharp.lang.impl.parser.preprocessor.RegionPreprocessorDirective;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
+import consulo.csharp.lang.impl.psi.CSharpRecursiveElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodBodyImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodBodyImpl;
+import consulo.language.psi.PsiWhiteSpace;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -44,6 +53,7 @@ import java.util.*;
  * @author VISTALL
  * @since 30.11.13.
  */
+@ExtensionImpl
 public class CSharpFoldingBuilder extends CustomFoldingBuilder
 {
 	@RequiredReadAction
@@ -305,5 +315,12 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 		}
 
 		return false;
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

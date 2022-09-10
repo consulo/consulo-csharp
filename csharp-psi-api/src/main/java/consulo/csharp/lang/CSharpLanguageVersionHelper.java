@@ -16,11 +16,12 @@
 
 package consulo.csharp.lang;
 
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.ide.ServiceManager;
+import consulo.language.version.LanguageVersion;
+
 import javax.annotation.Nonnull;
 
-import com.intellij.openapi.components.ServiceManager;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.lang.LanguageVersion;
 
 /**
  * @author VISTALL

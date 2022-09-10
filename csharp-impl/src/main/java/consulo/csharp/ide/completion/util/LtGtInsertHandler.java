@@ -17,19 +17,20 @@ package consulo.csharp.ide.completion.util;
 
 import javax.annotation.Nullable;
 
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiWhiteSpace;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.document.Document;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiWhiteSpace;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.ParenthesesInsertHandler;
+import consulo.util.lang.StringUtil;
 
 /**
  * @author peter
- * @see com.intellij.codeInsight.completion.util.ParenthesesInsertHandler
+ * @see ParenthesesInsertHandler
  */
 public abstract class LtGtInsertHandler<T extends LookupElement> implements InsertHandler<T>
 {
@@ -205,7 +206,7 @@ public abstract class LtGtInsertHandler<T extends LookupElement> implements Inse
 	}
 
 	@Nullable
-	protected com.intellij.psi.PsiElement findNextToken(final InsertionContext context)
+	protected PsiElement findNextToken(final InsertionContext context)
 	{
 		final PsiFile file = context.getFile();
 		PsiElement element = file.findElementAt(context.getTailOffset());

@@ -22,11 +22,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import consulo.codeEditor.Editor;
 import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 
 /**
  * @author Fedor.Korotkov

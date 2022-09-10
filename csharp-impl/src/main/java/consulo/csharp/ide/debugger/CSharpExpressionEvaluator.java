@@ -16,35 +16,24 @@
 
 package consulo.csharp.ide.debugger;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.Contract;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.debugger.expressionEvaluator.*;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.source.*;
+import consulo.csharp.lang.impl.psi.source.resolve.MethodResolveResult;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NCallArgument;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.*;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.ResolveResult;
+import org.jetbrains.annotations.Contract;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL

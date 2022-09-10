@@ -16,16 +16,16 @@
 
 package consulo.csharp.ide.structureView;
 
-import com.intellij.ide.util.InheritedMembersNodeProvider;
-import com.intellij.ide.util.treeView.smartTree.TreeElement;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
+import consulo.fileEditor.structureView.tree.InheritedMembersNodeProvider;
+import consulo.fileEditor.structureView.tree.TreeElement;
+import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import consulo.csharp.lang.impl.psi.resolve.CSharpResolveContextUtil;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.language.psi.PsiNamedElement;
 
 import java.util.*;
 import java.util.stream.Collectors;

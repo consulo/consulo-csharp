@@ -16,8 +16,6 @@
 
 package consulo.csharp.ide.actions.generate.memberChoose;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.util.PairConsumer;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
@@ -26,7 +24,9 @@ import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.lang.psi.CSharpXAccessorOwner;
 import consulo.dotnet.psi.DotNetPropertyDeclaration;
 import consulo.dotnet.psi.DotNetXAccessor;
+import consulo.language.psi.PsiElement;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.lang.function.PairConsumer;
 
 import javax.annotation.Nonnull;
 import java.util.Locale;

@@ -16,17 +16,17 @@
 
 package consulo.csharp.ide.actions.generate.memberChoose;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.util.PairConsumer;
-import consulo.ui.annotation.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.language.psi.PsiElement;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.lang.function.PairConsumer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

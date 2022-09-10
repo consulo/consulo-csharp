@@ -18,14 +18,14 @@ package consulo.csharp.ide.debugger.expressionEvaluator;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.openapi.application.ReadAction;
+import consulo.application.ReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
-import consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
+import consulo.csharp.lang.impl.psi.source.CSharpIsExpressionImpl;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.DotNetVirtualMachineProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author VISTALL

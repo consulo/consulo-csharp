@@ -16,19 +16,22 @@
 
 package consulo.csharp.ide.refactoring.rename;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.psi.CSharpNamedElement;
+import consulo.language.psi.ElementDescriptionLocation;
+import consulo.language.psi.ElementDescriptionProvider;
+import consulo.language.psi.PsiElement;
+import consulo.usage.UsageViewShortNameLocation;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.intellij.psi.ElementDescriptionLocation;
-import com.intellij.psi.ElementDescriptionProvider;
-import com.intellij.psi.PsiElement;
-import com.intellij.usageView.UsageViewShortNameLocation;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpNamedElement;
 
 /**
  * @author VISTALL
  * @since 14-Nov-17
  */
+@ExtensionImpl
 public class CSharpElementDescriptionProvider implements ElementDescriptionProvider
 {
 	@Nullable

@@ -16,26 +16,26 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
+import consulo.codeEditor.Editor;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.dotnet.DotNetRunUtil;
 import consulo.dotnet.DotNetTarget;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.dotnet.module.extension.DotNetMutableModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import consulo.dotnet.psi.DotNetRunUtil;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.language.editor.intention.PsiElementBaseIntentionAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.content.ModuleRootManager;
+import consulo.module.content.layer.ModifiableRootModel;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 
 import javax.annotation.Nonnull;

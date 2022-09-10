@@ -29,8 +29,8 @@ import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
-import com.intellij.psi.PsiElement;
+import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author VISTALL

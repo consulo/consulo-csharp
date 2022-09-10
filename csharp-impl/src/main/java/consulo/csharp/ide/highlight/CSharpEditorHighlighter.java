@@ -16,24 +16,24 @@
 
 package consulo.csharp.ide.highlight;
 
+import consulo.colorScheme.EditorColorsScheme;
+import consulo.colorScheme.TextAttributesKey;
+import consulo.csharp.cfs.impl.CSharpCfsLanguageVersion;
+import consulo.csharp.lang.doc.impl.ide.highlight.CSharpDocSyntaxHighlighter;
+import consulo.csharp.lang.impl.psi.CSharpTemplateTokens;
+import consulo.csharp.lang.impl.psi.CSharpTokensImpl;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.dotnet.cfs.ide.highlight.CfsSyntaxHighlighter;
+import consulo.dotnet.cfs.lang.CfsTokens;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.highlight.LayerDescriptor;
+import consulo.language.editor.highlight.LayeredLexerEditorHighlighter;
+import consulo.language.lexer.Lexer;
+import consulo.language.lexer.StringLiteralLexer;
+import consulo.virtualFileSystem.VirtualFile;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.intellij.lexer.Lexer;
-import com.intellij.lexer.StringLiteralLexer;
-import com.intellij.openapi.editor.colors.EditorColorsScheme;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.editor.ex.util.LayerDescriptor;
-import com.intellij.openapi.editor.ex.util.LayeredLexerEditorHighlighter;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.tree.IElementType;
-import consulo.csharp.cfs.ide.highlight.CfsSyntaxHighlighter;
-import consulo.csharp.cfs.lang.CfsTokens;
-import consulo.csharp.lang.CSharpCfsLanguageVersion;
-import consulo.csharp.lang.doc.ide.highlight.CSharpDocSyntaxHighlighter;
-import consulo.csharp.lang.psi.CSharpTemplateTokens;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpTokensImpl;
 
 /**
  * @author VISTALL

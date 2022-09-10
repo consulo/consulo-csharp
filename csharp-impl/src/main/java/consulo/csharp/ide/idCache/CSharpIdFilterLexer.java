@@ -16,15 +16,15 @@
 
 package consulo.csharp.ide.idCache;
 
-import com.intellij.lexer.Lexer;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.impl.cache.impl.BaseFilterLexer;
-import com.intellij.psi.impl.cache.impl.OccurrenceConsumer;
-import com.intellij.psi.search.UsageSearchContext;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import consulo.csharp.lang.psi.CSharpTokenSets;
+import consulo.language.ast.TokenType;
+import consulo.language.lexer.Lexer;
+import consulo.language.psi.stub.BaseFilterLexer;
+import consulo.language.psi.search.UsageSearchContext;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.language.psi.stub.OccurrenceConsumer;
 
 /**
  * @author VISTALL

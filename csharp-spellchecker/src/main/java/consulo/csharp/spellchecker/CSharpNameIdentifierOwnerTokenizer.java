@@ -16,15 +16,15 @@
 
 package consulo.csharp.spellchecker;
 
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
 import com.intellij.spellchecker.inspections.IdentifierSplitter;
 import com.intellij.spellchecker.tokenizer.TokenConsumer;
 import com.intellij.spellchecker.tokenizer.Tokenizer;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
+import consulo.language.psi.PsiNameIdentifierOwner;
+import consulo.language.psi.util.PsiTreeUtil;
 
 import javax.annotation.Nonnull;
 

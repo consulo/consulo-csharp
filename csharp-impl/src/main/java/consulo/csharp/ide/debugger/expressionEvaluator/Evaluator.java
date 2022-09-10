@@ -16,23 +16,19 @@
 
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiUtilCore;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.ide.debugger.CSharpStaticValueProxy;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.debugger.DotNetDebugContext;
-import consulo.dotnet.debugger.proxy.DotNetAbsentInformationException;
-import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
-import consulo.dotnet.debugger.proxy.DotNetInvalidStackFrameException;
-import consulo.dotnet.debugger.proxy.DotNetNotSuspendedException;
-import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
-import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
+import consulo.dotnet.debugger.proxy.*;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
+import consulo.virtualFileSystem.VirtualFile;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

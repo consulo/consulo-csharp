@@ -16,22 +16,23 @@
 
 package consulo.csharp.ide.highlight;
 
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
-import com.intellij.openapi.editor.colors.CodeInsightColors;
-import com.intellij.openapi.editor.colors.EditorColors;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.language.editor.rawHighlight.HighlightInfoHolder;
+import consulo.language.editor.rawHighlight.HighlightInfoType;
+import consulo.codeEditor.CodeInsightColors;
+import consulo.codeEditor.EditorColors;
+import consulo.colorScheme.TextAttributesKey;
+import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpCaseVariableImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpIsVariableImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpOutRefVariableImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpCaseVariableImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpIsVariableImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpOutRefVariableImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpTypeDefStatementImpl;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpMethodImplUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
 

@@ -16,23 +16,25 @@
 
 package consulo.csharp.ide.highlight;
 
-import javax.annotation.Nullable;
-
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.codeEditor.Editor;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.codeInsight.TargetElementUtil;
-import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase;
-import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerFactory;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.editor.TargetElementUtil;
+import consulo.language.editor.highlight.usage.HighlightUsagesHandlerBase;
+import consulo.language.editor.highlight.usage.HighlightUsagesHandlerFactory;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 06.03.2016
  */
+@ExtensionImpl
 public class CSharpHighlightUsagesHandlerFactory implements HighlightUsagesHandlerFactory
 {
 	@Nullable

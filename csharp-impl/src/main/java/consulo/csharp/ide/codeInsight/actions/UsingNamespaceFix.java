@@ -16,45 +16,46 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import com.intellij.codeInsight.daemon.impl.ShowAutoImportPass;
-import com.intellij.codeInsight.hint.HintManager;
-import com.intellij.codeInsight.intention.HighPriorityAction;
-import com.intellij.codeInspection.HintAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Conditions;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.Processors;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.progress.ProgressManager;
+import consulo.application.util.function.Processors;
+import consulo.codeEditor.Editor;
+import consulo.csharp.lang.impl.psi.CSharpGenericConstraintUtil;
+import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
+import consulo.csharp.lang.impl.psi.msil.MsilToCSharpUtil;
+import consulo.csharp.lang.impl.psi.resolve.AttributeByNameSelector;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpGenericExtractor;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.impl.psi.source.resolve.type.wrapper.GenericUnwrapTool;
+import consulo.csharp.lang.impl.psi.stub.index.ExtensionMethodIndex;
+import consulo.csharp.lang.impl.psi.stub.index.MethodIndex;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
-import consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex;
-import consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
-import consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
+import consulo.document.util.TextRange;
 import consulo.dotnet.DotNetBundle;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetShortNameSearcher;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.GlobalSearchScopeFilter;
+import consulo.dotnet.psi.impl.resolve.GlobalSearchScopeFilter;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetShortNameSearcher;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.AutoImportHelper;
+import consulo.language.editor.hint.HintManager;
+import consulo.language.editor.intention.HighPriorityAction;
+import consulo.language.editor.intention.HintAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
 import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilMethodEntry;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.function.Condition;
+import consulo.util.lang.function.Conditions;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -102,7 +103,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		}
 
 		AddUsingAction action = new AddUsingAction(editor, element, references);
-		String message = ShowAutoImportPass.getMessage(references.size() != 1, DotNetBundle.message("use.popup", AddUsingAction.formatMessage(references.iterator().next())));
+		String message = AutoImportHelper.getInstance(element.getProject()).getImportMessage(references.size() != 1, DotNetBundle.message("use.popup", AddUsingAction.formatMessage(references.iterator().next())));
 
 		PsiElement referenceElement = element.getReferenceElement();
 		assert referenceElement != null;

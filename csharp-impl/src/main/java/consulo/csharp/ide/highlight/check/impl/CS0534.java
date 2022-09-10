@@ -16,25 +16,25 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import com.intellij.codeInsight.generation.ImplementMethodsHandler;
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.SmartList;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
+import consulo.csharp.ide.actions.generate.GenerateImplementMemberHandler;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
+import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.collection.SmartList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,7 +79,7 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
 		@RequiredUIAccess
 		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
-			new ImplementMethodsHandler().invoke(project, editor, file);
+			new GenerateImplementMemberHandler().invoke(project, editor, file);
 		}
 	}
 

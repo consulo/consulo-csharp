@@ -18,11 +18,11 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import javax.annotation.Nonnull;
 
+import consulo.component.util.localize.BundleBase;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.BundleBase;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL

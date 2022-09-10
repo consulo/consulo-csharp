@@ -1,23 +1,26 @@
 package consulo.csharp.lang;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.doc.psi.CSharpDocRoot;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
+import consulo.language.Language;
+import consulo.language.ast.ASTNode;
+import consulo.language.editor.folding.CodeFoldingSettings;
+import consulo.language.editor.folding.FoldingBuilderEx;
+import consulo.language.editor.folding.FoldingDescriptor;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.intellij.codeInsight.folding.CodeFoldingSettings;
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.folding.FoldingBuilderEx;
-import com.intellij.lang.folding.FoldingDescriptor;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 
 /**
  * @author VISTALL
  * @since 16-Nov-17
  */
+@ExtensionImpl
 public class CSharpDocFoldingBuilder extends FoldingBuilderEx
 {
 	@RequiredReadAction
@@ -54,5 +57,12 @@ public class CSharpDocFoldingBuilder extends FoldingBuilderEx
 	public boolean isCollapsedByDefault(@Nonnull ASTNode node)
 	{
 		return CodeFoldingSettings.getInstance().COLLAPSE_DOC_COMMENTS;
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

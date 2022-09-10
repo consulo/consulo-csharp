@@ -16,20 +16,16 @@
 
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.text.StringUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
-import consulo.dotnet.debugger.proxy.DotNetFieldProxy;
-import consulo.dotnet.debugger.proxy.DotNetLocalVariableProxy;
-import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
-import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
-import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
+import consulo.dotnet.debugger.impl.nodes.DotNetDebuggerCompilerGenerateUtil;
+import consulo.dotnet.debugger.proxy.*;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
+import consulo.util.lang.Comparing;
+import consulo.util.lang.StringUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

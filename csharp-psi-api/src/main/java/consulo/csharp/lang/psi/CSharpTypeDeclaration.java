@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
-import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.util.collection.ArrayFactory;
 
 /**
  * @author VISTALL

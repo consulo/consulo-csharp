@@ -42,19 +42,6 @@
 		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.languageKeywordUsage.LanguageKeywordUsageInspection"
 						 displayName="Language Keyword Usage" groupName="C#" enabledByDefault="true" level="WEAK WARNING"/>
 
-		<localInspection language="C#"
-						 implementationClass="consulo.csharp.lang.doc.inspection.CSharpDocInspection"
-						 displayName="Documentation problems"
-						 groupPath="C#"
-						 groupName="Documentation"
-						 enabledByDefault="true"/>
 
-		<localInspection language="C#"
-						 implementationClass="consulo.csharp.lang.doc.inspection.CSharpDocReferenceInspection"
-						 displayName="Documentation reference problems"
-						 groupPath="C#"
-						 groupName="Documentation"
-						 enabledByDefault="true"
-						 level="WARNING"/>
 	</extensions>
 </consulo-plugin>

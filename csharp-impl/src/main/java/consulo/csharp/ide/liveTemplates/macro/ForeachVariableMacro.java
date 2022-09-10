@@ -16,22 +16,24 @@
 
 package consulo.csharp.ide.liveTemplates.macro;
 
-import java.util.List;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.impl.psi.DotNetTypes2;
+import consulo.csharp.lang.impl.psi.source.CSharpTypeDeclarationImplUtil;
+import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.template.Expression;
+import consulo.language.editor.template.ExpressionContext;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.SmartList;
 
 import javax.annotation.Nullable;
-import consulo.csharp.lang.psi.impl.DotNetTypes2;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
-import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInsight.template.Expression;
-import com.intellij.codeInsight.template.ExpressionContext;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.SmartList;
+import java.util.List;
 
 /**
  * @author VISTALL
  * @since 11.06.14
  */
+@ExtensionImpl
 public class ForeachVariableMacro extends VariableTypeMacroBase
 {
 	private static final String[] ourAcceptableTypes = {

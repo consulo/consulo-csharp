@@ -16,20 +16,20 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.impl.psi.source.CSharpSwitchStatementImpl;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.CSharpSwitchStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ArrayUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

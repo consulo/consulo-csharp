@@ -16,13 +16,14 @@
 
 package consulo.csharp.ide.codeStyle;
 
-import com.intellij.application.options.codeStyle.CommenterForm;
-import com.intellij.openapi.application.ApplicationBundle;
-import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.ui.VerticalFlowLayout;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
+import consulo.configurable.Configurable;
+import consulo.ide.impl.idea.application.options.codeStyle.CommenterForm;
+import consulo.application.ApplicationBundle;
+import consulo.configurable.ConfigurationException;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.ui.ex.awt.VerticalFlowLayout;
 import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.ui.annotation.RequiredUIAccess;
 import org.jetbrains.annotations.Nls;
 

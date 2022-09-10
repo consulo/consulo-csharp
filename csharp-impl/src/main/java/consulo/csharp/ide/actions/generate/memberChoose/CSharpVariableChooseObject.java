@@ -16,10 +16,6 @@
 
 package consulo.csharp.ide.actions.generate.memberChoose;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.intellij.util.ArrayFactory;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
@@ -27,6 +23,10 @@ import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
+import consulo.util.collection.ArrayFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

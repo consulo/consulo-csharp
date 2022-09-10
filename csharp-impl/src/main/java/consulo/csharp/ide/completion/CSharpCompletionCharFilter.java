@@ -16,15 +16,17 @@
 
 package consulo.csharp.ide.completion;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.CSharpFileType;
-import com.intellij.codeInsight.lookup.CharFilter;
-import com.intellij.codeInsight.lookup.Lookup;
-import com.intellij.psi.PsiFile;
+import consulo.language.editor.completion.lookup.CharFilter;
+import consulo.language.psi.PsiFile;
+import consulo.language.editor.completion.lookup.Lookup;
 
 /**
  * @author VISTALL
  * @since 03.01.15
  */
+@ExtensionImpl
 public class CSharpCompletionCharFilter extends CharFilter
 {
 	@Override

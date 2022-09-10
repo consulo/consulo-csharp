@@ -19,22 +19,22 @@ package consulo.csharp.ide.parameterInfo;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import consulo.language.psi.PsiElement;
 import org.checkerframework.common.aliasing.qual.NonLeaked;
-import com.intellij.codeInsight.CodeInsightSettings;
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
+import consulo.language.editor.CodeInsightSettings;
+import consulo.application.AccessToken;
+import consulo.language.psi.PsiNamedElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpIndexAccessExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpStaticTypeRef;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL

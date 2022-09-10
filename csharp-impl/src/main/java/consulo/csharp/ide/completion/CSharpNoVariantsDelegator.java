@@ -16,49 +16,55 @@
 
 package consulo.csharp.ide.completion;
 
-import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.completion.impl.BetterPrefixMatcher;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Consumer;
-import com.intellij.util.Processor;
-import com.intellij.util.indexing.IdFilter;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
+import consulo.application.progress.ProgressManager;
+import consulo.application.util.function.Processor;
+import consulo.application.util.matcher.PrefixMatcher;
+import consulo.component.util.Iconable;
 import consulo.csharp.ide.CSharpLookupElementBuilder;
 import consulo.csharp.ide.codeInsight.actions.AddUsingAction;
 import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import consulo.csharp.ide.completion.util.LtGtInsertHandler;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import consulo.dotnet.psi.DotNetAttributeUtil;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import consulo.dotnet.resolve.DotNetShortNameSearcher;
-import consulo.dotnet.resolve.GlobalSearchScopeFilter;
-import consulo.ide.IconDescriptorUpdaters;
+import consulo.dotnet.psi.impl.resolve.GlobalSearchScopeFilter;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
+import consulo.dotnet.psi.resolve.DotNetShortNameSearcher;
+import consulo.ide.impl.idea.codeInsight.completion.impl.BetterPrefixMatcher;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
+import consulo.language.editor.completion.CompletionParameters;
+import consulo.language.editor.completion.CompletionResult;
+import consulo.language.editor.completion.CompletionResultSet;
+import consulo.language.editor.completion.CompletionType;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.editor.impl.internal.completion.CompletionUtil;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.stub.IdFilter;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.util.dataholder.Key;
+import consulo.util.lang.StringUtil;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * @author VISTALL
@@ -80,7 +86,7 @@ class CSharpNoVariantsDelegator
 		}
 
 		@Override
-		public void consume(CompletionResult plainResult)
+		public void accept(CompletionResult plainResult)
 		{
 			myResult.passResult(plainResult);
 
@@ -102,9 +108,9 @@ class CSharpNoVariantsDelegator
 		ResultTracker tracker = new ResultTracker(result)
 		{
 			@Override
-			public void consume(CompletionResult plainResult)
+			public void accept(CompletionResult plainResult)
 			{
-				super.consume(plainResult);
+				super.accept(plainResult);
 
 				LookupElement element = plainResult.getLookupElement();
 				Object o = element.getObject();
@@ -159,6 +165,7 @@ class CSharpNoVariantsDelegator
 
 	@RequiredReadAction
 	public static void addTypesForUsing(final CompletionParameters parameters, final CompletionResultSet result, final InheritorsHolder inheritorsHolder)
+
 	{
 		final PrefixMatcher matcher = result.getPrefixMatcher();
 		final CSharpReferenceExpression parent = (CSharpReferenceExpression) parameters.getPosition().getParent();
@@ -304,6 +311,6 @@ class CSharpNoVariantsDelegator
 
 		element.putCopyableUserData(CSharpLookupElementBuilder.OBSOLETE_FLAG, Boolean.TRUE);
 
-		consumer.consume(element);
+		consumer.accept(element);
 	}
 }

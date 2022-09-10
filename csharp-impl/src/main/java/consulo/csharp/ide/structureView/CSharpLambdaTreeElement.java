@@ -16,11 +16,11 @@
 
 package consulo.csharp.ide.structureView;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.ide.structureView.StructureViewTreeElement;
-import com.intellij.ide.structureView.impl.common.PsiTreeElementBase;
-import consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
-import consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
+import consulo.application.AllIcons;
+import consulo.language.editor.structureView.PsiTreeElementBase;
+import consulo.csharp.lang.impl.psi.source.CSharpAnonymousMethodExpression;
+import consulo.csharp.lang.impl.psi.source.CSharpDelegateExpressionImpl;
+import consulo.fileEditor.structureView.StructureViewTreeElement;
 import consulo.ui.image.Image;
 
 import javax.annotation.Nonnull;

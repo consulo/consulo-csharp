@@ -16,27 +16,27 @@
 
 package consulo.csharp.ide.refactoring.extractMethod;
 
-import com.intellij.CommonBundle;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.BaseRefactoringProcessor;
-import com.intellij.util.Processor;
+import consulo.application.util.function.Processor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.language.editor.refactoring.BaseRefactoringProcessor;
+import consulo.application.CommonBundle;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureDialog;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpParameterInfo;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
-import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.impl.psi.light.builder.CSharpLightMethodDeclarationBuilder;
+import consulo.csharp.lang.impl.psi.light.builder.CSharpLightParameterBuilder;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -51,7 +51,7 @@ public class CSharpExtractMethodDialog extends CSharpChangeSignatureDialog
 	private Processor<DotNetLikeMethodDeclaration> myProcessor;
 
 	public CSharpExtractMethodDialog(Project project, CSharpMethodDescriptor method, boolean allowDelegation, PsiElement defaultValueContext,
-			@Nonnull @RequiredUIAccess Processor<DotNetLikeMethodDeclaration> processor)
+									 @Nonnull @RequiredUIAccess Processor<DotNetLikeMethodDeclaration> processor)
 	{
 		super(project, method, allowDelegation, defaultValueContext);
 		myProcessor = processor;

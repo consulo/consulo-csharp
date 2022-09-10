@@ -16,29 +16,29 @@
 
 package consulo.csharp.ide.completion;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.containers.ConcurrentFactoryMap;
+import consulo.application.util.ConcurrentFactoryMap;
 import consulo.csharp.ide.completion.util.SpaceInsertHandler;
+import consulo.csharp.lang.impl.psi.source.CSharpConstructorSuperCallImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import consulo.util.NotNullPairFunction;
+import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.language.editor.completion.CompletionParameters;
+import consulo.language.editor.completion.CompletionResultSet;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.psi.PsiElement;
 import consulo.util.dataholder.Key;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 /**
  * @author VISTALL
@@ -46,7 +46,7 @@ import java.util.Map;
  */
 public class CSharpCompletionUtil
 {
-	public static NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement> ourSpaceInsert = (b, t) -> b.withInsertHandler(SpaceInsertHandler.INSTANCE);
+	public static BiFunction<LookupElementBuilder, IElementType, LookupElement> ourSpaceInsert = (b, t) -> b.withInsertHandler(SpaceInsertHandler.INSTANCE);
 
 	private static Map<IElementType, String> ourCache = ConcurrentFactoryMap.createMap(elementType ->
 	{
@@ -108,8 +108,8 @@ public class CSharpCompletionUtil
 
 	public static void tokenSetToLookup(@Nonnull CompletionResultSet resultSet,
 			@Nonnull TokenSet tokenSet,
-			@Nullable NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement> decorator,
-			@Nullable Condition<IElementType> condition)
+			@Nullable BiFunction<LookupElementBuilder, IElementType, LookupElement> decorator,
+			@Nullable Predicate<IElementType> condition)
 	{
 		for(IElementType elementType : tokenSet.getTypes())
 		{
@@ -119,10 +119,10 @@ public class CSharpCompletionUtil
 
 	public static void elementToLookup(@Nonnull CompletionResultSet resultSet,
 			@Nonnull IElementType elementType,
-			@Nullable NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement> decorator,
-			@Nullable Condition<IElementType> condition)
+			@Nullable BiFunction<LookupElementBuilder, IElementType, LookupElement> decorator,
+			@Nullable Predicate<IElementType> condition)
 	{
-		if(condition != null && !condition.value(elementType))
+		if(condition != null && !condition.test(elementType))
 		{
 			return;
 		}
@@ -133,7 +133,7 @@ public class CSharpCompletionUtil
 		LookupElement item = builder;
 		if(decorator != null)
 		{
-			item = decorator.fun(builder, elementType);
+			item = decorator.apply(builder, elementType);
 		}
 
 		item.putUserData(KEYWORD_ELEMENT_TYPE, elementType);

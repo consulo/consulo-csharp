@@ -25,7 +25,7 @@ import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetParameterList;
-import com.intellij.util.ArrayUtil;
+import consulo.util.collection.ArrayUtil;
 
 /**
  * @author VISTALL

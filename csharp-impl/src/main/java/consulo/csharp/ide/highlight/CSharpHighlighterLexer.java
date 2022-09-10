@@ -16,10 +16,10 @@
 
 package consulo.csharp.ide.highlight;
 
-import com.intellij.lexer.RestartableLexer;
-import com.intellij.lexer.TokenIterator;
-import consulo.csharp.lang.lexer.CSharpLexer;
-import consulo.csharp.lang.lexer._CSharpLexer;
+import consulo.csharp.lang.impl.lexer.CSharpLexer;
+import consulo.csharp.lang.impl.lexer._CSharpLexer;
+import consulo.language.lexer.RestartableLexer;
+import consulo.language.lexer.TokenIterator;
 
 import javax.annotation.Nonnull;
 

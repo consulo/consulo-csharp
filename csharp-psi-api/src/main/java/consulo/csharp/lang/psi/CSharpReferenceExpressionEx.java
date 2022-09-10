@@ -16,12 +16,12 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.ResolveResult;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

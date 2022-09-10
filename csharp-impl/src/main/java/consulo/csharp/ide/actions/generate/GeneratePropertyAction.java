@@ -16,20 +16,19 @@
 
 package consulo.csharp.ide.actions.generate;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
-import com.intellij.codeInsight.CodeInsightActionHandler;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
+import consulo.language.editor.action.CodeInsightActionHandler;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL

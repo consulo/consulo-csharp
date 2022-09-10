@@ -16,29 +16,30 @@
 
 package consulo.csharp.ide.completion.expected;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.util.CachedValueProvider;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpImplicitReturnModel;
+import consulo.csharp.lang.impl.psi.DotNetTypes2;
+import consulo.csharp.lang.impl.psi.source.*;
+import consulo.csharp.lang.impl.psi.source.resolve.MethodResolveResult;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.MethodResolvePriorityInfo;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NCallArgument;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
-import consulo.csharp.lang.psi.impl.DotNetTypes2;
-import consulo.csharp.lang.psi.impl.source.*;
-import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.util.ArrayUtil2;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.ResolveResult;
+import consulo.language.psi.util.LanguageCachedValueUtil;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
 
 import javax.annotation.Nonnull;
@@ -67,7 +68,7 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 			return List.of();
 		}
 
-		return CachedValuesManager.getCachedValue(psiElement, () -> CachedValueProvider.Result.create(findExpectedTypeRefsImpl(psiElement), PsiModificationTracker.MODIFICATION_COUNT));
+		return LanguageCachedValueUtil.getCachedValue(psiElement, () -> CachedValueProvider.Result.create(findExpectedTypeRefsImpl(psiElement), PsiModificationTracker.MODIFICATION_COUNT));
 	}
 
 	@Nonnull

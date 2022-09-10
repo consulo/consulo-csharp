@@ -16,12 +16,12 @@
 
 package consulo.csharp.ide.findUsage.referenceSearch;
 
-import com.intellij.openapi.application.QueryExecutorBase;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.util.Processor;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.application.util.function.Processor;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
+import consulo.project.util.query.QueryExecutorBase;
 
 import javax.annotation.Nonnull;
 

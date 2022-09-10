@@ -16,39 +16,38 @@
 
 package consulo.csharp.ide.completion;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.patterns.StandardPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ProcessingContext;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.codeInsight.completion.CompletionProvider;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandlerWithChar;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.resolve.DotNetPsiSearcher;
+import consulo.dotnet.psi.resolve.DotNetPsiSearcher;
+import consulo.language.Language;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.EqTailType;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.pattern.StandardPatterns;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.ProcessingContext;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
 
 /**
  * @author VISTALL
  * @since 06.01.15
  */
+@ExtensionImpl
 public class CSharpMemberNameCompletionContributor extends CompletionContributor
 {
 	public CSharpMemberNameCompletionContributor()
@@ -72,7 +71,7 @@ public class CSharpMemberNameCompletionContributor extends CompletionContributor
 					for(String suggestedName : suggestedNames)
 					{
 						LookupElementBuilder element = LookupElementBuilder.create(suggestedName);
-						element = element.withInsertHandler(new CSharpTailInsertHandlerWithChar(TailType.EQ, '='));
+						element = element.withInsertHandler(new CSharpTailInsertHandlerWithChar(EqTailType.INSTANCE, '='));
 						result.addElement(element);
 					}
 				}
@@ -118,5 +117,12 @@ public class CSharpMemberNameCompletionContributor extends CompletionContributor
 				}
 			}
 		});
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

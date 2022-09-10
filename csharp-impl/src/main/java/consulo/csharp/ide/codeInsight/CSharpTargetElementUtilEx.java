@@ -16,25 +16,26 @@
 
 package consulo.csharp.ide.codeInsight;
 
-import java.util.Set;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.codeEditor.Editor;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.language.editor.TargetElementUtil;
+import consulo.language.editor.TargetElementUtilExtender;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReference;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.codeInsight.TargetElementUtil;
-import consulo.codeInsight.TargetElementUtilEx;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import java.util.Set;
 
 /**
  * @author VISTALL
  * @since 2020-04-05
  */
-public class CSharpTargetElementUtilEx extends TargetElementUtilEx.Adapter
+@ExtensionImpl
+public class CSharpTargetElementUtilEx implements TargetElementUtilExtender
 {
 	@Nullable
 	@Override

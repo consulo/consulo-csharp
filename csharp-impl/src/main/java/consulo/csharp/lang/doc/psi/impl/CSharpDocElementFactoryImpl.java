@@ -16,12 +16,12 @@
 
 package consulo.csharp.lang.doc.psi.impl;
 
-import javax.annotation.Nonnull;
+import consulo.csharp.lang.doc.impl.psi.CSharpDocElements;
+import consulo.csharp.lang.doc.psi.CSharpDocElementFactory;
+import consulo.language.ast.IElementType;
 import jakarta.inject.Singleton;
 
-import com.intellij.psi.tree.IElementType;
-import consulo.csharp.lang.doc.psi.CSharpDocElementFactory;
-import consulo.csharp.lang.doc.psi.CSharpDocElements;
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

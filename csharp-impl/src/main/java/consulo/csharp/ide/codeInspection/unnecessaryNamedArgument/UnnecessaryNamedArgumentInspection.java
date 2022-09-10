@@ -16,37 +16,34 @@
 
 package consulo.csharp.ide.codeInspection.unnecessaryNamedArgument;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import consulo.csharp.ide.codeInsight.actions.ConvertNamedToSimpleArgumentFix;
 import consulo.csharp.ide.highlight.check.impl.CS1738;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.source.resolve.MethodResolveResult;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NCallArgument;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
-import com.intellij.codeInspection.IntentionWrapper;
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.psi.ResolveResult;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * @author VISTALL
  * @since 02.12.14
  */
-public class UnnecessaryNamedArgumentInspection extends LocalInspectionTool
+public abstract class UnnecessaryNamedArgumentInspection extends LocalInspectionTool
 {
 	@Nonnull
 	@Override
@@ -76,14 +73,7 @@ public class UnnecessaryNamedArgumentInspection extends LocalInspectionTool
 
 				List<NCallArgument> arguments = ((MethodResolveResult) result).getCalcResult().getArguments();
 
-				NCallArgument nCallArgument = ContainerUtil.find(arguments, new Condition<NCallArgument>()
-				{
-					@Override
-					public boolean value(NCallArgument nCallArgument)
-					{
-						return nCallArgument.getCallArgument() == argument;
-					}
-				});
+				NCallArgument nCallArgument = ContainerUtil.find(arguments, nCallArgument1 -> nCallArgument1.getCallArgument() == argument);
 
 				if(nCallArgument == null)
 				{
@@ -105,7 +95,7 @@ public class UnnecessaryNamedArgumentInspection extends LocalInspectionTool
 				{
 					CSharpReferenceExpression argumentNameReference = argument.getArgumentNameReference();
 					holder.registerProblem(argumentNameReference, "Unnecessary argument name specific", ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-							new IntentionWrapper(new ConvertNamedToSimpleArgumentFix(argument), owner.getContainingFile()));
+							new consulo.ide.impl.idea.codeInspection.IntentionWrapper(new ConvertNamedToSimpleArgumentFix(argument), owner.getContainingFile()));
 				}
 			}
 		};

@@ -16,19 +16,18 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.language.editor.intention.PsiElementBaseIntentionAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 
@@ -103,14 +102,7 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 	@Override
 	public String getText()
 	{
-		return "Make " + StringUtil.join(myModifiers, new Function<CSharpModifier, String>()
-		{
-			@Override
-			public String fun(CSharpModifier modifier)
-			{
-				return modifier.getPresentableText();
-			}
-		}, " ");
+		return "Make " + StringUtil.join(myModifiers, modifier -> modifier.getPresentableText(), " ");
 	}
 
 	@Nonnull

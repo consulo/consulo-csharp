@@ -16,20 +16,21 @@
 package consulo.csharp.ide.completion.util;
 
 import javax.annotation.Nullable;
+
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiWhiteSpace;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.csharp.ide.parameterInfo.CSharpParameterInfoHandler;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetParameterList;
-import com.intellij.codeInsight.AutoPopupController;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiWhiteSpace;
+import consulo.language.editor.AutoPopupController;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.document.Document;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.StringUtil;
 
 /**
  * @author peter

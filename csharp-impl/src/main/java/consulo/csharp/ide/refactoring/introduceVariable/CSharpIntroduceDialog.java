@@ -31,12 +31,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.ComboBox;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.ui.EditorComboBoxEditor;
-import com.intellij.ui.EditorComboBoxRenderer;
-import com.intellij.ui.StringComboboxEditor;
+import consulo.language.editor.ui.awt.EditorComboBoxRenderer;
+import consulo.project.Project;
+import consulo.ui.ex.awt.ComboBox;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.language.editor.ui.awt.EditorComboBoxEditor;
+import consulo.language.editor.ui.awt.StringComboboxEditor;
 
 /**
  * User: Fedor.Korotkov

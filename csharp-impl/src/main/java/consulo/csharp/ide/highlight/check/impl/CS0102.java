@@ -16,29 +16,23 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.util.ObjectUtil;
-import com.intellij.util.SmartList;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.CSharpElementCompareUtil;
+import consulo.csharp.lang.impl.psi.CSharpElementCompareUtil;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetMemberOwner;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.dotnet.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiNameIdentifierOwner;
+import consulo.util.lang.ObjectUtil;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -58,7 +52,7 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 	@RequiredReadAction
 	public static List<CompilerCheckBuilder> doCheck(@Nonnull CompilerCheck<? extends DotNetMemberOwner> compilerCheck, @Nonnull DotNetMemberOwner t)
 	{
-		List<CompilerCheckBuilder> results = new SmartList<>();
+		List<CompilerCheckBuilder> results = new ArrayList<>();
 
 		final DotNetNamedElement[] members = t.getMembers();
 

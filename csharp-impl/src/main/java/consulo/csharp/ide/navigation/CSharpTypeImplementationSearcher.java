@@ -16,11 +16,11 @@
 
 package consulo.csharp.ide.navigation;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.searches.DefinitionsScopedSearch;
-import com.intellij.util.Processor;
-import com.intellij.util.QueryExecutor;
-import consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import consulo.application.util.query.QueryExecutor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.search.DefinitionsScopedSearch;
+import consulo.application.util.function.Processor;
+import consulo.csharp.lang.impl.psi.msil.CSharpTransform;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
 

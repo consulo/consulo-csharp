@@ -17,8 +17,8 @@
 package consulo.csharp;
 
 import consulo.annotation.DeprecationInfo;
+import consulo.component.util.localize.AbstractBundle;
 import org.jetbrains.annotations.PropertyKey;
-import com.intellij.AbstractBundle;
 
 /**
  * @author VISTALL

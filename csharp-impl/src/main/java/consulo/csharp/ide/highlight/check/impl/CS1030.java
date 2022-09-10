@@ -16,14 +16,14 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiUtilCore;
+import consulo.language.ast.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.CSharpPreprocessorElements;
-import consulo.csharp.lang.psi.impl.source.CSharpPreprocessorWarningImpl;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
+import consulo.csharp.lang.impl.psi.source.CSharpPreprocessorWarningImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.language.psi.PsiUtilCore;
 import consulo.localize.LocalizeValue;
 
 import javax.annotation.Nonnull;

@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.doc.psi;
 
-import javax.annotation.Nonnull;
+import consulo.ide.ServiceManager;
+import consulo.language.ast.IElementType;
 
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.psi.tree.IElementType;
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

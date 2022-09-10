@@ -16,24 +16,24 @@
 
 package consulo.csharp.ide.completion.expected;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.BaseScopeProcessor;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
-import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
+import consulo.csharp.lang.impl.psi.source.using.AddUsingUtil;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import consulo.csharp.lang.psi.CSharpUsingTypeStatement;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import consulo.csharp.lang.psi.impl.source.using.AddUsingUtil;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.resolve.BaseScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

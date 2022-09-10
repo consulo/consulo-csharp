@@ -21,18 +21,18 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.AsPsiElementProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
-import consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
-import consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpReferenceExpressionImplUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.AsPsiElementProcessor;
+import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveOptions;
+import consulo.csharp.lang.impl.psi.source.resolve.CompletionResolveScopeProcessor;
+import consulo.csharp.lang.impl.psi.source.resolve.ExecuteTarget;
+import consulo.csharp.lang.impl.psi.source.resolve.SimpleNamedScopeProcessor;
+import consulo.csharp.lang.impl.psi.source.resolve.StubScopeProcessor;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.psi.DotNetVariable;
-import com.intellij.openapi.util.Couple;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.Couple;
+import consulo.language.psi.resolve.ResolveState;
 
 /**
  * @author VISTALL

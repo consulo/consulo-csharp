@@ -16,16 +16,17 @@
 
 package consulo.csharp.lang.formatter.processors;
 
-import com.intellij.formatting.Wrap;
-import com.intellij.formatting.WrapType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.tree.IElementType;
 import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
+import consulo.csharp.lang.impl.psi.CSharpElements;
+import consulo.csharp.lang.impl.psi.source.*;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.*;
 import consulo.dotnet.psi.DotNetStatement;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.codeStyle.Wrap;
+import consulo.language.codeStyle.WrapType;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nullable;
 

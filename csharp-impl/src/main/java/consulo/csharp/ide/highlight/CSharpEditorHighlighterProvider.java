@@ -16,25 +16,37 @@
 
 package consulo.csharp.ide.highlight;
 
+import consulo.annotation.component.ExtensionImpl;
+import consulo.codeEditor.EditorHighlighter;
+import consulo.colorScheme.EditorColorsScheme;
+import consulo.csharp.lang.CSharpFileType;
+import consulo.language.editor.highlight.EditorHighlighterProvider;
+import consulo.project.Project;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.fileType.FileType;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.intellij.openapi.editor.colors.EditorColorsScheme;
-import com.intellij.openapi.editor.highlighter.EditorHighlighter;
-import com.intellij.openapi.fileTypes.EditorHighlighterProvider;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author VISTALL
  * @since 24.01.14
  */
+@ExtensionImpl
 public class CSharpEditorHighlighterProvider implements EditorHighlighterProvider
 {
+	@Nonnull
 	@Override
 	public EditorHighlighter getEditorHighlighter(@Nullable Project project, @Nonnull FileType fileType, @Nullable VirtualFile virtualFile,
-			@Nonnull EditorColorsScheme editorColorsScheme)
+												  @Nonnull EditorColorsScheme editorColorsScheme)
 	{
 		return new CSharpEditorHighlighter(virtualFile, editorColorsScheme);
+	}
+
+	@Nonnull
+	@Override
+	public FileType getFileType()
+	{
+		return CSharpFileType.INSTANCE;
 	}
 }

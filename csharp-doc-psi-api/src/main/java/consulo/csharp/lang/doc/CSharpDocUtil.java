@@ -16,10 +16,11 @@
 
 package consulo.csharp.lang.doc;
 
-import javax.annotation.Nonnull;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

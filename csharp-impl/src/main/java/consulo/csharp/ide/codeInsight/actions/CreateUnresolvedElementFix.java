@@ -16,31 +16,36 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.TemplateManager;
-import com.intellij.ide.IdeBundle;
-import com.intellij.openapi.application.ApplicationNamesInfo;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.ScrollType;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.fileEditor.OpenFileDescriptor;
-import com.intellij.openapi.fileEditor.ex.FileEditorProviderManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.fileEditor.FileEditorManager;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.editor.template.Template;
+import consulo.language.editor.template.TemplateManager;
+import consulo.ide.IdeBundle;
+import consulo.application.impl.internal.ApplicationNamesInfo;
+import consulo.codeEditor.ScrollType;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.navigation.OpenFileDescriptor;
+import consulo.fileEditor.FileEditorProviderManager;
+import consulo.navigation.OpenFileDescriptorFactory;
+import consulo.project.Project;
+import consulo.ui.ex.awt.Messages;
+import consulo.language.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.ide.refactoring.CSharpGenerateUtil;
 import consulo.csharp.lang.psi.CSharpBodyWithBraces;
-import consulo.csharp.lang.psi.CSharpContextUtil;
+import consulo.csharp.lang.impl.psi.CSharpContextUtil;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.dotnet.psi.DotNetMemberOwner;
 import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.util.collection.ArrayUtil;
+import consulo.virtualFileSystem.VirtualFile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -163,7 +168,7 @@ public abstract class CreateUnresolvedElementFix extends BaseIntentionAction
 			return null;
 		}
 
-		OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
+		OpenFileDescriptor descriptor = OpenFileDescriptorFactory.getInstance(project).builder(virtualFile).build();
 		Editor editor = FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
 		if(editor != null)
 		{

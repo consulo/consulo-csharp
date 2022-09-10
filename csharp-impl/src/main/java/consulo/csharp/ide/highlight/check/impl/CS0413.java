@@ -26,16 +26,16 @@ import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
 import consulo.csharp.lang.psi.CSharpGenericConstraintOwner;
 import consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
-import consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
+import consulo.csharp.lang.impl.psi.CSharpGenericConstraintUtil;
 import consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpAsExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL

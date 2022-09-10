@@ -22,14 +22,14 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.AddModifierFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.util.ObjectUtil;
+import consulo.util.lang.ObjectUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNameIdentifierOwner;
 
 /**
  * @author VISTALL

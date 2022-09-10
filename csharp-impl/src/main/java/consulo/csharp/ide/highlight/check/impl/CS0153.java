@@ -21,10 +21,10 @@ import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.impl.source.CSharpGotoStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpSwitchStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpGotoStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpSwitchStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL

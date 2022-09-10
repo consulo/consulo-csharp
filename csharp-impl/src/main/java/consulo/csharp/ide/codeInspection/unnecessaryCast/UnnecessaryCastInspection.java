@@ -16,19 +16,19 @@
 
 package consulo.csharp.ide.codeInspection.unnecessaryCast;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.LocalInspectionToolSession;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.psi.PsiElementVisitor;
+import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.editor.inspection.LocalInspectionToolSession;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpAsExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpTypeCastExpressionImpl;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiElementVisitor;
 
 import javax.annotation.Nonnull;
 
@@ -36,7 +36,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 18.05.14
  */
-public class UnnecessaryCastInspection extends LocalInspectionTool
+public abstract class UnnecessaryCastInspection extends LocalInspectionTool
 {
 	@Nonnull
 	@Override

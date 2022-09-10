@@ -21,18 +21,18 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import consulo.language.editor.template.Result;
+import consulo.language.editor.template.TextResult;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.csharp.ide.lineMarkerProvider.CSharpLineMarkerUtil;
 import consulo.dotnet.psi.DotNetVariable;
-import com.intellij.codeInsight.template.Expression;
-import com.intellij.codeInsight.template.ExpressionContext;
-import com.intellij.codeInsight.template.Macro;
-import com.intellij.codeInsight.template.Result;
-import com.intellij.codeInsight.template.TextResult;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import consulo.language.editor.template.Expression;
+import consulo.language.editor.template.ExpressionContext;
+import consulo.language.editor.template.macro.Macro;
 
 /**
  * @author VISTALL

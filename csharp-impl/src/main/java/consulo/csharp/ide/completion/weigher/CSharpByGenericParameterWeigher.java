@@ -17,9 +17,9 @@
 package consulo.csharp.ide.completion.weigher;
 
 import javax.annotation.Nonnull;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.ProximityLocation;
-import com.intellij.psi.util.proximity.ProximityWeigher;
+import consulo.language.psi.PsiElement;
+import consulo.ide.impl.psi.util.ProximityLocation;
+import consulo.ide.impl.psi.util.proximity.ProximityWeigher;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 

@@ -16,43 +16,23 @@
 
 package consulo.csharp.ide.actions.generate;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.CodeInsightActionHandler;
-import com.intellij.ide.util.MemberChooser;
-import com.intellij.ide.util.MemberChooserBuilder;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiParserFacade;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.util.Processor;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.ui.annotation.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.util.function.Processor;
+import consulo.codeEditor.Editor;
 import consulo.csharp.ide.actions.generate.memberChoose.CSharpVariableChooseObject;
 import consulo.csharp.ide.actions.generate.memberChoose.ConstructorChooseMember;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.resolve.CSharpResolveContextUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpTypeDeclarationImplUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.AsPsiElementProcessor;
+import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveOptions;
+import consulo.csharp.lang.impl.psi.source.resolve.ExecuteTarget;
+import consulo.csharp.lang.impl.psi.source.resolve.MemberResolveScopeProcessor;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.AsPsiElementProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
-import consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
-import consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
@@ -60,7 +40,27 @@ import consulo.dotnet.psi.DotNetConstructorDeclaration;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.editor.action.CodeInsightActionHandler;
+import consulo.language.editor.generation.ClassMember;
+import consulo.language.editor.generation.MemberChooserBuilder;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiParserFacade;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Pair;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -122,35 +122,32 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 		}
 		else
 		{
-			final MemberChooserBuilder<ConstructorChooseMember> builder = new MemberChooserBuilder<>(project);
-			builder.setTitle("Choose Constructor");
-			builder.allowMultiSelection(true);
+			MemberChooserBuilder<ConstructorChooseMember> builder = MemberChooserBuilder.create(map);
+			builder.withTitle(LocalizeValue.localizeTODO("Choose Constructor"));
+			builder.withMultipleSelection();
 
-			final MemberChooser<ConstructorChooseMember> memberChooser = builder.createBuilder(map);
-
-			if(!memberChooser.showAndGet())
+			builder.showAsync(project, dataHolder ->
 			{
-				return;
-			}
+				List<ClassMember> selectedElements = dataHolder.getUserData(ClassMember.KEY_OF_LIST);
 
-			final List<ConstructorChooseMember> selectedElements = memberChooser.getSelectedElements();
-			if(selectedElements == null)
-			{
-				return;
-			}
+				if(selectedElements.isEmpty())
+				{
+					return;
+				}
 
-			for(ConstructorChooseMember selectedElement : selectedElements)
-			{
-				generateConstructor(typeDeclaration, editor, file, selectedElement);
-			}
+				for(ClassMember selectedElement : selectedElements)
+				{
+					generateConstructor(typeDeclaration, editor, file, (ConstructorChooseMember) selectedElement);
+				}
+			});
 		}
 	}
 
-	@RequiredReadAction
+	@RequiredUIAccess
 	private static void generateConstructor(@Nonnull final CSharpTypeDeclaration typeDeclaration,
-			@Nonnull final Editor editor,
-			@Nonnull final PsiFile file,
-			@Nonnull ConstructorChooseMember chooseMember)
+											@Nonnull final Editor editor,
+											@Nonnull final PsiFile file,
+											@Nonnull ConstructorChooseMember chooseMember)
 	{
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, typeDeclaration.getResolveScope(), typeDeclaration);
 		final List<DotNetVariable> fieldOrProperties = new ArrayList<>();
@@ -172,27 +169,35 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 			}
 		}, false);
 
-		List<CSharpVariableChooseObject> additionalParameters = Collections.emptyList();
 		if(!fieldOrProperties.isEmpty())
 		{
-			final MemberChooserBuilder<CSharpVariableChooseObject> builder = new MemberChooserBuilder<>(typeDeclaration.getProject());
-			builder.setTitle("Choose Fields or Properties");
-			builder.allowMultiSelection(true);
-			builder.allowEmptySelection(true);
-
 			List<CSharpVariableChooseObject> map = ContainerUtil.map(fieldOrProperties, CSharpVariableChooseObject::new);
+			MemberChooserBuilder<CSharpVariableChooseObject> builder = MemberChooserBuilder.create(ContainerUtil.toArray(map, CSharpVariableChooseObject.ARRAY_FACTORY));
+			builder.withTitle(LocalizeValue.localizeTODO("Choose Fields or Properties"));
+			builder.withMultipleSelection();
+			builder.withMultipleSelection();
 
-			MemberChooser<CSharpVariableChooseObject> fieldChooser = builder.createBuilder(ContainerUtil.toArray(map, CSharpVariableChooseObject.ARRAY_FACTORY));
-
-			if(!fieldChooser.showAndGet())
+			builder.showAsync(file.getProject(), dataHolder ->
 			{
-				return;
-			}
+				List<ClassMember> result = dataHolder.getUserData(ClassMember.KEY_OF_LIST);
 
-			additionalParameters = fieldChooser.getSelectedElements();
-			assert additionalParameters != null;
+				generateConstructorInner(typeDeclaration, editor, file, chooseMember, (List) result);
+			});
+		}
+		else
+		{
+			generateConstructorInner(typeDeclaration, editor, file, chooseMember, List.of());
 		}
 
+	}
+
+	@RequiredReadAction
+	private static void generateConstructorInner(@Nonnull final CSharpTypeDeclaration typeDeclaration,
+										  @Nonnull final Editor editor,
+										  @Nonnull final PsiFile file,
+										  @Nonnull ConstructorChooseMember chooseMember,
+										  @Nonnull List<CSharpVariableChooseObject> additionalParameters)
+	{
 		String text = chooseMember.getText(additionalParameters);
 		text = text.replace("$NAME$", typeDeclaration.getName());
 
@@ -214,7 +219,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 			{
 				final PsiElement psiElement = typeDeclaration.addAfter(method, elementAt);
 
-				typeDeclaration.addAfter(PsiParserFacade.SERVICE.getInstance(file.getProject()).createWhiteSpaceFromText("\n"), psiElement);
+				typeDeclaration.addAfter(PsiParserFacade.getInstance(file.getProject()).createWhiteSpaceFromText("\n"), psiElement);
 
 				if(finalExpectedUsingInfo != null)
 				{

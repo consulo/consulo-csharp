@@ -16,28 +16,27 @@
 
 package consulo.csharp.ide.resolve;
 
-import java.util.ArrayList;
-import java.util.List;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.impl.psi.source.CSharpIndexAccessExpressionImpl;
+import consulo.csharp.lang.psi.CSharpCallArgumentList;
+import consulo.document.util.TextRange;
+import consulo.language.Language;
+import consulo.language.pattern.StandardPatterns;
+import consulo.language.psi.*;
+import consulo.language.util.ProcessingContext;
+import consulo.util.collection.ContainerUtil;
 
 import javax.annotation.Nonnull;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.patterns.StandardPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.PsiReferenceContributor;
-import com.intellij.psi.PsiReferenceProvider;
-import com.intellij.psi.PsiReferenceRegistrar;
-import com.intellij.util.ProcessingContext;
-import com.intellij.util.containers.ContainerUtil;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
  * @since 04.09.14
  */
+@ExtensionImpl
 public class CSharpPsiReferenceContributor extends PsiReferenceContributor
 {
 	@Override
@@ -80,5 +79,12 @@ public class CSharpPsiReferenceContributor extends PsiReferenceContributor
 				return ContainerUtil.toArray(list, PsiReference.ARRAY_FACTORY);
 			}
 		});
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

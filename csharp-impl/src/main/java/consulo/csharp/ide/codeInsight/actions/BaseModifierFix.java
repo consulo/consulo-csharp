@@ -16,21 +16,20 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import consulo.codeEditor.Editor;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -69,14 +68,7 @@ public abstract class BaseModifierFix extends BaseIntentionAction
 		}
 		else
 		{
-			return getActionName() + " " + StringUtil.join(myModifiers, new Function<DotNetModifier, String>()
-			{
-				@Override
-				public String fun(DotNetModifier modifier)
-				{
-					return "'" + modifier.getPresentableText() + "'";
-				}
-			}, " & ") + " modifiers";
+			return getActionName() + " " + StringUtil.join(myModifiers, modifier -> "'" + modifier.getPresentableText() + "'", " & ") + " modifiers";
 		}
 	}
 

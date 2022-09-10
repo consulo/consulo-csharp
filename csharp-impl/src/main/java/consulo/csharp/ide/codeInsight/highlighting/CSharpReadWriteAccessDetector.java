@@ -16,20 +16,22 @@
 
 package consulo.csharp.ide.codeInsight.highlighting;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpAssignmentExpressionImpl;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
+import consulo.language.editor.highlight.ReadWriteAccessDetector;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
 
 /**
  * @author VISTALL
  * @since 15.04.2015
  */
+@ExtensionImpl
 public class CSharpReadWriteAccessDetector extends ReadWriteAccessDetector
 {
 	@Override

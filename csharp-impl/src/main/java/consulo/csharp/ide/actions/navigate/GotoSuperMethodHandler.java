@@ -16,24 +16,25 @@
 
 package consulo.csharp.ide.actions.navigate;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import consulo.codeEditor.Editor;
 import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
-import com.intellij.lang.LanguageCodeInsightActionHandler;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.pom.Navigatable;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.language.Language;
+import consulo.language.editor.action.LanguageCodeInsightActionHandler;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.navigation.Navigatable;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
 
 /**
  * @author VISTALL
@@ -93,5 +94,12 @@ public class GotoSuperMethodHandler implements LanguageCodeInsightActionHandler
 	public boolean startInWriteAction()
 	{
 		return false;
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

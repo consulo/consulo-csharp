@@ -16,14 +16,19 @@
 
 package consulo.csharp.ide.highlight;
 
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.language.Language;
+import consulo.language.editor.highlight.SingleLazyInstanceSyntaxHighlighterFactory;
+import consulo.language.editor.highlight.SyntaxHighlighter;
+
 import javax.annotation.Nonnull;
-import com.intellij.openapi.fileTypes.SingleLazyInstanceSyntaxHighlighterFactory;
-import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 
 /**
  * @author VISTALL
  * @since 22.11.13.
  */
+@ExtensionImpl
 public class CSharpSyntaxHighlighterFactory extends SingleLazyInstanceSyntaxHighlighterFactory
 {
 	@Nonnull
@@ -31,5 +36,12 @@ public class CSharpSyntaxHighlighterFactory extends SingleLazyInstanceSyntaxHigh
 	protected SyntaxHighlighter createHighlighter()
 	{
 		return new CSharpSyntaxHighlighter();
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

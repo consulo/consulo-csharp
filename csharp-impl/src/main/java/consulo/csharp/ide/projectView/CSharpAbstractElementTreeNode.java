@@ -20,13 +20,13 @@ import javax.annotation.Nonnull;
 
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetAttributeUtil;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiUtilCore;
+import consulo.language.psi.PsiFile;
+import consulo.project.ui.view.tree.BasePsiNode;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.project.Project;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
 
 /**
  * @author VISTALL

@@ -23,17 +23,17 @@ import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeOfExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpAsExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpIsExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpTypeCastExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpTypeOfExpressionImpl;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.usages.impl.rules.UsageType;
-import com.intellij.usages.impl.rules.UsageTypeProvider;
+import consulo.usage.UsageType;
+import consulo.usage.UsageTypeProvider;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL

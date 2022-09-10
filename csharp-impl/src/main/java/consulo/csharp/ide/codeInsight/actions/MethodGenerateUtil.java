@@ -17,12 +17,12 @@
 package consulo.csharp.ide.codeInsight.actions;
 
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTupleTypeRef;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTupleTypeRef;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
+import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

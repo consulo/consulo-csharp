@@ -16,15 +16,16 @@
 
 package consulo.csharp.ide.refactoring.rename;
 
-import com.intellij.openapi.ui.MessageDialogBuilder;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.refactoring.rename.RenamePsiElementProcessor;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.ide.impl.idea.openapi.ui.MessageDialogBuilder;
+import consulo.ui.ex.awt.Messages;
+import consulo.language.psi.PsiElement;
+import consulo.content.scope.SearchScope;
+import consulo.language.editor.refactoring.rename.RenamePsiElementProcessor;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -36,6 +37,7 @@ import java.util.Set;
  * @author VISTALL
  * @since 17.12.14
  */
+@ExtensionImpl
 public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 {
 	private int myLastResult;

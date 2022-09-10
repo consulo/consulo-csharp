@@ -16,28 +16,25 @@
 
 package consulo.csharp.ide.newProjectOrModule;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
-import com.intellij.openapi.project.DumbAwareRunnable;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ContentEntry;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.startup.StartupManager;
-import com.intellij.openapi.vfs.VirtualFile;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.application.AllIcons;
+import consulo.application.dumb.DumbAwareRunnable;
+import consulo.content.bundle.Sdk;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.dotnet.DotNetTarget;
+import consulo.dotnet.impl.roots.orderEntry.DotNetLibraryOrderEntryModel;
+import consulo.dotnet.impl.roots.orderEntry.DotNetLibraryOrderEntryType;
 import consulo.dotnet.module.extension.DotNetMutableModuleExtension;
-import consulo.dotnet.roots.orderEntry.DotNetLibraryOrderEntryImpl;
-import consulo.ide.impl.UnzipNewModuleBuilderProcessor;
-import consulo.ide.newProject.NewModuleBuilder;
-import consulo.ide.newProject.NewModuleBuilderProcessor;
-import consulo.ide.newProject.NewModuleContext;
-import consulo.ide.newProject.node.NewModuleContextGroup;
+import consulo.fileEditor.internal.FileEditorManagerEx;
+import consulo.ide.newModule.*;
 import consulo.localize.LocalizeValue;
-import consulo.roots.ModifiableModuleRootLayer;
-import consulo.roots.impl.ModuleRootLayerImpl;
-import consulo.ui.wizard.WizardStep;
+import consulo.module.content.layer.ContentEntry;
+import consulo.module.content.layer.ModifiableModuleRootLayer;
+import consulo.module.content.layer.ModifiableRootModel;
+import consulo.project.startup.StartupManager;
+import consulo.ui.ex.wizard.WizardStep;
+import consulo.virtualFileSystem.VirtualFile;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -48,6 +45,7 @@ import java.util.function.Consumer;
  * @author VISTALL
  * @since 05.06.14
  */
+@ExtensionImpl
 public class CSharpNewModuleBuilder implements NewModuleBuilder
 {
 	private static final String DEBUG = "Debug";
@@ -174,8 +172,8 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 				cSharpMutableModuleExtension.setOptimizeCode(true);
 			}
 
-			layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "mscorlib"));
-			layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "System"));
+			layer.addCustomOderEntry(DotNetLibraryOrderEntryType.getInstance(), new DotNetLibraryOrderEntryModel("mscorlib"));
+			layer.addCustomOderEntry(DotNetLibraryOrderEntryType.getInstance(), new DotNetLibraryOrderEntryModel("System"));
 		}
 
 		modifiableRootModel.setCurrentLayer(DEBUG);

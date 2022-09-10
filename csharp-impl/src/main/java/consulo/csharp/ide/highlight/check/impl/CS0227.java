@@ -16,16 +16,14 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.util.ModuleUtilCore;
+import consulo.project.Project;
+import consulo.module.content.layer.ModifiableRootModel;
+import consulo.module.content.ModuleRootManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
@@ -33,13 +31,15 @@ import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpModifierList;
-import consulo.csharp.lang.psi.impl.source.CSharpUnsafeStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpUnsafeStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.csharp.module.extension.CSharpSimpleMutableModuleExtension;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.module.Module;
 import consulo.ui.annotation.RequiredUIAccess;
 
 import javax.annotation.Nonnull;

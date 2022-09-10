@@ -16,43 +16,32 @@
 
 package consulo.csharp.ide.refactoring.changeSignature;
 
-import java.util.ArrayList;
-import java.util.List;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.application.util.ReadActionProcessor;
+import consulo.application.util.function.Processor;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.*;
+import consulo.document.util.TextRange;
+import consulo.dotnet.psi.*;
+import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
+import consulo.language.editor.refactoring.ResolveSnapshotProvider;
+import consulo.language.editor.refactoring.changeSignature.ChangeInfo;
+import consulo.language.editor.refactoring.changeSignature.ChangeSignatureUsageProcessor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.usage.UsageInfo;
+import consulo.util.collection.MultiMap;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.function.PairFunction;
+import consulo.util.lang.ref.Ref;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.intellij.psi.util.PsiTreeUtil;
-import consulo.csharp.lang.psi.CSharpAccessModifier;
-import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import com.intellij.openapi.application.ReadActionProcessor;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.refactoring.changeSignature.ChangeInfo;
-import com.intellij.refactoring.changeSignature.ChangeSignatureUsageProcessor;
-import com.intellij.refactoring.rename.ResolveSnapshotProvider;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.util.PairFunction;
-import com.intellij.util.Processor;
-import com.intellij.util.containers.MultiMap;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetParameterList;
-import consulo.dotnet.psi.DotNetReferenceExpression;
-import consulo.dotnet.psi.DotNetStatement;
-import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL

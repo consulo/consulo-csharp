@@ -19,17 +19,17 @@ package consulo.csharp.ide.findUsage.referenceSearch;
 import javax.annotation.Nonnull;
 
 
-import com.intellij.openapi.application.QueryExecutorBase;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.util.Processor;
+import consulo.application.util.function.Processor;
+import consulo.language.psi.PsiReference;
 import consulo.application.AccessRule;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
-import consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.StructOrGenericParameterConstructorProvider;
+import consulo.csharp.lang.impl.psi.light.builder.CSharpLightConstructorDeclarationBuilder;
+import consulo.csharp.lang.impl.psi.resolve.additionalMembersImpl.StructOrGenericParameterConstructorProvider;
 import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.project.util.query.QueryExecutorBase;
 
 /**
  * @author VISTALL

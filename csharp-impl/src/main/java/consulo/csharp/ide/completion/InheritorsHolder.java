@@ -15,21 +15,21 @@
  */
 package consulo.csharp.ide.completion;
 
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.lookup.AutoCompletionPolicy;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.Consumer;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetMethodDeclaration;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.language.editor.completion.AutoCompletionPolicy;
+import consulo.language.editor.completion.CompletionResultSet;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ContainerUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 class InheritorsHolder implements Consumer<LookupElement>
 {
@@ -42,7 +42,7 @@ class InheritorsHolder implements Consumer<LookupElement>
 	}
 
 	@Override
-	public void consume(LookupElement lookupElement)
+	public void accept(LookupElement lookupElement)
 	{
 		final Object object = lookupElement.getObject();
 		if(object instanceof PsiElement && CSharpPsiUtilImpl.isTypeLikeElement((PsiElement) object))

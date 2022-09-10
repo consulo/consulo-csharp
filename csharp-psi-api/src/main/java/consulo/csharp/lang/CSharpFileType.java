@@ -16,9 +16,9 @@
 
 package consulo.csharp.lang;
 
-import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.intellij.openapi.fileTypes.TemplateLanguageFileType;
 import consulo.csharp.psi.icon.CSharpPsiIconGroup;
+import consulo.language.file.LanguageFileType;
+import consulo.language.template.TemplateLanguageFileType;
 import consulo.localize.LocalizeValue;
 import consulo.ui.image.Image;
 

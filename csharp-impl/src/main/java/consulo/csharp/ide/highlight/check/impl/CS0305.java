@@ -19,14 +19,14 @@ package consulo.csharp.ide.highlight.check.impl;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpReferenceExpressionImplUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 

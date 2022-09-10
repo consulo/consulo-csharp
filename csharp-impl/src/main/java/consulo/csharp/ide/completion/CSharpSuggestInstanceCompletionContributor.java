@@ -16,24 +16,12 @@
 
 package consulo.csharp.ide.completion;
 
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.patterns.StandardPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ProcessingContext;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.codeInsight.completion.CompletionProvider;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.application.AllIcons;
+import consulo.component.util.Iconable;
 import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodByLambdaTypeFix;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
-import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.completion.insertHandler.CSharpParenthesesWithSemicolonInsertHandler;
@@ -41,27 +29,39 @@ import consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import consulo.csharp.ide.completion.weigher.CSharpInheritCompletionWeighter;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
+import consulo.csharp.lang.impl.psi.CSharpVisibilityUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpAnonymousMethodExpression;
+import consulo.csharp.lang.impl.psi.source.CSharpAssignmentExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpNativeTypeImplUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpNewExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpArrayTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
-import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImplUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
-import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import consulo.ide.IconDescriptorUpdaters;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
+import consulo.language.Language;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.*;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.pattern.StandardPatterns;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.ProcessingContext;
 import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.ui.image.Image;
 import consulo.ui.image.ImageEffects;
+import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -73,6 +73,7 @@ import java.util.Set;
  * @author VISTALL
  * @since 28-Oct-17
  */
+@ExtensionImpl
 public class CSharpSuggestInstanceCompletionContributor extends CompletionContributor
 {
 	public static final Key<Boolean> ourDefaultNewKeyword = Key.create("ourDefaultNewKeyword");
@@ -137,7 +138,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 
 				String methodName = ((CSharpAssignmentExpressionImpl) maybeAssign).getLeftExpression().getText().replace(".", "_");
 				LookupElementBuilder builder = LookupElementBuilder.create(methodName);
-				builder = builder.withIcon(ImageEffects.layered(PlatformIconGroup.nodesMethod(), PlatformIconGroup.nodesTabPin()));
+				builder = builder.withIcon(ImageEffects.layered(PlatformIconGroup.nodesMethod(), PlatformIconGroup.nodesTabpin()));
 				builder = builder.withInsertHandler((insertionContext, lookupElement) ->
 				{
 					insertionContext.commitDocument();
@@ -484,5 +485,12 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 				}
 			}
 		});
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

@@ -16,12 +16,15 @@
 
 package consulo.csharp.ide.refactoring;
 
-import com.intellij.codeInsight.editorActions.moveLeftRight.MoveElementLeftRightHandler;
-import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpImplicitArrayInitializationExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpArrayInitializerImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpImplicitArrayInitializationExpressionImpl;
+import consulo.language.Language;
+import consulo.language.editor.moveLeftRight.MoveElementLeftRightHandler;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nonnull;
 
@@ -29,6 +32,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 05/05/2021
  */
+@ExtensionImpl
 public class CSharpMoveElementLeftRightHandler implements MoveElementLeftRightHandler
 {
 	@RequiredReadAction
@@ -49,5 +53,12 @@ public class CSharpMoveElementLeftRightHandler implements MoveElementLeftRightHa
 			return initializer.getExpressions();
 		}
 		return PsiElement.EMPTY_ARRAY;
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

@@ -16,36 +16,44 @@
 
 package consulo.csharp.ide.highlight;
 
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
-import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
-import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
-import com.intellij.codeInsight.template.impl.TemplateColors;
-import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.colors.EditorColors;
-import com.intellij.openapi.progress.ProgressIndicatorProvider;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiUtilCore;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.codeEditor.EditorColors;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.language.editor.rawHighlight.HighlightInfoType;
+import consulo.language.editor.rawHighlight.HighlightInfoHolder;
+import consulo.language.editor.intention.QuickFixAction;
+import consulo.language.editor.impl.internal.template.TemplateColors;
+import consulo.codeEditor.DefaultLanguageHighlighterColors;
+import consulo.application.progress.ProgressIndicatorProvider;
+import consulo.language.ast.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
 import consulo.csharp.ide.highlight.util.ConstructorHighlightUtil;
 import consulo.csharp.ide.highlight.util.GenericParameterHighlightUtil;
 import consulo.csharp.impl.localize.CSharpErrorLocalize;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.source.*;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.*;
-import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
-import consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitCastInfo;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.MethodResolveResult;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.MethodResolvePriorityInfo;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NCallArgument;
+import consulo.csharp.lang.impl.psi.source.resolve.operatorResolving.ImplicitCastInfo;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpMethodImplUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetParameter;
+import consulo.language.editor.rawHighlight.HighlightVisitor;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.PsiUtilCore;
+import consulo.language.psi.ResolveResult;
 import consulo.localize.LocalizeValue;
 import consulo.util.collection.primitive.ints.IntSet;
 import consulo.util.collection.primitive.ints.IntSets;
@@ -56,6 +64,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 28.11.13.
  */
+@ExtensionImpl
 public class CSharpHighlightVisitor extends CSharpElementVisitor implements HighlightVisitor
 {
 	private HighlightInfoHolder myHighlightInfoHolder;
@@ -380,11 +389,5 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	public HighlightVisitor clone()
 	{
 		return new CSharpHighlightVisitor();
-	}
-
-	@Override
-	public int order()
-	{
-		return 1;
 	}
 }

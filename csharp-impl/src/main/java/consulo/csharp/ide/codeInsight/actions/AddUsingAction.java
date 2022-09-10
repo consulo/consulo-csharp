@@ -16,35 +16,39 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import com.intellij.codeInsight.actions.OptimizeImportsProcessor;
-import com.intellij.codeInsight.hint.QuestionAction;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.WriteCommandAction;
-import consulo.logging.Logger;
-import com.intellij.openapi.editor.*;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.ui.popup.PopupStep;
-import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredWriteAction;
+import consulo.application.WriteAction;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.EditorPopupHelper;
+import consulo.codeEditor.LogicalPosition;
+import consulo.codeEditor.ScrollType;
 import consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings;
+import consulo.csharp.lang.impl.psi.source.using.AddUsingUtil;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.impl.source.using.AddUsingUtil;
+import consulo.document.Document;
+import consulo.document.RangeMarker;
 import consulo.dotnet.DotNetBundle;
+import consulo.dotnet.impl.roots.orderEntry.DotNetLibraryOrderEntryModel;
+import consulo.dotnet.impl.roots.orderEntry.DotNetLibraryOrderEntryType;
 import consulo.dotnet.libraryAnalyzer.NamespaceReference;
-import consulo.dotnet.roots.orderEntry.DotNetLibraryOrderEntryImpl;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.editor.hint.QuestionAction;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.language.util.ModuleUtilCore;
+import consulo.logging.Logger;
+import consulo.module.Module;
+import consulo.module.content.ModuleRootManager;
+import consulo.module.content.layer.ModifiableRootModel;
 import consulo.platform.base.icon.PlatformIconGroup;
-import consulo.roots.impl.ModuleRootLayerImpl;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.popup.BaseListPopupStep;
+import consulo.ui.ex.popup.JBPopupFactory;
+import consulo.ui.ex.popup.PopupStep;
 import consulo.ui.image.Image;
+import consulo.util.collection.ContainerUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -119,7 +123,7 @@ public class AddUsingAction implements QuestionAction
 				}
 			};
 
-			JBPopupFactory.getInstance().createListPopup(step).showInBestPositionFor(myEditor);
+			EditorPopupHelper.getInstance().showPopupInBestPositionFor(myEditor, JBPopupFactory.getInstance().createListPopup(step));
 		}
 
 		return true;
@@ -157,7 +161,7 @@ public class AddUsingAction implements QuestionAction
 
 					final ModifiableRootModel modifiableModel = moduleRootManager.getModifiableModel();
 
-					modifiableModel.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) moduleRootManager.getCurrentLayer(), libraryName));
+					modifiableModel.addCustomOderEntry(DotNetLibraryOrderEntryType.getInstance(), new DotNetLibraryOrderEntryModel(libraryName));
 
 					WriteAction.run(modifiableModel::commit);
 				}
@@ -187,7 +191,7 @@ public class AddUsingAction implements QuestionAction
 			{
 				Document document = myEditor.getDocument();
 				PsiFile psiFile = PsiDocumentManager.getInstance(myProject).getPsiFile(document);
-				new OptimizeImportsProcessor(myProject, psiFile).runWithoutProgress();
+				new consulo.ide.impl.idea.codeInsight.actions.OptimizeImportsProcessor(myProject, psiFile).runWithoutProgress();
 			}
 		}
 		catch(IncorrectOperationException e)

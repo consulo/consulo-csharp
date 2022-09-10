@@ -18,16 +18,16 @@ package consulo.csharp.ide;
 
 import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTokenSets;
+import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
-import com.intellij.codeInsight.editorActions.JavaLikeQuoteHandler;
-import com.intellij.codeInsight.editorActions.SimpleTokenSetQuoteHandler;
-import com.intellij.openapi.editor.highlighter.HighlighterIterator;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.StringEscapesTokenTypes;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
+import consulo.csharp.lang.impl.psi.source.CSharpConstantExpressionImpl;
+import consulo.codeEditor.HighlighterIterator;
+import consulo.language.ast.StringEscapesTokenTypes;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.language.editor.action.JavaLikeQuoteHandler;
+import consulo.language.editor.action.SimpleTokenSetQuoteHandler;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author peter
@@ -58,7 +58,7 @@ public class CSharpQuoteHandler extends SimpleTokenSetQuoteHandler implements Ja
 			{
 				iterator.retreat();
 
-				if(!iterator.atEnd() && StringEscapesTokenTypes.STRING_LITERAL_ESCAPES.contains(iterator.getTokenType()))
+				if(!iterator.atEnd() && StringEscapesTokenTypes.STRING_LITERAL_ESCAPES.contains((IElementType) iterator.getTokenType()))
 				{
 					openingQuote = false;
 				}
@@ -80,7 +80,7 @@ public class CSharpQuoteHandler extends SimpleTokenSetQuoteHandler implements Ja
 			{
 				iterator.advance();
 
-				if(!iterator.atEnd() && StringEscapesTokenTypes.STRING_LITERAL_ESCAPES.contains(iterator.getTokenType()))
+				if(!iterator.atEnd() && StringEscapesTokenTypes.STRING_LITERAL_ESCAPES.contains((IElementType) iterator.getTokenType()))
 				{
 					closingQuote = false;
 				}

@@ -16,10 +16,10 @@
 
 package consulo.csharp.ide.codeInspection.matchNamespace;
 
-import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import org.jetbrains.annotations.Nls;
 

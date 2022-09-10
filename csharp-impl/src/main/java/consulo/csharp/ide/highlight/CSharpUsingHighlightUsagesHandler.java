@@ -16,23 +16,22 @@
 
 package consulo.csharp.ide.highlight;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
+import consulo.csharp.lang.impl.ide.codeInspection.unusedUsing.BaseUnusedUsingVisitor;
+import consulo.csharp.lang.psi.CSharpUsingListChild;
+import consulo.document.util.TextRange;
+import consulo.language.editor.highlight.usage.HighlightUsagesHandlerBase;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiRecursiveElementVisitor;
+
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.codeInspection.unusedUsing.BaseUnusedUsingVisitor;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiRecursiveElementVisitor;
-import com.intellij.util.Consumer;
+import java.util.function.Consumer;
 
 /**
  * @author VISTALL
@@ -42,7 +41,7 @@ public class CSharpUsingHighlightUsagesHandler extends HighlightUsagesHandlerBas
 {
 	public static class OurVisitor extends BaseUnusedUsingVisitor
 	{
-		private List<PsiElement> myElements = new LinkedList<PsiElement>();
+		private List<PsiElement> myElements = new LinkedList<>();
 		private final CSharpUsingListChild myListChild;
 
 		public OurVisitor(CSharpUsingListChild listChild)
@@ -80,6 +79,7 @@ public class CSharpUsingHighlightUsagesHandler extends HighlightUsagesHandlerBas
 		myListChild = listChild;
 	}
 
+	@RequiredReadAction
 	@Override
 	public List<PsiElement> getTargets()
 	{
@@ -99,7 +99,7 @@ public class CSharpUsingHighlightUsagesHandler extends HighlightUsagesHandlerBas
 	@Override
 	protected void selectTargets(List<PsiElement> targets, Consumer<List<PsiElement>> selectionConsumer)
 	{
-		selectionConsumer.consume(targets);
+		selectionConsumer.accept(targets);
 	}
 
 	@Override

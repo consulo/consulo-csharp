@@ -16,20 +16,24 @@
 
 package consulo.csharp.ide.surroundWith;
 
-import javax.annotation.Nonnull;
-
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
 import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.lang.surroundWith.SurroundDescriptor;
-import com.intellij.lang.surroundWith.Surrounder;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.Language;
+import consulo.language.editor.surroundWith.SurroundDescriptor;
+import consulo.language.editor.surroundWith.Surrounder;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiWhiteSpace;
+import consulo.language.psi.util.PsiTreeUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 17.05.14
  */
+@ExtensionImpl
 public class CSharpExpressionSurroundDescriptor implements SurroundDescriptor
 {
 	private Surrounder[] mySurrounders = new Surrounder[] {
@@ -79,5 +83,12 @@ public class CSharpExpressionSurroundDescriptor implements SurroundDescriptor
 	public boolean isExclusive()
 	{
 		return false;
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

@@ -16,33 +16,31 @@
 
 package consulo.csharp.ide.projectView;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.application.progress.ProgressManager;
+import consulo.csharp.ide.CSharpElementPresentationUtil;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.dotnet.psi.*;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiNamedElement;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.tree.PresentationData;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.io.FileUtil;
+import consulo.util.lang.BitUtil;
+import consulo.util.lang.Comparing;
+
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nullable;
-
-import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.util.BitUtil;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.ui.annotation.RequiredUIAccess;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.CSharpElementPresentationUtil;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.dotnet.ide.DotNetElementPresentationUtil;
-import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL

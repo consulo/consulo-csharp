@@ -16,11 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.source.injection;
 
-import javax.annotation.Nonnull;
-
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import com.intellij.psi.impl.source.tree.LazyParseablePsiElement;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
+import consulo.language.impl.psi.LazyParseablePsiElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

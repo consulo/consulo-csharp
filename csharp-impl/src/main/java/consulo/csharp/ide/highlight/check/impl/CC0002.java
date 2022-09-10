@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpOperatorReferenceImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 
 /**

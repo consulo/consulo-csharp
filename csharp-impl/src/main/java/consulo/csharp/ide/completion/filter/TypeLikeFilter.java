@@ -16,8 +16,8 @@
 
 package consulo.csharp.ide.completion.filter;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.filters.ElementFilterBase;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.filter.ElementFilterBase;
 import consulo.csharp.ide.completion.CSharpCompletionUtil;
 import consulo.dotnet.psi.DotNetNamedElement;
 

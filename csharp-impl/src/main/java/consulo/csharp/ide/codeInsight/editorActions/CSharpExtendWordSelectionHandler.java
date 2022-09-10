@@ -16,20 +16,22 @@
 
 package consulo.csharp.ide.codeInsight.editorActions;
 
+import consulo.annotation.component.ExtensionImpl;
+import consulo.codeEditor.Editor;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.document.util.TextRange;
+import consulo.language.editor.action.ExtendWordSelectionHandlerBase;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
+
 import java.util.Collections;
 import java.util.List;
-
-import com.intellij.codeInsight.editorActions.ExtendWordSelectionHandlerBase;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiUtilCore;
-import consulo.csharp.lang.psi.CSharpTokens;
 
 /**
  * @author VISTALL
  * @since 14-Nov-17
  */
+@ExtensionImpl
 public class CSharpExtendWordSelectionHandler extends ExtendWordSelectionHandlerBase
 {
 	@Override

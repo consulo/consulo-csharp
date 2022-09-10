@@ -16,34 +16,36 @@
 
 package consulo.csharp.ide.refactoring.rename;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.rename.RenamePsiElementProcessor;
-import com.intellij.util.containers.MultiMap;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.codeEditor.Editor;
+import consulo.content.scope.SearchScope;
+import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
+import consulo.csharp.lang.impl.psi.resolve.CSharpResolveContextUtil;
+import consulo.csharp.lang.impl.psi.resolve.CSharpTypeResolveContext;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
-import consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
-import consulo.csharp.lang.psi.impl.resolve.CSharpTypeResolveContext;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.language.editor.refactoring.rename.RenamePsiElementProcessor;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.MultiMap;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Map;
 
 /**
  * @author VISTALL
  * @since 17.01.15
  */
+@ExtensionImpl
 public class CSharpTypeRenamePsiElementProcessor extends RenamePsiElementProcessor
 {
 	@Nullable
@@ -65,9 +67,9 @@ public class CSharpTypeRenamePsiElementProcessor extends RenamePsiElementProcess
 
 	@Override
 	public void findExistingNameConflicts(PsiElement element,
-			String newName,
-			MultiMap<PsiElement, String> conflicts,
-			Map<PsiElement, String> allRenames)
+										  String newName,
+										  MultiMap<PsiElement, String> conflicts,
+										  Map<PsiElement, String> allRenames)
 	{
 		for(Map.Entry<PsiElement, String> entry : allRenames.entrySet())
 		{

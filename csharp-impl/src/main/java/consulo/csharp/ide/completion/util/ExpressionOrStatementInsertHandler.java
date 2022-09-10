@@ -16,27 +16,28 @@
 
 package consulo.csharp.ide.completion.util;
 
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.IdeActions;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.actionSystem.EditorActionManager;
-import com.intellij.openapi.editor.actionSystem.EditorWriteActionHandler;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.codeStyle.CodeStyleManager;
 import consulo.annotation.access.RequiredWriteAction;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.action.EditorActionManager;
+import consulo.codeEditor.action.EditorWriteActionHandler;
+import consulo.dataContext.DataManager;
+import consulo.document.Document;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.ParenthesesInsertHandler;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiWhiteSpace;
+import consulo.ui.ex.action.IdeActions;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nullable;
 
 /**
  * @author peter
- * @see com.intellij.codeInsight.completion.util.ParenthesesInsertHandler
+ * @see ParenthesesInsertHandler
  */
 public class ExpressionOrStatementInsertHandler<T extends LookupElement> implements InsertHandler<T>
 {

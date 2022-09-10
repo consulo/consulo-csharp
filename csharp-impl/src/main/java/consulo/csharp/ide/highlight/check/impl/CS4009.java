@@ -16,8 +16,6 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -25,9 +23,12 @@ import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.dotnet.DotNetRunUtil;
 import consulo.dotnet.psi.DotNetModifierList;
-import com.intellij.psi.PsiElement;
+import consulo.dotnet.psi.DotNetRunUtil;
+import consulo.language.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

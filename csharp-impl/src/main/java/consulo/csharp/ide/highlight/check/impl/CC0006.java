@@ -1,15 +1,15 @@
 package consulo.csharp.ide.highlight.check.impl;
 
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.ReferenceRange;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpReferenceWithValidation;
-import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpConstantExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.ReferenceRange;
 import consulo.localize.LocalizeValue;
 
 import javax.annotation.Nonnull;

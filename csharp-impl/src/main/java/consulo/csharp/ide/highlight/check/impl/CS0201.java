@@ -24,16 +24,16 @@ import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpNewExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpExpressionWithOperatorImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpPostfixExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpAssignmentExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpAwaitExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpExpressionStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpExpressionWithOperatorImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPostfixExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPrefixExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
 
 /**
  * @author VISTALL

@@ -16,10 +16,10 @@
 
 package consulo.csharp.ide.completion.util;
 
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.TailType;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.LookupElement;
 
 /**
  * @author VISTALL

@@ -16,28 +16,24 @@
 
 package consulo.csharp.lang.formatter;
 
-import com.intellij.formatting.*;
-import com.intellij.formatting.templateLanguages.BlockWithParent;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.formatter.FormatterUtil;
-import com.intellij.psi.formatter.common.AbstractBlock;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.SmartList;
-import com.intellij.util.codeInsight.CommentUtilCore;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.formatter.processors.CSharpIndentProcessor;
 import consulo.csharp.lang.formatter.processors.CSharpSpacingSettings;
 import consulo.csharp.lang.formatter.processors.CSharpWrappingProcessor;
-import consulo.csharp.lang.psi.CSharpElements;
-import consulo.csharp.lang.psi.CSharpTokenSets;
+import consulo.csharp.lang.impl.psi.CSharpElements;
+import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.codeStyle.*;
+import consulo.language.codeStyle.template.BlockWithParent;
+import consulo.language.util.CommentUtilCore;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.collection.SmartList;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

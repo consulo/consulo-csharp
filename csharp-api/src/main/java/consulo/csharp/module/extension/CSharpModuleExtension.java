@@ -16,15 +16,15 @@
 
 package consulo.csharp.module.extension;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import consulo.content.bundle.Sdk;
 import consulo.csharp.compiler.CSharpPlatform;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.vfs.VirtualFile;
 import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import consulo.module.extension.ModuleExtension;
 import consulo.module.extension.ModuleInheritableNamedPointer;
+import consulo.virtualFileSystem.VirtualFile;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

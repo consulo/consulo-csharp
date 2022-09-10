@@ -19,7 +19,6 @@ package consulo.csharp.ide.highlight.check.impl;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.AddModifierFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -27,12 +26,13 @@ import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpLambdaParameter;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImplUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImplUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.util.ArrayUtil2;
+import consulo.language.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL

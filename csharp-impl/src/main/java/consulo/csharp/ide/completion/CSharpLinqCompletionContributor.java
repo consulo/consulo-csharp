@@ -18,14 +18,10 @@ package consulo.csharp.ide.completion;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ProcessingContext;
+import consulo.language.editor.completion.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.ProcessingContext;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.codeInsight.completion.CompletionProvider;
 import consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;

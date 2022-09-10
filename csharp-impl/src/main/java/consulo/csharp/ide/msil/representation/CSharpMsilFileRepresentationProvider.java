@@ -16,17 +16,10 @@
 
 package consulo.csharp.ide.msil.representation;
 
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.io.URLUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
 import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
+import consulo.csharp.lang.impl.psi.msil.MsilToCSharpUtil;
 import consulo.dotnet.psi.DotNetAttributeTargetType;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetQualifiedElement;
@@ -34,10 +27,17 @@ import consulo.internal.dotnet.msil.decompiler.file.DotNetAssemblyFileArchiveEnt
 import consulo.internal.dotnet.msil.decompiler.textBuilder.block.LineStubBlock;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
+import consulo.language.psi.PsiElement;
 import consulo.msil.lang.psi.MsilAssemblyEntry;
 import consulo.msil.lang.psi.MsilFile;
 import consulo.msil.representation.MsilFileRepresentationProvider;
-import consulo.vfs.util.ArchiveVfsUtil;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.io.FileUtil;
+import consulo.util.io.URLUtil;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
+import consulo.virtualFileSystem.fileType.FileType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -16,18 +16,18 @@
 
 package consulo.csharp.ide.completion.insertHandler;
 
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.TailType;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.psi.PsiElement;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.csharp.ide.completion.util.CSharpParenthesesInsertHandler;
 import consulo.csharp.lang.psi.CSharpCodeFragment;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
+import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 
 /**
  * @author VISTALL

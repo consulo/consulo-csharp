@@ -16,13 +16,13 @@
 
 package consulo.csharp.ide.refactoring.move;
 
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.move.MoveCallback;
-import com.intellij.refactoring.move.MoveHandlerDelegate;
+import consulo.language.editor.CommonDataKeys;
+import consulo.dataContext.DataContext;
+import consulo.language.psi.PsiDirectory;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.editor.refactoring.move.MoveCallback;
+import consulo.language.editor.refactoring.move.MoveHandlerDelegate;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 

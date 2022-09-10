@@ -4,13 +4,13 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.find.findUsages.FindUsagesHandler;
-import com.intellij.openapi.ui.MessageDialogBuilder;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiUtilCore;
+import consulo.find.FindUsagesHandler;
+import consulo.ide.impl.idea.openapi.ui.MessageDialogBuilder;
+import consulo.ui.ex.awt.Messages;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 
 /**

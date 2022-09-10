@@ -22,14 +22,14 @@ import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.CSharpElements;
+import consulo.csharp.lang.impl.psi.CSharpElements;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeList;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiUtilCore;
+import consulo.language.psi.PsiUtilCore;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author VISTALL

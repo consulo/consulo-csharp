@@ -16,20 +16,14 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nullable;
-
-import org.jetbrains.annotations.Contract;
-import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpCheckedExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpDefaultExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpParenthesesExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.*;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
+import consulo.language.psi.PsiElement;
+import org.jetbrains.annotations.Contract;
+
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

@@ -16,51 +16,40 @@
 
 package consulo.csharp.ide.findUsage;
 
-import com.intellij.lang.cacheBuilder.WordsScanner;
-import com.intellij.lang.findUsages.FindUsagesProvider;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.navigation.ItemPresentationProviders;
-import com.intellij.navigation.NavigationItem;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiUtilCore;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.source.*;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.*;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.Language;
+import consulo.language.ast.IElementType;
+import consulo.language.findUsage.FindUsagesProvider;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.PsiUtilCore;
+import consulo.navigation.ItemPresentation;
+import consulo.navigation.ItemPresentationProvider;
+import consulo.navigation.NavigationItem;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 21.12.13.
  */
+@ExtensionImpl
 public class CSharpFindUsagesProvider implements FindUsagesProvider
 {
-	@Nullable
-	@Override
-	public WordsScanner getWordsScanner()
-	{
-		return null;
-	}
-
 	@Override
 	public boolean canFindUsagesFor(@Nonnull PsiElement element)
 	{
 		return element instanceof DotNetNamedElement || element instanceof CSharpPreprocessorVariable;
-	}
-
-	@Nullable
-	@Override
-	public String getHelpId(@Nonnull PsiElement element)
-	{
-		return null;
 	}
 
 	@Nonnull
@@ -220,7 +209,7 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 			return builder.toString();
 		}
 
-		ItemPresentation itemPresentation = ItemPresentationProviders.getItemPresentation((NavigationItem) element);
+		ItemPresentation itemPresentation = ItemPresentationProvider.getItemPresentation((NavigationItem) element);
 		if(itemPresentation != null)
 		{
 			String presentableText = itemPresentation.getPresentableText();
@@ -261,5 +250,12 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		IElementType type = PsiUtilCore.getElementType(element);
 		String suffix = type == null ? element.getClass().getSimpleName() : type.toString();
 		return prefix + " : " + suffix;
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

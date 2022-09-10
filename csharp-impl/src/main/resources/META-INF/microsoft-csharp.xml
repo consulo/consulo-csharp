@@ -20,11 +20,8 @@
 								 parentKey="microsoft-dotnet"
 								 name="C#"
 								 icon="consulo.dotnet.microsoft.MicrosoftDotNetIconGroup@dotnet"
-								 immutableClass="consulo.microsoft.csharp.module.extension.MicrosoftCSharpModuleExtension"
-								 mutableClass="consulo.microsoft.csharp.module.extension.MicrosoftCSharpMutableModuleExtension"/>
+								 immutableClass="consulo.csharp.microsoft.module.extension.MicrosoftCSharpModuleExtension"
+								 mutableClass="consulo.csharp.microsoft.module.extension.MicrosoftCSharpMutableModuleExtension"/>
 	</extensions>
 
-	<extensions defaultExtensionNs="consulo.csharp">
-		<compilerProvider id="ms-internal" implementation="consulo.microsoft.csharp.compiler.MicrosoftInternalCompilerProvider" order="first"/>
-	</extensions>
 </consulo-plugin>

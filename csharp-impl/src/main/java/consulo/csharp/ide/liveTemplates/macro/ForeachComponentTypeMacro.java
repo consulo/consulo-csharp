@@ -16,22 +16,26 @@
 
 package consulo.csharp.ide.liveTemplates.macro;
 
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.codeInsight.template.*;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.SmartList;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
-import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFactory;
+import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFileImpl;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
 import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.editor.template.Expression;
+import consulo.language.editor.template.ExpressionContext;
+import consulo.language.editor.template.Result;
+import consulo.language.editor.template.TextResult;
+import consulo.language.editor.template.macro.Macro;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.SmartList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -16,27 +16,32 @@
 
 package consulo.csharp.compiler;
 
-import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.openapi.compiler.CompilerMessageCategory;
-import consulo.logging.Logger;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.StandardFileSystems;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import consulo.application.ApplicationProperties;
+import consulo.compiler.CompilerMessageCategory;
+import consulo.content.bundle.Sdk;
 import consulo.csharp.module.CSharpNullableOption;
 import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.dotnet.DotNetTarget;
-import consulo.dotnet.compiler.*;
+import consulo.dotnet.compiler.DotNetCompileFailedException;
+import consulo.dotnet.compiler.DotNetCompilerMessage;
+import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
+import consulo.dotnet.compiler.DotNetMacroUtil;
+import consulo.dotnet.impl.compiler.DotNetCompilerUtil;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
+import consulo.language.util.ModuleUtilCore;
+import consulo.logging.Logger;
+import consulo.module.Module;
+import consulo.process.cmd.GeneralCommandLine;
+import consulo.util.io.FileUtil;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.StandardFileSystems;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.VirtualFileManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -123,8 +128,8 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 	@Override
 	@Nonnull
 	public GeneralCommandLine createCommandLine(@Nonnull Module module,
-			@Nonnull VirtualFile[] results,
-			@Nonnull DotNetModuleExtension<?> extension) throws Exception
+												@Nonnull VirtualFile[] results,
+												@Nonnull DotNetModuleExtension<?> extension) throws Exception
 	{
 		if(myExecutable == null)
 		{
@@ -158,18 +163,18 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 
 		addArgument("/target:" + target);
 		String outputFile = DotNetMacroUtil.expandOutputFile(extension);
-		addArgument("/out:" + StringUtil.QUOTER.fun(outputFile));
+		addArgument("/out:" + StringUtil.QUOTER.apply(outputFile));
 
 		Set<File> libraryFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.LIBRARY, false, DotNetCompilerUtil.ACCEPT_ALL);
 		if(!libraryFiles.isEmpty())
 		{
-			addArgument("/reference:" + StringUtil.join(libraryFiles, file -> StringUtil.QUOTER.fun(file.getAbsolutePath()), ","));
+			addArgument("/reference:" + StringUtil.join(libraryFiles, file -> StringUtil.QUOTER.apply(file.getAbsolutePath()), ","));
 		}
 
 		Set<File> moduleFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.NET_MODULE, false, DotNetCompilerUtil.ACCEPT_ALL);
 		if(!moduleFiles.isEmpty())
 		{
-			addArgument("/addmodule:" + StringUtil.join(moduleFiles, file -> StringUtil.QUOTER.fun(file.getAbsolutePath()), ","));
+			addArgument("/addmodule:" + StringUtil.join(moduleFiles, file -> StringUtil.QUOTER.apply(file.getAbsolutePath()), ","));
 		}
 
 		if(extension.isAllowDebugInfo())
@@ -230,14 +235,12 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 
 		for(VirtualFile result : results)
 		{
-			addArgument(StringUtil.QUOTER.fun(FileUtil.toSystemDependentName(result.getPath())));
+			addArgument(StringUtil.QUOTER.apply(FileUtil.toSystemDependentName(result.getPath())));
 		}
 
 		File tempFile = FileUtil.createTempFile("consulo-dotnet-rsp", ".rsp");
-		for(String argument : myArguments)
-		{
-			FileUtil.appendToFile(tempFile, argument);
-		}
+
+		Files.write(tempFile.toPath(), myArguments);
 
 		//LOGGER.warn("Compiler def file: " + tempFile);
 		//LOGGER.warn(FileUtil.loadFile(tempFile));

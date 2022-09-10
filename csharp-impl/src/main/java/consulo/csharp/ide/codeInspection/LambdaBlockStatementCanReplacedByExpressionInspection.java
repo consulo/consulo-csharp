@@ -16,25 +16,25 @@
 
 package consulo.csharp.ide.codeInspection;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
+import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.util.lang.Couple;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpExpressionStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpReturnStatementImpl;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
+import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
+import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
 
 import javax.annotation.Nonnull;
@@ -44,7 +44,7 @@ import javax.annotation.Nullable;
  * @author VISTALL
  * @since 2020-06-29
  */
-public class LambdaBlockStatementCanReplacedByExpressionInspection extends LocalInspectionTool
+public abstract class LambdaBlockStatementCanReplacedByExpressionInspection extends LocalInspectionTool
 {
 	private static class ReplaceStatementByExpressionFix extends LocalQuickFixOnPsiElement
 	{

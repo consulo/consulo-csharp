@@ -16,23 +16,23 @@
 
 package consulo.csharp.ide.codeInspection.unnecessaryEnumUnderlyingType;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
+import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeList;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
 
 import javax.annotation.Nonnull;
@@ -41,7 +41,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 01-Nov-17
  */
-public class UnnecessaryEnumUnderlyingTypeInspection extends LocalInspectionTool
+public abstract class UnnecessaryEnumUnderlyingTypeInspection extends LocalInspectionTool
 {
 	private static class RemoveFix extends LocalQuickFixOnPsiElement
 	{

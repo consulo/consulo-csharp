@@ -16,27 +16,27 @@
 
 package consulo.csharp.ide.codeInspection.unnecessaryModifier;
 
-import javax.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import consulo.dotnet.psi.DotNetModifierList;
-import com.intellij.codeInspection.IntentionWrapper;
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
+import consulo.ide.impl.idea.codeInspection.IntentionWrapper;
+import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 17.11.2015
  */
-public class UnnecessaryModifierInspection extends LocalInspectionTool
+public abstract class UnnecessaryModifierInspection extends LocalInspectionTool
 {
 	@Nonnull
 	@Override

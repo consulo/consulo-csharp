@@ -16,26 +16,26 @@
 
 package consulo.csharp.ide.msil.representation.builder;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.PairFunction;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpEmptyGenericWrapperTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpArrayTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpEmptyGenericWrapperTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpGenericWrapperTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.internal.dotnet.asm.signature.*;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
+import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.logging.Logger;
+import consulo.msil.impl.lang.stubbing.MsilCustomAttributeArgumentList;
+import consulo.msil.impl.lang.stubbing.MsilCustomAttributeStubber;
+import consulo.msil.impl.lang.stubbing.values.MsiCustomAttributeValue;
+import consulo.msil.impl.lang.stubbing.values.MsilCustomAttributeEnumValue;
 import consulo.msil.lang.psi.MsilCustomAttribute;
-import consulo.msil.lang.stubbing.MsilCustomAttributeArgumentList;
-import consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
-import consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
-import consulo.msil.lang.stubbing.values.MsilCustomAttributeEnumValue;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.function.PairFunction;
 
 import javax.annotation.Nullable;
 import java.util.List;

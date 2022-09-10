@@ -16,29 +16,27 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
+import consulo.application.Result;
+import consulo.codeEditor.Editor;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.source.CSharpExpressionStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpMethodImplUtil;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.editor.intention.PsiElementBaseIntentionAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
+
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
-import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
@@ -88,14 +86,7 @@ public class ConvertToNormalCallFix extends PsiElementBaseIntentionAction
 		elements.add(qualifier);
 		Collections.addAll(elements, parameterExpressions);
 
-		builder.append(StringUtil.join(elements, new Function<PsiElement, String>()
-		{
-			@Override
-			public String fun(PsiElement element)
-			{
-				return element.getText();
-			}
-		}, ", "));
+		builder.append(StringUtil.join(elements, element1 -> element1.getText(), ", "));
 		builder.append(")");
 
 		new WriteCommandAction<Object>(project, getText(), element.getContainingFile())

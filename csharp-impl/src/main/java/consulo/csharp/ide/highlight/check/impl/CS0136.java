@@ -16,29 +16,28 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.MultiMap;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.util.CachedValueProvider;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.impl.psi.CSharpRecursiveElementVisitor;
+import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaParameterImpl;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaParameterImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetVariable;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.util.LanguageCachedValueUtil;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.MultiMap;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
 
 /**
  * @author VISTALL
@@ -117,7 +116,7 @@ public class CS0136 extends CompilerCheck<DotNetVariable>
 			return null;
 		}
 
-		AnalyzeContext context = CachedValuesManager.getCachedValue(method, () -> CachedValueProvider.Result.create(new AnalyzeContext(method), PsiModificationTracker.MODIFICATION_COUNT));
+		AnalyzeContext context = LanguageCachedValueUtil.getCachedValue(method, () -> CachedValueProvider.Result.create(new AnalyzeContext(method), PsiModificationTracker.MODIFICATION_COUNT));
 
 		Collection<DotNetVariable> variables = context.myVariables.get(name);
 		if(variables.size() <= 1)

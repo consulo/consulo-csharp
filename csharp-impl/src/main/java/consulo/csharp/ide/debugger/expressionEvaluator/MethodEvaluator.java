@@ -16,19 +16,18 @@
 
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.application.ReadAction;
+import consulo.application.ReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL

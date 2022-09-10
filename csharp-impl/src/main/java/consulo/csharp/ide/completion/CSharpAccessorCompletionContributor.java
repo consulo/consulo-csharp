@@ -16,34 +16,35 @@
 
 package consulo.csharp.ide.completion;
 
-import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.IdeActions;
-import com.intellij.openapi.editor.CaretModel;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.actionSystem.EditorActionManager;
-import com.intellij.openapi.editor.actionSystem.EditorWriteActionHandler;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ProcessingContext;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
-import consulo.codeInsight.completion.CompletionProvider;
+import consulo.codeEditor.CaretModel;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.action.EditorActionManager;
+import consulo.codeEditor.action.EditorWriteActionHandler;
 import consulo.csharp.lang.psi.CSharpEventDeclaration;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpXAccessorOwner;
+import consulo.dataContext.DataManager;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetXAccessor;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.ProcessingContext;
+import consulo.ui.ex.action.IdeActions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.intellij.patterns.StandardPatterns.psiElement;
+import static consulo.language.pattern.StandardPatterns.psiElement;
 
 /**
  * @author VISTALL

@@ -22,12 +22,12 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.quickFix.RenameQuickFix;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.psi.PsiElement;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.language.editor.rawHighlight.HighlightInfoType;
+import consulo.language.editor.intention.QuickFixAction;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.Comparing;
 
 /**
  * @author VISTALL

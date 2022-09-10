@@ -16,28 +16,28 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import consulo.annotation.access.RequiredReadAction;
+import consulo.component.util.localize.BundleBase;
 import consulo.csharp.ide.liveTemplates.expression.ReturnStatementExpression;
 import consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;
-import consulo.csharp.lang.psi.CSharpContextUtil;
+import consulo.csharp.lang.impl.psi.CSharpContextUtil;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetMemberOwner;
 import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.BundleBase;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.impl.ConstantNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
+import consulo.language.editor.template.ConstantNode;
+import consulo.language.editor.template.Template;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

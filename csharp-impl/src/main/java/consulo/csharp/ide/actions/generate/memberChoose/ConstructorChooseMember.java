@@ -16,28 +16,28 @@
 
 package consulo.csharp.ide.actions.generate.memberChoose;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.codeInsight.generation.ClassMember;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayFactory;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetConstructorDeclaration;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
+import consulo.language.editor.generation.ClassMember;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ArrayFactory;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.StringUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL

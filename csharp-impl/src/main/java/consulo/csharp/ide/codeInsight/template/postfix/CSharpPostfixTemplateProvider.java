@@ -20,30 +20,28 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInsight.template.postfix.templates.PostfixTemplate;
-import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateProvider;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.containers.ArrayListSet;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.language.Language;
+import consulo.language.editor.postfixTemplate.PostfixTemplate;
+import consulo.language.editor.postfixTemplate.PostfixTemplateProvider;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiFile;
+import consulo.ide.impl.idea.util.containers.ArrayListSet;
+
+import static consulo.ui.ex.content.event.ContentManagerEvent.ContentOperation.add;
 
 /**
  * @author VISTALL
  * @since 17.05.14
  */
-public class CSharpPostfixTemplateProvider implements PostfixTemplateProvider
+@ExtensionImpl
+public class CSharpPostfixTemplateProvider extends PostfixTemplateProvider
 {
-	private final Set<PostfixTemplate> myTemplates = new ArrayListSet<PostfixTemplate>()
-	{
-		{
-			add(new CSharpParenthesesPostfixTemplate());
-		}
-	};
-
-	@Nonnull
 	@Override
-	public Set<PostfixTemplate> getTemplates()
+	protected Set<PostfixTemplate> buildTemplates()
 	{
-		return myTemplates;
+		return Set.of(new CSharpParenthesesPostfixTemplate());
 	}
 
 	@Override
@@ -69,5 +67,12 @@ public class CSharpPostfixTemplateProvider implements PostfixTemplateProvider
 	public PsiFile preCheck(@Nonnull final PsiFile copyFile, @Nonnull Editor realEditor, int currentOffset)
 	{
 		return copyFile;
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

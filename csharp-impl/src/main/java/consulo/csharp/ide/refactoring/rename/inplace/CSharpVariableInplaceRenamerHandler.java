@@ -16,23 +16,25 @@
 
 package consulo.csharp.ide.refactoring.rename.inplace;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.refactoring.rename.inplace.VariableInplaceRenameHandler;
-import com.intellij.refactoring.rename.inplace.VariableInplaceRenamer;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.codeEditor.Editor;
 import consulo.csharp.ide.refactoring.CSharpRefactoringSupportProvider;
 import consulo.csharp.lang.psi.CSharpNamedElement;
+import consulo.language.editor.refactoring.rename.inplace.VariableInplaceRenameHandler;
+import consulo.language.editor.refactoring.rename.inplace.VariableInplaceRenamer;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiNamedElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 14-Nov-17
  */
+@ExtensionImpl
 public class CSharpVariableInplaceRenamerHandler extends VariableInplaceRenameHandler
 {
 	@Override

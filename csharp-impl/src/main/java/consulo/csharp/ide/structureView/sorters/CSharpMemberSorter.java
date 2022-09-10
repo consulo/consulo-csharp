@@ -22,9 +22,9 @@ import javax.annotation.Nonnull;
 
 import consulo.csharp.ide.projectView.CSharpElementTreeNode;
 import consulo.csharp.ide.structureView.CSharpNamedTreeElement;
-import com.intellij.ide.util.treeView.smartTree.ActionPresentation;
-import com.intellij.ide.util.treeView.smartTree.Sorter;
-import com.intellij.psi.PsiNamedElement;
+import consulo.fileEditor.structureView.tree.ActionPresentation;
+import consulo.fileEditor.structureView.tree.Sorter;
+import consulo.language.psi.PsiNamedElement;
 
 /**
  * @author VISTALL

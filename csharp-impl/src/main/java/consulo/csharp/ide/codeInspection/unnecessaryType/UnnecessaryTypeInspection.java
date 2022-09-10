@@ -16,33 +16,32 @@
 
 package consulo.csharp.ide.codeInspection.unnecessaryType;
 
-import javax.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.ChangeVariableToTypeRefFix;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.source.CSharpCatchStatementImpl;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpDynamicTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpNullTypeRef;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInspection.IntentionWrapper;
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.LocalInspectionToolSession;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.psi.PsiElementVisitor;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.editor.inspection.LocalInspectionToolSession;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiElementVisitor;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 18.05.14
  */
-public class UnnecessaryTypeInspection extends LocalInspectionTool
+public abstract class UnnecessaryTypeInspection extends LocalInspectionTool
 {
 	@Nonnull
 	@Override
@@ -96,7 +95,7 @@ public class UnnecessaryTypeInspection extends LocalInspectionTool
 				}
 
 				holder.registerProblem(type, "Can replaced by 'var'", ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-						new IntentionWrapper(new ChangeVariableToTypeRefFix(variable, DotNetTypeRef.AUTO_TYPE), variable.getContainingFile()));
+						new consulo.ide.impl.idea.codeInspection.IntentionWrapper(new ChangeVariableToTypeRefFix(variable, DotNetTypeRef.AUTO_TYPE), variable.getContainingFile()));
 			}
 		};
 	}

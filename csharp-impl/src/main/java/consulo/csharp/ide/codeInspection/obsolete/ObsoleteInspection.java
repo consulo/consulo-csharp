@@ -16,26 +16,28 @@
 
 package consulo.csharp.ide.codeInspection.obsolete;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.tree.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.projectView.CSharpElementTreeNode;
 import consulo.csharp.impl.localize.CSharpInspectionLocalize;
-import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
+import consulo.csharp.lang.impl.evaluator.ConstantExpressionEvaluator;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.*;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetAttributeUtil;
 import consulo.dotnet.psi.DotNetExpression;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.psi.PsiNamedElement;
+import consulo.msil.impl.lang.stubbing.MsilCustomAttributeArgumentList;
+import consulo.msil.impl.lang.stubbing.MsilCustomAttributeStubber;
+import consulo.msil.impl.lang.stubbing.values.MsiCustomAttributeValue;
 import consulo.msil.lang.psi.MsilCustomAttribute;
-import consulo.msil.lang.stubbing.MsilCustomAttributeArgumentList;
-import consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
-import consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,7 +47,7 @@ import java.util.List;
  * @author VISTALL
  * @since 28.08.14
  */
-public class ObsoleteInspection extends LocalInspectionTool
+public abstract class ObsoleteInspection extends LocalInspectionTool
 {
 	@Nonnull
 	@Override

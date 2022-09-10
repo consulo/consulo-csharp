@@ -16,12 +16,12 @@
 
 package consulo.csharp.ide.projectView;
 
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.project.Project;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.extensions.StrictExtensionPointName;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.project.Project;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.project.ui.view.tree.ViewSettings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,10 +30,9 @@ import javax.annotation.Nullable;
  * @author VISTALL
  * @since 2020-10-28
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public interface CSharpProjectTreeNodeExpander
 {
-	StrictExtensionPointName<Application, CSharpProjectTreeNodeExpander> EP_NAME = StrictExtensionPointName.forApplication("consulo.csharp.projectTreeNodeExpander");
-
 	@Nullable
 	@RequiredReadAction
 	AbstractTreeNode<?> expandFile(@Nonnull Project project, @Nonnull ViewSettings viewSettings, @Nonnull AbstractTreeNode<?> originalNode);

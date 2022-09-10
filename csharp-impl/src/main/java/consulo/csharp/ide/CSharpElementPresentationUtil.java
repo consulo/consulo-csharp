@@ -16,24 +16,17 @@
 
 package consulo.csharp.ide;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.BitUtil;
-import com.intellij.util.Function;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.dotnet.psi.DotNetConstructorDeclaration;
-import consulo.dotnet.psi.DotNetFieldDeclaration;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetPropertyDeclaration;
-import consulo.dotnet.psi.DotNetVirtualImplementOwner;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.*;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.util.lang.BitUtil;
+import consulo.util.lang.StringUtil;
+
+import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 /**
  * @author VISTALL
@@ -160,27 +153,22 @@ public class CSharpElementPresentationUtil
 		else
 		{
 			builder.append(indexMethod ? "[" : "(");
-			builder.append(StringUtil.join(parameters, new Function<DotNetParameter, String>()
+			builder.append(StringUtil.join(parameters, parameter ->
 			{
-				@Override
-				@RequiredReadAction
-				public String fun(DotNetParameter parameter)
+				String text = CSharpTypeRefPresentationUtil.buildTextWithKeyword(parameter.toTypeRef(true));
+
+				if(!BitUtil.isSet(flags, METHOD_PARAMETER_NAME))
 				{
-					String text = CSharpTypeRefPresentationUtil.buildTextWithKeyword(parameter.toTypeRef(true));
+					return text;
+				}
 
-					if(!BitUtil.isSet(flags, METHOD_PARAMETER_NAME))
-					{
-						return text;
-					}
-
-					if(BitUtil.isSet(flags, SCALA_FORMAT))
-					{
-						return parameter.getName() + ":" + text;
-					}
-					else
-					{
-						return text + " " + parameter.getName();
-					}
+				if(BitUtil.isSet(flags, SCALA_FORMAT))
+				{
+					return parameter.getName() + ":" + text;
+				}
+				else
+				{
+					return text + " " + parameter.getName();
 				}
 			}, ", "));
 			builder.append(indexMethod ? "]" : ")");
@@ -214,7 +202,7 @@ public class CSharpElementPresentationUtil
 			{
 				@Override
 				@RequiredReadAction
-				public String fun(DotNetGenericParameter dotNetGenericParameter)
+				public String apply(DotNetGenericParameter dotNetGenericParameter)
 				{
 					return dotNetGenericParameter.getName();
 				}
@@ -232,19 +220,13 @@ public class CSharpElementPresentationUtil
 		{
 			return "";
 		}
-		return "<" + StringUtil.join(genericParameters, new Function<DotNetGenericParameter, String>()
-		{
-			@Override
-			@RequiredReadAction
-			public String fun(DotNetGenericParameter genericParameter)
+		return "<" + StringUtil.join(genericParameters, genericParameter -> {
+			DotNetTypeRef extract = extractor.extract(genericParameter);
+			if(extract != null)
 			{
-				DotNetTypeRef extract = extractor.extract(genericParameter);
-				if(extract != null)
-				{
-					return CSharpTypeRefPresentationUtil.buildShortText(extract);
-				}
-				return genericParameter.getName();
+				return CSharpTypeRefPresentationUtil.buildShortText(extract);
 			}
+			return genericParameter.getName();
 		}, ", ") + ">";
 	}
 }

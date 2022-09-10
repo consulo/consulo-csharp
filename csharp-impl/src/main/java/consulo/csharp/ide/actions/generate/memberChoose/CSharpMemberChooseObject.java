@@ -16,18 +16,18 @@
 
 package consulo.csharp.ide.actions.generate.memberChoose;
 
-import com.intellij.codeInsight.generation.ClassMember;
-import com.intellij.codeInsight.generation.MemberChooserObject;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.psi.PsiElement;
-import com.intellij.ui.SimpleColoredComponent;
-import com.intellij.util.ArrayFactory;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.component.util.Iconable;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.ide.IconDescriptorUpdaters;
+import consulo.language.editor.generation.ClassMember;
+import consulo.language.editor.generation.MemberChooserObject;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.psi.PsiElement;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.ColoredTextContainer;
+import consulo.util.collection.ArrayFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,7 +58,7 @@ public abstract class CSharpMemberChooseObject<T extends DotNetElement> implemen
 
 	@Override
 	@RequiredUIAccess
-	public void renderTreeNode(SimpleColoredComponent component, JTree tree)
+	public void renderTreeNode(ColoredTextContainer component, JTree tree)
 	{
 		component.setIcon(IconDescriptorUpdaters.getIcon(myDeclaration, Iconable.ICON_FLAG_VISIBILITY));
 		component.append(getPresentationText());

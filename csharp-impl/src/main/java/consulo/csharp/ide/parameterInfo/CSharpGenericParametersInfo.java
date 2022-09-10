@@ -21,8 +21,8 @@ import javax.annotation.Nonnull;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.util.ArrayUtil2;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.UnfairTextRange;
+import consulo.document.util.TextRange;
+import consulo.document.util.UnfairTextRange;
 
 /**
  * @author VISTALL

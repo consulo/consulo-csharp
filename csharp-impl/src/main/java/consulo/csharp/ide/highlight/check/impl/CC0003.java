@@ -26,12 +26,12 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
-import consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpIndexAccessExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
+import consulo.util.collection.ContainerUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpDynamicTypeRef;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author VISTALL

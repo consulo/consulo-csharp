@@ -16,19 +16,19 @@
 
 package consulo.csharp.ide.structureView;
 
-import com.intellij.ide.structureView.StructureViewModel;
-import com.intellij.ide.structureView.StructureViewModelBase;
-import com.intellij.ide.structureView.StructureViewTreeElement;
-import com.intellij.ide.util.treeView.smartTree.NodeProvider;
-import com.intellij.ide.util.treeView.smartTree.Sorter;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import consulo.fileEditor.structureView.StructureViewTreeElement;
+import consulo.fileEditor.structureView.tree.NodeProvider;
+import consulo.codeEditor.Editor;
 import consulo.csharp.ide.structureView.sorters.CSharpMemberSorter;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
 import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.fileEditor.structureView.StructureViewModel;
+import consulo.fileEditor.structureView.tree.Sorter;
+import consulo.language.editor.structureView.StructureViewModelBase;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -19,8 +19,8 @@ package consulo.csharp.ide.assemblyInfo.blocks;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiFile;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiFile;
 
 /**
  * @author VISTALL

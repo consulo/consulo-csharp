@@ -16,24 +16,26 @@
 
 package consulo.csharp.ide.codeInspection.languageKeywordUsage;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiUtilCore;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.ast.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
-import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.ide.completion.CSharpCompletionUtil;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImplUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpNativeTypeImplUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
+import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiUtilCore;
+import consulo.project.Project;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -42,7 +44,7 @@ import java.util.Map;
  * @author VISTALL
  * @since 16.04.2016
  */
-public class LanguageKeywordUsageInspection extends LocalInspectionTool
+public abstract class LanguageKeywordUsageInspection extends LocalInspectionTool
 {
 	public static class ReplaceByKeywordFix extends LocalQuickFixOnPsiElement
 	{

@@ -19,14 +19,14 @@ package consulo.csharp.ide.findUsage.groupingRule;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.usages.Usage;
-import com.intellij.usages.UsageGroup;
-import com.intellij.usages.impl.FileStructureGroupRuleProvider;
-import com.intellij.usages.rules.PsiElementUsage;
-import com.intellij.usages.rules.UsageGroupingRule;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.usage.Usage;
+import consulo.usage.UsageGroup;
+import consulo.usage.rule.FileStructureGroupRuleProvider;
+import consulo.usage.rule.PsiElementUsage;
+import consulo.usage.rule.UsageGroupingRule;
+import consulo.project.Project;
 
 /**
  * @author VISTALL

@@ -16,11 +16,6 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import java.util.Collections;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -29,8 +24,13 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.resolve.DotNetPsiSearcher;
-import com.intellij.psi.PsiElement;
+import consulo.dotnet.psi.resolve.DotNetPsiSearcher;
+import consulo.language.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * @author VISTALL

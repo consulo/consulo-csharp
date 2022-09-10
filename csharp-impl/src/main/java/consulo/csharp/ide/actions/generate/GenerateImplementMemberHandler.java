@@ -16,15 +16,16 @@
 
 package consulo.csharp.ide.actions.generate;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetXAccessor;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.localize.LocalizeValue;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -38,9 +39,9 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 {
 	@Nonnull
 	@Override
-	public String getTitle()
+	public LocalizeValue getTitle()
 	{
-		return "Choose Members For Implement";
+		return LocalizeValue.localizeTODO("Choose Members For Implement");
 	}
 
 	@RequiredReadAction

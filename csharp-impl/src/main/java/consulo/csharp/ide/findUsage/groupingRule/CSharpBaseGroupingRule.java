@@ -16,28 +16,28 @@
 
 package consulo.csharp.ide.findUsage.groupingRule;
 
+import consulo.component.util.Iconable;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.dataContext.DataSink;
+import consulo.dataContext.TypeSafeDataProvider;
+import consulo.language.editor.LangDataKeys;
+import consulo.language.editor.util.NavigationItemFileStatus;
+import consulo.language.findUsage.FindUsagesProvider;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.navigation.Navigatable;
+import consulo.navigation.NavigationItem;
+import consulo.ui.image.Image;
+import consulo.usage.UsageGroup;
+import consulo.usage.UsageInfo;
+import consulo.usage.UsageView;
+import consulo.util.dataholder.Key;
+import consulo.virtualFileSystem.status.FileStatus;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.intellij.lang.findUsages.LanguageFindUsages;
-import com.intellij.navigation.NavigationItem;
-import com.intellij.navigation.NavigationItemFileStatus;
-import com.intellij.openapi.actionSystem.DataSink;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.actionSystem.TypeSafeDataProvider;
-import com.intellij.openapi.util.Iconable;
-import consulo.util.dataholder.Key;
-import com.intellij.openapi.vcs.FileStatus;
-import com.intellij.pom.Navigatable;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.usages.UsageGroup;
-import com.intellij.usages.UsageView;
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.ide.IconDescriptorUpdaters;
-import consulo.ui.image.Image;
 
 /**
  * @author VISTALL
@@ -73,7 +73,7 @@ public class CSharpBaseGroupingRule<T extends PsiElement> implements UsageGroup,
 		{
 			return "INVALID";
 		}
-		return LanguageFindUsages.INSTANCE.forKey(CSharpLanguage.INSTANCE).get(0).getNodeText(element, false);
+		return FindUsagesProvider.forLanguage(CSharpLanguage.INSTANCE).getNodeText(element, false);
 	}
 
 	@Nullable

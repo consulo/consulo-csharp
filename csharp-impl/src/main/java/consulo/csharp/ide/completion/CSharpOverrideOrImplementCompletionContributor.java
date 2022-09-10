@@ -16,32 +16,31 @@
 
 package consulo.csharp.ide.completion;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.editor.CaretModel;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Consumer;
-import com.intellij.util.ProcessingContext;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.AllIcons;
+import consulo.codeEditor.CaretModel;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.actions.generate.GenerateImplementMemberHandler;
 import consulo.csharp.ide.actions.generate.GenerateOverrideMemberHandler;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.CSharpVisibilityUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.csharp.psi.icon.CSharpPsiIconGroup;
-import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.ide.IconDescriptor;
-import consulo.ide.IconDescriptorUpdaters;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.editor.completion.CompletionParameters;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.icon.IconDescriptor;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.ProcessingContext;
 import consulo.ui.image.Image;
 
 import javax.annotation.Nonnull;
@@ -50,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 /**
  * @author VISTALL
@@ -69,13 +69,13 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 		{
 			LookupElementBuilder builder = buildLookupItem(typeDeclaration, overrideItem, false);
 
-			result.consume(builder);
+			result.accept(builder);
 
 			if(!typeDeclaration.isInterface() && overrideItem.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
 			{
 				builder = buildLookupItem(typeDeclaration, overrideItem, true);
 
-				result.consume(builder);
+				result.accept(builder);
 			}
 		}
 	}
@@ -184,7 +184,7 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 		{
 			if(hide)
 			{
-				rightIcon = CSharpPsiIconGroup.gutterHidingMethod();
+				rightIcon = CSharpPsiIconGroup.gutterHidingmethod();
 			}
 			else if(element.hasModifier(DotNetModifier.ABSTRACT))
 			{

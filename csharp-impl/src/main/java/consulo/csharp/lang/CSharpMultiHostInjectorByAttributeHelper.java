@@ -16,21 +16,24 @@
 
 package consulo.csharp.lang;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.openapi.util.TextRange;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.impl.evaluator.ConstantExpressionEvaluator;
+import consulo.csharp.lang.impl.psi.source.CSharpConstantExpressionImpl;
 import consulo.csharp.lang.psi.CSharpAttribute;
-import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
-import consulo.dotnet.lang.MultiHostInjectorByAttributeHelper;
+import consulo.document.util.TextRange;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.MultiHostInjectorByAttributeHelper;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 02.09.14
  */
+@ExtensionImpl
 public class CSharpMultiHostInjectorByAttributeHelper implements MultiHostInjectorByAttributeHelper
 {
 	@Nullable

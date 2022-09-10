@@ -18,17 +18,17 @@ package consulo.csharp.ide.codeInsight.actions;
 
 import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpNamedCallArgument;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
 import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.project.Project;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.util.IncorrectOperationException;
 
 /**
  * @author VISTALL

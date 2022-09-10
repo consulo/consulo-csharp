@@ -16,31 +16,19 @@
 
 package consulo.csharp.ide.debugger;
 
-import com.intellij.lang.Language;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.util.Consumer;
-import com.intellij.xdebugger.XDebugSession;
-import com.intellij.xdebugger.XSourcePosition;
-import com.intellij.xdebugger.evaluation.XDebuggerEvaluator;
-import com.intellij.xdebugger.frame.XNamedValue;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.application.ApplicationManager;
 import consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
 import consulo.csharp.ide.debugger.expressionEvaluator.ThisObjectEvaluator;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
-import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFactory;
+import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFileImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
 import consulo.dotnet.debugger.DotNetDebugContext;
 import consulo.dotnet.debugger.DotNetDebuggerProvider;
-import consulo.dotnet.debugger.nodes.DotNetFieldOrPropertyValueNode;
-import consulo.dotnet.debugger.nodes.DotNetStructValueInfo;
+import consulo.dotnet.debugger.impl.nodes.DotNetFieldOrPropertyValueNode;
+import consulo.dotnet.debugger.impl.nodes.DotNetStructValueInfo;
 import consulo.dotnet.debugger.proxy.*;
 import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetStructValueProxy;
@@ -48,20 +36,34 @@ import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetReferenceExpression;
+import consulo.execution.debug.XDebugSession;
+import consulo.execution.debug.XSourcePosition;
+import consulo.execution.debug.evaluation.XDebuggerEvaluator;
+import consulo.execution.debug.frame.XNamedValue;
+import consulo.language.Language;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
 import consulo.logging.Logger;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @author VISTALL
  * @since 10.04.14
  */
+@ExtensionImpl
 public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 {
 	private static final Logger LOGGER = Logger.getInstance(CSharpDebuggerProvider.class);
@@ -76,11 +78,11 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 	@Override
 	@RequiredUIAccess
 	public void evaluate(@Nonnull DotNetStackFrameProxy frame,
-			@Nonnull DotNetDebugContext debuggerContext,
-			@Nonnull String expression,
-			@Nullable PsiElement elementAt,
-			@Nonnull XDebuggerEvaluator.XEvaluationCallback callback,
-			@Nullable XSourcePosition sourcePosition)
+						 @Nonnull DotNetDebugContext debuggerContext,
+						 @Nonnull String expression,
+						 @Nullable PsiElement elementAt,
+						 @Nonnull XDebuggerEvaluator.XEvaluationCallback callback,
+						 @Nullable XSourcePosition sourcePosition)
 	{
 		if(elementAt == null)
 		{
@@ -195,14 +197,14 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 
 	@Override
 	public void evaluate(@Nonnull DotNetStackFrameProxy frame,
-			@Nonnull DotNetDebugContext debuggerContext,
-			@Nonnull DotNetReferenceExpression referenceExpression,
-			@Nonnull Set<Object> visitedVariables,
-			@Nonnull Consumer<XNamedValue> consumer)
+						 @Nonnull DotNetDebugContext debuggerContext,
+						 @Nonnull DotNetReferenceExpression referenceExpression,
+						 @Nonnull Set<Object> visitedVariables,
+						 @Nonnull Consumer<XNamedValue> consumer)
 	{
 		try
 		{
-			List<Evaluator> evaluators = ApplicationManager.getApplication().runReadAction((Computable<List<Evaluator>>) () ->
+			List<Evaluator> evaluators = ApplicationManager.getApplication().runReadAction((Supplier<List<Evaluator>>) () ->
 			{
 				PsiElement resolvedElement = referenceExpression.resolve();
 				if(referenceExpression.getParent() instanceof CSharpMethodCallExpressionImpl || resolvedElement instanceof DotNetLikeMethodDeclaration)
@@ -238,7 +240,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 				DotNetTypeProxy type = thisObjectValue.getType();
 				if(thisObjectValue instanceof DotNetObjectValueProxy && parent.equals(type))
 				{
-					consumer.consume(new DotNetFieldOrPropertyValueNode(debuggerContext, fieldOrPropertyMirror, frame, (DotNetObjectValueProxy) thisObjectValue));
+					consumer.accept(new DotNetFieldOrPropertyValueNode(debuggerContext, fieldOrPropertyMirror, frame, (DotNetObjectValueProxy) thisObjectValue));
 				}
 				else if(thisObjectValue instanceof DotNetStructValueProxy && parent.equals(type))
 				{
@@ -246,11 +248,11 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 
 					DotNetStructValueInfo valueInfo = new DotNetStructValueInfo(structValueMirror, null, fieldOrPropertyMirror, objectPair.getFirst());
 
-					consumer.consume(new DotNetFieldOrPropertyValueNode(debuggerContext, fieldOrPropertyMirror, frame, null, valueInfo));
+					consumer.accept(new DotNetFieldOrPropertyValueNode(debuggerContext, fieldOrPropertyMirror, frame, null, valueInfo));
 				}
 				else
 				{
-					consumer.consume(new CSharpWatcherNode(debuggerContext, ApplicationManager.getApplication().runReadAction((Computable<String>) referenceExpression::getText), frame, objectPair
+					consumer.accept(new CSharpWatcherNode(debuggerContext, ApplicationManager.getApplication().runReadAction((Supplier<String>) referenceExpression::getText), frame, objectPair
 							.getFirst()));
 				}
 			}

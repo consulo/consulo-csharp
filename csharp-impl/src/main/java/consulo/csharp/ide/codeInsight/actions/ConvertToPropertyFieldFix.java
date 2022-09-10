@@ -16,15 +16,11 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.PsiElementBaseIntentionAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
@@ -32,7 +28,11 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetType;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 

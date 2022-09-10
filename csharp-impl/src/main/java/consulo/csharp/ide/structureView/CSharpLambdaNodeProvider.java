@@ -1,19 +1,18 @@
 package consulo.csharp.ide.structureView;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.ide.structureView.impl.common.PsiTreeElementBase;
-import com.intellij.ide.util.FileStructureNodeProvider;
-import com.intellij.ide.util.treeView.smartTree.ActionPresentation;
-import com.intellij.ide.util.treeView.smartTree.ActionPresentationData;
-import com.intellij.ide.util.treeView.smartTree.TreeElement;
-import com.intellij.openapi.actionSystem.KeyboardShortcut;
-import com.intellij.openapi.actionSystem.Shortcut;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.util.PropertyOwner;
-import com.intellij.openapi.util.SystemInfo;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.SyntaxTraverser;
-import consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
+import consulo.application.AllIcons;
+import consulo.fileEditor.structureView.tree.ActionPresentation;
+import consulo.fileEditor.structureView.tree.FileStructureNodeProvider;
+import consulo.language.editor.structureView.PsiTreeElementBase;
+import consulo.fileEditor.structureView.tree.ActionPresentationData;
+import consulo.fileEditor.structureView.tree.TreeElement;
+import consulo.language.psi.SyntaxTraverser;
+import consulo.ui.ex.action.KeyboardShortcut;
+import consulo.ui.ex.action.Shortcut;
+import consulo.application.dumb.DumbAware;
+import consulo.application.util.SystemInfo;
+import consulo.language.psi.PsiElement;
+import consulo.csharp.lang.impl.psi.source.CSharpAnonymousMethodExpression;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 
 import javax.annotation.Nonnull;
@@ -24,7 +23,7 @@ import java.util.Collections;
  * @author VISTALL
  * @since 2020-06-28
  */
-public class CSharpLambdaNodeProvider implements FileStructureNodeProvider<CSharpLambdaTreeElement>, PropertyOwner, DumbAware
+public class CSharpLambdaNodeProvider implements FileStructureNodeProvider<CSharpLambdaTreeElement>, DumbAware
 {
 	public static final CSharpLambdaNodeProvider INSTANCE = new CSharpLambdaNodeProvider();
 
@@ -75,7 +74,7 @@ public class CSharpLambdaNodeProvider implements FileStructureNodeProvider<CShar
 
 	@Nonnull
 	@Override
-	public String getPropertyName()
+	public String getSerializePropertyName()
 	{
 		return CSHARP_LAMBDA_PROPERTY_NAME;
 	}

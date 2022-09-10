@@ -16,13 +16,13 @@
 
 package consulo.csharp.ide.navigation;
 
-import com.intellij.openapi.application.ReadAction;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.searches.DefinitionsScopedSearch;
-import com.intellij.util.Processor;
-import com.intellij.util.QueryExecutor;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.application.ReadAction;
+import consulo.application.util.function.Processor;
+import consulo.application.util.query.QueryExecutor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.search.DefinitionsScopedSearch;
+import consulo.util.collection.ContainerUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 
 import javax.annotation.Nonnull;

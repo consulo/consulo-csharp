@@ -16,25 +16,25 @@
 
 package consulo.csharp.ide.codeInspection.unnecessarySemicolon;
 
-import javax.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpEmptyStatementImpl;
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpEmptyStatementImpl;
+import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 5/9/2016
  */
-public class UnnecessarySemicolonInspection extends LocalInspectionTool
+public abstract class UnnecessarySemicolonInspection extends LocalInspectionTool
 {
 	private static class RemoveSemicolonFix extends LocalQuickFixOnPsiElement
 	{

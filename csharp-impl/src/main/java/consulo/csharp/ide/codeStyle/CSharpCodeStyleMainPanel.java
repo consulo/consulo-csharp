@@ -17,10 +17,10 @@
 package consulo.csharp.ide.codeStyle;
 
 import consulo.csharp.lang.CSharpLanguage;
-import com.intellij.application.options.TabbedLanguageCodeStylePanel;
-import com.intellij.openapi.extensions.Extensions;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CodeStyleSettingsProvider;
+import consulo.language.codeStyle.ui.setting.TabbedLanguageCodeStylePanel;
+import consulo.component.extension.Extensions;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.setting.CodeStyleSettingsProvider;
 
 /**
  * @author VISTALL

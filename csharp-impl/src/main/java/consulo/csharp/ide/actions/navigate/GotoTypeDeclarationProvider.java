@@ -19,15 +19,15 @@ package consulo.csharp.ide.actions.navigate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
 import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.psi.CSharpMethodUtil;
+import consulo.csharp.lang.impl.psi.CSharpMethodUtil;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInsight.navigation.actions.TypeDeclarationProvider;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.action.TypeDeclarationProvider;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author VISTALL

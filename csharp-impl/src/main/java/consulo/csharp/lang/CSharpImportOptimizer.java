@@ -16,21 +16,27 @@
 
 package consulo.csharp.lang;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.ImportOptimizer;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.Language;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenType;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
+import consulo.csharp.lang.impl.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
+import consulo.csharp.lang.impl.psi.CSharpRecursiveElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpTypeDefStatementImpl;
 import consulo.dotnet.psi.DotNetReferenceExpression;
 import consulo.dotnet.psi.DotNetType;
+import consulo.language.ast.ASTNode;
+import consulo.language.editor.refactoring.ImportOptimizer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,6 +46,7 @@ import java.util.*;
  * @author VISTALL
  * @since 01.01.14.
  */
+@ExtensionImpl
 public class CSharpImportOptimizer implements ImportOptimizer
 {
 	@Override
@@ -262,5 +269,12 @@ public class CSharpImportOptimizer implements ImportOptimizer
 	private static boolean isSystem(String name)
 	{
 		return name.startsWith("System");
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

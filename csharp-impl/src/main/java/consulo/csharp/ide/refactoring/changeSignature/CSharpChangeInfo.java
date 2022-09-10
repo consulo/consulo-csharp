@@ -23,8 +23,8 @@ import javax.annotation.Nullable;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import com.intellij.lang.Language;
-import com.intellij.refactoring.changeSignature.ChangeInfo;
+import consulo.language.Language;
+import consulo.language.editor.refactoring.changeSignature.ChangeInfo;
 
 /**
  * @author VISTALL

@@ -16,25 +16,30 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
-import com.intellij.psi.impl.source.tree.TreeElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.ast.ASTNode;
+import consulo.language.impl.ast.TreeElement;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiWhiteSpace;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
+import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
+import consulo.language.impl.psi.CodeEditUtil;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 
 import javax.annotation.Nonnull;

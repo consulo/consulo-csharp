@@ -17,12 +17,12 @@
 package consulo.csharp.ide.codeInsight.actions;
 
 import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpStubElements;
+import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.dotnet.psi.DotNetMethodDeclaration;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import com.intellij.openapi.util.Comparing;
+import consulo.util.lang.Comparing;
 
 /**
  * @author VISTALL

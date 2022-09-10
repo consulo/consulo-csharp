@@ -1,28 +1,31 @@
 package consulo.csharp.ide.codeInsight.hits;
 
-import com.intellij.codeInsight.hints.InlayInfo;
-import com.intellij.codeInsight.hints.InlayParameterHintsProvider;
-import com.intellij.codeInsight.hints.MethodInfo;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.SmartList;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.impl.psi.source.CSharpExpressionWithOperatorImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpOperatorReferenceImpl;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.NCallArgumentBuilder;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NCallArgument;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NErrorCallArgument;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NNamedCallArgument;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NParamsCallArgument;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpExpressionWithOperatorImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.NCallArgumentBuilder;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NErrorCallArgument;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NNamedCallArgument;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NParamsCallArgument;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
+import consulo.language.Language;
+import consulo.language.editor.inlay.InlayInfo;
+import consulo.language.editor.inlay.InlayParameterHintsProvider;
+import consulo.language.editor.inlay.MethodInfo;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.collection.SmartList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,6 +37,7 @@ import java.util.Set;
  * @author VISTALL
  * @since 16-Jan-17
  */
+@ExtensionImpl
 public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 {
 	private static String[] ourDefaultBlacklist = {
@@ -179,6 +183,13 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 	@Override
 	public Set<String> getDefaultBlackList()
 	{
-		return ContainerUtil.newHashSet(ourDefaultBlacklist);
+		return Set.of(ourDefaultBlacklist);
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

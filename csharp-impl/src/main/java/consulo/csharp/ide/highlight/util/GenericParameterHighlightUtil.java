@@ -16,16 +16,16 @@
 
 package consulo.csharp.ide.highlight.util;
 
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
-import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.language.editor.rawHighlight.HighlightInfoHolder;
+import consulo.language.editor.intention.QuickFixAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetModifierList;
+import consulo.language.editor.rawHighlight.HighlightInfoType;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author VISTALL

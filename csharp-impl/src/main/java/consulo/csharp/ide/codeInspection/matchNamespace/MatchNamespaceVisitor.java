@@ -16,16 +16,16 @@
 
 package consulo.csharp.ide.codeInspection.matchNamespace;
 
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.localize.CSharpInspectionLocalize;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.dotnet.module.DotNetNamespaceGeneratePolicy;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.dotnet.psi.DotNetReferenceExpression;
+import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.lang.StringUtil;
 
 import java.util.ArrayList;

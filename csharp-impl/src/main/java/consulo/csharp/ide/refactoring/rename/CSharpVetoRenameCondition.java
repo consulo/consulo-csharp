@@ -16,20 +16,24 @@
 
 package consulo.csharp.ide.refactoring.rename;
 
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import consulo.msil.representation.fileSystem.MsilFileRepresentationVirtualFile;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpFileImpl;
+import consulo.language.editor.refactoring.rename.VetoRenameCondition;
+import consulo.language.psi.PsiElement;
+import consulo.msil.impl.representation.fileSystem.MsilFileRepresentationVirtualFile;
+import consulo.virtualFileSystem.VirtualFile;
 
 /**
  * @author VISTALL
  * @since 15.05.14
  */
-public class CSharpVetoRenameCondition implements Condition<PsiElement>
+@ExtensionImpl
+public class CSharpVetoRenameCondition implements VetoRenameCondition
 {
+	@RequiredReadAction
 	@Override
-	public boolean value(PsiElement psiElement)
+	public boolean isVetoed(PsiElement psiElement)
 	{
 		if(psiElement instanceof CSharpFileImpl)
 		{

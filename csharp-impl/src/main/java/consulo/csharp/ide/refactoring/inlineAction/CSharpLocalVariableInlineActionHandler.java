@@ -20,21 +20,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.impl.source.CSharpForStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLocalVariableUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpForStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLocalVariableUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
-import com.intellij.lang.Language;
-import com.intellij.lang.refactoring.InlineActionHandler;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.util.Processor;
+import consulo.language.Language;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.editor.refactoring.inline.InlineActionHandler;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.application.util.function.Processor;
+import consulo.project.Project;
 
 /**
  * @author VISTALL

@@ -16,11 +16,6 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
@@ -29,8 +24,12 @@ import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.SmartList;
+import consulo.language.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -49,7 +48,7 @@ public class CS1004 extends CompilerCheck<DotNetModifierListOwner>
 			return Collections.emptyList();
 		}
 
-		List<CompilerCheckBuilder> results = new SmartList<CompilerCheckBuilder>();
+		List<CompilerCheckBuilder> results = new ArrayList<>();
 		for(CSharpModifier modifier : CSharpModifier.values())
 		{
 			List<PsiElement> modifierElements = modifierList.getModifierElements(modifier);

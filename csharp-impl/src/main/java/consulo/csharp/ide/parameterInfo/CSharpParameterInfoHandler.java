@@ -16,29 +16,32 @@
 
 package consulo.csharp.ide.parameterInfo;
 
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.lang.parameterInfo.*;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.ArrayFactory;
-import com.intellij.util.SmartList;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.impl.psi.source.CSharpDelegateExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpDictionaryInitializerImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
+import consulo.csharp.lang.impl.psi.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpDictionaryInitializerImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
+import consulo.document.util.TextRange;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
+import consulo.language.Language;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.parameterInfo.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
+import consulo.language.psi.ResolveResult;
+import consulo.language.psi.util.PsiTreeUtil;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.collection.ArrayFactory;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.collection.SmartList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,6 +51,7 @@ import java.util.List;
  * @author VISTALL
  * @since 11.05.14
  */
+@ExtensionImpl
 public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiElement, CSharpParameterInfoHandler.ItemToShow>
 {
 	@Nonnull
@@ -323,5 +327,12 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 
 		context.setupUIComponentPresentation(text, parameterRange.getStartOffset(), parameterRange.getEndOffset(), !context.isUIComponentEnabled(), p.isObsolete(), false, context
 				.getDefaultParameterColor());
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

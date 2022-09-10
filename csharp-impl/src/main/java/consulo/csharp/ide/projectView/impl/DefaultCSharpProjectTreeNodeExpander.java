@@ -16,17 +16,18 @@
 
 package consulo.csharp.ide.projectView.impl;
 
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.project.Project;
+import consulo.language.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.problems.CSharpLocationUtil;
 import consulo.csharp.ide.projectView.CSharpElementTreeNode;
 import consulo.csharp.ide.projectView.CSharpProjectTreeNodeExpander;
 import consulo.csharp.lang.psi.CSharpFile;
-import consulo.csharp.lang.psi.impl.source.CSharpDummyDeclarationImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpDummyDeclarationImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetNamedElement;
 
 import javax.annotation.Nonnull;
@@ -36,6 +37,7 @@ import javax.annotation.Nullable;
  * @author VISTALL
  * @since 2020-10-28
  */
+@ExtensionImpl
 public class DefaultCSharpProjectTreeNodeExpander implements CSharpProjectTreeNodeExpander
 {
 	@RequiredReadAction

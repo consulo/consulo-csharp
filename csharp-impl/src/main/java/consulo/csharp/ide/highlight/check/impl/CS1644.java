@@ -16,37 +16,41 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
+import consulo.codeEditor.Editor;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.impl.psi.CSharpElements;
+import consulo.csharp.lang.impl.psi.CSharpStubElements;
+import consulo.csharp.lang.impl.psi.CSharpTokenSets;
+import consulo.csharp.lang.impl.psi.CSharpTokensImpl;
+import consulo.csharp.lang.impl.psi.source.*;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.*;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.language.editor.intention.PsiElementBaseIntentionAction;
+import consulo.language.editor.rawHighlight.HighlightInfoType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.content.ModuleRootManager;
+import consulo.module.content.layer.ModifiableRootModel;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author VISTALL
@@ -121,7 +125,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("lambda expressions", CSharpLanguageVersion._3_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					if(element instanceof CSharpLambdaExpressionImpl)
 					{
@@ -133,7 +137,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("generics", CSharpLanguageVersion._2_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					if(element instanceof CSharpGenericParameterListImpl)
 					{
@@ -151,7 +155,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			{
 				@Override
 				@RequiredReadAction
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					if(element instanceof CSharpLocalVariable && ((CSharpLocalVariable) element).toTypeRef(false) == DotNetTypeRef.AUTO_TYPE)
 					{
@@ -164,7 +168,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			{
 				@Override
 				@RequiredReadAction
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					if(element instanceof CSharpMethodDeclaration)
 					{
@@ -188,7 +192,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("using static members", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					return element instanceof CSharpUsingTypeStatement ? element : null;
 				}
@@ -196,7 +200,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("parameterless struct ctors", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					if(element instanceof CSharpConstructorDeclaration)
 					{
@@ -213,7 +217,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			{
 				@Override
 				@RequiredReadAction
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					if(element instanceof CSharpPropertyDeclaration)
 					{
@@ -244,7 +248,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("exception filters", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					if(element instanceof CSharpCatchStatementImpl)
 					{
@@ -256,7 +260,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("null propagation", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					if(element instanceof CSharpReferenceExpression)
 					{
@@ -273,7 +277,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			{
 				@Override
 				@RequiredReadAction
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					if(element instanceof CSharpConstantExpressionImpl)
 					{
@@ -285,7 +289,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("dictionary initializer", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					if(element instanceof CSharpDictionaryInitializerImpl)
 					{
@@ -298,7 +302,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			{
 				@Override
 				@RequiredReadAction
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					if(element instanceof CSharpAwaitExpressionImpl)
 					{
@@ -316,7 +320,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			{
 				@Override
 				@RequiredReadAction
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					if(element instanceof CSharpSimpleLikeMethodAsElement)
 					{
@@ -333,7 +337,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("named arguments", CSharpLanguageVersion._4_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
-				public PsiElement fun(PsiElement element)
+				public PsiElement apply(PsiElement element)
 				{
 					return element instanceof CSharpNamedCallArgument ? element : null;
 				}
@@ -341,7 +345,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("tuples", CSharpLanguageVersion._7_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
-				public PsiElement fun(PsiElement psiElement)
+				public PsiElement apply(PsiElement psiElement)
 				{
 					return psiElement instanceof CSharpTupleType || psiElement instanceof CSharpTupleExpressionImpl ? psiElement : null;
 				}
@@ -350,7 +354,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			{
 				@Override
 				@RequiredReadAction
-				public PsiElement fun(PsiElement psiElement)
+				public PsiElement apply(PsiElement psiElement)
 				{
 					return psiElement instanceof CSharpDefaultExpressionImpl && ((CSharpDefaultExpressionImpl) psiElement).isSimplified() ? psiElement : null;
 				}
@@ -391,7 +395,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 		{
 			if(languageVersion.ordinal() < feature.myLanguageVersion.ordinal())
 			{
-				PsiElement fun = feature.myFunc.fun(element);
+				PsiElement fun = feature.myFunc.apply(element);
 				if(fun == null)
 				{
 					continue;

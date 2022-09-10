@@ -16,93 +16,52 @@
 
 package consulo.csharp.ide.navigation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import consulo.csharp.lang.psi.impl.stub.index.EventIndex;
-import consulo.csharp.lang.psi.impl.stub.index.FieldIndex;
-import consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
-import consulo.csharp.lang.psi.impl.stub.index.PropertyIndex;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.application.util.function.Processor;
+import consulo.content.scope.SearchScope;
+import consulo.csharp.lang.impl.psi.stub.index.CSharpIndexKeys;
 import consulo.dotnet.psi.DotNetEventDeclaration;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetPropertyDeclaration;
-import com.intellij.navigation.ChooseByNameContributorEx;
-import com.intellij.navigation.NavigationItem;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StubIndex;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Processor;
-import com.intellij.util.indexing.FindSymbolParameters;
-import com.intellij.util.indexing.IdFilter;
+import consulo.ide.navigation.GotoSymbolContributor;
+import consulo.language.psi.search.FindSymbolParameters;
+import consulo.language.psi.stub.IdFilter;
+import consulo.language.psi.stub.StubIndex;
+import consulo.navigation.NavigationItem;
+import consulo.project.Project;
+import consulo.project.content.scope.ProjectAwareSearchScope;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 21.12.13
  */
-public class CSharpSymbolNameContributor implements ChooseByNameContributorEx
+@ExtensionImpl
+public class CSharpSymbolNameContributor implements GotoSymbolContributor
 {
-	@Nonnull
 	@Override
-	public String[] getNames(Project project, boolean includeNonProjectItems)
+	public void processNames(@Nonnull Processor<String> stringProcessor, @Nonnull SearchScope searchScope, @Nullable IdFilter idFilter)
 	{
-		Collection<String> k1 = MethodIndex.getInstance().getAllKeys(project);
-		Collection<String> k2 = EventIndex.getInstance().getAllKeys(project);
-		Collection<String> k3 = PropertyIndex.getInstance().getAllKeys(project);
-		Collection<String> k4 = FieldIndex.getInstance().getAllKeys(project);
-		List<String> list = new ArrayList<String>(k1.size() + k2.size() + k3.size() + k4.size());
-		list.addAll(k1);
-		list.addAll(k2);
-		list.addAll(k3);
-		list.addAll(k4);
-		return ArrayUtil.toStringArray(list);
-	}
-
-	@Nonnull
-	@Override
-	public NavigationItem[] getItemsByName(String name, final String pattern, Project project, boolean includeNonProjectItems)
-	{
-		Collection<? extends PsiElement> k1 = MethodIndex.getInstance().get(name, project, GlobalSearchScope.allScope(project));
-		Collection<? extends PsiElement> k2 = EventIndex.getInstance().get(name, project, GlobalSearchScope.allScope(project));
-		Collection<? extends PsiElement> k3 = PropertyIndex.getInstance().get(name, project, GlobalSearchScope.allScope(project));
-		Collection<? extends PsiElement> k4 = FieldIndex.getInstance().get(name, project, GlobalSearchScope.allScope(project));
-
-		List<PsiElement> list = new ArrayList<PsiElement>(k1.size() + k2.size() + k3.size() + k4.size());
-		list.addAll(k1);
-		list.addAll(k2);
-		list.addAll(k3);
-		list.addAll(k4);
-		return list.toArray(new NavigationItem[list.size()]);
+		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.METHOD_INDEX, stringProcessor, (ProjectAwareSearchScope) searchScope, idFilter);
+		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.EVENT_INDEX, stringProcessor, (ProjectAwareSearchScope) searchScope, idFilter);
+		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.PROPERTY_INDEX, stringProcessor, (ProjectAwareSearchScope) searchScope, idFilter);
+		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.FIELD_INDEX, stringProcessor, (ProjectAwareSearchScope) searchScope, idFilter);
 	}
 
 	@Override
-	public void processNames(@Nonnull Processor<String> stringProcessor, @Nonnull GlobalSearchScope searchScope, @Nullable IdFilter idFilter)
-	{
-		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.METHOD_INDEX, stringProcessor, searchScope, idFilter);
-		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.EVENT_INDEX, stringProcessor, searchScope, idFilter);
-		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.PROPERTY_INDEX, stringProcessor, searchScope, idFilter);
-		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.FIELD_INDEX, stringProcessor, searchScope, idFilter);
-	}
-
-	@Override
-	public void processElementsWithName(
-			@Nonnull String name, @Nonnull Processor<NavigationItem> navigationItemProcessor, @Nonnull FindSymbolParameters findSymbolParameters)
+	public void processElementsWithName(@Nonnull String name, @Nonnull Processor<NavigationItem> navigationItemProcessor, @Nonnull FindSymbolParameters findSymbolParameters)
 	{
 		Project project = findSymbolParameters.getProject();
 		IdFilter idFilter = findSymbolParameters.getIdFilter();
-		GlobalSearchScope searchScope = findSymbolParameters.getSearchScope();
+		ProjectAwareSearchScope searchScope = findSymbolParameters.getSearchScope();
 
 		StubIndex.getInstance().processElements(CSharpIndexKeys.METHOD_INDEX, name, project, searchScope, idFilter,
 				DotNetLikeMethodDeclaration.class, (Processor) navigationItemProcessor);
 		StubIndex.getInstance().processElements(CSharpIndexKeys.EVENT_INDEX, name, project, searchScope, idFilter,
-				DotNetEventDeclaration.class,  (Processor) navigationItemProcessor);
+				DotNetEventDeclaration.class, (Processor) navigationItemProcessor);
 		StubIndex.getInstance().processElements(CSharpIndexKeys.PROPERTY_INDEX, name, project, searchScope, idFilter,
 				DotNetPropertyDeclaration.class, (Processor) navigationItemProcessor);
 		StubIndex.getInstance().processElements(CSharpIndexKeys.FIELD_INDEX, name, project, searchScope, idFilter,

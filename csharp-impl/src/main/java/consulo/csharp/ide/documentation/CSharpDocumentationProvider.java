@@ -16,29 +16,32 @@
 
 package consulo.csharp.ide.documentation;
 
-import com.intellij.lang.documentation.DocumentationProvider;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtil;
-import com.intellij.openapi.roots.OrderEntry;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.util.Function;
-import com.intellij.xml.util.XmlStringUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
-import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
-import consulo.dotnet.documentation.DotNetDocumentationCache;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpStaticTypeRef;
+import consulo.csharp.lang.psi.CSharpEventDeclaration;
+import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import consulo.dotnet.impl.documentation.DotNetDocumentationCache;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.*;
+import consulo.dotnet.psi.resolve.*;
+import consulo.ide.impl.idea.openapi.module.ModuleUtil;
+import consulo.language.editor.documentation.DocumentationProvider;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiNamedElement;
+import consulo.module.Module;
+import consulo.module.content.ProjectFileIndex;
+import consulo.module.content.ProjectRootManager;
+import consulo.module.content.layer.orderEntry.OrderEntry;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.xml.XmlStringUtil;
+import consulo.virtualFileSystem.VirtualFile;
 import org.emonic.base.codehierarchy.CodeHierarchyHelper;
 import org.emonic.base.documentation.IDocumentation;
 
@@ -46,6 +49,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author VISTALL
@@ -166,7 +170,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		{
 			@Override
 			@RequiredReadAction
-			public String fun(DotNetParameter dotNetParameter)
+			public String apply(DotNetParameter dotNetParameter)
 			{
 				DotNetTypeRef typeRef = dotNetParameter.toTypeRef(true);
 				if(typeRef == CSharpStaticTypeRef.__ARGLIST_TYPE)

@@ -16,29 +16,28 @@
 
 package consulo.dotnet.libraryAnalyzer;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.containers.MultiMap;
-import com.intellij.util.messages.MessageBusConnection;
+import consulo.application.ApplicationManager;
+import consulo.application.eap.EarlyAccessProgramDescriptor;
+import consulo.application.eap.EarlyAccessProgramManager;
+import consulo.component.messagebus.MessageBusConnection;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import consulo.ide.eap.EarlyAccessProgramDescriptor;
-import consulo.ide.eap.EarlyAccessProgramManager;
 import consulo.internal.dotnet.asm.mbel.ModuleParser;
 import consulo.internal.dotnet.asm.mbel.TypeDef;
 import consulo.internal.dotnet.asm.parse.MSILParseException;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
+import consulo.module.ModuleManager;
 import consulo.module.extension.ModuleExtension;
-import consulo.module.extension.ModuleExtensionChangeListener;
-
-import javax.annotation.Nonnull;
+import consulo.module.extension.event.ModuleExtensionChangeListener;
+import consulo.project.Project;
+import consulo.project.event.DumbModeListener;
+import consulo.util.collection.MultiMap;
+import consulo.util.lang.StringUtil;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -103,12 +102,12 @@ public class DotNetLibraryAnalyzerComponent
 
 		MessageBusConnection connect = project.getMessageBus().connect();
 
-		connect.subscribe(DumbService.DUMB_MODE, new DumbService.DumbModeListener()
+		connect.subscribe(DumbModeListener.class, new DumbModeListener()
 		{
 			@Override
 			public void enteredDumbMode()
 			{
-				Module[] modules = ModuleManager.getInstance(project).getModules();
+				consulo.module.Module[] modules = ModuleManager.getInstance(project).getModules();
 				for(Module module : modules)
 				{
 					DotNetSimpleModuleExtension extension = ModuleUtilCore.getExtension(module, DotNetSimpleModuleExtension.class);
@@ -119,15 +118,9 @@ public class DotNetLibraryAnalyzerComponent
 					runAnalyzerFor(extension);
 				}
 			}
-
-			@Override
-			public void exitDumbMode()
-			{
-
-			}
 		});
 
-		connect.subscribe(ModuleExtension.CHANGE_TOPIC, new ModuleExtensionChangeListener()
+		connect.subscribe(ModuleExtensionChangeListener.class, new ModuleExtensionChangeListener()
 		{
 			@Override
 			public void beforeExtensionChanged(@Nonnull ModuleExtension<?> moduleExtension, @Nonnull final ModuleExtension<?> moduleExtension2)
@@ -217,7 +210,7 @@ public class DotNetLibraryAnalyzerComponent
 	 * @return couple library + namespace
 	 */
 	@Nonnull
-	public Collection<NamespaceReference> get(@Nonnull Module module, @Nonnull String typeName)
+	public Collection<NamespaceReference> get(@Nonnull consulo.module.Module module, @Nonnull String typeName)
 	{
 		/*MultiMap<String, NamespaceReference> map = myCacheMap.get(module);
 		if(map == null)

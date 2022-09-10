@@ -25,18 +25,18 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiCodeFragment;
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.changeSignature.ParameterTableModelBase;
-import com.intellij.refactoring.ui.StringTableCellEditor;
-import com.intellij.ui.ColoredTableCellRenderer;
-import com.intellij.ui.EditorTextField;
-import com.intellij.ui.SimpleTextAttributes;
+import consulo.language.psi.PsiCodeFragment;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.ide.impl.idea.refactoring.changeSignature.ParameterTableModelBase;
+import consulo.language.editor.refactoring.ui.StringTableCellEditor;
+import consulo.ui.ex.awt.ColoredTableCellRenderer;
+import consulo.language.editor.ui.awt.EditorTextField;
+import consulo.ui.ex.SimpleTextAttributes;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFactory;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 
 /**

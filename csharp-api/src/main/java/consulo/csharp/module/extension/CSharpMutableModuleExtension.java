@@ -16,12 +16,14 @@
 
 package consulo.csharp.module.extension;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.content.bundle.Sdk;
 import consulo.csharp.compiler.CSharpPlatform;
-import com.intellij.openapi.projectRoots.Sdk;
+import consulo.module.content.layer.ModuleRootLayer;
 import consulo.module.extension.MutableModuleExtension;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -39,4 +41,7 @@ public interface CSharpMutableModuleExtension<T extends CSharpModuleExtension<T>
 	@Override
 	@Nonnull
 	MutableModuleInheritableNamedPointer<Sdk> getCustomCompilerSdkPointer();
+
+	@Nonnull
+	ModuleRootLayer getModuleRootLayer();
 }

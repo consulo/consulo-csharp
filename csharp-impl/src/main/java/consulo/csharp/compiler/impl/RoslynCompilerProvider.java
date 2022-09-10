@@ -16,18 +16,19 @@
 
 package consulo.csharp.compiler.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.content.bundle.SdkType;
+import consulo.csharp.base.compiler.CSharpCompilerUtil;
 import consulo.csharp.compiler.CSharpCompilerProvider;
-import consulo.csharp.compiler.CSharpCompilerUtil;
 import consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
+import consulo.dotnet.impl.sdk.RoslynBundleType;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import consulo.dotnet.sdk.RoslynBundleType;
-import com.intellij.openapi.projectRoots.SdkType;
-import com.intellij.openapi.vfs.VirtualFile;
+import consulo.virtualFileSystem.VirtualFile;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

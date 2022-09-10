@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import com.intellij.openapi.util.Comparing;
-import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.language.psi.PsiElement;
 import consulo.util.dataholder.UserDataHolderBase;
+import consulo.util.lang.Comparing;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;

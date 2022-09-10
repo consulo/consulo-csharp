@@ -16,33 +16,39 @@
 
 package consulo.csharp.ide.completion;
 
-import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.ProcessingContext;
+import consulo.language.editor.completion.CompletionContributor;
+import consulo.language.editor.completion.CompletionParameters;
+import consulo.language.editor.completion.CompletionResultSet;
+import consulo.language.editor.completion.CompletionType;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.psi.PsiElement;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.psi.PsiUtilCore;
+import consulo.language.util.ProcessingContext;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.codeInsight.completion.CompletionProvider;
+import consulo.language.editor.completion.CompletionProvider;
 import consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.ide.completion.util.SpaceInsertHandler;
+import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
+import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpConstructorSuperCallImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
-import consulo.dotnet.DotNetRunUtil;
 import consulo.dotnet.psi.*;
+import consulo.language.editor.completion.CompletionUtilCore;
+import consulo.language.editor.completion.lookup.ParenthesesInsertHandler;
+import consulo.util.collection.ArrayUtil;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
-import static com.intellij.patterns.StandardPatterns.psiElement;
+import static consulo.language.pattern.StandardPatterns.psiElement;
 
 /**
  * @author VISTALL
@@ -130,11 +136,11 @@ class CSharpKeywordCompletionContributor
 			@Override
 			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
-				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.STATIC_KEYWORD, null, new Condition<IElementType>()
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.STATIC_KEYWORD, null, new Predicate<IElementType>()
 				{
 					@Override
 					@RequiredReadAction
-					public boolean value(IElementType elementType)
+					public boolean test(IElementType elementType)
 					{
 						return CSharpModuleUtil.findLanguageVersion(parameters.getPosition()).isAtLeast(CSharpLanguageVersion._6_0);
 					}
@@ -148,11 +154,11 @@ class CSharpKeywordCompletionContributor
 			@Override
 			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
-				CSharpCompletionUtil.tokenSetToLookup(result, TokenSet.create(CSharpTokens.IN_KEYWORD, CSharpTokens.OUT_KEYWORD), null, new Condition<IElementType>()
+				CSharpCompletionUtil.tokenSetToLookup(result, TokenSet.create(CSharpTokens.IN_KEYWORD, CSharpTokens.OUT_KEYWORD), null, new Predicate<IElementType>()
 				{
 					@Override
 					@RequiredReadAction
-					public boolean value(IElementType elementType)
+					public boolean test(IElementType elementType)
 					{
 						DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpMethodDeclaration.class, DotNetTypeDeclaration.class);
 						if(qualifiedElement instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) qualifiedElement).isDelegate())
@@ -249,11 +255,11 @@ class CSharpKeywordCompletionContributor
 						TokenSet tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START, TokenSet.create(CSharpTokens.DELEGATE_KEYWORD, CSharpTokens
 								.NAMESPACE_KEYWORD));
 
-						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, CSharpCompletionUtil.ourSpaceInsert, new Condition<IElementType>()
+						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, CSharpCompletionUtil.ourSpaceInsert, new Predicate<IElementType>()
 						{
 							@Override
 							@RequiredReadAction
-							public boolean value(IElementType elementType)
+							public boolean test(IElementType elementType)
 							{
 								if(elementType == CSharpTokens.IN_KEYWORD)
 								{

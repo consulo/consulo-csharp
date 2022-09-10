@@ -22,11 +22,11 @@ import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpArrayInitializerImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpNewExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL

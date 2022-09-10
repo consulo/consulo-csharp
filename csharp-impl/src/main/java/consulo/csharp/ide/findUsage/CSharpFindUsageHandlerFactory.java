@@ -2,9 +2,9 @@ package consulo.csharp.ide.findUsage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.intellij.find.findUsages.FindUsagesHandler;
-import com.intellij.find.findUsages.FindUsagesHandlerFactory;
-import com.intellij.psi.PsiElement;
+import consulo.find.FindUsagesHandler;
+import consulo.find.FindUsagesHandlerFactory;
+import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 

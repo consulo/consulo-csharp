@@ -19,16 +19,16 @@ package consulo.csharp.ide.codeInsight.template.postfix;
 import javax.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.codeEditor.Editor;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
 import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.codeInsight.template.postfix.templates.PostfixTemplate;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.editor.postfixTemplate.PostfixTemplate;
+import consulo.document.Document;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL

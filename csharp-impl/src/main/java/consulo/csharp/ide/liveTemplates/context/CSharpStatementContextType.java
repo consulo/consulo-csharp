@@ -20,11 +20,11 @@ import javax.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
-import com.intellij.codeInsight.template.TemplateContextType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
+import consulo.language.editor.template.context.TemplateContextType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL

@@ -16,42 +16,45 @@
 
 package consulo.csharp.ide.refactoring.copy;
 
-import com.intellij.CommonBundle;
-import com.intellij.ide.actions.CreateFileFromTemplateAction;
-import com.intellij.ide.util.EditorHelper;
-import com.intellij.ide.util.PlatformPackageUtil;
-import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.command.WriteCommandAction;
-import consulo.logging.Logger;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.copy.CopyFilesOrDirectoriesDialog;
-import com.intellij.refactoring.copy.CopyFilesOrDirectoriesHandler;
-import com.intellij.refactoring.copy.CopyHandler;
-import com.intellij.refactoring.copy.CopyHandlerDelegateBase;
-import com.intellij.refactoring.move.moveFilesOrDirectories.MoveFilesOrDirectoriesUtil;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.CommonBundle;
+import consulo.application.util.function.Computable;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.CSharpRecursiveElementVisitor;
+import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.copy.CopyFilesOrDirectoriesDialog;
+import consulo.language.editor.refactoring.copy.CopyFilesOrDirectoriesHandler;
+import consulo.language.editor.refactoring.copy.CopyHandler;
+import consulo.language.editor.refactoring.copy.CopyHandlerDelegateBase;
+import consulo.language.editor.refactoring.move.fileOrDirectory.MoveFilesOrDirectoriesUtil;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.editor.refactoring.util.PlatformPackageUtil;
+import consulo.language.editor.util.EditorHelper;
+import consulo.language.psi.*;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.module.Module;
+import consulo.module.content.ModuleRootManager;
+import consulo.module.content.NewFileModuleResolver;
+import consulo.module.content.ProjectRootManager;
+import consulo.module.content.layer.ModifiableRootModel;
+import consulo.project.Project;
+import consulo.project.ui.wm.ToolWindowManager;
+import consulo.ui.ex.awt.Messages;
+import consulo.undoRedo.CommandProcessor;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.io.FileUtil;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -249,7 +252,7 @@ public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 		{
 			PsiFile psiFile = (PsiFile) targetDirectory.add(copyFile);
 
-			Module module = CreateFileFromTemplateAction.ModuleResolver.EP_NAME.composite().resolveModule(targetDirectory, CSharpFileType.INSTANCE);
+			Module module = targetDirectory.getProject().getExtensionPoint(NewFileModuleResolver.class).computeSafeIfAny(it -> it.resolveModule(targetDirectory.getVirtualFile(), CSharpFileType.INSTANCE));
 			if(module != null)
 			{
 				ModuleRootManager manager = ModuleRootManager.getInstance(module);
@@ -284,7 +287,7 @@ public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 			}
 			if(root == null)
 			{
-				root = VfsUtil.getUserHomeDir();
+				root = VirtualFileUtil.getUserHomeDir();
 			}
 			defaultTargetDirectory = root != null ? PsiManager.getInstance(project).findDirectory(root) : null;
 

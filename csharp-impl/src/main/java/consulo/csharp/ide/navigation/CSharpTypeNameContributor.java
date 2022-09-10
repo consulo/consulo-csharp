@@ -16,58 +16,37 @@
 
 package consulo.csharp.ide.navigation;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.intellij.navigation.ChooseByNameContributorEx;
-import com.intellij.navigation.GotoClassContributor;
-import com.intellij.navigation.NavigationItem;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StubIndex;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.CommonProcessors;
-import com.intellij.util.Processor;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.indexing.FindSymbolParameters;
-import com.intellij.util.indexing.IdFilter;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.application.util.function.Processor;
+import consulo.content.scope.SearchScope;
+import consulo.csharp.lang.impl.psi.stub.index.CSharpIndexKeys;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.ide.navigation.GotoClassOrTypeContributor;
+import consulo.language.psi.search.FindSymbolParameters;
+import consulo.language.psi.stub.IdFilter;
+import consulo.language.psi.stub.StubIndex;
+import consulo.navigation.NavigationItem;
+import consulo.project.Project;
+import consulo.project.content.scope.ProjectAwareSearchScope;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 15.12.13
  */
-public class CSharpTypeNameContributor implements ChooseByNameContributorEx, GotoClassContributor
+@ExtensionImpl
+public class CSharpTypeNameContributor implements GotoClassOrTypeContributor
 {
-	@Nonnull
 	@Override
-	public String[] getNames(Project project, boolean includeNonProjectItems)
+	public void processNames(@Nonnull Processor<String> stringProcessor, @Nonnull SearchScope searchScope, @Nullable IdFilter idFilter)
 	{
-		CommonProcessors.CollectProcessor<String> processor = new CommonProcessors.CollectProcessor<String>(ContainerUtil.<String>newTroveSet());
-		processNames(processor, GlobalSearchScope.allScope(project), IdFilter.getProjectIdFilter(project, includeNonProjectItems));
-		return processor.toArray(ArrayUtil.STRING_ARRAY_FACTORY);
-	}
-
-	@Nonnull
-	@Override
-	@RequiredReadAction
-	public NavigationItem[] getItemsByName(String name, final String pattern, Project project, boolean includeNonProjectItems)
-	{
-		CommonProcessors.CollectProcessor<NavigationItem> processor = new CommonProcessors.CollectProcessor<NavigationItem>(ContainerUtil.<NavigationItem>newTroveSet());
-		processElementsWithName(name, processor, new FindSymbolParameters(pattern, name, GlobalSearchScope.allScope(project), IdFilter.getProjectIdFilter(project, includeNonProjectItems)));
-		return processor.toArray(NavigationItem.ARRAY_FACTORY);
-	}
-
-
-	@Override
-	public void processNames(@Nonnull Processor<String> stringProcessor, @Nonnull GlobalSearchScope searchScope, @Nullable IdFilter idFilter)
-	{
-		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.TYPE_INDEX, stringProcessor, searchScope, idFilter);
-		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.DELEGATE_METHOD_BY_NAME_INDEX, stringProcessor, searchScope, idFilter);
+		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.TYPE_INDEX, stringProcessor, (ProjectAwareSearchScope)searchScope, idFilter);
+		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.DELEGATE_METHOD_BY_NAME_INDEX, stringProcessor, (ProjectAwareSearchScope)searchScope, idFilter);
 	}
 
 	@Override
@@ -76,7 +55,7 @@ public class CSharpTypeNameContributor implements ChooseByNameContributorEx, Got
 		Project project = findSymbolParameters.getProject();
 		IdFilter idFilter = findSymbolParameters.getIdFilter();
 		Processor temp = navigationItemProcessor;
-		GlobalSearchScope searchScope = findSymbolParameters.getSearchScope();
+		ProjectAwareSearchScope searchScope = findSymbolParameters.getSearchScope();
 
 		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_INDEX, name, project, searchScope, idFilter, CSharpTypeDeclaration.class, temp);
 		StubIndex.getInstance().processElements(CSharpIndexKeys.DELEGATE_METHOD_BY_NAME_INDEX, name, project, searchScope, idFilter, CSharpMethodDeclaration.class, temp);

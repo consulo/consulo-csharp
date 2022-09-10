@@ -16,28 +16,30 @@
 
 package consulo.csharp.ide.assemblyInfo;
 
-import javax.annotation.Nonnull;
-
+import consulo.annotation.component.ExtensionImpl;
+import consulo.application.ApplicationManager;
+import consulo.application.eap.EarlyAccessProgramDescriptor;
+import consulo.application.eap.EarlyAccessProgramManager;
+import consulo.application.util.function.Computable;
+import consulo.csharp.lang.impl.CSharpAssemblyConstants;
+import consulo.csharp.lang.impl.psi.source.CSharpFileImpl;
+import consulo.fileEditor.FileEditor;
+import consulo.fileEditor.FileEditorPolicy;
+import consulo.fileEditor.FileEditorProvider;
+import consulo.fileEditor.FileEditorState;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.project.Project;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jdom.Element;
-import consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
-import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.fileEditor.FileEditor;
-import com.intellij.openapi.fileEditor.FileEditorPolicy;
-import com.intellij.openapi.fileEditor.FileEditorProvider;
-import com.intellij.openapi.fileEditor.FileEditorState;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import consulo.ide.eap.EarlyAccessProgramDescriptor;
-import consulo.ide.eap.EarlyAccessProgramManager;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 09.03.14
  */
+@ExtensionImpl
 public class CSharpAssemblyFileEditorProvider implements FileEditorProvider
 {
 	public static class EapDescriptor extends EarlyAccessProgramDescriptor

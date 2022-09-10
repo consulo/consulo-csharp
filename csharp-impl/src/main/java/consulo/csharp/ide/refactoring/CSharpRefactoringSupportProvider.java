@@ -16,36 +16,37 @@
 
 package consulo.csharp.ide.refactoring;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.content.scope.SearchScope;
 import consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureHandler;
 import consulo.csharp.ide.refactoring.extractMethod.CSharpExtractMethodHandler;
 import consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceLocalVariableHandler;
-import consulo.csharp.lang.psi.CSharpLambdaParameter;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpTupleVariable;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.source.CSharpTupleElementImpl;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.impl.psi.source.CSharpTupleElementImpl;
+import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import com.intellij.lang.refactoring.RefactoringSupportProvider;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.PsiSearchHelper;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.RefactoringActionHandler;
-import com.intellij.refactoring.changeSignature.ChangeSignatureHandler;
+import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
+import consulo.language.Language;
+import consulo.language.editor.refactoring.RefactoringSupportProvider;
+import consulo.language.editor.refactoring.action.RefactoringActionHandler;
+import consulo.language.editor.refactoring.changeSignature.ChangeSignatureHandler;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.StubBasedPsiElement;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.language.psi.search.PsiSearchHelper;
+import consulo.language.psi.util.PsiTreeUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 11.03.14
  */
+@ExtensionImpl
 public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 {
 	@Nullable
@@ -130,5 +131,12 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 		}
 		PsiFile containingFile = elementToRename.getContainingFile();
 		return PsiTreeUtil.isAncestor(containingFile, scopeElements[0], false);
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

@@ -16,9 +16,9 @@
 
 package consulo.csharp.module.extension;
 
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.ModuleUtilCore;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

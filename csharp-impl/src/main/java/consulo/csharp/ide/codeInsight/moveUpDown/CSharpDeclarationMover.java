@@ -15,41 +15,30 @@
  */
 package consulo.csharp.ide.codeInsight.moveUpDown;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.intellij.codeInsight.CodeInsightUtilBase;
-import com.intellij.codeInsight.editorActions.moveUpDown.LineMover;
-import com.intellij.codeInsight.editorActions.moveUpDown.LineRange;
-import consulo.logging.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.LogicalPosition;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.impl.source.tree.Factory;
-import com.intellij.psi.impl.source.tree.TreeElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.LogicalPosition;
 import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetNamedElement;
-import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetVariable;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
+import consulo.dotnet.psi.*;
+import consulo.language.editor.moveUpDown.LineMover;
+import consulo.language.editor.moveUpDown.LineRange;
+import consulo.language.impl.ast.Factory;
+import consulo.language.impl.ast.TreeElement;
+import consulo.language.psi.*;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.util.lang.Pair;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * initial version from java com.intellij.openapi.editor.actions.moveUpDown.DeclarationMover
@@ -72,7 +61,7 @@ public class CSharpDeclarationMover extends LineMover
 			try
 			{
 				PsiElement inserted = myEnumToInsertSemicolonAfter.getParent().addAfter(semicolon.getPsi(), myEnumToInsertSemicolonAfter);
-				inserted = CodeInsightUtilBase.forcePsiPostprocessAndRestoreElement(inserted);
+				inserted = consulo.ide.impl.idea.codeInsight.CodeInsightUtilBase.forcePsiPostprocessAndRestoreElement(inserted);
 				final LogicalPosition position = editor.offsetToLogicalPosition(inserted.getTextRange().getEndOffset());
 
 				info.toMove2 = new LineRange(position.line + 1, position.line + 1);
@@ -343,10 +332,11 @@ public class CSharpDeclarationMover extends LineMover
 			if(field instanceof CSharpEnumConstantDeclaration)
 			{
 				PsiElement anchor = firstNonWhiteElement(field.getNextSibling(), true);
-				if(!(anchor != null && (PsiUtilCore.getElementType(anchor) == CSharpTokens.SEMICOLON))) {
-				anchor = field;
-				myEnumToInsertSemicolonAfter = (CSharpEnumConstantDeclaration) field;
-			}
+				if(!(anchor != null && (PsiUtilCore.getElementType(anchor) == CSharpTokens.SEMICOLON)))
+				{
+					anchor = field;
+					myEnumToInsertSemicolonAfter = (CSharpEnumConstantDeclaration) field;
+				}
 				return anchor;
 			}
 		}

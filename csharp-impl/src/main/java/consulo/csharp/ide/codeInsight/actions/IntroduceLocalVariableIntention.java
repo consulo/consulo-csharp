@@ -16,22 +16,22 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
-import com.intellij.codeInsight.CodeInsightBundle;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.SyntheticElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.BaseRefactoringIntentionAction;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.editor.CodeInsightBundle;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.refactoring.action.BaseRefactoringIntentionAction;
+import consulo.language.psi.SyntheticElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
 import consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceLocalVariableHandler;
-import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpAssignmentExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpExpressionStatementImpl;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.language.util.IncorrectOperationException;
 
 import javax.annotation.Nonnull;
 

@@ -16,27 +16,34 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import com.intellij.codeInsight.daemon.impl.IdentifierHighlighterPass;
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.refactoring.actions.RenameElementAction;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.codeEditor.Editor;
+import consulo.dataContext.DataManager;
+import consulo.ide.impl.idea.codeInsight.daemon.impl.IdentifierHighlighterPass;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiParserFacade;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnAction;
+import consulo.language.editor.refactoring.rename.RenameElementAction;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpAssignmentExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.*;
+import consulo.language.editor.intention.BaseIntentionAction;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.action.AnActionEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -203,7 +210,7 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 						editor.getCaretModel().moveToOffset(variables[0].getTextOffset());
 
 						// reset all under caret highlight due it will provide some bug after caret change
-						IdentifierHighlighterPass.clearMyHighlights(editor.getDocument(), project);
+						consulo.ide.impl.idea.codeInsight.daemon.impl.IdentifierHighlighterPass.clearMyHighlights(editor.getDocument(), project);
 
 						AnAction action = new RenameElementAction();
 						AnActionEvent event = AnActionEvent.createFromAnAction(action, null, "", DataManager.getInstance().getDataContext(editor.getComponent()));

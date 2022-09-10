@@ -17,13 +17,14 @@
 package consulo.csharp.ide.codeInsight;
 
 import javax.annotation.Nonnull;
+
+import consulo.component.persist.PersistentStateComponent;
+import consulo.component.persist.State;
+import consulo.component.persist.Storage;
 import jakarta.inject.Singleton;
 
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.util.xmlb.XmlSerializerUtil;
+import consulo.ide.ServiceManager;
+import consulo.util.xml.serializer.XmlSerializerUtil;
 
 /**
  * @author VISTALL

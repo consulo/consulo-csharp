@@ -16,26 +16,25 @@
 
 package consulo.csharp.ide.highlight.check;
 
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.ApplicationProperties;
+import consulo.colorScheme.TextAttributesKey;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.dotnet.ide.DotNetElementPresentationUtil;
+import consulo.document.util.TextRange;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.language.editor.rawHighlight.HighlightInfoType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.localize.LocalizeKey;
 import consulo.localize.LocalizeValue;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -16,11 +16,14 @@
 
 package consulo.csharp.spellchecker;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.language.Language;
+import consulo.language.psi.PsiElement;
 import com.intellij.spellchecker.tokenizer.SpellcheckingStrategy;
 import com.intellij.spellchecker.tokenizer.Tokenizer;
 import consulo.csharp.lang.psi.CSharpUserType;
+import consulo.language.psi.PsiNameIdentifierOwner;
 
 import javax.annotation.Nonnull;
 
@@ -28,6 +31,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 10.03.14
  */
+@ExtensionImpl
 public class CSharpSpellcheckingStrategy extends SpellcheckingStrategy
 {
 	@Nonnull
@@ -44,5 +48,12 @@ public class CSharpSpellcheckingStrategy extends SpellcheckingStrategy
 			return CSharpUserTypeTokenizer.INSTANCE;
 		}
 		return super.getTokenizer(element);
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

@@ -16,14 +16,14 @@
 
 package consulo.csharp.ide.refactoring.move;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.usageView.UsageViewBundle;
-import com.intellij.usageView.UsageViewDescriptor;
-import com.intellij.usageView.UsageViewUtil;
+import consulo.usage.UsageViewDescriptor;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.usage.UsageViewBundle;
+import consulo.usage.UsageViewUtil;
 
 import javax.annotation.Nonnull;
 

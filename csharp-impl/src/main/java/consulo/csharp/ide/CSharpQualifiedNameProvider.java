@@ -16,17 +16,20 @@
 
 package consulo.csharp.ide;
 
-import javax.annotation.Nullable;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.codeEditor.Editor;
 import consulo.dotnet.psi.DotNetQualifiedElement;
-import com.intellij.ide.actions.QualifiedNameProvider;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.QualifiedNameProvider;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 19.01.14
  */
+@ExtensionImpl
 public class CSharpQualifiedNameProvider implements QualifiedNameProvider
 {
 	@Nullable

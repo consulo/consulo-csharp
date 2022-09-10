@@ -25,13 +25,13 @@ import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
+import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetParameter;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ObjectUtil;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.ObjectUtil;
 
 /**
  * @author VISTALL

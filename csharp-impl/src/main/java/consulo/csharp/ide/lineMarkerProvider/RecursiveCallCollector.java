@@ -16,20 +16,20 @@
 
 package consulo.csharp.ide.lineMarkerProvider;
 
-import javax.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.AllIcons;
+import consulo.codeEditor.markup.GutterIconRenderer;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import com.intellij.codeHighlighting.Pass;
-import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Consumer;
-import com.intellij.util.FunctionUtil;
+import consulo.language.editor.Pass;
+import consulo.language.editor.gutter.LineMarkerInfo;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+
+import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 /**
  * @author VISTALL
@@ -51,8 +51,8 @@ public class RecursiveCallCollector implements LineMarkerCollector
 				if(resolvedElement.isEquivalentTo(methodDeclaration))
 				{
 					LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Gutter.RecursiveMethod, Pass.LINE_MARKERS,
-							FunctionUtil.constant("Recursive call"), null, GutterIconRenderer.Alignment.CENTER);
-					consumer.consume(lineMarkerInfo);
+							it -> "Recursive call", null, GutterIconRenderer.Alignment.CENTER);
+					consumer.accept(lineMarkerInfo);
 				}
 			}
 		}

@@ -16,27 +16,31 @@
 
 package consulo.csharp.ide.actions.generate;
 
-import com.intellij.ide.util.MemberChooser;
-import com.intellij.ide.util.MemberChooserBuilder;
-import com.intellij.lang.LanguageCodeInsightActionHandler;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiParserFacade;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.util.PairConsumer;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
 import consulo.csharp.ide.actions.generate.memberChoose.CSharpMemberChooseObject;
 import consulo.csharp.ide.actions.generate.memberChoose.MethodChooseMember;
 import consulo.csharp.ide.actions.generate.memberChoose.XAccessorOwnerChooseMember;
 import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.language.Language;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.editor.action.LanguageCodeInsightActionHandler;
+import consulo.language.editor.generation.ClassMember;
+import consulo.language.editor.generation.MemberChooserBuilder;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiParserFacade;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.function.PairConsumer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -49,6 +53,13 @@ import java.util.List;
  */
 public abstract class GenerateImplementOrOverrideMemberHandler implements LanguageCodeInsightActionHandler
 {
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
+	}
+
 	@RequiredUIAccess
 	@Override
 	public void invoke(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file)
@@ -76,15 +87,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 				GenerateImplementOrOverrideMemberHandler.this.appendReturnStatement(builder, element);
 			}
 		};
-		PairConsumer<PsiElement, StringBuilder> additionalModifiersAppender = new PairConsumer<PsiElement, StringBuilder>()
-		{
-			@Override
-			@RequiredUIAccess
-			public void consume(PsiElement element, StringBuilder builder)
-			{
-				GenerateImplementOrOverrideMemberHandler.this.appendAdditionalModifiers(builder, element);
-			}
-		};
+		PairConsumer<PsiElement, StringBuilder> additionalModifiersAppender = (element, builder) -> appendAdditionalModifiers(builder, element);
 
 		for(final PsiElement psiElement : psiElements)
 		{
@@ -98,31 +101,23 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 			}
 		}
 
-		final MemberChooserBuilder<CSharpMemberChooseObject<?>> builder = new MemberChooserBuilder<>(project);
-		builder.setTitle(getTitle());
-		builder.allowMultiSelection(true);
+		final MemberChooserBuilder<CSharpMemberChooseObject<?>> builder = MemberChooserBuilder.create(ContainerUtil.toArray(memberChooseObjects, CSharpMemberChooseObject.ARRAY_FACTORY));
+		builder.withTitle(getTitle());
+		builder.withMultipleSelection();
 
-		final MemberChooser<CSharpMemberChooseObject<?>> memberChooser = builder.createBuilder(ContainerUtil.toArray(memberChooseObjects, CSharpMemberChooseObject.ARRAY_FACTORY));
-
-		if(!memberChooser.showAndGet())
+		builder.showAsync(project,  dataHolder ->
 		{
-			return;
-		}
+			List<ClassMember> list = dataHolder.getUserData(ClassMember.KEY_OF_LIST);
 
-		final List<CSharpMemberChooseObject<?>> selectedElements = memberChooser.getSelectedElements();
-		if(selectedElements == null)
-		{
-			return;
-		}
-
-		for(CSharpMemberChooseObject<?> selectedElement : selectedElements)
-		{
-			generateMember(typeDeclaration, editor, file, selectedElement);
-		}
+			for(ClassMember selectedElement : list)
+			{
+				generateMember(typeDeclaration, editor, file, (CSharpMemberChooseObject<?>) selectedElement);
+			}
+		});
 	}
 
 	@Nonnull
-	public abstract String getTitle();
+	public abstract LocalizeValue getTitle();
 
 	@RequiredReadAction
 	public abstract void appendAdditionalModifiers(@Nonnull StringBuilder builder, @Nonnull PsiElement item);

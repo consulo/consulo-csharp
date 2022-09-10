@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.psi;
 
-import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetCodeBodyProxy;
 import consulo.dotnet.psi.DotNetElement;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nullable;
 

@@ -16,23 +16,26 @@
 
 package consulo.csharp.ide.debugger;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.impl.psi.CSharpRecursiveElementVisitor;
+import consulo.csharp.lang.impl.psi.source.CSharpDelegateExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
+import consulo.dotnet.debugger.DotNetDebuggerSourceLineResolver;
+import consulo.language.Language;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nonnull;
-
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import com.intellij.psi.PsiElement;
-import consulo.dotnet.debugger.DotNetDefaultDebuggerSourceLineResolver;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * @author VISTALL
  * @since 23.07.2015
  */
-public class CSharpDebuggerSourceLineResolver extends DotNetDefaultDebuggerSourceLineResolver
+@ExtensionImpl
+public class CSharpDebuggerSourceLineResolver implements DotNetDebuggerSourceLineResolver
 {
 	@RequiredReadAction
 	@Nonnull
@@ -55,5 +58,12 @@ public class CSharpDebuggerSourceLineResolver extends DotNetDefaultDebuggerSourc
 			}
 		});
 		return lambdas;
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

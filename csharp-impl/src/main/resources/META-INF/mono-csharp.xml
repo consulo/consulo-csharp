@@ -20,11 +20,10 @@
 								 parentKey="mono-dotnet"
 								 name="C#"
 								 icon="consulo.dotnet.mono.MonoDotNetIconGroup@mono"
-								 immutableClass="consulo.mono.csharp.module.extension.MonoCSharpModuleExtension"
-								 mutableClass="consulo.mono.csharp.module.extension.MonoCSharpMutableModuleExtension"/>
+								 immutableClass="consulo.csharp.mono.module.extension.MonoCSharpModuleExtension"
+								 mutableClass="consulo.csharp.mono.module.extension.MonoCSharpMutableModuleExtension"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="consulo.csharp">
-		<compilerProvider id="mono-internal" implementation="consulo.mono.csharp.compiler.MonoInternalCompilerProvider" order="first"/>
 	</extensions>
 </consulo-plugin>

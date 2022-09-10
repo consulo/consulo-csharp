@@ -16,19 +16,19 @@
 
 package consulo.csharp.ide.liveTemplates.macro;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.CSharpLookupElementBuilder;
 import consulo.dotnet.psi.DotNetVariable;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.template.Expression;
-import com.intellij.codeInsight.template.ExpressionContext;
-import com.intellij.codeInsight.template.Macro;
-import com.intellij.codeInsight.template.PsiElementResult;
-import com.intellij.codeInsight.template.Result;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.template.Expression;
+import consulo.language.editor.template.ExpressionContext;
+import consulo.language.editor.template.PsiElementResult;
+import consulo.language.editor.template.Result;
+import consulo.language.editor.template.macro.Macro;
+import consulo.language.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

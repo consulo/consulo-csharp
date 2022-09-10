@@ -16,42 +16,44 @@
 
 package consulo.csharp.ide.actions;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import consulo.csharp.lang.CSharpFileType;
+import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import consulo.fileTemplate.CreateFromTemplateHandler;
+import consulo.fileTemplate.FileTemplate;
+import consulo.language.file.light.LightVirtualFile;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.util.QualifiedName;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
+import consulo.module.content.NewFileModuleResolver;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.LocalFileSystem;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.VirtualFileSystem;
+import consulo.virtualFileSystem.fileType.FileType;
+import consulo.virtualFileSystem.fileType.FileTypeRegistry;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.ide.actions.CreateFileFromTemplateAction;
-import com.intellij.ide.fileTemplates.DefaultCreateFromTemplateHandler;
-import com.intellij.ide.fileTemplates.FileTemplate;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.FileTypeRegistry;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileSystem;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.util.QualifiedName;
-import com.intellij.testFramework.LightVirtualFile;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
-import consulo.csharp.lang.CSharpFileType;
-import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-
 /**
  * @author VISTALL
  * @since 24.03.2016
  */
-public class CSharpCreateFromTemplateHandler extends DefaultCreateFromTemplateHandler
+@ExtensionImpl
+public class CSharpCreateFromTemplateHandler implements CreateFromTemplateHandler
 {
 	@Nonnull
 	public static CSharpCreateFromTemplateHandler getInstance()
 	{
-		return EP_NAME.findExtension(CSharpCreateFromTemplateHandler.class);
+		return EP_NAME.findExtensionOrFail(CSharpCreateFromTemplateHandler.class);
 	}
 
 	@Nullable
@@ -73,7 +75,7 @@ public class CSharpCreateFromTemplateHandler extends DefaultCreateFromTemplateHa
 				return LocalFileSystem.getInstance();
 			}
 		};
-		return CreateFileFromTemplateAction.ModuleResolver.EP_NAME.composite().resolveModule(directory, CSharpFileType.INSTANCE);
+		return directory.getProject().getExtensionPoint(NewFileModuleResolver.class).computeSafeIfAny(it -> it.resolveModule(directory.getVirtualFile(), CSharpFileType.INSTANCE));
 	}
 
 	@Override
@@ -99,7 +101,7 @@ public class CSharpCreateFromTemplateHandler extends DefaultCreateFromTemplateHa
 			return;
 		}
 
-		Module module = ModuleUtilCore.findModuleForPsiElement(directory);
+		consulo.module.Module module = ModuleUtilCore.findModuleForPsiElement(directory);
 		if(module != null)
 		{
 			props.put("MODULE", module.getName());
@@ -109,7 +111,7 @@ public class CSharpCreateFromTemplateHandler extends DefaultCreateFromTemplateHa
 		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(directory, DotNetSimpleModuleExtension.class);
 		if(extension == null)
 		{
-			Module moduleByPsiDirectory = findModuleByPsiDirectory(directory);
+			consulo.module.Module moduleByPsiDirectory = findModuleByPsiDirectory(directory);
 			if(moduleByPsiDirectory != null)
 			{
 				extension = ModuleUtilCore.getExtension(moduleByPsiDirectory, DotNetSimpleModuleExtension.class);

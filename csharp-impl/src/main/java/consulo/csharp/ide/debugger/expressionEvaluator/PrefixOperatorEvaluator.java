@@ -20,10 +20,10 @@ import javax.annotation.Nonnull;
 
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.psi.CSharpTokens;
-import com.intellij.psi.tree.IElementType;
 import consulo.dotnet.debugger.proxy.DotNetVirtualMachineProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetBooleanValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
+import consulo.language.ast.IElementType;
 
 /**
  * @author VISTALL

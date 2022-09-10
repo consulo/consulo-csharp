@@ -16,29 +16,62 @@
 
 package consulo.csharp.lang.doc.inspection;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.ide.highlight.check.impl.CC0001;
+import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.doc.CSharpDocUtil;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
+import consulo.language.Language;
+import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author VISTALL
  * @since 24.07.2015
  */
+@ExtensionImpl
 public class CSharpDocReferenceInspection extends LocalInspectionTool
 {
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "Documentation reference problems";
+	}
+
+	@Nonnull
+	@Override
+	public String getGroupDisplayName()
+	{
+		return "Documentation";
+	}
+
+	@Nullable
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
+	}
+
+	@Nonnull
+	@Override
+	public HighlightDisplayLevel getDefaultLevel()
+	{
+		return HighlightDisplayLevel.WARNING;
+	}
+
 	@Nonnull
 	@Override
 	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)

@@ -16,9 +16,9 @@
 
 package consulo.csharp.ide.newProjectOrModule;
 
-import com.intellij.openapi.projectRoots.Sdk;
+import consulo.content.bundle.Sdk;
 import consulo.dotnet.DotNetTarget;
-import consulo.ide.wizard.newModule.NewModuleWizardContextBase;
+import consulo.ide.newModule.NewModuleWizardContextBase;
 
 /**
  * @author VISTALL

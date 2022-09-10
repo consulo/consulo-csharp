@@ -16,13 +16,16 @@
 
 package consulo.csharp.ide.structureView;
 
-import com.intellij.ide.structureView.StructureViewBuilder;
-import com.intellij.ide.structureView.StructureViewModel;
-import com.intellij.ide.structureView.TreeBasedStructureViewBuilder;
-import com.intellij.lang.PsiStructureViewFactory;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiFile;
-import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.fileEditor.structureView.StructureViewModel;
+import consulo.language.Language;
+import consulo.language.editor.structureView.PsiStructureViewFactory;
+import consulo.codeEditor.Editor;
+import consulo.csharp.lang.impl.psi.source.CSharpFileImpl;
+import consulo.fileEditor.structureView.StructureViewBuilder;
+import consulo.fileEditor.structureView.TreeBasedStructureViewBuilder;
+import consulo.language.psi.PsiFile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,6 +34,7 @@ import javax.annotation.Nullable;
  * @author VISTALL
  * @since 31.12.13.
  */
+@ExtensionImpl
 public class CSharpStructureViewFactory implements PsiStructureViewFactory
 {
 	@Nullable
@@ -53,5 +57,12 @@ public class CSharpStructureViewFactory implements PsiStructureViewFactory
 		{
 			return null;
 		}
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

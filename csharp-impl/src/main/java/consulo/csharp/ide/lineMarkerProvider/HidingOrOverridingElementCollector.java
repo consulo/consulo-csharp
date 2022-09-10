@@ -16,29 +16,28 @@
 
 package consulo.csharp.ide.lineMarkerProvider;
 
-import com.intellij.codeHighlighting.Pass;
-import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
-import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.pom.Navigatable;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ConstantFunction;
-import com.intellij.util.Consumer;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import consulo.application.AllIcons;
+import consulo.codeEditor.markup.GutterIconRenderer;
+import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.csharp.psi.icon.CSharpPsiIconGroup;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.language.editor.Pass;
+import consulo.language.editor.gutter.GutterIconNavigationHandler;
+import consulo.language.editor.gutter.LineMarkerInfo;
+import consulo.language.psi.PsiElement;
+import consulo.navigation.Navigatable;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
+import consulo.util.collection.ContainerUtil;
 
 import javax.annotation.Nonnull;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * @author VISTALL
@@ -105,7 +104,7 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 			Image icon = null;
 			if(virtualImplementOwner.getTypeForImplement() != null)
 			{
-				icon = CSharpPsiIconGroup.gutterHidingMethod();
+				icon = CSharpPsiIconGroup.gutterHidingmethod();
 			}
 			else
 			{
@@ -120,10 +119,10 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 				}
 			}
 
-			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, new ConstantFunction<>("Searching for overriding"),
+			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, it -> "Searching for overriding",
 					OurHandler.INSTANCE, GutterIconRenderer.Alignment.RIGHT);
 
-			consumer.consume(lineMarkerInfo);
+			consumer.accept(lineMarkerInfo);
 		}
 	}
 }

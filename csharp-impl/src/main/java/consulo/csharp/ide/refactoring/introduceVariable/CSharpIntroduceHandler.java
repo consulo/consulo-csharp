@@ -16,42 +16,45 @@
 
 package consulo.csharp.ide.refactoring.introduceVariable;
 
-import com.intellij.codeInsight.CodeInsightUtilCore;
-import com.intellij.codeInsight.template.impl.TemplateManagerImpl;
-import com.intellij.codeInsight.template.impl.TemplateState;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.*;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pass;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.refactoring.IntroduceTargetChooser;
-import com.intellij.refactoring.RefactoringActionHandler;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.introduce.inplace.InplaceVariableIntroducer;
-import com.intellij.refactoring.introduce.inplace.OccurrencesChooser;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Function;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.ApplicationManager;
+import consulo.application.Result;
+import consulo.codeEditor.CaretModel;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.ScrollType;
+import consulo.codeEditor.SelectionModel;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
-import consulo.csharp.ide.refactoring.util.CSharpRefactoringUtil;
+import consulo.csharp.lang.impl.ide.refactoring.CSharpRefactoringUtil;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.UsefulPsiTreeUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpExpressionStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import consulo.dataContext.DataContext;
+import consulo.document.Document;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetCodeBlockOwner;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.editor.CodeInsightUtilCore;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.editor.refactoring.IntroduceTargetChooser;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.action.RefactoringActionHandler;
+import consulo.language.editor.refactoring.introduce.inplace.InplaceVariableIntroducer;
+import consulo.language.editor.refactoring.introduce.inplace.OccurrencesChooser;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.editor.template.TemplateManager;
+import consulo.language.editor.template.TemplateState;
+import consulo.language.psi.*;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.collection.ArrayUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -144,7 +147,7 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		final Editor editor = operation.getEditor();
 		if(editor.getSettings().isVariableInplaceRenameEnabled())
 		{
-			final TemplateState templateState = TemplateManagerImpl.getTemplateState(operation.getEditor());
+			final TemplateState templateState = TemplateManager.getInstance(operation.getProject()).getTemplateState(operation.getEditor());
 			if(templateState != null && !templateState.isFinished())
 			{
 				return;
@@ -314,22 +317,10 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		}
 		else if(expressions.size() > 1)
 		{
-			IntroduceTargetChooser.showChooser(editor, expressions, new Pass<DotNetExpression>()
-					{
-						@Override
-						public void pass(DotNetExpression expression)
-						{
-							operation.setElement(expression);
-							performActionOnElement(operation);
-						}
-					}, new Function<DotNetExpression, String>()
-					{
-						@Override
-						public String fun(DotNetExpression expression)
-						{
-							return expression.getText();
-						}
-					}
+			IntroduceTargetChooser.showChooser(editor, expressions, expression -> {
+				operation.setElement(expression);
+				performActionOnElement(operation);
+			}, PsiElement::getText
 			);
 			return true;
 		}
@@ -376,14 +367,9 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 			}
 			else
 			{
-				OccurrencesChooser.simpleChooser(editor).showChooser(operation.getElement(), operation.getOccurrences(), new Pass<OccurrencesChooser.ReplaceChoice>()
-				{
-					@Override
-					public void pass(OccurrencesChooser.ReplaceChoice replaceChoice)
-					{
-						operation.setReplaceAll(replaceChoice == OccurrencesChooser.ReplaceChoice.ALL);
-						performInplaceIntroduce(operation);
-					}
+				OccurrencesChooser.simpleChooser(editor).showChooser(operation.getElement(), operation.getOccurrences(), replaceChoice -> {
+					operation.setReplaceAll(replaceChoice == OccurrencesChooser.ReplaceChoice.ALL);
+					performInplaceIntroduce(operation);
 				});
 			}
 		}

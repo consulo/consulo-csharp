@@ -21,10 +21,10 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementWeigher;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.completion.lookup.LookupElementWeigher;
+import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.language.editor.completion.lookup.LookupElement;
 
 /**
  * @author VISTALL

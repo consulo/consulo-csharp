@@ -16,27 +16,26 @@
 
 package consulo.csharp.ide.codeInsight.actions.expressionActions.lambda;
 
-import javax.annotation.Nonnull;
-
-import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.codeEditor.Editor;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpDelegateExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpReturnStatementImpl;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetStatement;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.ast.ASTNode;
+import consulo.language.editor.intention.PsiElementBaseIntentionAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -107,14 +106,7 @@ public class DelegateToLambdaExpressionFix extends PsiElementBaseIntentionAction
 			}
 			else
 			{
-				String join = StringUtil.join(statements, new Function<DotNetStatement, String>()
-				{
-					@Override
-					public String fun(DotNetStatement dotNetStatement)
-					{
-						return dotNetStatement.getText();
-					}
-				}, "\n");
+				String join = StringUtil.join(statements, dotNetStatement -> dotNetStatement.getText(), "\n");
 				builder.append("{").append(join).append("}");
 			}
 		}

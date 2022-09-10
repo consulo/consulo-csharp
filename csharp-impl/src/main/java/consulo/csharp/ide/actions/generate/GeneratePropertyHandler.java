@@ -16,37 +16,36 @@
 
 package consulo.csharp.ide.actions.generate;
 
-import com.intellij.codeInsight.CodeInsightActionHandler;
-import com.intellij.ide.util.ChooseElementsDialog;
-import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.Task;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.util.Function;
-import com.intellij.util.Processor;
-import com.intellij.util.Query;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.ApplicationPropertiesComponent;
+import consulo.application.Result;
+import consulo.application.progress.ProgressIndicator;
+import consulo.application.progress.Task;
+import consulo.application.util.function.Processor;
+import consulo.application.util.query.Query;
+import consulo.codeEditor.Editor;
+import consulo.component.util.Iconable;
 import consulo.csharp.ide.codeInsight.actions.AddAccessModifierFix;
-import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.dotnet.psi.DotNetModifier;
-import consulo.ide.IconDescriptorUpdaters;
+import consulo.ide.impl.idea.ide.util.ChooseElementsDialog;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.editor.action.CodeInsightActionHandler;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,6 +54,7 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author VISTALL
@@ -94,13 +94,13 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 			{
 				JComponent centerPanel = super.createCenterPanel();
 				assert centerPanel != null;
-				final JCheckBox replaceUsageToProperty = new JCheckBox("Replace references to property?", PropertiesComponent.getInstance().getBoolean(ourReplaceReferencesToProperty, true));
+				final JCheckBox replaceUsageToProperty = new JCheckBox("Replace references to property?", ApplicationPropertiesComponent.getInstance().getBoolean(ourReplaceReferencesToProperty, true));
 				replaceUsageToProperty.addItemListener(new ItemListener()
 				{
 					@Override
 					public void itemStateChanged(ItemEvent e)
 					{
-						PropertiesComponent.getInstance().setValue(ourReplaceReferencesToProperty, replaceUsageToProperty.isSelected(), true);
+						ApplicationPropertiesComponent.getInstance().setValue(ourReplaceReferencesToProperty, replaceUsageToProperty.isSelected(), true);
 					}
 				});
 				centerPanel.add(replaceUsageToProperty, BorderLayout.SOUTH);
@@ -131,11 +131,11 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 
 		final String lineIndent = CodeStyleManager.getInstance(project).getLineIndent(editor.getDocument(), startOffset);
 
-		final String allText = StringUtil.join(fieldDeclarations, new Function<DotNetFieldDeclaration, String>()
+		final String allText = StringUtil.join(fieldDeclarations, new Function<>()
 		{
 			@Override
 			@RequiredReadAction
-			public String fun(DotNetFieldDeclaration fieldDeclaration)
+			public String apply(DotNetFieldDeclaration fieldDeclaration)
 			{
 				return generatePropertyTextFromField(lineIndent, fieldDeclaration);
 			}
@@ -154,7 +154,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 					@RequiredUIAccess
 					protected void run(Result result) throws Throwable
 					{
-						if(PropertiesComponent.getInstance().getBoolean(ourReplaceReferencesToProperty, true))
+						if(ApplicationPropertiesComponent.getInstance().getBoolean(ourReplaceReferencesToProperty, true))
 						{
 							for(final DotNetFieldDeclaration fieldDeclaration : fieldDeclarations)
 							{

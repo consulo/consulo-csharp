@@ -16,67 +16,63 @@
 
 package consulo.csharp.ide.completion;
 
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.patterns.StandardPatterns;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Function;
-import com.intellij.util.ProcessingContext;
-import com.intellij.util.Processor;
-import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
-import consulo.codeInsight.completion.CompletionProvider;
+import consulo.application.AllIcons;
+import consulo.application.progress.ProgressManager;
+import consulo.application.util.function.Processor;
+import consulo.codeEditor.Editor;
 import consulo.csharp.ide.CSharpLookupElementBuilder;
-import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandler;
 import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import consulo.csharp.ide.completion.weigher.CSharpInheritCompletionWeighter;
+import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.csharp.lang.impl.psi.CSharpContextUtil;
+import consulo.csharp.lang.impl.psi.CSharpTokenSets;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
+import consulo.csharp.lang.impl.psi.source.*;
+import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveOptions;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpGenericExtractor;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpMethodImplUtil;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import consulo.csharp.lang.psi.impl.source.*;
-import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
-import consulo.dotnet.DotNetRunUtil;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import consulo.ide.IconDescriptorUpdaters;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.*;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.pattern.StandardPatterns;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.ResolveResult;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.ProcessingContext;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
 import consulo.ui.image.ImageEffects;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 
-import static com.intellij.patterns.StandardPatterns.psiElement;
+import static consulo.language.pattern.StandardPatterns.psiElement;
 
 /**
  * @author VISTALL
@@ -138,11 +134,11 @@ class CSharpExpressionCompletionContributor
 							});
 						}
 						return t;
-					}, new Condition<IElementType>()
+					}, new Predicate<IElementType>()
 					{
 						@Override
 						@RequiredReadAction
-						public boolean value(IElementType elementType)
+						public boolean test(IElementType elementType)
 						{
 							if(elementType == CSharpTokens.NEW_KEYWORD)
 							{
@@ -298,7 +294,7 @@ class CSharpExpressionCompletionContributor
 					builder = builder.withIcon(ImageEffects.transparent(AllIcons.Nodes.Parameter));
 
 					CSharpCompletionSorting.force(builder, CSharpCompletionSorting.KindSorter.Type.parameterInCall);
-					result.consume(builder);
+					result.accept(builder);
 				}
 			}
 		});
@@ -445,7 +441,7 @@ class CSharpExpressionCompletionContributor
 									{
 										if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), new CSharpLambdaTypeRef(methodDeclaration)))
 										{
-											result.consume(buildForMethodReference(methodDeclaration, contextType, expression));
+											result.accept(buildForMethodReference(methodDeclaration, contextType, expression));
 											return true;
 										}
 									}
@@ -457,7 +453,7 @@ class CSharpExpressionCompletionContributor
 						{
 							lookupElement = PrioritizedLookupElement.withPriority(lookupElement, 1);
 						}
-						result.consume(lookupElement);
+						result.accept(lookupElement);
 						return true;
 					}
 				});
@@ -575,11 +571,11 @@ class CSharpExpressionCompletionContributor
 
 							if(CSharpPsiUtilImpl.isTypeLikeElement(element))
 							{
-								result.consume(CSharpTypeLikeLookupElement.create(lookupElementBuilder, DotNetGenericExtractor.EMPTY, expression));
+								result.accept(CSharpTypeLikeLookupElement.create(lookupElementBuilder, DotNetGenericExtractor.EMPTY, expression));
 							}
 							else
 							{
-								result.consume(lookupElementBuilder);
+								result.accept(lookupElementBuilder);
 							}
 						}
 						return true;
@@ -646,11 +642,11 @@ class CSharpExpressionCompletionContributor
 							return lookupElementBuilder.withInsertHandler(SpaceInsertHandler.INSTANCE);
 						}
 						return lookupElementBuilder;
-					}, new Condition<IElementType>()
+					}, new Predicate<IElementType>()
 					{
 						@Override
 						@RequiredReadAction
-						public boolean value(IElementType elementType)
+						public boolean test(IElementType elementType)
 						{
 							if(elementType == CSharpTokens.EXPLICIT_KEYWORD || elementType == CSharpTokens.IMPLICIT_KEYWORD)
 							{
@@ -751,15 +747,7 @@ class CSharpExpressionCompletionContributor
 
 		String genericText = DotNetElementPresentationUtil.formatGenericParameters(methodDeclaration);
 
-		String parameterText = genericText + "(" + StringUtil.join(parameterTypes, new Function<DotNetTypeRef, String>()
-		{
-			@Override
-			@RequiredReadAction
-			public String fun(DotNetTypeRef parameter)
-			{
-				return CSharpTypeRefPresentationUtil.buildShortText(parameter);
-			}
-		}, ", ") + ")";
+		String parameterText = genericText + "(" + StringUtil.join(parameterTypes, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter), ", ") + ")";
 
 		if(CSharpMethodImplUtil.isExtensionWrapper(methodDeclaration))
 		{
@@ -785,7 +773,7 @@ class CSharpExpressionCompletionContributor
 						if(expression != null && expression.getParent() instanceof CSharpCallArgument)
 						{
 							context.setAddCompletionChar(false);
-							TailType.COMMA.processTail(context.getEditor(), context.getTailOffset());
+							CommaTailType.INSTANCE.processTail(context.getEditor(), context.getTailOffset());
 						}
 						break;
 				}

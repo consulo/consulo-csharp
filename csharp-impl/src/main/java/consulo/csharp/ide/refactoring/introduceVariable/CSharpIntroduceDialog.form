@@ -24,7 +24,7 @@
               <text value="&lt;HTML&gt;&lt;u&gt;N&lt;/u&gt;ame:"/>
             </properties>
           </component>
-          <component id="dabd1" class="com.intellij.openapi.ui.ComboBox" binding="myNameComboBox">
+          <component id="dabd1" class="consulo.ui.ex.awt.ComboBox" binding="myNameComboBox">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>

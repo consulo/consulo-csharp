@@ -18,19 +18,19 @@ package consulo.csharp.ide.highlight.quickFix;
 
 import javax.annotation.Nonnull;
 
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
-import consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFactory;
+import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFileImpl;
 import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
+import consulo.language.util.IncorrectOperationException;
 
 /**
  * @author VISTALL

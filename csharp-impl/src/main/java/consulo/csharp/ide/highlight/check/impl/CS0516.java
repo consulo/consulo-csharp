@@ -21,9 +21,9 @@ import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpConstructorSuperCallImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author VISTALL

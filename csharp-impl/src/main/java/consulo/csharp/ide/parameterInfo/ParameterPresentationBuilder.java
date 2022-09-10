@@ -16,15 +16,15 @@
 
 package consulo.csharp.ide.parameterInfo;
 
+import consulo.application.AccessToken;
+import consulo.document.util.TextRange;
+import consulo.document.util.UnfairTextRange;
+import consulo.util.lang.ObjectUtil;
+import consulo.util.lang.xml.XmlStringUtil;
+import org.checkerframework.common.aliasing.qual.NonLeaked;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.checkerframework.common.aliasing.qual.NonLeaked;
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.UnfairTextRange;
-import com.intellij.xml.util.XmlStringUtil;
-import consulo.util.lang.ObjectUtil;
 
 /**
  * @author VISTALL

@@ -16,19 +16,19 @@
 
 package consulo.csharp.ide.completion;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionInitializationContext;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionUtilCore;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.language.Language;
+import consulo.language.editor.completion.*;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 28-Oct-17
  */
+@ExtensionImpl
 public class CSharpCompletionContributor extends CompletionContributor
 {
 	public CSharpCompletionContributor()
@@ -61,5 +61,12 @@ public class CSharpCompletionContributor extends CompletionContributor
 		super.fillCompletionVariants(parameters, resultSet);
 
 		CSharpNoVariantsDelegator.fillCompletionVariants(parameters, resultSet);
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }

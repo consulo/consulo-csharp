@@ -16,21 +16,15 @@
 
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
-import javax.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
-import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
-import consulo.dotnet.debugger.proxy.DotNetAbsentInformationException;
-import consulo.dotnet.debugger.proxy.DotNetFieldProxy;
-import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
-import consulo.dotnet.debugger.proxy.DotNetInvalidStackFrameException;
-import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
-import consulo.dotnet.debugger.proxy.DotNetSourceLocation;
-import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
-import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
+import consulo.dotnet.debugger.impl.nodes.DotNetDebuggerCompilerGenerateUtil;
+import consulo.dotnet.debugger.proxy.*;
 import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
+import consulo.dotnet.psi.DotNetVariable;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

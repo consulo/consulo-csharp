@@ -16,23 +16,24 @@
 
 package consulo.csharp.ide.navbar;
 
-import com.intellij.ide.navigationToolbar.StructureAwareNavBarModelExtension;
-import com.intellij.ide.ui.UISettings;
-import com.intellij.ide.util.treeView.smartTree.NodeProvider;
-import com.intellij.lang.Language;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.fileEditor.structureView.tree.NodeProvider;
+import consulo.ide.navigationToolbar.StructureAwareNavBarModelExtension;
+import consulo.application.ui.UISettings;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.structureView.CSharpLambdaNodeProvider;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpFile;
-import consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpDelegateExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.language.Language;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,6 +44,7 @@ import java.util.List;
  * @author VISTALL
  * @since 2020-06-21
  */
+@ExtensionImpl
 public class CSharpNavBarExtension extends StructureAwareNavBarModelExtension
 {
 	@Nonnull

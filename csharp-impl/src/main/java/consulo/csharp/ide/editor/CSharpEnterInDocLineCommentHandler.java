@@ -16,24 +16,26 @@
 
 package consulo.csharp.ide.editor;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.editorActions.enter.EnterHandlerDelegateAdapter;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.actionSystem.EditorActionHandler;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.util.PsiTreeUtil;
-import consulo.ui.annotation.RequiredUIAccess;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.action.EditorActionHandler;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
+import consulo.dataContext.DataContext;
+import consulo.document.Document;
+import consulo.language.editor.action.EnterHandlerDelegateAdapter;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiWhiteSpace;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.lang.ref.Ref;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  */
+@ExtensionImpl
 public class CSharpEnterInDocLineCommentHandler extends EnterHandlerDelegateAdapter
 {
 	private static final String DOC_LINE_START = "///";

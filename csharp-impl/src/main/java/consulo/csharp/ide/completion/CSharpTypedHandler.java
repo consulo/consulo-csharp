@@ -16,46 +16,46 @@
 
 package consulo.csharp.ide.completion;
 
-import com.intellij.codeInsight.AutoPopupController;
-import com.intellij.codeInsight.editorActions.TypedHandler;
-import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
-import com.intellij.codeStyle.CodeStyleFacade;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorModificationUtil;
-import com.intellij.openapi.editor.ScrollType;
-import com.intellij.openapi.editor.highlighter.HighlighterIterator;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.EditorEx;
+import consulo.codeEditor.HighlighterIterator;
+import consulo.codeEditor.ScrollType;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
+import consulo.csharp.lang.impl.psi.UsefulPsiTreeUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodBodyImpl;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.UsefulPsiTreeUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodBodyImpl;
+import consulo.document.Document;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetPointerTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeRefUtil;
+import consulo.dotnet.psi.resolve.DotNetPointerTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
+import consulo.language.ast.TokenType;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.editor.AutoPopupController;
+import consulo.language.editor.action.TypedHandlerDelegate;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.DumbService;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.lang.Pair;
+import consulo.virtualFileSystem.fileType.FileType;
 
 import javax.annotation.Nonnull;
+import java.util.function.Predicate;
 
 /**
  * @author VISTALL
  * @since 06.01.14
  */
+@ExtensionImpl(id = "csharp")
 public class CSharpTypedHandler extends TypedHandlerDelegate
 {
 	@Override
@@ -98,7 +98,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 				return Result.CONTINUE;
 			}
 
-			HighlighterIterator iterator = editor.getHighlighter().createIterator(offset - 1);
+			HighlighterIterator iterator = ((EditorEx) editor).getHighlighter().createIterator(offset - 1);
 			while(!iterator.atEnd() && iterator.getTokenType() == TokenType.WHITE_SPACE)
 			{
 				iterator.retreat();
@@ -113,8 +113,8 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 
 			if(PsiTreeUtil.getParentOfType(leaf, CSharpMethodBodyImpl.class, false, DotNetModifierListOwner.class) != null)
 			{
-				EditorModificationUtil.insertStringAtCaret(editor, "{");
-				TypedHandler.indentOpenedBrace(project, editor);
+				consulo.ide.impl.idea.openapi.editor.EditorModificationUtil.insertStringAtCaret(editor, "{");
+				consulo.ide.impl.idea.codeInsight.editorActions.TypedHandler.indentOpenedBrace(project, editor);
 				return Result.STOP; // use case: manually wrapping part of method's code in 'if', 'while', etc
 			}
 		}
@@ -194,7 +194,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 	@RequiredUIAccess
 	private static Pair<CharSequence, Integer> buildDocComment(DotNetQualifiedElement qualifiedElement, Editor editor, int offset)
 	{
-		String lineIndent = CodeStyleFacade.getInstance(qualifiedElement.getProject()).getLineIndent(editor.getDocument(), offset);
+		String lineIndent = consulo.ide.impl.idea.codeStyle.CodeStyleFacade.getInstance(qualifiedElement.getProject()).getLineIndent(editor.getDocument(), offset);
 
 		int diffForCaret;
 		StringBuilder builder = new StringBuilder(" <summary>\n");
@@ -311,11 +311,11 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 	@RequiredUIAccess
 	private static void autoPopupMemberLookup(Project project, final Editor editor)
 	{
-		AutoPopupController.getInstance(project).autoPopupMemberLookup(editor, new Condition<PsiFile>()
+		AutoPopupController.getInstance(project).autoPopupMemberLookup(editor, new Predicate<PsiFile>()
 		{
 			@Override
 			@RequiredReadAction
-			public boolean value(final PsiFile file)
+			public boolean test(final PsiFile file)
 			{
 				int offset = editor.getCaretModel().getOffset();
 

@@ -16,31 +16,30 @@
 
 package consulo.csharp.ide.lineMarkerProvider;
 
-import java.awt.event.MouseEvent;
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-import javax.swing.JComponent;
-
-import com.intellij.codeHighlighting.Pass;
-import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
-import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.CommonProcessors;
-import com.intellij.util.Consumer;
-import com.intellij.util.FunctionUtil;
-import com.intellij.util.Functions;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.ui.annotation.RequiredUIAccess;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.AllIcons;
+import consulo.application.progress.ProgressManager;
+import consulo.application.util.function.CommonProcessors;
+import consulo.codeEditor.markup.GutterIconRenderer;
+import consulo.csharp.lang.impl.psi.msil.CSharpTransformer;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
+import consulo.ide.impl.idea.util.FunctionUtil;
+import consulo.language.editor.Pass;
+import consulo.language.editor.gutter.GutterIconNavigationHandler;
+import consulo.language.editor.gutter.LineMarkerInfo;
+import consulo.language.psi.PsiElement;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.function.Functions;
+
+import javax.annotation.Nonnull;
+import javax.swing.*;
+import java.awt.event.MouseEvent;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * @author VISTALL
@@ -79,7 +78,7 @@ public class OverrideTypeCollector implements LineMarkerCollector
 						CSharpLineMarkerUtil.openTargets(ContainerUtil.map(results, CSharpTransformer.INSTANCE), mouseEvent, "Navigate to inheritors", Functions.<PsiElement, PsiElement>identity());
 					}
 				}, GutterIconRenderer.Alignment.RIGHT);
-				consumer.consume(lineMarkerInfo);
+				consumer.accept(lineMarkerInfo);
 			}
 		}
 	}

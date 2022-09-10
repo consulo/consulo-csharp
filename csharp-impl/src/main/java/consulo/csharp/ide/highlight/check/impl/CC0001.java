@@ -16,16 +16,6 @@
 
 package consulo.csharp.ide.highlight.check.impl;
 
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
-import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixActionRegistrarImpl;
-import com.intellij.codeInsight.quickfix.UnresolvedReferenceQuickFixProvider;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.ui.ColorUtil;
-import com.intellij.ui.JBColor;
-import com.intellij.xml.util.XmlStringUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.ide.codeInsight.actions.CastNArgumentToTypeRefFix;
 import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedConstructorFix;
@@ -34,20 +24,31 @@ import consulo.csharp.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.ide.highlight.check.CompilerCheck;
 import consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
 import consulo.csharp.lang.doc.CSharpDocUtil;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
+import consulo.csharp.lang.impl.psi.source.*;
+import consulo.csharp.lang.impl.psi.source.resolve.MethodResolveResult;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.MethodResolvePriorityInfo;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NCallArgument;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NErrorCallArgument;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import consulo.csharp.lang.psi.impl.source.*;
-import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolvePriorityInfo;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NErrorCallArgument;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.*;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
+import consulo.language.editor.intention.QuickFixAction;
+import consulo.language.editor.intention.UnresolvedReferenceQuickFixProvider;
+import consulo.language.editor.internal.QuickFixActionRegistrarImpl;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.language.editor.rawHighlight.HighlightInfoType;
+import consulo.language.psi.*;
 import consulo.localize.LocalizeValue;
+import consulo.ui.ex.JBColor;
+import consulo.ui.ex.awt.util.ColorUtil;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.xml.XmlStringUtil;
 import org.jetbrains.annotations.Contract;
 
 import javax.annotation.Nonnull;
@@ -364,7 +365,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 				parameterList = callOwner;
 			}
 
-			HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(insideDoc ? HighlightInfoType.WEAK_WARNING : HighlightInfoType.ERROR);
+			HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(insideDoc ? HighlightInfoType.WEAK_WARNING :HighlightInfoType.ERROR);
 			builder = builder.description("");
 			builder = builder.escapedToolTip(tooltipBuilder.toString());
 			builder = builder.range(parameterList);

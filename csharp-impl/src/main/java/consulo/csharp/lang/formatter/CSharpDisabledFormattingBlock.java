@@ -21,15 +21,12 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.intellij.formatting.Alignment;
-import com.intellij.formatting.Block;
-import com.intellij.formatting.ChildAttributes;
-import com.intellij.formatting.Indent;
-import com.intellij.formatting.Spacing;
-import com.intellij.formatting.Wrap;
-import com.intellij.formatting.templateLanguages.BlockWithParent;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
+
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.codeStyle.*;
+import consulo.language.codeStyle.Wrap;
+import consulo.language.codeStyle.template.BlockWithParent;
 import consulo.annotation.access.RequiredReadAction;
 
 /**

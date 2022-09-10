@@ -16,25 +16,19 @@
 
 package consulo.csharp.ide.codeInsight;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedEventFix;
-import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedFieldFix;
-import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodByLambdaTypeFix;
-import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodFix;
-import consulo.csharp.ide.codeInsight.actions.CreateUnresolvedPropertyFix;
-import consulo.csharp.ide.codeInsight.actions.UsingNamespaceFix;
+import consulo.csharp.ide.codeInsight.actions.*;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.codeInsight.daemon.QuickFixActionRegistrar;
-import com.intellij.codeInsight.quickfix.UnresolvedReferenceQuickFixProvider;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
+import consulo.language.editor.intention.QuickFixActionRegistrar;
+import consulo.language.editor.intention.UnresolvedReferenceQuickFixProvider;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * @author VISTALL

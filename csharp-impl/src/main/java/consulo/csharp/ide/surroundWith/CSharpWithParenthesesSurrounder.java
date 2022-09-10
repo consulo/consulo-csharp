@@ -19,14 +19,14 @@ package consulo.csharp.ide.surroundWith;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.lang.surroundWith.Surrounder;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.project.Project;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.editor.surroundWith.Surrounder;
+import consulo.language.util.IncorrectOperationException;
 
 /**
  * @author VISTALL

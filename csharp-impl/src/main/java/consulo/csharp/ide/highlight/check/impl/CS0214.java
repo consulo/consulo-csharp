@@ -26,20 +26,20 @@ import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.CSharpFixedStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpUnsafeStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpFixedStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpOperatorReferenceImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPrefixExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpUnsafeStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetPointerType;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetType;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.editor.rawHighlight.HighlightInfoType;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.Pair;
 
 /**
  * @author VISTALL

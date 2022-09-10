@@ -16,23 +16,19 @@
 
 package consulo.csharp.ide.presentation;
 
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.navigation.ItemPresentationProvider;
-import com.intellij.navigation.NavigationItem;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.openapi.util.text.StringUtil;
+import consulo.component.util.Iconable;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.dotnet.ide.DotNetElementPresentationUtil;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetMethodDeclaration;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.ide.IconDescriptorUpdaters;
+import consulo.dotnet.psi.*;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.navigation.ItemPresentation;
+import consulo.navigation.ItemPresentationProvider;
+import consulo.navigation.NavigationItem;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nullable;
 
@@ -40,7 +36,7 @@ import javax.annotation.Nullable;
  * @author VISTALL
  * @since 21.12.13.
  */
-public class CSharpQualifiedElementPresentationProvider implements ItemPresentationProvider<NavigationItem>
+public abstract class CSharpQualifiedElementPresentationProvider implements ItemPresentationProvider<NavigationItem>
 {
 	public static class It implements ItemPresentation
 	{

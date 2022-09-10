@@ -16,23 +16,33 @@
 
 package consulo.csharp.ide.copyright;
 
-import javax.annotation.Nonnull;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpFileType;
+import consulo.language.copyright.UpdateCopyrightsProvider;
+import consulo.language.copyright.UpdatePsiFileCopyright;
+import consulo.language.copyright.config.CopyrightFileConfig;
+import consulo.language.copyright.config.CopyrightProfile;
+import consulo.language.copyright.ui.TemplateCommentPanel;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
+import consulo.virtualFileSystem.fileType.FileType;
 
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
-import com.maddyhome.idea.copyright.CopyrightProfile;
-import com.maddyhome.idea.copyright.psi.UpdateCopyrightsProvider;
-import com.maddyhome.idea.copyright.psi.UpdatePsiFileCopyright;
-import com.maddyhome.idea.copyright.ui.TemplateCommentPanel;
-import consulo.copyright.config.CopyrightFileConfig;
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 15.03.14
  */
+@ExtensionImpl
 public class CSharpUpdateCopyrightsProvider extends UpdateCopyrightsProvider<CopyrightFileConfig>
 {
+	@Nonnull
+	@Override
+	public FileType getFileType()
+	{
+		return CSharpFileType.INSTANCE;
+	}
+
 	@Nonnull
 	@Override
 	public UpdatePsiFileCopyright<CopyrightFileConfig> createInstance(@Nonnull final PsiFile file, @Nonnull CopyrightProfile copyrightProfile)

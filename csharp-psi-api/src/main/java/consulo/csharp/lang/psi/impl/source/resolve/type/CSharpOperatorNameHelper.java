@@ -1,7 +1,7 @@
 /*
  * Copyright 2013-2017 consulo.io
  *
- * Licensed under the Apache License, Version 2.0 (the "License").
+ * Licensed under the Apache License, Version 2.0 (the "License",
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -16,12 +16,13 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.language.ast.IElementType;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.google.common.collect.ImmutableMap;
-import com.intellij.psi.tree.IElementType;
-import consulo.csharp.lang.psi.CSharpTokens;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author VISTALL
@@ -29,37 +30,41 @@ import consulo.csharp.lang.psi.CSharpTokens;
  */
 public class CSharpOperatorNameHelper
 {
-	private static final ImmutableMap<IElementType, String> ourOperatorNames = ImmutableMap.<IElementType, String>builder().
-			put(CSharpTokens.EQEQ, "==").
-			put(CSharpTokens.NTEQ, "!=").
-			put(CSharpTokens.LT, "<").
-			put(CSharpTokens.LTEQ, "<=").
-			put(CSharpTokens.GT, ">").
-			put(CSharpTokens.GTEQ, ">=").
-			put(CSharpTokens.MUL, "*").
-			put(CSharpTokens.MULEQ, "*").
-			put(CSharpTokens.DIV, "/").
-			put(CSharpTokens.DIVEQ, "/").
-			put(CSharpTokens.PLUS, "+").
-			put(CSharpTokens.PLUSEQ, "+").
-			put(CSharpTokens.PLUSPLUS, "++").
-			put(CSharpTokens.MINUS, "-").
-			put(CSharpTokens.MINUSEQ, "-").
-			put(CSharpTokens.MINUSMINUS, "--").
-			put(CSharpTokens.LTLT, "<<").
-			put(CSharpTokens.LTLTEQ, "<<").
-			put(CSharpTokens.GTGT, ">>").
-			put(CSharpTokens.GTGTEQ, ">>").
-			put(CSharpTokens.EXCL, "!").
-			put(CSharpTokens.AND, "&").
-			put(CSharpTokens.ANDEQ, "&").
-			put(CSharpTokens.OR, "|").
-			put(CSharpTokens.OREQ, "|").
-			put(CSharpTokens.XOR, "^").
-			put(CSharpTokens.XOREQ, "^").
-			put(CSharpTokens.TILDE, "~").
-			put(CSharpTokens.PERC, "%").
-			put(CSharpTokens.PERCEQ, "%").build();
+	private static final Map<IElementType, String> ourOperatorNames = new HashMap<>();
+
+	static
+	{
+		ourOperatorNames.put(CSharpTokens.EQEQ, "==");
+		ourOperatorNames.put(CSharpTokens.NTEQ, "!=");
+		ourOperatorNames.put(CSharpTokens.LT, "<");
+		ourOperatorNames.put(CSharpTokens.LTEQ, "<=");
+		ourOperatorNames.put(CSharpTokens.GT, ">");
+		ourOperatorNames.put(CSharpTokens.GTEQ, ">=");
+		ourOperatorNames.put(CSharpTokens.MUL, "*");
+		ourOperatorNames.put(CSharpTokens.MULEQ, "*");
+		ourOperatorNames.put(CSharpTokens.DIV, "/");
+		ourOperatorNames.put(CSharpTokens.DIVEQ, "/");
+		ourOperatorNames.put(CSharpTokens.PLUS, "+");
+		ourOperatorNames.put(CSharpTokens.PLUSEQ, "+");
+		ourOperatorNames.put(CSharpTokens.PLUSPLUS, "++");
+		ourOperatorNames.put(CSharpTokens.MINUS, "-");
+		ourOperatorNames.put(CSharpTokens.MINUSEQ, "-");
+		ourOperatorNames.put(CSharpTokens.MINUSMINUS, "--");
+		ourOperatorNames.put(CSharpTokens.LTLT, "<<");
+		ourOperatorNames.put(CSharpTokens.LTLTEQ, "<<");
+		ourOperatorNames.put(CSharpTokens.GTGT, ">>");
+		ourOperatorNames.put(CSharpTokens.GTGTEQ, ">>");
+		ourOperatorNames.put(CSharpTokens.EXCL, "!");
+		ourOperatorNames.put(CSharpTokens.AND, "&");
+		ourOperatorNames.put(CSharpTokens.ANDEQ, "&");
+		ourOperatorNames.put(CSharpTokens.OR, "|");
+		ourOperatorNames.put(CSharpTokens.OREQ, "|");
+		ourOperatorNames.put(CSharpTokens.XOR, "^");
+		ourOperatorNames.put(CSharpTokens.XOREQ, "^");
+		ourOperatorNames.put(CSharpTokens.TILDE, "~");
+		ourOperatorNames.put(CSharpTokens.PERC, "%");
+		ourOperatorNames.put(CSharpTokens.PERCEQ, "%");
+	}
 
 	@Nullable
 	public static String getOperatorName(@Nonnull IElementType elementType)

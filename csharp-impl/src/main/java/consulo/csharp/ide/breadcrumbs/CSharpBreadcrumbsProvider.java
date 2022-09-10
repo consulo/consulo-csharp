@@ -18,16 +18,16 @@ package consulo.csharp.ide.breadcrumbs;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.lang.Language;
-import com.intellij.psi.PsiElement;
-import com.intellij.ui.breadcrumbs.BreadcrumbsProvider;
+import consulo.language.psi.PsiElement;
+import consulo.ide.impl.idea.ui.breadcrumbs.BreadcrumbsProvider;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
+import consulo.csharp.lang.impl.psi.source.CSharpAnonymousMethodExpression;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.language.Language;
 
 /**
  * @author VISTALL

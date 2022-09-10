@@ -16,20 +16,19 @@
 
 package consulo.csharp.ide.liveTemplates.expression;
 
-import java.util.ArrayList;
-import java.util.List;
+import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.template.Expression;
+import consulo.language.editor.template.ExpressionContext;
+import consulo.language.editor.template.Result;
+import consulo.language.editor.template.TextResult;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nullable;
-import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
-import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.template.Expression;
-import com.intellij.codeInsight.template.ExpressionContext;
-import com.intellij.codeInsight.template.Result;
-import com.intellij.codeInsight.template.TextResult;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.SmartList;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -41,7 +40,7 @@ public class TypeRefExpression extends Expression
 
 	public TypeRefExpression(DotNetTypeRef typeRef, PsiElement scope)
 	{
-		myTypeRefText = new SmartList<String>(CSharpTypeRefPresentationUtil.buildShortText(typeRef));
+		myTypeRefText = List.of(CSharpTypeRefPresentationUtil.buildShortText(typeRef));
 	}
 
 	public TypeRefExpression(List<ExpectedTypeInfo> expectedTypeInfos, PsiElement scope)
