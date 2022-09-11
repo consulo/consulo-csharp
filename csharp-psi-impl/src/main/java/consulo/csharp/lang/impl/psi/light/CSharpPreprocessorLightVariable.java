@@ -20,6 +20,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.lang.CSharpPreprocessorLanguage;
 import consulo.csharp.lang.psi.CSharpPreprocessorVariable;
+import consulo.ide.setting.ShowSettingsUtil;
 import consulo.language.impl.psi.LightElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
@@ -27,7 +28,6 @@ import consulo.language.psi.PsiManager;
 import consulo.language.util.IncorrectOperationException;
 import consulo.module.Module;
 import consulo.navigation.Navigatable;
-import consulo.project.ui.view.internal.ProjectSettingsService;
 import consulo.util.lang.Comparing;
 import org.jetbrains.annotations.NonNls;
 
@@ -114,7 +114,7 @@ public class CSharpPreprocessorLightVariable extends LightElement implements CSh
 		}
 		else
 		{
-			ProjectSettingsService.getInstance(getProject()).openContentEntriesSettings(myModule);
+			ShowSettingsUtil.getInstance().showProjectStructureDialog(myModule.getProject(), projectStructureSelector -> projectStructureSelector.select(myModule, true));
 		}
 	}
 

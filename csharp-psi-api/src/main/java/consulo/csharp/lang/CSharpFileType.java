@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang;
 
-import consulo.csharp.psi.icon.CSharpPsiIconGroup;
+import consulo.csharp.lang.psi.icon.CSharpPsiIconGroup;
 import consulo.language.file.LanguageFileType;
 import consulo.language.template.TemplateLanguageFileType;
 import consulo.localize.LocalizeValue;

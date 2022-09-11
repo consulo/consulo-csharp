@@ -16,23 +16,24 @@
 
 package consulo.csharp.lang.doc.impl;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import consulo.language.psi.PsiElement;
-import org.emonic.base.documentation.IDocumentation;
-import consulo.virtualFileSystem.VirtualFile;
-import consulo.language.psi.util.PsiTreeUtil;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import consulo.dotnet.documentation.DotNetDocumentationResolver;
 import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.virtualFileSystem.VirtualFile;
+import org.emonic.base.documentation.IDocumentation;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author VISTALL
  * @since 04.03.2015
  */
+@ExtensionImpl
 public class CSharpCommentDocumentationResolver implements DotNetDocumentationResolver
 {
 	@Nullable

@@ -17,9 +17,9 @@
 package consulo.csharp.lang.impl.psi.source;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.csharp.lang.psi.CSharpArrayType;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
-import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.lang.impl.psi.stub.CSharpWithIntValueStub;
@@ -79,6 +79,6 @@ public class CSharpStubArrayTypeImpl extends CSharpStubTypeElementImpl<CSharpWit
 	@Override
 	public DotNetType getInnerType()
 	{
-		return getRequiredStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
+		return getRequiredStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 0);
 	}
 }

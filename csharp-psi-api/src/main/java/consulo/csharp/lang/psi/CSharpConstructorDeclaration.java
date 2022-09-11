@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
  * @author VISTALL
  * @since 09.01.14
  */
-public interface CSharpConstructorDeclaration extends DotNetConstructorDeclaration, CSharpSimpleLikeMethodAsElement, PsiNameIdentifierOwner
+public interface CSharpConstructorDeclaration extends DotNetConstructorDeclaration, CSharpSimpleLikeMethodAsElement, PsiNameIdentifierOwner, CSharpNamedElement
 {
 	@Nullable
 	default CSharpConstructorSuperCall getConstructorSuperCall()

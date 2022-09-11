@@ -16,20 +16,21 @@
 
 package consulo.csharp.lang.impl.psi.search;
 
+import consulo.annotation.component.ExtensionImpl;
+import consulo.application.ApplicationManager;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.ProgressIndicatorProvider;
-import consulo.application.util.query.QueryExecutor;
-import consulo.language.psi.PsiElement;
-import consulo.language.psi.scope.GlobalSearchScope;
-import consulo.content.scope.SearchScope;
-import consulo.application.util.function.Processor;
-import consulo.application.ApplicationManager;
 import consulo.application.util.function.Computable;
+import consulo.application.util.function.Processor;
+import consulo.content.scope.SearchScope;
 import consulo.csharp.lang.impl.psi.CSharpRecursiveElementVisitor;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.impl.psi.stub.index.TypeIndex;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.search.searches.AllTypesSearch;
+import consulo.dotnet.psi.search.searches.AllTypesSearchExecutor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.scope.LocalSearchScope;
 
 import javax.annotation.Nonnull;
@@ -40,7 +41,8 @@ import java.util.*;
  * <p/>
  * Copied from Java plugin by Jetbrains (com.intellij.psi.search.searches.ClassInheritorsSearch)
  */
-public class CSharpAllTypesSearchExecutor implements QueryExecutor<DotNetTypeDeclaration, AllTypesSearch.SearchParameters>
+@ExtensionImpl
+public class CSharpAllTypesSearchExecutor implements AllTypesSearchExecutor
 {
 	@Override
 	public boolean execute(@Nonnull final AllTypesSearch.SearchParameters queryParameters, @Nonnull final Processor<? super DotNetTypeDeclaration> consumer)

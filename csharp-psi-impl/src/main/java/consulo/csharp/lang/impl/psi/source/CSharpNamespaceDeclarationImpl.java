@@ -16,18 +16,22 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import consulo.util.lang.StringUtil;
-import consulo.language.psi.PsiElement;
-import consulo.language.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.impl.psi.stub.CSharpNamespaceDeclStub;
+import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.CSharpUsingListChild;
 import consulo.dotnet.psi.*;
 import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nonnull;
@@ -108,7 +112,7 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	@Override
 	public DotNetQualifiedElement[] getMembers()
 	{
-		return getStubOrPsiChildren(CSharpStubElements.QUALIFIED_MEMBERS, DotNetQualifiedElement.ARRAY_FACTORY);
+		return getStubOrPsiChildren(CSharpStubElementSets.QUALIFIED_MEMBERS, DotNetQualifiedElement.ARRAY_FACTORY);
 	}
 
 	@Override
@@ -183,6 +187,6 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	@RequiredReadAction
 	public CSharpUsingListChild[] getUsingStatements()
 	{
-		return getStubOrPsiChildren(CSharpStubElements.USING_CHILDREN, CSharpUsingListChild.ARRAY_FACTORY);
+		return getStubOrPsiChildren(CSharpStubElementSets.USING_CHILDREN, CSharpUsingListChild.ARRAY_FACTORY);
 	}
 }

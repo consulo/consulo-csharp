@@ -17,7 +17,7 @@
 package consulo.csharp.lang.impl.psi.source;
 
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
-import consulo.csharp.lang.impl.psi.CSharpStubElements;
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.csharp.lang.impl.psi.stub.CSharpWithStringValueStub;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpGenericConstraintValue;
@@ -98,7 +98,7 @@ public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpWit
 	@Override
 	public CSharpGenericConstraintValue[] getGenericConstraintValues()
 	{
-		return getStubOrPsiChildren(CSharpStubElements.GENERIC_CONSTRAINT_VALUES, CSharpGenericConstraintValue.ARRAY_FACTORY);
+		return getStubOrPsiChildren(CSharpStubElementSets.GENERIC_CONSTRAINT_VALUES, CSharpGenericConstraintValue.ARRAY_FACTORY);
 	}
 
 	@Override

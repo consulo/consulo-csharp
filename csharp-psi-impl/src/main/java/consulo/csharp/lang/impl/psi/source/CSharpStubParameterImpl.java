@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.ide.refactoring.CSharpRefactoringUtil;
@@ -107,7 +108,7 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 	@Override
 	public DotNetType getType()
 	{
-		return getRequiredStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
+		return getRequiredStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 0);
 	}
 
 	@RequiredReadAction

@@ -34,7 +34,7 @@ import consulo.language.psi.resolve.ResolveState;
 import consulo.language.ast.IElementType;
 import consulo.application.util.function.Processor;
 import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpOperatorNameHelper;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 
 /**

@@ -16,6 +16,9 @@
 
 package consulo.csharp.lang.impl.psi.source.resolve.genericInference;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.annotation.component.ServiceImpl;
 import consulo.ide.ServiceManager;
 import consulo.component.util.SimpleModificationTracker;
 import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
@@ -33,6 +36,8 @@ import java.util.function.Function;
  * @since 2018-07-23
  */
 @Singleton
+@ServiceAPI(ComponentScope.PROJECT)
+@ServiceImpl
 public class GenericInferenceManager extends SimpleModificationTracker
 {
 	@Nonnull

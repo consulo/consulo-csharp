@@ -18,6 +18,7 @@ package consulo.csharp.lang.impl.psi.stub.index;
 
 import javax.annotation.Nonnull;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.language.psi.stub.StubIndexKey;
 import consulo.language.psi.stub.StringStubIndexExtension;
@@ -27,6 +28,7 @@ import consulo.language.psi.stub.StubIndexExtension;
  * @author VISTALL
  * @since 18.07.15
  */
+@ExtensionImpl
 public class DelegateMethodIndex extends StringStubIndexExtension<CSharpMethodDeclaration>
 {
 	public static DelegateMethodIndex getInstance()

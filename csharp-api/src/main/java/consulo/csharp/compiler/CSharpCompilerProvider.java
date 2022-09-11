@@ -16,6 +16,8 @@
 
 package consulo.csharp.compiler;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
 import consulo.component.extension.ExtensionPointName;
 import consulo.content.bundle.Sdk;
 import consulo.content.bundle.SdkType;
@@ -34,9 +36,10 @@ import javax.annotation.Nullable;
  * @author VISTALL
  * @since 08.06.2015
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class CSharpCompilerProvider
 {
-	public static final ExtensionPointName<CSharpCompilerProvider> EP_NAME = ExtensionPointName.create("consulo.csharp.compilerProvider");
+	public static final ExtensionPointName<CSharpCompilerProvider> EP_NAME = ExtensionPointName.create(CSharpCompilerProvider.class);
 
 	@Nullable
 	public abstract SdkType getBundleType(@Nonnull DotNetSimpleModuleExtension<?> moduleExtension);

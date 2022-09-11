@@ -17,6 +17,7 @@
 package consulo.csharp.lang.impl.psi.resolve.additionalMembersImpl;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightConversionMethodDeclarationBuilder;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightLikeMethodDeclarationBuilder;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightParameterBuilder;
@@ -51,6 +52,7 @@ import java.util.function.Consumer;
  * @author VISTALL
  * @since 07.03.2016
  */
+@ExtensionImpl
 public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 {
 	@RequiredReadAction

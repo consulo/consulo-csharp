@@ -50,7 +50,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-                                                                                             
+
 /**
  * @author VISTALL
  * @since 15.12.13.

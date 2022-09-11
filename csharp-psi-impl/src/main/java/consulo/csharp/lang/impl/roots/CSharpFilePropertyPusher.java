@@ -17,6 +17,7 @@
 package consulo.csharp.lang.impl.roots;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.component.messagebus.MessageBus;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -50,6 +51,7 @@ import java.util.TreeSet;
  * @author VISTALL
  * @since 2018-03-04
  */
+@ExtensionImpl
 public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAttribute>
 {
 	public static final Key<CSharpFileAttribute> ourCSharpFileAttributeKey = Key.create("CSharpFilePropertyPusher.PREPROCESSOR_VARIABLES");

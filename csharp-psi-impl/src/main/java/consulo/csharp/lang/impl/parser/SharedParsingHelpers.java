@@ -17,10 +17,7 @@
 package consulo.csharp.lang.impl.parser;
 
 import consulo.csharp.lang.impl.parser.exp.ExpressionParsing;
-import consulo.csharp.lang.impl.psi.CSharpElements;
-import consulo.csharp.lang.impl.psi.CSharpStubElements;
-import consulo.csharp.lang.impl.psi.CSharpTokenSets;
-import consulo.csharp.lang.impl.psi.CSharpTokensImpl;
+import consulo.csharp.lang.impl.psi.*;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -138,7 +135,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	{
 		marker.done(elementType);
 
-		if(CSharpStubElements.QUALIFIED_MEMBERS.contains(elementType))
+		if(CSharpStubElementSets.QUALIFIED_MEMBERS.contains(elementType))
 		{
 			marker.setCustomEdgeTokenBinders(DocWhitespacesAndCommentsBinder.INSTANCE, null);
 		}

@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.virtualFileSystem.fileType.FileTypeConsumer;
 import consulo.virtualFileSystem.fileType.FileTypeFactory;
 
@@ -25,6 +26,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 22.11.13.
  */
+@ExtensionImpl
 public class CSharpFileTypeFactory extends FileTypeFactory
 {
 	@Override

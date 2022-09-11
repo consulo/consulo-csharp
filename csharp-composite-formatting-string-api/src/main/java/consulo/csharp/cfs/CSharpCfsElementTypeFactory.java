@@ -16,7 +16,9 @@
 
 package consulo.csharp.cfs;
 
-import consulo.ide.ServiceManager;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.application.Application;
 import consulo.language.ast.IElementType;
 
 import javax.annotation.Nonnull;
@@ -25,12 +27,13 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 26-Dec-17
  */
+@ServiceAPI(ComponentScope.APPLICATION)
 public interface CSharpCfsElementTypeFactory
 {
 	@Nonnull
 	static IElementType create()
 	{
-		CSharpCfsElementTypeFactory factory = ServiceManager.getService(CSharpCfsElementTypeFactory.class);
+		CSharpCfsElementTypeFactory factory = Application.get().getInstance(CSharpCfsElementTypeFactory.class);
 		return factory.getInterpolationStringElementType();
 	}
 

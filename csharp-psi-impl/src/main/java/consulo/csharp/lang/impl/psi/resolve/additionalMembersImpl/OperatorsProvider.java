@@ -17,6 +17,7 @@
 package consulo.csharp.lang.impl.psi.resolve.additionalMembersImpl;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightMethodDeclarationBuilder;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightParameterBuilder;
 import consulo.csharp.lang.impl.psi.resolve.CSharpAdditionalMemberProvider;
@@ -50,6 +51,7 @@ import java.util.function.Consumer;
  * @author VISTALL
  * @since 26.10.14
  */
+@ExtensionImpl
 public class OperatorsProvider implements CSharpAdditionalMemberProvider
 {
 	@RequiredReadAction

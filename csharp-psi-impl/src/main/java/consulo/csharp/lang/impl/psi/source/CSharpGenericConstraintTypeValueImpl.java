@@ -19,7 +19,7 @@ package consulo.csharp.lang.impl.psi.source;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
-import consulo.csharp.lang.impl.psi.CSharpStubElements;
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.EmptyStub;
 import consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
@@ -54,7 +54,7 @@ public class CSharpGenericConstraintTypeValueImpl extends CSharpStubElementImpl<
 	@Override
 	public DotNetType getType()
 	{
-		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
+		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 0);
 	}
 
 	@Nonnull

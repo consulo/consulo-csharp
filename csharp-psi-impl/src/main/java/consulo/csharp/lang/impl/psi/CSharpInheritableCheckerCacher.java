@@ -17,6 +17,9 @@
 package consulo.csharp.lang.impl.psi;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.annotation.component.ServiceImpl;
 import consulo.csharp.lang.CSharpCastType;
 import consulo.disposer.Disposable;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
@@ -39,6 +42,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 2020-10-24
  */
 @Singleton
+@ServiceAPI(ComponentScope.PROJECT)
+@ServiceImpl
 public class CSharpInheritableCheckerCacher implements Disposable
 {
 	public static CSharpInheritableCheckerCacher getInstance(@Nonnull Project project)

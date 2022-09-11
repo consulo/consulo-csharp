@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -95,7 +96,7 @@ public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharp
 	@Override
 	public DotNetType getTypeForImplement()
 	{
-		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 1);
+		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 1);
 	}
 
 	@Nonnull

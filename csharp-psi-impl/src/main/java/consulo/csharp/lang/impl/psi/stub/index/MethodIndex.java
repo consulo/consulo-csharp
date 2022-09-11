@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.stub.index;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexExtension;
@@ -27,6 +28,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 18.12.13.
  */
+@ExtensionImpl
 public class MethodIndex extends StringStubIndexExtension<DotNetLikeMethodDeclaration>
 {
 	public static MethodIndex getInstance()

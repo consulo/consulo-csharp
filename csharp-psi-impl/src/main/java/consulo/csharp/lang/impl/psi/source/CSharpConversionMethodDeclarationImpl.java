@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
@@ -80,7 +81,7 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpStubLikeMethodD
 	@Override
 	public DotNetType getReturnType()
 	{
-		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 1);
+		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 1);
 	}
 
 	@Nonnull
@@ -95,7 +96,7 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpStubLikeMethodD
 	@Override
 	public DotNetType getConversionType()
 	{
-		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
+		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 0);
 	}
 
 	@Nullable

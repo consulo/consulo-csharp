@@ -24,7 +24,6 @@ import consulo.csharp.lang.psi.CSharpNullableType;
 import consulo.csharp.lang.psi.CSharpUsingTypeStatement;
 import consulo.dotnet.psi.DotNetPointerType;
 import consulo.language.ast.ASTNode;
-import consulo.language.ast.TokenSet;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.EmptyStub;
 
@@ -53,8 +52,7 @@ public interface CSharpStubElements
 	CSharpParameterStubElementType PARAMETER = new CSharpParameterStubElementType();
 	CSharpUsingNamespaceStatementStubElementType USING_NAMESPACE_STATEMENT = new CSharpUsingNamespaceStatementStubElementType();
 	CSharpIdentifierStubElementType IDENTIFIER = new CSharpIdentifierStubElementType();
-	CSharpEmptyStubElementType<CSharpUsingTypeStatement> USING_TYPE_STATEMENT = new CSharpEmptyStubElementType<CSharpUsingTypeStatement>
-			("USING_TYPE_STATEMENT")
+	CSharpEmptyStubElementType<CSharpUsingTypeStatement> USING_TYPE_STATEMENT = new CSharpEmptyStubElementType<>("USING_TYPE_STATEMENT")
 	{
 		@Override
 		public CSharpUsingTypeStatement createPsi(@Nonnull EmptyStub<CSharpUsingTypeStatement> stub)
@@ -81,9 +79,7 @@ public interface CSharpStubElements
 	CSharpAttributeListStubElementType ATTRIBUTE_LIST = new CSharpAttributeListStubElementType();
 	CSharpAttributeStubElementType ATTRIBUTE = new CSharpAttributeStubElementType();
 
-	TokenSet USING_CHILDREN = TokenSet.create(USING_NAMESPACE_STATEMENT, USING_TYPE_STATEMENT, TYPE_DEF_STATEMENT);
-
-	CSharpEmptyStubElementType<CSharpNullableType> NULLABLE_TYPE = new CSharpEmptyStubElementType<CSharpNullableType>("NULLABLE_TYPE")
+	CSharpEmptyStubElementType<CSharpNullableType> NULLABLE_TYPE = new CSharpEmptyStubElementType<>("NULLABLE_TYPE")
 	{
 		@Nonnull
 		@Override
@@ -99,7 +95,7 @@ public interface CSharpStubElements
 		}
 	};
 
-	CSharpEmptyStubElementType<DotNetPointerType> POINTER_TYPE = new CSharpEmptyStubElementType<DotNetPointerType>("POINTER_TYPE")
+	CSharpEmptyStubElementType<DotNetPointerType> POINTER_TYPE = new CSharpEmptyStubElementType<>("POINTER_TYPE")
 	{
 		@Nonnull
 		@Override
@@ -128,12 +124,4 @@ public interface CSharpStubElements
 	CSharpTypeListElementType TYPE_ARGUMENTS = new CSharpTypeListElementType("TYPE_ARGUMENTS");
 
 	CSharpReferenceExpressionStubElementType REFERENCE_EXPRESSION = new CSharpReferenceExpressionStubElementType();
-
-	TokenSet GENERIC_CONSTRAINT_VALUES = TokenSet.create(GENERIC_CONSTRAINT_KEYWORD_VALUE, GENERIC_CONSTRAINT_TYPE_VALUE);
-
-	TokenSet TYPE_SET = TokenSet.create(NULLABLE_TYPE, POINTER_TYPE, NATIVE_TYPE, TUPLE_TYPE, ARRAY_TYPE, USER_TYPE);
-
-	TokenSet QUALIFIED_MEMBERS = TokenSet.create(NAMESPACE_DECLARATION, TYPE_DECLARATION, METHOD_DECLARATION, CONSTRUCTOR_DECLARATION,
-			PROPERTY_DECLARATION, EVENT_DECLARATION, FIELD_DECLARATION, ENUM_CONSTANT_DECLARATION, CONVERSION_METHOD_DECLARATION,
-			INDEX_METHOD_DECLARATION);
 }

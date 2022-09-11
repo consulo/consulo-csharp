@@ -19,6 +19,7 @@ package consulo.csharp.lang.impl.psi.source;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpElements;
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.impl.psi.stub.CSharpIndexMethodDeclStub;
@@ -94,7 +95,7 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	@Override
 	public DotNetType getReturnType()
 	{
-		return getRequiredStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
+		return getRequiredStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 0);
 	}
 
 	@RequiredReadAction
@@ -187,7 +188,7 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	@Override
 	public DotNetType getTypeForImplement()
 	{
-		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 1);
+		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 1);
 	}
 
 	@Nonnull

@@ -16,17 +16,19 @@
 
 package consulo.csharp.lang.impl.psi.stub.index;
 
-import javax.annotation.Nonnull;
-
+import consulo.annotation.component.ExtensionImpl;
 import consulo.dotnet.psi.DotNetPropertyDeclaration;
 import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author VISTALL
  * @since 21.12.13.
  */
+@ExtensionImpl
 public class PropertyIndex extends StringStubIndexExtension<DotNetPropertyDeclaration>
 {
 	public static PropertyIndex getInstance()

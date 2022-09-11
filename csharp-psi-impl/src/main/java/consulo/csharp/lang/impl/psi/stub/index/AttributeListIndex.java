@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.stub.index;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.dotnet.psi.DotNetAttributeTargetType;
 import consulo.index.io.KeyDescriptor;
@@ -32,6 +33,7 @@ import java.io.IOException;
  * @author VISTALL
  * @since 09.12.14
  */
+@ExtensionImpl
 public class AttributeListIndex extends AbstractStubIndex<DotNetAttributeTargetType, CSharpAttributeList>
 {
 	public static class EnumeratorTypeDescriptor implements KeyDescriptor<DotNetAttributeTargetType>

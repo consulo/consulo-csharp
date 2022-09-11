@@ -17,6 +17,8 @@
 package consulo.csharp.lang.impl.psi.resolve;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
 import consulo.component.extension.ExtensionPointName;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
@@ -29,9 +31,10 @@ import java.util.function.Consumer;
  * @author VISTALL
  * @since 26.10.14
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public interface CSharpAdditionalMemberProvider
 {
-	ExtensionPointName<CSharpAdditionalMemberProvider> EP_NAME = ExtensionPointName.create("consulo.csharp.additionalMemberProvider");
+	ExtensionPointName<CSharpAdditionalMemberProvider> EP_NAME = ExtensionPointName.create(CSharpAdditionalMemberProvider.class);
 
 	enum Target
 	{

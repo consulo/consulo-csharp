@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.stub;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.impl.psi.stub.index.CSharpIndexKeys;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.impl.stub.DotNetNamespaceStubUtil;
@@ -37,6 +38,7 @@ import java.util.List;
  * @author VISTALL
  * @since 22.05.14
  */
+@ExtensionImpl
 public class CSharpMsilStubIndexer extends MsilStubIndexer
 {
 	public static int makeExtensionMethodIndexKey(@Nullable String namespace, @Nonnull String name)

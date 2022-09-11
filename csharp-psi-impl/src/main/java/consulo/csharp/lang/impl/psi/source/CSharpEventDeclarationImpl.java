@@ -19,6 +19,7 @@ package consulo.csharp.lang.impl.psi.source;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.csharp.lang.psi.CSharpEventDeclaration;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -111,7 +112,7 @@ public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	@Override
 	public DotNetType getTypeForImplement()
 	{
-		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 1);
+		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 1);
 	}
 
 	@Nonnull

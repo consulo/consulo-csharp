@@ -15,19 +15,20 @@
  */
 package consulo.csharp.lang.impl.psi.search;
 
-import consulo.application.util.function.Processor;
-import consulo.content.scope.SearchScope;
-import consulo.util.lang.StringUtil;
-import consulo.language.psi.scope.EverythingGlobalScope;
-import consulo.language.psi.scope.GlobalSearchScope;
-import consulo.application.util.query.QueryExecutor;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.application.ReadAction;
 import consulo.application.progress.ProgressIndicatorProvider;
+import consulo.application.util.function.Processor;
+import consulo.content.scope.SearchScope;
 import consulo.csharp.lang.impl.psi.stub.index.ExtendsListIndex;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.psi.search.searches.DirectTypeInheritorsSearch;
+import consulo.dotnet.psi.search.searches.DirectTypeInheritorsSearchExecutor;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
+import consulo.language.psi.scope.EverythingGlobalScope;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -37,7 +38,8 @@ import java.util.*;
  *         <p/>
  *         Copied from Java plugin by Jetbrains (com.intellij.psi.search.searches.ClassInheritorsSearch)
  */
-public class CSharpDirectTypeInheritorsSearcherExecutor implements QueryExecutor<DotNetTypeDeclaration, DirectTypeInheritorsSearch.SearchParameters>
+@ExtensionImpl
+public class CSharpDirectTypeInheritorsSearcherExecutor implements DirectTypeInheritorsSearchExecutor
 {
 	@Override
 	public boolean execute(@Nonnull final DirectTypeInheritorsSearch.SearchParameters p, @Nonnull final Processor<? super DotNetTypeDeclaration> consumer)

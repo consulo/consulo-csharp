@@ -128,7 +128,8 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 			return;
 		}
 
-		myManager.beforeChange(false); // clear resolve cache
+		getManager().dropResolveCaches();
+
 		if(child instanceof CSharpUsingNamespaceStatement)
 		{
 			String referenceText = ((CSharpUsingNamespaceStatement) child).getReferenceText();

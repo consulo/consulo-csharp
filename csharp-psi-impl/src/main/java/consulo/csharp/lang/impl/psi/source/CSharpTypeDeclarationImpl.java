@@ -19,6 +19,7 @@ package consulo.csharp.lang.impl.psi.source;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.CachedValueProvider;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.impl.psi.source.resolve.ExecuteTarget;
 import consulo.csharp.lang.impl.psi.source.resolve.ExecuteTargetUtil;
@@ -119,7 +120,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 	@Override
 	public DotNetQualifiedElement[] getMembers()
 	{
-		return LanguageCachedValueUtil.getCachedValue(this, () -> CachedValueProvider.Result.create(getStubOrPsiChildren(CSharpStubElements.QUALIFIED_MEMBERS,
+		return LanguageCachedValueUtil.getCachedValue(this, () -> CachedValueProvider.Result.create(getStubOrPsiChildren(CSharpStubElementSets.QUALIFIED_MEMBERS,
 				DotNetQualifiedElement.ARRAY_FACTORY),
 
 				PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT));

@@ -16,6 +16,9 @@
 
 package consulo.csharp.lang.impl.psi.partial;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.annotation.component.ServiceImpl;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.disposer.Disposable;
 import consulo.ide.ServiceManager;
@@ -38,6 +41,8 @@ import java.util.Map;
  * @since 02.05.2015
  */
 @Singleton
+@ServiceAPI(ComponentScope.PROJECT)
+@ServiceImpl
 public class CSharpPartialElementManager implements Disposable
 {
 	@Nonnull

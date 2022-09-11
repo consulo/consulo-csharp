@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.resolve;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.application.progress.ProgressManager;
 import consulo.content.scope.SearchScope;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResultUtil;
@@ -39,6 +40,7 @@ import java.util.function.Predicate;
  * @author VISTALL
  * @since 08.07.2015
  */
+@ExtensionImpl
 public class CSharpShortNameSearcher extends DotNetShortNameSearcher
 {
 	@Inject

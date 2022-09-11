@@ -21,8 +21,8 @@ import consulo.application.util.CachedValueProvider;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.csharp.lang.psi.CSharpFile;
-import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetQualifiedElement;
@@ -63,7 +63,7 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 		StubElement<?> stub = getStub();
 		if(stub != null)
 		{
-			return stub.getChildrenByType(CSharpStubElements.USING_CHILDREN, CSharpUsingListChild.ARRAY_FACTORY);
+			return stub.getChildrenByType(CSharpStubElementSets.USING_CHILDREN, CSharpUsingListChild.ARRAY_FACTORY);
 		}
 		return findChildrenByClass(CSharpUsingListChild.class);
 	}
@@ -109,7 +109,7 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 		StubElement<?> stub = getStub();
 		if(stub != null)
 		{
-			return stub.getChildrenByType(CSharpStubElements.QUALIFIED_MEMBERS, DotNetQualifiedElement.ARRAY_FACTORY);
+			return stub.getChildrenByType(CSharpStubElementSets.QUALIFIED_MEMBERS, DotNetQualifiedElement.ARRAY_FACTORY);
 		}
 		return findChildrenByClass(DotNetQualifiedElement.class);
 	}

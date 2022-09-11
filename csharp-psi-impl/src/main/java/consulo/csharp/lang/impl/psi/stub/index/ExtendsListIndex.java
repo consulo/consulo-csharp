@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.stub.index;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.stub.IntStubIndexExtension;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.language.psi.stub.StubIndexExtension;
@@ -27,6 +28,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 10.01.14
  */
+@ExtensionImpl
 public class ExtendsListIndex extends IntStubIndexExtension<DotNetTypeList>
 {
 	@Nonnull

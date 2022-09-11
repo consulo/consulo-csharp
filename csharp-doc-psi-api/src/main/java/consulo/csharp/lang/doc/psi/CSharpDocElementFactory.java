@@ -16,7 +16,9 @@
 
 package consulo.csharp.lang.doc.psi;
 
-import consulo.ide.ServiceManager;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.application.Application;
 import consulo.language.ast.IElementType;
 
 import javax.annotation.Nonnull;
@@ -25,11 +27,12 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 26-Dec-17
  */
+@ServiceAPI(ComponentScope.APPLICATION)
 public interface CSharpDocElementFactory
 {
 	static IElementType create()
 	{
-		CSharpDocElementFactory factory = ServiceManager.getService(CSharpDocElementFactory.class);
+		CSharpDocElementFactory factory = Application.get().getInstance(CSharpDocElementFactory.class);
 		return factory.getDocRootElementType();
 	}
 

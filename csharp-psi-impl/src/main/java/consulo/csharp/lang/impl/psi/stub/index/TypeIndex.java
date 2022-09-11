@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.stub.index;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.stub.StubIndexExtension;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.language.psi.stub.StringStubIndexExtension;
@@ -27,6 +28,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 15.12.13.
  */
+@ExtensionImpl
 public class TypeIndex extends StringStubIndexExtension<CSharpTypeDeclaration>
 {
 	@Nonnull

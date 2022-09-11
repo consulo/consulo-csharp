@@ -18,6 +18,7 @@ package consulo.csharp.lang.impl.psi.source;
 
 import javax.annotation.Nonnull;
 
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import org.jetbrains.annotations.NonNls;
@@ -95,7 +96,7 @@ public class CSharpStubTupleVariableImpl extends CSharpStubElementImpl<CSharpVar
 	@Nullable
 	public DotNetType getType()
 	{
-		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
+		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 0);
 	}
 
 	@RequiredReadAction

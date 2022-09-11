@@ -69,7 +69,7 @@ public class SimpleElementGroupCollectors
 		@Override
 		public DotNetGenericExtractor getExtractor()
 		{
-			// dont allow extract
+			// don't allow extract
 			return DotNetGenericExtractor.EMPTY;
 		}
 

@@ -35,7 +35,7 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpPointerTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpOperatorNameHelper;
 import consulo.csharp.lang.psi.resolve.OperatorByTokenSelector;
 import consulo.document.util.TextRange;
 import consulo.dotnet.DotNetTypes;

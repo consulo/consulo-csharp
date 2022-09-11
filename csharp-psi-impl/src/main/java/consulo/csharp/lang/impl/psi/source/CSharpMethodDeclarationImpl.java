@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.IStubElementType;
@@ -27,7 +28,7 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpOperatorNameHelper;
 import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpMethodImplUtil;
 import consulo.csharp.lang.impl.psi.stub.CSharpMethodDeclStub;
 import consulo.dotnet.psi.DotNetType;
@@ -159,7 +160,7 @@ public class CSharpMethodDeclarationImpl extends CSharpStubLikeMethodDeclaration
 	@Override
 	public DotNetType getTypeForImplement()
 	{
-		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 1);
+		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 1);
 	}
 
 	@Nonnull

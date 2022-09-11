@@ -16,9 +16,10 @@
 
 package consulo.csharp.cfs.impl;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.cfs.impl.lexer.CSharpInterpolationStringLexer;
 import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.doc.impl.psi.CSharpInjectExpressionElementType;
+import consulo.csharp.lang.impl.psi.CSharpInjectExpressionElementType;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.dotnet.cfs.lang.BaseExpressionCfsLanguageVersion;
 import consulo.dotnet.cfs.lang.CfsLanguage;
@@ -34,6 +35,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 12.03.2015
  */
+@ExtensionImpl
 public class CSharpCfsLanguageVersion extends BaseExpressionCfsLanguageVersion
 {
 	@Nonnull

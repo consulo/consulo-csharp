@@ -17,7 +17,7 @@
 package consulo.csharp.resolve;
 
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.ide.CSharpElementPresentationUtil;
+import consulo.csharp.impl.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.impl.psi.source.CSharpOperatorReferenceImpl;
 import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.*;

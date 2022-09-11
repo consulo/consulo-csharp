@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.stub.index;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.language.psi.stub.IntStubIndexExtension;
 import consulo.language.psi.stub.StubIndexExtension;
@@ -27,6 +28,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 13.07.14
  */
+@ExtensionImpl
 public class TypeByVmQNameIndex extends IntStubIndexExtension<DotNetTypeDeclaration>
 {
 	@Nonnull

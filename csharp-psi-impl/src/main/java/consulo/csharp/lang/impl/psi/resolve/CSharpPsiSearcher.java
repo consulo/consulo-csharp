@@ -17,6 +17,7 @@
 package consulo.csharp.lang.impl.psi.resolve;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.content.scope.SearchScope;
 import consulo.csharp.lang.impl.psi.CSharpNamespaceAsElementImpl;
 import consulo.csharp.lang.impl.psi.partial.CSharpPartialElementManager;
@@ -28,13 +29,12 @@ import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.impl.resolve.impl.IndexBasedDotNetPsiSearcherExtension;
 import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
-import consulo.ide.ServiceManager;
+import consulo.dotnet.psi.resolve.DotNetPsiSearcherExtension;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.stub.StubIndexKey;
 import consulo.project.DumbService;
 import consulo.project.Project;
 import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -46,13 +46,13 @@ import java.util.List;
  * @author VISTALL
  * @since 13.07.14
  */
-@Singleton
+@ExtensionImpl
 public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcherExtension
 {
 	@Nonnull
 	public static CSharpPsiSearcher getInstance(@Nonnull Project project)
 	{
-		return ServiceManager.getService(project, CSharpPsiSearcher.class);
+		return project.getExtensionPoint(DotNetPsiSearcherExtension.class).findExtensionOrFail(CSharpPsiSearcher.class);
 	}
 
 	@Inject

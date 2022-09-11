@@ -19,6 +19,7 @@ package consulo.csharp.lang.impl.psi.source;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.language.ast.ASTNode;
 import org.jetbrains.annotations.NonNls;
 import consulo.language.psi.PsiElement;
@@ -82,7 +83,7 @@ public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<EmptyStub<
 	@Nullable
 	public DotNetType getType()
 	{
-		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
+		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 0);
 	}
 
 	@RequiredReadAction

@@ -18,7 +18,7 @@ package consulo.csharp.lang.impl.psi.source;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
-import consulo.csharp.lang.impl.psi.CSharpStubElements;
+import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.csharp.lang.impl.psi.stub.CSharpTypeListStub;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeList;
@@ -49,7 +49,7 @@ public class CSharpStubTypeListImpl extends CSharpStubElementImpl<CSharpTypeList
 	@Override
 	public int getTypesCount()
 	{
-		return DotNetPsiCountUtil.countChildrenOfType(this, CSharpStubElements.TYPE_SET);
+		return DotNetPsiCountUtil.countChildrenOfType(this, CSharpStubElementSets.TYPE_SET);
 	}
 
 	@RequiredReadAction
@@ -57,7 +57,7 @@ public class CSharpStubTypeListImpl extends CSharpStubElementImpl<CSharpTypeList
 	@Override
 	public DotNetType[] getTypes()
 	{
-		return getStubOrPsiChildren(CSharpStubElements.TYPE_SET, DotNetType.ARRAY_FACTORY);
+		return getStubOrPsiChildren(CSharpStubElementSets.TYPE_SET, DotNetType.ARRAY_FACTORY);
 	}
 
 	@RequiredReadAction

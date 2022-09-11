@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.impl;
 
+import consulo.annotation.component.ServiceImpl;
 import consulo.csharp.lang.CSharpLanguageVersionHelper;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.version.LanguageVersion;
@@ -28,6 +29,7 @@ import javax.annotation.Nonnull;
  * @since 14.12.13.
  */
 @Singleton
+@ServiceImpl
 public class CSharpLanguageVersionHelperImpl extends CSharpLanguageVersionHelper
 {
 	private final CSharpLanguageVersionWrapper[] myWrappers;
