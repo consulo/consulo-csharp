@@ -17,11 +17,13 @@
 package consulo.csharp.impl.ide.codeInspection.matchNamespace;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.impl.ide.codeInspection.CSharpGeneralLocalInspection;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import consulo.language.editor.inspection.LocalInspectionTool;
 import consulo.language.editor.inspection.LocalInspectionToolSession;
 import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiCodeFragment;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
@@ -34,7 +36,8 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 05-Nov-17
  */
-public abstract class MatchNamespaceInspection extends LocalInspectionTool
+@ExtensionImpl
+public class MatchNamespaceInspection extends CSharpGeneralLocalInspection
 {
 	private static final Key<MatchNamespaceVisitor> KEY = Key.create("MatchNamespaceVisitor");
 
@@ -77,5 +80,19 @@ public abstract class MatchNamespaceInspection extends LocalInspectionTool
 			return;
 		}
 		visitor.report();
+	}
+
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "Namespace match vfs inspection";
+	}
+
+	@Nonnull
+	@Override
+	public HighlightDisplayLevel getDefaultLevel()
+	{
+		return HighlightDisplayLevel.WARNING;
 	}
 }

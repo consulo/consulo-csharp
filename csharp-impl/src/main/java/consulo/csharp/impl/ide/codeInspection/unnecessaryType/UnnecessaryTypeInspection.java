@@ -17,7 +17,9 @@
 package consulo.csharp.impl.ide.codeInspection.unnecessaryType;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.impl.ide.codeInsight.actions.ChangeVariableToTypeRefFix;
+import consulo.csharp.impl.ide.codeInspection.CSharpGeneralLocalInspection;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.source.CSharpCatchStatementImpl;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpDynamicTypeRef;
@@ -29,10 +31,10 @@ import consulo.csharp.module.extension.CSharpModuleUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import consulo.language.editor.inspection.LocalInspectionTool;
 import consulo.language.editor.inspection.LocalInspectionToolSession;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElementVisitor;
 
 import javax.annotation.Nonnull;
@@ -41,7 +43,8 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 18.05.14
  */
-public abstract class UnnecessaryTypeInspection extends LocalInspectionTool
+@ExtensionImpl
+public class UnnecessaryTypeInspection extends CSharpGeneralLocalInspection
 {
 	@Nonnull
 	@Override
@@ -98,5 +101,19 @@ public abstract class UnnecessaryTypeInspection extends LocalInspectionTool
 						new consulo.ide.impl.idea.codeInspection.IntentionWrapper(new ChangeVariableToTypeRefFix(variable, DotNetTypeRef.AUTO_TYPE), variable.getContainingFile()));
 			}
 		};
+	}
+
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "Unnecessary type";
+	}
+
+	@Nonnull
+	@Override
+	public HighlightDisplayLevel getDefaultLevel()
+	{
+		return HighlightDisplayLevel.WEAK_WARNING;
 	}
 }

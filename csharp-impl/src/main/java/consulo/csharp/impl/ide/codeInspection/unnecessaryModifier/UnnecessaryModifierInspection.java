@@ -17,16 +17,18 @@
 package consulo.csharp.impl.ide.codeInspection.unnecessaryModifier;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.impl.ide.codeInsight.actions.RemoveModifierFix;
+import consulo.csharp.impl.ide.codeInspection.CSharpGeneralLocalInspection;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.ide.impl.idea.codeInspection.IntentionWrapper;
-import consulo.language.editor.inspection.LocalInspectionTool;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 
@@ -36,7 +38,8 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 17.11.2015
  */
-public abstract class UnnecessaryModifierInspection extends LocalInspectionTool
+@ExtensionImpl
+public class UnnecessaryModifierInspection extends CSharpGeneralLocalInspection
 {
 	@Nonnull
 	@Override
@@ -66,5 +69,19 @@ public abstract class UnnecessaryModifierInspection extends LocalInspectionTool
 				}
 			}
 		};
+	}
+
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "Unnecessary modifier";
+	}
+
+	@Nonnull
+	@Override
+	public HighlightDisplayLevel getDefaultLevel()
+	{
+		return HighlightDisplayLevel.WARNING;
 	}
 }

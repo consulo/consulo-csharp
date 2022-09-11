@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2022 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,32 @@
  * limitations under the License.
  */
 
-package consulo.csharp.impl.ide.codeInsight.actions;
+package consulo.csharp.impl.ide.codeInspection;
 
-import consulo.annotation.component.ExtensionImpl;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.language.editor.intention.IntentionMetaData;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.language.Language;
+import consulo.language.editor.inspection.LocalInspectionTool;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
- * @since 31.08.14
+ * @since 11-Sep-22
  */
-@ExtensionImpl
-@IntentionMetaData(ignoreId = "csharp.add.private.modifier", categories = "C#", fileExtensions = "cs")
-public class AddPrivateModifierFix extends AddAccessModifierFix
+public abstract class CSharpGeneralLocalInspection extends LocalInspectionTool
 {
-	public AddPrivateModifierFix()
+	@Nullable
+	@Override
+	public final Language getLanguage()
 	{
-		super(CSharpModifier.PRIVATE);
+		return CSharpLanguage.INSTANCE;
+	}
+
+	@Nonnull
+	@Override
+	public final String getGroupDisplayName()
+	{
+		return "General";
 	}
 }

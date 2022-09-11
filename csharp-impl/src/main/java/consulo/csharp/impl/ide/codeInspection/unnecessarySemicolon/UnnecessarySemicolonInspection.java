@@ -17,12 +17,14 @@
 package consulo.csharp.impl.ide.codeInspection.unnecessarySemicolon;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.impl.ide.codeInspection.CSharpGeneralLocalInspection;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpEmptyStatementImpl;
-import consulo.language.editor.inspection.LocalInspectionTool;
 import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
 import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
@@ -34,7 +36,8 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 5/9/2016
  */
-public abstract class UnnecessarySemicolonInspection extends LocalInspectionTool
+@ExtensionImpl
+public class UnnecessarySemicolonInspection extends CSharpGeneralLocalInspection
 {
 	private static class RemoveSemicolonFix extends LocalQuickFixOnPsiElement
 	{
@@ -81,5 +84,19 @@ public abstract class UnnecessarySemicolonInspection extends LocalInspectionTool
 				}
 			}
 		};
+	}
+
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "Unnecessary semicolon";
+	}
+
+	@Nonnull
+	@Override
+	public HighlightDisplayLevel getDefaultLevel()
+	{
+		return HighlightDisplayLevel.WARNING;
 	}
 }

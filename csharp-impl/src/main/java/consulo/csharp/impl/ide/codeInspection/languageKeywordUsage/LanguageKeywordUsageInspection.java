@@ -16,23 +16,27 @@
 
 package consulo.csharp.impl.ide.codeInspection.languageKeywordUsage;
 
-import consulo.language.editor.inspection.ProblemsHolder;
-import consulo.language.editor.WriteCommandAction;
-import consulo.language.psi.PsiElementVisitor;
-import consulo.language.ast.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
-import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.impl.ide.codeInspection.CSharpGeneralLocalInspection;
 import consulo.csharp.impl.ide.completion.CSharpCompletionUtil;
+import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.impl.psi.source.CSharpNativeTypeImplUtil;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
-import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiUtilCore;
 import consulo.project.Project;
@@ -44,7 +48,8 @@ import java.util.Map;
  * @author VISTALL
  * @since 16.04.2016
  */
-public abstract class LanguageKeywordUsageInspection extends LocalInspectionTool
+@ExtensionImpl
+public class LanguageKeywordUsageInspection extends CSharpGeneralLocalInspection
 {
 	public static class ReplaceByKeywordFix extends LocalQuickFixOnPsiElement
 	{
@@ -147,6 +152,20 @@ public abstract class LanguageKeywordUsageInspection extends LocalInspectionTool
 				}
 			}
 		}
+	}
+
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "Language Keyword Usage";
+	}
+
+	@Nonnull
+	@Override
+	public HighlightDisplayLevel getDefaultLevel()
+	{
+		return HighlightDisplayLevel.WEAK_WARNING;
 	}
 
 	@Nonnull

@@ -16,6 +16,7 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions.expressionActions.lambda;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.codeEditor.Editor;
 import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
@@ -28,6 +29,7 @@ import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.ASTNode;
+import consulo.language.editor.intention.IntentionMetaData;
 import consulo.language.editor.intention.PsiElementBaseIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
@@ -41,6 +43,8 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 01.11.14
  */
+@ExtensionImpl
+@IntentionMetaData(ignoreId = "csharp.delegate.to.lambda", categories = "C#", fileExtensions = "cs")
 public class DelegateToLambdaExpressionFix extends PsiElementBaseIntentionAction
 {
 	@Override

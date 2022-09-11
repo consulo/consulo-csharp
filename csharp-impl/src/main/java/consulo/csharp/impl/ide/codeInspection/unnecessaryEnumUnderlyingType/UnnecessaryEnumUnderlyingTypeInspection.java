@@ -16,20 +16,22 @@
 
 package consulo.csharp.impl.ide.codeInspection.unnecessaryEnumUnderlyingType;
 
-import consulo.language.editor.inspection.LocalInspectionTool;
-import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
-import consulo.language.editor.inspection.ProblemsHolder;
-import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.impl.ide.codeInspection.CSharpGeneralLocalInspection;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
 import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
+import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
@@ -41,7 +43,8 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 01-Nov-17
  */
-public abstract class UnnecessaryEnumUnderlyingTypeInspection extends LocalInspectionTool
+@ExtensionImpl
+public class UnnecessaryEnumUnderlyingTypeInspection extends CSharpGeneralLocalInspection
 {
 	private static class RemoveFix extends LocalQuickFixOnPsiElement
 	{
@@ -105,5 +108,19 @@ public abstract class UnnecessaryEnumUnderlyingTypeInspection extends LocalInspe
 				}
 			}
 		};
+	}
+
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "Unnecessary enum underlying type";
+	}
+
+	@Nonnull
+	@Override
+	public HighlightDisplayLevel getDefaultLevel()
+	{
+		return HighlightDisplayLevel.WARNING;
 	}
 }

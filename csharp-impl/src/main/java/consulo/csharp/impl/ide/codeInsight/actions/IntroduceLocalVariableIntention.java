@@ -16,8 +16,10 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.editor.CodeInsightBundle;
 import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.IntentionMetaData;
 import consulo.language.editor.refactoring.action.BaseRefactoringIntentionAction;
 import consulo.language.psi.SyntheticElement;
 import consulo.language.psi.util.PsiTreeUtil;
@@ -39,6 +41,8 @@ import javax.annotation.Nonnull;
  * @author michael.shumenko
  * @since Aug 09, 2015
  */
+@ExtensionImpl
+@IntentionMetaData(ignoreId = "csharp.introduce.local.var", categories = "C#", fileExtensions = "cs")
 public class IntroduceLocalVariableIntention extends BaseRefactoringIntentionAction
 {
 	@Override

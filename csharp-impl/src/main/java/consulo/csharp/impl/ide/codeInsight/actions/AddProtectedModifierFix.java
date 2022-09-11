@@ -17,14 +17,18 @@
 package consulo.csharp.impl.ide.codeInsight.actions;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.language.editor.intention.IntentionMetaData;
 
 /**
  * @author VISTALL
  * @since 31.08.14
  */
+@ExtensionImpl
+@IntentionMetaData(ignoreId = "csharp.add.protected.modifier", categories = "C#", fileExtensions = "cs")
 public class AddProtectedModifierFix extends AddAccessModifierFix
 {
 	public AddProtectedModifierFix()

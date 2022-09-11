@@ -16,25 +16,26 @@
 
 package consulo.csharp.impl.ide.codeInspection;
 
-import consulo.language.editor.inspection.LocalInspectionTool;
-import consulo.language.editor.inspection.ProblemHighlightType;
-import consulo.language.editor.inspection.ProblemsHolder;
-import consulo.language.psi.PsiElementVisitor;
-import consulo.util.lang.Couple;
-import consulo.document.util.TextRange;
-import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpExpressionStatementImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpReturnStatementImpl;
+import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
+import consulo.document.util.TextRange;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.psi.PsiFile;
 import consulo.project.Project;
+import consulo.util.lang.Couple;
 import org.jetbrains.annotations.Nls;
 
 import javax.annotation.Nonnull;
@@ -44,7 +45,8 @@ import javax.annotation.Nullable;
  * @author VISTALL
  * @since 2020-06-29
  */
-public abstract class LambdaBlockStatementCanReplacedByExpressionInspection extends LocalInspectionTool
+@ExtensionImpl
+public class LambdaBlockStatementCanReplacedByExpressionInspection extends CSharpGeneralLocalInspection
 {
 	private static class ReplaceStatementByExpressionFix extends LocalQuickFixOnPsiElement
 	{
@@ -180,5 +182,19 @@ public abstract class LambdaBlockStatementCanReplacedByExpressionInspection exte
 
 		holder.registerProblem(elementToHighlight, "Statement body can be replaced by expression body", ProblemHighlightType.LIKE_UNUSED_SYMBOL, new TextRange(0, textLength), new
 				ReplaceStatementByExpressionFix(lambdaExpression));
+	}
+
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "Lambda statement can replaced by expression";
+	}
+
+	@Nonnull
+	@Override
+	public HighlightDisplayLevel getDefaultLevel()
+	{
+		return HighlightDisplayLevel.WARNING;
 	}
 }

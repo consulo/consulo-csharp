@@ -16,7 +16,9 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.IntentionMetaData;
 import consulo.language.editor.intention.PsiElementBaseIntentionAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
@@ -40,6 +42,8 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 07.03.2016
  */
+@ExtensionImpl
+@IntentionMetaData(ignoreId = "csharp.convert.property.to.field", categories = "C#", fileExtensions = "cs")
 public class ConvertToPropertyFieldFix extends PsiElementBaseIntentionAction
 {
 	public ConvertToPropertyFieldFix()

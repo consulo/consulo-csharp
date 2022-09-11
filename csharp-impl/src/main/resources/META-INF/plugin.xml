@@ -31,14 +31,10 @@
 	<depends optional="true">consulo.dotnet.microsoft</depends>
 	<depends optional="true">consulo.dotnet.mono</depends>
 
-	<import path="/META-INF/CSharpInspections.xml"/>
-	<import path="/META-INF/CSharpIntentions.xml"/>
-
 	<actions>
 		<action id="CSharp.File" class="consulo.csharp.impl.ide.actions.CSharpCreateFileAction">
 			<add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewClass"/>
 		</action>
-
 
 		<group id="CSharp.GenerateActions">
 			<action id="CSharp.GenerateReadOnlyProperty" class="consulo.csharp.impl.ide.actions.generate.GenerateReadOnlyPropertyAction"/>

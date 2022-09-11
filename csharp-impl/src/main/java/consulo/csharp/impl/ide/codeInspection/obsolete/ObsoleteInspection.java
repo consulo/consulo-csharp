@@ -17,6 +17,8 @@
 package consulo.csharp.impl.ide.codeInspection.obsolete;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.impl.ide.codeInspection.CSharpGeneralLocalInspection;
 import consulo.csharp.impl.ide.projectView.CSharpElementTreeNode;
 import consulo.csharp.impl.localize.CSharpInspectionLocalize;
 import consulo.csharp.lang.impl.evaluator.ConstantExpressionEvaluator;
@@ -28,9 +30,9 @@ import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetAttributeUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.ast.IElementType;
-import consulo.language.editor.inspection.LocalInspectionTool;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiNamedElement;
@@ -47,8 +49,23 @@ import java.util.List;
  * @author VISTALL
  * @since 28.08.14
  */
-public abstract class ObsoleteInspection extends LocalInspectionTool
+@ExtensionImpl
+public class ObsoleteInspection extends CSharpGeneralLocalInspection
 {
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "Obsolete declarations";
+	}
+
+	@Nonnull
+	@Override
+	public HighlightDisplayLevel getDefaultLevel()
+	{
+		return HighlightDisplayLevel.WARNING;
+	}
+
 	@Nonnull
 	@Override
 	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)

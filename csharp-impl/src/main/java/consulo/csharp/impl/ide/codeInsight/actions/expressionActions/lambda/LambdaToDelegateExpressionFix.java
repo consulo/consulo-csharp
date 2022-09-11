@@ -16,22 +16,26 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions.expressionActions.lambda;
 
-import consulo.codeEditor.Editor;
-import consulo.language.psi.PsiElement;
-import consulo.language.ast.IElementType;
-import consulo.language.psi.PsiUtilCore;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.codeEditor.Editor;
 import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
+import consulo.csharp.lang.psi.CSharpLambdaParameter;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.intention.IntentionMetaData;
 import consulo.language.editor.intention.PsiElementBaseIntentionAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
 import consulo.language.psi.util.PsiTreeUtil;
-import consulo.project.Project;
 import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
@@ -40,6 +44,8 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 01.11.14
  */
+@ExtensionImpl
+@IntentionMetaData(ignoreId = "csharp.lambda.to.delegate", categories = "C#", fileExtensions = "cs")
 public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
 {
 	@Override

@@ -16,12 +16,16 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.language.editor.intention.IntentionMetaData;
 
 /**
  * @author VISTALL
  * @since 31.08.14
  */
+@ExtensionImpl
+@IntentionMetaData(ignoreId = "csharp.add.protected.internal.modifier", categories = "C#", fileExtensions = "cs")
 public class AddProtectedInternalModifierFix extends AddAccessModifierFix
 {
 	public AddProtectedInternalModifierFix()

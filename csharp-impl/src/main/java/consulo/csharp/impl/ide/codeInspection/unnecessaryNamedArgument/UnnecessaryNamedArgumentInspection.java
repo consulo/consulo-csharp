@@ -16,7 +16,9 @@
 
 package consulo.csharp.impl.ide.codeInspection.unnecessaryNamedArgument;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.impl.ide.codeInsight.actions.ConvertNamedToSimpleArgumentFix;
+import consulo.csharp.impl.ide.codeInspection.CSharpGeneralLocalInspection;
 import consulo.csharp.impl.ide.highlight.check.impl.CS1738;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.source.resolve.MethodResolveResult;
@@ -27,9 +29,10 @@ import consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
-import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.ide.impl.idea.codeInspection.IntentionWrapper;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.ResolveResult;
@@ -43,7 +46,8 @@ import java.util.List;
  * @author VISTALL
  * @since 02.12.14
  */
-public abstract class UnnecessaryNamedArgumentInspection extends LocalInspectionTool
+@ExtensionImpl
+public class UnnecessaryNamedArgumentInspection extends CSharpGeneralLocalInspection
 {
 	@Nonnull
 	@Override
@@ -95,9 +99,23 @@ public abstract class UnnecessaryNamedArgumentInspection extends LocalInspection
 				{
 					CSharpReferenceExpression argumentNameReference = argument.getArgumentNameReference();
 					holder.registerProblem(argumentNameReference, "Unnecessary argument name specific", ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-							new consulo.ide.impl.idea.codeInspection.IntentionWrapper(new ConvertNamedToSimpleArgumentFix(argument), owner.getContainingFile()));
+							new IntentionWrapper(new ConvertNamedToSimpleArgumentFix(argument), owner.getContainingFile()));
 				}
 			}
 		};
+	}
+
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "Unnecessary named argument";
+	}
+
+	@Nonnull
+	@Override
+	public HighlightDisplayLevel getDefaultLevel()
+	{
+		return HighlightDisplayLevel.WEAK_WARNING;
 	}
 }

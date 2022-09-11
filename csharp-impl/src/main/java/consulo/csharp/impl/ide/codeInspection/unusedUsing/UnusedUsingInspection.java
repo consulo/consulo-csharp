@@ -16,18 +16,20 @@
 
 package consulo.csharp.impl.ide.codeInspection.unusedUsing;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.impl.ide.codeInspection.CSharpGeneralLocalInspection;
+import consulo.csharp.lang.impl.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
+import consulo.csharp.lang.psi.CSharpUsingListChild;
 import consulo.language.editor.WriteCommandAction;
-import consulo.language.editor.inspection.LocalInspectionTool;
 import consulo.language.editor.inspection.LocalInspectionToolSession;
 import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
 import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
-import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.impl.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.language.editor.inspection.ProblemsHolder;
 import consulo.project.Project;
 import consulo.util.dataholder.Key;
 
@@ -38,7 +40,8 @@ import java.util.Map;
  * @author VISTALL
  * @since 05.03.2016
  */
-public abstract class UnusedUsingInspection extends LocalInspectionTool
+@ExtensionImpl
+public class UnusedUsingInspection extends CSharpGeneralLocalInspection
 {
 	public static final class DeleteStatement extends LocalQuickFixOnPsiElement
 	{
@@ -110,5 +113,19 @@ public abstract class UnusedUsingInspection extends LocalInspectionTool
 			CSharpUsingListChild element = entry.getKey();
 			problemsHolder.registerProblem(element, "Using statement is not used", ProblemHighlightType.LIKE_UNUSED_SYMBOL, new DeleteStatement(element));
 		}
+	}
+
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "Unused using";
+	}
+
+	@Nonnull
+	@Override
+	public HighlightDisplayLevel getDefaultLevel()
+	{
+		return HighlightDisplayLevel.WARNING;
 	}
 }
