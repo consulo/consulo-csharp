@@ -16,29 +16,30 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
-import javax.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
 import consulo.component.util.localize.BundleBase;
-import consulo.language.psi.PsiDocumentManager;
-import consulo.language.psi.SmartPointerManager;
-import consulo.language.psi.SmartPsiElementPointer;
-import consulo.project.Project;
-import consulo.ui.annotation.RequiredUIAccess;
 import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
+import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiFile;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 30.12.14
  */
-public class ChangeVariableToTypeRefFix extends BaseIntentionAction
+public class ChangeVariableToTypeRefFix extends BaseIntentionAction implements SyntheticIntentionAction
 {
 	private final SmartPsiElementPointer<DotNetVariable> myVariablePointer;
 	@Nonnull
