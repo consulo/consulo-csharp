@@ -16,7 +16,8 @@
 
 package consulo.csharp.impl.ide.codeInsight;
 
-import consulo.configurable.Configurable;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.configurable.ApplicationConfigurable;
 import consulo.configurable.SimpleConfigurableByProperties;
 import consulo.disposer.Disposable;
 import consulo.platform.base.localize.ApplicationLocalize;
@@ -28,12 +29,14 @@ import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 01.01.14.
  */
-public class CSharpAutoImportConfigurable extends SimpleConfigurableByProperties implements Configurable
+@ExtensionImpl
+public class CSharpAutoImportConfigurable extends SimpleConfigurableByProperties implements ApplicationConfigurable
 {
 	private final Provider<CSharpCodeInsightSettings> myCSharpCodeInsightSettings;
 
@@ -57,5 +60,26 @@ public class CSharpAutoImportConfigurable extends SimpleConfigurableByProperties
 		propertyBuilder.add(optimizeImportOnTheFlyBox, () -> settings.OPTIMIZE_IMPORTS_ON_THE_FLY, value -> settings.OPTIMIZE_IMPORTS_ON_THE_FLY = value);
 
 		return verticalLayout;
+	}
+
+	@Nonnull
+	@Override
+	public String getId()
+	{
+		return "editor.preferences.import.csharp";
+	}
+
+	@Nullable
+	@Override
+	public String getParentId()
+	{
+		return "editor.preferences.import";
+	}
+
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "C#";
 	}
 }

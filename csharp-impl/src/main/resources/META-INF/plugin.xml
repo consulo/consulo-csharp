@@ -48,17 +48,4 @@
 			<add-to-group group-id="GenerateGroup" anchor="first"/>
 		</group>
 	</actions>
-
-
-	<extensions defaultExtensionNs="com.intellij">
-
-
-
-		<applicationConfigurable id="editor.preferences.import.csharp"
-								 parentId="editor.preferences.import"
-								 displayName="C#"
-								 instance="consulo.csharp.impl.ide.codeInsight.CSharpAutoImportConfigurable"/>
-
-
-	</extensions>
 </consulo-plugin>
