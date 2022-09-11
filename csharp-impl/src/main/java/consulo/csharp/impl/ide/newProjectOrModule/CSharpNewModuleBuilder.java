@@ -28,6 +28,7 @@ import consulo.dotnet.impl.roots.orderEntry.DotNetLibraryOrderEntryType;
 import consulo.dotnet.module.extension.DotNetMutableModuleExtension;
 import consulo.fileEditor.FileEditorManager;
 import consulo.ide.newModule.*;
+import consulo.language.content.ProductionContentFolderTypeProvider;
 import consulo.localize.LocalizeValue;
 import consulo.module.content.layer.ContentEntry;
 import consulo.module.content.layer.ModifiableModuleRootLayer;
@@ -118,7 +119,8 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 
 				defaultSetup(context, modifiableRootModel);
 
-				StartupManager.getInstance(modifiableRootModel.getProject()).registerPostStartupActivity(((DumbAwareRunnable) () -> {
+				StartupManager.getInstance(modifiableRootModel.getProject()).runAfterOpened(((DumbAwareRunnable) () ->
+				{
 					VirtualFile dir = contentEntry.getFile();
 					if(dir != null)
 					{
@@ -155,6 +157,11 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 			assert dotNetMutableModuleExtension != null;
 
 			dotNetMutableModuleExtension.setEnabled(true);
+			dotNetMutableModuleExtension.setAllowSourceRoots(true);
+
+			ContentEntry entry = layer.getContentEntries()[0];
+			entry.addFolder(entry.getUrl(), ProductionContentFolderTypeProvider.getInstance());
+
 			boolean debug = layerName.equals(DEBUG);
 			if(debug)
 			{
