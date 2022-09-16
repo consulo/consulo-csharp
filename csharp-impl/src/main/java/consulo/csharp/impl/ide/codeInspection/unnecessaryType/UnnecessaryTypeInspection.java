@@ -34,6 +34,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.editor.inspection.LocalInspectionToolSession;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.intention.IntentionWrapper;
 import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElementVisitor;
 
@@ -98,7 +99,7 @@ public class UnnecessaryTypeInspection extends CSharpGeneralLocalInspection
 				}
 
 				holder.registerProblem(type, "Can replaced by 'var'", ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-						new consulo.ide.impl.idea.codeInspection.IntentionWrapper(new ChangeVariableToTypeRefFix(variable, DotNetTypeRef.AUTO_TYPE), variable.getContainingFile()));
+						new IntentionWrapper(new ChangeVariableToTypeRefFix(variable, DotNetTypeRef.AUTO_TYPE), variable.getContainingFile()));
 			}
 		};
 	}

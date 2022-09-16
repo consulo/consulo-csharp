@@ -33,7 +33,6 @@ import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.dotnet.psi.DotNetModifier;
-import consulo.ide.impl.idea.ide.util.ChooseElementsDialog;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.action.CodeInsightActionHandler;
@@ -44,6 +43,7 @@ import consulo.language.psi.PsiReference;
 import consulo.language.psi.search.ReferencesSearch;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.awt.ChooseElementsDialog;
 import consulo.ui.image.Image;
 import consulo.util.lang.StringUtil;
 
