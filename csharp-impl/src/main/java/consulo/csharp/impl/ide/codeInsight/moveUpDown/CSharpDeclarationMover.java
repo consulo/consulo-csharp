@@ -25,6 +25,7 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.document.Document;
 import consulo.document.util.TextRange;
 import consulo.dotnet.psi.*;
+import consulo.language.editor.CodeInsightUtilCore;
 import consulo.language.editor.moveUpDown.LineMover;
 import consulo.language.editor.moveUpDown.LineRange;
 import consulo.language.impl.ast.Factory;
@@ -61,7 +62,7 @@ public class CSharpDeclarationMover extends LineMover
 			try
 			{
 				PsiElement inserted = myEnumToInsertSemicolonAfter.getParent().addAfter(semicolon.getPsi(), myEnumToInsertSemicolonAfter);
-				inserted = consulo.ide.impl.idea.codeInsight.CodeInsightUtilBase.forcePsiPostprocessAndRestoreElement(inserted);
+				inserted = CodeInsightUtilCore.forcePsiPostprocessAndRestoreElement(inserted);
 				final LogicalPosition position = editor.offsetToLogicalPosition(inserted.getTextRange().getEndOffset());
 
 				info.toMove2 = new LineRange(position.line + 1, position.line + 1);

@@ -31,13 +31,13 @@ import consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import consulo.dotnet.impl.documentation.DotNetDocumentationCache;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.psi.resolve.*;
-import consulo.ide.impl.idea.openapi.module.ModuleUtil;
 import consulo.language.Language;
 import consulo.language.editor.documentation.LanguageDocumentationProvider;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiManager;
 import consulo.language.psi.PsiNamedElement;
+import consulo.language.util.ModuleUtilCore;
 import consulo.module.Module;
 import consulo.module.content.ProjectFileIndex;
 import consulo.module.content.ProjectRootManager;
@@ -232,7 +232,7 @@ public class CSharpDocumentationProvider implements LanguageDocumentationProvide
 			}
 			else
 			{
-				final Module module = containingFile == null ? null : ModuleUtil.findModuleForPsiElement(containingFile);
+				final Module module = containingFile == null ? null : ModuleUtilCore.findModuleForPsiElement(containingFile);
 				if(module != null)
 				{
 					builder.append('[').append(module.getName()).append("] ");

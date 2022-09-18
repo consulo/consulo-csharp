@@ -24,7 +24,6 @@ import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImplUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.document.util.TextRange;
-import consulo.ide.impl.idea.util.ConstantFunction;
 import consulo.language.ast.IElementType;
 import consulo.language.editor.Pass;
 import consulo.language.editor.gutter.GutterIconNavigationHandler;
@@ -81,7 +80,7 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 		@Override
 		public Function<? super PsiElement, String> getCommonTooltip(@Nonnull List<MergeableLineMarkerInfo> infos)
 		{
-			return new ConstantFunction<>("Navigate to lambda delegate");
+			return element -> "Navigate to lambda delegate";
 		}
 	}
 
@@ -98,7 +97,7 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 				return;
 			}
 
-			MarkerInfo markerInfo = new MarkerInfo(parent, psiElement.getTextRange(), AllIcons.Gutter.ImplementingFunctional, Pass.UPDATE_ALL, new ConstantFunction<>("Navigate to lambda delegate"),
+			MarkerInfo markerInfo = new MarkerInfo(parent, psiElement.getTextRange(), AllIcons.Gutter.ImplementingFunctional, Pass.UPDATE_ALL, element -> "Navigate to lambda delegate",
 					new GutterIconNavigationHandler<PsiElement>()
 			{
 				@Override

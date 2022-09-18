@@ -63,6 +63,7 @@ import org.jetbrains.annotations.Contract;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -117,7 +118,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 		final TextRange extractRange = new TextRange(statements[0].getTextRange().getStartOffset(), statements[statements.length - 1].getTextRange().getEndOffset());
 
 		final MultiMap<DotNetVariable, CSharpReferenceExpression> variables = MultiMap.createLinkedSet();
-		final Set<DotNetVariable> assignmentVariables = new consulo.ide.impl.idea.util.containers.ArrayListSet<DotNetVariable>();
+		final Set<DotNetVariable> assignmentVariables = new LinkedHashSet<>();
 
 		final Ref<DotNetTypeRef> returnTypeRef = Ref.create();
 		for(DotNetStatement statement : statements)

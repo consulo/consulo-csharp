@@ -22,6 +22,7 @@ import consulo.codeEditor.Editor;
 import consulo.codeEditor.EditorEx;
 import consulo.codeEditor.HighlighterIterator;
 import consulo.codeEditor.ScrollType;
+import consulo.codeEditor.util.EditorModificationUtil;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import consulo.csharp.lang.impl.psi.UsefulPsiTreeUtil;
 import consulo.csharp.lang.impl.psi.source.CSharpMethodBodyImpl;
@@ -34,6 +35,8 @@ import consulo.dotnet.psi.*;
 import consulo.dotnet.psi.resolve.DotNetPointerTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
+import consulo.ide.impl.idea.codeInsight.editorActions.TypedHandler;
+import consulo.ide.impl.idea.codeStyle.CodeStyleFacade;
 import consulo.language.ast.TokenType;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.editor.AutoPopupController;
@@ -113,8 +116,8 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 
 			if(PsiTreeUtil.getParentOfType(leaf, CSharpMethodBodyImpl.class, false, DotNetModifierListOwner.class) != null)
 			{
-				consulo.ide.impl.idea.openapi.editor.EditorModificationUtil.insertStringAtCaret(editor, "{");
-				consulo.ide.impl.idea.codeInsight.editorActions.TypedHandler.indentOpenedBrace(project, editor);
+				EditorModificationUtil.insertStringAtCaret(editor, "{");
+				TypedHandler.indentOpenedBrace(project, editor);
 				return Result.STOP; // use case: manually wrapping part of method's code in 'if', 'while', etc
 			}
 		}
@@ -194,7 +197,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 	@RequiredUIAccess
 	private static Pair<CharSequence, Integer> buildDocComment(DotNetQualifiedElement qualifiedElement, Editor editor, int offset)
 	{
-		String lineIndent = consulo.ide.impl.idea.codeStyle.CodeStyleFacade.getInstance(qualifiedElement.getProject()).getLineIndent(editor.getDocument(), offset);
+		String lineIndent = CodeStyleFacade.getInstance(qualifiedElement.getProject()).getLineIndent(editor.getDocument(), offset);
 
 		int diffForCaret;
 		StringBuilder builder = new StringBuilder(" <summary>\n");

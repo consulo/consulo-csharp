@@ -25,7 +25,6 @@ import consulo.csharp.lang.impl.psi.msil.CSharpTransformer;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
-import consulo.ide.impl.idea.util.FunctionUtil;
 import consulo.language.editor.Pass;
 import consulo.language.editor.gutter.GutterIconNavigationHandler;
 import consulo.language.editor.gutter.LineMarkerInfo;
@@ -57,7 +56,7 @@ public class OverrideTypeCollector implements LineMarkerCollector
 			if(hasChild(parent))
 			{
 				Image icon = parent.isInterface() ? AllIcons.Gutter.ImplementedMethod : AllIcons.Gutter.OverridenMethod;
-				LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, FunctionUtil.constant("Searching for overriding"),
+				LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, e -> "Searching for overriding",
 						new GutterIconNavigationHandler<PsiElement>()
 				{
 					@Override

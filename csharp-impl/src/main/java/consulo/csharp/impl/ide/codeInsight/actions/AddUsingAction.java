@@ -31,6 +31,7 @@ import consulo.dotnet.DotNetBundle;
 import consulo.dotnet.impl.roots.orderEntry.DotNetLibraryOrderEntryModel;
 import consulo.dotnet.impl.roots.orderEntry.DotNetLibraryOrderEntryType;
 import consulo.csharp.impl.libraryAnalyzer.NamespaceReference;
+import consulo.language.editor.AutoImportHelper;
 import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.hint.QuestionAction;
 import consulo.language.psi.PsiDocumentManager;
@@ -60,7 +61,7 @@ import java.util.Set;
  */
 public class AddUsingAction implements QuestionAction
 {
-	private static final Logger LOGGER = Logger.getInstance(AddUsingAction.class);
+	private static final Logger LOG = Logger.getInstance(AddUsingAction.class);
 
 	@Nullable
 	private final Editor myEditor;
@@ -191,12 +192,12 @@ public class AddUsingAction implements QuestionAction
 			{
 				Document document = myEditor.getDocument();
 				PsiFile psiFile = PsiDocumentManager.getInstance(myProject).getPsiFile(document);
-				new consulo.ide.impl.idea.codeInsight.actions.OptimizeImportsProcessor(myProject, psiFile).runWithoutProgress();
+				AutoImportHelper.getInstance(myProject).runOptimizeImports(myProject, psiFile, true);
 			}
 		}
 		catch(IncorrectOperationException e)
 		{
-			LOGGER.error(e);
+			LOG.error(e);
 		}
 
 		line = myEditor.getCaretModel().getLogicalPosition().line;
