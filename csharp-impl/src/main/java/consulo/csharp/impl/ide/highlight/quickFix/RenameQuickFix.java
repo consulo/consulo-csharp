@@ -16,54 +16,43 @@
 
 package consulo.csharp.impl.ide.highlight.quickFix;
 
-import javax.annotation.Nonnull;
-
+import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
-import consulo.codeEditor.Editor;
-import consulo.language.editor.intention.BaseIntentionAction;
-import consulo.project.Project;
 import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 12.11.14
  */
-public class RenameQuickFix extends BaseIntentionAction
-{
-	private final String myNewName;
-	private final SmartPsiElementPointer<PsiNamedElement> myPointer;
+public class RenameQuickFix extends BaseIntentionAction implements SyntheticIntentionAction {
+  private final String myNewName;
+  private final SmartPsiElementPointer<PsiNamedElement> myPointer;
 
-	public RenameQuickFix(@Nonnull String newName, @Nonnull PsiNamedElement namedElement)
-	{
-		myNewName = newName;
-		myPointer = SmartPointerManager.getInstance(namedElement.getProject()).createSmartPsiElementPointer(namedElement);
-		setText("Rename '" + namedElement.getName() + "' to '" + myNewName + "'");
-	}
+  public RenameQuickFix(@Nonnull String newName, @Nonnull PsiNamedElement namedElement) {
+    myNewName = newName;
+    myPointer = SmartPointerManager.getInstance(namedElement.getProject()).createSmartPsiElementPointer(namedElement);
+    setText("Rename '" + namedElement.getName() + "' to '" + myNewName + "'");
+  }
 
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return "C#";
-	}
+  @Override
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    return myPointer.getElement() != null;
+  }
 
-	@Override
-	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-	{
-		return myPointer.getElement() != null;
-	}
-
-	@Override
-	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-	{
-		PsiNamedElement element = myPointer.getElement();
-		if(element == null)
-		{
-			return;
-		}
-		element.setName(myNewName);
-	}
+  @Override
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    PsiNamedElement element = myPointer.getElement();
+    if (element == null) {
+      return;
+    }
+    element.setName(myNewName);
+  }
 }

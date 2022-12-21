@@ -35,80 +35,60 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 31.08.14
  */
-public class AddXModifierFix extends PsiElementBaseIntentionAction
-{
-	private CSharpModifier[] myModifiers;
+public abstract class AddXModifierFix extends PsiElementBaseIntentionAction {
+  private CSharpModifier[] myModifiers;
 
-	public AddXModifierFix(CSharpModifier... modifiers)
-	{
-		myModifiers = modifiers;
-	}
+  public AddXModifierFix(CSharpModifier... modifiers) {
+    myModifiers = modifiers;
+  }
 
-	@Override
-	public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException
-	{
-		DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
-		if(owner == null || !owner.isWritable())
-		{
-			return;
-		}
+  @Override
+  public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException {
+    DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
+    if (owner == null || !owner.isWritable()) {
+      return;
+    }
 
-		DotNetModifierList modifierList = owner.getModifierList();
-		if(modifierList == null)
-		{
-			return;
-		}
+    DotNetModifierList modifierList = owner.getModifierList();
+    if (modifierList == null) {
+      return;
+    }
 
-		beforeAdd(modifierList);
+    beforeAdd(modifierList);
 
-		for(CSharpModifier modifier : ArrayUtil.reverseArray(myModifiers))
-		{
-			modifierList.addModifier(modifier);
-		}
-	}
+    for (CSharpModifier modifier : ArrayUtil.reverseArray(myModifiers)) {
+      modifierList.addModifier(modifier);
+    }
+  }
 
-	protected void beforeAdd(DotNetModifierList modifierList)
-	{
+  protected void beforeAdd(DotNetModifierList modifierList) {
 
-	}
+  }
 
-	public boolean isAllow(DotNetModifierListOwner owner, CSharpModifier[] modifier)
-	{
-		return true;
-	}
+  public boolean isAllow(DotNetModifierListOwner owner, CSharpModifier[] modifier) {
+    return true;
+  }
 
-	@Override
-	@RequiredUIAccess
-	public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
-	{
-		DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
-		return owner != null && !hasModifiers(owner) && isAllow(owner, myModifiers) && owner.isWritable();
-	}
+  @Override
+  @RequiredUIAccess
+  public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) {
+    DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
+    return owner != null && !hasModifiers(owner) && isAllow(owner, myModifiers) && owner.isWritable();
+  }
 
-	@RequiredReadAction
-	protected boolean hasModifiers(DotNetModifierListOwner owner)
-	{
-		for(CSharpModifier modifier : myModifiers)
-		{
-			if(!owner.hasModifier(modifier))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
+  @RequiredReadAction
+  protected boolean hasModifiers(DotNetModifierListOwner owner) {
+    for (CSharpModifier modifier : myModifiers) {
+      if (!owner.hasModifier(modifier)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	@Nonnull
-	@Override
-	public String getText()
-	{
-		return "Make " + StringUtil.join(myModifiers, modifier -> modifier.getPresentableText(), " ");
-	}
-
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return "C#";
-	}
+  @Nonnull
+  @Override
+  public String getText() {
+    return "Make " + StringUtil.join(myModifiers, modifier -> modifier.getPresentableText(), " ");
+  }
 }

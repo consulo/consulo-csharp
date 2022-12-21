@@ -16,27 +16,28 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import consulo.language.editor.intention.BaseIntentionAction;
-import consulo.codeEditor.Editor;
-import consulo.language.psi.PsiDocumentManager;
-import consulo.language.psi.SmartPointerManager;
-import consulo.language.psi.SmartPsiElementPointer;
-import consulo.project.Project;
-import consulo.language.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.impl.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import consulo.util.lang.Pair;
 
 import javax.annotation.Nonnull;
@@ -48,84 +49,68 @@ import java.util.Map;
  * @author VISTALL
  * @since 04.12.14
  */
-public class CS0702 extends CompilerCheck<CSharpGenericConstraintTypeValue>
-{
-	public static class ReplaceConstraintFix extends BaseIntentionAction
-	{
-		private final String myKeywordForReplace;
-		private final SmartPsiElementPointer<CSharpGenericConstraintTypeValue> myPointer;
+public class CS0702 extends CompilerCheck<CSharpGenericConstraintTypeValue> {
+  public static class ReplaceConstraintFix implements SyntheticIntentionAction {
+    private final String myKeywordForReplace;
+    private final SmartPsiElementPointer<CSharpGenericConstraintTypeValue> myPointer;
 
-		public ReplaceConstraintFix(CSharpGenericConstraintTypeValue declaration, String keywordForReplace)
-		{
-			myKeywordForReplace = keywordForReplace;
-			myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
-		}
+    public ReplaceConstraintFix(CSharpGenericConstraintTypeValue declaration, String keywordForReplace) {
+      myKeywordForReplace = keywordForReplace;
+      myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
+    }
 
-		@Nonnull
-		@Override
-		public String getFamilyName()
-		{
-			return "C#";
-		}
+    @Nonnull
+    @Override
+    public String getText() {
+      return "Replace by '" + myKeywordForReplace + "' constraint";
+    }
 
-		@Nonnull
-		@Override
-		public String getText()
-		{
-			return "Replace by '" + myKeywordForReplace + "' constraint";
-		}
+    @Override
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+      return myPointer.getElement() != null;
+    }
 
-		@Override
-		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-		{
-			return myPointer.getElement() != null;
-		}
+    @Override
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+      CSharpGenericConstraintTypeValue element = myPointer.getElement();
+      if (element == null) {
+        return;
+      }
+      PsiDocumentManager.getInstance(project).commitAllDocuments();
 
-		@Override
-		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-		{
-			CSharpGenericConstraintTypeValue element = myPointer.getElement();
-			if(element == null)
-			{
-				return;
-			}
-			PsiDocumentManager.getInstance(project).commitAllDocuments();
+      CSharpMethodDeclaration method = (CSharpMethodDeclaration)CSharpFileFactory.createMethod(project, "void test<T> where T : " +
+        myKeywordForReplace + " {}");
 
-			CSharpMethodDeclaration method = (CSharpMethodDeclaration) CSharpFileFactory.createMethod(project, "void test<T> where T : " +
-					myKeywordForReplace + " {}");
+      CSharpGenericConstraint newGenericConstraint = method.getGenericConstraints()[0];
 
-			CSharpGenericConstraint newGenericConstraint = method.getGenericConstraints()[0];
+      element.replace(newGenericConstraint.getGenericConstraintValues()[0]);
+    }
+  }
 
-			element.replace(newGenericConstraint.getGenericConstraintValues()[0]);
-		}
-	}
+  private static final Map<String, String> ourErrorMap = new HashMap<String, String>() {
+    {
+      put(DotNetTypes.System.Object, "class");
+      put(DotNetTypes.System.ValueType, "struct");
+    }
+  };
 
-	private static final Map<String, String> ourErrorMap = new HashMap<String, String>()
-	{
-		{
-			put(DotNetTypes.System.Object, "class");
-			put(DotNetTypes.System.ValueType, "struct");
-		}
-	};
-
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpGenericConstraintTypeValue element)
-	{
-		DotNetTypeRef typeRef = element.toTypeRef();
-		Pair<String, DotNetTypeDeclaration> pair = CSharpTypeUtil.resolveTypeElement(typeRef);
-		if(pair == null)
-		{
-			return null;
-		}
-		String keywordForReplace = ourErrorMap.get(pair.getFirst());
-		if(keywordForReplace != null)
-		{
-			DotNetType type = element.getType();
-			assert type != null;
-			return newBuilder(type, pair.getFirst()).withQuickFix(new ReplaceConstraintFix(element, keywordForReplace));
-		}
-		return null;
-	}
+  @RequiredReadAction
+  @Nullable
+  @Override
+  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
+                                        @Nonnull CSharpHighlightContext highlightContext,
+                                        @Nonnull CSharpGenericConstraintTypeValue element) {
+    DotNetTypeRef typeRef = element.toTypeRef();
+    Pair<String, DotNetTypeDeclaration> pair = CSharpTypeUtil.resolveTypeElement(typeRef);
+    if (pair == null) {
+      return null;
+    }
+    String keywordForReplace = ourErrorMap.get(pair.getFirst());
+    if (keywordForReplace != null) {
+      DotNetType type = element.getType();
+      assert type != null;
+      return newBuilder(type, pair.getFirst()).withQuickFix(new ReplaceConstraintFix(element, keywordForReplace));
+    }
+    return null;
+  }
 }

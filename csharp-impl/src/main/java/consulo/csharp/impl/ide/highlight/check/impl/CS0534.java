@@ -28,7 +28,7 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
-import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
@@ -45,99 +45,79 @@ import java.util.List;
  * @author VISTALL
  * @since 16.12.14
  */
-public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
-{
-	public static class ImplementMembersQuickFix extends BaseIntentionAction
-	{
-		@Nonnull
-		@Override
-		public String getText()
-		{
-			return "Implement members";
-		}
+public class CS0534 extends CompilerCheck<CSharpTypeDeclaration> {
+  public static class ImplementMembersQuickFix implements SyntheticIntentionAction {
+    @Nonnull
+    @Override
+    public String getText() {
+      return "Implement members";
+    }
 
-		@Nonnull
-		@Override
-		public String getFamilyName()
-		{
-			return "C#";
-		}
+    @Override
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+      return true;
+    }
 
-		@Override
-		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-		{
-			return true;
-		}
+    @Override
+    public boolean startInWriteAction() {
+      return false;
+    }
 
-		@Override
-		public boolean startInWriteAction()
-		{
-			return false;
-		}
+    @Override
+    @RequiredUIAccess
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+      new GenerateImplementMemberHandler().invoke(project, editor, file);
+    }
+  }
 
-		@Override
-		@RequiredUIAccess
-		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-		{
-			new GenerateImplementMemberHandler().invoke(project, editor, file);
-		}
-	}
+  @RequiredReadAction
+  @Nullable
+  @Override
+  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
+                                        @Nonnull CSharpHighlightContext highlightContext,
+                                        @Nonnull CSharpTypeDeclaration element) {
+    if (element.isInterface()) {
+      return null;
+    }
+    PsiElement nameIdentifier = element.getNameIdentifier();
+    if (nameIdentifier == null) {
+      return null;
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpTypeDeclaration element)
-	{
-		if(element.isInterface())
-		{
-			return null;
-		}
-		PsiElement nameIdentifier = element.getNameIdentifier();
-		if(nameIdentifier == null)
-		{
-			return null;
-		}
+    Collection<DotNetModifierListOwner> abstractElements =
+      OverrideUtil.collectMembersWithModifier(element, DotNetGenericExtractor.EMPTY, CSharpModifier.ABSTRACT);
+    if (!abstractElements.isEmpty()) {
+      List<DotNetModifierListOwner> targets = new SmartList<>();
 
-		Collection<DotNetModifierListOwner> abstractElements = OverrideUtil.collectMembersWithModifier(element, DotNetGenericExtractor.EMPTY, CSharpModifier.ABSTRACT);
-		if(!abstractElements.isEmpty())
-		{
-			List<DotNetModifierListOwner> targets = new SmartList<>();
+      boolean isAbstract = CSharpCompositeTypeDeclaration.selectCompositeOrSelfType(element).hasModifier(CSharpModifier.ABSTRACT);
 
-			boolean isAbstract = CSharpCompositeTypeDeclaration.selectCompositeOrSelfType(element).hasModifier(CSharpModifier.ABSTRACT);
+      for (DotNetModifierListOwner abstractElement : abstractElements) {
+        if (abstractElement.hasModifier(CSharpModifier.INTERFACE_ABSTRACT)) {
+          targets.add(abstractElement);
+        }
+        else if (!isAbstract) {
+          targets.add(abstractElement);
+        }
+      }
 
-			for(DotNetModifierListOwner abstractElement : abstractElements)
-			{
-				if(abstractElement.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
-				{
-					targets.add(abstractElement);
-				}
-				else if(!isAbstract)
-				{
-					targets.add(abstractElement);
-				}
-			}
+      if (targets.isEmpty()) {
+        return null;
+      }
 
-			if(targets.isEmpty())
-			{
-				return null;
-			}
+      DotNetModifierListOwner firstItem = targets.get(0);
 
-			DotNetModifierListOwner firstItem = targets.get(0);
+      CompilerCheckBuilder compilerCheckBuilder;
 
-			CompilerCheckBuilder compilerCheckBuilder;
+      if (firstItem.hasModifier(CSharpModifier.INTERFACE_ABSTRACT)) {
+        compilerCheckBuilder = newBuilderImpl(CS0535.class, nameIdentifier, formatElement(element), formatElement(firstItem));
+      }
+      else {
+        compilerCheckBuilder = newBuilder(nameIdentifier, formatElement(element), formatElement(firstItem));
+      }
 
-			if(firstItem.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
-			{
-				compilerCheckBuilder = newBuilderImpl(CS0535.class, nameIdentifier, formatElement(element), formatElement(firstItem));
-			}
-			else
-			{
-				compilerCheckBuilder = newBuilder(nameIdentifier, formatElement(element), formatElement(firstItem));
-			}
-
-			compilerCheckBuilder.withQuickFix(new ImplementMembersQuickFix());
-			return compilerCheckBuilder;
-		}
-		return null;
-	}
+      compilerCheckBuilder.withQuickFix(new ImplementMembersQuickFix());
+      return compilerCheckBuilder;
+    }
+    return null;
+  }
 }

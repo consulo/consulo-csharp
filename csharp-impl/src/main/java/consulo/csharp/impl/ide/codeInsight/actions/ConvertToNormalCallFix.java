@@ -27,6 +27,7 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.intention.PsiElementBaseIntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
@@ -42,77 +43,63 @@ import java.util.List;
  * @author VISTALL
  * @since 26.03.14
  */
-public class ConvertToNormalCallFix extends PsiElementBaseIntentionAction
-{
-	public static ConvertToNormalCallFix INSTANCE = new ConvertToNormalCallFix();
+public class ConvertToNormalCallFix extends PsiElementBaseIntentionAction implements SyntheticIntentionAction {
+  public static ConvertToNormalCallFix INSTANCE = new ConvertToNormalCallFix();
 
-	public ConvertToNormalCallFix()
-	{
-		setText("Convert to normal call");
-	}
+  public ConvertToNormalCallFix() {
+    setText("Convert to normal call");
+  }
 
-	@Override
-	public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException
-	{
-		final CSharpMethodCallExpressionImpl callExpression = PsiTreeUtil.getParentOfType(element, CSharpMethodCallExpressionImpl.class);
-		assert callExpression != null;
-		CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) callExpression.getCallExpression();
+  @Override
+  public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException {
+    final CSharpMethodCallExpressionImpl callExpression = PsiTreeUtil.getParentOfType(element, CSharpMethodCallExpressionImpl.class);
+    assert callExpression != null;
+    CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression)callExpression.getCallExpression();
 
-		PsiElement qualifier = referenceExpression.getQualifier();
-		assert qualifier != null;
+    PsiElement qualifier = referenceExpression.getQualifier();
+    assert qualifier != null;
 
-		PsiElement resolve = referenceExpression.resolve();
-		if(!CSharpMethodImplUtil.isExtensionWrapper(resolve))
-		{
-			return;
-		}
+    PsiElement resolve = referenceExpression.resolve();
+    if (!CSharpMethodImplUtil.isExtensionWrapper(resolve)) {
+      return;
+    }
 
-		final StringBuilder builder = new StringBuilder();
+    final StringBuilder builder = new StringBuilder();
 
-		CSharpTypeDeclaration parentTypeOfMethod = (CSharpTypeDeclaration) resolve.getParent();
+    CSharpTypeDeclaration parentTypeOfMethod = (CSharpTypeDeclaration)resolve.getParent();
 
-		CSharpTypeDeclaration parentTypeOfExpression = PsiTreeUtil.getParentOfType(element, CSharpTypeDeclaration.class);
+    CSharpTypeDeclaration parentTypeOfExpression = PsiTreeUtil.getParentOfType(element, CSharpTypeDeclaration.class);
 
-		if(parentTypeOfMethod != parentTypeOfExpression)
-		{
-			builder.append(parentTypeOfMethod.getName()).append(".");
-		}
+    if (parentTypeOfMethod != parentTypeOfExpression) {
+      builder.append(parentTypeOfMethod.getName()).append(".");
+    }
 
-		builder.append(referenceExpression.getReferenceName());
-		builder.append("(");
+    builder.append(referenceExpression.getReferenceName());
+    builder.append("(");
 
-		DotNetExpression[] parameterExpressions = callExpression.getParameterExpressions();
-		List<PsiElement> elements = new ArrayList<PsiElement>(parameterExpressions.length + 1);
-		elements.add(qualifier);
-		Collections.addAll(elements, parameterExpressions);
+    DotNetExpression[] parameterExpressions = callExpression.getParameterExpressions();
+    List<PsiElement> elements = new ArrayList<PsiElement>(parameterExpressions.length + 1);
+    elements.add(qualifier);
+    Collections.addAll(elements, parameterExpressions);
 
-		builder.append(StringUtil.join(elements, element1 -> element1.getText(), ", "));
-		builder.append(")");
+    builder.append(StringUtil.join(elements, element1 -> element1.getText(), ", "));
+    builder.append(")");
 
-		new WriteCommandAction<Object>(project, getText(), element.getContainingFile())
-		{
-			@Override
-			protected void run(Result<Object> objectResult) throws Throwable
-			{
-				CSharpExpressionStatementImpl statement = (CSharpExpressionStatementImpl) CSharpFileFactory.createStatement(callExpression
-						.getProject(), builder.toString());
+    new WriteCommandAction<Object>(project, getText(), element.getContainingFile()) {
+      @Override
+      protected void run(Result<Object> objectResult) throws Throwable {
+        CSharpExpressionStatementImpl statement = (CSharpExpressionStatementImpl)CSharpFileFactory.createStatement(callExpression
+                                                                                                                     .getProject(),
+                                                                                                                   builder.toString());
 
-				callExpression.replace(statement.getExpression());
-			}
-		}.execute();
-	}
+        callExpression.replace(statement.getExpression());
+      }
+    }.execute();
+  }
 
-	@Override
-	public boolean isAvailable(
-			@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
-	{
-		return true;
-	}
-
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return "C#";
-	}
+  @Override
+  public boolean isAvailable(
+    @Nonnull Project project, Editor editor, @Nonnull PsiElement element) {
+    return true;
+  }
 }

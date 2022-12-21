@@ -16,8 +16,6 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
-import javax.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.component.util.localize.BundleBase;
@@ -26,77 +24,64 @@ import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiDocumentManager;
-import consulo.language.psi.SmartPsiElementPointer;
-import consulo.language.editor.intention.BaseIntentionAction;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
-import consulo.project.Project;
+import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 30.12.14
  */
-public class ChangeReturnToTypeRefFix extends BaseIntentionAction
-{
-	private final SmartPsiElementPointer<DotNetLikeMethodDeclaration> myMethodPointer;
-	@Nonnull
-	private final DotNetTypeRef myToTypeRef;
+public class ChangeReturnToTypeRefFix implements SyntheticIntentionAction {
+  private final SmartPsiElementPointer<DotNetLikeMethodDeclaration> myMethodPointer;
+  @Nonnull
+  private final DotNetTypeRef myToTypeRef;
 
-	public ChangeReturnToTypeRefFix(@Nonnull DotNetLikeMethodDeclaration element, @Nonnull DotNetTypeRef toTypeRef)
-	{
-		myMethodPointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
-		myToTypeRef = toTypeRef;
-	}
+  public ChangeReturnToTypeRefFix(@Nonnull DotNetLikeMethodDeclaration element, @Nonnull DotNetTypeRef toTypeRef) {
+    myMethodPointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
+    myToTypeRef = toTypeRef;
+  }
 
-	@Nonnull
-	@Override
-	public String getText()
-	{
-		DotNetLikeMethodDeclaration element = myMethodPointer.getElement();
-		if(element == null)
-		{
-			return "invalid";
-		}
-		return BundleBase.format("Make ''{0}'' return to ''{1}''", element.getName(), CSharpTypeRefPresentationUtil.buildTextWithKeyword
-				(myToTypeRef));
-	}
+  @Nonnull
+  @Override
+  public String getText() {
+    DotNetLikeMethodDeclaration element = myMethodPointer.getElement();
+    if (element == null) {
+      return "invalid";
+    }
+    return BundleBase.format("Make ''{0}'' return to ''{1}''", element.getName(), CSharpTypeRefPresentationUtil.buildTextWithKeyword
+      (myToTypeRef));
+  }
 
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return "C#";
-	}
+  @Override
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    return myMethodPointer.getElement() != null;
+  }
 
-	@Override
-	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-	{
-		return myMethodPointer.getElement() != null;
-	}
+  @Override
+  @RequiredReadAction
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    PsiDocumentManager.getInstance(project).commitAllDocuments();
 
-	@Override
-	@RequiredReadAction
-	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-	{
-		PsiDocumentManager.getInstance(project).commitAllDocuments();
+    DotNetLikeMethodDeclaration element = myMethodPointer.getElement();
+    if (element == null) {
+      return;
+    }
 
-		DotNetLikeMethodDeclaration element = myMethodPointer.getElement();
-		if(element == null)
-		{
-			return;
-		}
+    DotNetType typeOfVariable = element.getReturnType();
+    if (typeOfVariable == null) {
+      return;
+    }
+    String typeText = CSharpTypeRefPresentationUtil.buildShortText(myToTypeRef);
 
-		DotNetType typeOfVariable = element.getReturnType();
-		if(typeOfVariable == null)
-		{
-			return;
-		}
-		String typeText = CSharpTypeRefPresentationUtil.buildShortText(myToTypeRef);
+    DotNetType type = CSharpFileFactory.createMaybeStubType(project, typeText, typeOfVariable);
 
-		DotNetType type = CSharpFileFactory.createMaybeStubType(project, typeText, typeOfVariable);
-
-		typeOfVariable.replace(type);
-	}
+    typeOfVariable.replace(type);
+  }
 }

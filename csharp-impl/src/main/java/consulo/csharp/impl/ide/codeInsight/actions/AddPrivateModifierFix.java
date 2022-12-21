@@ -26,10 +26,8 @@ import consulo.language.editor.intention.IntentionMetaData;
  */
 @ExtensionImpl
 @IntentionMetaData(ignoreId = "csharp.add.private.modifier", categories = "C#", fileExtensions = "cs")
-public class AddPrivateModifierFix extends AddAccessModifierFix
-{
-	public AddPrivateModifierFix()
-	{
-		super(CSharpModifier.PRIVATE);
-	}
+public class AddPrivateModifierFix extends AddAccessModifierFix {
+  public AddPrivateModifierFix() {
+    super(CSharpModifier.PRIVATE);
+  }
 }

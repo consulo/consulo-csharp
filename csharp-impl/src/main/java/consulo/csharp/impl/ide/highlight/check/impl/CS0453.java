@@ -27,6 +27,7 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
@@ -41,76 +42,60 @@ import javax.annotation.Nullable;
  * @author VISTALL
  * @since 15.09.14
  */
-public class CS0453 extends CompilerCheck<CSharpNullableType>
-{
-	public static class DeleteQuestMarkQuickFix extends BaseIntentionAction
-	{
-		private SmartPsiElementPointer<CSharpNullableType> myPointer;
+public class CS0453 extends CompilerCheck<CSharpNullableType> {
+  public static class DeleteQuestMarkQuickFix extends BaseIntentionAction implements SyntheticIntentionAction {
+    private SmartPsiElementPointer<CSharpNullableType> myPointer;
 
-		public DeleteQuestMarkQuickFix(CSharpNullableType nullableType)
-		{
-			myPointer = SmartPointerManager.getInstance(nullableType.getProject()).createSmartPsiElementPointer(nullableType);
-			setText("Remove '?'");
-		}
+    public DeleteQuestMarkQuickFix(CSharpNullableType nullableType) {
+      myPointer = SmartPointerManager.getInstance(nullableType.getProject()).createSmartPsiElementPointer(nullableType);
+      setText("Remove '?'");
+    }
 
-		@Nonnull
-		@Override
-		public String getFamilyName()
-		{
-			return "C#";
-		}
+    @Override
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+      return myPointer.getElement() != null;
+    }
 
-		@Override
-		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-		{
-			return myPointer.getElement() != null;
-		}
+    @Override
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+      CSharpNullableType element = myPointer.getElement();
+      if (element == null) {
+        return;
+      }
 
-		@Override
-		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-		{
-			CSharpNullableType element = myPointer.getElement();
-			if(element == null)
-			{
-				return;
-			}
+      DotNetType innerType = element.getInnerType();
+      if (innerType == null) {
+        return;
+      }
 
-			DotNetType innerType = element.getInnerType();
-			if(innerType == null)
-			{
-				return;
-			}
+      DotNetType type = CSharpFileFactory.createMaybeStubType(project, innerType.getText(), element);
+      element.replace(type);
+    }
+  }
 
-			DotNetType type = CSharpFileFactory.createMaybeStubType(project, innerType.getText(), element);
-			element.replace(type);
-		}
-	}
+  @RequiredReadAction
+  @Nullable
+  @Override
+  public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
+                                        @Nonnull CSharpHighlightContext highlightContext,
+                                        @Nonnull CSharpNullableType element) {
+    // C# 8 have special handle
+    if (languageVersion.isAtLeast(CSharpLanguageVersion._8_0)) {
+      return null;
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpNullableType element)
-	{
-		// C# 8 have special handle
-		if(languageVersion.isAtLeast(CSharpLanguageVersion._8_0))
-		{
-			return null;
-		}
+    DotNetType innerType = element.getInnerType();
+    if (innerType == null) {
+      return null;
+    }
+    DotNetTypeRef dotNetTypeRef = innerType.toTypeRef();
 
-		DotNetType innerType = element.getInnerType();
-		if(innerType == null)
-		{
-			return null;
-		}
-		DotNetTypeRef dotNetTypeRef = innerType.toTypeRef();
+    DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve();
 
-		DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve();
-
-		if(!typeResolveResult.isNullable())
-		{
-			return null;
-		}
-		PsiElement questElement = element.getQuestElement();
-		return newBuilder(questElement, formatTypeRef(dotNetTypeRef)).withQuickFix(new DeleteQuestMarkQuickFix(element));
-	}
+    if (!typeResolveResult.isNullable()) {
+      return null;
+    }
+    PsiElement questElement = element.getQuestElement();
+    return newBuilder(questElement, formatTypeRef(dotNetTypeRef)).withQuickFix(new DeleteQuestMarkQuickFix(element));
+  }
 }

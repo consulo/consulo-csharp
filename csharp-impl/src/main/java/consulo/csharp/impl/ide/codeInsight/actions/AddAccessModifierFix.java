@@ -28,38 +28,32 @@ import consulo.util.lang.Comparing;
  * @author VISTALL
  * @since 31.08.14
  */
-public class AddAccessModifierFix extends AddXModifierFix
-{
-	public AddAccessModifierFix(CSharpModifier... modifiers)
-	{
-		super(modifiers);
-	}
+public abstract class AddAccessModifierFix extends AddXModifierFix {
+  public AddAccessModifierFix(CSharpModifier... modifiers) {
+    super(modifiers);
+  }
 
-	@Override
-	public boolean isAllow(DotNetModifierListOwner owner, CSharpModifier[] modifiers)
-	{
-		if(owner instanceof DotNetTypeDeclaration || owner instanceof DotNetMethodDeclaration && !(owner.getParent() instanceof
-				DotNetTypeDeclaration))
-		{
-			return equal(modifiers, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL) ||
-					equal(modifiers, CSharpModifier.INTERNAL) ||
-					equal(modifiers, CSharpModifier.PUBLIC);
-		}
+  @Override
+  public boolean isAllow(DotNetModifierListOwner owner, CSharpModifier[] modifiers) {
+    if (owner instanceof DotNetTypeDeclaration || owner instanceof DotNetMethodDeclaration && !(owner.getParent() instanceof
+      DotNetTypeDeclaration)) {
+      return equal(modifiers, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL) ||
+        equal(modifiers, CSharpModifier.INTERNAL) ||
+        equal(modifiers, CSharpModifier.PUBLIC);
+    }
 
-		return CSharpStubElementSets.QUALIFIED_MEMBERS.contains(owner.getNode().getElementType());
-	}
+    return CSharpStubElementSets.QUALIFIED_MEMBERS.contains(owner.getNode().getElementType());
+  }
 
-	private static boolean equal(CSharpModifier[] modifiers, CSharpModifier... required)
-	{
-		return Comparing.equal(modifiers, required);
-	}
+  private static boolean equal(CSharpModifier[] modifiers, CSharpModifier... required) {
+    return Comparing.equal(modifiers, required);
+  }
 
-	@Override
-	protected void beforeAdd(DotNetModifierList modifierList)
-	{
-		modifierList.removeModifier(CSharpModifier.INTERNAL);
-		modifierList.removeModifier(CSharpModifier.PUBLIC);
-		modifierList.removeModifier(CSharpModifier.PROTECTED);
-		modifierList.removeModifier(CSharpModifier.PRIVATE);
-	}
+  @Override
+  protected void beforeAdd(DotNetModifierList modifierList) {
+    modifierList.removeModifier(CSharpModifier.INTERNAL);
+    modifierList.removeModifier(CSharpModifier.PUBLIC);
+    modifierList.removeModifier(CSharpModifier.PROTECTED);
+    modifierList.removeModifier(CSharpModifier.PRIVATE);
+  }
 }

@@ -16,19 +16,20 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
-import consulo.language.ast.ASTNode;
-import consulo.language.editor.intention.BaseIntentionAction;
-import consulo.codeEditor.Editor;
-import consulo.language.psi.SmartPsiElementPointer;
-import consulo.language.util.IncorrectOperationException;
 import consulo.annotation.access.RequiredWriteAction;
+import consulo.codeEditor.Editor;
 import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetVariable;
+import consulo.language.ast.ASTNode;
+import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
 
 import javax.annotation.Nonnull;
@@ -37,54 +38,40 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 24.05.2015
  */
-public class RemoveVariableInitializer extends BaseIntentionAction
-{
-	private SmartPsiElementPointer<DotNetVariable> myPointer;
+public class RemoveVariableInitializer extends BaseIntentionAction implements SyntheticIntentionAction {
+  private SmartPsiElementPointer<DotNetVariable> myPointer;
 
-	public RemoveVariableInitializer(DotNetVariable variable)
-	{
-		myPointer = SmartPointerManager.getInstance(variable.getProject()).createSmartPsiElementPointer(variable);
-		setText(variable instanceof DotNetParameter ? "Remove initializer" : "Remove default value");
-	}
+  public RemoveVariableInitializer(DotNetVariable variable) {
+    myPointer = SmartPointerManager.getInstance(variable.getProject()).createSmartPsiElementPointer(variable);
+    setText(variable instanceof DotNetParameter ? "Remove initializer" : "Remove default value");
+  }
 
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return "C#";
-	}
+  @Override
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    DotNetVariable element = myPointer.getElement();
+    return element != null && element.getInitializer() != null;
+  }
 
-	@Override
-	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-	{
-		DotNetVariable element = myPointer.getElement();
-		return element != null && element.getInitializer() != null;
-	}
+  @Override
+  @RequiredWriteAction
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    DotNetVariable element = myPointer.getElement();
+    if (element == null) {
+      return;
+    }
+    PsiDocumentManager.getInstance(project).commitAllDocuments();
 
-	@Override
-	@RequiredWriteAction
-	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-	{
-		DotNetVariable element = myPointer.getElement();
-		if(element == null)
-		{
-			return;
-		}
-		PsiDocumentManager.getInstance(project).commitAllDocuments();
+    DotNetExpression initializer = element.getInitializer();
+    if (initializer == null) {
+      return;
+    }
 
-		DotNetExpression initializer = element.getInitializer();
-		if(initializer == null)
-		{
-			return;
-		}
+    initializer.delete();
 
-		initializer.delete();
-
-		ASTNode node = element.getNode();
-		ASTNode childByType = node.findChildByType(CSharpTokenSets.EQ);
-		if(childByType != null)
-		{
-			node.removeChild(childByType);
-		}
-	}
+    ASTNode node = element.getNode();
+    ASTNode childByType = node.findChildByType(CSharpTokenSets.EQ);
+    if (childByType != null) {
+      node.removeChild(childByType);
+    }
+  }
 }

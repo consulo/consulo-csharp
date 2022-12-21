@@ -16,65 +16,55 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
-import javax.annotation.Nonnull;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.impl.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpNamedCallArgument;
-import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
-import consulo.dotnet.psi.DotNetExpression;
 import consulo.codeEditor.Editor;
-import consulo.project.Project;
+import consulo.csharp.lang.impl.psi.CSharpFileFactory;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
+import consulo.csharp.lang.psi.CSharpCallArgument;
+import consulo.csharp.lang.psi.CSharpNamedCallArgument;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
-import consulo.language.editor.intention.BaseIntentionAction;
 import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 28.03.2015
  */
-public class ConvertNamedToSimpleArgumentFix extends BaseIntentionAction
-{
-	private SmartPsiElementPointer<CSharpNamedCallArgument> myPointer;
+public class ConvertNamedToSimpleArgumentFix extends BaseIntentionAction implements SyntheticIntentionAction {
+  private SmartPsiElementPointer<CSharpNamedCallArgument> myPointer;
 
-	public ConvertNamedToSimpleArgumentFix(CSharpNamedCallArgument element)
-	{
-		setText("Convert to simple argument");
-		myPointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
-	}
+  public ConvertNamedToSimpleArgumentFix(CSharpNamedCallArgument element) {
+    setText("Convert to simple argument");
+    myPointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
+  }
 
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return "C#";
-	}
+  @Override
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile) {
+    return myPointer.getElement() != null;
+  }
 
-	@Override
-	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile)
-	{
-		return myPointer.getElement() != null;
-	}
+  @Override
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
+    CSharpNamedCallArgument element = myPointer.getElement();
+    if (element == null) {
+      return;
+    }
 
-	@Override
-	public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
-	{
-		CSharpNamedCallArgument element = myPointer.getElement();
-		if(element == null)
-		{
-			return;
-		}
+    DotNetExpression argumentExpression = element.getArgumentExpression();
 
-		DotNetExpression argumentExpression = element.getArgumentExpression();
+    assert argumentExpression != null;
 
-		assert argumentExpression != null;
+    CSharpMethodCallExpressionImpl expression = (CSharpMethodCallExpressionImpl)CSharpFileFactory.createExpression(project, "test(" +
+      argumentExpression.getText() + ")");
 
-		CSharpMethodCallExpressionImpl expression = (CSharpMethodCallExpressionImpl) CSharpFileFactory.createExpression(project, "test(" +
-				argumentExpression.getText() + ")");
+    CSharpCallArgument callArgument = expression.getCallArguments()[0];
 
-		CSharpCallArgument callArgument = expression.getCallArguments()[0];
-
-		element.replace(callArgument);
-	}
+    element.replace(callArgument);
+  }
 }

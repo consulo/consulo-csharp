@@ -16,10 +16,8 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
@@ -29,108 +27,93 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.editor.intention.BaseIntentionAction;
-import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.SyntheticIntentionAction;
+import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
-import consulo.project.Project;
-import consulo.language.psi.PsiElement;
 import consulo.language.psi.SmartPsiElementPointer;
-import consulo.util.collection.ArrayUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 20.01.15
  */
-public class CS1722 extends CompilerCheck<DotNetTypeList>
-{
-	public static class MoveToFirstPositionFix extends BaseIntentionAction
-	{
-		private SmartPsiElementPointer<DotNetType> myTypePointer;
+public class CS1722 extends CompilerCheck<DotNetTypeList> {
+  public static class MoveToFirstPositionFix extends BaseIntentionAction implements SyntheticIntentionAction {
+    private SmartPsiElementPointer<DotNetType> myTypePointer;
 
-		public MoveToFirstPositionFix(DotNetType baseType)
-		{
-			myTypePointer = SmartPointerManager.getInstance(baseType.getProject()).createSmartPsiElementPointer(baseType);
-			setText("Place base type at first");
-		}
+    public MoveToFirstPositionFix(DotNetType baseType) {
+      myTypePointer = SmartPointerManager.getInstance(baseType.getProject()).createSmartPsiElementPointer(baseType);
+      setText("Place base type at first");
+    }
 
-		@Nonnull
-		@Override
-		public String getFamilyName()
-		{
-			return "C#";
-		}
+    @Override
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+      return myTypePointer.getElement() != null;
+    }
 
-		@Override
-		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-		{
-			return myTypePointer.getElement() != null;
-		}
+    @Override
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+      DotNetType element = myTypePointer.getElement();
+      if (element == null) {
+        return;
+      }
 
-		@Override
-		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-		{
-			DotNetType element = myTypePointer.getElement();
-			if(element == null)
-			{
-				return;
-			}
+      DotNetTypeList parent = (DotNetTypeList)element.getParent();
 
-			DotNetTypeList parent = (DotNetTypeList) element.getParent();
+      DotNetType[] types = parent.getTypes();
 
-			DotNetType[] types = parent.getTypes();
+      int i = ArrayUtil.indexOf(types, element);
+      if (i <= 0) {
+        return;
+      }
+      DotNetType elementAtZeroPosition = types[0];
 
-			int i = ArrayUtil.indexOf(types, element);
-			if(i <= 0)
-			{
-				return;
-			}
-			DotNetType elementAtZeroPosition = types[0];
+      PsiElement baseElementCopy = element.copy();
+      PsiElement elementAtZeroCopy = elementAtZeroPosition.copy();
 
-			PsiElement baseElementCopy = element.copy();
-			PsiElement elementAtZeroCopy = elementAtZeroPosition.copy();
+      elementAtZeroPosition.replace(baseElementCopy);
+      element.replace(elementAtZeroCopy);
+    }
+  }
 
-			elementAtZeroPosition.replace(baseElementCopy);
-			element.replace(elementAtZeroCopy);
-		}
-	}
+  @RequiredReadAction
+  @Nullable
+  @Override
+  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
+                                        @Nonnull CSharpHighlightContext highlightContext,
+                                        @Nonnull DotNetTypeList element) {
+    if (element.getNode().getElementType() != CSharpStubElements.EXTENDS_LIST) {
+      return null;
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetTypeList element)
-	{
-		if(element.getNode().getElementType() != CSharpStubElements.EXTENDS_LIST)
-		{
-			return null;
-		}
+    CSharpTypeDeclaration resolvedElement = null;
+    DotNetType baseType = null;
+    DotNetType[] types = element.getTypes();
 
-		CSharpTypeDeclaration resolvedElement = null;
-		DotNetType baseType = null;
-		DotNetType[] types = element.getTypes();
+    for (DotNetType type : types) {
+      DotNetTypeRef typeRef = type.toTypeRef();
+      PsiElement temp = typeRef.resolve().getElement();
+      if (temp instanceof CSharpTypeDeclaration && !((CSharpTypeDeclaration)temp).isInterface()) {
+        resolvedElement = (CSharpTypeDeclaration)temp;
+        baseType = type;
+        break;
+      }
+    }
 
-		for(DotNetType type : types)
-		{
-			DotNetTypeRef typeRef = type.toTypeRef();
-			PsiElement temp = typeRef.resolve().getElement();
-			if(temp instanceof CSharpTypeDeclaration && !((CSharpTypeDeclaration) temp).isInterface())
-			{
-				resolvedElement = (CSharpTypeDeclaration) temp;
-				baseType = type;
-				break;
-			}
-		}
-
-		if(baseType == null)
-		{
-			return null;
-		}
-		int i = ArrayUtil.indexOf(types, baseType);
-		if(i != 0)
-		{
-			CSharpTypeDeclaration parent = (CSharpTypeDeclaration) element.getParent();
-			return newBuilder(baseType, formatElement(parent), formatElement(resolvedElement)).withQuickFix(new MoveToFirstPositionFix(baseType));
-		}
-		return null;
-	}
+    if (baseType == null) {
+      return null;
+    }
+    int i = ArrayUtil.indexOf(types, baseType);
+    if (i != 0) {
+      CSharpTypeDeclaration parent = (CSharpTypeDeclaration)element.getParent();
+      return newBuilder(baseType, formatElement(parent), formatElement(resolvedElement)).withQuickFix(new MoveToFirstPositionFix(baseType));
+    }
+    return null;
+  }
 }

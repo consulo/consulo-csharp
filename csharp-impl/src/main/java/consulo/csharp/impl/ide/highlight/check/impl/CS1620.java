@@ -36,6 +36,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.*;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
@@ -49,117 +50,96 @@ import java.util.List;
  * @author VISTALL
  * @since 01.07.14
  */
-public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
-{
-	public static class BaseUseTypeFix extends BaseIntentionAction
-	{
-		private final CSharpRefTypeRef.Type myType;
-		private final SmartPsiElementPointer<DotNetExpression> myPointer;
+public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl> {
+  public static class BaseUseTypeFix extends BaseIntentionAction implements SyntheticIntentionAction {
+    private final CSharpRefTypeRef.Type myType;
+    private final SmartPsiElementPointer<DotNetExpression> myPointer;
 
-		public BaseUseTypeFix(DotNetExpression expression, CSharpRefTypeRef.Type type)
-		{
-			myType = type;
-			myPointer = SmartPointerManager.getInstance(expression.getProject()).createSmartPsiElementPointer(expression);
+    public BaseUseTypeFix(DotNetExpression expression, CSharpRefTypeRef.Type type) {
+      myType = type;
+      myPointer = SmartPointerManager.getInstance(expression.getProject()).createSmartPsiElementPointer(expression);
 
-			setText("Wrap with '" + myType + "'");
-		}
+      setText("Wrap with '" + myType + "'");
+    }
 
-		@Nonnull
-		@Override
-		public String getFamilyName()
-		{
-			return "C#";
-		}
+    @Override
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+      return myPointer.getElement() != null;
+    }
 
-		@Override
-		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-		{
-			return myPointer.getElement() != null;
-		}
+    @Override
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+      DotNetExpression element = myPointer.getElement();
+      if (element == null) {
+        return;
+      }
 
-		@Override
-		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-		{
-			DotNetExpression element = myPointer.getElement();
-			if(element == null)
-			{
-				return;
-			}
+      DotNetExpression expression = CSharpFileFactory.createExpression(project, myType.name() + " " + element.getText());
 
-			DotNetExpression expression = CSharpFileFactory.createExpression(project, myType.name() + " " + element.getText());
+      element.replace(expression);
+    }
+  }
 
-			element.replace(expression);
-		}
-	}
+  @RequiredReadAction
+  @Nonnull
+  @Override
+  public List<CompilerCheckBuilder> check(@Nonnull CSharpLanguageVersion languageVersion,
+                                          @Nonnull CSharpHighlightContext highlightContext,
+                                          @Nonnull CSharpMethodCallExpressionImpl element) {
+    ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(element.multiResolve(true));
+    if (!(resolveResult instanceof MethodResolveResult)) {
+      return Collections.emptyList();
+    }
 
-	@RequiredReadAction
-	@Nonnull
-	@Override
-	public List<CompilerCheckBuilder> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpMethodCallExpressionImpl element)
-	{
-		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(element.multiResolve(true));
-		if(!(resolveResult instanceof MethodResolveResult))
-		{
-			return Collections.emptyList();
-		}
+    MethodResolvePriorityInfo calcResult = ((MethodResolveResult)resolveResult).getCalcResult();
 
-		MethodResolvePriorityInfo calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
+    List<CompilerCheckBuilder> results = new ArrayList<>();
 
-		List<CompilerCheckBuilder> results = new ArrayList<>();
+    List<NCallArgument> arguments = calcResult.getArguments();
+    for (NCallArgument argument : arguments) {
+      CSharpCallArgument callArgument = argument.getCallArgument();
+      if (callArgument == null) {
+        continue;
+      }
 
-		List<NCallArgument> arguments = calcResult.getArguments();
-		for(NCallArgument argument : arguments)
-		{
-			CSharpCallArgument callArgument = argument.getCallArgument();
-			if(callArgument == null)
-			{
-				continue;
-			}
+      DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+      if (argumentExpression == null) {
+        continue;
+      }
+      PsiElement parameterElement = argument.getParameterElement();
+      if (!(parameterElement instanceof DotNetParameter)) {
+        continue;
+      }
 
-			DotNetExpression argumentExpression = callArgument.getArgumentExpression();
-			if(argumentExpression == null)
-			{
-				continue;
-			}
-			PsiElement parameterElement = argument.getParameterElement();
-			if(!(parameterElement instanceof DotNetParameter))
-			{
-				continue;
-			}
+      CSharpRefTypeRef.Type type;
 
-			CSharpRefTypeRef.Type type;
+      DotNetParameter parameter = (DotNetParameter)parameterElement;
+      if (parameter.hasModifier(CSharpModifier.REF)) {
+        type = CSharpRefTypeRef.Type.ref;
+      }
+      else if (parameter.hasModifier(CSharpModifier.OUT)) {
+        type = CSharpRefTypeRef.Type.out;
+      }
+      else {
+        continue;
+      }
 
-			DotNetParameter parameter = (DotNetParameter) parameterElement;
-			if(parameter.hasModifier(CSharpModifier.REF))
-			{
-				type = CSharpRefTypeRef.Type.ref;
-			}
-			else if(parameter.hasModifier(CSharpModifier.OUT))
-			{
-				type = CSharpRefTypeRef.Type.out;
-			}
-			else
-			{
-				continue;
-			}
+      DotNetTypeRef typeRef = argument.getTypeRef();
+      if (typeRef instanceof CSharpOutRefAutoTypeRef && ((CSharpOutRefAutoTypeRef)typeRef).getType() == type) {
+        continue;
+      }
 
-			DotNetTypeRef typeRef = argument.getTypeRef();
-			if(typeRef instanceof CSharpOutRefAutoTypeRef && ((CSharpOutRefAutoTypeRef) typeRef).getType() == type)
-			{
-				continue;
-			}
+      if (argumentExpression instanceof CSharpOutRefVariableExpressionImpl) {
+        continue;
+      }
 
-			if(argumentExpression instanceof CSharpOutRefVariableExpressionImpl)
-			{
-				continue;
-			}
-
-			if(!(typeRef instanceof CSharpRefTypeRef) || ((CSharpRefTypeRef) typeRef).getType() != type)
-			{
-				results.add(newBuilder(argumentExpression, String.valueOf(parameter.getIndex() + 1), type.name()).withQuickFix(new BaseUseTypeFix(argumentExpression, type)));
-			}
-			return results;
-		}
-		return Collections.emptyList();
-	}
+      if (!(typeRef instanceof CSharpRefTypeRef) || ((CSharpRefTypeRef)typeRef).getType() != type) {
+        results.add(newBuilder(argumentExpression, String.valueOf(parameter.getIndex() + 1), type.name()).withQuickFix(new BaseUseTypeFix(
+          argumentExpression,
+          type)));
+      }
+      return results;
+    }
+    return Collections.emptyList();
+  }
 }

@@ -17,11 +17,6 @@
 package consulo.csharp.impl.ide.codeInsight.actions;
 
 import consulo.codeEditor.Editor;
-import consulo.language.editor.intention.BaseIntentionAction;
-import consulo.language.psi.SmartPointerManager;
-import consulo.language.psi.SmartPsiElementPointer;
-import consulo.project.Project;
-import consulo.language.psi.PsiFile;
 import consulo.component.util.localize.BundleBase;
 import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
@@ -29,8 +24,13 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
-import consulo.ui.annotation.RequiredUIAccess;
+import consulo.language.editor.intention.SyntheticIntentionAction;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 
 import javax.annotation.Nonnull;
 
@@ -38,74 +38,57 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 30.12.14
  */
-public class CastExpressionToTypeRef extends BaseIntentionAction
-{
-	@Nonnull
-	protected final SmartPsiElementPointer<DotNetExpression> myExpressionPointer;
-	@Nonnull
-	protected final DotNetTypeRef myExpectedTypeRef;
+public class CastExpressionToTypeRef implements SyntheticIntentionAction {
+  @Nonnull
+  protected final SmartPsiElementPointer<DotNetExpression> myExpressionPointer;
+  @Nonnull
+  protected final DotNetTypeRef myExpectedTypeRef;
 
-	public CastExpressionToTypeRef(@Nonnull DotNetExpression expression, @Nonnull DotNetTypeRef expectedTypeRef)
-	{
-		myExpressionPointer = SmartPointerManager.getInstance(expression.getProject()).createSmartPsiElementPointer(expression);
-		myExpectedTypeRef = expectedTypeRef;
-	}
+  public CastExpressionToTypeRef(@Nonnull DotNetExpression expression, @Nonnull DotNetTypeRef expectedTypeRef) {
+    myExpressionPointer = SmartPointerManager.getInstance(expression.getProject()).createSmartPsiElementPointer(expression);
+    myExpectedTypeRef = expectedTypeRef;
+  }
 
-	@Nonnull
-	@Override
-	@RequiredUIAccess
-	public String getText()
-	{
-		DotNetExpression element = myExpressionPointer.getElement();
-		if(element == null)
-		{
-			return "invalid";
-		}
-		return BundleBase.format("Cast to ''{0}''", CSharpTypeRefPresentationUtil.buildTextWithKeyword(myExpectedTypeRef));
-	}
+  @Nonnull
+  @Override
+  @RequiredUIAccess
+  public String getText() {
+    DotNetExpression element = myExpressionPointer.getElement();
+    if (element == null) {
+      return "invalid";
+    }
+    return BundleBase.format("Cast to ''{0}''", CSharpTypeRefPresentationUtil.buildTextWithKeyword(myExpectedTypeRef));
+  }
 
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return "C#";
-	}
+  @Override
+  @RequiredUIAccess
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    if (myExpectedTypeRef == DotNetTypeRef.UNKNOWN_TYPE) {
+      return false;
+    }
+    DotNetExpression element = myExpressionPointer.getElement();
+    if (element == null) {
+      return false;
+    }
 
-	@Override
-	@RequiredUIAccess
-	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-	{
-		if(myExpectedTypeRef == DotNetTypeRef.UNKNOWN_TYPE)
-		{
-			return false;
-		}
-		DotNetExpression element = myExpressionPointer.getElement();
-		if(element == null)
-		{
-			return false;
-		}
+    if (DotNetTypeRefUtil.isVmQNameEqual(myExpectedTypeRef, DotNetTypes.System.Void)) {
+      return false;
+    }
+    return true;
+  }
 
-		if(DotNetTypeRefUtil.isVmQNameEqual(myExpectedTypeRef, DotNetTypes.System.Void))
-		{
-			return false;
-		}
-		return true;
-	}
+  @Override
+  @RequiredUIAccess
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    DotNetExpression element = myExpressionPointer.getElement();
+    if (element == null) {
+      return;
+    }
 
-	@Override
-	@RequiredUIAccess
-	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-	{
-		DotNetExpression element = myExpressionPointer.getElement();
-		if(element == null)
-		{
-			return;
-		}
+    String typeText = CSharpTypeRefPresentationUtil.buildShortText(myExpectedTypeRef);
 
-		String typeText = CSharpTypeRefPresentationUtil.buildShortText(myExpectedTypeRef);
+    DotNetExpression expression = CSharpFileFactory.createExpression(project, "(" + typeText + ") " + element.getText());
 
-		DotNetExpression expression = CSharpFileFactory.createExpression(project, "(" + typeText + ") " + element.getText());
-
-		element.replace(expression);
-	}
+    element.replace(expression);
+  }
 }

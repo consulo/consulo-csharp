@@ -16,69 +16,57 @@
 
 package consulo.csharp.impl.ide.highlight.quickFix;
 
-import javax.annotation.Nonnull;
-
+import consulo.codeEditor.Editor;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFactory;
 import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFileImpl;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import consulo.codeEditor.Editor;
 import consulo.language.editor.intention.BaseIntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.psi.util.PsiTreeUtil;
-import consulo.project.Project;
 import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 14.12.14
  */
-public class ReplaceTypeQuickFix extends BaseIntentionAction
-{
-	private final SmartPsiElementPointer<DotNetType> myPointer;
-	private final String myTypeText;
+public class ReplaceTypeQuickFix extends BaseIntentionAction implements SyntheticIntentionAction {
+  private final SmartPsiElementPointer<DotNetType> myPointer;
+  private final String myTypeText;
 
-	public ReplaceTypeQuickFix(@Nonnull DotNetType type, @Nonnull DotNetTypeRef typeRef)
-	{
-		myPointer = SmartPointerManager.getInstance(type.getProject()).createSmartPsiElementPointer(type);
+  public ReplaceTypeQuickFix(@Nonnull DotNetType type, @Nonnull DotNetTypeRef typeRef) {
+    myPointer = SmartPointerManager.getInstance(type.getProject()).createSmartPsiElementPointer(type);
 
-		myTypeText = CSharpTypeRefPresentationUtil.buildShortText(typeRef);
-		setText("Replace '" + type.getText() + "' by '" + myTypeText + "'");
-	}
+    myTypeText = CSharpTypeRefPresentationUtil.buildShortText(typeRef);
+    setText("Replace '" + type.getText() + "' by '" + myTypeText + "'");
+  }
 
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return "C#";
-	}
+  @Override
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    return myPointer.getElement() != null;
+  }
 
-	@Override
-	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-	{
-		return myPointer.getElement() != null;
-	}
+  @Override
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    DotNetType element = myPointer.getElement();
+    if (element == null) {
+      return;
+    }
 
-	@Override
-	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-	{
-		DotNetType element = myPointer.getElement();
-		if(element == null)
-		{
-			return;
-		}
+    CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(project, myTypeText, element);
 
-		CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(project, myTypeText, element);
+    DotNetType newType = PsiTreeUtil.getChildOfType(typeFragment, DotNetType.class);
+    if (newType == null) {
+      return;
+    }
 
-		DotNetType newType = PsiTreeUtil.getChildOfType(typeFragment, DotNetType.class);
-		if(newType == null)
-		{
-			return;
-		}
-
-		element.replace(newType);
-	}
+    element.replace(newType);
+  }
 }

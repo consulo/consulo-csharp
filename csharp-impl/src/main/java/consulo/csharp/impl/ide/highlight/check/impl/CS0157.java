@@ -16,81 +16,67 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.impl.psi.source.CSharpFinallyStatementImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpReturnStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.language.editor.intention.BaseIntentionAction;
-import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiFile;
-import consulo.language.psi.SmartPsiElementPointer;
-import consulo.project.Project;
 import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 01.01.15
  */
-public class CS0157 extends CompilerCheck<CSharpReturnStatementImpl>
-{
-	public static class RemoveReturnStatementFix extends BaseIntentionAction
-	{
-		private SmartPsiElementPointer<CSharpReturnStatementImpl> myPointer;
+public class CS0157 extends CompilerCheck<CSharpReturnStatementImpl> {
+  public static class RemoveReturnStatementFix implements SyntheticIntentionAction {
+    private SmartPsiElementPointer<CSharpReturnStatementImpl> myPointer;
 
-		public RemoveReturnStatementFix(CSharpReturnStatementImpl declaration)
-		{
-			myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
-		}
+    public RemoveReturnStatementFix(CSharpReturnStatementImpl declaration) {
+      myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
+    }
 
-		@Nonnull
-		@Override
-		public String getFamilyName()
-		{
-			return "C#";
-		}
+    @Nonnull
+    @Override
+    public String getText() {
+      return "Remove return statement";
+    }
 
-		@Nonnull
-		@Override
-		public String getText()
-		{
-			return "Remove return statement";
-		}
+    @Override
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+      return myPointer.getElement() != null;
+    }
 
-		@Override
-		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-		{
-			return myPointer.getElement() != null;
-		}
+    @Override
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+      CSharpReturnStatementImpl element = myPointer.getElement();
+      if (element == null) {
+        return;
+      }
+      element.delete();
+    }
+  }
 
-		@Override
-		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-		{
-			CSharpReturnStatementImpl element = myPointer.getElement();
-			if(element == null)
-			{
-				return;
-			}
-			element.delete();
-		}
-	}
-
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpReturnStatementImpl element)
-	{
-		CSharpFinallyStatementImpl finallyStatement = PsiTreeUtil.getParentOfType(element, CSharpFinallyStatementImpl.class);
-		if(finallyStatement != null)
-		{
-			return newBuilder(element).withQuickFix(new RemoveReturnStatementFix(element));
-		}
-		return null;
-	}
+  @RequiredReadAction
+  @Nullable
+  @Override
+  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
+                                        @Nonnull CSharpHighlightContext highlightContext,
+                                        @Nonnull CSharpReturnStatementImpl element) {
+    CSharpFinallyStatementImpl finallyStatement = PsiTreeUtil.getParentOfType(element, CSharpFinallyStatementImpl.class);
+    if (finallyStatement != null) {
+      return newBuilder(element).withQuickFix(new RemoveReturnStatementFix(element));
+    }
+    return null;
+  }
 }

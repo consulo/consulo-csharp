@@ -45,108 +45,83 @@ import javax.annotation.Nonnull;
  */
 @ExtensionImpl
 @IntentionMetaData(ignoreId = "csharp.delegate.to.lambda", categories = "C#", fileExtensions = "cs")
-public class DelegateToLambdaExpressionFix extends PsiElementBaseIntentionAction
-{
-	@Override
-	public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException
-	{
-		CSharpDelegateExpressionImpl delegateExpression = PsiTreeUtil.getParentOfType(element, CSharpDelegateExpressionImpl.class);
+public class DelegateToLambdaExpressionFix extends PsiElementBaseIntentionAction {
+  @Override
+  public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException {
+    CSharpDelegateExpressionImpl delegateExpression = PsiTreeUtil.getParentOfType(element, CSharpDelegateExpressionImpl.class);
 
-		assert delegateExpression != null;
+    assert delegateExpression != null;
 
-		DotNetParameter[] parameters = delegateExpression.getParameters();
+    DotNetParameter[] parameters = delegateExpression.getParameters();
 
-		StringBuilder builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
 
-		if(delegateExpression.hasModifier(CSharpModifier.ASYNC))
-		{
-			builder.append("async ");
-		}
+    if (delegateExpression.hasModifier(CSharpModifier.ASYNC)) {
+      builder.append("async ");
+    }
 
-		if(parameters.length == 0)
-		{
-			builder.append("()");
-		}
-		else if(parameters.length == 1)
-		{
-			builder.append(parameters[0].getName());
-		}
-		else
-		{
-			builder.append("(");
-			for(int i = 0; i < parameters.length; i++)
-			{
-				if(i != 0)
-				{
-					builder.append(", ");
-				}
-				DotNetParameter parameter = parameters[i];
-				builder.append(parameter.getName());
-			}
-			builder.append(")");
-		}
+    if (parameters.length == 0) {
+      builder.append("()");
+    }
+    else if (parameters.length == 1) {
+      builder.append(parameters[0].getName());
+    }
+    else {
+      builder.append("(");
+      for (int i = 0; i < parameters.length; i++) {
+        if (i != 0) {
+          builder.append(", ");
+        }
+        DotNetParameter parameter = parameters[i];
+        builder.append(parameter.getName());
+      }
+      builder.append(")");
+    }
 
-		builder.append(" => ");
+    builder.append(" => ");
 
-		CSharpBlockStatementImpl statement = delegateExpression.getBodyStatement();
-		if(statement == null)
-		{
-			builder.append("{}");
-		}
-		else
-		{
-			DotNetStatement[] statements = statement.getStatements();
-			if(statements.length == 1 && statements[0] instanceof CSharpReturnStatementImpl)
-			{
-				DotNetExpression expression = ((CSharpReturnStatementImpl) statements[0]).getExpression();
-				if(expression != null)
-				{
-					builder.append(expression.getText());
-				}
-				else
-				{
-					builder.append("{}");
-				}
-			}
-			else
-			{
-				String join = StringUtil.join(statements, dotNetStatement -> dotNetStatement.getText(), "\n");
-				builder.append("{").append(join).append("}");
-			}
-		}
+    CSharpBlockStatementImpl statement = delegateExpression.getBodyStatement();
+    if (statement == null) {
+      builder.append("{}");
+    }
+    else {
+      DotNetStatement[] statements = statement.getStatements();
+      if (statements.length == 1 && statements[0] instanceof CSharpReturnStatementImpl) {
+        DotNetExpression expression = ((CSharpReturnStatementImpl)statements[0]).getExpression();
+        if (expression != null) {
+          builder.append(expression.getText());
+        }
+        else {
+          builder.append("{}");
+        }
+      }
+      else {
+        String join = StringUtil.join(statements, dotNetStatement -> dotNetStatement.getText(), "\n");
+        builder.append("{").append(join).append("}");
+      }
+    }
 
-		DotNetExpression expression = CSharpFileFactory.createExpression(project, builder.toString());
+    DotNetExpression expression = CSharpFileFactory.createExpression(project, builder.toString());
 
-		delegateExpression.replace(expression);
-	}
+    delegateExpression.replace(expression);
+  }
 
-	@Override
-	public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
-	{
-		ASTNode node = element.getNode();
-		if(node == null)
-		{
-			return false;
-		}
-		if(node.getElementType() == CSharpTokens.DELEGATE_KEYWORD)
-		{
-			CSharpDelegateExpressionImpl anonymMethodExpression = PsiTreeUtil.getParentOfType(element, CSharpDelegateExpressionImpl.class);
-			return anonymMethodExpression != null && anonymMethodExpression.toTypeRef(true) != DotNetTypeRef.ERROR_TYPE;
-		}
-		return false;
-	}
+  @Override
+  public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) {
+    ASTNode node = element.getNode();
+    if (node == null) {
+      return false;
+    }
+    if (node.getElementType() == CSharpTokens.DELEGATE_KEYWORD) {
+      CSharpDelegateExpressionImpl anonymMethodExpression = PsiTreeUtil.getParentOfType(element, CSharpDelegateExpressionImpl.class);
+      return anonymMethodExpression != null && anonymMethodExpression.toTypeRef(true) != DotNetTypeRef.ERROR_TYPE;
+    }
+    return false;
+  }
 
-	@Nonnull
-	@Override
-	public String getText()
-	{
-		return "To lambda";
-	}
-
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return "C#";
-	}
+  @Nonnull
+  @Override
+  public String getText() {
+    return "To lambda";
+  }
 }

@@ -46,81 +46,64 @@ import javax.annotation.Nonnull;
  */
 @ExtensionImpl
 @IntentionMetaData(ignoreId = "csharp.lambda.to.delegate", categories = "C#", fileExtensions = "cs")
-public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
-{
-	@Override
-	@RequiredReadAction
-	public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException
-	{
-		CSharpLambdaExpressionImpl lambdaExpression = PsiTreeUtil.getParentOfType(element, CSharpLambdaExpressionImpl.class);
-		assert lambdaExpression != null;
+public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction {
+  @Override
+  @RequiredReadAction
+  public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException {
+    CSharpLambdaExpressionImpl lambdaExpression = PsiTreeUtil.getParentOfType(element, CSharpLambdaExpressionImpl.class);
+    assert lambdaExpression != null;
 
-		StringBuilder builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
 
-		if(lambdaExpression.hasModifier(CSharpModifier.ASYNC))
-		{
-			builder.append("async ");
-		}
+    if (lambdaExpression.hasModifier(CSharpModifier.ASYNC)) {
+      builder.append("async ");
+    }
 
-		builder.append("delegate(");
+    builder.append("delegate(");
 
-		CSharpLambdaParameter[] parameters = lambdaExpression.getParameters();
+    CSharpLambdaParameter[] parameters = lambdaExpression.getParameters();
 
-		for(int i = 0; i < parameters.length; i++)
-		{
-			if(i != 0)
-			{
-				builder.append(", ");
-			}
-			CSharpLambdaParameter parameter = parameters[i];
+    for (int i = 0; i < parameters.length; i++) {
+      if (i != 0) {
+        builder.append(", ");
+      }
+      CSharpLambdaParameter parameter = parameters[i];
 
-			builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameter.toTypeRef(true))).append(" ").append(parameter.getName());
-		}
-		builder.append(") { ");
+      builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameter.toTypeRef(true))).append(" ").append(parameter.getName());
+    }
+    builder.append(") { ");
 
-		PsiElement codeBlock = lambdaExpression.getCodeBlock().getElement();
-		if(codeBlock instanceof DotNetExpression)
-		{
-			builder.append("return ").append(codeBlock.getText()).append(";");
-		}
-		else if(codeBlock instanceof CSharpBlockStatementImpl)
-		{
-			String join = StringUtil.join(((CSharpBlockStatementImpl) codeBlock).getStatements(), PsiElement::getText, "\n");
+    PsiElement codeBlock = lambdaExpression.getCodeBlock().getElement();
+    if (codeBlock instanceof DotNetExpression) {
+      builder.append("return ").append(codeBlock.getText()).append(";");
+    }
+    else if (codeBlock instanceof CSharpBlockStatementImpl) {
+      String join = StringUtil.join(((CSharpBlockStatementImpl)codeBlock).getStatements(), PsiElement::getText, "\n");
 
-			builder.append(join);
-		}
+      builder.append(join);
+    }
 
-		builder.append("}");
+    builder.append("}");
 
-		DotNetExpression expression = CSharpFileFactory.createExpression(project, builder.toString());
+    DotNetExpression expression = CSharpFileFactory.createExpression(project, builder.toString());
 
-		lambdaExpression.replace(expression);
-	}
+    lambdaExpression.replace(expression);
+  }
 
-	@Override
-	@RequiredReadAction
-	public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element)
-	{
-		IElementType elementType = PsiUtilCore.getElementType(element);
-		if(elementType == CSharpTokens.DARROW)
-		{
-			CSharpLambdaExpressionImpl lambdaExpression = PsiTreeUtil.getParentOfType(element, CSharpLambdaExpressionImpl.class);
-			return lambdaExpression != null && lambdaExpression.toTypeRef(true) != DotNetTypeRef.ERROR_TYPE;
-		}
-		return false;
-	}
+  @Override
+  @RequiredReadAction
+  public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) {
+    IElementType elementType = PsiUtilCore.getElementType(element);
+    if (elementType == CSharpTokens.DARROW) {
+      CSharpLambdaExpressionImpl lambdaExpression = PsiTreeUtil.getParentOfType(element, CSharpLambdaExpressionImpl.class);
+      return lambdaExpression != null && lambdaExpression.toTypeRef(true) != DotNetTypeRef.ERROR_TYPE;
+    }
+    return false;
+  }
 
-	@Nonnull
-	@Override
-	public String getText()
-	{
-		return "To delegate";
-	}
-
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return "C#";
-	}
+  @Nonnull
+  @Override
+  public String getText() {
+    return "To delegate";
+  }
 }

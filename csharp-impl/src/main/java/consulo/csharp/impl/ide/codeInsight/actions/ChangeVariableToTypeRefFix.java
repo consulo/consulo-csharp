@@ -23,7 +23,6 @@ import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import consulo.language.editor.intention.BaseIntentionAction;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiFile;
@@ -39,65 +38,50 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 30.12.14
  */
-public class ChangeVariableToTypeRefFix extends BaseIntentionAction implements SyntheticIntentionAction
-{
-	private final SmartPsiElementPointer<DotNetVariable> myVariablePointer;
-	@Nonnull
-	private final DotNetTypeRef myToTypeRef;
+public class ChangeVariableToTypeRefFix implements SyntheticIntentionAction {
+  private final SmartPsiElementPointer<DotNetVariable> myVariablePointer;
+  @Nonnull
+  private final DotNetTypeRef myToTypeRef;
 
-	public ChangeVariableToTypeRefFix(@Nonnull DotNetVariable element, @Nonnull DotNetTypeRef toTypeRef)
-	{
-		myVariablePointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
-		myToTypeRef = toTypeRef;
-	}
+  public ChangeVariableToTypeRefFix(@Nonnull DotNetVariable element, @Nonnull DotNetTypeRef toTypeRef) {
+    myVariablePointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
+    myToTypeRef = toTypeRef;
+  }
 
-	@Nonnull
-	@Override
-	public String getText()
-	{
-		DotNetVariable element = myVariablePointer.getElement();
-		if(element == null)
-		{
-			return "invalid";
-		}
-		return BundleBase.format("Change ''{0}'' type to ''{1}''", element.getName(), CSharpTypeRefPresentationUtil.buildTextWithKeyword
-				(myToTypeRef));
-	}
+  @Nonnull
+  @Override
+  public String getText() {
+    DotNetVariable element = myVariablePointer.getElement();
+    if (element == null) {
+      return "invalid";
+    }
+    return BundleBase.format("Change ''{0}'' type to ''{1}''", element.getName(), CSharpTypeRefPresentationUtil.buildTextWithKeyword
+      (myToTypeRef));
+  }
 
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return "C#";
-	}
+  @Override
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    return myVariablePointer.getElement() != null;
+  }
 
-	@Override
-	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-	{
-		return myVariablePointer.getElement() != null;
-	}
+  @Override
+  @RequiredUIAccess
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    PsiDocumentManager.getInstance(project).commitAllDocuments();
 
-	@Override
-	@RequiredUIAccess
-	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-	{
-		PsiDocumentManager.getInstance(project).commitAllDocuments();
+    DotNetVariable element = myVariablePointer.getElement();
+    if (element == null) {
+      return;
+    }
 
-		DotNetVariable element = myVariablePointer.getElement();
-		if(element == null)
-		{
-			return;
-		}
+    DotNetType typeOfVariable = element.getType();
+    if (typeOfVariable == null) {
+      return;
+    }
+    String typeText = CSharpTypeRefPresentationUtil.buildShortText(myToTypeRef);
 
-		DotNetType typeOfVariable = element.getType();
-		if(typeOfVariable == null)
-		{
-			return;
-		}
-		String typeText = CSharpTypeRefPresentationUtil.buildShortText(myToTypeRef);
+    DotNetType type = CSharpFileFactory.createMaybeStubType(project, typeText, typeOfVariable);
 
-		DotNetType type = CSharpFileFactory.createMaybeStubType(project, typeText, typeOfVariable);
-
-		typeOfVariable.replace(type);
-	}
+    typeOfVariable.replace(type);
+  }
 }
