@@ -25,7 +25,7 @@ import consulo.application.util.function.Processor;
 import consulo.application.util.query.Query;
 import consulo.codeEditor.Editor;
 import consulo.component.util.Iconable;
-import consulo.csharp.impl.ide.codeInsight.actions.AddAccessModifierFix;
+import consulo.csharp.impl.ide.codeInsight.actions.AddPrivateModifierFix;
 import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpModifier;
@@ -158,7 +158,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 						{
 							for(final DotNetFieldDeclaration fieldDeclaration : fieldDeclarations)
 							{
-								new AddAccessModifierFix(CSharpModifier.PRIVATE).invoke(project, editor, fieldDeclaration.getNameIdentifier());
+								new AddPrivateModifierFix().invoke(project, editor, fieldDeclaration.getNameIdentifier());
 
 								final String propertyName = getPropertyName(project, fieldDeclaration.hasModifier(DotNetModifier.STATIC), fieldDeclaration.getName());
 								Query<PsiReference> search = ReferencesSearch.search(fieldDeclaration);
