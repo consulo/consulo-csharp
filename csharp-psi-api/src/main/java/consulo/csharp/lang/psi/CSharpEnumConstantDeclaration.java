@@ -22,6 +22,6 @@ import consulo.dotnet.psi.DotNetFieldDeclaration;
  * @author VISTALL
  * @since 20.07.14
  */
-public interface CSharpEnumConstantDeclaration extends DotNetFieldDeclaration
+public interface CSharpEnumConstantDeclaration extends DotNetFieldDeclaration, CSharpNamedElement
 {
 }

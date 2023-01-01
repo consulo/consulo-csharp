@@ -16,9 +16,9 @@
 
 package consulo.csharp.lang.psi;
 
-import com.intellij.util.ArrayFactory;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.util.collection.ArrayFactory;
 
 import javax.annotation.Nonnull;
 

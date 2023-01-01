@@ -16,16 +16,11 @@
 
 package consulo.csharp.lang.util;
 
-import java.util.AbstractCollection;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import consulo.util.collection.ContainerUtil;
+import org.jetbrains.annotations.Contract;
 
 import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.Contract;
-import com.intellij.util.containers.ContainerUtil;
+import java.util.*;
 
 /**
  * @author VISTALL

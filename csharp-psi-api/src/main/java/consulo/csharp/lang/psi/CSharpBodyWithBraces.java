@@ -17,7 +17,7 @@
 package consulo.csharp.lang.psi;
 
 import consulo.annotation.access.RequiredReadAction;
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author VISTALL

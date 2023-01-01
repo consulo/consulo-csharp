@@ -16,9 +16,10 @@
 
 package consulo.csharp.lang;
 
+import consulo.language.Language;
+import consulo.language.version.LanguageVersion;
+
 import javax.annotation.Nonnull;
-import com.intellij.lang.Language;
-import consulo.lang.LanguageVersion;
 
 /**
  * @author VISTALL

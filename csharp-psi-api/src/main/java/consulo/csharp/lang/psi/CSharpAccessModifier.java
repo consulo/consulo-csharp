@@ -16,9 +16,9 @@
 
 package consulo.csharp.lang.psi;
 
-import com.intellij.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nonnull;
 import java.util.Locale;

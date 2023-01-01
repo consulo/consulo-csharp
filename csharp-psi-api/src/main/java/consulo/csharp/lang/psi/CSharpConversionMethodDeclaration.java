@@ -16,18 +16,20 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.psi.PsiElement;
+import consulo.navigation.NavigationItem;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 09.01.14
  */
-public interface CSharpConversionMethodDeclaration extends DotNetLikeMethodDeclaration
+public interface CSharpConversionMethodDeclaration extends DotNetLikeMethodDeclaration, NavigationItem
 {
 	/**
 	 * @return true if type equal implicit - if not method type is explicit

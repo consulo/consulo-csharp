@@ -16,14 +16,15 @@
 
 package consulo.csharp.lang.psi;
 
-import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.navigation.NavigationItem;
+import consulo.util.collection.ArrayFactory;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-public interface CSharpTypeDeclaration extends DotNetTypeDeclaration, CSharpGenericConstraintOwner, CSharpBodyWithBraces, CSharpNamedElement
+public interface CSharpTypeDeclaration extends DotNetTypeDeclaration, CSharpGenericConstraintOwner, CSharpBodyWithBraces, CSharpNamedElement, NavigationItem
 {
 	public static final CSharpTypeDeclaration[] EMPTY_ARRAY = new CSharpTypeDeclaration[0];
 

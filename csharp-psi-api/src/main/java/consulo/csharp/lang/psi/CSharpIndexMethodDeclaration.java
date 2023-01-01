@@ -20,6 +20,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetMemberOwner;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.navigation.NavigationItem;
 
 import javax.annotation.Nonnull;
 
@@ -28,7 +29,7 @@ import javax.annotation.Nonnull;
  * @since 01.03.14
  */
 public interface CSharpIndexMethodDeclaration extends DotNetLikeMethodDeclaration, DotNetVirtualImplementOwner, DotNetMemberOwner,
-		CSharpSimpleLikeMethodAsElement, CSharpBodyWithBraces, CSharpXAccessorOwner
+		CSharpSimpleLikeMethodAsElement, CSharpBodyWithBraces, CSharpXAccessorOwner, NavigationItem
 {
 	@RequiredReadAction
 	default boolean isAutoGet()

@@ -16,10 +16,10 @@
 
 package consulo.csharp.module.extension;
 
+import consulo.component.util.pointer.Named;
+import consulo.component.util.pointer.NamedPointer;
 import consulo.csharp.api.localize.CSharpLocalize;
 import consulo.localize.LocalizeValue;
-import consulo.util.pointers.Named;
-import consulo.util.pointers.NamedPointer;
 
 import javax.annotation.Nonnull;
 

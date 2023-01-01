@@ -16,26 +16,30 @@
 
 package consulo.csharp.compiler;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import consulo.content.bundle.Sdk;
+import consulo.content.bundle.SdkType;
 import consulo.csharp.module.extension.CSharpModuleExtension;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.SdkType;
-import com.intellij.openapi.vfs.VirtualFile;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import consulo.roots.ui.configuration.SdkComboBox;
+import consulo.module.ui.awt.SdkComboBox;
+import consulo.virtualFileSystem.VirtualFile;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 08.06.2015
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class CSharpCompilerProvider
 {
-	public static final ExtensionPointName<CSharpCompilerProvider> EP_NAME = ExtensionPointName.create("consulo.csharp.compilerProvider");
+	public static final ExtensionPointName<CSharpCompilerProvider> EP_NAME = ExtensionPointName.create(CSharpCompilerProvider.class);
 
 	@Nullable
 	public abstract SdkType getBundleType(@Nonnull DotNetSimpleModuleExtension<?> moduleExtension);

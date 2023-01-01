@@ -16,16 +16,16 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ArrayFactory;
-import com.intellij.util.Processor;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.util.function.Processor;
 import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ArrayFactory;
 import consulo.util.dataholder.UserDataHolder;
 
 import javax.annotation.Nonnull;

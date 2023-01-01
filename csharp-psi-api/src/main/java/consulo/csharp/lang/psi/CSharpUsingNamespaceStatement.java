@@ -16,11 +16,12 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nullable;
-import com.intellij.util.ArrayFactory;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetReferenceExpression;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
+import consulo.util.collection.ArrayFactory;
+
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

@@ -16,11 +16,11 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import java.util.Collection;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nonnull;
-import consulo.annotation.access.RequiredReadAction;
-import com.intellij.psi.PsiElement;
+import java.util.Collection;
 
 /**
  * @author VISTALL

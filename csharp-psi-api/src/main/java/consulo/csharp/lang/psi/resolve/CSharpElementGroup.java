@@ -16,10 +16,10 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.util.Processor;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.util.function.Processor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;

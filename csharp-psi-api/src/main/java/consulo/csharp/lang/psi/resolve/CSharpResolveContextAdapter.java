@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import com.intellij.psi.PsiElement;
 import consulo.annotation.DeprecationInfo;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nonnull;
 

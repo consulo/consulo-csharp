@@ -16,11 +16,11 @@
 
 package consulo.csharp.lang.psi;
 
+import consulo.dotnet.psi.DotNetType;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL

@@ -16,14 +16,13 @@
 
 package consulo.csharp.lang.psi;
 
+import consulo.dotnet.psi.DotNetModifier;
+import consulo.util.collection.ArrayFactory;
+
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
-
-import com.intellij.util.ArrayFactory;
-import consulo.dotnet.psi.DotNetModifier;
 
 /**
  * @author VISTALL

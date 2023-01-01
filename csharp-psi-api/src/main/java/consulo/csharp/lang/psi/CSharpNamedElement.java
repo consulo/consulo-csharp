@@ -16,17 +16,18 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nullable;
-
-import org.jetbrains.annotations.Contract;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.navigation.NavigationItem;
+import org.jetbrains.annotations.Contract;
+
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 14-Nov-17
  */
-public interface CSharpNamedElement extends DotNetNamedElement
+public interface CSharpNamedElement extends DotNetNamedElement, NavigationItem
 {
 	@Contract("null -> null")
 	@RequiredReadAction

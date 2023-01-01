@@ -23,7 +23,7 @@ import consulo.dotnet.psi.DotNetPropertyDeclaration;
  * @author VISTALL
  * @since 15.01.14
  */
-public interface CSharpPropertyDeclaration extends DotNetPropertyDeclaration, CSharpXAccessorOwner
+public interface CSharpPropertyDeclaration extends DotNetPropertyDeclaration, CSharpXAccessorOwner, CSharpNamedElement
 {
 	@RequiredReadAction
 	boolean isAutoGet();

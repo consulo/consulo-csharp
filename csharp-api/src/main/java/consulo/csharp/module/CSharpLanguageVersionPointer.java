@@ -16,15 +16,17 @@
 
 package consulo.csharp.module;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
+import consulo.component.util.pointer.NamedPointer;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
-import consulo.module.extension.impl.ModuleInheritableNamedPointerImpl;
-import consulo.roots.ModuleRootLayer;
-import consulo.util.pointers.NamedPointer;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
+import consulo.module.content.layer.ModuleRootLayer;
+import consulo.module.content.layer.extension.ModuleInheritableNamedPointerImpl;
+
+import javax.annotation.Nonnull;
+
+;
 
 /**
  * @author VISTALL

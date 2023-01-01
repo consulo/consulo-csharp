@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.doc.psi;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author VISTALL

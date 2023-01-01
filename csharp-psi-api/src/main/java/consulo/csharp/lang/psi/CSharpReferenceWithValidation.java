@@ -1,8 +1,8 @@
 package consulo.csharp.lang.psi;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
 import consulo.localize.LocalizeValue;
 
 import javax.annotation.Nonnull;
