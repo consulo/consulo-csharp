@@ -44,7 +44,7 @@ public class MatchNamespaceInspection extends CSharpGeneralLocalInspection
 	@Nonnull
 	@Override
 	@RequiredReadAction
-	public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session)
+	public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session, @Nonnull Object state)
 	{
 		PsiFile file = holder.getFile();
 		if(!(file instanceof CSharpFile))
@@ -72,7 +72,7 @@ public class MatchNamespaceInspection extends CSharpGeneralLocalInspection
 	}
 
 	@Override
-	public void inspectionFinished(@Nonnull LocalInspectionToolSession session, @Nonnull ProblemsHolder problemsHolder)
+	public void inspectionFinished(@Nonnull LocalInspectionToolSession session, @Nonnull ProblemsHolder problemsHolder, @Nonnull Object state)
 	{
 		MatchNamespaceVisitor visitor = session.getUserData(KEY);
 		if(visitor == null)

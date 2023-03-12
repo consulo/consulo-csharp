@@ -43,7 +43,7 @@ public class UnnecessaryCastInspection extends CSharpGeneralLocalInspection
 {
 	@Nonnull
 	@Override
-	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session)
+	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)
 	{
 		return new CSharpElementVisitor()
 		{

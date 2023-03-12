@@ -49,7 +49,7 @@ public class UnnecessaryTypeInspection extends CSharpGeneralLocalInspection
 {
 	@Nonnull
 	@Override
-	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session)
+	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)
 	{
 		CSharpLanguageVersion languageVersion = CSharpModuleUtil.findLanguageVersion(holder.getFile());
 		if(!languageVersion.isAtLeast(CSharpLanguageVersion._3_0))

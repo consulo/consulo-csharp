@@ -82,7 +82,7 @@ public class UnusedUsingInspection extends CSharpGeneralLocalInspection
 
 	@Nonnull
 	@Override
-	public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session)
+	public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session, @Nonnull Object state)
 	{
 		UnusedUsingVisitor visitor = session.getUserData(KEY);
 		if(visitor == null)
@@ -94,7 +94,7 @@ public class UnusedUsingInspection extends CSharpGeneralLocalInspection
 
 	@Override
 	@RequiredReadAction
-	public void inspectionFinished(@Nonnull LocalInspectionToolSession session, @Nonnull ProblemsHolder problemsHolder)
+	public void inspectionFinished(@Nonnull LocalInspectionToolSession session, @Nonnull ProblemsHolder problemsHolder, @Nonnull Object state)
 	{
 		UnusedUsingVisitor visitor = session.getUserData(KEY);
 		if(visitor == null)
