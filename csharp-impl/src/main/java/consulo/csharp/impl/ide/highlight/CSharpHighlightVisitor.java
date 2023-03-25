@@ -17,7 +17,6 @@
 package consulo.csharp.impl.ide.highlight;
 
 import consulo.annotation.access.RequiredReadAction;
-import consulo.annotation.component.ExtensionImpl;
 import consulo.application.progress.ProgressIndicatorProvider;
 import consulo.codeEditor.DefaultLanguageHighlighterColors;
 import consulo.codeEditor.EditorColors;
@@ -59,17 +58,17 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 28.11.13.
  */
-@ExtensionImpl
 public class CSharpHighlightVisitor extends CSharpElementVisitor implements HighlightVisitor
 {
+	private final PsiDocumentManager myPsiDocumentManager;
+
 	private HighlightInfoHolder myHighlightInfoHolder;
 	private IntSet myProcessedLines = IntSets.newHashSet();
 	private Document myDocument;
 
-	@Override
-	public boolean suitableForFile(@Nonnull PsiFile psiFile)
+	public CSharpHighlightVisitor(PsiDocumentManager psiDocumentManager)
 	{
-		return psiFile instanceof CSharpFile;
+		myPsiDocumentManager = psiDocumentManager;
 	}
 
 	@Override
@@ -373,16 +372,9 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	{
 		myHighlightInfoHolder = highlightInfoHolder;
 		myProcessedLines.clear();
-		myDocument = PsiDocumentManager.getInstance(psiFile.getProject()).getCachedDocument(psiFile);
+		myDocument = myPsiDocumentManager.getCachedDocument(psiFile);
 		runnable.run();
 		myDocument = null;
 		return true;
-	}
-
-	@Nonnull
-	@Override
-	public HighlightVisitor clone()
-	{
-		return new CSharpHighlightVisitor();
 	}
 }

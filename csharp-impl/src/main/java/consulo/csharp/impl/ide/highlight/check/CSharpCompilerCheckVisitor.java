@@ -17,12 +17,10 @@
 package consulo.csharp.impl.ide.highlight.check;
 
 import consulo.annotation.access.RequiredReadAction;
-import consulo.annotation.component.ExtensionImpl;
 import consulo.application.progress.ProgressIndicatorProvider;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.lang.doc.CSharpDocUtil;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetElement;
@@ -33,8 +31,6 @@ import consulo.language.editor.rawHighlight.HighlightInfoHolder;
 import consulo.language.editor.rawHighlight.HighlightVisitor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
-import consulo.msil.impl.representation.fileSystem.MsilFileRepresentationVirtualFile;
-import consulo.virtualFileSystem.VirtualFile;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -43,7 +39,6 @@ import java.util.List;
  * @author VISTALL
  * @since 18.11.14
  */
-@ExtensionImpl
 public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements HighlightVisitor
 {
 	private HighlightInfoHolder myHighlightInfoHolder;
@@ -96,13 +91,6 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 	}
 
 	@Override
-	public boolean suitableForFile(@Nonnull PsiFile psiFile)
-	{
-		VirtualFile virtualFile = psiFile.getVirtualFile();
-		return !(virtualFile instanceof MsilFileRepresentationVirtualFile) && psiFile instanceof CSharpFile;
-	}
-
-	@Override
 	public void visit(@Nonnull PsiElement element)
 	{
 		element.accept(this);
@@ -118,12 +106,5 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 		myHighlightContext = null;
 
 		return true;
-	}
-
-	@Nonnull
-	@Override
-	public HighlightVisitor clone()
-	{
-		return new CSharpCompilerCheckVisitor();
 	}
 }
