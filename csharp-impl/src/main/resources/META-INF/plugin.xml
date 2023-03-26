@@ -27,7 +27,6 @@
 
 	<depends>consulo.dotnet</depends>
 	<depends>com.intellij.xml</depends>
-	<depends optional="true">com.intellij.spellchecker</depends>
 	<depends optional="true">consulo.dotnet.microsoft</depends>
 	<depends optional="true">consulo.dotnet.mono</depends>
 

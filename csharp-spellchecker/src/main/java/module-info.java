@@ -9,6 +9,4 @@ module consulo.csharp.spellchecker
 	requires consulo.dotnet.psi.impl;
 
 	requires consulo.csharp.psi.impl;
-
-	requires com.intellij.spellchecker;
 }

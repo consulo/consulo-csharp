@@ -16,16 +16,16 @@
 
 package consulo.csharp.spellchecker;
 
-import consulo.language.psi.PsiElement;
-import com.intellij.spellchecker.inspections.IdentifierSplitter;
-import com.intellij.spellchecker.tokenizer.TokenConsumer;
-import com.intellij.spellchecker.tokenizer.Tokenizer;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.document.util.TextRange;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeList;
+import consulo.language.psi.PsiElement;
+import consulo.language.spellcheker.tokenizer.TokenConsumer;
+import consulo.language.spellcheker.tokenizer.Tokenizer;
+import consulo.language.spellcheker.tokenizer.splitter.IdentifierTokenSplitter;
 
 import javax.annotation.Nonnull;
 
@@ -61,7 +61,7 @@ public class CSharpUserTypeTokenizer extends Tokenizer<CSharpUserType>
 					textRange = new TextRange(1, textRange.getEndOffset());
 				}
 
-				consumer.consumeToken(referenceElement, refName, true, 0, textRange, IdentifierSplitter.getInstance());
+				consumer.consumeToken(referenceElement, refName, true, 0, textRange, IdentifierTokenSplitter.getInstance());
 			}
 
 			DotNetTypeList typeArgumentList = referenceExpression.getTypeArgumentList();

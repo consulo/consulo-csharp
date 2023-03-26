@@ -18,12 +18,12 @@ package consulo.csharp.spellchecker;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.language.Language;
 import consulo.language.psi.PsiElement;
-import com.intellij.spellchecker.tokenizer.SpellcheckingStrategy;
-import com.intellij.spellchecker.tokenizer.Tokenizer;
-import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.language.psi.PsiNameIdentifierOwner;
+import consulo.language.spellcheker.SpellcheckingStrategy;
+import consulo.language.spellcheker.tokenizer.Tokenizer;
 
 import javax.annotation.Nonnull;
 

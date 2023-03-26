@@ -16,15 +16,15 @@
 
 package consulo.csharp.spellchecker;
 
-import consulo.document.util.TextRange;
-import consulo.language.psi.PsiElement;
-import com.intellij.spellchecker.inspections.IdentifierSplitter;
-import com.intellij.spellchecker.tokenizer.TokenConsumer;
-import com.intellij.spellchecker.tokenizer.Tokenizer;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.spellcheker.tokenizer.TokenConsumer;
+import consulo.language.spellcheker.tokenizer.Tokenizer;
+import consulo.language.spellcheker.tokenizer.splitter.IdentifierTokenSplitter;
 
 import javax.annotation.Nonnull;
 
@@ -67,6 +67,6 @@ public class CSharpNameIdentifierOwnerTokenizer extends Tokenizer<PsiNameIdentif
 		}
 
 		String text = CSharpPsiUtilImpl.getNameWithoutAt(oldText);
-		tokenConsumer.consumeToken(parent, text, true, offset, TextRange.allOf(text), IdentifierSplitter.getInstance());
+		tokenConsumer.consumeToken(parent, text, true, offset, TextRange.allOf(text), IdentifierTokenSplitter.getInstance());
 	}
 }

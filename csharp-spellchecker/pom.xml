@@ -52,12 +52,6 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>com.intellij.spellchecker</artifactId>
-			<version>${project.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
 			<artifactId>consulo.dotnet</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
