@@ -34,7 +34,7 @@ import java.util.Set;
  * @author VISTALL
  * @since 14-Nov-17
  */
-@ExtensionImpl(order = "last")
+@ExtensionImpl
 public class CSharpNameSuggestionProvider implements NameSuggestionProvider
 {
 	@Nullable
