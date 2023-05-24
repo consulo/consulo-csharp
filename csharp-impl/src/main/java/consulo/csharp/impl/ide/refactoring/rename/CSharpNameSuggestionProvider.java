@@ -43,6 +43,7 @@ public class CSharpNameSuggestionProvider implements NameSuggestionProvider
 	{
 		if(element.getLanguage() != CSharpLanguage.INSTANCE)
 		{
+			
 			return null;
 		}
 

@@ -17,7 +17,6 @@
 package consulo.csharp.impl.ide.newProjectOrModule;
 
 import consulo.annotation.access.RequiredReadAction;
-import consulo.annotation.component.ExtensionImpl;
 import consulo.application.AllIcons;
 import consulo.application.dumb.DumbAwareRunnable;
 import consulo.content.bundle.Sdk;
@@ -43,10 +42,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
+ * Old style module creating - disabled since outdated
+ *
  * @author VISTALL
  * @since 05.06.14
  */
-@ExtensionImpl
 public class CSharpNewModuleBuilder implements NewModuleBuilder
 {
 	private static final String DEBUG = "Debug";
