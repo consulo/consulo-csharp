@@ -16,11 +16,12 @@
 
 package consulo.csharp.impl.ide.highlight.check;
 
-import consulo.language.editor.rawHighlight.HighlightInfoType;
-import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
+import consulo.csharp.impl.ide.highlight.CSharpHighlightInfoType;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.language.editor.rawHighlight.HighlightInfoType;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.ParameterizedType;
@@ -64,15 +65,15 @@ public enum CSharpCompilerChecks
 	CS0155(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // throw object must be child of System.Exception
 	CS0157(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // return is not allowed inside finally blocks
 	CS0161(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  return check
-	CS0168(CSharpLanguageVersion._1_0, HighlightInfoType.UNUSED_SYMBOL), // local variable usage check
-	CS0169(CSharpLanguageVersion._1_0, HighlightInfoType.UNUSED_SYMBOL), // field is not used
+	CS0168(CSharpLanguageVersion._1_0, CSharpHighlightInfoType.UNUSED), // local variable usage check
+	CS0169(CSharpLanguageVersion._1_0, CSharpHighlightInfoType.UNUSED), // field is not used
 	CS0173(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // failed to find conditional expression type
 	CS0200(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // readonly check
 	CS0201(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expression statement can be only call, etc
 	CS0206(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref/out expressions can be only indexer, etc
 	CS0211(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // cant take address for expression
 	CS0214(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // fixed can be used inside unsafe context
-	CS0219(CSharpLanguageVersion._1_0, HighlightInfoType.UNUSED_SYMBOL), // local variable usage check with initializer
+	CS0219(CSharpLanguageVersion._1_0, CSharpHighlightInfoType.UNUSED), // local variable usage check with initializer
 	CS0227(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // 'unsafe' modifier check
 	CS0231(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // 'params' modifier must be last
 	CS0236(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // can't reference to non static field, property, method from field initializer
@@ -140,7 +141,7 @@ public enum CSharpCompilerChecks
 	CS1980(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // dynamic checks
 	CS1984(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside finally statements
 	CS1985(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside catch statements
-	CS1998(CSharpLanguageVersion._4_0, HighlightInfoType.UNUSED_SYMBOL), // async modifer - then no await
+	CS1998(CSharpLanguageVersion._4_0, CSharpHighlightInfoType.UNUSED), // async modifer - then no await
 	CS4009(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // async modifier cant be at entry point
 	CS8632(CSharpLanguageVersion._8_0, HighlightInfoType.WARNING), // nullable type check
 
