@@ -162,7 +162,7 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 	{
 		try
 		{
-			return FileUtil.loadTextAndClose(CSharpLanguageCodeStyleSettingsProvider.class.getResourceAsStream("/codeStyle" + file));
+			return FileUtil.loadTextAndClose(CSharpLanguageCodeStyleSettingsProvider.class.getResourceAsStream("/codeStyle/" + file));
 		}
 		catch(IOException e)
 		{
