@@ -7,6 +7,8 @@ open module consulo.csharp
 	// TODO remove this dependency in future
 	requires java.desktop;
 	// TODO remove this dependency in future
+	requires forms.rt;
+	// TODO remove this dependency in future
 	requires consulo.ide.impl;
 
 	requires transitive consulo.csharp.base.impl;
