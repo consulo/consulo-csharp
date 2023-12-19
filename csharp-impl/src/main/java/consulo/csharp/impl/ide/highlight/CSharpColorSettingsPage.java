@@ -17,7 +17,6 @@
 package consulo.csharp.impl.ide.highlight;
 
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.util.NotNullLazyValue;
 import consulo.colorScheme.TextAttributesKey;
 import consulo.colorScheme.setting.AttributesDescriptor;
 import consulo.colorScheme.setting.ColorDescriptor;
@@ -26,12 +25,14 @@ import consulo.csharp.lang.doc.impl.ide.highlight.CSharpDocHighlightKey;
 import consulo.language.editor.colorScheme.setting.ColorSettingsPage;
 import consulo.language.editor.highlight.SyntaxHighlighter;
 import consulo.util.io.FileUtil;
+import consulo.util.lang.lazy.LazyValue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @author VISTALL
@@ -123,11 +124,11 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 		ourAdditionalTags.put("local_var", CSharpHighlightKey.LOCAL_VARIABLE);
 	}
 
-	private final NotNullLazyValue<String> myDemoTextValue = NotNullLazyValue.createValue(() ->
+	private final Supplier<String> myDemoTextValue = LazyValue.notNull(() ->
 	{
 		try
 		{
-			return FileUtil.loadTextAndClose(getClass().getResourceAsStream("/colorSettingsPage/C#.txt"), true);
+			return FileUtil.loadTextAndClose(CSharpColorSettingsPage.class.getResourceAsStream("/consulo/csharp/impl/ide/highlight/demoHighlightCode.txt"), true);
 		}
 		catch(IOException e)
 		{
@@ -146,7 +147,7 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 	@Override
 	public String getDemoText()
 	{
-		return myDemoTextValue.getValue();
+		return myDemoTextValue.get();
 	}
 
 	@Nullable

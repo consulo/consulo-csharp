@@ -17,10 +17,9 @@
 package consulo.csharp.impl.ide.codeStyle;
 
 import consulo.csharp.lang.CSharpLanguage;
-import consulo.language.codeStyle.ui.setting.TabbedLanguageCodeStylePanel;
-import consulo.component.extension.Extensions;
 import consulo.language.codeStyle.CodeStyleSettings;
 import consulo.language.codeStyle.setting.CodeStyleSettingsProvider;
+import consulo.language.codeStyle.ui.setting.TabbedLanguageCodeStylePanel;
 
 /**
  * @author VISTALL
@@ -37,7 +36,7 @@ public class CSharpCodeStyleMainPanel extends TabbedLanguageCodeStylePanel
 	protected void initTabs(CodeStyleSettings settings)
 	{
 		super.initTabs(settings);
-		for(CodeStyleSettingsProvider provider : Extensions.getExtensions(CodeStyleSettingsProvider.EXTENSION_POINT_NAME))
+		for(CodeStyleSettingsProvider provider : CodeStyleSettingsProvider.EXTENSION_POINT_NAME.getExtensionList())
 		{
 			if(provider.getLanguage() == CSharpLanguage.INSTANCE && !provider.hasSettingsPage())
 			{
