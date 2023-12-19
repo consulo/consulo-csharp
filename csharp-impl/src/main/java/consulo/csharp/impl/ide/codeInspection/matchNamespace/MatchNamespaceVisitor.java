@@ -17,6 +17,7 @@
 package consulo.csharp.impl.ide.codeInspection.matchNamespace;
 
 import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.localize.CSharpInspectionLocalize;
@@ -50,7 +51,8 @@ class MatchNamespaceVisitor extends CSharpElementVisitor
 
 		DotNetNamespaceGeneratePolicy namespaceGeneratePolicy = extension.getNamespaceGeneratePolicy();
 
-		myExpectedNamespace = namespaceGeneratePolicy.calculateNamespace(holder.getFile().getContainingDirectory());
+		PsiDirectory containingDirectory = holder.getFile().getContainingDirectory();
+		myExpectedNamespace = containingDirectory == null ? null : namespaceGeneratePolicy.calculateNamespace(containingDirectory);
 	}
 
 	@Override
