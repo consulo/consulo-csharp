@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2023 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,34 @@
 
 package consulo.csharp.lang.impl.psi.stub;
 
+import consulo.csharp.lang.impl.psi.source.CSharpUsingNamespaceStatementImpl;
 import consulo.index.io.StringRef;
-import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.psi.stub.StubBase;
 import consulo.language.psi.stub.StubElement;
-
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL
- * @since 17.10.14
+ * @since 2023-12-30
  */
-public class CSharpWithStringValueStub<T extends PsiElement> extends StubBase<T>
+public class CSharpUsingNamespaceStub extends StubBase<CSharpUsingNamespaceStatementImpl>
 {
 	private final String myReferenceText;
+	private final boolean myGlobal;
 
-	public CSharpWithStringValueStub(StubElement parent, IStubElementType elementType, StringRef referenceText)
+	public CSharpUsingNamespaceStub(StubElement parent, IStubElementType elementType, StringRef referenceText, boolean global)
 	{
 		super(parent, elementType);
 		myReferenceText = StringRef.toString(referenceText);
+		myGlobal = global;
 	}
 
-	public CSharpWithStringValueStub(StubElement parent, IStubElementType elementType, String referenceText)
+	public CSharpUsingNamespaceStub(StubElement parent, IStubElementType elementType, String referenceText, boolean global)
 	{
 		super(parent, elementType);
 		myReferenceText = referenceText;
+		myGlobal = global;
 	}
 
 	@Nullable
@@ -49,4 +51,10 @@ public class CSharpWithStringValueStub<T extends PsiElement> extends StubBase<T>
 	{
 		return myReferenceText;
 	}
+
+	public boolean isGlobal()
+	{
+		return myGlobal;
+	}
 }
+

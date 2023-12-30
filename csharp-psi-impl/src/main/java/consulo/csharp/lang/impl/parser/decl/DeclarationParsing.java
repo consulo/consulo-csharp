@@ -16,12 +16,6 @@
 
 package consulo.csharp.lang.impl.parser.decl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import consulo.language.parser.PsiBuilder;
-import consulo.language.ast.IElementType;
-import consulo.language.ast.TokenSet;
 import consulo.csharp.lang.impl.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.impl.parser.ModifierSet;
 import consulo.csharp.lang.impl.parser.SharedParsingHelpers;
@@ -29,8 +23,15 @@ import consulo.csharp.lang.impl.parser.UsingStatementParsing;
 import consulo.csharp.lang.impl.parser.exp.ExpressionParsing;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.impl.psi.CSharpTokenSets;
+import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.language.parser.PsiBuilder;
 import consulo.util.lang.Pair;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -149,7 +150,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 				modifierListMarker.drop();
 			}
 
-			UsingStatementParsing.parseUsing(builder, marker);
+			UsingStatementParsing.parseUsing(builder, marker, CSharpBuilderWrapper::advanceLexer);
 		}
 		else if(tokenType == CONST_KEYWORD)
 		{
@@ -159,79 +160,101 @@ public class DeclarationParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			// MODIFIER_LIST IDENTIFIER LPAR -> CONSTRUCTOR
-			if(tokenType == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == LPAR)
+			// global using ...
+			if(builder.isSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD) && builder.lookAhead(1) == USING_KEYWORD)
 			{
-				MethodParsing.parseMethodStartAfterType(builder, marker, null, MethodParsing.Target.CONSTRUCTOR, modifierSet);
-			}
-			else if(tokenType == TILDE)
-			{
-				builder.advanceLexer();
+				if(modifierListMarker != null)
+				{
+					modifierListMarker.drop();
+				}
 
-				MethodParsing.parseMethodStartAfterType(builder, marker, null, MethodParsing.Target.DECONSTRUCTOR, modifierSet);
+				UsingStatementParsing.parseUsing(builder, marker, b ->
+				{
+					b.enableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
+					// make sure its parsed to global
+					b.advanceLexer();
+					b.disableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
+
+					// eat using
+					b.advanceLexer();
+				});
 			}
 			else
 			{
-				TypeInfo typeInfo = parseType(builder, STUB_SUPPORT);
-				if(typeInfo == null)
+				// MODIFIER_LIST IDENTIFIER LPAR -> CONSTRUCTOR
+				if(tokenType == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == LPAR)
 				{
-					if(!modifierSet.isEmpty())
-					{
-						if(root)
-						{
-							marker.done(DUMMY_DECLARATION);
-							return;
-						}
-						builder.error("Type expected");
-						marker.done(FIELD_DECLARATION);
-						return;
-					}
-					else
-					{
-						modifierListMarker.drop();
-					}
-
-					marker.drop();
-					advanceUnexpectedToken(builder);
+					MethodParsing.parseMethodStartAfterType(builder, marker, null, MethodParsing.Target.CONSTRUCTOR, modifierSet);
 				}
-				else if(builder.getTokenType() == OPERATOR_KEYWORD)
+				else if(tokenType == TILDE)
 				{
-					MethodParsing.parseMethodStartAfterType(builder, marker, typeInfo, MethodParsing.Target.METHOD, modifierSet);
+					builder.advanceLexer();
+
+					MethodParsing.parseMethodStartAfterType(builder, marker, null, MethodParsing.Target.DECONSTRUCTOR, modifierSet);
 				}
 				else
 				{
-					TypeInfo implementType = parseImplementType(builder);
-					if(implementType == null)
+					TypeInfo typeInfo = parseType(builder, STUB_SUPPORT);
+					if(typeInfo == null)
 					{
-						builder.error("Name is expected");
+						if(!modifierSet.isEmpty())
+						{
+							if(root)
+							{
+								marker.done(DUMMY_DECLARATION);
+								return;
+							}
+							builder.error("Type expected");
+							marker.done(FIELD_DECLARATION);
+							return;
+						}
+						else
+						{
+							modifierListMarker.drop();
+						}
 
-						// if we dont have name but we have lbracket - parse as index method
-						parseAfterName(builder, marker, builder.getTokenType() == LBRACKET ? THIS_KEYWORD : null, modifierSet);
-						return;
+						marker.drop();
+						advanceUnexpectedToken(builder);
 					}
-
-					IElementType prevToken = null;
-					if(builder.getTokenType() == DOT)
+					else if(builder.getTokenType() == OPERATOR_KEYWORD)
 					{
-						builder.advanceLexer();
-
-						prevToken = builder.getTokenType();
-
-						doneThisOrIdentifier(builder);
+						MethodParsing.parseMethodStartAfterType(builder, marker, typeInfo, MethodParsing.Target.METHOD, modifierSet);
 					}
 					else
 					{
-						if(implementType.marker != null)
+						TypeInfo implementType = parseImplementType(builder);
+						if(implementType == null)
 						{
-							implementType.marker.rollbackTo();
+							builder.error("Name is expected");
+
+							// if we dont have name but we have lbracket - parse as index method
+							parseAfterName(builder, marker, builder.getTokenType() == LBRACKET ? THIS_KEYWORD : null, modifierSet);
+							return;
 						}
 
-						prevToken = builder.getTokenType();
+						IElementType prevToken = null;
+						if(builder.getTokenType() == DOT)
+						{
+							builder.advanceLexer();
 
-						doneThisOrIdentifier(builder);
+							prevToken = builder.getTokenType();
+
+							doneThisOrIdentifier(builder);
+						}
+						else
+						{
+							if(implementType.marker != null)
+							{
+								implementType.marker.rollbackTo();
+							}
+
+							prevToken = builder.getTokenType();
+
+							doneThisOrIdentifier(builder);
+						}
+
+						parseAfterName(builder, marker, prevToken, modifierSet);
 					}
-
-					parseAfterName(builder, marker, prevToken, modifierSet);
 				}
 			}
 		}

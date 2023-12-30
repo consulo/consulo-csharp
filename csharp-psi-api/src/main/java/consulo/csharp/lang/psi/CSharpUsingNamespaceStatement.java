@@ -29,9 +29,14 @@ import javax.annotation.Nullable;
  */
 public interface CSharpUsingNamespaceStatement extends CSharpUsingListChild
 {
-	public static final CSharpUsingNamespaceStatement[] EMPTY_ARRAY = new CSharpUsingNamespaceStatement[0];
+	CSharpUsingNamespaceStatement[] EMPTY_ARRAY = new CSharpUsingNamespaceStatement[0];
 
-	public static ArrayFactory<CSharpUsingNamespaceStatement> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpUsingNamespaceStatement[count];
+	ArrayFactory<CSharpUsingNamespaceStatement> ARRAY_FACTORY = ArrayFactory.of(CSharpUsingNamespaceStatement[]::new);
+
+	default boolean isGlobal()
+	{
+		return false;
+	}
 
 	@Nullable
 	@RequiredReadAction

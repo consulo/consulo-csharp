@@ -44,6 +44,7 @@ import java.util.function.Supplier;
 public class CSharpBuilderWrapper extends PsiBuilderAdapter
 {
 	private static Map<String, IElementType> ourIdentifierToSoftKeywords = new HashMap<>();
+	private static Map<IElementType, String> ourSoftKeywordsToIdentifiers = new HashMap<>();
 
 	static
 	{
@@ -51,6 +52,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		{
 			String keyword = o.toString().replace("_KEYWORD", "").toLowerCase(Locale.US);
 			ourIdentifierToSoftKeywords.put(keyword, o);
+			ourSoftKeywordsToIdentifiers.put(o, keyword);
 		}
 	}
 
@@ -101,6 +103,18 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 	public void disableSoftKeyword(@Nonnull IElementType elementType)
 	{
 		mySoftSet = TokenSet.andNot(mySoftSet, TokenSet.create(elementType));
+	}
+
+	public boolean isSoftKeyword(@Nonnull IElementType elementType)
+	{
+		IElementType tokenType = getTokenType();
+		if(tokenType == CSharpTokens.IDENTIFIER)
+		{
+			String keywordText = Objects.requireNonNull(ourSoftKeywordsToIdentifiers.get(elementType), "not soft keyword");
+			return Objects.equals(keywordText, getTokenText());
+		}
+
+		return false;
 	}
 
 	@Nullable

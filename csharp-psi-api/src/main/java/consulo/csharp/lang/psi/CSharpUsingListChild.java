@@ -30,9 +30,9 @@ import javax.annotation.Nullable;
  */
 public interface CSharpUsingListChild extends DotNetElement
 {
-	public static final CSharpUsingListChild[] EMPTY_ARRAY = new CSharpUsingListChild[0];
+	CSharpUsingListChild[] EMPTY_ARRAY = new CSharpUsingListChild[0];
 
-	public static ArrayFactory<CSharpUsingListChild> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpUsingListChild[count];
+	ArrayFactory<CSharpUsingListChild> ARRAY_FACTORY = ArrayFactory.of(CSharpUsingListChild[]::new);
 
 	@Nonnull
 	@RequiredReadAction

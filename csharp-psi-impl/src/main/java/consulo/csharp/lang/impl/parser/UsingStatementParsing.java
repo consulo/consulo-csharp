@@ -24,6 +24,7 @@ import consulo.language.ast.TokenSet;
 import consulo.language.parser.PsiBuilder;
 
 import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 /**
  * @author VISTALL
@@ -33,9 +34,9 @@ public class UsingStatementParsing extends SharedParsingHelpers
 {
 	public static final TokenSet ourStoppers = TokenSet.orSet(ourSemicolonSet, CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START, TokenSet.create(DELEGATE_KEYWORD, CONST_KEYWORD));
 
-	public static void parseUsing(@Nonnull CSharpBuilderWrapper builder, @Nonnull PsiBuilder.Marker marker)
+	public static void parseUsing(@Nonnull CSharpBuilderWrapper builder, @Nonnull PsiBuilder.Marker marker, @Nonnull Consumer<CSharpBuilderWrapper> consumer)
 	{
-		builder.advanceLexer();
+		consumer.accept(builder);
 
 		IElementType to = null;
 		if(builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == CSharpTokens.EQ)

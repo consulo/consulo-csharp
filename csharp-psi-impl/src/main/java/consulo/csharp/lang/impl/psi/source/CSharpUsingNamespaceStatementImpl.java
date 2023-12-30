@@ -20,7 +20,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.CachedValueProvider;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
-import consulo.csharp.lang.impl.psi.stub.CSharpWithStringValueStub;
+import consulo.csharp.lang.impl.psi.stub.CSharpUsingNamespaceStub;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -42,14 +42,14 @@ import javax.annotation.Nullable;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpUsingNamespaceStatement>> implements CSharpUsingNamespaceStatement
+public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSharpUsingNamespaceStub> implements CSharpUsingNamespaceStatement
 {
 	public CSharpUsingNamespaceStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpUsingNamespaceStatementImpl(@Nonnull CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub)
+	public CSharpUsingNamespaceStatementImpl(@Nonnull CSharpUsingNamespaceStub stub)
 	{
 		super(stub, CSharpStubElements.USING_NAMESPACE_STATEMENT);
 	}
@@ -67,7 +67,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 	@Nullable
 	public String getReferenceText()
 	{
-		CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub = getGreenStub();
+		CSharpUsingNamespaceStub stub = getGreenStub();
 		if(stub != null)
 		{
 			return stub.getReferenceText();
