@@ -16,6 +16,7 @@
 
 package consulo.csharp.impl.ide.codeInspection.matchNamespace;
 
+import consulo.csharp.lang.psi.CSharpNamespaceProvider;
 import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
@@ -33,7 +34,7 @@ public class ChangeNamespaceFix extends LocalQuickFixOnPsiElement
 {
 	private final String myExpectedNamespace;
 
-	public ChangeNamespaceFix(@Nonnull CSharpNamespaceDeclaration element, @Nonnull String expectedNamespace)
+	public ChangeNamespaceFix(@Nonnull CSharpNamespaceProvider element, @Nonnull String expectedNamespace)
 	{
 		super(element);
 		myExpectedNamespace = expectedNamespace;
@@ -42,7 +43,7 @@ public class ChangeNamespaceFix extends LocalQuickFixOnPsiElement
 	@Override
 	public void invoke(@Nonnull Project project, @Nonnull PsiFile psiFile, @Nonnull PsiElement element1, @Nonnull PsiElement element2)
 	{
-		CSharpNamespaceDeclaration declaration = (CSharpNamespaceDeclaration) element1;
+		CSharpNamespaceProvider declaration = (CSharpNamespaceProvider) element1;
 
 		new ChangeNamespaceProcessor(project, declaration, myExpectedNamespace).run();
 	}

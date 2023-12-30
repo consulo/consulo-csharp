@@ -16,6 +16,7 @@
 
 package consulo.csharp.impl.ide.codeInspection.matchNamespace;
 
+import consulo.csharp.lang.psi.CSharpNamespaceProvider;
 import consulo.language.editor.inspection.ProblemsHolder;
 import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiFile;
@@ -42,7 +43,7 @@ class MatchNamespaceVisitor extends CSharpElementVisitor
 	private ProblemsHolder myHolder;
 	private final String myExpectedNamespace;
 
-	private List<CSharpNamespaceDeclaration> myRootNamespaces = new ArrayList<>();
+	private List<CSharpNamespaceProvider> myRootNamespaces = new ArrayList<>();
 
 	@RequiredReadAction
 	MatchNamespaceVisitor(ProblemsHolder holder, DotNetSimpleModuleExtension extension)
@@ -56,22 +57,21 @@ class MatchNamespaceVisitor extends CSharpElementVisitor
 	}
 
 	@Override
-	@RequiredReadAction
-	public void visitNamespaceDeclaration(CSharpNamespaceDeclaration declaration)
+	public void visitNamespaceProvider(CSharpNamespaceProvider provider)
 	{
-		CSharpNamespaceDeclaration top = PsiTreeUtil.getParentOfType(declaration, CSharpNamespaceDeclaration.class);
+		CSharpNamespaceDeclaration top = PsiTreeUtil.getParentOfType(provider, CSharpNamespaceDeclaration.class);
 		if(top != null)
 		{
 			return;
 		}
 
-		DotNetReferenceExpression namespaceReference = declaration.getNamespaceReference();
+		DotNetReferenceExpression namespaceReference = provider.getNamespaceReference();
 		if(namespaceReference == null)
 		{
 			return;
 		}
 
-		myRootNamespaces.add(declaration);
+		myRootNamespaces.add(provider);
 	}
 
 	@RequiredReadAction
@@ -91,7 +91,7 @@ class MatchNamespaceVisitor extends CSharpElementVisitor
 		}
 		else if(myRootNamespaces.size() == 1)
 		{
-			CSharpNamespaceDeclaration declaration = myRootNamespaces.get(0);
+			CSharpNamespaceProvider declaration = myRootNamespaces.get(0);
 
 			String presentableQName = declaration.getPresentableQName();
 

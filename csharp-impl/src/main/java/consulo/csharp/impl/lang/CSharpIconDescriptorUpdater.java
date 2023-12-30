@@ -192,7 +192,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 				iconDescriptor.setRightIcon(AllIcons.Nodes.C_private);
 			}
 		}
-		else if(element instanceof CSharpNamespaceDeclaration)
+		else if(element instanceof CSharpNamespaceProvider)
 		{
 			iconDescriptor.setMainIcon(PlatformIconGroup.nodesNamespace());
 		}

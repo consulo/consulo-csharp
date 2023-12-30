@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2023 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,10 @@
 
 package consulo.csharp.lang.psi;
 
-import consulo.dotnet.psi.DotNetFile;
-import consulo.dotnet.psi.DotNetQualifiedElement;
-import jakarta.annotation.Nullable;
-
-import javax.annotation.Nonnull;
-
 /**
  * @author VISTALL
- * @since 18.10.14
+ * @since 2023-12-30
  */
-public interface CSharpFile extends DotNetFile, CSharpUsingListOwner
+public interface CSharpNamespaceStatement extends CSharpNamespaceProvider
 {
-	@Nonnull
-	@Override
-	DotNetQualifiedElement[] getMembers();
-
-	@Nullable
-	default CSharpNamespaceStatement getNamespaceStatement()
-	{
-		return null;
-	}
 }

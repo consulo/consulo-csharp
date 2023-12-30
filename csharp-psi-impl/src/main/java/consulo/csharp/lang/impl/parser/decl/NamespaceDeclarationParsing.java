@@ -36,15 +36,24 @@ public class NamespaceDeclarationParsing extends SharedParsingHelpers
 			builder.error("Name expected");
 		}
 
-		if(expect(builder, LBRACE, "'{' expected"))
+		if(builder.getTokenType() == SEMICOLON)
 		{
-			DeclarationParsing.parseAll(builder, false, false);
+			builder.advanceLexer();
 
-			expect(builder, RBRACE, "'}' expected");
-			expect(builder, SEMICOLON, null);
+			marker.done(NAMESPACE_STATEMENT);
 		}
+		else
+		{
+			if(expect(builder, LBRACE, "'{' expected"))
+			{
+				DeclarationParsing.parseAll(builder, false, false);
 
-		marker.done(NAMESPACE_DECLARATION);
+				expect(builder, RBRACE, "'}' expected");
+				expect(builder, SEMICOLON, null);
+			}
+
+			marker.done(NAMESPACE_DECLARATION);
+		}
 	}
 
 }

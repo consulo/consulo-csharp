@@ -23,6 +23,7 @@ import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.csharp.lang.psi.CSharpFile;
+import consulo.csharp.lang.psi.CSharpNamespaceStatement;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetQualifiedElement;
@@ -35,6 +36,7 @@ import consulo.language.psi.stub.StubElement;
 import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.language.util.IncorrectOperationException;
 import consulo.virtualFileSystem.fileType.FileType;
+import jakarta.annotation.Nullable;
 
 import javax.annotation.Nonnull;
 
@@ -100,6 +102,18 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 	public FileType getFileType()
 	{
 		return CSharpFileType.INSTANCE;
+	}
+
+	@Nullable
+	@Override
+	public CSharpNamespaceStatement getNamespaceStatement()
+	{
+		StubElement stub = getStub();
+		if(stub != null)
+		{
+			return (CSharpNamespaceStatement) stub.findChildStubByType(CSharpStubElementSets.NAMESPACE_STATEMENT);
+		}
+		return findChildByClass(CSharpNamespaceStatement.class);
 	}
 
 	@Nonnull

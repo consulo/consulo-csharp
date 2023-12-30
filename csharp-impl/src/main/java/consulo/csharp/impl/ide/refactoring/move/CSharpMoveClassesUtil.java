@@ -25,7 +25,6 @@ import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.psi.resolve.DotNetPsiSearcher;
 import consulo.language.editor.refactoring.RefactoringBundle;
 import consulo.language.editor.refactoring.RefactoringSettings;
-import consulo.language.editor.refactoring.copy.CopyFilesOrDirectoriesHandler;
 import consulo.language.editor.refactoring.move.MoveCallback;
 import consulo.language.editor.refactoring.move.MoveHandler;
 import consulo.language.editor.refactoring.move.fileOrDirectory.MoveFilesOrDirectoriesDialog;
@@ -132,7 +131,7 @@ public class CSharpMoveClassesUtil
 							{
 								final PsiFile file = (PsiFile) psiElement;
 
-								if(CopyFilesOrDirectoriesHandler.checkFileExist(targetDirectory1, choice, file, file.getName(), "Move"))
+								if(CommonRefactoringUtil.checkFileExist(targetDirectory1, choice, file, file.getName(), "Move"))
 								{
 									continue;
 								}

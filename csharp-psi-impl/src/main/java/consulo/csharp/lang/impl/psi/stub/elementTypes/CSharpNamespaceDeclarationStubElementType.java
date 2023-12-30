@@ -16,34 +16,33 @@
 
 package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.source.CSharpNamespaceDeclarationImpl;
-import consulo.csharp.lang.impl.psi.stub.CSharpNamespaceDeclStub;
+import consulo.csharp.lang.impl.psi.stub.CSharpNamespaceProviderStub;
 import consulo.index.io.StringRef;
-import consulo.language.psi.stub.StubElement;
 import consulo.language.ast.ASTNode;
+import consulo.language.psi.stub.StubElement;
 import consulo.language.psi.stub.StubInputStream;
 import consulo.language.psi.stub.StubOutputStream;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
 
 /**
  * @author VISTALL
  * @since 15.12.13.
  */
-public class CSharpNamespaceStubElementType extends CSharpAbstractStubElementType<CSharpNamespaceDeclStub, CSharpNamespaceDeclarationImpl>
+public class CSharpNamespaceDeclarationStubElementType extends CSharpAbstractStubElementType<CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl>, CSharpNamespaceDeclarationImpl>
 {
-	public CSharpNamespaceStubElementType()
+	public CSharpNamespaceDeclarationStubElementType()
 	{
 		super("NAMESPACE_DECLARATION");
 	}
 
 	@Override
-	public CSharpNamespaceDeclarationImpl createPsi(@Nonnull CSharpNamespaceDeclStub cSharpNamespaceStub)
+	public CSharpNamespaceDeclarationImpl createPsi(@Nonnull CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> stub)
 	{
-		return new CSharpNamespaceDeclarationImpl(cSharpNamespaceStub);
+		return new CSharpNamespaceDeclarationImpl(stub);
 	}
 
 	@Nonnull
@@ -53,25 +52,26 @@ public class CSharpNamespaceStubElementType extends CSharpAbstractStubElementTyp
 		return new CSharpNamespaceDeclarationImpl(astNode);
 	}
 
+	@Nonnull
 	@RequiredReadAction
 	@Override
-	public CSharpNamespaceDeclStub createStub(@Nonnull CSharpNamespaceDeclarationImpl declaration, StubElement stubElement)
+	public CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> createStub(@Nonnull CSharpNamespaceDeclarationImpl declaration, StubElement stubElement)
 	{
 		String referenceText = declaration.getReferenceText();
-		return new CSharpNamespaceDeclStub(stubElement, this, referenceText);
+		return new CSharpNamespaceProviderStub<>(stubElement, this, referenceText);
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpNamespaceDeclStub namespaceStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@Nonnull CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> namespaceStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(namespaceStub.getReferenceTextRef());
 	}
 
 	@Nonnull
 	@Override
-	public CSharpNamespaceDeclStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef referenceTextRef = stubInputStream.readName();
-		return new CSharpNamespaceDeclStub(stubElement, this, referenceTextRef);
+		return new CSharpNamespaceProviderStub<>(stubElement, this, referenceTextRef);
 	}
 }

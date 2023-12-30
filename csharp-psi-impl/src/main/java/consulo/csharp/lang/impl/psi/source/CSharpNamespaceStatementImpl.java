@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2023 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,14 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpFileFactory;
-import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
-import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.impl.psi.stub.CSharpNamespaceProviderStub;
-import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
+import consulo.csharp.lang.psi.CSharpNamespaceStatement;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.dotnet.psi.*;
+import consulo.dotnet.psi.DotNetNamespaceDeclaration;
+import consulo.dotnet.psi.DotNetReferenceExpression;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
-import consulo.language.util.IncorrectOperationException;
+import consulo.language.psi.stub.IStubElementType;
 import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
@@ -38,80 +35,25 @@ import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
- * @since 28.11.13.
+ * @since 2023-12-30
  */
-public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl>> implements CSharpNamespaceDeclaration
+public class CSharpNamespaceStatementImpl extends CSharpStubElementImpl<CSharpNamespaceProviderStub<CSharpNamespaceStatementImpl>> implements CSharpNamespaceStatement
 {
-	public CSharpNamespaceDeclarationImpl(@Nonnull ASTNode node)
+	public CSharpNamespaceStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpNamespaceDeclarationImpl(@Nonnull CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> stub)
+	public CSharpNamespaceStatementImpl(@Nonnull CSharpNamespaceProviderStub<CSharpNamespaceStatementImpl> stub,
+										@Nonnull IStubElementType<? extends CSharpNamespaceProviderStub<CSharpNamespaceStatementImpl>, ?> nodeType)
 	{
-		super(stub, CSharpStubElements.NAMESPACE_DECLARATION);
+		super(stub, nodeType);
 	}
 
 	@Override
 	public void accept(@Nonnull CSharpElementVisitor visitor)
 	{
-		visitor.visitNamespaceDeclaration(this);
-	}
-
-	@RequiredReadAction
-	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
-	{
-		return false;
-	}
-
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public DotNetModifierList getModifierList()
-	{
-		return null;
-	}
-
-	@Override
-	@RequiredReadAction
-	public String getName()
-	{
-		String qName = getPresentableQName();
-		if(qName == null)
-		{
-			return null;
-		}
-		return StringUtil.getShortName(qName);
-	}
-
-	@RequiredWriteAction
-	@Override
-	public PsiElement setName(@Nonnull String s) throws IncorrectOperationException
-	{
-		return null;
-	}
-
-	@RequiredReadAction
-	@Override
-	public PsiElement getLeftBrace()
-	{
-		return findChildByType(CSharpTokens.LBRACE);
-	}
-
-	@RequiredReadAction
-	@Override
-	public PsiElement getRightBrace()
-	{
-		return findChildByType(CSharpTokens.RBRACE);
-	}
-
-	@RequiredReadAction
-	@Nonnull
-	@Override
-	public DotNetQualifiedElement[] getMembers()
-	{
-		return getStubOrPsiChildren(CSharpStubElementSets.QUALIFIED_MEMBERS, DotNetQualifiedElement.ARRAY_FACTORY);
+		visitor.visitNamespaceStatement(this);
 	}
 
 	@Override
@@ -179,13 +121,5 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 		}
 		CSharpReferenceExpression childByClass = findChildByClass(CSharpReferenceExpression.class);
 		return childByClass != null ? StringUtil.strip(childByClass.getText(), CSharpReferenceExpression.DEFAULT_REF_FILTER) : null;
-	}
-
-	@Nonnull
-	@Override
-	@RequiredReadAction
-	public CSharpUsingListChild[] getUsingStatements()
-	{
-		return getStubOrPsiChildren(CSharpStubElementSets.USING_CHILDREN, CSharpUsingListChild.ARRAY_FACTORY);
 	}
 }

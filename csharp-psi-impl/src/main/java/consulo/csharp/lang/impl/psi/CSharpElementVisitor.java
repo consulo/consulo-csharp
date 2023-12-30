@@ -53,7 +53,17 @@ public class CSharpElementVisitor extends PsiElementVisitor
 
 	public void visitNamespaceDeclaration(CSharpNamespaceDeclaration declaration)
 	{
-		visitElement(declaration);
+		visitNamespaceProvider(declaration);
+	}
+
+	public void visitNamespaceStatement(CSharpNamespaceStatement statement)
+	{
+		visitNamespaceProvider(statement);
+	}
+
+	public void visitNamespaceProvider(CSharpNamespaceProvider provider)
+	{
+		visitElement(provider);
 	}
 
 	public void visitParameter(DotNetParameter parameter)

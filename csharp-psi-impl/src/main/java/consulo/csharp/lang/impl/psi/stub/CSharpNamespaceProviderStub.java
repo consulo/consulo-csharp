@@ -16,28 +16,29 @@
 
 package consulo.csharp.lang.impl.psi.stub;
 
-import javax.annotation.Nullable;
+import consulo.csharp.lang.psi.CSharpNamespaceProvider;
+import consulo.index.io.StringRef;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.psi.stub.StubBase;
 import consulo.language.psi.stub.StubElement;
-import consulo.index.io.StringRef;
-import consulo.csharp.lang.impl.psi.source.CSharpNamespaceDeclarationImpl;
+
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 15.12.13.
  */
-public class CSharpNamespaceDeclStub extends StubBase<CSharpNamespaceDeclarationImpl>
+public class CSharpNamespaceProviderStub<N extends CSharpNamespaceProvider> extends StubBase<N>
 {
 	private final String myReferenceTextRef;
 
-	public CSharpNamespaceDeclStub(StubElement parent, IStubElementType elementType, @Nullable StringRef referenceTextRef)
+	public CSharpNamespaceProviderStub(StubElement parent, IStubElementType elementType, @Nullable StringRef referenceTextRef)
 	{
 		super(parent, elementType);
 		myReferenceTextRef = StringRef.toString(referenceTextRef);
 	}
 
-	public CSharpNamespaceDeclStub(final StubElement parent, final IStubElementType elementType, @Nullable final String referenceTextRef)
+	public CSharpNamespaceProviderStub(final StubElement parent, final IStubElementType elementType, @Nullable final String referenceTextRef)
 	{
 		super(parent, elementType);
 		myReferenceTextRef = referenceTextRef;

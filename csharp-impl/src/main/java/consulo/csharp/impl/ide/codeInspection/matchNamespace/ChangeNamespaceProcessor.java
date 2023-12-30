@@ -16,20 +16,20 @@
 
 package consulo.csharp.impl.ide.codeInspection.matchNamespace;
 
-import consulo.language.psi.PsiElement;
-import consulo.usage.UsageInfo;
-import consulo.util.lang.Couple;
-import consulo.language.psi.PsiReference;
-import consulo.language.psi.search.ReferencesSearch;
-import consulo.language.editor.refactoring.BaseRefactoringProcessor;
-import consulo.usage.UsageViewDescriptor;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.impl.ide.refactoring.move.CSharpClassesMoveProcessor;
 import consulo.csharp.impl.ide.refactoring.move.CSharpMoveClassesUtil;
-import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
+import consulo.csharp.lang.psi.CSharpNamespaceProvider;
 import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.language.editor.refactoring.BaseRefactoringProcessor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.ReferencesSearch;
 import consulo.project.Project;
+import consulo.usage.UsageInfo;
+import consulo.usage.UsageViewDescriptor;
+import consulo.util.lang.Couple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,7 +49,7 @@ public class ChangeNamespaceProcessor extends BaseRefactoringProcessor
 		@Override
 		public PsiElement[] getElements()
 		{
-			return new PsiElement[] {myDeclaration};
+			return new PsiElement[] {myNamespaceProvider};
 		}
 
 		@Override
@@ -73,14 +73,14 @@ public class ChangeNamespaceProcessor extends BaseRefactoringProcessor
 	}
 
 	@Nonnull
-	private final CSharpNamespaceDeclaration myDeclaration;
+	private final CSharpNamespaceProvider myNamespaceProvider;
 	@Nonnull
 	private final String myExpectedNamespace;
 
-	protected ChangeNamespaceProcessor(@Nonnull Project project, @Nonnull CSharpNamespaceDeclaration declaration, @Nonnull String expectedNamespace)
+	protected ChangeNamespaceProcessor(@Nonnull Project project, @Nonnull CSharpNamespaceProvider namespaceProvider, @Nonnull String expectedNamespace)
 	{
 		super(project);
-		myDeclaration = declaration;
+		myNamespaceProvider = namespaceProvider;
 		myExpectedNamespace = expectedNamespace;
 	}
 
@@ -97,7 +97,7 @@ public class ChangeNamespaceProcessor extends BaseRefactoringProcessor
 	protected UsageInfo[] findUsages()
 	{
 		List<UsageInfo> result = new ArrayList<>();
-		Set<Couple<DotNetNamedElement>> children = CSharpMoveClassesUtil.findTypesAndNamespaces(myDeclaration);
+		Set<Couple<DotNetNamedElement>> children = CSharpMoveClassesUtil.findTypesAndNamespaces(myNamespaceProvider);
 
 		for(Couple<DotNetNamedElement> couple : children)
 		{
@@ -116,7 +116,7 @@ public class ChangeNamespaceProcessor extends BaseRefactoringProcessor
 	@RequiredWriteAction
 	protected void performRefactoring(@Nonnull UsageInfo[] usages)
 	{
-		myDeclaration.setNamespace(myExpectedNamespace);
+		myNamespaceProvider.setNamespace(myExpectedNamespace);
 
 		CSharpClassesMoveProcessor.retargetUsages(usages);
 	}

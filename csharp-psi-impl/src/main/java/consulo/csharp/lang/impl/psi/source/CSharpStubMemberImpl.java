@@ -20,7 +20,9 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.impl.psi.stub.MemberStub;
+import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpNamedElement;
+import consulo.csharp.lang.psi.CSharpNamespaceStatement;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
@@ -119,6 +121,14 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 		if(parent instanceof DotNetQualifiedElement)
 		{
 			return ((DotNetQualifiedElement) parent).getPresentableQName();
+		}
+		else if(parent instanceof CSharpFile file)
+		{
+			CSharpNamespaceStatement namespaceStatement = file.getNamespaceStatement();
+			if(namespaceStatement != null)
+			{
+				return namespaceStatement.getPresentableQName();
+			}
 		}
 		return "";
 	}

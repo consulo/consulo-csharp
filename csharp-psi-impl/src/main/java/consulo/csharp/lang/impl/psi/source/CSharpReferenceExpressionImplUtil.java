@@ -466,7 +466,7 @@ public class CSharpReferenceExpressionImplUtil
 
 			return ResolveToKind.GENERIC_PARAMETER_FROM_PARENT;
 		}
-		else if(tempElement instanceof CSharpNamespaceDeclarationImpl)
+		else if(tempElement instanceof CSharpNamespaceProvider)
 		{
 			return ResolveToKind.SOFT_QUALIFIED_NAMESPACE;
 		}
@@ -543,10 +543,10 @@ public class CSharpReferenceExpressionImplUtil
 		}
 		else if(tempElement instanceof CSharpReferenceExpression)
 		{
-			CSharpNamespaceDeclarationImpl netNamespaceDeclaration = PsiTreeUtil.getParentOfType(referenceExpression, CSharpNamespaceDeclarationImpl.class);
-			if(netNamespaceDeclaration != null)
+			CSharpNamespaceProvider namespaceProvider = PsiTreeUtil.getParentOfType(referenceExpression, CSharpNamespaceProvider.class);
+			if(namespaceProvider != null)
 			{
-				DotNetReferenceExpression namespaceReference = netNamespaceDeclaration.getNamespaceReference();
+				DotNetReferenceExpression namespaceReference = namespaceProvider.getNamespaceReference();
 				if(namespaceReference != null && PsiTreeUtil.isAncestor(namespaceReference, referenceExpression, false))
 				{
 					return ResolveToKind.SOFT_QUALIFIED_NAMESPACE;

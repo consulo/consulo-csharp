@@ -37,7 +37,8 @@ public interface CSharpStubElements
 {
 	CSharpFileStubElementType FILE = new CSharpFileStubElementType();
 	CSharpDummyDefElementType DUMMY_DECLARATION = new CSharpDummyDefElementType();
-	CSharpNamespaceStubElementType NAMESPACE_DECLARATION = new CSharpNamespaceStubElementType();
+	CSharpNamespaceDeclarationStubElementType NAMESPACE_DECLARATION = new CSharpNamespaceDeclarationStubElementType();
+	CSNamespaceStatementStubElementType NAMESPACE_STATEMENT = new CSNamespaceStatementStubElementType();
 	CSharpTypeStubElementType TYPE_DECLARATION = new CSharpTypeStubElementType();
 	CSharpMethodStubElementType METHOD_DECLARATION = new CSharpMethodStubElementType();
 	CSharpIndexMethodStubElementType INDEX_METHOD_DECLARATION = new CSharpIndexMethodStubElementType();

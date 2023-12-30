@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi;
 
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.dotnet.psi.DotNetNamespaceDeclaration;
+import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetReferenceExpression;
 
 import javax.annotation.Nonnull;
@@ -27,7 +28,7 @@ import javax.annotation.Nullable;
  * @author VISTALL
  * @since 30.11.13.
  */
-public interface CSharpNamespaceDeclaration extends DotNetNamespaceDeclaration, CSharpBodyWithBraces, CSharpUsingListOwner
+public interface CSharpNamespaceDeclaration extends CSharpNamespaceProvider, DotNetQualifiedElement, DotNetNamespaceDeclaration, CSharpBodyWithBraces, CSharpUsingListOwner
 {
 	@Nullable
 	DotNetReferenceExpression getNamespaceReference();
