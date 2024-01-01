@@ -20,9 +20,11 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpLinqVariable;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.impl.psi.CSharpVisibilityUtil;
+import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
@@ -30,6 +32,7 @@ import consulo.util.dataholder.Key;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * @author VISTALL
@@ -86,7 +89,9 @@ public class CSharpResolveResult implements ResolveResult
 				element instanceof CSharpLinqVariable ||
 				element instanceof DotNetParameter ||
 				element instanceof DotNetGenericParameter ||
-				element instanceof DotNetNamespaceAsElement)
+				element instanceof DotNetNamespaceAsElement ||
+				// hack do not do stackoverflow inside BaseCSharpModuleExtension.getAssemblyTitle()
+				element instanceof DotNetTypeDeclaration typeDeclaration && Objects.equals(typeDeclaration.getVmQName(), DotNetTypes.System.Reflection.AssemblyTitleAttribute))
 		{
 			myAssignable = Boolean.TRUE;
 			return;

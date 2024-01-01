@@ -16,8 +16,10 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
+import consulo.application.util.CachedValueProvider;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiModificationTracker;
 import consulo.language.psi.ResolveResult;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.*;
@@ -25,6 +27,7 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByTypeDecla
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.psi.util.LanguageCachedValueUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,6 +52,12 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttr
 	@Nullable
 	@Override
 	public DotNetTypeDeclaration resolveToType()
+	{
+		return LanguageCachedValueUtil.getCachedValue(this, () -> CachedValueProvider.Result.create(resolveToTypeImpl(), PsiModificationTracker.MODIFICATION_COUNT));
+	}
+
+	@Nullable
+	private DotNetTypeDeclaration resolveToTypeImpl()
 	{
 		CSharpReferenceExpression ref = getReferenceExpression();
 		if(ref == null)
