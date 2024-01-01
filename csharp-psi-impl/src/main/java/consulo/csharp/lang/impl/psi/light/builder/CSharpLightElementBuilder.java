@@ -26,6 +26,7 @@ import consulo.language.psi.PsiManager;
 import consulo.project.Project;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 /**
  * @author VISTALL
@@ -34,6 +35,8 @@ import javax.annotation.Nonnull;
 public abstract class CSharpLightElementBuilder<T extends CSharpLightElementBuilder<T>> extends LightElement
 {
 	private PsiElement myParent;
+
+	private Object myHashAndEqualObject = this;
 
 	public CSharpLightElementBuilder(PsiElement element)
 	{
@@ -73,6 +76,13 @@ public abstract class CSharpLightElementBuilder<T extends CSharpLightElementBuil
 		return myParent == null ? null : myParent.getContainingFile();
 	}
 
+	@SuppressWarnings("unchecked")
+	public T withHashAndEqualObject(@Nonnull Object hashAndEqualObject)
+	{
+		myHashAndEqualObject = hashAndEqualObject;
+		return (T) this;
+	}
+
 	@Override
 	public PsiElement getParent()
 	{
@@ -89,5 +99,31 @@ public abstract class CSharpLightElementBuilder<T extends CSharpLightElementBuil
 	public boolean isValid()
 	{
 		return true;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(myHashAndEqualObject == this)
+		{
+			return super.equals(o);
+		}
+
+		if(this == o)
+		{
+			return true;
+		}
+		if(o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+		CSharpLightElementBuilder<?> that = (CSharpLightElementBuilder<?>) o;
+		return Objects.equals(myHashAndEqualObject, that.myHashAndEqualObject);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return myHashAndEqualObject == this ? super.hashCode() : myHashAndEqualObject.hashCode();
 	}
 }

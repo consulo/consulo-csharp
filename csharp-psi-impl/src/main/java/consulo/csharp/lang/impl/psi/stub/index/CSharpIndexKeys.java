@@ -19,6 +19,7 @@ package consulo.csharp.lang.impl.psi.stub.index;
 import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import consulo.dotnet.psi.*;
 import consulo.language.psi.stub.StubIndexKey;
 
@@ -48,4 +49,6 @@ public interface CSharpIndexKeys
 	StubIndexKey<Integer, DotNetTypeList> EXTENDS_LIST_INDEX = StubIndexKey.createIndexKey("csharp.extends.list.index");
 
 	StubIndexKey<DotNetAttributeTargetType, CSharpAttributeList> ATTRIBUTE_LIST_INDEX = StubIndexKey.createIndexKey("csharp.attribute.list.index");
+
+	StubIndexKey<String, CSharpUsingNamespaceStatement> GLOBAL_USING_NAMESPACE = StubIndexKey.createIndexKey("csharp.global.using.namespace");
 }

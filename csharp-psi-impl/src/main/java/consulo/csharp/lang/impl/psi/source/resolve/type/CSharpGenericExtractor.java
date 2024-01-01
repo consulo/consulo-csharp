@@ -25,7 +25,7 @@ import consulo.util.collection.ContainerUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -55,8 +55,8 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 		return new CSharpGenericExtractor(genericParameters, arguments);
 	}
 
-	private DotNetGenericParameter[] myGenericParameters;
-	private DotNetTypeRef[] myTypeRefs;
+	private List<DotNetGenericParameter> myGenericParameters;
+	private List<DotNetTypeRef> myTypeRefs;
 
 	private CSharpGenericExtractor(Map<DotNetGenericParameter, DotNetTypeRef> map)
 	{
@@ -65,9 +65,9 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 
 	private CSharpGenericExtractor(DotNetGenericParameter[] genericParameters, DotNetTypeRef[] arguments)
 	{
-		myGenericParameters = genericParameters;
-		myTypeRefs = arguments;
-		assert myGenericParameters.length != 0 : "can't be empty";
+		myGenericParameters = List.of(genericParameters);
+		myTypeRefs = List.of(arguments);
+		assert myGenericParameters.size() != 0 : "can't be empty";
 	}
 
 	@Nullable
@@ -75,9 +75,9 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 	public DotNetTypeRef extract(@Nonnull DotNetGenericParameter parameter)
 	{
 		int index = -1;
-		for(int i = 0; i < myGenericParameters.length; i++)
+		for(int i = 0; i < myGenericParameters.size(); i++)
 		{
-			DotNetGenericParameter genericParameter = myGenericParameters[i];
+			DotNetGenericParameter genericParameter = myGenericParameters.get(i);
 			if(genericParameter.isEquivalentTo(parameter))
 			{
 				index = i;
@@ -105,7 +105,7 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 			return false;
 		}
 		CSharpGenericExtractor that = (CSharpGenericExtractor) o;
-		return isEquivalentTo(myGenericParameters, that.myGenericParameters) && Arrays.equals(myTypeRefs, that.myTypeRefs);
+		return isEquivalentTo(myGenericParameters, that.myGenericParameters) && Objects.equals(myTypeRefs, that.myTypeRefs);
 	}
 
 	@Override
@@ -114,17 +114,17 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 		return Objects.hash(myGenericParameters, myTypeRefs);
 	}
 
-	private static boolean isEquivalentTo(PsiElement[] elements1, PsiElement[] elements2)
+	private static boolean isEquivalentTo(List<? extends PsiElement> elements1, List<? extends PsiElement> elements2)
 	{
-		if(elements1.length != elements2.length)
+		if(elements1.size() != elements2.size())
 		{
 			return false;
 		}
 
-		for(int i = 0; i < elements1.length; i++)
+		for(int i = 0; i < elements1.size(); i++)
 		{
-			PsiElement element1 = elements1[i];
-			PsiElement element2 = elements2[i];
+			PsiElement element1 = elements1.get(i);
+			PsiElement element2 = elements2.get(i);
 			if(!element1.isEquivalentTo(element2))
 			{
 				return false;

@@ -45,7 +45,7 @@ import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.logging.Logger;
-import consulo.util.collection.ContainerUtil;
+import consulo.project.Project;
 import consulo.util.collection.SmartList;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.KeyWithDefaultValue;
@@ -139,7 +139,9 @@ public class CSharpResolveUtil
 			LOG.error(new PsiInvalidElementAccessException(entrance));
 		}
 
-		DotNetNamespaceAsElement root = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace("", entrance.getResolveScope());
+		GlobalSearchScope resolveScope = entrance.getResolveScope();
+		Project project = entrance.getProject();
+		DotNetNamespaceAsElement root = DotNetPsiSearcher.getInstance(project).findNamespace("", resolveScope);
 
 		// skip null - indexing
 		if(root == null)
@@ -200,6 +202,20 @@ public class CSharpResolveUtil
 			}
 		}
 
+		PsiFile containingFile = entrance.getContainingFile();
+		if(containingFile instanceof CSharpFile file)
+		{
+			for(String qName : file.getGlobalUsings())
+			{
+				ProgressManager.checkCanceled();
+
+				DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(project).findNamespace(qName, resolveScope);
+				if(namespace != null && !processor.execute(namespace, state))
+				{
+					return false;
+				}
+			}
+		}
 		return true;
 	}
 

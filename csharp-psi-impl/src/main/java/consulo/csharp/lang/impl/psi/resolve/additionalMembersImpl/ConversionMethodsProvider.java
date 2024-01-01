@@ -40,12 +40,9 @@ import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
-import consulo.util.collection.ContainerUtil;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -55,16 +52,18 @@ import java.util.function.Consumer;
 @ExtensionImpl
 public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 {
+	private record ConversionMethodEqualObject(DotNetTypeDeclaration parent, OperatorStubsLoader.Operator operator)
+	{
+	}
+
 	@RequiredReadAction
 	@Override
 	public void processAdditionalMembers(@Nonnull DotNetElement element, @Nonnull DotNetGenericExtractor extractor, @Nonnull Consumer<PsiElement> consumer)
 	{
-		if(element instanceof CSharpTypeDeclaration)
+		if(element instanceof CSharpTypeDeclaration typeDeclaration)
 		{
 			Project project = element.getProject();
 			GlobalSearchScope resolveScope = element.getResolveScope();
-
-			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
 
 			CSharpMethodDeclaration methodDeclaration = typeDeclaration.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE);
 			DotNetTypeRef selfTypeRef;
@@ -77,11 +76,11 @@ public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 				selfTypeRef = new CSharpTypeRefByTypeDeclaration(typeDeclaration, extractor);
 			}
 
-			buildConversionMethods(project, resolveScope, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myTypeOperators.get(typeDeclaration.getVmQName()), consumer);
+			buildConversionMethods(project, resolveScope, selfTypeRef, typeDeclaration, OperatorStubsLoader.INSTANCE.myTypeOperators.get(typeDeclaration.getVmQName()), consumer);
 
 			if(typeDeclaration.isEnum())
 			{
-				buildConversionMethods(project, resolveScope, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myEnumOperators, consumer);
+				buildConversionMethods(project, resolveScope, selfTypeRef, typeDeclaration, OperatorStubsLoader.INSTANCE.myEnumOperators, consumer);
 			}
 
 			if(DotNetTypes.System.Nullable$1.equals(typeDeclaration.getVmQName()))
@@ -98,36 +97,33 @@ public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 		return Target.CONVERSION_METHOD;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	private DotNetElement[] buildNullableConversionMethods(Project project,
-			@Nonnull DotNetTypeRef selfTypeRef,
-			GlobalSearchScope resolveScope,
-			@Nonnull CSharpTypeDeclaration typeDeclaration,
-			@Nonnull DotNetGenericExtractor extractor,
-			@Nonnull Consumer<PsiElement> consumer)
+	private void buildNullableConversionMethods(Project project,
+												@Nonnull DotNetTypeRef selfTypeRef,
+												GlobalSearchScope resolveScope,
+												@Nonnull CSharpTypeDeclaration typeDeclaration,
+												@Nonnull DotNetGenericExtractor extractor,
+												@Nonnull Consumer<PsiElement> consumer)
 	{
 		DotNetGenericParameter[] genericParameters = typeDeclaration.getGenericParameters();
 		if(genericParameters.length == 0)
 		{
-			return DotNetElement.EMPTY_ARRAY;
+			return;
 		}
 		DotNetGenericParameter genericParameter = genericParameters[0];
 
 		DotNetTypeRef extract = extractor.extract(genericParameter);
 		if(extract == null)
 		{
-			return DotNetElement.EMPTY_ARRAY;
+			return;
 		}
 
 		DotNetTypeResolveResult typeResolveResult = extract.resolve();
 		PsiElement typeResolveResultElement = typeResolveResult.getElement();
 		if(!(typeResolveResultElement instanceof DotNetTypeDeclaration))
 		{
-			return DotNetElement.EMPTY_ARRAY;
+			return;
 		}
-
-		List<DotNetElement> elements = new ArrayList<DotNetElement>();
 
 		DotNetTypeDeclaration forAddOperatorsElement = (DotNetTypeDeclaration) typeResolveResultElement;
 
@@ -137,15 +133,14 @@ public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 		{
 			buildConversionMethods(project, resolveScope, selfTypeRef, forAddOperatorsElement, OperatorStubsLoader.INSTANCE.myEnumOperators, consumer);
 		}
-		return ContainerUtil.toArray(elements, DotNetElement.ARRAY_FACTORY);
 	}
 
 	private static void buildConversionMethods(@Nonnull Project project,
-			GlobalSearchScope resolveScope,
-			@Nonnull DotNetTypeRef selfTypeRef,
-			@Nonnull DotNetElement parent,
-			@Nonnull Collection<OperatorStubsLoader.Operator> operators,
-			@Nonnull Consumer<PsiElement> consumer)
+											   GlobalSearchScope resolveScope,
+											   @Nonnull DotNetTypeRef selfTypeRef,
+											   @Nonnull DotNetTypeDeclaration parent,
+											   @Nonnull Collection<OperatorStubsLoader.Operator> operators,
+											   @Nonnull Consumer<PsiElement> consumer)
 	{
 		if(operators.isEmpty())
 		{
@@ -164,6 +159,8 @@ public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 				CSharpLightLikeMethodDeclarationBuilder builder = new CSharpLightConversionMethodDeclarationBuilder(project, staticTypeRef);
 
 				builder.withParent(parent);
+
+				builder.withHashAndEqualObject(new ConversionMethodEqualObject(parent, operator));
 
 				builder.withReturnType(operator.myReturnTypeRef == null ? selfTypeRef : new CSharpTypeRefByQName(project, resolveScope, operator.myReturnTypeRef));
 

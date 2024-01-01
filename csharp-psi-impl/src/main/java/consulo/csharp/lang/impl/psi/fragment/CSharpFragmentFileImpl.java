@@ -60,6 +60,8 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 	{
 		super(elementType, contentElementType, provider);
 		myContext = context;
+
+		System.out.println(provider.getContents());
 	}
 
 	@RequiredReadAction

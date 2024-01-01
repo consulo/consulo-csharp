@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 11.02.14
  */
-public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResult
+public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResult implements CSharpLikeTypeRef
 {
 	private DotNetTypeDeclaration myElement;
 	@Nonnull
@@ -74,16 +74,19 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResul
 	@Override
 	public boolean equals(Object obj)
 	{
-		if(obj instanceof CSharpTypeRefByTypeDeclaration other)
-		{
-			return myElement.isEquivalentTo(other.myElement) && myExtractor.equals(other.myExtractor);
-		}
-		return super.equals(obj);
+		return CSharpLikeTypeRef.equals(this, obj);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return getVmQName().hashCode() ^ myExtractor.hashCode();
+		return CSharpLikeTypeRef.hashCode(this);
+	}
+
+	@Nonnull
+	@Override
+	public DotNetGenericExtractor getExtractor()
+	{
+		return myExtractor;
 	}
 }

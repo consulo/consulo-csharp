@@ -19,6 +19,7 @@ package consulo.csharp.lang.impl.psi.source.resolve.handlers;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.progress.ProgressManager;
 import consulo.application.util.function.Processor;
+import consulo.csharp.lang.impl.psi.source.CSharpUsingNamespaceStatementImpl;
 import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveOptions;
 import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveResult;
 import consulo.csharp.lang.impl.psi.source.resolve.StubScopeProcessor;
@@ -55,6 +56,8 @@ public class QualifiedNamespaceKindProcessor implements KindProcessor
 		PsiElement element = options.getElement();
 
 		String qName = StringUtil.strip(element.getText(), CSharpReferenceExpression.DEFAULT_REF_FILTER);
+		// this is correct? we need always remove it? 
+		qName = StringUtil.trimStart(qName, CSharpUsingNamespaceStatementImpl.GLOBAL_PREFIX);
 
 		DotNetNamespaceAsElement namespace = null;
 

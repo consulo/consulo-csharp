@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.source.resolve.type;
 
-import consulo.annotation.DeprecationInfo;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightIndexMethodDeclarationBuilder;
@@ -73,16 +72,6 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	}
 
 	@RequiredReadAction
-	@Deprecated
-	@DeprecationInfo("Use contructor with project parameter")
-	public CSharpArrayTypeRef(@Nonnull DotNetTypeRef innerTypeRef, int dimensions)
-	{
-		super(innerTypeRef.getProject(), innerTypeRef.getResolveScope());
-		myInnerTypeRef = innerTypeRef;
-		myDimensions = dimensions;
-	}
-
-	@RequiredReadAction
 	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
@@ -90,6 +79,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(myProject, myResolveScope);
 		builder.withParentQName("System");
 		builder.withName("ArrayImpl[" + CSharpTypeRefPresentationUtil.buildText(myInnerTypeRef) + "]");
+		builder.withHashAndEqualObject(this);
 		builder.addModifier(DotNetModifier.PUBLIC);
 
 		builder.addExtendType(new CSharpTypeRefByQName(myProject, myResolveScope, "System.Array"));

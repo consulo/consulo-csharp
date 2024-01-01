@@ -27,6 +27,7 @@ import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 /**
  * @author VISTALL
@@ -34,10 +35,10 @@ import javax.annotation.Nullable;
  */
 public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPropertyDeclaration> implements CSharpPropertyDeclaration
 {
-	private final DotNetTypeRef myTypeRef;
-	private final DotNetTypeRef myVirtualTypeRefForImpl;
+	private final Supplier<DotNetTypeRef> myTypeRef;
+	private final Supplier<DotNetTypeRef> myVirtualTypeRefForImpl;
 
-	public CSharpLightPropertyDeclaration(CSharpPropertyDeclaration original, DotNetTypeRef typeRef, DotNetTypeRef virtualTypeRefForImpl)
+	public CSharpLightPropertyDeclaration(CSharpPropertyDeclaration original, Supplier<DotNetTypeRef> typeRef, Supplier<DotNetTypeRef> virtualTypeRefForImpl)
 	{
 		super(original);
 		myTypeRef = typeRef;
@@ -49,7 +50,7 @@ public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPr
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
-		return myTypeRef;
+		return myTypeRef.get();
 	}
 
 	@Override
@@ -58,6 +59,7 @@ public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPr
 		visitor.visitPropertyDeclaration(this);
 	}
 
+	@RequiredReadAction
 	@Nonnull
 	@Override
 	public DotNetXAccessor[] getAccessors()
@@ -65,6 +67,7 @@ public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPr
 		return myOriginal.getAccessors();
 	}
 
+	@RequiredReadAction
 	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
@@ -113,7 +116,7 @@ public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPr
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		return myVirtualTypeRefForImpl;
+		return myVirtualTypeRefForImpl.get();
 	}
 
 	@RequiredReadAction

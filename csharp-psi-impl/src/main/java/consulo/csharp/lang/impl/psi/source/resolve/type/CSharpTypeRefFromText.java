@@ -24,8 +24,10 @@ import consulo.dotnet.psi.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.lang.lazy.LazyValue;
 
 import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 
 /**
  * @author VISTALL
@@ -33,25 +35,22 @@ import javax.annotation.Nonnull;
  */
 public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 {
-	private final String myText;
-	private final PsiElement myOwner;
+	private final Supplier<DotNetType> myDelegate;
 
 	public CSharpTypeRefFromText(final String text, final PsiElement owner)
 	{
 		super(owner.getProject(), owner.getResolveScope());
-		myText = text;
-		myOwner = owner;
+		myDelegate = LazyValue.notNull(() -> getType(text, owner));
 	}
 
 	@Nonnull
-	//@Lazy
-	private DotNetType getType()
+	private static DotNetType getType(String text, PsiElement owner)
 	{
-		CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(myOwner.getProject(), myText, myOwner);
-		typeFragment.forceResolveScope(myOwner.getResolveScope());
+		CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(owner.getProject(), text, owner);
+		typeFragment.forceResolveScope(owner.getResolveScope());
 
 		DotNetType dotNetType = PsiTreeUtil.getChildOfType(typeFragment, DotNetType.class);
-		assert dotNetType != null : myText;
+		assert dotNetType != null : text;
 		return dotNetType;
 	}
 
@@ -60,7 +59,7 @@ public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
-		return getType().toTypeRef().resolve();
+		return myDelegate.get().toTypeRef().resolve();
 	}
 
 	@RequiredReadAction
@@ -68,6 +67,6 @@ public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 	@Override
 	public String getVmQName()
 	{
-		return getType().toTypeRef().getVmQName();
+		return myDelegate.get().toTypeRef().getVmQName();
 	}
 }

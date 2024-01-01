@@ -126,7 +126,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 
 				if(DotNetTypes.System.Reflection.AssemblyTitleAttribute.equals(typeDeclaration.getVmQName()))
 				{
-					Module attributeModule = ModuleUtilCore.findModuleForPsiElement(attribute);
+					Module attributeModule = attribute.getModule();
 					if(attributeModule == null || !attributeModule.equals(getModule()))
 					{
 						continue;

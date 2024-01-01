@@ -18,10 +18,13 @@ package consulo.csharp.lang.impl.psi.source;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.CachedValueProvider;
+import consulo.application.util.CachedValuesManager;
+import consulo.application.util.function.CommonProcessors;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
+import consulo.csharp.lang.impl.psi.stub.index.CSharpIndexKeys;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpNamespaceStatement;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
@@ -32,13 +35,20 @@ import consulo.language.impl.psi.PsiFileBase;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.stub.IdFilter;
 import consulo.language.psi.stub.StubElement;
+import consulo.language.psi.stub.StubIndex;
 import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.fileType.FileType;
 import jakarta.annotation.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -56,7 +66,7 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 	@RequiredReadAction
 	public CSharpUsingListChild[] getUsingStatements()
 	{
-		return LanguageCachedValueUtil.getCachedValue(this, () -> CachedValueProvider.Result.create(getUsingStatementsInner(), PsiModificationTracker.MODIFICATION_COUNT)) ;
+		return LanguageCachedValueUtil.getCachedValue(this, () -> CachedValueProvider.Result.create(getUsingStatementsInner(), PsiModificationTracker.MODIFICATION_COUNT));
 	}
 
 	@Nonnull
@@ -114,6 +124,24 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 			return (CSharpNamespaceStatement) stub.findChildStubByType(CSharpStubElementSets.NAMESPACE_STATEMENT);
 		}
 		return findChildByClass(CSharpNamespaceStatement.class);
+	}
+
+	@RequiredReadAction
+	@Nonnull
+	@Override
+	public Collection<String> getGlobalUsings()
+	{
+		return CachedValuesManager.getManager(getProject()).createCachedValue(() -> CachedValueProvider.Result.create(getGlobalUsingsImpl(), PsiModificationTracker.MODIFICATION_COUNT)).getValue();
+	}
+
+	private List<String> getGlobalUsingsImpl()
+	{
+		Project project = getProject();
+		GlobalSearchScope resolveScope = getResolveScope();
+
+		CommonProcessors.CollectUniquesProcessor<String> uniquesProcessor = new CommonProcessors.CollectUniquesProcessor<>();
+		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.GLOBAL_USING_NAMESPACE, uniquesProcessor, resolveScope, IdFilter.getProjectIdFilter(project, true));
+		return uniquesProcessor.getResults().stream().map(s -> StringUtil.trimStart(s, CSharpUsingNamespaceStatementImpl.GLOBAL_PREFIX)).toList();
 	}
 
 	@Nonnull

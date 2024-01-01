@@ -33,6 +33,7 @@ public interface CSharpUsingNamespaceStatement extends CSharpUsingListChild
 
 	ArrayFactory<CSharpUsingNamespaceStatement> ARRAY_FACTORY = ArrayFactory.of(CSharpUsingNamespaceStatement[]::new);
 
+	@RequiredReadAction
 	default boolean isGlobal()
 	{
 		return false;

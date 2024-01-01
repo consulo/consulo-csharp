@@ -26,11 +26,13 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 import consulo.util.lang.ObjectUtil;
+import consulo.util.lang.lazy.LazyValue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @author VISTALL
@@ -115,10 +117,8 @@ public class GenericUnwrapTool
 			return namedElement;
 		}
 
-		if(namedElement instanceof CSharpMethodDeclaration)
+		if(namedElement instanceof CSharpMethodDeclaration methodDeclaration)
 		{
-			CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) namedElement;
-
 			DotNetParameterList parameterList = methodDeclaration.getParameterList();
 
 			DotNetParameter[] parameters = methodDeclaration.getParameters();
@@ -126,7 +126,7 @@ public class GenericUnwrapTool
 			for(int i = 0; i < parameters.length; i++)
 			{
 				DotNetParameter parameter = parameters[i];
-				newParameters[i] = new CSharpLightParameter(parameter, exchangeTypeRef(parameter.toTypeRef(true), extractor));
+				newParameters[i] = new CSharpLightParameter(parameter, LazyValue.notNull(() -> exchangeTypeRef(parameter.toTypeRef(true), extractor)));
 			}
 
 			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
@@ -135,18 +135,22 @@ public class GenericUnwrapTool
 			exchangeMethodTypeRefs(copy, methodDeclaration, extractor);
 			return cast(copy, parent);
 		}
-		else if(namedElement instanceof CSharpTypeDeclaration)
+		else if(namedElement instanceof CSharpTypeDeclaration typeDeclaration)
 		{
-			if(namedElement instanceof CSharpLightTypeDeclaration typeDeclaration && typeDeclaration.getExtractor().equals(extractor))
+			if(parent == null && typeDeclaration.getGenericParametersCount() == 0)
 			{
 				return namedElement;
 			}
-			return cast(new CSharpLightTypeDeclaration((CSharpTypeDeclaration) namedElement, extractor), parent);
-		}
-		else if(namedElement instanceof CSharpIndexMethodDeclaration)
-		{
-			CSharpIndexMethodDeclaration arrayMethodDeclaration = (CSharpIndexMethodDeclaration) namedElement;
 
+			if(namedElement instanceof CSharpLightTypeDeclaration lightTypeDeclaration && lightTypeDeclaration.getExtractor().equals(extractor))
+			{
+				return namedElement;
+			}
+
+			return cast(new CSharpLightTypeDeclaration(typeDeclaration, extractor), parent);
+		}
+		else if(namedElement instanceof CSharpIndexMethodDeclaration arrayMethodDeclaration)
+		{
 			DotNetParameterList parameterList = arrayMethodDeclaration.getParameterList();
 
 			DotNetParameter[] parameters = arrayMethodDeclaration.getParameters();
@@ -155,7 +159,7 @@ public class GenericUnwrapTool
 			for(int i = 0; i < parameters.length; i++)
 			{
 				DotNetParameter parameter = parameters[i];
-				newParameters[i] = new CSharpLightParameter(parameter, exchangeTypeRef(parameter.toTypeRef(true), extractor));
+				newParameters[i] = new CSharpLightParameter(parameter, LazyValue.notNull(() -> exchangeTypeRef(parameter.toTypeRef(true), extractor)));
 			}
 
 			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
@@ -164,10 +168,8 @@ public class GenericUnwrapTool
 			exchangeMethodTypeRefs(copy, arrayMethodDeclaration, extractor);
 			return cast(copy, parent);
 		}
-		else if(namedElement instanceof CSharpConversionMethodDeclaration)
+		else if(namedElement instanceof CSharpConversionMethodDeclaration conversionMethodDeclaration)
 		{
-			CSharpConversionMethodDeclaration conversionMethodDeclaration = (CSharpConversionMethodDeclaration) namedElement;
-
 			DotNetParameterList parameterList = conversionMethodDeclaration.getParameterList();
 
 			DotNetParameter[] parameters = conversionMethodDeclaration.getParameters();
@@ -176,19 +178,17 @@ public class GenericUnwrapTool
 			for(int i = 0; i < parameters.length; i++)
 			{
 				DotNetParameter parameter = parameters[i];
-				newParameters[i] = new CSharpLightParameter(parameter, exchangeTypeRef(parameter.toTypeRef(true), extractor));
+				newParameters[i] = new CSharpLightParameter(parameter, LazyValue.notNull(() -> exchangeTypeRef(parameter.toTypeRef(true), extractor)));
 			}
 
 			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
 
 			DotNetTypeRef returnTypeRef = exchangeTypeRef(conversionMethodDeclaration.getReturnTypeRef(), extractor);
-			CSharpLightConversionMethodDeclaration copy = new CSharpLightConversionMethodDeclaration(conversionMethodDeclaration, parameterList, returnTypeRef);
+			CSharpLightConversionMethodDeclaration copy = new CSharpLightConversionMethodDeclaration(conversionMethodDeclaration, parameterList, returnTypeRef, extractor);
 			return cast(copy, parent);
 		}
-		else if(namedElement instanceof CSharpConstructorDeclaration)
+		else if(namedElement instanceof CSharpConstructorDeclaration constructor)
 		{
-			CSharpConstructorDeclaration constructor = (CSharpConstructorDeclaration) namedElement;
-
 			DotNetParameterList parameterList = constructor.getParameterList();
 
 			DotNetParameter[] parameters = constructor.getParameters();
@@ -197,7 +197,7 @@ public class GenericUnwrapTool
 			for(int i = 0; i < parameters.length; i++)
 			{
 				DotNetParameter parameter = parameters[i];
-				newParameters[i] = new CSharpLightParameter(parameter, exchangeTypeRef(parameter.toTypeRef(true), extractor));
+				newParameters[i] = new CSharpLightParameter(parameter, LazyValue.notNull(() -> exchangeTypeRef(parameter.toTypeRef(true), extractor)));
 			}
 
 			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
@@ -208,8 +208,8 @@ public class GenericUnwrapTool
 		else if(namedElement instanceof CSharpPropertyDeclaration)
 		{
 			CSharpPropertyDeclaration e = (CSharpPropertyDeclaration) namedElement;
-			DotNetTypeRef returnTypeRef = exchangeTypeRef(e.toTypeRef(true), extractor);
-			DotNetTypeRef virtualTypeForImpl = exchangeTypeRef(e.getTypeRefForImplement(), extractor);
+			Supplier<DotNetTypeRef> returnTypeRef = LazyValue.notNull(() -> exchangeTypeRef(e.toTypeRef(true), extractor));
+			Supplier<DotNetTypeRef> virtualTypeForImpl = LazyValue.notNull(() -> exchangeTypeRef(e.getTypeRefForImplement(), extractor));
 			return cast(new CSharpLightPropertyDeclaration(e, returnTypeRef, virtualTypeForImpl), parent);
 		}
 		else if(namedElement instanceof CSharpEventDeclaration)
@@ -244,9 +244,8 @@ public class GenericUnwrapTool
 																													 S original,
 																													 DotNetGenericExtractor extractor)
 	{
-		copy.withReturnTypeRef(exchangeTypeRef(original.getReturnTypeRef(), extractor));
-
-		copy.withTypeRefForImplement(exchangeTypeRef(original.getTypeRefForImplement(), extractor));
+		copy.withReturnTypeRef(LazyValue.notNull(() -> exchangeTypeRef(original.getReturnTypeRef(), extractor)));
+		copy.withTypeRefForImplement(LazyValue.notNull(() -> exchangeTypeRef(original.getTypeRefForImplement(), extractor)));
 	}
 
 	@Nonnull

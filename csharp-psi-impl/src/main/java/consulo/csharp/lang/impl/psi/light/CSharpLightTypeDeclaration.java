@@ -17,7 +17,6 @@
 package consulo.csharp.lang.impl.psi.light;
 
 import consulo.annotation.access.RequiredReadAction;
-import consulo.application.util.NotNullLazyValue;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
@@ -28,10 +27,13 @@ import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.util.lang.lazy.LazyValue;
 import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * @author VISTALL
@@ -39,14 +41,14 @@ import javax.annotation.Nullable;
  */
 public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTypeDeclaration> implements CSharpTypeDeclaration
 {
-	private final NotNullLazyValue<DotNetNamedElement[]> myMembersValue;
+	private final Supplier<DotNetNamedElement[]> myMembersValue;
 	private DotNetGenericExtractor myExtractor;
 
 	public CSharpLightTypeDeclaration(CSharpTypeDeclaration original, DotNetGenericExtractor extractor)
 	{
 		super(original);
 		myExtractor = extractor;
-		myMembersValue = NotNullLazyValue.createValue(() ->
+		myMembersValue = LazyValue.notNull(() ->
 		{
 			DotNetNamedElement[] originalMembers = myOriginal.getMembers();
 			DotNetNamedElement[] members = new DotNetNamedElement[originalMembers.length];
@@ -56,6 +58,28 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 			}
 			return members;
 		});
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this == o)
+		{
+			return true;
+		}
+		if(o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+		CSharpLightTypeDeclaration that = (CSharpLightTypeDeclaration) o;
+		return Objects.equals(myOriginal, that.myOriginal) &&
+				Objects.equals(myExtractor, that.myExtractor);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(myOriginal, myExtractor);
 	}
 
 	@Nonnull
@@ -204,7 +228,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 	@RequiredReadAction
 	public DotNetNamedElement[] getMembers()
 	{
-		return myMembersValue.getValue();
+		return myMembersValue.get();
 	}
 
 	@RequiredReadAction

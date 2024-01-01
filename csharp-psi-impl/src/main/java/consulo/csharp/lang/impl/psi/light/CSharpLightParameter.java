@@ -24,6 +24,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 /**
  * @author VISTALL
@@ -31,14 +32,14 @@ import javax.annotation.Nullable;
  */
 public class CSharpLightParameter extends CSharpLightVariable<DotNetParameter> implements DotNetParameter
 {
-	private DotNetTypeRef myTypeRef;
+	private Supplier<DotNetTypeRef> myTypeRef;
 
 	public CSharpLightParameter(DotNetParameter original)
 	{
-		this(original, original.toTypeRef(false));
+		this(original, () -> original.toTypeRef(false));
 	}
 
-	public CSharpLightParameter(DotNetParameter original, DotNetTypeRef dotNetTypeRef)
+	public CSharpLightParameter(DotNetParameter original, Supplier<DotNetTypeRef> dotNetTypeRef)
 	{
 		super(original);
 		myTypeRef = dotNetTypeRef;
@@ -49,7 +50,7 @@ public class CSharpLightParameter extends CSharpLightVariable<DotNetParameter> i
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
-		return myTypeRef;
+		return myTypeRef.get();
 	}
 
 	@Override

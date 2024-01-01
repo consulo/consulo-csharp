@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package consulo.csharp.lang.impl.psi;
+package consulo.csharp.lang.impl.psi.cast;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
 import consulo.csharp.lang.CSharpCastType;
+import consulo.csharp.lang.impl.psi.CSharpInheritableChecker;
+import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.disposer.Disposable;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import consulo.ide.ServiceManager;
 import consulo.language.psi.PsiModificationTrackerListener;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
@@ -34,7 +35,6 @@ import jakarta.inject.Singleton;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -48,80 +48,43 @@ public class CSharpInheritableCheckerCacher implements Disposable
 {
 	public static CSharpInheritableCheckerCacher getInstance(@Nonnull Project project)
 	{
-		return ServiceManager.getService(project, CSharpInheritableCheckerCacher.class);
+		return project.getInstance(CSharpInheritableCheckerCacher.class);
 	}
 
-	private static class CacheKey
-	{
-		private final DotNetTypeRef myTop;
-		private final DotNetTypeRef myTarget;
-
-		private final Pair<CSharpCastType, GlobalSearchScope> myCastTypeResolver;
-
-		private CacheKey(DotNetTypeRef top, DotNetTypeRef target, Pair<CSharpCastType, GlobalSearchScope> castTypeResolver)
-		{
-			myTop = top;
-			myTarget = target;
-			myCastTypeResolver = castTypeResolver;
-		}
-
-		@Override
-		public boolean equals(Object o)
-		{
-			if(this == o)
-			{
-				return true;
-			}
-			if(o == null || getClass() != o.getClass())
-			{
-				return false;
-			}
-			CacheKey cacheKey = (CacheKey) o;
-			return Objects.equals(myTop, cacheKey.myTop) &&
-					Objects.equals(myTarget, cacheKey.myTarget) &&
-					Objects.equals(myCastTypeResolver, cacheKey.myCastTypeResolver);
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return Objects.hash(myTop, myTarget, myCastTypeResolver);
-		}
-
-		@Override
-		public String toString()
-		{
-			return "CacheKey{" +
-					"myTop=" + myTop +
-					", myTarget=" + myTarget +
-					", myCastTypeResolver=" + myCastTypeResolver +
-					'}';
-		}
-	}
-
-	private final Map<CacheKey, CSharpTypeUtil.InheritResult> myCache = new ConcurrentHashMap<>();
+	private final Map<CSharpInheritKey, CSharpTypeUtil.InheritResult> myCache = new ConcurrentHashMap<>();
+	private final Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> myImplicitCast = new ConcurrentHashMap<>();
 
 	@Inject
 	public CSharpInheritableCheckerCacher(Project project)
 	{
-		project.getMessageBus().connect(this).subscribe(PsiModificationTrackerListener.class, myCache::clear);
+		project.getMessageBus().connect(this).subscribe(PsiModificationTrackerListener.class, () ->
+		{
+			myCache.clear();
+			myImplicitCast.clear();
+		});
 	}
 
 	@Nonnull
 	@RequiredReadAction
 	public CSharpTypeUtil.InheritResult getOrCheck(DotNetTypeRef top,
 												   DotNetTypeRef target,
-												   @Nullable Pair<CSharpCastType, GlobalSearchScope> castTypeResolver,
-												   @Nullable CSharpInheritableCheckerContext context)
+												   @Nullable Pair<CSharpCastType, GlobalSearchScope> castTypeResolver)
 	{
-		CacheKey key = new CacheKey(top, target, castTypeResolver);
+		CSharpInheritKey key = new CSharpInheritKey(top, target, castTypeResolver);
 		CSharpTypeUtil.InheritResult result = myCache.get(key);
 		if(result != null)
 		{
 			return result;
 		}
 
-		result = CSharpInheritableChecker.isInheritable(key.myTop, key.myTarget, key.myCastTypeResolver, context == null ? CSharpInheritableCheckerContext.create() : context);
+		try (CSharpCastSession session = CSharpCastSession.start(myImplicitCast))
+		{
+			result = CSharpInheritableChecker.isInheritable(key.top(), key.target(), key.castResolvingInfo());
+
+			myImplicitCast.putAll(session.getImplicitCast());
+		}
+
+		// we can't use computeIfAbsent since we can call store data in recursive mode, which ConcurrentHashMap not allow
 		myCache.putIfAbsent(key, result);
 		return result;
 	}

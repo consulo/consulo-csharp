@@ -24,6 +24,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 /**
  * @author VISTALL
@@ -32,47 +33,83 @@ import javax.annotation.Nullable;
 public abstract class CSharpLightLikeMethodDeclarationWithImplType<S extends DotNetLikeMethodDeclaration & DotNetVirtualImplementOwner> extends
 		CSharpLightLikeMethodDeclaration<S> implements DotNetVirtualImplementOwner
 {
-	private DotNetTypeRef myReturnTypeRef = DotNetTypeRef.ERROR_TYPE;
-	private DotNetTypeRef myTypeRefForImplement = DotNetTypeRef.ERROR_TYPE;
+	@Nullable
+	private Supplier<DotNetTypeRef> myReturnTypeRef;
+	@Nullable
+	private Supplier<DotNetTypeRef> myTypeRefForImplement;
 
+	@RequiredReadAction
 	public CSharpLightLikeMethodDeclarationWithImplType(@Nonnull S declaration)
 	{
 		this(declaration, declaration.getParameterList());
 	}
 
+	@RequiredReadAction
 	public CSharpLightLikeMethodDeclarationWithImplType(S original, @Nullable DotNetParameterList parameterList)
 	{
 		super(original, parameterList);
-		myReturnTypeRef = original.getReturnTypeRef();
-		myTypeRefForImplement = original.getTypeRefForImplement();
+	}
+
+	@Nonnull
+	public CSharpLightLikeMethodDeclarationWithImplType<S> withTypeRefForImplement(@Nonnull Supplier<DotNetTypeRef> typeRef)
+	{
+		if(myTypeRefForImplement != null)
+		{
+			throw new UnsupportedOperationException();
+		}
+
+		myTypeRefForImplement = typeRef;
+		return this;
+	}
+
+	@Nonnull
+	public CSharpLightLikeMethodDeclarationWithImplType<S> withReturnTypeRef(@Nonnull Supplier<DotNetTypeRef> typeRef)
+	{
+		if (myReturnTypeRef != null)
+		{
+			throw new UnsupportedOperationException();
+		}
+
+		myReturnTypeRef = typeRef;
+		return this;
 	}
 
 	@Nonnull
 	public CSharpLightLikeMethodDeclarationWithImplType<S> withTypeRefForImplement(@Nonnull DotNetTypeRef type)
 	{
-		myTypeRefForImplement = type;
-		return this;
+		return withTypeRefForImplement(() -> type);
 	}
 
 	@Nonnull
 	public CSharpLightLikeMethodDeclarationWithImplType<S> withReturnTypeRef(@Nonnull DotNetTypeRef type)
 	{
-		myReturnTypeRef = type;
-		return this;
+		return withReturnTypeRef(() -> type);
 	}
 
 	@Nonnull
 	@Override
+	@SuppressWarnings("unchecked")
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		return myTypeRefForImplement;
+		if(myTypeRefForImplement == null)
+		{
+			return ((S) getOriginalElement()).getTypeRefForImplement();
+		}
+
+		return myTypeRefForImplement.get();
 	}
 
 	@RequiredReadAction
 	@Nonnull
 	@Override
+	@SuppressWarnings("unchecked")
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		return myReturnTypeRef;
+		if(myReturnTypeRef == null)
+		{
+			return ((S) getOriginalElement()).getReturnTypeRef();
+		}
+
+		return myReturnTypeRef.get();
 	}
 }

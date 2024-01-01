@@ -19,12 +19,15 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.source.CSharpUsingNamespaceStatementImpl;
 import consulo.csharp.lang.impl.psi.stub.CSharpUsingNamespaceStub;
+import consulo.csharp.lang.impl.psi.stub.index.CSharpIndexKeys;
 import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import consulo.index.io.StringRef;
 import consulo.language.ast.ASTNode;
+import consulo.language.psi.stub.IndexSink;
 import consulo.language.psi.stub.StubElement;
 import consulo.language.psi.stub.StubInputStream;
 import consulo.language.psi.stub.StubOutputStream;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -77,5 +80,15 @@ public class CSharpUsingNamespaceStatementStubElementType extends CSharpAbstract
 		StringRef referenceText = stubInputStream.readName();
 		boolean global = stubInputStream.readBoolean();
 		return new CSharpUsingNamespaceStub(stubElement, this, referenceText, global);
+	}
+
+	@Override
+	public void indexStub(@Nonnull CSharpUsingNamespaceStub stub, @Nonnull IndexSink indexSink)
+	{
+		String referenceText = stub.getReferenceText();
+		if(stub.isGlobal() && !StringUtil.isEmptyOrSpaces(referenceText))
+		{
+			indexSink.occurrence(CSharpIndexKeys.GLOBAL_USING_NAMESPACE, referenceText);
+		}
 	}
 }

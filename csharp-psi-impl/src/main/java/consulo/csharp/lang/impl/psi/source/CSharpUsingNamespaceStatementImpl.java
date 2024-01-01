@@ -21,10 +21,7 @@ import consulo.application.util.CachedValueProvider;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.impl.psi.stub.CSharpUsingNamespaceStub;
-import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
+import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetReferenceExpression;
 import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.psi.resolve.DotNetPsiSearcher;
@@ -44,6 +41,8 @@ import javax.annotation.Nullable;
  */
 public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSharpUsingNamespaceStub> implements CSharpUsingNamespaceStatement
 {
+	public static final String GLOBAL_PREFIX = "global::";
+
 	public CSharpUsingNamespaceStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
@@ -85,6 +84,18 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 		return LanguageCachedValueUtil.getCachedValue(this, () -> CachedValueProvider.Result.create(resolveInner(), PsiModificationTracker.MODIFICATION_COUNT));
 	}
 
+	@RequiredReadAction
+	@Override
+	public boolean isGlobal()
+	{
+		CSharpUsingNamespaceStub stub = getStub();
+		if(stub != null)
+		{
+			return stub.isGlobal();
+		}
+		return findChildByType(CSharpSoftTokens.GLOBAL_KEYWORD) != null;
+	}
+
 	@Nullable
 	@RequiredReadAction
 	private DotNetNamespaceAsElement resolveInner()
@@ -95,10 +106,17 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 			return null;
 		}
 
-		final String qName = StringUtil.strip(referenceText, CSharpReferenceExpression.DEFAULT_REF_FILTER);
+		DotNetPsiSearcher psiSearcher = DotNetPsiSearcher.getInstance(getProject());
+
+		String qName = StringUtil.strip(referenceText, CSharpReferenceExpression.DEFAULT_REF_FILTER);
+		boolean isGlobal = qName.startsWith(GLOBAL_PREFIX);
+		if(isGlobal)
+		{
+			qName = StringUtil.trimStart(qName, GLOBAL_PREFIX);
+			return psiSearcher.findNamespace(qName, getResolveScope());
+		}
 
 		PsiElement parent = getParent();
-		DotNetPsiSearcher psiSearcher = DotNetPsiSearcher.getInstance(getProject());
 		if(parent instanceof CSharpNamespaceDeclaration)
 		{
 			DotNetNamespaceAsElement namespace = tryResolveRelativeNamespace((CSharpNamespaceDeclaration) parent, qName, psiSearcher);
@@ -128,11 +146,11 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 			DotNetNamespaceAsElement namespace = psiSearcher.findNamespace(target.append(text).join("."), getResolveScope());
 			if(namespace != null)
 			{
-			 	return namespace;
+				return namespace;
 			}
 
 			target = target.getParent();
-			
+
 			if(target == null || target == QualifiedName.ROOT)
 			{
 				break;

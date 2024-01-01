@@ -18,6 +18,8 @@ package consulo.csharp.lang.impl.psi;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpCastType;
+import consulo.csharp.lang.impl.psi.cast.CSharpCastSession;
+import consulo.csharp.lang.impl.psi.cast.CSharpImpicitCastKey;
 import consulo.csharp.lang.impl.psi.resolve.CSharpResolveContextUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
@@ -319,9 +321,18 @@ public class CSharpTypeUtil
 																	@Nonnull DotNetTypeRef from,
 																	@Nonnull DotNetTypeDeclaration typeDeclaration,
 																	@Nonnull DotNetGenericExtractor extractor,
-																	@Nonnull Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo,
-																	@Nonnull CSharpInheritableCheckerContext context)
+																	@Nonnull Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo)
 	{
+		CSharpImpicitCastKey key = new CSharpImpicitCastKey(to, from, typeDeclaration, extractor, castResolvingInfo);
+
+		CSharpCastSession session = CSharpCastSession.get();
+
+		InheritResult oldResult = session.getImplicitResult(key);
+		if(oldResult != null)
+		{
+			return oldResult;
+		}
+
 		CSharpCastType castType = castResolvingInfo.getFirst();
 		GlobalSearchScope resolveScope = castResolvingInfo.getSecond();
 
@@ -330,7 +341,7 @@ public class CSharpTypeUtil
 		CSharpElementGroup<CSharpConversionMethodDeclaration> conversionMethodGroup = resolveContext.findConversionMethodGroup(castType, true);
 		if(conversionMethodGroup == null)
 		{
-			return fail();
+			return session.recordImpicit(key, fail());
 		}
 
 		// we need swap to vs from for explicit
@@ -346,7 +357,7 @@ public class CSharpTypeUtil
 			// extract here
 			declaration = GenericUnwrapTool.extract(declaration, extractor);
 
-			if(!CSharpInheritableChecker.create(declaration.getReturnTypeRef(), to).withCastType(CSharpCastType.IMPLICIT, resolveScope).withContext(context).check().isSuccess())
+			if(!CSharpInheritableChecker.create(declaration.getReturnTypeRef(), to).withCastType(CSharpCastType.IMPLICIT, resolveScope).check().isSuccess())
 			{
 				continue;
 			}
@@ -358,12 +369,13 @@ public class CSharpTypeUtil
 				continue;
 			}
 
-			if(CSharpInheritableChecker.create(parameterTypeRef, from).withCastType(CSharpCastType.IMPLICIT, resolveScope).withContext(context).check().isSuccess())
+			if(CSharpInheritableChecker.create(parameterTypeRef, from).withCastType(CSharpCastType.IMPLICIT, resolveScope).check().isSuccess())
 			{
-				return new InheritResult(true, declaration);
+				return session.recordImpicit(key, new InheritResult(true, declaration));
 			}
 		}
-		return fail();
+
+		return session.recordImpicit(key, fail());
 	}
 
 	@Nonnull

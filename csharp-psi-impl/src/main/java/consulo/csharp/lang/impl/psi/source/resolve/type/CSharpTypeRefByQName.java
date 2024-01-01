@@ -34,7 +34,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 26.10.14
  */
-public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
+public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult implements CSharpLikeTypeRef
 {
 	@Nonnull
 	private final String myQualifiedName;
@@ -100,6 +100,18 @@ public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
 		{
 			obj = ((Delegate) obj).getDelegate();
 		}
-		return obj instanceof CSharpTypeRefByQName && ((CSharpTypeRefByQName) obj).myQualifiedName.equals(myQualifiedName);
+		return CSharpLikeTypeRef.equals(this, obj);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return CSharpLikeTypeRef.hashCode(this);
+	}
+
+	@Override
+	public DotNetGenericExtractor getExtractor()
+	{
+		return DotNetGenericExtractor.EMPTY;
 	}
 }

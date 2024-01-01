@@ -16,15 +16,18 @@
 
 package consulo.csharp.lang.impl.psi.light;
 
-import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetType;
+import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * @author VISTALL
@@ -35,12 +38,17 @@ public class CSharpLightConversionMethodDeclaration extends CSharpLightLikeMetho
 {
 	@Nonnull
 	private final DotNetTypeRef myReturnTypeRef;
+	@Nonnull
+	private final DotNetGenericExtractor myExtractor;
 
 	public CSharpLightConversionMethodDeclaration(CSharpConversionMethodDeclaration original,
-			@Nullable DotNetParameterList parameterList,
-			@Nonnull DotNetTypeRef returnTypeRef)
+												  @Nullable DotNetParameterList parameterList,
+												  @Nonnull DotNetTypeRef returnTypeRef,
+												  @Nonnull DotNetGenericExtractor extractor)
 	{
 		super(original, parameterList);
+		myExtractor = extractor;
+		myOriginal = original;
 		myReturnTypeRef = returnTypeRef;
 	}
 
@@ -77,10 +85,43 @@ public class CSharpLightConversionMethodDeclaration extends CSharpLightLikeMetho
 		visitor.visitConversionMethodDeclaration(this);
 	}
 
+	@RequiredReadAction
 	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
 		return myReturnTypeRef;
+	}
+
+	@Override
+	public String toString()
+	{
+		final StringBuilder sb = new StringBuilder("CSharpLightConversionMethodDeclaration{");
+		sb.append("myOriginal=").append(myOriginal);
+		sb.append(", myExtractor=").append(myExtractor);
+		sb.append('}');
+		return sb.toString();
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this == o)
+		{
+			return true;
+		}
+		if(o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+		CSharpLightConversionMethodDeclaration that = (CSharpLightConversionMethodDeclaration) o;
+		return Objects.equals(myOriginal, that.myOriginal) &&
+				Objects.equals(myExtractor, that.myExtractor);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(myOriginal, myExtractor);
 	}
 }

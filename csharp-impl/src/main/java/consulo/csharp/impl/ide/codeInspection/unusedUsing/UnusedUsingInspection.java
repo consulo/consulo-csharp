@@ -21,6 +21,7 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.impl.ide.codeInspection.CSharpGeneralLocalInspection;
 import consulo.csharp.lang.impl.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
 import consulo.csharp.lang.psi.CSharpUsingListChild;
+import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.inspection.LocalInspectionToolSession;
 import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
@@ -111,6 +112,11 @@ public class UnusedUsingInspection extends CSharpGeneralLocalInspection
 			}
 
 			CSharpUsingListChild element = entry.getKey();
+			if(element instanceof CSharpUsingNamespaceStatement usingNamespaceStatement && usingNamespaceStatement.isGlobal())
+			{
+				continue;
+			}
+
 			problemsHolder.registerProblem(element, "Using statement is not used", ProblemHighlightType.LIKE_UNUSED_SYMBOL, new DeleteStatement(element));
 		}
 	}
