@@ -16,20 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
-import consulo.language.ast.ILazyParseableElementType;
-import consulo.language.parser.ParserDefinition;
-import consulo.language.parser.PsiBuilder;
-import consulo.language.parser.PsiBuilderFactory;
-import consulo.language.psi.PsiElement;
-import consulo.language.psi.stub.*;
-import consulo.language.version.LanguageVersion;
-import consulo.module.Module;
-import consulo.language.util.ModuleUtilCore;
-import consulo.module.content.ProjectFileIndex;
-import consulo.module.content.layer.orderEntry.OrderEntry;
-import consulo.language.file.FileViewProvider;
-import consulo.language.psi.PsiFile;
-import consulo.language.file.light.LightVirtualFile;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.impl.CSharpLanguageVersionWrapper;
@@ -38,7 +24,21 @@ import consulo.csharp.lang.impl.psi.stub.CSharpFileStub;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.language.Language;
 import consulo.language.ast.ASTNode;
+import consulo.language.ast.ILazyParseableElementType;
+import consulo.language.file.FileViewProvider;
+import consulo.language.file.light.LightVirtualFile;
+import consulo.language.parser.ParserDefinition;
+import consulo.language.parser.PsiBuilder;
+import consulo.language.parser.PsiBuilderFactory;
 import consulo.language.parser.PsiParser;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.stub.*;
+import consulo.language.util.ModuleUtilCore;
+import consulo.language.version.LanguageVersion;
+import consulo.module.Module;
+import consulo.module.content.ProjectFileIndex;
+import consulo.module.content.layer.orderEntry.OrderEntry;
 import consulo.project.Project;
 import consulo.util.dataholder.Key;
 import consulo.virtualFileSystem.VirtualFile;
@@ -46,7 +46,10 @@ import consulo.virtualFileSystem.VirtualFile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author VISTALL
@@ -185,7 +188,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	@Override
 	public int getStubVersion()
 	{
-		return 123;
+		return 125;
 	}
 
 	@Nonnull
