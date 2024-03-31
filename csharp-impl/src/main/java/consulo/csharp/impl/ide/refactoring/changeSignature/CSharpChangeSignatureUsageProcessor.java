@@ -86,7 +86,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 	@Override
 	public MultiMap<PsiElement, String> findConflicts(@Nonnull ChangeInfo info, Ref<UsageInfo[]> refUsages)
 	{
-		return MultiMap.emptyInstance();
+		return MultiMap.empty();
 	}
 
 	@Override
