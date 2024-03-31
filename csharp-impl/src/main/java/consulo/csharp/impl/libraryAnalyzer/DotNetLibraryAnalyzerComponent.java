@@ -203,7 +203,7 @@ public class DotNetLibraryAnalyzerComponent
 		catch(IOException | MSILParseException ignored)
 		{
 		}
-		return MultiMap.emptyInstance();
+		return MultiMap.empty();
 	}
 
 	/**
