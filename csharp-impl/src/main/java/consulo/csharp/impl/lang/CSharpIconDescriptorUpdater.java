@@ -150,7 +150,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		}
 		else if(element instanceof CSharpLabeledStatementImpl)
 		{
-			iconDescriptor.setMainIcon(AllIcons.Nodes.Advice);
+			iconDescriptor.setMainIcon(PlatformIconGroup.nodesTag());
 		}
 		else if(element instanceof CSharpLocalVariable || element instanceof CSharpLinqVariable || element instanceof CSharpTupleVariable)
 		{
