@@ -1,17 +1,16 @@
 package consulo.csharp.impl.ide.findUsage;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
-import consulo.find.FindUsagesHandler;
-import consulo.ide.impl.idea.openapi.ui.MessageDialogBuilder;
-import consulo.ui.ex.awt.Messages;
-import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiUtilCore;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.find.FindUsagesHandler;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
+import consulo.ui.ex.awt.MessageDialogBuilder;
+import consulo.ui.ex.awt.Messages;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
 
 /**
  * @author VISTALL

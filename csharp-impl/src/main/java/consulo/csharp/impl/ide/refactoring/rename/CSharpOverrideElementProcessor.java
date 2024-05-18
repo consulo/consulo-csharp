@@ -16,15 +16,15 @@
 
 package consulo.csharp.impl.ide.refactoring.rename;
 
-import consulo.annotation.component.ExtensionImpl;
-import consulo.ide.impl.idea.openapi.ui.MessageDialogBuilder;
-import consulo.ui.ex.awt.Messages;
-import consulo.language.psi.PsiElement;
-import consulo.content.scope.SearchScope;
-import consulo.language.editor.refactoring.rename.RenamePsiElementProcessor;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.content.scope.SearchScope;
 import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.language.editor.refactoring.rename.RenamePsiElementProcessor;
+import consulo.language.psi.PsiElement;
+import consulo.ui.ex.awt.MessageDialogBuilder;
+import consulo.ui.ex.awt.Messages;
 import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
