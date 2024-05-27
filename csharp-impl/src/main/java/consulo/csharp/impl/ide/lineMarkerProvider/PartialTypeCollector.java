@@ -17,7 +17,6 @@
 package consulo.csharp.impl.ide.lineMarkerProvider;
 
 import consulo.annotation.access.RequiredReadAction;
-import consulo.application.AllIcons;
 import consulo.codeEditor.markup.GutterIconRenderer;
 import consulo.component.util.Iconable;
 import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
@@ -33,6 +32,7 @@ import consulo.language.psi.NavigatablePsiElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiUtilCore;
 import consulo.language.psi.util.SymbolPresentationUtil;
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.virtualFileSystem.VirtualFile;
 
@@ -96,7 +96,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 				return;
 			}
 
-			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Nodes.TreeDownArrow, Pass.LINE_MARKERS,
+			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), PlatformIconGroup.gutterFold(), Pass.LINE_MARKERS,
 					element -> "Navigate to partial types", new GutterIconNavigationHandler<PsiElement>()
 			{
 				@Override
