@@ -19,7 +19,6 @@ package consulo.csharp.impl.ide.completion;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.AllIcons;
-import consulo.component.util.Iconable;
 import consulo.csharp.impl.ide.codeInsight.actions.CreateUnresolvedMethodByLambdaTypeFix;
 import consulo.csharp.impl.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.impl.ide.completion.expected.ExpectedTypeInfo;
@@ -365,7 +364,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 								builder = builder.withLookupString(declaration.getName());
 								builder = builder.withLookupString(member.getName());
 								builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(returnTypeRef));
-								builder = builder.withIcon(IconDescriptorUpdaters.getIcon(member, Iconable.ICON_FLAG_VISIBILITY));
+								builder = builder.withIcon(IconDescriptorUpdaters.getIcon(member, 0));
 								builder = builder.withInsertHandler(new CSharpParenthesesWithSemicolonInsertHandler(member));
 
 								if(member instanceof CSharpMethodDeclaration)
@@ -477,7 +476,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 							return null;
 						}
 					}
-					return IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY);
+					return IconDescriptorUpdaters.getIcon(element, 0);
 				}
 				else
 				{

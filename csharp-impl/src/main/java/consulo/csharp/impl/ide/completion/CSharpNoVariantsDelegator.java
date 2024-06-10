@@ -269,7 +269,7 @@ class CSharpNoVariantsDelegator
 		}
 		LookupElementBuilder builder = LookupElementBuilder.create(targetElementForLookup, lookupString);
 		builder = builder.withPresentableText(presentationText);
-		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(targetElementForLookup, Iconable.ICON_FLAG_VISIBILITY));
+		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(targetElementForLookup, 0));
 
 		builder = builder.withTypeText(parentQName, true);
 		final InsertHandler<LookupElement> ltGtInsertHandler = genericCount == 0 ? null : LtGtInsertHandler.getInstance(genericCount > 0);

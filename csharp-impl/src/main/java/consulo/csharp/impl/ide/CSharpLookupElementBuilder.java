@@ -18,7 +18,6 @@ package consulo.csharp.impl.ide;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.CaretModel;
-import consulo.component.util.Iconable;
 import consulo.csharp.impl.ide.completion.CSharpCompletionSorting;
 import consulo.csharp.impl.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.impl.ide.completion.expected.ExpectedTypeVisitor;
@@ -126,7 +125,7 @@ public class CSharpLookupElementBuilder
 
 				String lookupString = inheritGeneric == CSharpMethodUtil.Result.CAN ? name + "<>()" : name;
 				builder = LookupElementBuilder.create(methodDeclaration, lookupString);
-				builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+				builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, 0));
 
 				final CSharpSimpleParameterInfo[] parameterInfos = methodDeclaration.getParameterInfos();
 
@@ -166,7 +165,7 @@ public class CSharpLookupElementBuilder
 		else if(element instanceof CSharpIndexMethodDeclaration)
 		{
 			builder = LookupElementBuilder.create(element, "[]");
-			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, 0));
 			final CSharpSimpleParameterInfo[] parameterInfos = ((CSharpIndexMethodDeclaration) element).getParameterInfos();
 			String parameterText = "[" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef()) + " " + parameter.getNotNullName()
 					, ", ") + "]";
@@ -217,7 +216,7 @@ public class CSharpLookupElementBuilder
 			builder = LookupElementBuilder.create(element, ownerName);
 			builder = builder.withPresentableText(accessorPrefix + "::" + parent.getName());
 			builder = builder.withLookupString(accessorPrefix + "::" + parent.getName());
-			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(parent, Iconable.ICON_FLAG_VISIBILITY));
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(parent, 0));
 
 			if(parent instanceof DotNetVariable)
 			{
@@ -293,7 +292,7 @@ public class CSharpLookupElementBuilder
 			}
 			builder = LookupElementBuilder.create(name);
 
-			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, 0));
 			CSharpCompletionSorting.force(builder, CSharpCompletionSorting.KindSorter.Type.namespace);
 		}
 		else if(element instanceof CSharpTypeDefStatement)
@@ -306,7 +305,7 @@ public class CSharpLookupElementBuilder
 			}
 			builder = LookupElementBuilder.create(name);
 
-			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, 0));
 			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(typeDefStatement.toTypeRef()));
 		}
 		else if(element instanceof CSharpLabeledStatementImpl)
@@ -319,7 +318,7 @@ public class CSharpLookupElementBuilder
 			}
 			builder = LookupElementBuilder.create(name);
 
-			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, 0));
 		}
 		else if(element instanceof DotNetGenericParameter)
 		{
@@ -331,7 +330,7 @@ public class CSharpLookupElementBuilder
 			}
 			builder = LookupElementBuilder.create(name);
 
-			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, 0));
 		}
 		else if(element instanceof DotNetVariable)
 		{
@@ -349,7 +348,7 @@ public class CSharpLookupElementBuilder
 
 			builder = decapitalizeLookup(builder, name);
 
-			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, 0));
 
 			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(variable.toTypeRef(true)));
 
@@ -406,7 +405,7 @@ public class CSharpLookupElementBuilder
 		else if(element instanceof CSharpPreprocessorDefine)
 		{
 			builder = LookupElementBuilder.create(element);
-			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, 0));
 		}
 		else if(element instanceof CSharpTypeDeclaration)
 		{
@@ -442,7 +441,7 @@ public class CSharpLookupElementBuilder
 
 		builder = builder.withPresentableText(name); // always show only name
 
-		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, 0));
 
 		builder = builder.withTypeText(element.getPresentableParentQName());
 
