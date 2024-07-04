@@ -92,11 +92,11 @@ public class CSharpMoveClassesUtil
 
 	@RequiredUIAccess
 	public static void doMove(
-    final Project project,
-		final PsiElement[] elements,
-		final PsiElement[] targetElement,
-		final MoveCallback moveCallback,
-		final Function<PsiElement[], PsiElement[]> adjustElements
+			final Project project,
+			final PsiElement[] elements,
+			final PsiElement[] targetElement,
+			final MoveCallback moveCallback,
+			final Function<PsiElement[], PsiElement[]> adjustElements
 	)
 	{
 		final PsiDirectory targetDirectory = MoveFilesOrDirectoriesUtil.resolveToDirectory(project, targetElement[0]);
