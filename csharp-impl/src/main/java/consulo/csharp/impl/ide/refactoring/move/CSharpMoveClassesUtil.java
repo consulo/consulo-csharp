@@ -58,10 +58,10 @@ public class CSharpMoveClassesUtil
 
 	@RequiredUIAccess
 	public static void doMove(
-    final Project project,
-		final PsiElement[] elements,
-		final PsiElement[] targetElement,
-		final MoveCallback moveCallback
+			final Project project,
+			final PsiElement[] elements,
+			final PsiElement[] targetElement,
+			final MoveCallback moveCallback
 	)
 	{
 		doMove(
@@ -160,14 +160,14 @@ public class CSharpMoveClassesUtil
 						callback.run();
 						return;
 					}
-          new CSharpClassesMoveProcessor(project,
-						els.toArray(new PsiElement[els.size()]),
-						targetDirectory1,
-						RefactoringSettings.getInstance().MOVE_SEARCH_FOR_REFERENCES_FOR_FILE,
-						false,
-						false,
-						moveCallback,
-						callback
+					new CSharpClassesMoveProcessor(project,
+							els.toArray(new PsiElement[els.size()]),
+							targetDirectory1,
+							RefactoringSettings.getInstance().MOVE_SEARCH_FOR_REFERENCES_FOR_FILE,
+							false,
+							false,
+							moveCallback,
+							callback
 					).run();
 				}
 				catch (IncorrectOperationException e)
