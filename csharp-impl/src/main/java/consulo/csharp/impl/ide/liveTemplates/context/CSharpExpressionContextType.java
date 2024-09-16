@@ -20,10 +20,11 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.dotnet.psi.DotNetExpression;
-import consulo.language.editor.template.context.TemplateContextType;
+import consulo.language.editor.template.context.BaseTemplateContextType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
 
 import javax.annotation.Nonnull;
 
@@ -32,11 +33,11 @@ import javax.annotation.Nonnull;
  * @since 11.06.14
  */
 @ExtensionImpl
-public class CSharpExpressionContextType extends TemplateContextType
+public class CSharpExpressionContextType extends BaseTemplateContextType
 {
 	public CSharpExpressionContextType()
 	{
-		super("CSHARP_EXPRESSION", "C# Expression");
+		super("CSHARP_EXPRESSION", LocalizeValue.localizeTODO("C# Expression"));
 	}
 
 	@Override

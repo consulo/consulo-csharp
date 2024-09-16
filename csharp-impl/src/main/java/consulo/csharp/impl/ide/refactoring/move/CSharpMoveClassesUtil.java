@@ -157,7 +157,7 @@ public class CSharpMoveClassesUtil
 					{
 						CommonRefactoringUtil.showErrorMessage(RefactoringBundle.message("error.title"), e.getMessage(), "refactoring.moveFile", project);
 					}
-				}, MoveHandler.REFACTORING_NAME, null);
+				}, MoveHandler.REFACTORING_NAME.get(), null);
 			}
 		};
 
