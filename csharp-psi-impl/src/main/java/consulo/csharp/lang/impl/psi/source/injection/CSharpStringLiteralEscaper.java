@@ -16,13 +16,13 @@
 
 package consulo.csharp.lang.impl.psi.source.injection;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 import consulo.document.util.ProperTextRange;
 import consulo.document.util.TextRange;
 import consulo.language.psi.LiteralTextEscaper;
 import consulo.language.psi.PsiLanguageInjectionHost;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

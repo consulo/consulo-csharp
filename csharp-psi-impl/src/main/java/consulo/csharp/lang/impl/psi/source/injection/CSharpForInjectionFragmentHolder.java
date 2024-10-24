@@ -20,7 +20,7 @@ import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.language.ast.IElementType;
 import consulo.language.impl.psi.LazyParseablePsiElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

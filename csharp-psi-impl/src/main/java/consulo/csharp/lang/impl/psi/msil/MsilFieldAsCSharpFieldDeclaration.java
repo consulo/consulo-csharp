@@ -24,8 +24,8 @@ import consulo.language.psi.PsiElement;
 import consulo.msil.impl.lang.psi.MsilTokens;
 import consulo.msil.lang.psi.MsilFieldEntry;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

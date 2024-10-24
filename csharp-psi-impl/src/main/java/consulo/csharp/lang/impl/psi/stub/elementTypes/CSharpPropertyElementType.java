@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.source.CSharpPropertyDeclarationImpl;

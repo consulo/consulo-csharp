@@ -18,13 +18,13 @@ package consulo.csharp.impl.ide.refactoring.changeSignature;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.language.Language;
 import consulo.language.editor.refactoring.changeSignature.ChangeInfo;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

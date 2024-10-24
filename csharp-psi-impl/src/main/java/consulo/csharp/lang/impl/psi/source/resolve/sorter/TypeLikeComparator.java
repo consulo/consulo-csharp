@@ -25,8 +25,8 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.Comparator;
 
 /**

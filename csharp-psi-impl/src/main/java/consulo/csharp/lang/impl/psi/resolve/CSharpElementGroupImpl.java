@@ -18,11 +18,10 @@ package consulo.csharp.lang.impl.psi.resolve;
 
 import java.util.Collection;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.impl.psi.LightElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.util.IncorrectOperationException;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.NonNls;
 import consulo.application.progress.ProgressManager;
 import consulo.project.Project;

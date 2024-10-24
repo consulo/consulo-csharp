@@ -27,7 +27,7 @@ import consulo.csharp.lang.impl.psi.stub.CSharpIndexMethodDeclStub;
 import consulo.language.psi.stub.StubOutputStream;
 import consulo.util.lang.BitUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**

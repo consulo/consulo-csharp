@@ -16,10 +16,9 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import javax.annotation.Nonnull;
-
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

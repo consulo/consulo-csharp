@@ -36,8 +36,8 @@ import consulo.usage.UsageView;
 import consulo.util.dataholder.Key;
 import consulo.virtualFileSystem.status.FileStatus;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

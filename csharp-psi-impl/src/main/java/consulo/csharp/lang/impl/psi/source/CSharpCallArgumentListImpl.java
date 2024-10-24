@@ -28,8 +28,9 @@ import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.psi.PsiReferenceService;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 

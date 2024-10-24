@@ -25,7 +25,7 @@ import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.StubElement;
 import consulo.language.psi.stub.StubInputStream;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**

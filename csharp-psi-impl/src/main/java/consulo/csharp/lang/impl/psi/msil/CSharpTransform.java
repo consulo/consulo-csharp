@@ -21,8 +21,8 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.ToNativeElementTransformers;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.function.Function;
 
 /**

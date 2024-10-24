@@ -25,9 +25,9 @@ import consulo.ui.ex.awt.VerticalFlowLayout;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.ui.annotation.RequiredUIAccess;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.Nls;
 
-import javax.annotation.Nullable;
 import javax.swing.*;
 
 /**

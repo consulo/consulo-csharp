@@ -18,8 +18,8 @@ package consulo.csharp.impl.ide.debugger.expressionEvaluator;
 
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import consulo.application.ReadAction;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.debugger.CSharpEvaluateContext;

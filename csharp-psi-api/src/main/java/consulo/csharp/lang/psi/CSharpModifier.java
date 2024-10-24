@@ -18,8 +18,8 @@ package consulo.csharp.lang.psi;
 
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.util.collection.ArrayFactory;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;

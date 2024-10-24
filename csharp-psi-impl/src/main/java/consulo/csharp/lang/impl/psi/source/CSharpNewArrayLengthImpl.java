@@ -22,7 +22,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**

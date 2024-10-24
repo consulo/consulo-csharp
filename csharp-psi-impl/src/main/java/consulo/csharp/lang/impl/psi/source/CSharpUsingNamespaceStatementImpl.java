@@ -32,8 +32,8 @@ import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.language.psi.util.QualifiedName;
 import consulo.util.lang.StringUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

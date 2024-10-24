@@ -31,10 +31,10 @@ import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.msil.impl.lang.psi.MsilTokens;
 import consulo.msil.lang.psi.MsilMethodEntry;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.NonNls;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

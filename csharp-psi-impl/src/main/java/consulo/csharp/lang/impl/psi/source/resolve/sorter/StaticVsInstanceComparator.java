@@ -31,8 +31,8 @@ import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.ResolveResult;
 import consulo.util.lang.Comparing;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.Comparator;
 
 /**

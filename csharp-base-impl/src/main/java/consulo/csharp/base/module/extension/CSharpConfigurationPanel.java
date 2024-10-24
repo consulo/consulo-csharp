@@ -39,8 +39,8 @@ import consulo.ui.ex.SimpleTextAttributes;
 import consulo.ui.ex.awt.*;
 import consulo.ui.ex.awt.event.DocumentAdapter;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import java.awt.event.ItemEvent;

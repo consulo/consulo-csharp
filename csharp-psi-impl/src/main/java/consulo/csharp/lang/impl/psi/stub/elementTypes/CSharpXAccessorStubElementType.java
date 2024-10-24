@@ -25,7 +25,7 @@ import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.StubOutputStream;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**

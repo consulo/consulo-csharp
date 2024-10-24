@@ -23,10 +23,10 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.dotnet.psi.DotNetExpression;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.NonNls;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

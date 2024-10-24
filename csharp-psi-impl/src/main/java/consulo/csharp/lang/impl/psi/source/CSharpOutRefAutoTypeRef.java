@@ -19,7 +19,7 @@ package consulo.csharp.lang.impl.psi.source;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

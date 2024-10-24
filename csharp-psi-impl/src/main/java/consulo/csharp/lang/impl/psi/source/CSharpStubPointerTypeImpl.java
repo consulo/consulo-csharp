@@ -29,8 +29,8 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.EmptyStub;
 import consulo.language.psi.stub.IStubElementType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

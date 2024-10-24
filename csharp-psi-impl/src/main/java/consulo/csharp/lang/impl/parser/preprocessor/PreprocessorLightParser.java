@@ -21,7 +21,7 @@ import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
 import consulo.language.ast.IElementType;
 import consulo.util.lang.StringUtil;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

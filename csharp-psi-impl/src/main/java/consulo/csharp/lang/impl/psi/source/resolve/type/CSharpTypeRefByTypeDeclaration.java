@@ -26,7 +26,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

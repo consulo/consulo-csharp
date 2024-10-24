@@ -24,9 +24,9 @@ import consulo.language.CodeDocumentationAwareCommenter;
 import consulo.language.Language;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiComment;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

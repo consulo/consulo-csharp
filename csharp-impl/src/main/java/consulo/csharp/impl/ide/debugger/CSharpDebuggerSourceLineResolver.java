@@ -25,8 +25,8 @@ import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
 import consulo.dotnet.debugger.DotNetDebuggerSourceLineResolver;
 import consulo.language.Language;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.LinkedHashSet;
 import java.util.Set;
 

@@ -26,8 +26,9 @@ import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetAttributeList;
 import consulo.dotnet.psi.DotNetModifier;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

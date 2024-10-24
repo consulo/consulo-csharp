@@ -33,8 +33,8 @@ import consulo.csharp.lang.doc.impl.psi.CSharpDocTagImpl;
 import consulo.language.editor.inspection.LocalInspectionTool;
 import consulo.language.psi.PsiElementVisitor;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.List;
 
 /**

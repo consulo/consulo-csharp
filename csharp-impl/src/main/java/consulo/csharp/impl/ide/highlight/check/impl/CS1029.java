@@ -26,8 +26,8 @@ import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiUtilCore;
 import consulo.localize.LocalizeValue;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

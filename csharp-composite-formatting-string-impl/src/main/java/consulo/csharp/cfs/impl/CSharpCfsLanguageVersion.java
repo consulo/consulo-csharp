@@ -28,8 +28,7 @@ import consulo.language.ast.IElementType;
 import consulo.language.ast.TokenSet;
 import consulo.language.lexer.Lexer;
 import consulo.language.lexer.MergingLexerAdapter;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

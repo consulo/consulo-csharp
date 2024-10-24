@@ -25,8 +25,8 @@ import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.language.editor.action.CodeInsightActionHandler;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 

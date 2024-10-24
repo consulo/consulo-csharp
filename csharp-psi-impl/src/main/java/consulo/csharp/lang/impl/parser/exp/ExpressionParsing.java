@@ -31,8 +31,8 @@ import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 public class ExpressionParsing extends SharedParsingHelpers
 {

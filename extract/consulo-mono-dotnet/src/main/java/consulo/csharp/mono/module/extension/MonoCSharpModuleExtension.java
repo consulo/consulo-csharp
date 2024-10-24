@@ -28,7 +28,7 @@ import consulo.module.content.layer.ModuleRootLayer;
 import consulo.mono.dotnet.sdk.MonoSdkType;
 import consulo.virtualFileSystem.VirtualFile;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

@@ -24,8 +24,8 @@ import consulo.language.editor.refactoring.rename.NameSuggestionProvider;
 import consulo.language.editor.refactoring.rename.SuggestedNameInfo;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayUtil;
+import jakarta.annotation.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;

@@ -16,8 +16,8 @@
 
 package consulo.csharp.impl.ide.actions.generate;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;

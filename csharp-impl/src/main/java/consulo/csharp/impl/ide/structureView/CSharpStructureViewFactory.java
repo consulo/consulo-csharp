@@ -26,9 +26,9 @@ import consulo.csharp.lang.impl.psi.source.CSharpFileImpl;
 import consulo.fileEditor.structureView.StructureViewBuilder;
 import consulo.fileEditor.structureView.TreeBasedStructureViewBuilder;
 import consulo.language.psi.PsiFile;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

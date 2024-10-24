@@ -26,8 +26,9 @@ import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.util.HashSet;
 import java.util.Set;
 

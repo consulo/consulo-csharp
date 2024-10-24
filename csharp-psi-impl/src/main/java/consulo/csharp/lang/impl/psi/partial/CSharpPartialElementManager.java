@@ -32,7 +32,7 @@ import consulo.util.collection.ContainerUtil;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Map;
 

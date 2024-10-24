@@ -21,8 +21,7 @@ import consulo.index.io.StringRef;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.psi.stub.StubBase;
 import consulo.language.psi.stub.StubElement;
-
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

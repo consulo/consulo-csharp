@@ -24,7 +24,7 @@ import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**

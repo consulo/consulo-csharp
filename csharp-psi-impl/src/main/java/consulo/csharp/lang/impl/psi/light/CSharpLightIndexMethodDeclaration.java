@@ -24,9 +24,9 @@ import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

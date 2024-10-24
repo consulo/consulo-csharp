@@ -16,9 +16,9 @@
 
 package consulo.csharp.impl.ide.refactoring;
 
-import javax.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import consulo.csharp.lang.psi.CSharpTokens;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

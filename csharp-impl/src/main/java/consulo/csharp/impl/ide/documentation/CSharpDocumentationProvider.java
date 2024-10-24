@@ -48,8 +48,8 @@ import consulo.virtualFileSystem.VirtualFile;
 import org.emonic.base.codehierarchy.CodeHierarchyHelper;
 import org.emonic.base.documentation.IDocumentation;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;

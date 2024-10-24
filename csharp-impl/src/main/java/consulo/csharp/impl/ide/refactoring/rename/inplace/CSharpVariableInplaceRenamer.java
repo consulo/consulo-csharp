@@ -16,13 +16,13 @@
 
 package consulo.csharp.impl.ide.refactoring.rename.inplace;
 
-import javax.annotation.Nonnull;
 import consulo.codeEditor.Editor;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpNamedElement;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.language.editor.refactoring.rename.inplace.VariableInplaceRenamer;
 import consulo.language.psi.PsiNamedElement;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

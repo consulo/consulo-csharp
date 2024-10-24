@@ -29,7 +29,7 @@ import consulo.language.psi.PsiParserFacade;
 import consulo.language.psi.PsiWhiteSpace;
 import consulo.language.psi.util.LanguageCachedValueUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.*;
 
 /**

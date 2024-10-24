@@ -29,9 +29,9 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.Contract;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -22,7 +22,7 @@ import consulo.dotnet.psi.impl.DotNetTypeRefCacheUtil;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.function.Function;
 
 /**

@@ -16,8 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.source.resolve.handlers;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.function.Processor;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -25,6 +23,8 @@ import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveOptions;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

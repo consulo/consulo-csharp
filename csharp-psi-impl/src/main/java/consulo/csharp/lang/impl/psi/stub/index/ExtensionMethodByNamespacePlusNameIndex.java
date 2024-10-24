@@ -22,7 +22,7 @@ import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.language.psi.stub.IntStubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

@@ -22,7 +22,7 @@ import consulo.csharp.lang.psi.CSharpLambdaParameter;
 import consulo.csharp.lang.psi.CSharpLambdaParameterList;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

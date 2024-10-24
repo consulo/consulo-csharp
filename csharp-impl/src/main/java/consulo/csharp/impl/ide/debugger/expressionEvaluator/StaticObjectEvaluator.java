@@ -16,7 +16,7 @@
 
 package consulo.csharp.impl.ide.debugger.expressionEvaluator;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import consulo.csharp.impl.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.impl.ide.debugger.CSharpStaticValueProxy;
 

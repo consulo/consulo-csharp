@@ -16,13 +16,12 @@
 
 package consulo.csharp.impl.ide.parameterInfo;
 
-import javax.annotation.Nonnull;
-
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.util.ArrayUtil2;
 import consulo.document.util.TextRange;
 import consulo.document.util.UnfairTextRange;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.light.builder;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpStaticTypeRef;
@@ -25,6 +24,7 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.project.Project;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

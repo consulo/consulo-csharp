@@ -16,14 +16,13 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import javax.annotation.Nonnull;
-
 import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.NonNls;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.util.IncorrectOperationException;

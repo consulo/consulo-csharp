@@ -22,7 +22,7 @@ import consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightElementBuilder;
 import consulo.project.Project;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

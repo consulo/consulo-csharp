@@ -20,8 +20,8 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 

@@ -30,8 +30,8 @@ import consulo.csharp.lang.impl.psi.source.CSharpDummyDeclarationImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetNamedElement;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

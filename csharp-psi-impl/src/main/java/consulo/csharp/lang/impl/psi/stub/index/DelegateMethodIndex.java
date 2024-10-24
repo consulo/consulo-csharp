@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.stub.index;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;

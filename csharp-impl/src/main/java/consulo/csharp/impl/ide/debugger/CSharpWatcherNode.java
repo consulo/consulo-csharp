@@ -26,8 +26,8 @@ import consulo.execution.debug.frame.XValueModifier;
 import consulo.ui.image.Image;
 import consulo.util.lang.ref.SimpleReference;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

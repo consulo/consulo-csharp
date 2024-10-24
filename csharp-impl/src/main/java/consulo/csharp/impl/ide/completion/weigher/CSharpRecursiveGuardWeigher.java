@@ -18,8 +18,8 @@ package consulo.csharp.impl.ide.completion.weigher;
 
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import consulo.language.editor.completion.lookup.LookupElementWeigher;
 import consulo.language.psi.PsiElement;

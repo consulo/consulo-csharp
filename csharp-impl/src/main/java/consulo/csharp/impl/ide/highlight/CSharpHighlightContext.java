@@ -25,9 +25,9 @@ import consulo.language.psi.PsiFile;
 import consulo.language.util.ModuleUtilCore;
 import consulo.module.Module;
 import consulo.util.dataholder.UserDataHolderBase;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

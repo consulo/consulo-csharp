@@ -19,7 +19,7 @@ package consulo.csharp.lang.impl.psi.source.resolve;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.application.util.function.Processor;
 import consulo.language.psi.PsiElement;

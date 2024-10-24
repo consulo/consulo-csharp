@@ -38,10 +38,10 @@ import consulo.fileEditor.FileEditor;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.dataholder.UserDataHolderBase;
+import jakarta.annotation.Nonnull;
 import kava.beans.PropertyChangeListener;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;

@@ -42,8 +42,8 @@ import consulo.language.editor.folding.FoldingDescriptor;
 import consulo.language.psi.*;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 /**

@@ -16,8 +16,7 @@
 
 package consulo.csharp.impl.ide.highlight.util;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.quickFix.RenameQuickFix;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
@@ -28,6 +27,7 @@ import consulo.language.editor.rawHighlight.HighlightInfoType;
 import consulo.language.editor.intention.QuickFixAction;
 import consulo.language.psi.PsiElement;
 import consulo.util.lang.Comparing;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

@@ -21,8 +21,7 @@ import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetMemberOwner;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.navigation.NavigationItem;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

@@ -21,8 +21,7 @@ import consulo.csharp.lang.psi.CSharpFile;
 import consulo.language.editor.ProblemHighlightFilter;
 import consulo.language.psi.PsiCodeFragment;
 import consulo.language.psi.PsiFile;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

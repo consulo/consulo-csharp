@@ -15,7 +15,7 @@ import consulo.language.psi.PsiElement;
 import consulo.csharp.lang.impl.psi.source.CSharpAnonymousMethodExpression;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 

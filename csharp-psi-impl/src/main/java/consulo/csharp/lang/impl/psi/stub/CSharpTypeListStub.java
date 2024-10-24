@@ -16,12 +16,11 @@
 
 package consulo.csharp.lang.impl.psi.stub;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.psi.stub.StubElement;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.psi.stub.StubBase;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

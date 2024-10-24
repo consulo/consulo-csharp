@@ -27,8 +27,8 @@ import consulo.language.editor.Pass;
 import consulo.language.editor.gutter.LineMarkerInfo;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**

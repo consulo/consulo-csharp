@@ -28,8 +28,8 @@ import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.UserDataHolderBase;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;

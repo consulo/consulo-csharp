@@ -21,9 +21,9 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 /**

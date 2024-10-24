@@ -41,8 +41,8 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.ProcessingContext;
 import consulo.ui.ex.action.IdeActions;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import static consulo.language.pattern.StandardPatterns.psiElement;
 

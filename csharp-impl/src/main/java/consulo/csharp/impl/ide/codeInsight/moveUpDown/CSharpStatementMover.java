@@ -38,7 +38,7 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.logging.Logger;
 import consulo.util.lang.Pair;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * initial version from java plugin com.intellij.openapi.editor.actions.moveUpDown.StatementMover

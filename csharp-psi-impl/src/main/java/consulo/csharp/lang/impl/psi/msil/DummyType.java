@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.msil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.impl.psi.msil.typeParsing.SomeType;
 import consulo.csharp.lang.impl.psi.msil.typeParsing.SomeTypeParser;

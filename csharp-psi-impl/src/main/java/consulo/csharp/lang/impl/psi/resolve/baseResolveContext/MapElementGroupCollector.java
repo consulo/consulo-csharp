@@ -31,9 +31,9 @@ import consulo.language.psi.PsiElement;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.MultiMap;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;

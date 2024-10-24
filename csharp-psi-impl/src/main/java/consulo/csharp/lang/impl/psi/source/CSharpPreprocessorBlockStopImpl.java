@@ -22,8 +22,8 @@ import consulo.language.ast.TokenSet;
 import consulo.csharp.lang.impl.psi.CSharpMacroElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

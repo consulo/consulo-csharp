@@ -26,8 +26,8 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.wrapper.CSharpTupleTypeD
 import consulo.dotnet.psi.DotNetType;
 import consulo.language.psi.resolve.ResolveState;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

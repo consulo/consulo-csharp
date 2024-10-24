@@ -29,8 +29,8 @@ import consulo.language.editor.ui.PsiElementListCellRenderer;
 import consulo.language.editor.ui.navigation.GotoDeclarationHandlerEx;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

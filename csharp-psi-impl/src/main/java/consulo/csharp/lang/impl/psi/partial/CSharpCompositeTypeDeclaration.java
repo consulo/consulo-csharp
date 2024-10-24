@@ -46,10 +46,11 @@ import consulo.util.collection.MultiMap;
 import consulo.util.collection.SmartList;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.ObjectUtil;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.NonNls;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+
 import java.util.*;
 
 /**

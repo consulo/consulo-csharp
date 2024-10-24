@@ -23,7 +23,7 @@ import consulo.ide.impl.psi.util.ProximityLocation;
 import consulo.ide.impl.psi.util.proximity.ProximityWeigher;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

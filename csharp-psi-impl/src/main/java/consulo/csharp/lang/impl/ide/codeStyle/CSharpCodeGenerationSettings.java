@@ -21,7 +21,7 @@ import consulo.language.codeStyle.CodeStyleSettingsManager;
 import consulo.language.codeStyle.CustomCodeStyleSettings;
 import consulo.project.Project;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

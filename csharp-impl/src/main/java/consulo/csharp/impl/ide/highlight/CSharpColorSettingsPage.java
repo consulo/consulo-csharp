@@ -27,8 +27,9 @@ import consulo.language.editor.highlight.SyntaxHighlighter;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.lazy.LazyValue;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

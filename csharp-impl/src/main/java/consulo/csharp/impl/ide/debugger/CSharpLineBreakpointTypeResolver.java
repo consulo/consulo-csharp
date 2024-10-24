@@ -20,8 +20,7 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.dotnet.debugger.impl.breakpoint.DotNetLineBreakpointTypeResolver;
 import consulo.virtualFileSystem.fileType.FileType;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

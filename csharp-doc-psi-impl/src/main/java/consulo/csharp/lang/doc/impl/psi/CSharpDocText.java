@@ -20,7 +20,7 @@ import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
 import consulo.csharp.lang.impl.psi.source.AdvancedCompositePsiElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

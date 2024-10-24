@@ -37,7 +37,7 @@ import consulo.language.psi.PsiFile;
 import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

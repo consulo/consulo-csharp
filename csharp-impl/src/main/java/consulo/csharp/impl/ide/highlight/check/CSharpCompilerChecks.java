@@ -23,7 +23,7 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.editor.rawHighlight.HighlightInfoType;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
 import java.util.List;

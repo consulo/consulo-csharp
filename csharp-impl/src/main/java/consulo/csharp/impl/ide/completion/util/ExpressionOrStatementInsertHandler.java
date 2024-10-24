@@ -33,7 +33,7 @@ import consulo.language.psi.PsiWhiteSpace;
 import consulo.ui.ex.action.IdeActions;
 import consulo.util.lang.StringUtil;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author peter

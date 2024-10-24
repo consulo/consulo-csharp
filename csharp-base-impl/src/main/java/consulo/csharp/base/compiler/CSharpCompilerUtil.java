@@ -27,7 +27,7 @@ import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.module.extension.ModuleInheritableNamedPointer;
 import consulo.virtualFileSystem.VirtualFile;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**

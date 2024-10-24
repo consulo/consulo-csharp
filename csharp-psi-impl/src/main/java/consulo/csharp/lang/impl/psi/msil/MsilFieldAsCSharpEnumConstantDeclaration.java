@@ -16,14 +16,14 @@
 
 package consulo.csharp.lang.impl.psi.msil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.language.psi.PsiElement;
 import consulo.msil.lang.psi.MsilFieldEntry;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

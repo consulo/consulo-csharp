@@ -16,13 +16,13 @@
 
 package consulo.csharp.lang.impl.psi.msil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.impl.psi.LightElement;
 import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpStaticTypeRef;
 import consulo.dotnet.psi.DotNetExpression;

@@ -19,8 +19,7 @@ package consulo.csharp.lang.impl.psi.source;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
 import consulo.dotnet.psi.DotNetExpression;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

@@ -19,9 +19,9 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetVariable;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

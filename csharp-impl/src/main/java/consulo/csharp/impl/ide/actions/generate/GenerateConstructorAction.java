@@ -16,7 +16,7 @@
 
 package consulo.csharp.impl.ide.actions.generate;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.project.Project;
 import consulo.language.psi.PsiFile;

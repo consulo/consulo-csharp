@@ -50,8 +50,8 @@ import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.Pair;
 import consulo.virtualFileSystem.fileType.FileType;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.function.Predicate;
 
 /**

@@ -30,8 +30,8 @@ import consulo.language.parser.WhitespacesBinders;
 import consulo.util.lang.BitUtil;
 import consulo.util.lang.Pair;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

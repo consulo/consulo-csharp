@@ -19,9 +19,9 @@ package consulo.csharp.lang.psi;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.util.collection.ArrayFactory;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

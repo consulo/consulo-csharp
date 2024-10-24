@@ -24,7 +24,7 @@ import consulo.csharp.lang.impl.psi.resolve.CSharpBaseResolveContext;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**

@@ -24,7 +24,7 @@ import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.impl.psi.CSharpStoppableRecursiveElementVisitor;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 

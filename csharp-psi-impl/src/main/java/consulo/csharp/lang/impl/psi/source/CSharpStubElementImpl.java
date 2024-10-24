@@ -32,8 +32,8 @@ import consulo.language.psi.stub.StubElement;
 import consulo.navigation.ItemPresentation;
 import consulo.navigation.ItemPresentationProvider;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

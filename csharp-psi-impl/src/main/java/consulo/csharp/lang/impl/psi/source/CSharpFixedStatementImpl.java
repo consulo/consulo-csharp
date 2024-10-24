@@ -27,8 +27,8 @@ import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -61,7 +61,7 @@ public class CSharpFixedStatementImpl extends CSharpElementImpl implements DotNe
 
 	@Override
 	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent,
-			@Nonnull PsiElement place)
+									   @Nonnull PsiElement place)
 	{
 		if(lastParent == null || !PsiTreeUtil.isAncestor(this, lastParent, false))
 		{

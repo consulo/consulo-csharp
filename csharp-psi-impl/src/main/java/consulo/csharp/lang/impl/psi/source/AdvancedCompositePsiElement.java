@@ -24,8 +24,9 @@ import consulo.language.impl.psi.CompositePsiElement;
 import consulo.language.psi.PsiElement;
 import consulo.logging.Logger;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;

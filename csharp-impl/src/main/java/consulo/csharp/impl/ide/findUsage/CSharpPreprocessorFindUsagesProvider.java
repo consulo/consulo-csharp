@@ -26,7 +26,7 @@ import consulo.language.findUsage.FindUsagesProvider;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiUtilCore;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

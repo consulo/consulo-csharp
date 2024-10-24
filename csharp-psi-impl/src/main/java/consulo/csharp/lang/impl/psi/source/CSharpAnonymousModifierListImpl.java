@@ -25,9 +25,9 @@ import consulo.language.ast.ASTNode;
 import consulo.language.impl.psi.LightElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiParserFacade;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

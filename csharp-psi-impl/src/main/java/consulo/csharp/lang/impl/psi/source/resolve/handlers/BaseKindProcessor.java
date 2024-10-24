@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.impl.psi.source.resolve.handlers;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.function.Processor;
 import consulo.csharp.lang.impl.psi.source.CSharpTypeDeclarationImplUtil;

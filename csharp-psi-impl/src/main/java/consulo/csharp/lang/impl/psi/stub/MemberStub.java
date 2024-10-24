@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.stub;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.psi.stub.StubElement;
 import consulo.dotnet.psi.DotNetNamedElement;

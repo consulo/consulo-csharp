@@ -34,9 +34,9 @@ import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.language.Language;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 

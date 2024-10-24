@@ -37,7 +37,7 @@ import consulo.util.lang.StringUtil;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;

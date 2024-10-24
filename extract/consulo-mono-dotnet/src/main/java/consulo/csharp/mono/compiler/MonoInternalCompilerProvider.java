@@ -27,9 +27,9 @@ import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.mono.dotnet.sdk.MonoSdkType;
 import consulo.ui.image.Image;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

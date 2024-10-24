@@ -22,7 +22,7 @@ import consulo.language.psi.stub.StubIndexExtension;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.language.psi.stub.StubIndexKey;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

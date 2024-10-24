@@ -21,7 +21,7 @@ import consulo.csharp.lang.CSharpLanguage;
 import consulo.language.Language;
 import consulo.language.editor.completion.SkipAutopopupInStrings;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

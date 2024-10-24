@@ -23,7 +23,7 @@ import consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.util.dataholder.UserDataHolder;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 

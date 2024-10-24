@@ -24,9 +24,8 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.Contract;
-
-import javax.annotation.Nullable;
 
 /**
  * @author VISTALL

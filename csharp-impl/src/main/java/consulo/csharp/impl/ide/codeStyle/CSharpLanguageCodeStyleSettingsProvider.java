@@ -26,7 +26,7 @@ import consulo.language.codeStyle.setting.LanguageCodeStyleSettingsProvider;
 import consulo.language.codeStyle.ui.setting.SmartIndentOptionsEditor;
 import consulo.util.io.FileUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**

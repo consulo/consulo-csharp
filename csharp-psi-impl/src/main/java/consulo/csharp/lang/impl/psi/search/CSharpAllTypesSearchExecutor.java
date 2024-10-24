@@ -32,8 +32,8 @@ import consulo.dotnet.psi.search.searches.AllTypesSearchExecutor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.scope.LocalSearchScope;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 /**

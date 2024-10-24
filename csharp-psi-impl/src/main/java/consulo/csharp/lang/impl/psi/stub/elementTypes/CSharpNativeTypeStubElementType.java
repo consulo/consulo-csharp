@@ -18,7 +18,7 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.csharp.lang.psi.CSharpNativeType;
 import consulo.csharp.lang.impl.psi.CSharpTokenSets;

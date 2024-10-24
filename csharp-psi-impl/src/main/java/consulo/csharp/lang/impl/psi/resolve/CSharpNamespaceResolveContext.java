@@ -49,9 +49,9 @@ import consulo.util.collection.SmartList;
 import consulo.util.dataholder.UserDataHolder;
 import consulo.util.lang.ObjectUtil;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

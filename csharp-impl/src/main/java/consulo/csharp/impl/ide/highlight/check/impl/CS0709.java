@@ -16,9 +16,6 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
@@ -30,6 +27,8 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.language.psi.PsiUtilCore;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

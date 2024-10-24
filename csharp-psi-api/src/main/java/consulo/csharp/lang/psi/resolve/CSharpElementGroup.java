@@ -20,8 +20,8 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.function.Processor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNamedElement;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**

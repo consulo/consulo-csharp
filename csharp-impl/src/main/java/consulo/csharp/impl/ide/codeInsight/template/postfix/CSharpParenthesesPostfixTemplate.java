@@ -16,7 +16,7 @@
 
 package consulo.csharp.impl.ide.codeInsight.template.postfix;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;

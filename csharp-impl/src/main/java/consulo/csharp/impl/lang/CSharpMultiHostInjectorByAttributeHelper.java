@@ -26,8 +26,8 @@ import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.MultiHostInjectorByAttributeHelper;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

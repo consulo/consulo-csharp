@@ -15,7 +15,7 @@
  */
 package consulo.csharp.impl.ide.completion.util;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 import consulo.language.editor.completion.lookup.InsertionContext;
 import consulo.language.editor.completion.lookup.LookupElement;

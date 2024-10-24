@@ -27,8 +27,8 @@ import consulo.language.pattern.StandardPatterns;
 import consulo.language.psi.*;
 import consulo.language.util.ProcessingContext;
 import consulo.util.collection.ContainerUtil;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 

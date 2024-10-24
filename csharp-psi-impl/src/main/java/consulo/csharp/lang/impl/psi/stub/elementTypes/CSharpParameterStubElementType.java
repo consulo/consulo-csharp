@@ -21,7 +21,7 @@ import consulo.csharp.lang.impl.psi.stub.CSharpVariableDeclStub;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.language.ast.ASTNode;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

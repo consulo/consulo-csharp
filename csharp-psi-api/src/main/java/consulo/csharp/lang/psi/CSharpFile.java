@@ -19,9 +19,9 @@ package consulo.csharp.lang.psi;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetFile;
 import consulo.dotnet.psi.DotNetQualifiedElement;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 

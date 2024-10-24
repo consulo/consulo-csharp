@@ -16,8 +16,8 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import consulo.language.editor.inspection.LocalQuickFixAndIntentionActionOnPsiElement;
 import consulo.codeEditor.Editor;
 import consulo.language.psi.PsiElement;

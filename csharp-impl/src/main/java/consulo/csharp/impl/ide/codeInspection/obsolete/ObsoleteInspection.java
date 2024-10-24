@@ -41,8 +41,9 @@ import consulo.msil.impl.lang.stubbing.MsilCustomAttributeStubber;
 import consulo.msil.impl.lang.stubbing.values.MsiCustomAttributeValue;
 import consulo.msil.lang.psi.MsilCustomAttribute;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.util.List;
 
 /**

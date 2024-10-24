@@ -27,8 +27,8 @@ import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.language.psi.PsiElement;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.function.PairConsumer;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.Locale;
 
 /**

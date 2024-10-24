@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi.resolve;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Collection;
 
 /**

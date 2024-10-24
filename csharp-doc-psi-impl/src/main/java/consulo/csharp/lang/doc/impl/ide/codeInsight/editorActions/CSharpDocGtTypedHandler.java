@@ -42,8 +42,8 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.fileType.FileType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.List;
 
 @ExtensionImpl(id = "csharpdoc")

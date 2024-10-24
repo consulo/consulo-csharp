@@ -16,11 +16,10 @@
 
 package consulo.csharp.impl.ide.codeStyle;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.codeStyle.CodeStyleSettings;
 import consulo.language.codeStyle.ui.setting.CodeStyleAbstractConfigurable;
 import consulo.language.codeStyle.ui.setting.CodeStyleAbstractPanel;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

@@ -58,7 +58,7 @@ import consulo.util.lang.StringUtil;
 import consulo.util.lang.function.Condition;
 import consulo.util.lang.function.Conditions;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.*;
 
 /**

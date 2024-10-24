@@ -19,7 +19,7 @@ package consulo.csharp.impl.ide.liveTemplates;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.editor.template.DefaultLiveTemplatesProvider;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

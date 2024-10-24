@@ -24,7 +24,7 @@ import consulo.language.psi.stub.AbstractStubIndex;
 import consulo.language.psi.stub.StubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;

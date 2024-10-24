@@ -30,7 +30,7 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.ref.Ref;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

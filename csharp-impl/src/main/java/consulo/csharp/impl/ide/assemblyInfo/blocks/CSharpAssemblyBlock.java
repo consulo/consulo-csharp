@@ -18,11 +18,11 @@ package consulo.csharp.impl.ide.assemblyInfo.blocks;
 
 import javax.swing.JComponent;
 
-import javax.annotation.Nullable;
 import consulo.csharp.lang.impl.psi.CSharpAttributeUtil;
 import consulo.csharp.lang.impl.psi.source.CSharpDummyDeclarationImpl;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.psi.PsiFile;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

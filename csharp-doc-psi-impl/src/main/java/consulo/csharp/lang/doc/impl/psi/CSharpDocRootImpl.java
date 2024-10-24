@@ -18,8 +18,8 @@ package consulo.csharp.lang.doc.impl.psi;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import consulo.language.ast.IElementType;

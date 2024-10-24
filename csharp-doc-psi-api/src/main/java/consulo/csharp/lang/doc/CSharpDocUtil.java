@@ -19,8 +19,7 @@ package consulo.csharp.lang.doc;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

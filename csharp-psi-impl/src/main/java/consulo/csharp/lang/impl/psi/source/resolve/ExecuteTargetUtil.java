@@ -20,8 +20,8 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.KeyWithDefaultValue;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.EnumSet;
 
 /**

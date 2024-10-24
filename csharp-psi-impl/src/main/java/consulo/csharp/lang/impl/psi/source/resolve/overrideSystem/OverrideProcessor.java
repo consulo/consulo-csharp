@@ -19,7 +19,7 @@ package consulo.csharp.lang.impl.psi.source.resolve.overrideSystem;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.util.collection.SmartList;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**

@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.fragment;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.CSharpLanguage;
@@ -39,6 +38,7 @@ import consulo.language.impl.file.SingleRootFileViewProvider;
 import consulo.language.ast.IFileElementType;
 import consulo.language.Language;
 import consulo.language.ast.ASTNode;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

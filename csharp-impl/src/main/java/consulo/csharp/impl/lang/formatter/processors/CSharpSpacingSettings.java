@@ -34,8 +34,8 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.impl.psi.source.CSharpOperatorReferenceImpl;
 import consulo.language.codeStyle.SpacingBuilder;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 

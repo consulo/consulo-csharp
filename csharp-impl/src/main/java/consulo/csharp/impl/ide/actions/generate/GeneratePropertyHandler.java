@@ -28,7 +28,6 @@ import consulo.component.util.Iconable;
 import consulo.csharp.impl.ide.codeInsight.actions.AddPrivateModifierFix;
 import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
-import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
@@ -47,8 +46,9 @@ import consulo.ui.ex.awt.ChooseElementsDialog;
 import consulo.ui.image.Image;
 import consulo.util.lang.StringUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;

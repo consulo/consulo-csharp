@@ -27,8 +27,8 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.editor.intention.QuickFixActionRegistrar;
 import consulo.language.editor.intention.UnresolvedReferenceQuickFixProvider;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**

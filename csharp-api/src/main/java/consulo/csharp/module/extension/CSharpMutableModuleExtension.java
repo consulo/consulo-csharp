@@ -21,9 +21,8 @@ import consulo.csharp.compiler.CSharpPlatform;
 import consulo.module.content.layer.ModuleRootLayer;
 import consulo.module.extension.MutableModuleExtension;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

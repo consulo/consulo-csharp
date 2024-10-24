@@ -29,13 +29,14 @@ import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
+import jakarta.annotation.Nullable;
 import org.joou.UByte;
 import org.joou.UInteger;
 import org.joou.ULong;
 import org.joou.UShort;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+
 import java.math.BigInteger;
 
 /**

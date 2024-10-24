@@ -20,8 +20,7 @@ import consulo.csharp.lang.impl.lexer.CSharpLexer;
 import consulo.csharp.lang.impl.lexer._CSharpLexer;
 import consulo.language.lexer.RestartableLexer;
 import consulo.language.lexer.TokenIterator;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

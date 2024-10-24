@@ -21,7 +21,7 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpFieldOrPropertySetBlock;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

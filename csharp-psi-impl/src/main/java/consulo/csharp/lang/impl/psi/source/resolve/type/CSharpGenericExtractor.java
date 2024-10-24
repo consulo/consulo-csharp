@@ -23,8 +23,8 @@ import consulo.dotnet.util.ArrayUtil2;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ContainerUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;

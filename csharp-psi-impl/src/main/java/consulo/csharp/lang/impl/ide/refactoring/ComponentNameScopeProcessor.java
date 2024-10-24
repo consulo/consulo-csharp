@@ -21,8 +21,9 @@ import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.resolve.BaseScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.util.Set;
 
 public class ComponentNameScopeProcessor extends BaseScopeProcessor

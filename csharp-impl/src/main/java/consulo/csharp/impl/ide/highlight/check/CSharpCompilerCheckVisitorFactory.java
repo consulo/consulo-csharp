@@ -23,8 +23,7 @@ import consulo.language.editor.rawHighlight.HighlightVisitorFactory;
 import consulo.language.psi.PsiFile;
 import consulo.msil.impl.representation.fileSystem.MsilFileRepresentationVirtualFile;
 import consulo.virtualFileSystem.VirtualFile;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

@@ -21,8 +21,7 @@ import consulo.language.psi.stub.StubIndexExtension;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

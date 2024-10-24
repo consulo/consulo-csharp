@@ -25,8 +25,8 @@ import consulo.csharp.lang.psi.CSharpPreprocessorDefine;
 import consulo.csharp.lang.psi.CSharpPreprocessorVariable;
 import consulo.csharp.lang.impl.psi.light.CSharpPreprocessorLightVariable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

@@ -26,10 +26,10 @@ import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.msil.lang.psi.MsilMethodEntry;
 import consulo.language.util.IncorrectOperationException;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.NonNls;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

@@ -16,7 +16,7 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;

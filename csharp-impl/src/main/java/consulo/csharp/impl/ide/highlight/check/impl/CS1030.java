@@ -25,9 +25,9 @@ import consulo.csharp.lang.impl.psi.source.CSharpPreprocessorWarningImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.psi.PsiUtilCore;
 import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

@@ -24,7 +24,7 @@ import consulo.module.Module;
 import consulo.module.content.layer.ModuleRootLayer;
 import consulo.module.content.layer.extension.ModuleInheritableNamedPointerImpl;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 ;
 

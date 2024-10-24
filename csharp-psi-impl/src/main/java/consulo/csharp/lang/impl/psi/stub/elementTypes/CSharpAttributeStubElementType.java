@@ -18,8 +18,6 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
-
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.impl.psi.source.CSharpStubAttributeImpl;
@@ -30,6 +28,7 @@ import consulo.index.io.StringRef;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.StubInputStream;
 import consulo.language.psi.stub.StubOutputStream;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

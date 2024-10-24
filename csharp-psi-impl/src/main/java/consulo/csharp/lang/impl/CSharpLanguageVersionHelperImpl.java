@@ -22,7 +22,7 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.version.LanguageVersion;
 import jakarta.inject.Singleton;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

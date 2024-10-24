@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.impl.parser.macro;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import consulo.csharp.lang.impl.parser.SharedParsingHelpers;
 import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;

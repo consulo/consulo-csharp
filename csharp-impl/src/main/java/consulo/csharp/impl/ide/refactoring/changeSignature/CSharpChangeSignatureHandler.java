@@ -16,8 +16,6 @@
 
 package consulo.csharp.impl.ide.refactoring.changeSignature;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpIdentifier;
@@ -32,6 +30,8 @@ import consulo.project.Project;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.editor.refactoring.changeSignature.ChangeSignatureHandler;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

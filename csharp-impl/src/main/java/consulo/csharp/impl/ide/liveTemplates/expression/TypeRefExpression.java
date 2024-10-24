@@ -26,7 +26,7 @@ import consulo.language.editor.template.Result;
 import consulo.language.editor.template.TextResult;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 

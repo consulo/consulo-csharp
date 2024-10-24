@@ -27,7 +27,7 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 

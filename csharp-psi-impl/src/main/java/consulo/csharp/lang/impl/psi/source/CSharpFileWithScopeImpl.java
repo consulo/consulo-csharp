@@ -20,7 +20,7 @@ import consulo.language.file.FileViewProvider;
 import consulo.language.psi.PsiCodeFragment;
 import consulo.language.psi.scope.GlobalSearchScope;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

@@ -16,13 +16,12 @@
 
 package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
-import javax.annotation.Nonnull;
-
 import consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import consulo.csharp.lang.impl.psi.source.CSharpGenericConstraintTypeValueImpl;
 import consulo.language.psi.PsiElement;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.EmptyStub;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

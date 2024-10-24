@@ -23,7 +23,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.psi.resolve.SimpleTypeResolveResult;
 import consulo.language.psi.scope.GlobalSearchScope;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

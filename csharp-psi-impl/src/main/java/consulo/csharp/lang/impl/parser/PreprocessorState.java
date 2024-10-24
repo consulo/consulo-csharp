@@ -16,8 +16,8 @@
 
 package consulo.csharp.lang.impl.parser;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;

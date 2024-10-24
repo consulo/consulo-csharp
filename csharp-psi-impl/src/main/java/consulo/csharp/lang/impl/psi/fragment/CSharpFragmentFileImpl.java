@@ -37,8 +37,8 @@ import consulo.util.collection.SmartList;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.fileType.FileType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;

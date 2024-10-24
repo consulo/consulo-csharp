@@ -44,9 +44,9 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.fileType.FileType;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 

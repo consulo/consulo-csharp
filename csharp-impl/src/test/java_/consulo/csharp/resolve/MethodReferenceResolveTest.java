@@ -16,13 +16,12 @@
 
 package consulo.csharp.resolve;
 
-import javax.annotation.Nonnull;
-
 import consulo.csharp.CSharpMockModuleDescriptor;
 import com.intellij.testFramework.TestModuleDescriptor;
 import consulo.ide.impl.idea.util.Function;
 import consulo.language.psi.ResolveResult;
 import consulo.testFramework.ResolvingTestCase;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

@@ -22,8 +22,7 @@ import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.impl.DotNetPsiCountUtil;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

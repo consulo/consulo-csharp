@@ -18,7 +18,7 @@ package consulo.csharp.lang.impl.parser;
 
 import consulo.language.ast.IElementType;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;

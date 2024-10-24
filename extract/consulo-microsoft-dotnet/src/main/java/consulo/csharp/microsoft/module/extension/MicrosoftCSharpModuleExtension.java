@@ -24,8 +24,7 @@ import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.module.content.layer.ModuleRootLayer;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

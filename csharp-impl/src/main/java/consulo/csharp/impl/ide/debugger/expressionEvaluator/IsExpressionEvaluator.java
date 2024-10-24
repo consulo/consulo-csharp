@@ -16,8 +16,6 @@
 
 package consulo.csharp.impl.ide.debugger.expressionEvaluator;
 
-import javax.annotation.Nonnull;
-
 import consulo.application.ReadAction;
 import consulo.csharp.impl.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.impl.psi.source.CSharpIsExpressionImpl;
@@ -26,6 +24,7 @@ import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.DotNetVirtualMachineProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

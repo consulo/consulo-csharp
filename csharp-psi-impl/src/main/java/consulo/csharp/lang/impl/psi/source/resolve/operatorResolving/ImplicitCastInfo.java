@@ -19,7 +19,7 @@ package consulo.csharp.lang.impl.psi.source.resolve.operatorResolving;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.util.dataholder.Key;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

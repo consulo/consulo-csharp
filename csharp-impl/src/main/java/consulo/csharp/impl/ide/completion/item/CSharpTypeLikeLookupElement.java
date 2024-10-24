@@ -34,7 +34,7 @@ import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.editor.completion.lookup.InsertionContext;
 import consulo.language.editor.completion.lookup.ParenthesesInsertHandler;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

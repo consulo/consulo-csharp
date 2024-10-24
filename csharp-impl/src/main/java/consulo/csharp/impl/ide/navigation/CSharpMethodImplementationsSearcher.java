@@ -26,7 +26,7 @@ import consulo.language.psi.search.DefinitionsScopedSearch;
 import consulo.language.psi.search.DefinitionsScopedSearchExecutor;
 import consulo.util.collection.ContainerUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Collection;
 
 /**

@@ -16,14 +16,13 @@
 
 package consulo.csharp.lang.impl.psi.light.builder;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

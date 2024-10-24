@@ -37,8 +37,8 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.util.List;
 

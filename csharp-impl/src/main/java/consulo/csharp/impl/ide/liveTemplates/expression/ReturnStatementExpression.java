@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.liveTemplates.expression;
 
-import javax.annotation.Nullable;
 import consulo.csharp.impl.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.language.editor.completion.lookup.LookupElement;
@@ -30,6 +29,7 @@ import consulo.language.editor.template.Result;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.project.Project;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

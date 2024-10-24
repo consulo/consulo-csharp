@@ -27,7 +27,7 @@ import consulo.language.parser.PsiParser;
 import consulo.language.version.LanguageVersion;
 import consulo.language.version.LanguageVersionWithParsing;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

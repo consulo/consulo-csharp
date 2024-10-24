@@ -18,10 +18,9 @@ package consulo.csharp.parsing;
 
 import java.lang.reflect.Method;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.version.LanguageVersion;
 import consulo.virtualFileSystem.fileType.FileType;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.NonNls;
 import consulo.csharp.lang.CSharpLanguageVersionHelper;
 import consulo.testFramework.ParsingTestCase;

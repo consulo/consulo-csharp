@@ -32,8 +32,8 @@ import consulo.language.psi.PsiUtilCore;
 import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.collection.Lists;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -28,8 +28,8 @@ import consulo.dotnet.psi.resolve.DotNetPsiSearcher;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

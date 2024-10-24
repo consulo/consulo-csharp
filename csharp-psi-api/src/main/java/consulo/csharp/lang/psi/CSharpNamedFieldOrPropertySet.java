@@ -18,7 +18,7 @@ package consulo.csharp.lang.psi;
 
 import consulo.language.psi.PsiNameIdentifierOwner;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

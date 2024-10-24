@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.source.resolve.extensionResolver;
 
-import javax.annotation.Nullable;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.impl.psi.light.CSharpLightExpression;
@@ -25,6 +24,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.impl.psi.LightElement;
 import consulo.language.psi.PsiManager;
 import consulo.project.Project;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

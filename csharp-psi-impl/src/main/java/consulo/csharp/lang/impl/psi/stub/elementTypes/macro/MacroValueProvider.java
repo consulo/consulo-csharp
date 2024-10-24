@@ -16,9 +16,9 @@
 
 package consulo.csharp.lang.impl.psi.stub.elementTypes.macro;
 
-import java.util.Set;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
+import java.util.Set;
 
 /**
  * @author VISTALL

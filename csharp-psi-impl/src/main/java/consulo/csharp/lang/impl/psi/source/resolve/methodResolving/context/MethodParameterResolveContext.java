@@ -29,9 +29,9 @@ import consulo.project.Project;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.Trinity;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

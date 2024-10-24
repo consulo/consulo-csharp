@@ -16,7 +16,7 @@
 
 package consulo.csharp.impl.ide.refactoring.rename.inplace;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.codeEditor.Editor;
 import consulo.language.psi.PsiReference;

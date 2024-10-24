@@ -25,8 +25,8 @@ import consulo.csharp.lang.impl.psi.source.CSharpNameOfExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

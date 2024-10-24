@@ -22,7 +22,7 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

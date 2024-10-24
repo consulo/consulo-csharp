@@ -25,7 +25,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.util.lang.BitUtil;
 import consulo.util.lang.StringUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.function.Function;
 
 /**

@@ -40,8 +40,8 @@ import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.*;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

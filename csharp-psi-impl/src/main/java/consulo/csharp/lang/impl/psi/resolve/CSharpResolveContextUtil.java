@@ -35,8 +35,8 @@ import consulo.project.DumbService;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.UserDataHolderEx;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.Set;
 import java.util.function.Function;
 

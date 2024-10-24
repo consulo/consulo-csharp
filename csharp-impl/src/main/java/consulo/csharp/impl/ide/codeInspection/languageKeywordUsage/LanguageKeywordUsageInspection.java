@@ -41,7 +41,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiUtilCore;
 import consulo.project.Project;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Map;
 
 /**

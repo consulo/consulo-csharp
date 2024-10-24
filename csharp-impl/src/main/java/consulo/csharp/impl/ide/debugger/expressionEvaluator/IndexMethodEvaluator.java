@@ -19,8 +19,7 @@ package consulo.csharp.impl.ide.debugger.expressionEvaluator;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.impl.psi.CSharpAttributeUtil;
@@ -35,6 +34,7 @@ import consulo.dotnet.debugger.proxy.value.DotNetArrayValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetNumberValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

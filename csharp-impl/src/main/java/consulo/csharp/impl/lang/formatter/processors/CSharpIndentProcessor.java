@@ -37,7 +37,7 @@ import consulo.csharp.lang.impl.psi.source.CSharpIfStatementImpl;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.util.CommentUtilCore;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

@@ -29,9 +29,9 @@ import consulo.msil.impl.lang.psi.impl.elementType.stub.MsilMethodEntryStub;
 import consulo.msil.impl.lang.psi.impl.elementType.stub.MsilStubIndexer;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**

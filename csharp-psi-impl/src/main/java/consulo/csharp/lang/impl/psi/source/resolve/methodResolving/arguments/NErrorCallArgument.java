@@ -19,9 +19,9 @@ package consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.scope.GlobalSearchScope;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

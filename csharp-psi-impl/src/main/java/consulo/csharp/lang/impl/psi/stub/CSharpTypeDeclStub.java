@@ -22,7 +22,7 @@ import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.util.lang.BitUtil;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

@@ -27,9 +27,9 @@ import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

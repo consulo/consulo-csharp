@@ -36,7 +36,7 @@ import consulo.project.startup.StartupManager;
 import consulo.ui.ex.wizard.WizardStep;
 import consulo.virtualFileSystem.VirtualFile;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;

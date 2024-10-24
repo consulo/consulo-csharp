@@ -20,10 +20,11 @@ import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
 import consulo.ide.ServiceManager;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Singleton;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;

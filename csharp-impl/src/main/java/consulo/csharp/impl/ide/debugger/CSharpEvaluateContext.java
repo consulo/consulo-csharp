@@ -23,8 +23,8 @@ import consulo.dotnet.debugger.DotNetDebugContext;
 import consulo.dotnet.debugger.proxy.*;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;

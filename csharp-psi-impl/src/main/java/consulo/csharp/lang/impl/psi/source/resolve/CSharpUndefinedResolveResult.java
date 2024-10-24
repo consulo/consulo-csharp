@@ -19,7 +19,7 @@ package consulo.csharp.lang.impl.psi.source.resolve;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

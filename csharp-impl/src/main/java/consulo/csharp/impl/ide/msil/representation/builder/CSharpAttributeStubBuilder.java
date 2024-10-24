@@ -36,8 +36,8 @@ import consulo.msil.lang.psi.MsilCustomAttribute;
 import consulo.project.Project;
 import consulo.util.lang.StringUtil;
 import consulo.util.lang.function.PairFunction;
+import jakarta.annotation.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 

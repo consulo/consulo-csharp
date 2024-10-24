@@ -27,8 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.editor.ui.awt.EditorComboBoxRenderer;
@@ -37,6 +36,7 @@ import consulo.ui.ex.awt.ComboBox;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.language.editor.ui.awt.EditorComboBoxEditor;
 import consulo.language.editor.ui.awt.StringComboboxEditor;
+import jakarta.annotation.Nonnull;
 
 /**
  * User: Fedor.Korotkov

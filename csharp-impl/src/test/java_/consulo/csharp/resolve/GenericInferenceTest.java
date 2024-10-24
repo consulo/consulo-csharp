@@ -16,7 +16,7 @@
 
 package consulo.csharp.resolve;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.ResolveResult;
 import com.intellij.testFramework.TestModuleDescriptor;

@@ -38,7 +38,7 @@ import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.language.version.LanguageVersion;
 import consulo.project.Project;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Set;
 
 /**

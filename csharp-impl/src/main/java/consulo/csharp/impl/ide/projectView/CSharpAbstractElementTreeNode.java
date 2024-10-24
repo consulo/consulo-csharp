@@ -16,8 +16,6 @@
 
 package consulo.csharp.impl.ide.projectView;
 
-import javax.annotation.Nonnull;
-
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetAttributeUtil;
 import consulo.language.psi.PsiFile;
@@ -27,6 +25,7 @@ import consulo.project.Project;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiUtilCore;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

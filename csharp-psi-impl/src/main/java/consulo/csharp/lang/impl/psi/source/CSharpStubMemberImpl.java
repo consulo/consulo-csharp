@@ -33,8 +33,8 @@ import consulo.language.psi.stub.IStubElementType;
 import consulo.language.util.IncorrectOperationException;
 import consulo.util.lang.StringUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

@@ -16,10 +16,10 @@
 
 package consulo.csharp.impl.ide.completion.expected;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import consulo.language.psi.PsiElement;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

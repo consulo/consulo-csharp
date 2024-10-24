@@ -26,8 +26,8 @@ import consulo.language.psi.PsiElement;
 import consulo.ui.ex.awt.MessageDialogBuilder;
 import consulo.ui.ex.awt.Messages;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;

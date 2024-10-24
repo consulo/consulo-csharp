@@ -19,7 +19,7 @@ package consulo.csharp.impl.ide.refactoring.changeSignature;
 import java.awt.Component;
 import java.awt.Font;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellEditor;

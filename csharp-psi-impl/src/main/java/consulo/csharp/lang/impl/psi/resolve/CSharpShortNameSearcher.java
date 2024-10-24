@@ -30,10 +30,10 @@ import consulo.language.psi.stub.IdFilter;
 import consulo.language.psi.stub.StubIndex;
 import consulo.project.Project;
 import consulo.project.content.scope.ProjectAwareSearchScope;
+import jakarta.annotation.Nonnull;
 import jakarta.inject.Inject;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.function.Predicate;
 
 /**

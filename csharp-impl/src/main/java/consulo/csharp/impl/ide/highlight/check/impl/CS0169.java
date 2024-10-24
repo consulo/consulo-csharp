@@ -16,8 +16,7 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.search.ReferencesSearch;
@@ -32,6 +31,7 @@ import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.language.psi.PsiReference;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

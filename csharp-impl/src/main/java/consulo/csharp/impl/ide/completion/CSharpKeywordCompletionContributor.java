@@ -42,8 +42,8 @@ import consulo.dotnet.psi.*;
 import consulo.language.editor.completion.CompletionUtilCore;
 import consulo.language.editor.completion.lookup.ParenthesesInsertHandler;
 import consulo.util.collection.ArrayUtil;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;

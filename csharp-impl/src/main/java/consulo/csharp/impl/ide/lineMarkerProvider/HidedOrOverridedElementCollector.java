@@ -33,8 +33,8 @@ import consulo.navigation.Navigatable;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
 import consulo.util.collection.ContainerUtil;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.function.Consumer;

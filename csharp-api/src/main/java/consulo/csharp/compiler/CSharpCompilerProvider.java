@@ -29,8 +29,8 @@ import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.module.ui.awt.SdkComboBox;
 import consulo.virtualFileSystem.VirtualFile;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

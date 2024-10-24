@@ -21,7 +21,7 @@ import consulo.language.ast.IElementType;
 import consulo.util.lang.Couple;
 import consulo.util.lang.function.PairFunction;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -23,8 +23,7 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.psi.resolve.ResolveState;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

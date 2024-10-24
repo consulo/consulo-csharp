@@ -19,7 +19,7 @@ package consulo.csharp.lang.util;
 import consulo.util.collection.ContainerUtil;
 import org.jetbrains.annotations.Contract;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.*;
 
 /**

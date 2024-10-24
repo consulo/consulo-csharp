@@ -30,7 +30,7 @@ import consulo.language.psi.scope.EverythingGlobalScope;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.util.lang.StringUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.*;
 
 /**

@@ -26,7 +26,7 @@ import consulo.csharp.lang.psi.CSharpTupleType;
 import consulo.csharp.lang.psi.CSharpTupleVariable;
 import consulo.dotnet.psi.DotNetStatement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

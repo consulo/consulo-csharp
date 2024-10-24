@@ -24,8 +24,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.editor.refactoring.RefactoringBundle;
 import consulo.usage.UsageViewBundle;
 import consulo.usage.UsageViewUtil;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

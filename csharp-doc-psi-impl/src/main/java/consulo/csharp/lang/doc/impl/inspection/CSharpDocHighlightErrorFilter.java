@@ -22,7 +22,7 @@ import consulo.csharp.lang.doc.CSharpDocUtil;
 import consulo.language.editor.HighlightErrorFilter;
 import consulo.language.psi.PsiErrorElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

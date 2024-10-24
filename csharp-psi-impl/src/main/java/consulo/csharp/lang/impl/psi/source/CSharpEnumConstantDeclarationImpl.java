@@ -16,8 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
@@ -30,6 +28,8 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.util.PsiTreeUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

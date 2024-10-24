@@ -36,8 +36,8 @@ import consulo.msil.impl.lang.psi.impl.MsilTypeByRefImpl;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Comparing;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

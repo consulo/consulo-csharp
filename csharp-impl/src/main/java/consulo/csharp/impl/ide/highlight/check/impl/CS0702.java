@@ -30,7 +30,6 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import consulo.language.editor.intention.BaseIntentionAction;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiFile;
@@ -40,8 +39,8 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
 import consulo.util.lang.Pair;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 

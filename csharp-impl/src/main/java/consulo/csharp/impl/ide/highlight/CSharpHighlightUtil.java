@@ -35,9 +35,9 @@ import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpMethodImplUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

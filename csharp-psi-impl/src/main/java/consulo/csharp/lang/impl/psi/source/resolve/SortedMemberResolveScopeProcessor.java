@@ -22,7 +22,7 @@ import consulo.application.util.function.Processor;
 import consulo.language.psi.ResolveResult;
 import consulo.util.collection.ContainerUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 

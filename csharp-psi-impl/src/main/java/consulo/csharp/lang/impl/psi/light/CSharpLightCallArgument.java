@@ -19,9 +19,9 @@ package consulo.csharp.lang.impl.psi.light;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.impl.psi.LightElement;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

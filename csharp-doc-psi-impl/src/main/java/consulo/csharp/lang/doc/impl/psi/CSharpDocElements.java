@@ -43,9 +43,9 @@ import consulo.language.psi.PsiElement;
 import consulo.language.version.LanguageVersion;
 import consulo.language.version.LanguageVersionUtil;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

@@ -26,7 +26,7 @@ import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.language.psi.stub.IndexSink;
 import consulo.util.lang.StringUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

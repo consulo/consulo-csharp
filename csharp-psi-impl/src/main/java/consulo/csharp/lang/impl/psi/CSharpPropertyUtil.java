@@ -25,7 +25,7 @@ import consulo.dotnet.psi.DotNetCodeBodyProxy;
 import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

@@ -61,8 +61,8 @@ import consulo.util.lang.function.PairFunction;
 import consulo.util.lang.ref.Ref;
 import org.jetbrains.annotations.Contract;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;

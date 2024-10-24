@@ -19,8 +19,8 @@ package consulo.csharp.lang.psi;
 import consulo.dotnet.psi.DotNetConstructorDeclaration;
 import consulo.language.psi.PsiNameIdentifierOwner;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

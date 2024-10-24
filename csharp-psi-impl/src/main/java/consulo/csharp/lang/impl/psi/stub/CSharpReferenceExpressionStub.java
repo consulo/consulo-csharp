@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.stub;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.psi.stub.StubBase;

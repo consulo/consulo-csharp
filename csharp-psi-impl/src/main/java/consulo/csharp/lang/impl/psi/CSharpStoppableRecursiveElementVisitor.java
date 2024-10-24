@@ -20,9 +20,8 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiRecursiveVisitor;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.progress.ProgressManager;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

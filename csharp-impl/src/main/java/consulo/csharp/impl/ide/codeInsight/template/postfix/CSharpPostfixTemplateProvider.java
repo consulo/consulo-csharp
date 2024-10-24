@@ -18,7 +18,7 @@ package consulo.csharp.impl.ide.codeInsight.template.postfix;
 
 import java.util.Set;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.CSharpLanguage;

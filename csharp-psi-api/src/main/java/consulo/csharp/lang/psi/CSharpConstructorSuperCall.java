@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

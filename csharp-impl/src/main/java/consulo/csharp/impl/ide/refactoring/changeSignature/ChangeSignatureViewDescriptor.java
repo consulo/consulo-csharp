@@ -16,14 +16,13 @@
 
 package consulo.csharp.impl.ide.refactoring.changeSignature;
 
-import javax.annotation.Nonnull;
-
 import consulo.usage.UsageViewDescriptor;
 import consulo.usage.UsageViewUtil;
 import consulo.util.lang.StringUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.editor.refactoring.RefactoringBundle;
 import consulo.usage.UsageViewBundle;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

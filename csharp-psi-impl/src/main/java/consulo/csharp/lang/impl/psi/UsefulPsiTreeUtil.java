@@ -28,8 +28,8 @@ import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.SmartList;
 import consulo.util.lang.function.Condition;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

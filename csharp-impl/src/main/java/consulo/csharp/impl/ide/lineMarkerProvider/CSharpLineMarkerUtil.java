@@ -30,8 +30,8 @@ import consulo.language.psi.PsiUtilCore;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Comparing;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.function.Function;

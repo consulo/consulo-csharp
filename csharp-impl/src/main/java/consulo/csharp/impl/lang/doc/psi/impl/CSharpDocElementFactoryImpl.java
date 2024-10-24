@@ -22,7 +22,7 @@ import consulo.csharp.lang.doc.psi.CSharpDocElementFactory;
 import consulo.language.ast.IElementType;
 import jakarta.inject.Singleton;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

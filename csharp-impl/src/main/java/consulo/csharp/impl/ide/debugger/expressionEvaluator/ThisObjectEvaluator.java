@@ -24,8 +24,8 @@ import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.ObjectUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

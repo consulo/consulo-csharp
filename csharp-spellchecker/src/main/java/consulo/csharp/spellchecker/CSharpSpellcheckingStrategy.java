@@ -24,8 +24,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.language.spellcheker.SpellcheckingStrategy;
 import consulo.language.spellcheker.tokenizer.Tokenizer;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

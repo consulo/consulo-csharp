@@ -19,7 +19,7 @@ package consulo.csharp.module.extension;
 import consulo.csharp.module.CSharpNullableOption;
 import consulo.module.extension.ModuleExtension;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

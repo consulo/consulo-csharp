@@ -21,10 +21,9 @@ import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
-import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import org.jetbrains.annotations.Nls;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

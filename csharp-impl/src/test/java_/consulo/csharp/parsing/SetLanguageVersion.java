@@ -19,8 +19,8 @@ package consulo.csharp.parsing;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import javax.annotation.Nonnull;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

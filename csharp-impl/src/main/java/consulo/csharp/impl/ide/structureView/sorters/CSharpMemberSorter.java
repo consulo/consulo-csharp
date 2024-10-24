@@ -18,7 +18,7 @@ package consulo.csharp.impl.ide.structureView.sorters;
 
 import java.util.Comparator;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.csharp.impl.ide.projectView.CSharpElementTreeNode;
 import consulo.csharp.impl.ide.structureView.CSharpNamedTreeElement;

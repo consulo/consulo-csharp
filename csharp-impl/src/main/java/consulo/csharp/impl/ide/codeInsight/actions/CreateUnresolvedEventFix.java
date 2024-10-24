@@ -28,7 +28,7 @@ import consulo.dotnet.DotNetTypes;
 import consulo.language.editor.template.Template;
 import consulo.language.psi.PsiFile;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**

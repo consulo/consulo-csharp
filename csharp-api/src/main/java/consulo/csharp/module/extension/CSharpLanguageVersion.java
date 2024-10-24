@@ -21,7 +21,7 @@ import consulo.component.util.pointer.NamedPointer;
 import consulo.csharp.api.localize.CSharpLocalize;
 import consulo.localize.LocalizeValue;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

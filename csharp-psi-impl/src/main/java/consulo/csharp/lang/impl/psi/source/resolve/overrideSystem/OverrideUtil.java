@@ -46,7 +46,7 @@ import consulo.logging.Logger;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.*;
 
 /**

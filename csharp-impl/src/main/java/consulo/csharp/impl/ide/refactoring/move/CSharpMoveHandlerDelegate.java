@@ -17,17 +17,16 @@
 package consulo.csharp.impl.ide.refactoring.move;
 
 import consulo.annotation.component.ExtensionImpl;
-import consulo.language.editor.CommonDataKeys;
-import consulo.dataContext.DataContext;
-import consulo.language.psi.PsiDirectory;
-import consulo.project.Project;
-import consulo.language.psi.PsiElement;
-import consulo.language.editor.refactoring.move.MoveCallback;
-import consulo.language.editor.refactoring.move.MoveHandlerDelegate;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-
-import javax.annotation.Nullable;
+import consulo.dataContext.DataContext;
+import consulo.language.editor.CommonDataKeys;
+import consulo.language.editor.refactoring.move.MoveCallback;
+import consulo.language.editor.refactoring.move.MoveHandlerDelegate;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

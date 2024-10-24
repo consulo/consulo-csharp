@@ -18,7 +18,7 @@ package consulo.csharp.lang.doc.psi;
 
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

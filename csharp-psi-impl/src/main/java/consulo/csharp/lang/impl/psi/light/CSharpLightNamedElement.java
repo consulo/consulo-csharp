@@ -19,8 +19,7 @@ package consulo.csharp.lang.impl.psi.light;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpNamedElement;
 import consulo.language.psi.PsiNamedElement;
-
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

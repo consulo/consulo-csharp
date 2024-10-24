@@ -18,8 +18,7 @@ package consulo.csharp;
 
 import java.io.File;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 import consulo.content.bundle.Sdk;
 import consulo.content.library.LibraryTable;
@@ -36,6 +35,7 @@ import consulo.roots.types.BinariesOrderRootType;
 import consulo.testFramework.util.TestPathUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

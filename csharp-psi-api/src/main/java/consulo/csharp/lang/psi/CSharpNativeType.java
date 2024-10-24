@@ -20,7 +20,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetNativeType;
 import consulo.language.ast.IElementType;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

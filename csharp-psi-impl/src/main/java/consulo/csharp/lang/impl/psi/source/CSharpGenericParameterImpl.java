@@ -33,7 +33,7 @@ import consulo.language.psi.PsiModificationTracker;
 import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.util.collection.ArrayUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

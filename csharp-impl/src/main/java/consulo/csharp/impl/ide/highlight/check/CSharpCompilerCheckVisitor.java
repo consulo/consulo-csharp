@@ -31,8 +31,8 @@ import consulo.language.editor.rawHighlight.HighlightInfoHolder;
 import consulo.language.editor.rawHighlight.HighlightVisitor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**

@@ -35,8 +35,8 @@ import consulo.language.psi.PsiNamedElement;
 import consulo.util.lang.BitUtil;
 import consulo.util.lang.function.PairFunction;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 

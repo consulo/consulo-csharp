@@ -19,7 +19,6 @@ package consulo.csharp.impl.ide.liveTemplates.macro;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.source.CSharpReferenceExpressionImplUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.AsPsiElementProcessor;
@@ -33,6 +32,7 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.language.psi.PsiElement;
 import consulo.util.lang.Couple;
 import consulo.language.psi.resolve.ResolveState;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

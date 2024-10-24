@@ -21,8 +21,7 @@ import consulo.dotnet.psi.DotNetAccessorOwner;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetXAccessor;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

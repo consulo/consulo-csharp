@@ -22,7 +22,7 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.ide.ServiceManager;
 import consulo.language.version.LanguageVersion;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 
 /**

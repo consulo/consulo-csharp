@@ -38,7 +38,7 @@ import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.editor.action.SmartEnterProcessor;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

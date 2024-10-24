@@ -19,8 +19,8 @@ package consulo.csharp.lang.impl.psi.source.resolve.methodResolving;
 import consulo.csharp.lang.impl.psi.source.resolve.WeightUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.util.dataholder.UserDataHolderBase;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 

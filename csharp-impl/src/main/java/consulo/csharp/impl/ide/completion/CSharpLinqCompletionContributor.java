@@ -16,8 +16,6 @@
 
 package consulo.csharp.impl.ide.completion;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.editor.completion.*;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.ProcessingContext;
@@ -28,6 +26,7 @@ import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
