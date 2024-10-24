@@ -16,11 +16,12 @@
 
 package consulo.csharp.impl.ide.refactoring.move;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dataContext.DataContext;
-import consulo.language.editor.CommonDataKeys;
 import consulo.language.editor.refactoring.move.MoveCallback;
 import consulo.language.editor.refactoring.move.MoveHandlerDelegate;
 import consulo.language.psi.PsiDirectory;
@@ -58,15 +59,30 @@ public class CSharpMoveHandlerDelegate extends MoveHandlerDelegate
 	}
 
 	@Override
+	@RequiredReadAction
+	public boolean canMove(PsiElement[] elements, @Nullable PsiElement targetContainer)
+	{
+		for(PsiElement psiElement : elements)
+		{
+			if(psiElement.getLanguage() != CSharpLanguage.INSTANCE)
+			{
+				return false;
+			}
+		}
+		return super.canMove(elements, targetContainer);
+	}
+
+	@Override
+	@RequiredReadAction
 	public boolean canMove(DataContext dataContext)
 	{
-		PsiElement psiElement = dataContext.getData(CommonDataKeys.PSI_ELEMENT);
-		return canMove(new PsiElement[] {psiElement}, null);
+		PsiElement[] elements = dataContext.getData(PsiElement.KEY_OF_ARRAY);
+		return elements != null && canMove(elements, null);
 	}
 
 	@Override
 	public void doMove(Project project, PsiElement[] elements, @Nullable PsiElement targetContainer, @Nullable MoveCallback callback)
 	{
-		CSharpMoveClassesUtil.doMove(project, adjustForMove(project, elements, targetContainer), new PsiElement[] {targetContainer}, callback);
+		CSharpMoveClassesUtil.doMove(project, adjustForMove(project, elements, targetContainer), new PsiElement[]{targetContainer}, callback);
 	}
 }
