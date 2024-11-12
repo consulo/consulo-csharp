@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.roots;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.component.messagebus.MessageBus;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
@@ -36,9 +35,9 @@ import consulo.util.dataholder.Key;
 import consulo.util.lang.function.Conditions;
 import consulo.virtualFileSystem.FileAttribute;
 import consulo.virtualFileSystem.VirtualFile;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -52,165 +51,135 @@ import java.util.TreeSet;
  * @since 2018-03-04
  */
 @ExtensionImpl
-public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAttribute>
-{
-	public static final Key<CSharpFileAttribute> ourCSharpFileAttributeKey = Key.create("CSharpFilePropertyPusher.PREPROCESSOR_VARIABLES");
-	private static final FileAttribute ourFileAttribute = new FileAttribute("csharp-file-preprocessor-variables", 2, false);
+public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAttribute> {
+    public static final Key<CSharpFileAttribute> ourCSharpFileAttributeKey = Key.create("CSharpFilePropertyPusher.PREPROCESSOR_VARIABLES");
+    private static final FileAttribute ourFileAttribute = new FileAttribute("csharp-file-preprocessor-variables", 2, false);
 
-	private static final Key<Set<String>> ourChangedModulesKey = Key.create("CSharpFilePropertyPusher.ourChangedModules");
+    private static final Key<Set<String>> ourChangedModulesKey = Key.create("CSharpFilePropertyPusher.ourChangedModules");
 
-	@Override
-	public void initExtra(@Nonnull Project project, @Nonnull MessageBus messageBus)
-	{
-		project.getMessageBus().connect().subscribe(ModuleExtensionChangeListener.class, (oldExtension, newExtension) ->
-		{
-			if(oldExtension instanceof CSharpSimpleModuleExtension && newExtension instanceof CSharpSimpleModuleExtension)
-			{
-				if(((CSharpSimpleModuleExtension) oldExtension).getLanguageVersion() != ((CSharpSimpleModuleExtension) newExtension).getLanguageVersion())
-				{
-					addChanged(project, newExtension);
-				}
-			}
+    @Override
+    public void initExtra(@Nonnull Project project) {
+        project.getMessageBus().connect().subscribe(ModuleExtensionChangeListener.class, (oldExtension, newExtension) -> {
+            if (oldExtension instanceof CSharpSimpleModuleExtension && newExtension instanceof CSharpSimpleModuleExtension) {
+                if (((CSharpSimpleModuleExtension) oldExtension).getLanguageVersion() != ((CSharpSimpleModuleExtension) newExtension).getLanguageVersion()) {
+                    addChanged(project, newExtension);
+                }
+            }
 
-			if(oldExtension instanceof DotNetSimpleModuleExtension && newExtension instanceof DotNetSimpleModuleExtension)
-			{
-				if(!((DotNetSimpleModuleExtension) oldExtension).getVariables().equals(((DotNetSimpleModuleExtension) newExtension).getVariables()))
-				{
-					addChanged(project, newExtension);
-				}
-			}
-		});
-	}
+            if (oldExtension instanceof DotNetSimpleModuleExtension && newExtension instanceof DotNetSimpleModuleExtension) {
+                if (!((DotNetSimpleModuleExtension) oldExtension).getVariables().equals(((DotNetSimpleModuleExtension) newExtension).getVariables())) {
+                    addChanged(project, newExtension);
+                }
+            }
+        });
+    }
 
-	private void addChanged(Project project, ModuleExtension<?> newExtension)
-	{
-		Set<String> changedModules = project.getUserData(ourChangedModulesKey);
-		if(changedModules == null)
-		{
-			changedModules = new HashSet<>();
-		}
+    private void addChanged(Project project, ModuleExtension<?> newExtension) {
+        Set<String> changedModules = project.getUserData(ourChangedModulesKey);
+        if (changedModules == null) {
+            changedModules = new HashSet<>();
+        }
 
-		project.putUserData(ourChangedModulesKey, changedModules);
+        project.putUserData(ourChangedModulesKey, changedModules);
 
-		changedModules.add(newExtension.getModule().getName());
-	}
+        changedModules.add(newExtension.getModule().getName());
+    }
 
-	@Nonnull
-	@Override
-	public Key<CSharpFileAttribute> getFileDataKey()
-	{
-		return ourCSharpFileAttributeKey;
-	}
+    @Nonnull
+    @Override
+    public Key<CSharpFileAttribute> getFileDataKey() {
+        return ourCSharpFileAttributeKey;
+    }
 
-	@Override
-	public boolean pushDirectoriesOnly()
-	{
-		return false;
-	}
+    @Override
+    public boolean pushDirectoriesOnly() {
+        return false;
+    }
 
-	@Nonnull
-	@Override
-	public CSharpFileAttribute getDefaultValue()
-	{
-		return CSharpFileAttribute.DEFAULT;
-	}
+    @Nonnull
+    @Override
+    public CSharpFileAttribute getDefaultValue() {
+        return CSharpFileAttribute.DEFAULT;
+    }
 
-	@Nullable
-	@Override
-	@RequiredReadAction
-	public CSharpFileAttribute getImmediateValue(@Nonnull Project project, @Nullable VirtualFile virtualFile)
-	{
-		if(virtualFile == null)
-		{
-			return CSharpFileAttribute.DEFAULT;
-		}
+    @Nullable
+    @Override
+    @RequiredReadAction
+    public CSharpFileAttribute getImmediateValue(@Nonnull Project project, @Nullable VirtualFile virtualFile) {
+        if (virtualFile == null) {
+            return CSharpFileAttribute.DEFAULT;
+        }
 
-		Module moduleForFile = ModuleUtilCore.findModuleForFile(virtualFile, project);
-		return moduleForFile == null ? CSharpFileAttribute.DEFAULT : getImmediateValue(moduleForFile);
-	}
+        Module moduleForFile = ModuleUtilCore.findModuleForFile(virtualFile, project);
+        return moduleForFile == null ? CSharpFileAttribute.DEFAULT : getImmediateValue(moduleForFile);
+    }
 
-	@Nullable
-	@Override
-	@RequiredReadAction
-	public CSharpFileAttribute getImmediateValue(@Nonnull consulo.module.Module module)
-	{
-		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(module, DotNetSimpleModuleExtension.class);
-		if(extension != null)
-		{
-			CSharpSimpleModuleExtension csharpExtension = ModuleUtilCore.getExtension(module, CSharpSimpleModuleExtension.class);
-			return new CSharpFileAttribute(csharpExtension == null ? CSharpLanguageVersion.HIGHEST : csharpExtension.getLanguageVersion(), varHashCode(extension.getVariables()));
-		}
-		return CSharpFileAttribute.DEFAULT;
-	}
+    @Nullable
+    @Override
+    @RequiredReadAction
+    public CSharpFileAttribute getImmediateValue(@Nonnull consulo.module.Module module) {
+        DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(module, DotNetSimpleModuleExtension.class);
+        if (extension != null) {
+            CSharpSimpleModuleExtension csharpExtension = ModuleUtilCore.getExtension(module, CSharpSimpleModuleExtension.class);
+            return new CSharpFileAttribute(csharpExtension == null ? CSharpLanguageVersion.HIGHEST : csharpExtension.getLanguageVersion(), varHashCode(extension.getVariables()));
+        }
+        return CSharpFileAttribute.DEFAULT;
+    }
 
-	private static int varHashCode(@Nonnull Collection<String> vars)
-	{
-		Set<String> sortedSet = new TreeSet<>(vars);
-		IntSet intSet = IntSets.newHashSet();
-		for(String varName : sortedSet)
-		{
-			intSet.add(varName.hashCode());
-		}
-		return intSet.hashCode();
-	}
+    private static int varHashCode(@Nonnull Collection<String> vars) {
+        Set<String> sortedSet = new TreeSet<>(vars);
+        IntSet intSet = IntSets.newHashSet();
+        for (String varName : sortedSet) {
+            intSet.add(varName.hashCode());
+        }
+        return intSet.hashCode();
+    }
 
-	@Override
-	public boolean acceptsFile(@Nonnull VirtualFile virtualFile)
-	{
-		return virtualFile.getFileType() == CSharpFileType.INSTANCE;
-	}
+    @Override
+    public boolean acceptsFile(@Nonnull VirtualFile virtualFile, @Nullable Project project) {
+        return virtualFile.getFileType() == CSharpFileType.INSTANCE;
+    }
 
-	@Override
-	public boolean acceptsDirectory(@Nonnull VirtualFile virtualFile, @Nonnull Project project)
-	{
-		return true;
-	}
+    @Override
+    public boolean acceptsDirectory(@Nonnull VirtualFile virtualFile, @Nonnull Project project) {
+        return true;
+    }
 
-	@Override
-	public void persistAttribute(@Nonnull Project project, @Nonnull VirtualFile virtualFile, @Nonnull CSharpFileAttribute newAttribute) throws IOException
-	{
-		DataInputStream inputStream = ourFileAttribute.readAttribute(virtualFile);
-		if(inputStream != null)
-		{
-			try
-			{
-				CSharpFileAttribute oldAttribute = CSharpFileAttribute.read(inputStream);
-				if(oldAttribute.equals(newAttribute))
-				{
-					return;
-				}
-			}
-			catch(IOException e)
-			{
-				inputStream.close();
-			}
-		}
+    @Override
+    public void persistAttribute(@Nonnull Project project, @Nonnull VirtualFile virtualFile, @Nonnull CSharpFileAttribute newAttribute) throws IOException {
+        DataInputStream inputStream = ourFileAttribute.readAttribute(virtualFile);
+        if (inputStream != null) {
+            try {
+                CSharpFileAttribute oldAttribute = CSharpFileAttribute.read(inputStream);
+                if (oldAttribute.equals(newAttribute)) {
+                    return;
+                }
+            }
+            catch (IOException e) {
+                inputStream.close();
+            }
+        }
 
-		if(newAttribute != CSharpFileAttribute.DEFAULT || inputStream != null)
-		{
-			try (DataOutputStream oStream = ourFileAttribute.writeAttribute(virtualFile))
-			{
-				CSharpFileAttribute.write(oStream, newAttribute);
-			}
+        if (newAttribute != CSharpFileAttribute.DEFAULT || inputStream != null) {
+            try (DataOutputStream oStream = ourFileAttribute.writeAttribute(virtualFile)) {
+                CSharpFileAttribute.write(oStream, newAttribute);
+            }
 
-			PushedFilePropertiesUpdater.getInstance(project).filePropertiesChanged(virtualFile, Conditions.alwaysTrue());
-		}
-	}
+            PushedFilePropertiesUpdater.getInstance(project).filePropertiesChanged(virtualFile, Conditions.alwaysTrue());
+        }
+    }
 
-	@Override
-	public void afterRootsChanged(@Nonnull Project project)
-	{
-		Set<String> changedModules = project.getUserData(ourChangedModulesKey);
-		if(changedModules == null)
-		{
-			return;
-		}
+    @Override
+    public void afterRootsChanged(@Nonnull Project project) {
+        Set<String> changedModules = project.getUserData(ourChangedModulesKey);
+        if (changedModules == null) {
+            return;
+        }
 
-		project.putUserData(ourChangedModulesKey, null);
+        project.putUserData(ourChangedModulesKey, null);
 
-		if(!changedModules.isEmpty())
-		{
-			PushedFilePropertiesUpdater.getInstance(project).pushAll(this);
-		}
-	}
+        if (!changedModules.isEmpty()) {
+            PushedFilePropertiesUpdater.getInstance(project).pushAll(this);
+        }
+    }
 }
