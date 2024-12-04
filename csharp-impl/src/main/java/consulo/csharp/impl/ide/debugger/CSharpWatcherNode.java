@@ -16,16 +16,15 @@
 
 package consulo.csharp.impl.ide.debugger;
 
-import consulo.application.AllIcons;
 import consulo.dotnet.debugger.DotNetDebugContext;
 import consulo.dotnet.debugger.impl.nodes.DotNetAbstractVariableValueNode;
 import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 import consulo.execution.debug.frame.XValueModifier;
+import consulo.execution.debug.icon.ExecutionDebugIconGroup;
 import consulo.ui.image.Image;
 import consulo.util.lang.ref.SimpleReference;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -33,47 +32,40 @@ import jakarta.annotation.Nullable;
  * @author VISTALL
  * @since 05.08.2015
  */
-public class CSharpWatcherNode extends DotNetAbstractVariableValueNode
-{
-	private DotNetValueProxy myValue;
+public class CSharpWatcherNode extends DotNetAbstractVariableValueNode {
+    private DotNetValueProxy myValue;
 
-	public CSharpWatcherNode(@Nonnull DotNetDebugContext debuggerContext, @Nonnull String name, @Nonnull DotNetStackFrameProxy frameProxy, @Nonnull DotNetValueProxy value)
-	{
-		super(debuggerContext, name, frameProxy);
-		myValue = value;
-	}
+    public CSharpWatcherNode(@Nonnull DotNetDebugContext debuggerContext, @Nonnull String name, @Nonnull DotNetStackFrameProxy frameProxy, @Nonnull DotNetValueProxy value) {
+        super(debuggerContext, name, frameProxy);
+        myValue = value;
+    }
 
-	@Nonnull
-	@Override
-	public Image getIconForVariable(@Nullable SimpleReference<DotNetValueProxy> alreadyCalledValue)
-	{
-		return AllIcons.Debugger.Watch;
-	}
+    @Nonnull
+    @Override
+    public Image getIconForVariable(@Nullable SimpleReference<DotNetValueProxy> alreadyCalledValue) {
+        return ExecutionDebugIconGroup.nodeWatch();
+    }
 
-	@Nullable
-	@Override
-	public XValueModifier getModifier()
-	{
-		return null;
-	}
+    @Nullable
+    @Override
+    public XValueModifier getModifier() {
+        return null;
+    }
 
-	@Nullable
-	@Override
-	public DotNetValueProxy getValueOfVariableImpl()
-	{
-		return myValue;
-	}
+    @Nullable
+    @Override
+    public DotNetValueProxy getValueOfVariableImpl() {
+        return myValue;
+    }
 
-	@Override
-	public void setValueForVariableImpl(@Nonnull DotNetValueProxy value)
-	{
+    @Override
+    public void setValueForVariableImpl(@Nonnull DotNetValueProxy value) {
 
-	}
+    }
 
-	@Nullable
-	@Override
-	public DotNetTypeProxy getTypeOfVariableImpl()
-	{
-		return null;
-	}
+    @Nullable
+    @Override
+    public DotNetTypeProxy getTypeOfVariableImpl() {
+        return null;
+    }
 }
