@@ -33,10 +33,11 @@ import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;
-import org.jetbrains.annotations.Contract;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.annotations.Contract;
+
+import java.util.Objects;
 
 /**
  * @author VISTALL
@@ -58,7 +59,7 @@ public class CSharpLambdaResolveResultUtil
 
 		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(declaration.getProject(), declaration.getResolveScope());
 		builder.withParentQName(declaration.getPresentableParentQName());
-		builder.withName(declaration.getName());
+		builder.withName(Objects.requireNonNullElse(declaration.getName(), "Unknown"));
 		builder.addModifier(DotNetModifier.SEALED);
 		CSharpAccessModifier accessModifier = CSharpAccessModifier.findModifierOrDefault(declaration);
 		for(CSharpModifier modifier : accessModifier.getModifiers())
