@@ -153,9 +153,9 @@ public class CSharpCompletionSorting
 			for(ExpectedTypeInfo expectedTypeInfo : expectedTypeInfos)
 			{
 				PsiElement typeProvider = expectedTypeInfo.getTypeProvider();
-				if(typeProvider instanceof PsiNamedElement)
+				if(typeProvider instanceof PsiNamedElement namedElement)
 				{
-					myExpectedNames.add(((PsiNamedElement) typeProvider).getName());
+					ContainerUtil.addIfNotNull(myExpectedNames, namedElement.getName());
 				}
 			}
 		}
@@ -304,7 +304,7 @@ public class CSharpCompletionSorting
 		return max;
 	}
 
-	private static String truncDigits(String name)
+	private static String truncDigits(@Nonnull String name)
 	{
 		int count = name.length() - 1;
 		while(count >= 0)
