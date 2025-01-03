@@ -16,6 +16,7 @@
 
 package consulo.csharp.impl.ide.debugger;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.ApplicationManager;
 import consulo.csharp.impl.ide.debugger.expressionEvaluator.Evaluator;
@@ -71,7 +72,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 
 	@Nonnull
 	@Override
-	public PsiFile createExpressionCodeFragment(@Nonnull Project project, @Nonnull PsiElement sourcePosition, @Nonnull String text, boolean isPhysical)
+	public PsiFile createExpressionCodeFragment(@Nonnull Project project, @Nullable PsiElement sourcePosition, @Nonnull String text, boolean isPhysical)
 	{
 		return CSharpFragmentFactory.createExpressionFragment(project, text, sourcePosition);
 	}
@@ -264,7 +265,8 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 		}
 	}
 
-	@Override
+	@RequiredReadAction
+    @Override
 	public boolean isSupported(@Nonnull PsiFile psiFile)
 	{
 		return psiFile.getFileType() == CSharpFileType.INSTANCE;
