@@ -16,16 +16,16 @@
 
 package someTypeTest;
 
-import org.junit.Assert;
-import org.junit.Test;
 import consulo.csharp.lang.impl.psi.msil.typeParsing.SomeType;
 import consulo.csharp.lang.impl.psi.msil.typeParsing.SomeTypeParser;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author VISTALL
  * @since 11.07.14
  */
-public class SomeTypeParserTest extends Assert
+public class SomeTypeParserTest extends Assertions
 {
 	@Test
 	public void test1()

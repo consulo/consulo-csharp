@@ -16,17 +16,17 @@
 
 package preprocessorTest;
 
-import org.junit.Assert;
-import org.junit.Test;
 import consulo.csharp.lang.impl.parser.preprocessor.IfPreprocessorDirective;
 import consulo.csharp.lang.impl.parser.preprocessor.PreprocessorDirective;
 import consulo.csharp.lang.impl.parser.preprocessor.PreprocessorLightParser;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author VISTALL
  * @since 2018-02-08
  */
-public class PreprocessorTest extends Assert
+public class PreprocessorTest extends Assertions
 {
 	@Test
 	public void testSimpleIf()
