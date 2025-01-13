@@ -104,6 +104,9 @@ public abstract class NewParsingTest {
         Disposer.dispose(ourGlobalDisposable);
         ourGlobalDisposable = null;
         Disposer.assertIsEmpty();
+
+        ourProject = null;
+        ourApplication = null;
     }
 
     protected void doTest(TestInfo testInfo) throws Exception {
