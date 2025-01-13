@@ -1,0 +1,53 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(PUBLIC_KEYWORD)('public')
+    PsiWhiteSpace(' ')
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('WhereWhereTest')
+    PsiWhiteSpace('\n')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace('\n\t')
+    CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+      PsiWhiteSpace(' ')
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(VOID_KEYWORD)('void')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('test')
+      CSharpGenericParameterListImpl [GENERIC_PARAMETER_LIST]
+        PsiElement(LT)('<')
+        CSharpGenericParameterImpl [GENERIC_PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('where')
+        PsiElement(GT)('>')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      CSharpGenericConstraintListImpl [GENERIC_CONSTRAINT_LIST]
+        CSharpGenericConstraintImpl [GENERIC_CONSTRAINT]
+          PsiElement(WHERE_KEYWORD)('where')
+          PsiWhiteSpace(' ')
+          CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+            PsiElement(IDENTIFIER)('where')
+          PsiWhiteSpace(' ')
+          PsiElement(COLON)(':')
+          PsiWhiteSpace(' ')
+          CSharpGenericConstraintKeywordValueImpl [GENERIC_CONSTRAINT_KEYWORD_VALUE]
+            PsiElement(CLASS_KEYWORD)('class')
+      PsiWhiteSpace('\n\t')
+      PsiElement(CSHARP_STATEMENT_METHOD_BODY)
+        CSharpBlockStatementImpl(BLOCK_STATEMENT)
+          PsiElement(LBRACE)('{')
+          PsiWhiteSpace('\n\n\t')
+          PsiElement(RBRACE)('}')
+    PsiWhiteSpace('\n')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

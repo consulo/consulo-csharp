@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
-  - Copyright 2013-2017 consulo.io
+  - Copyright 2013-2025 consulo.io
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -15,11 +14,9 @@
   - See the License for the specific language governing permissions and
   - limitations under the License.
   -->
-
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>consulo</groupId>
         <artifactId>arch.ide-api-provided</artifactId>
@@ -27,51 +24,46 @@
         <relativePath/>
     </parent>
 
+    <groupId>consulo.plugin</groupId>
+    <artifactId>consulo.csharp.tests</artifactId>
+    <version>3-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
     <repositories>
         <repository>
             <id>consulo</id>
             <url>https://maven.consulo.io/repository/snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
-                <updatePolicy>interval:60</updatePolicy>
+                <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
     </repositories>
 
-    <groupId>consulo.plugin</groupId>
-    <artifactId>consulo.csharp-csharp.psi.impl</artifactId>
-    <version>3-SNAPSHOT</version>
-    <packaging>jar</packaging>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>consulo.maven</groupId>
-                <artifactId>maven-consulo-plugin</artifactId>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate-lexers</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
         <dependency>
-            <groupId>consulo</groupId>
-            <artifactId>consulo-language-impl</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>consulo.dotnet-dotnet.psi.api</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>consulo.dotnet-dotnet.psi.impl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>consulo.dotnet-composite.formatting.string</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>consulo.csharp-csharp.psi.api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>consulo.csharp-csharp.psi.impl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -81,19 +73,35 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>consulo.csharp-csharp.doc.psi.impl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>consulo.csharp-csharp-composite.formatting.string.api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>consulo.internal</groupId>
-            <artifactId>gnu.jel</artifactId>
-            <version>2.1.1</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>consulo.csharp-csharp-composite.formatting.string.impl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>consulo</groupId>
+            <artifactId>consulo-test-impl</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>consulo.dotnet</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

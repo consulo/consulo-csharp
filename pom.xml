@@ -56,5 +56,7 @@
 		<module>extract/consulo-mono-dotnet</module>
 
 		<module>csharp-impl</module>
+        
+		<module>tests</module>
 	</modules>
 </project>

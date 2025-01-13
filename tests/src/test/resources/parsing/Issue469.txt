@@ -1,0 +1,84 @@
+CSHARP_FILE
+  CSharpNamespaceDeclarationImpl [NAMESPACE_DECLARATION]
+    PsiElement(NAMESPACE_KEYWORD)('namespace')
+    PsiWhiteSpace(' ')
+    CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+      PsiElement(IDENTIFIER)('Issue469')
+    PsiWhiteSpace('\n')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace('\n\t')
+    CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+      PsiWhiteSpace(' ')
+      PsiElement(CLASS_KEYWORD)('class')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('Program')
+      PsiWhiteSpace('\n\t')
+      PsiElement(LBRACE)('{')
+      PsiWhiteSpace('\n\t\t')
+      CSharpFieldDeclarationImpl [FIELD_DECLARATION]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          PsiElement(PRIVATE_KEYWORD)('private')
+          PsiWhiteSpace(' ')
+          PsiElement(STATIC_KEYWORD)('static')
+        PsiWhiteSpace(' ')
+        CSharpStubArrayTypeImpl [ARRAY_TYPE]
+          CSharpStubNullableTypeImpl [NULLABLE_TYPE]
+            CSharpStubNativeTypeImpl [NATIVE_TYPE]
+              PsiElement(FLOAT_KEYWORD)('float')
+            PsiElement(QUEST)('?')
+          PsiElement(LBRACKET)('[')
+          PsiElement(RBRACKET)(']')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('floats')
+        PsiElement(SEMICOLON)(';')
+      PsiWhiteSpace('\n\n\t\t')
+      CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          PsiElement(PUBLIC_KEYWORD)('public')
+          PsiWhiteSpace(' ')
+          PsiElement(STATIC_KEYWORD)('static')
+        PsiWhiteSpace(' ')
+        CSharpStubNativeTypeImpl [NATIVE_TYPE]
+          PsiElement(VOID_KEYWORD)('void')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('test')
+        CSharpStubParameterListImpl [PARAMETER_LIST]
+          PsiElement(LPAR)('(')
+          PsiElement(RPAR)(')')
+        PsiWhiteSpace('\n\t\t')
+        PsiElement(CSHARP_STATEMENT_METHOD_BODY)
+          CSharpBlockStatementImpl(BLOCK_STATEMENT)
+            PsiElement(LBRACE)('{')
+            PsiWhiteSpace('\n\t\t\t')
+            CSharpExpressionStatementImpl(EXPRESSION_STATEMENT)
+              CSharpAssignmentExpressionImpl(ASSIGNMENT_EXPRESSION)
+                CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+                  PsiElement(IDENTIFIER)('floats')
+                PsiWhiteSpace(' ')
+                CSharpOperatorReferenceImpl(OPERATOR_REFERENCE)
+                  PsiElement(EQ)('=')
+                PsiWhiteSpace(' ')
+                CSharpNewExpressionImpl(NEW_EXPRESSION)
+                  PsiElement(NEW_KEYWORD)('new')
+                  PsiWhiteSpace(' ')
+                  CSharpNullableTypeImpl(NULLABLE_TYPE)
+                    CSharpNativeTypeImpl(NATIVE_TYPE)
+                      PsiElement(FLOAT_KEYWORD)('float')
+                    PsiElement(QUEST)('?')
+                  CSharpNewArrayLengthImpl(NEW_ARRAY_LENGTH)
+                    PsiElement(LBRACKET)('[')
+                    CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+                      PsiElement(INTEGER_LITERAL)('1')
+                    PsiElement(RBRACKET)(']')
+              PsiElement(SEMICOLON)(';')
+            PsiWhiteSpace('\n\t\t')
+            PsiElement(RBRACE)('}')
+      PsiWhiteSpace('\n\t')
+      PsiElement(RBRACE)('}')
+    PsiWhiteSpace('\n')
+    PsiElement(RBRACE)('}')
