@@ -103,7 +103,6 @@ open module consulo.csharp
 	exports consulo.csharp.impl.ide.surroundWith;
 	exports consulo.csharp.impl.lang;
 	exports consulo.csharp.impl.lang.doc.inspection;
-	exports consulo.csharp.impl.lang.doc.psi.impl;
 	exports consulo.csharp.impl.lang.formatter;
 	exports consulo.csharp.impl.lang.formatter.processors;
 	exports consulo.csharp.impl.lang.psi;
