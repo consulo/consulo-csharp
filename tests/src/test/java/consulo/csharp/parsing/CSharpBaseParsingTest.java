@@ -21,6 +21,7 @@ import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.CSharpLanguageVersionHelper;
 import consulo.language.file.LanguageFileType;
 import consulo.language.version.LanguageVersion;
+import consulo.test.junit.impl.SimpleParsingTest;
 import consulo.virtualFileSystem.fileType.FileType;
 import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.TestInfo;
@@ -31,7 +32,7 @@ import java.lang.reflect.Method;
  * @author VISTALL
  * @since 22.05.2015
  */
-public abstract class CSharpBaseParsingTest extends NewParsingTest {
+public abstract class CSharpBaseParsingTest extends SimpleParsingTest {
     public CSharpBaseParsingTest(@Nonnull String dataPath) {
         super(dataPath, "cs");
     }
