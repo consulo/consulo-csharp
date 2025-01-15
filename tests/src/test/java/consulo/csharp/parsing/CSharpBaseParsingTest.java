@@ -21,10 +21,9 @@ import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.CSharpLanguageVersionHelper;
 import consulo.language.file.LanguageFileType;
 import consulo.language.version.LanguageVersion;
-import consulo.test.junit.impl.SimpleParsingTest;
+import consulo.test.junit.impl.language.SimpleParsingTest;
 import consulo.virtualFileSystem.fileType.FileType;
 import jakarta.annotation.Nonnull;
-import org.junit.jupiter.api.TestInfo;
 
 import java.lang.reflect.Method;
 
@@ -32,14 +31,14 @@ import java.lang.reflect.Method;
  * @author VISTALL
  * @since 22.05.2015
  */
-public abstract class CSharpBaseParsingTest extends SimpleParsingTest {
+public abstract class CSharpBaseParsingTest extends SimpleParsingTest<Object> {
     public CSharpBaseParsingTest(@Nonnull String dataPath) {
         super(dataPath, "cs");
     }
 
     @Nonnull
     @Override
-    protected LanguageFileType getFileType() {
+    protected LanguageFileType getFileType(@Nonnull Context context, Object testContext) {
         return CSharpFileType.INSTANCE;
     }
 
@@ -51,8 +50,8 @@ public abstract class CSharpBaseParsingTest extends SimpleParsingTest {
     @RequiredReadAction
     @Nonnull
     @Override
-    public LanguageVersion resolveLanguageVersion(@Nonnull TestInfo testInfo, @Nonnull FileType fileType) {
-        Method method = testInfo.getTestMethod().get();
+    public LanguageVersion resolveLanguageVersion(@Nonnull Context context, Object testContext, @Nonnull FileType fileType) {
+        Method method = context.testInfo().getTestMethod().get();
         SetLanguageVersion annotation = method.getAnnotation(SetLanguageVersion.class);
         if (annotation != null) {
             return CSharpLanguageVersionHelper.getInstance().getWrapper(annotation.version());
