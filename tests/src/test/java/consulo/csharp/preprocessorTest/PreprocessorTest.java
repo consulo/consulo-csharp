@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package preprocessorTest;
+package consulo.csharp.preprocessorTest;
 
 import consulo.csharp.lang.impl.parser.preprocessor.IfPreprocessorDirective;
 import consulo.csharp.lang.impl.parser.preprocessor.PreprocessorDirective;
