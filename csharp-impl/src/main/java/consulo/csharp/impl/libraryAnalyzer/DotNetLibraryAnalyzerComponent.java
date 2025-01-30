@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.libraryAnalyzer;
 
-import consulo.application.ApplicationManager;
 import consulo.application.eap.EarlyAccessProgramDescriptor;
 import consulo.application.eap.EarlyAccessProgramManager;
 import consulo.component.messagebus.MessageBusConnection;
@@ -28,16 +27,14 @@ import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
 import consulo.language.util.ModuleUtilCore;
 import consulo.module.Module;
 import consulo.module.ModuleManager;
-import consulo.module.extension.ModuleExtension;
-import consulo.module.extension.event.ModuleExtensionChangeListener;
 import consulo.project.Project;
 import consulo.project.event.DumbModeListener;
 import consulo.util.collection.MultiMap;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import jakarta.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -120,24 +117,24 @@ public class DotNetLibraryAnalyzerComponent
 			}
 		});
 
-		connect.subscribe(ModuleExtensionChangeListener.class, new ModuleExtensionChangeListener()
-		{
-			@Override
-			public void beforeExtensionChanged(@Nonnull ModuleExtension<?> moduleExtension, @Nonnull final ModuleExtension<?> moduleExtension2)
-			{
-				if(moduleExtension2 instanceof DotNetSimpleModuleExtension && moduleExtension2.isEnabled())
-				{
-					ApplicationManager.getApplication().invokeLater(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							runAnalyzerFor((DotNetSimpleModuleExtension) moduleExtension2);
-						}
-					});
-				}
-			}
-		});
+//		connect.subscribe(ModuleExtensionChangeListener.class, new ModuleExtensionChangeListener()
+//		{
+//			@Override
+//			public void beforeExtensionChanged(@Nonnull ModuleExtension<?> moduleExtension, @Nonnull final ModuleExtension<?> moduleExtension2)
+//			{
+//				if(moduleExtension2 instanceof DotNetSimpleModuleExtension && moduleExtension2.isEnabled())
+//				{
+//					ApplicationManager.getApplication().invokeLater(new Runnable()
+//					{
+//						@Override
+//						public void run()
+//						{
+//							runAnalyzerFor((DotNetSimpleModuleExtension) moduleExtension2);
+//						}
+//					});
+//				}
+//			}
+//		});
 
 	}
 
