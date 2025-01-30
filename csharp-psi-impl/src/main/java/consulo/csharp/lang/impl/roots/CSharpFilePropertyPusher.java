@@ -54,19 +54,6 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
     public static final Key<CSharpFileAttribute> ourCSharpFileAttributeKey = Key.create("CSharpFilePropertyPusher.PREPROCESSOR_VARIABLES");
     private static final FileAttribute ourFileAttribute = new FileAttribute("csharp-file-preprocessor-variables", 2, false);
 
-    private static final Key<Set<String>> ourChangedModulesKey = Key.create("CSharpFilePropertyPusher.ourChangedModules");
-
-    private void addChanged(Project project, ModuleExtension<?> newExtension) {
-        Set<String> changedModules = project.getUserData(ourChangedModulesKey);
-        if (changedModules == null) {
-            changedModules = new HashSet<>();
-        }
-
-        project.putUserData(ourChangedModulesKey, changedModules);
-
-        changedModules.add(newExtension.getModule().getName());
-    }
-
     @Nonnull
     @Override
     public Key<CSharpFileAttribute> getFileDataKey() {
