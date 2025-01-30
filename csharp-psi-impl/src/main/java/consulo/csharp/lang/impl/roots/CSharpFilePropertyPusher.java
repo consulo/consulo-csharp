@@ -27,7 +27,6 @@ import consulo.module.Module;
 import consulo.module.content.FilePropertyPusher;
 import consulo.module.content.PushedFilePropertiesUpdater;
 import consulo.module.extension.ModuleExtension;
-import consulo.module.extension.event.ModuleExtensionChangeListener;
 import consulo.project.Project;
 import consulo.util.collection.primitive.ints.IntSet;
 import consulo.util.collection.primitive.ints.IntSets;
@@ -56,23 +55,6 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
     private static final FileAttribute ourFileAttribute = new FileAttribute("csharp-file-preprocessor-variables", 2, false);
 
     private static final Key<Set<String>> ourChangedModulesKey = Key.create("CSharpFilePropertyPusher.ourChangedModules");
-
-    @Override
-    public void initExtra(@Nonnull Project project) {
-        project.getMessageBus().connect().subscribe(ModuleExtensionChangeListener.class, (oldExtension, newExtension) -> {
-            if (oldExtension instanceof CSharpSimpleModuleExtension && newExtension instanceof CSharpSimpleModuleExtension) {
-                if (((CSharpSimpleModuleExtension) oldExtension).getLanguageVersion() != ((CSharpSimpleModuleExtension) newExtension).getLanguageVersion()) {
-                    addChanged(project, newExtension);
-                }
-            }
-
-            if (oldExtension instanceof DotNetSimpleModuleExtension && newExtension instanceof DotNetSimpleModuleExtension) {
-                if (!((DotNetSimpleModuleExtension) oldExtension).getVariables().equals(((DotNetSimpleModuleExtension) newExtension).getVariables())) {
-                    addChanged(project, newExtension);
-                }
-            }
-        });
-    }
 
     private void addChanged(Project project, ModuleExtension<?> newExtension) {
         Set<String> changedModules = project.getUserData(ourChangedModulesKey);
@@ -171,15 +153,6 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
 
     @Override
     public void afterRootsChanged(@Nonnull Project project) {
-        Set<String> changedModules = project.getUserData(ourChangedModulesKey);
-        if (changedModules == null) {
-            return;
-        }
-
-        project.putUserData(ourChangedModulesKey, null);
-
-        if (!changedModules.isEmpty()) {
-            PushedFilePropertiesUpdater.getInstance(project).pushAll(this);
-        }
+        PushedFilePropertiesUpdater.getInstance(project).pushAll(this);
     }
 }
