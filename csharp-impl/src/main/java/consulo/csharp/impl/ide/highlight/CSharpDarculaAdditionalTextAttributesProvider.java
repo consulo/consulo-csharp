@@ -17,9 +17,11 @@
 package consulo.csharp.impl.ide.highlight;
 
 import consulo.annotation.component.ExtensionImpl;
-import consulo.colorScheme.AdditionalTextAttributesProvider;
+import consulo.colorScheme.AttributesFlyweightBuilder;
+import consulo.colorScheme.EditorColorSchemeExtender;
 import consulo.colorScheme.EditorColorsScheme;
-
+import consulo.colorScheme.EffectType;
+import consulo.ui.color.RGBColor;
 import jakarta.annotation.Nonnull;
 
 /**
@@ -27,20 +29,40 @@ import jakarta.annotation.Nonnull;
  * @since 11-Sep-22
  */
 @ExtensionImpl
-public class CSharpDarculaAdditionalTextAttributesProvider implements AdditionalTextAttributesProvider
-{
-	@Nonnull
-	@Override
-	public String getColorSchemeName()
-	{
-		return EditorColorsScheme.DARCULA_SCHEME_NAME;
-	}
+public class CSharpDarculaAdditionalTextAttributesProvider implements EditorColorSchemeExtender {
+    @Override
+    public void extend(Builder builder) {
+        builder.add(CSharpHighlightKey.DISABLED_BLOCK, AttributesFlyweightBuilder.create()
+            .withBackground(new RGBColor(0x4C, 0x49, 0x3A))
+            .build());
 
-	@Nonnull
-	@Override
-	public String getColorSchemeFile()
-	{
-		return "/colorScheme/CSharpDarcula.xml";
-	}
+        builder.add(CSharpHighlightKey.DELEGATE_METHOD_NAME, AttributesFlyweightBuilder.create()
+            .withForeground(new RGBColor(84, 116, 58))
+            .build());
 
+        builder.add(CSharpHighlightKey.METHOD_REF, AttributesFlyweightBuilder.create()
+            .withBackground(new RGBColor(0x63, 0x51, 0x38))
+            .build());
+
+        builder.add(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST, AttributesFlyweightBuilder.create()
+            .withBackground(new RGBColor(60, 79, 77))
+            .build());
+
+        builder.add(CSharpHighlightKey.INSTANCE_EVENT, AttributesFlyweightBuilder.create()
+            .withForeground(new RGBColor(0xB0, 0x43, 0x93))
+            .withEffect(EffectType.LINE_UNDERSCORE, null)
+            .build());
+
+        builder.add(CSharpHighlightKey.STATIC_EVENT, AttributesFlyweightBuilder.create()
+            .withForeground(new RGBColor(0xB0, 0x43, 0x93))
+            .withItalicFont()
+            .withEffect(EffectType.LINE_UNDERSCORE, null)
+            .build());
+    }
+
+    @Nonnull
+    @Override
+    public String getColorSchemeId() {
+        return EditorColorsScheme.DARCULA_SCHEME_NAME;
+    }
 }
