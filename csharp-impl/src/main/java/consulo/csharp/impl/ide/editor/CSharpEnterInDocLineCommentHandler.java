@@ -28,40 +28,36 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiWhiteSpace;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.util.lang.ref.Ref;
-
+import consulo.util.lang.ref.SimpleReference;
 import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
  */
 @ExtensionImpl
-public class CSharpEnterInDocLineCommentHandler extends EnterHandlerDelegateAdapter
-{
-	private static final String DOC_LINE_START = "///";
+public class CSharpEnterInDocLineCommentHandler extends EnterHandlerDelegateAdapter {
+    private static final String DOC_LINE_START = "///";
 
-	@Override
-	@RequiredUIAccess
-	public Result preprocessEnter(@Nonnull final PsiFile file,
-			@Nonnull final Editor editor,
-			@Nonnull final Ref<Integer> caretOffsetRef,
-			@Nonnull final Ref<Integer> caretAdvance,
-			@Nonnull final DataContext dataContext,
-			final EditorActionHandler originalHandler)
-	{
-		final int caretOffset = caretOffsetRef.get();
-		final Document document = editor.getDocument();
-		final PsiElement psiAtOffset = file.findElementAt(caretOffset);
-		final PsiElement probablyDocComment = psiAtOffset instanceof PsiWhiteSpace && psiAtOffset.getText().startsWith("\n") ? psiAtOffset.getPrevSibling() : psiAtOffset == null && caretOffset > 0
-				&& caretOffset == document.getTextLength() ? file.findElementAt(caretOffset - 1) : psiAtOffset;
+    @Override
+    @RequiredUIAccess
+    public Result preprocessEnter(@Nonnull final PsiFile file,
+                                  @Nonnull final Editor editor,
+                                  @Nonnull final SimpleReference<Integer> caretOffsetRef,
+                                  @Nonnull final SimpleReference<Integer> caretAdvance,
+                                  @Nonnull final DataContext dataContext,
+                                  final EditorActionHandler originalHandler) {
+        final int caretOffset = caretOffsetRef.get();
+        final Document document = editor.getDocument();
+        final PsiElement psiAtOffset = file.findElementAt(caretOffset);
+        final PsiElement probablyDocComment = psiAtOffset instanceof PsiWhiteSpace && psiAtOffset.getText().startsWith("\n") ? psiAtOffset.getPrevSibling() : psiAtOffset == null && caretOffset > 0
+            && caretOffset == document.getTextLength() ? file.findElementAt(caretOffset - 1) : psiAtOffset;
 
-		if(probablyDocComment != null && PsiTreeUtil.getParentOfType(probablyDocComment, CSharpDocRoot.class, false) != null)
-		{
-			document.insertString(caretOffset, DOC_LINE_START + " ");
-			caretAdvance.set(4);
-			return Result.Default;
-		}
+        if (probablyDocComment != null && PsiTreeUtil.getParentOfType(probablyDocComment, CSharpDocRoot.class, false) != null) {
+            document.insertString(caretOffset, DOC_LINE_START + " ");
+            caretAdvance.set(4);
+            return Result.Default;
+        }
 
-		return Result.Continue;
-	}
+        return Result.Continue;
+    }
 }
