@@ -20,8 +20,6 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.application.ApplicationManager;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.ProgressIndicatorProvider;
-import consulo.application.util.function.Computable;
-import consulo.application.util.function.Processor;
 import consulo.content.scope.SearchScope;
 import consulo.csharp.lang.impl.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.impl.psi.stub.index.TypeIndex;
@@ -35,6 +33,8 @@ import consulo.language.psi.scope.LocalSearchScope;
 import jakarta.annotation.Nonnull;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * @author max
@@ -42,128 +42,92 @@ import java.util.*;
  * Copied from Java plugin by Jetbrains (com.intellij.psi.search.searches.ClassInheritorsSearch)
  */
 @ExtensionImpl
-public class CSharpAllTypesSearchExecutor implements AllTypesSearchExecutor
-{
-	@Override
-	public boolean execute(@Nonnull final AllTypesSearch.SearchParameters queryParameters, @Nonnull final Processor<? super DotNetTypeDeclaration> consumer)
-	{
-		SearchScope scope = queryParameters.getScope();
+public class CSharpAllTypesSearchExecutor implements AllTypesSearchExecutor {
+    @Override
+    public boolean execute(@Nonnull final AllTypesSearch.SearchParameters queryParameters, @Nonnull final Predicate<? super DotNetTypeDeclaration> consumer) {
+        SearchScope scope = queryParameters.getScope();
 
-		if(scope instanceof GlobalSearchScope)
-		{
-			return processAllClassesInGlobalScope((GlobalSearchScope) scope, consumer, queryParameters);
-		}
+        if (scope instanceof GlobalSearchScope) {
+            return processAllClassesInGlobalScope((GlobalSearchScope) scope, consumer, queryParameters);
+        }
 
-		PsiElement[] scopeRoots = ((LocalSearchScope) scope).getScope();
-		for(final PsiElement scopeRoot : scopeRoots)
-		{
-			if(!processScopeRootForAllClasses(scopeRoot, consumer))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
+        PsiElement[] scopeRoots = ((LocalSearchScope) scope).getScope();
+        for (final PsiElement scopeRoot : scopeRoots) {
+            if (!processScopeRootForAllClasses(scopeRoot, consumer)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	private static boolean processAllClassesInGlobalScope(final GlobalSearchScope scope,
-														  final Processor<? super DotNetTypeDeclaration> processor,
-														  final AllTypesSearch.SearchParameters parameters)
-	{
-		final Collection<String> names = ApplicationManager.getApplication().runReadAction(new Computable<Collection<String>>()
-		{
-			@Override
-			public Collection<String> compute()
-			{
-				return TypeIndex.getInstance().getAllKeys(parameters.getProject());
-			}
-		});
+    private static boolean processAllClassesInGlobalScope(final GlobalSearchScope scope,
+                                                          final Predicate<? super DotNetTypeDeclaration> processor,
+                                                          final AllTypesSearch.SearchParameters parameters) {
+        final Collection<String> names = ApplicationManager.getApplication().runReadAction((Supplier<Collection<String>>) () -> TypeIndex.getInstance().getAllKeys(parameters.getProject()));
 
-		final ProgressIndicator indicator = ProgressIndicatorProvider.getGlobalProgressIndicator();
-		if(indicator != null)
-		{
-			indicator.checkCanceled();
-		}
+        final ProgressIndicator indicator = ProgressIndicatorProvider.getGlobalProgressIndicator();
+        if (indicator != null) {
+            indicator.checkCanceled();
+        }
 
-		List<String> sorted = new ArrayList<String>(names.size());
-		int i = 0;
-		for(String name : names)
-		{
-			if(parameters.nameMatches(name))
-			{
-				sorted.add(name);
-			}
-			if(indicator != null && i % 512 == 0)
-			{
-				indicator.checkCanceled();
-			}
+        List<String> sorted = new ArrayList<String>(names.size());
+        int i = 0;
+        for (String name : names) {
+            if (parameters.nameMatches(name)) {
+                sorted.add(name);
+            }
+            if (indicator != null && i % 512 == 0) {
+                indicator.checkCanceled();
+            }
 
-			i++;
-		}
+            i++;
+        }
 
-		if(indicator != null)
-		{
-			indicator.checkCanceled();
-		}
+        if (indicator != null) {
+            indicator.checkCanceled();
+        }
 
-		Collections.sort(sorted, new Comparator<String>()
-		{
-			@Override
-			public int compare(final String o1, final String o2)
-			{
-				return o1.compareToIgnoreCase(o2);
-			}
-		});
+        Collections.sort(sorted, new Comparator<String>() {
+            @Override
+            public int compare(final String o1, final String o2) {
+                return o1.compareToIgnoreCase(o2);
+            }
+        });
 
-		for(final String name : sorted)
-		{
-			ProgressIndicatorProvider.checkCanceled();
-			final Collection<CSharpTypeDeclaration> classes = ApplicationManager.getApplication().runReadAction(new Computable<Collection<CSharpTypeDeclaration>>()
-			{
-				@Override
-				public Collection<CSharpTypeDeclaration> compute()
-				{
-					return TypeIndex.getInstance().get(name, parameters.getProject(), scope);
-				}
-			});
-			for(DotNetTypeDeclaration psiClass : classes)
-			{
-				ProgressIndicatorProvider.checkCanceled();
-				if(!processor.process(psiClass))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+        for (final String name : sorted) {
+            ProgressIndicatorProvider.checkCanceled();
+            final Collection<CSharpTypeDeclaration> classes = ApplicationManager.getApplication().runReadAction((Supplier<Collection<CSharpTypeDeclaration>>) () -> TypeIndex.getInstance().get(name, parameters.getProject(), scope));
+            for (DotNetTypeDeclaration psiClass : classes) {
+                ProgressIndicatorProvider.checkCanceled();
+                if (!processor.test(psiClass)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-	private static boolean processScopeRootForAllClasses(PsiElement scopeRoot, final Processor<? super DotNetTypeDeclaration> processor)
-	{
-		if(scopeRoot == null)
-		{
-			return true;
-		}
-		final boolean[] stopped = new boolean[]{false};
+    private static boolean processScopeRootForAllClasses(PsiElement scopeRoot, final Predicate<? super DotNetTypeDeclaration> processor) {
+        if (scopeRoot == null) {
+            return true;
+        }
+        final boolean[] stopped = new boolean[]{false};
 
-		scopeRoot.accept(new CSharpRecursiveElementVisitor()
-		{
-			@Override
-			public void visitElement(PsiElement element)
-			{
-				if(!stopped[0])
-				{
-					super.visitElement(element);
-				}
-			}
+        scopeRoot.accept(new CSharpRecursiveElementVisitor() {
+            @Override
+            public void visitElement(PsiElement element) {
+                if (!stopped[0]) {
+                    super.visitElement(element);
+                }
+            }
 
-			@Override
-			public void visitTypeDeclaration(CSharpTypeDeclaration aClass)
-			{
-				stopped[0] = !processor.process(aClass);
-				super.visitTypeDeclaration(aClass);
-			}
-		});
+            @Override
+            public void visitTypeDeclaration(CSharpTypeDeclaration aClass) {
+                stopped[0] = !processor.test(aClass);
+                super.visitTypeDeclaration(aClass);
+            }
+        });
 
-		return !stopped[0];
-	}
+        return !stopped[0];
+    }
 }

@@ -17,56 +17,45 @@
 package consulo.csharp.impl.ide.findUsage.referenceSearch;
 
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.util.function.Processor;
-import consulo.language.psi.PsiReference;
 import consulo.application.ApplicationManager;
-import consulo.application.util.function.Computable;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
 import consulo.language.psi.search.ReferencesSearch;
 import consulo.language.psi.search.ReferencesSearchQueryExecutor;
 import consulo.project.util.query.QueryExecutorBase;
-
 import jakarta.annotation.Nonnull;
+
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * @author VISTALL
  * @since 17-May-16
  */
 @ExtensionImpl
-public class CSharpImplementedReferenceSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> implements ReferencesSearchQueryExecutor
-{
-	@Override
-	public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer)
-	{
-		final PsiElement elementToSearch = queryParameters.getElementToSearch();
-		if(elementToSearch instanceof CSharpMethodDeclaration)
-		{
-			Collection<DotNetVirtualImplementOwner> targets = ApplicationManager.getApplication().runReadAction(new Computable<Collection<DotNetVirtualImplementOwner>>()
-			{
-				@Override
-				public Collection<DotNetVirtualImplementOwner> compute()
-				{
-					if(((CSharpMethodDeclaration) elementToSearch).hasModifier(DotNetModifier.ABSTRACT))
-					{
-						return OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) elementToSearch);
-					}
-					return Collections.emptyList();
-				}
-			});
+public class CSharpImplementedReferenceSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> implements ReferencesSearchQueryExecutor {
+    @Override
+    public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Predicate<? super PsiReference> consumer) {
+        final PsiElement elementToSearch = queryParameters.getElementToSearch();
+        if (elementToSearch instanceof CSharpMethodDeclaration) {
+            Collection<DotNetVirtualImplementOwner> targets = ApplicationManager.getApplication().runReadAction((Supplier<Collection<DotNetVirtualImplementOwner>>) () -> {
+                if (((CSharpMethodDeclaration) elementToSearch).hasModifier(DotNetModifier.ABSTRACT)) {
+                    return OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) elementToSearch);
+                }
+                return Collections.emptyList();
+            });
 
-			for(DotNetVirtualImplementOwner target : targets)
-			{
-				if(!ReferencesSearch.search(target, queryParameters.getEffectiveSearchScope()).forEach(consumer))
-				{
-					return;
-				}
-			}
-		}
-	}
+            for (DotNetVirtualImplementOwner target : targets) {
+                if (!ReferencesSearch.search(target, queryParameters.getEffectiveSearchScope()).forEach(consumer)) {
+                    return;
+                }
+            }
+        }
+    }
 }

@@ -18,33 +18,30 @@ package consulo.csharp.impl.ide.navigation;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.ReadAction;
-import consulo.application.util.function.Processor;
 import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.search.DefinitionsScopedSearch;
 import consulo.language.psi.search.DefinitionsScopedSearchExecutor;
 import consulo.util.collection.ContainerUtil;
-
 import jakarta.annotation.Nonnull;
+
 import java.util.Collection;
+import java.util.function.Predicate;
 
 /**
  * @author VISTALL
  * @since 17-May-16
  */
 @ExtensionImpl
-public class CSharpMethodImplementationsSearcher implements DefinitionsScopedSearchExecutor
-{
-	@Override
-	public boolean execute(@Nonnull DefinitionsScopedSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiElement> consumer)
-	{
-		PsiElement element = queryParameters.getElement();
-		if(element instanceof DotNetVirtualImplementOwner)
-		{
-			Collection<DotNetVirtualImplementOwner> members = ReadAction.compute(() -> OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) element));
-			return ContainerUtil.process(members, consumer);
-		}
-		return true;
-	}
+public class CSharpMethodImplementationsSearcher implements DefinitionsScopedSearchExecutor {
+    @Override
+    public boolean execute(@Nonnull DefinitionsScopedSearch.SearchParameters queryParameters, @Nonnull Predicate<? super PsiElement> consumer) {
+        PsiElement element = queryParameters.getElement();
+        if (element instanceof DotNetVirtualImplementOwner) {
+            Collection<DotNetVirtualImplementOwner> members = ReadAction.compute(() -> OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) element));
+            return ContainerUtil.process(members, consumer);
+        }
+        return true;
+    }
 }

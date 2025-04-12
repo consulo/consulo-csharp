@@ -17,40 +17,28 @@
 package consulo.csharp.impl.ide.navigation;
 
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.util.function.Processor;
 import consulo.csharp.lang.impl.psi.msil.CSharpTransform;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.search.DefinitionsScopedSearch;
 import consulo.language.psi.search.DefinitionsScopedSearchExecutor;
-
 import jakarta.annotation.Nonnull;
+
+import java.util.function.Predicate;
 
 /**
  * @author VISTALL
  * @since 17-May-16
  */
 @ExtensionImpl
-public class CSharpTypeImplementationSearcher implements DefinitionsScopedSearchExecutor
-{
-	@Override
-	public boolean execute(@Nonnull DefinitionsScopedSearch.SearchParameters queryParameters, @Nonnull final Processor<? super PsiElement> consumer)
-	{
-		final PsiElement element = queryParameters.getElement();
-		if(element instanceof DotNetTypeDeclaration)
-		{
-			return TypeInheritorsSearch.search((DotNetTypeDeclaration) element, queryParameters.getScope(), queryParameters.isCheckDeep(), true,
-					CSharpTransform.INSTANCE).forEach(new Processor<DotNetTypeDeclaration>()
-
-			{
-				@Override
-				public boolean process(DotNetTypeDeclaration typeDeclaration)
-				{
-					return consumer.process(typeDeclaration);
-				}
-			});
-		}
-		return true;
-	}
+public class CSharpTypeImplementationSearcher implements DefinitionsScopedSearchExecutor {
+    @Override
+    public boolean execute(@Nonnull DefinitionsScopedSearch.SearchParameters queryParameters, @Nonnull final Predicate<? super PsiElement> consumer) {
+        final PsiElement element = queryParameters.getElement();
+        if (element instanceof DotNetTypeDeclaration) {
+            return TypeInheritorsSearch.search((DotNetTypeDeclaration) element, queryParameters.getScope(), queryParameters.isCheckDeep(), true, CSharpTransform.INSTANCE).forEach(consumer);
+        }
+        return true;
+    }
 }

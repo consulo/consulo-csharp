@@ -17,39 +17,36 @@
 package consulo.csharp.impl.ide.findUsage.referenceSearch;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.application.util.function.Processor;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.search.ReferencesSearch;
-import consulo.application.util.function.Processor;
-import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.language.psi.search.ReferencesSearchQueryExecutor;
 import consulo.project.util.query.QueryExecutorBase;
-
 import jakarta.annotation.Nonnull;
+
+import java.util.function.Predicate;
 
 /**
  * @author VISTALL
  * @since 27.10.14
  */
 @ExtensionImpl
-public class AdditionalReferenceSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> implements ReferencesSearchQueryExecutor
-{
-	@Override
-	public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer)
-	{
-		PsiElement elementToSearch = queryParameters.getElementToSearch();
+public class AdditionalReferenceSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> implements ReferencesSearchQueryExecutor {
+    @Override
+    public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Predicate<? super PsiReference> consumer) {
+        PsiElement elementToSearch = queryParameters.getElementToSearch();
 
-		PsiElement declaration = elementToSearch.getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER);
-		if(declaration == null)
-		{
-			declaration = elementToSearch.getUserData(CSharpResolveUtil.ACCESSOR_VALUE_VARIABLE_OWNER);
-		}
+        PsiElement declaration = elementToSearch.getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER);
+        if (declaration == null) {
+            declaration = elementToSearch.getUserData(CSharpResolveUtil.ACCESSOR_VALUE_VARIABLE_OWNER);
+        }
 
-		if(declaration == null)
-		{
-			return;
-		}
+        if (declaration == null) {
+            return;
+        }
 
-		ReferencesSearch.search(declaration, queryParameters.getEffectiveSearchScope(), queryParameters.isIgnoreAccessScope()).forEach(consumer);
-	}
+        ReferencesSearch.search(declaration, queryParameters.getEffectiveSearchScope(), queryParameters.isIgnoreAccessScope()).forEach(consumer);
+    }
 }

@@ -18,7 +18,6 @@ package consulo.csharp.impl.ide.findUsage.referenceSearch;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.AccessRule;
-import consulo.application.util.function.Processor;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightConstructorDeclarationBuilder;
 import consulo.csharp.lang.impl.psi.resolve.additionalMembersImpl.StructOrGenericParameterConstructorProvider;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
@@ -29,42 +28,37 @@ import consulo.language.psi.PsiReference;
 import consulo.language.psi.search.ReferencesSearch;
 import consulo.language.psi.search.ReferencesSearchQueryExecutor;
 import consulo.project.util.query.QueryExecutorBase;
-
 import jakarta.annotation.Nonnull;
+
+import java.util.function.Predicate;
 
 /**
  * @author VISTALL
  * @since 16.04.2015
  */
 @ExtensionImpl
-public class CSharpConstructorPlusTypeReferenceSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> implements ReferencesSearchQueryExecutor
-{
-	@Override
-	public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer)
-	{
-		PsiElement elementToSearch = queryParameters.getElementToSearch();
+public class CSharpConstructorPlusTypeReferenceSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> implements ReferencesSearchQueryExecutor {
+    @Override
+    public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Predicate<? super PsiReference> consumer) {
+        PsiElement elementToSearch = queryParameters.getElementToSearch();
 
-		if(elementToSearch instanceof CSharpTypeDeclaration)
-		{
-			String name = AccessRule.read(((CSharpTypeDeclaration) elementToSearch)::getName);
-			if(name == null)
-			{
-				return;
-			}
+        if (elementToSearch instanceof CSharpTypeDeclaration) {
+            String name = AccessRule.read(((CSharpTypeDeclaration) elementToSearch)::getName);
+            if (name == null) {
+                return;
+            }
 
-			for(DotNetNamedElement member : AccessRule.read(((CSharpTypeDeclaration) elementToSearch)::getMembers))
-			{
-				if(member instanceof CSharpConstructorDeclaration)
-				{
-					queryParameters.getOptimizer().searchWord(name, queryParameters.getEffectiveSearchScope(), true, member);
-				}
-			}
+            for (DotNetNamedElement member : AccessRule.read(((CSharpTypeDeclaration) elementToSearch)::getMembers)) {
+                if (member instanceof CSharpConstructorDeclaration) {
+                    queryParameters.getOptimizer().searchWord(name, queryParameters.getEffectiveSearchScope(), true, member);
+                }
+            }
 
-			CSharpLightConstructorDeclarationBuilder constructor = AccessRule.read(() -> StructOrGenericParameterConstructorProvider.buildDefaultConstructor((DotNetNamedElement) elementToSearch, name));
+            CSharpLightConstructorDeclarationBuilder constructor = AccessRule.read(() -> StructOrGenericParameterConstructorProvider.buildDefaultConstructor((DotNetNamedElement) elementToSearch, name));
 
-			queryParameters.getOptimizer().searchWord(name, queryParameters.getEffectiveSearchScope(), true, constructor);
-		}   /*
-		else if(elementToSearch instanceof CSharpConstructorDeclaration)
+            queryParameters.getOptimizer().searchWord(name, queryParameters.getEffectiveSearchScope(), true, constructor);
+        }   /*
+        else if(elementToSearch instanceof CSharpConstructorDeclaration)
 		{
 			PsiElement parent = elementToSearch.getParent();
 			if(parent instanceof CSharpTypeDeclaration)
@@ -74,6 +68,6 @@ public class CSharpConstructorPlusTypeReferenceSearch extends QueryExecutorBase<
 			}
 		} */
 
-	}
+    }
 
 }
