@@ -43,7 +43,6 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
-import consulo.ide.impl.idea.util.containers.ArrayListSet;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import consulo.language.codeStyle.CodeStyleManager;
@@ -59,10 +58,10 @@ import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.MultiMap;
 import consulo.util.lang.function.PairFunction;
 import consulo.util.lang.ref.Ref;
-import org.jetbrains.annotations.Contract;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.annotations.Contract;
+
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -294,7 +293,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 	@RequiredReadAction
 	private DotNetStatement[] getStatements(PsiFile file, int startOffset, int endOffset)
 	{
-		Set<DotNetStatement> set = new ArrayListSet<DotNetStatement>();
+		Set<DotNetStatement> set = new LinkedHashSet<>();
 
 		PsiElement element1 = file.findElementAt(startOffset);
 		PsiElement element2 = file.findElementAt(endOffset - 1);

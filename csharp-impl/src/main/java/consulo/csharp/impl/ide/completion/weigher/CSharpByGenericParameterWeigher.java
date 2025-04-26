@@ -19,10 +19,9 @@ package consulo.csharp.impl.ide.completion.weigher;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import consulo.ide.impl.psi.util.ProximityLocation;
-import consulo.ide.impl.psi.util.proximity.ProximityWeigher;
 import consulo.language.psi.PsiElement;
-
+import consulo.language.util.proximity.ProximityLocation;
+import consulo.language.util.proximity.ProximityWeigher;
 import jakarta.annotation.Nonnull;
 
 /**
@@ -30,15 +29,12 @@ import jakarta.annotation.Nonnull;
  * @since 17.11.2015
  */
 @ExtensionImpl(id = "csharpByGenericParameterWeigher")
-public class CSharpByGenericParameterWeigher extends ProximityWeigher
-{
-	@Override
-	public Comparable weigh(@Nonnull PsiElement psiElement, @Nonnull ProximityLocation proximityLocation)
-	{
-		if(psiElement instanceof DotNetGenericParameterListOwner && psiElement.getLanguage() == CSharpLanguage.INSTANCE)
-		{
-			return -((DotNetGenericParameterListOwner) psiElement).getGenericParametersCount();
-		}
-		return 0;
-	}
+public class CSharpByGenericParameterWeigher extends ProximityWeigher {
+    @Override
+    public Comparable weigh(@Nonnull PsiElement psiElement, @Nonnull ProximityLocation proximityLocation) {
+        if (psiElement instanceof DotNetGenericParameterListOwner && psiElement.getLanguage() == CSharpLanguage.INSTANCE) {
+            return -((DotNetGenericParameterListOwner) psiElement).getGenericParametersCount();
+        }
+        return 0;
+    }
 }
