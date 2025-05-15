@@ -16,41 +16,36 @@
 
 package consulo.csharp.lang.impl.psi.resolve;
 
-import java.util.Arrays;
-import java.util.List;
-
-import jakarta.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpGenericConstraintUtil;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import jakarta.annotation.Nonnull;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author VISTALL
  * @since 26.10.14
  */
-public class CSharpGenericParameterResolveContext extends CSharpBaseResolveContext<DotNetGenericParameter>
-{
-	@RequiredReadAction
-	public CSharpGenericParameterResolveContext(@Nonnull DotNetGenericParameter element)
-	{
-		super(element, DotNetGenericExtractor.EMPTY, null);
-	}
+public class CSharpGenericParameterResolveContext extends CSharpBaseResolveContext<DotNetGenericParameter> {
+    @RequiredReadAction
+    public CSharpGenericParameterResolveContext(@Nonnull DotNetGenericParameter element) {
+        super(element, DotNetGenericExtractor.EMPTY, null);
+    }
 
-	@Override
-	public void acceptChildren(CSharpElementVisitor visitor)
-	{
+    @Override
+    public void acceptChildren(CSharpElementVisitor visitor) {
 
-	}
+    }
 
-	@RequiredReadAction
-	@Nonnull
-	@Override
-	protected List<DotNetTypeRef> getExtendTypeRefs()
-	{
-		return Arrays.asList(CSharpGenericConstraintUtil.getExtendTypes(myElement));
-	}
+    @RequiredReadAction
+    @Nonnull
+    @Override
+    protected List<DotNetTypeRef> getExtendTypeRefs() {
+        return Arrays.asList(CSharpGenericConstraintUtil.getExtendTypes(myElement));
+    }
 }

@@ -31,57 +31,55 @@ import java.util.*;
  * @author VISTALL
  * @since 2023-12-31
  */
-public class CSharpCastSession implements Closeable
-{
-	private static final ThreadLocal<CSharpCastSession> ourSession = ThreadLocal.withInitial(CSharpCastSession::new);
+public class CSharpCastSession implements Closeable {
+    private static final ThreadLocal<CSharpCastSession> ourSession = ThreadLocal.withInitial(CSharpCastSession::new);
 
-	@Nonnull
-	public static CSharpCastSession start(Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> implicitCast)
-	{
-		CSharpCastSession session = get();
-		session.myImplicitCast.putAll(implicitCast);
-		return session;
-	}
+    @Nonnull
+    public static CSharpCastSession start(@Nonnull Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> implicitCast) {
+        CSharpCastSession session = get();
+        session.myServiceImplicitMap = Collections.unmodifiableMap(implicitCast);
+        return session;
+    }
 
-	@Nonnull
-	public static CSharpCastSession get()
-	{
-		return Objects.requireNonNull(ourSession.get());
-	}
+    @Nonnull
+    public static CSharpCastSession get() {
+        return Objects.requireNonNull(ourSession.get());
+    }
 
-	private Set<CSharpInheritKey> myVisited = new LinkedHashSet<>();
+    private Set<CSharpInheritKey> myVisited = new LinkedHashSet<>();
 
-	private Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> myImplicitCast = new HashMap<>();
+    private Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> myServiceImplicitMap = Map.of();
 
-	public boolean mark(@Nonnull DotNetTypeRef top, @Nonnull DotNetTypeRef target, @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo)
-	{
-		CSharpInheritKey key = new CSharpInheritKey(top, target, castResolvingInfo);
-		return myVisited.add(key);
-	}
+    private Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> myNewImplicitMap = new HashMap<>();
 
-	public CSharpTypeUtil.InheritResult recordImpicit(CSharpImpicitCastKey key, CSharpTypeUtil.InheritResult result)
-	{
-		myImplicitCast.put(key, result);
-		return result;
-	}
+    public boolean mark(@Nonnull DotNetTypeRef top, @Nonnull DotNetTypeRef target, @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo) {
+        CSharpInheritKey key = new CSharpInheritKey(top, target, castResolvingInfo);
+        return myVisited.add(key);
+    }
 
-	public CSharpTypeUtil.InheritResult getImplicitResult(CSharpImpicitCastKey key)
-	{
-		return myImplicitCast.get(key);
-	}
+    public CSharpTypeUtil.InheritResult recordImpicit(CSharpImpicitCastKey key, CSharpTypeUtil.InheritResult result) {
+        myNewImplicitMap.put(key, result);
+        return result;
+    }
 
-	public Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> getImplicitCast()
-	{
-		return myImplicitCast;
-	}
+    public CSharpTypeUtil.InheritResult getImplicitResult(CSharpImpicitCastKey key) {
+        CSharpTypeUtil.InheritResult result = myServiceImplicitMap.get(key);
+        if (result != null) {
+            return result;
+        }
 
-	private CSharpCastSession()
-	{
-	}
+        return myNewImplicitMap.get(key);
+    }
 
-	@Override
-	public void close()
-	{
-		ourSession.remove();
-	}
+    public void storeImplicit(@Nonnull Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> serviceImplicitMap) {
+        serviceImplicitMap.putAll(myNewImplicitMap);
+    }
+
+    private CSharpCastSession() {
+    }
+
+    @Override
+    public void close() {
+        ourSession.remove();
+    }
 }

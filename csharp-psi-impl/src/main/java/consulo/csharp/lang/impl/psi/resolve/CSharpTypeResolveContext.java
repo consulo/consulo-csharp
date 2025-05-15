@@ -27,8 +27,6 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import consulo.language.psi.PsiElement;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -40,59 +38,50 @@ import java.util.Set;
  * @author VISTALL
  * @since 29.09.14
  */
-public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTypeDeclaration>
-{
-	@RequiredReadAction
-	public CSharpTypeResolveContext(@Nonnull CSharpTypeDeclaration element, @Nonnull DotNetGenericExtractor genericExtractor, @Nullable Set<PsiElement> recursiveGuardSet)
-	{
-		super(element, genericExtractor, recursiveGuardSet);
-	}
+public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTypeDeclaration> {
+    @RequiredReadAction
+    public CSharpTypeResolveContext(@Nonnull CSharpTypeDeclaration element,
+                                    @Nonnull DotNetGenericExtractor genericExtractor,
+                                    @Nullable Set<String> recursiveGuardSet) {
+        super(element, genericExtractor, recursiveGuardSet);
+    }
 
-	@Override
-	public void acceptChildren(CSharpElementVisitor visitor)
-	{
-		for(DotNetNamedElement element : myElement.getMembers())
-		{
-			ProgressManager.checkCanceled();
+    @Override
+    public void acceptChildren(CSharpElementVisitor visitor) {
+        for (DotNetNamedElement element : myElement.getMembers()) {
+            ProgressManager.checkCanceled();
 
-			element.accept(visitor);
-		}
-	}
+            element.accept(visitor);
+        }
+    }
 
-	@RequiredReadAction
-	@Override
-	public boolean processExtensionMethodGroups(@Nonnull Processor<CSharpMethodDeclaration> processor)
-	{
-		for(DotNetNamedElement element : myElement.getMembers())
-		{
-			if(element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isExtension())
-			{
-				if(!processor.process((CSharpMethodDeclaration) element))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+    @RequiredReadAction
+    @Override
+    public boolean processExtensionMethodGroups(@Nonnull Processor<CSharpMethodDeclaration> processor) {
+        for (DotNetNamedElement element : myElement.getMembers()) {
+            if (element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isExtension()) {
+                if (!processor.process((CSharpMethodDeclaration) element)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-	@RequiredReadAction
-	@Nonnull
-	@Override
-	protected List<DotNetTypeRef> getExtendTypeRefs()
-	{
-		DotNetTypeRef[] typeRefs = myElement.getExtendTypeRefs();
-		List<DotNetTypeRef> extendTypeRefs = new ArrayList<>(typeRefs.length);
+    @RequiredReadAction
+    @Nonnull
+    @Override
+    protected List<DotNetTypeRef> getExtendTypeRefs() {
+        DotNetTypeRef[] typeRefs = myElement.getExtendTypeRefs();
+        List<DotNetTypeRef> extendTypeRefs = new ArrayList<>(typeRefs.length);
 
-		for(DotNetTypeRef typeRef : typeRefs)
-		{
-			DotNetTypeRef ref = RecursionManager.doPreventingRecursion(this, false, () -> GenericUnwrapTool.exchangeTypeRef(typeRef, myExtractor));
-			if(ref == null)
-			{
-				continue;
-			}
-			extendTypeRefs.add(ref);
-		}
-		return extendTypeRefs;
-	}
+        for (DotNetTypeRef typeRef : typeRefs) {
+            DotNetTypeRef ref = RecursionManager.doPreventingRecursion(this, false, () -> GenericUnwrapTool.exchangeTypeRef(typeRef, myExtractor));
+            if (ref == null) {
+                continue;
+            }
+            extendTypeRefs.add(ref);
+        }
+        return extendTypeRefs;
+    }
 }

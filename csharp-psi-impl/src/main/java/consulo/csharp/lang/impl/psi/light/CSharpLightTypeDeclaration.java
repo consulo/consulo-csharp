@@ -28,10 +28,10 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.util.lang.lazy.LazyValue;
-import org.jetbrains.annotations.NonNls;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.annotations.NonNls;
+
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -39,239 +39,209 @@ import java.util.function.Supplier;
  * @author VISTALL
  * @since 15.03.2016
  */
-public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTypeDeclaration> implements CSharpTypeDeclaration
-{
-	private final Supplier<DotNetNamedElement[]> myMembersValue;
-	private DotNetGenericExtractor myExtractor;
+public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTypeDeclaration> implements CSharpTypeDeclaration {
+    private final Supplier<DotNetNamedElement[]> myMembersValue;
+    private DotNetGenericExtractor myExtractor;
 
-	public CSharpLightTypeDeclaration(CSharpTypeDeclaration original, DotNetGenericExtractor extractor)
-	{
-		super(original);
-		myExtractor = extractor;
-		myMembersValue = LazyValue.notNull(() ->
-		{
-			DotNetNamedElement[] originalMembers = myOriginal.getMembers();
-			DotNetNamedElement[] members = new DotNetNamedElement[originalMembers.length];
-			for(int i = 0; i < originalMembers.length; i++)
-			{
-				members[i] = GenericUnwrapTool.extract(originalMembers[i], myExtractor, CSharpLightTypeDeclaration.this);
-			}
-			return members;
-		});
-	}
+    public CSharpLightTypeDeclaration(CSharpTypeDeclaration original, DotNetGenericExtractor extractor) {
+        super(original);
+        myExtractor = extractor;
+        myMembersValue = LazyValue.notNull(() ->
+        {
+            DotNetNamedElement[] originalMembers = myOriginal.getMembers();
+            DotNetNamedElement[] members = new DotNetNamedElement[originalMembers.length];
+            for (int i = 0; i < originalMembers.length; i++) {
+                members[i] = GenericUnwrapTool.extract(originalMembers[i], myExtractor, CSharpLightTypeDeclaration.this);
+            }
+            return members;
+        });
+    }
 
-	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o)
-		{
-			return true;
-		}
-		if(o == null || getClass() != o.getClass())
-		{
-			return false;
-		}
-		CSharpLightTypeDeclaration that = (CSharpLightTypeDeclaration) o;
-		return Objects.equals(myOriginal, that.myOriginal) &&
-				Objects.equals(myExtractor, that.myExtractor);
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CSharpLightTypeDeclaration that = (CSharpLightTypeDeclaration) o;
+        return Objects.equals(myOriginal, that.myOriginal) &&
+            Objects.equals(myExtractor, that.myExtractor);
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(myOriginal, myExtractor);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(myOriginal, myExtractor);
+    }
 
-	@Nonnull
-	public DotNetGenericExtractor getExtractor()
-	{
-		return myExtractor;
-	}
+    @Override
+    public String toString() {
+        return myOriginal.getVmQName();
+    }
 
-	@RequiredReadAction
-	@Override
-	public PsiElement getLeftBrace()
-	{
-		return myOriginal.getLeftBrace();
-	}
+    @Nonnull
+    public DotNetGenericExtractor getExtractor() {
+        return myExtractor;
+    }
 
-	@RequiredReadAction
-	@Override
-	public PsiElement getRightBrace()
-	{
-		return myOriginal.getRightBrace();
-	}
+    @RequiredReadAction
+    @Override
+    public PsiElement getLeftBrace() {
+        return myOriginal.getLeftBrace();
+    }
 
-	@Nullable
-	@Override
-	public CSharpGenericConstraintList getGenericConstraintList()
-	{
-		return myOriginal.getGenericConstraintList();
-	}
+    @RequiredReadAction
+    @Override
+    public PsiElement getRightBrace() {
+        return myOriginal.getRightBrace();
+    }
 
-	@Nonnull
-	@Override
-	public CSharpGenericConstraint[] getGenericConstraints()
-	{
-		return myOriginal.getGenericConstraints();
-	}
+    @Nullable
+    @Override
+    public CSharpGenericConstraintList getGenericConstraintList() {
+        return myOriginal.getGenericConstraintList();
+    }
 
-	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
-	{
-		visitor.visitTypeDeclaration(this);
-	}
+    @Nonnull
+    @Override
+    public CSharpGenericConstraint[] getGenericConstraints() {
+        return myOriginal.getGenericConstraints();
+    }
 
-	@Override
-	public boolean isInterface()
-	{
-		return myOriginal.isInterface();
-	}
+    @Override
+    public void accept(@Nonnull CSharpElementVisitor visitor) {
+        visitor.visitTypeDeclaration(this);
+    }
 
-	@Override
-	public boolean isStruct()
-	{
-		return myOriginal.isStruct();
-	}
+    @Override
+    public boolean isInterface() {
+        return myOriginal.isInterface();
+    }
 
-	@Override
-	public boolean isEnum()
-	{
-		return myOriginal.isEnum();
-	}
+    @Override
+    public boolean isStruct() {
+        return myOriginal.isStruct();
+    }
 
-	@Override
-	public boolean isNested()
-	{
-		return myOriginal.isNested();
-	}
+    @Override
+    public boolean isEnum() {
+        return myOriginal.isEnum();
+    }
 
-	@Nullable
-	@Override
-	public DotNetTypeList getExtendList()
-	{
-		return myOriginal.getExtendList();
-	}
+    @Override
+    public boolean isNested() {
+        return myOriginal.isNested();
+    }
 
-	@Nonnull
-	@Override
-	@RequiredReadAction
-	public DotNetTypeRef[] getExtendTypeRefs()
-	{
-		DotNetTypeRef[] extendTypeRefs = myOriginal.getExtendTypeRefs();
-		DotNetTypeRef[] typeRefs = new DotNetTypeRef[extendTypeRefs.length];
-		for(int i = 0; i < extendTypeRefs.length; i++)
-		{
-			DotNetTypeRef extendTypeRef = extendTypeRefs[i];
-			typeRefs[i] = GenericUnwrapTool.exchangeTypeRef(extendTypeRef, myExtractor);
-		}
-		return typeRefs;
-	}
+    @Nullable
+    @Override
+    public DotNetTypeList getExtendList() {
+        return myOriginal.getExtendList();
+    }
 
-	@RequiredReadAction
-	@Override
-	public boolean isInheritor(@Nonnull String s, boolean b)
-	{
-		return myOriginal.isInheritor(s, b);
-	}
+    @Nonnull
+    @Override
+    @RequiredReadAction
+    public DotNetTypeRef[] getExtendTypeRefs() {
+        DotNetTypeRef[] extendTypeRefs = myOriginal.getExtendTypeRefs();
+        DotNetTypeRef[] typeRefs = new DotNetTypeRef[extendTypeRefs.length];
+        for (int i = 0; i < extendTypeRefs.length; i++) {
+            DotNetTypeRef extendTypeRef = extendTypeRefs[i];
+            typeRefs[i] = GenericUnwrapTool.exchangeTypeRef(extendTypeRef, myExtractor);
+        }
+        return typeRefs;
+    }
 
-	@Override
-	public boolean isEquivalentTo(PsiElement another)
-	{
-		return myOriginal.isEquivalentTo(another);
-	}
+    @RequiredReadAction
+    @Override
+    public boolean isInheritor(@Nonnull String s, boolean b) {
+        return myOriginal.isInheritor(s, b);
+    }
 
-	@Override
-	public DotNetTypeRef getTypeRefForEnumConstants()
-	{
-		return myOriginal.getTypeRefForEnumConstants();
-	}
+    @Override
+    public boolean isEquivalentTo(PsiElement another) {
+        return myOriginal.isEquivalentTo(another);
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public String getVmQName()
-	{
-		return myOriginal.getVmQName();
-	}
+    @Override
+    public DotNetTypeRef getTypeRefForEnumConstants() {
+        return myOriginal.getTypeRefForEnumConstants();
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public String getVmName()
-	{
-		return myOriginal.getVmName();
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public String getVmQName() {
+        return myOriginal.getVmQName();
+    }
 
-	@Nullable
-	@Override
-	public DotNetGenericParameterList getGenericParameterList()
-	{
-		return myOriginal.getGenericParameterList();
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public String getVmName() {
+        return myOriginal.getVmName();
+    }
 
-	@Nonnull
-	@Override
-	public DotNetGenericParameter[] getGenericParameters()
-	{
-		return myOriginal.getGenericParameters();
-	}
+    @Nullable
+    @Override
+    public DotNetGenericParameterList getGenericParameterList() {
+        return myOriginal.getGenericParameterList();
+    }
 
-	@Override
-	public int getGenericParametersCount()
-	{
-		return myOriginal.getGenericParametersCount();
-	}
+    @Nonnull
+    @Override
+    public DotNetGenericParameter[] getGenericParameters() {
+        return myOriginal.getGenericParameters();
+    }
 
-	@Nonnull
-	@Override
-	@RequiredReadAction
-	public DotNetNamedElement[] getMembers()
-	{
-		return myMembersValue.get();
-	}
+    @Override
+    public int getGenericParametersCount() {
+        return myOriginal.getGenericParametersCount();
+    }
 
-	@RequiredReadAction
-	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier dotNetModifier)
-	{
-		return myOriginal.hasModifier(dotNetModifier);
-	}
+    @Nonnull
+    @Override
+    @RequiredReadAction
+    public DotNetNamedElement[] getMembers() {
+        return myMembersValue.get();
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public DotNetModifierList getModifierList()
-	{
-		return myOriginal.getModifierList();
-	}
+    @RequiredReadAction
+    @Override
+    public boolean hasModifier(@Nonnull DotNetModifier dotNetModifier) {
+        return myOriginal.hasModifier(dotNetModifier);
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public String getPresentableParentQName()
-	{
-		return myOriginal.getPresentableParentQName();
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public DotNetModifierList getModifierList() {
+        return myOriginal.getModifierList();
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public String getPresentableQName()
-	{
-		return myOriginal.getPresentableQName();
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public String getPresentableParentQName() {
+        return myOriginal.getPresentableParentQName();
+    }
 
-	@Nullable
-	@Override
-	public PsiElement getNameIdentifier()
-	{
-		return myOriginal.getNameIdentifier();
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public String getPresentableQName() {
+        return myOriginal.getPresentableQName();
+    }
 
-	@Override
-	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
-	{
-		return myOriginal.setName(name);
-	}
+    @Nullable
+    @Override
+    public PsiElement getNameIdentifier() {
+        return myOriginal.getNameIdentifier();
+    }
+
+    @Override
+    public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException {
+        return myOriginal.setName(name);
+    }
 }

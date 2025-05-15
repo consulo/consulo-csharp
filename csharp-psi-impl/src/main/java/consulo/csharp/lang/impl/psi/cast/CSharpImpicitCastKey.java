@@ -17,11 +17,8 @@
 package consulo.csharp.lang.impl.psi.cast;
 
 import consulo.csharp.lang.CSharpCastType;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.scope.GlobalSearchScope;
-import consulo.util.lang.Pair;
 import jakarta.annotation.Nonnull;
 
 /**
@@ -29,9 +26,9 @@ import jakarta.annotation.Nonnull;
  * @since 2023-12-31
  */
 public record CSharpImpicitCastKey(@Nonnull DotNetTypeRef to,
-		@Nonnull DotNetTypeRef from,
-		@Nonnull DotNetTypeDeclaration typeDeclaration,
-		@Nonnull DotNetGenericExtractor extractor,
-		@Nonnull Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo)
-{
+                                   @Nonnull DotNetTypeRef from,
+                                   @Nonnull CSharpCastType castType,
+                                   @Nonnull GlobalSearchScope searchScope) {
+
+    
 }

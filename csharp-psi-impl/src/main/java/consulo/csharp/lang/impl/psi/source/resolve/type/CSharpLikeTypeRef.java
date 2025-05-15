@@ -18,6 +18,7 @@ package consulo.csharp.lang.impl.psi.source.resolve.type;
 
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
 
@@ -25,21 +26,21 @@ import java.util.Objects;
  * @author VISTALL
  * @since 2023-12-31
  */
-public interface CSharpLikeTypeRef extends DotNetTypeRef
-{
-	static int hashCode(CSharpLikeTypeRef typeRef)
-	{
-		return Objects.hash(typeRef.getVmQName(), typeRef.getExtractor());
-	}
+public interface CSharpLikeTypeRef extends DotNetTypeRef {
+    static int hashCode(CSharpLikeTypeRef typeRef) {
+        return Objects.hash(typeRef.getVmQName(), typeRef.getExtractor());
+    }
 
-	static boolean equals(CSharpLikeTypeRef o1, Object o2)
-	{
-		if(o2 instanceof CSharpLikeTypeRef typeRef2)
-		{
-			return Objects.equals(o1.getVmQName(), typeRef2.getVmQName()) && Objects.equals(o1.getExtractor(), typeRef2.getExtractor());
-		}
-		return false;
-	}
+    static boolean equals(CSharpLikeTypeRef o1, Object o2) {
+        if (o2 instanceof CSharpLikeTypeRef typeRef2) {
+            return Objects.equals(o1.getVmQName(), typeRef2.getVmQName()) && Objects.equals(o1.getExtractor(), typeRef2.getExtractor());
+        }
+        return false;
+    }
 
-	DotNetGenericExtractor getExtractor();
+    @Nonnull
+    DotNetTypeRef getInnerTypeRef();
+
+    @Nonnull
+    DotNetGenericExtractor getExtractor();
 }

@@ -19,99 +19,88 @@ package consulo.csharp.lang.impl.psi.source.resolve.type;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.msil.CSharpTransform;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
-import consulo.dotnet.psi.resolve.DotNetPsiSearcher;
-import consulo.dotnet.psi.resolve.DotNetTypeRefWithCachedResult;
-import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.psi.resolve.*;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.DumbService;
 import consulo.project.Project;
-
 import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 26.10.14
  */
-public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult implements CSharpLikeTypeRef
-{
-	@Nonnull
-	private final String myQualifiedName;
+public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult implements CSharpLikeTypeRef {
+    @Nonnull
+    private final String myQualifiedName;
 
-	public CSharpTypeRefByQName(@Nonnull Project project, @Nonnull GlobalSearchScope searchScope, @Nonnull String qualifiedName)
-	{
-		super(project, searchScope);
-		myQualifiedName = qualifiedName;
-	}
+    public CSharpTypeRefByQName(@Nonnull Project project, @Nonnull GlobalSearchScope searchScope, @Nonnull String qualifiedName) {
+        super(project, searchScope);
+        myQualifiedName = qualifiedName;
+    }
 
-	@RequiredReadAction
-	@Deprecated
-	public CSharpTypeRefByQName(@Nonnull PsiElement scope, @Nonnull String qualifiedName)
-	{
-		this(scope.getProject(), scope.getResolveScope(), qualifiedName);
-	}
+    @RequiredReadAction
+    @Deprecated
+    public CSharpTypeRefByQName(@Nonnull PsiElement scope, @Nonnull String qualifiedName) {
+        this(scope.getProject(), scope.getResolveScope(), qualifiedName);
+    }
 
-	@Nonnull
-	@Override
-	public String getVmQName()
-	{
-		return myQualifiedName;
-	}
+    @Nonnull
+    @Override
+    public String getVmQName() {
+        return myQualifiedName;
+    }
 
-	@RequiredReadAction
-	@Nonnull
-	@Override
-	protected DotNetTypeResolveResult resolveResult()
-	{
-		if(DumbService.isDumb(getProject()))
-		{
-			return DotNetTypeResolveResult.EMPTY;
-		}
+    @RequiredReadAction
+    @Nonnull
+    @Override
+    protected DotNetTypeResolveResult resolveResult() {
+        if (DumbService.isDumb(getProject())) {
+            return DotNetTypeResolveResult.EMPTY;
+        }
 
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(getProject()).findType(myQualifiedName, myResolveScope, CSharpTransform.INSTANCE);
+        DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(getProject()).findType(myQualifiedName, myResolveScope, CSharpTransform.INSTANCE);
 
-		if(type == null)
-		{
-			return DotNetTypeResolveResult.EMPTY;
-		}
+        if (type == null) {
+            return DotNetTypeResolveResult.EMPTY;
+        }
 
-		return new CSharpUserTypeRef.Result<>(type, DotNetGenericExtractor.EMPTY);
-	}
+        return new CSharpUserTypeRef.Result<>(type, DotNetGenericExtractor.EMPTY);
+    }
 
-	@Override
-	public boolean isEqualToVmQName(@Nonnull String vmQName)
-	{
-		return vmQName.equals(myQualifiedName);
-	}
+    @Override
+    public boolean isEqualToVmQName(@Nonnull String vmQName) {
+        return vmQName.equals(myQualifiedName);
+    }
 
-	@RequiredReadAction
-	@Nonnull
-	@Override
-	public String toString()
-	{
-		return myQualifiedName;
-	}
+    @RequiredReadAction
+    @Nonnull
+    @Override
+    public String toString() {
+        return myQualifiedName;
+    }
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		if(obj instanceof Delegate)
-		{
-			obj = ((Delegate) obj).getDelegate();
-		}
-		return CSharpLikeTypeRef.equals(this, obj);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Delegate) {
+            obj = ((Delegate) obj).getDelegate();
+        }
+        return CSharpLikeTypeRef.equals(this, obj);
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return CSharpLikeTypeRef.hashCode(this);
-	}
+    @Override
+    public int hashCode() {
+        return CSharpLikeTypeRef.hashCode(this);
+    }
 
-	@Override
-	public DotNetGenericExtractor getExtractor()
-	{
-		return DotNetGenericExtractor.EMPTY;
-	}
+    @Nonnull
+    @Override
+    public DotNetTypeRef getInnerTypeRef() {
+        return new CSharpTypeRefByQName(myProject, myResolveScope, myQualifiedName);
+    }
+
+    @Override
+    public DotNetGenericExtractor getExtractor() {
+        return DotNetGenericExtractor.EMPTY;
+    }
 }

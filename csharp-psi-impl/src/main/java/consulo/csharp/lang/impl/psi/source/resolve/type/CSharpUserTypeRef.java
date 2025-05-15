@@ -193,7 +193,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 	@Override
 	public String getVmQName()
 	{
-		return CSharpTypeRefPresentationUtil.buildText(this);
+		return CSharpTypeRefPresentationUtil.buildVmQName(this);
 	}
 
 	@Nonnull

@@ -17,143 +17,131 @@
 package consulo.csharp.lang.impl.psi.source.resolve.type;
 
 import consulo.annotation.access.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.psi.resolve.*;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
-
 import jakarta.annotation.Nonnull;
+
 import java.util.Arrays;
 
 /**
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult implements DotNetGenericWrapperTypeRef
-{
-	private final DotNetTypeRef myInnerTypeRef;
-	private final DotNetTypeRef[] myArguments;
+public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult implements DotNetGenericWrapperTypeRef {
+    private final DotNetTypeRef myInnerTypeRef;
+    private final DotNetTypeRef[] myArguments;
 
-	public CSharpGenericWrapperTypeRef(Project project, @Nonnull GlobalSearchScope scope, @Nonnull DotNetTypeRef innerTypeRef, @Nonnull DotNetTypeRef... rArguments)
-	{
-		super(project, scope);
-		myInnerTypeRef = innerTypeRef;
-		myArguments = rArguments;
-	}
+    public CSharpGenericWrapperTypeRef(Project project,
+                                       @Nonnull GlobalSearchScope scope,
+                                       @Nonnull DotNetTypeRef innerTypeRef,
+                                       @Nonnull DotNetTypeRef... rArguments) {
+        super(project, scope);
+        myArguments = rArguments;
 
-	@RequiredReadAction
-	@Nonnull
-	@Override
-	public String toString()
-	{
-		StringBuilder builder = new StringBuilder();
-		builder.append(getInnerTypeRef().toString());
-		builder.append("<");
-		for(int i = 0; i < getArgumentTypeRefs().length; i++)
-		{
-			if(i != 0)
-			{
-				builder.append(", ");
-			}
-			DotNetTypeRef argument = getArgumentTypeRefs()[i];
-			builder.append(argument.toString());
-		}
-		builder.append(">");
-		return builder.toString();
-	}
+        if (innerTypeRef instanceof CSharpLikeTypeRef cSharpLikeTypeRef) {
+            myInnerTypeRef = cSharpLikeTypeRef.getInnerTypeRef();
+        } else {
+            myInnerTypeRef = innerTypeRef;
+        }
+    }
 
-	@RequiredReadAction
-	@Nonnull
-	@Override
-	protected DotNetTypeResolveResult resolveResult()
-	{
-		DotNetTypeResolveResult typeResolveResult = getInnerTypeRef().resolve();
-		PsiElement element = typeResolveResult.getElement();
+    @RequiredReadAction
+    @Nonnull
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(getInnerTypeRef().toString());
+        builder.append("<");
+        for (int i = 0; i < getArgumentTypeRefs().length; i++) {
+            if (i != 0) {
+                builder.append(", ");
+            }
+            DotNetTypeRef argument = getArgumentTypeRefs()[i];
+            builder.append(argument.toString());
+        }
+        builder.append(">");
+        return builder.toString();
+    }
 
-		if(typeResolveResult instanceof CSharpLambdaResolveResult)
-		{
-			CSharpMethodDeclaration target = ((CSharpLambdaResolveResult) typeResolveResult).getTarget();
-			if(target == null)
-			{
-				return new CSharpUserTypeRef.Result<>(element, getGenericExtractor(element));
-			}
-			return new CSharpUserTypeRef.LambdaResult(target.getProject(), target.getResolveScope(), target, getGenericExtractor(target));
-		}
-		return new CSharpUserTypeRef.Result<>(element, getGenericExtractor(element));
-	}
+    @RequiredReadAction
+    @Nonnull
+    @Override
+    protected DotNetTypeResolveResult resolveResult() {
+        DotNetTypeResolveResult typeResolveResult = getInnerTypeRef().resolve();
+        PsiElement element = typeResolveResult.getElement();
 
-	public DotNetGenericExtractor getGenericExtractor(PsiElement resolved)
-	{
-		if(!(resolved instanceof DotNetGenericParameterListOwner))
-		{
-			return DotNetGenericExtractor.EMPTY;
-		}
+        if (typeResolveResult instanceof CSharpLambdaResolveResult) {
+            CSharpMethodDeclaration target = ((CSharpLambdaResolveResult) typeResolveResult).getTarget();
+            if (target == null) {
+                return new CSharpUserTypeRef.Result<>(element, getGenericExtractor(element));
+            }
+            return new CSharpUserTypeRef.LambdaResult(target.getProject(), target.getResolveScope(), target, getGenericExtractor(target));
+        }
+        return new CSharpUserTypeRef.Result<>(element, getGenericExtractor(element));
+    }
 
-		DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) resolved).getGenericParameters();
-		if(genericParameters.length != getArgumentTypeRefs().length)
-		{
-			return DotNetGenericExtractor.EMPTY;
-		}
-		return CSharpGenericExtractor.create(genericParameters, getArgumentTypeRefs());
-	}
+    public DotNetGenericExtractor getGenericExtractor(PsiElement resolved) {
+        if (!(resolved instanceof DotNetGenericParameterListOwner)) {
+            return DotNetGenericExtractor.EMPTY;
+        }
 
-	@Override
-	@Nonnull
-	public DotNetTypeRef getInnerTypeRef()
-	{
-		return myInnerTypeRef;
-	}
+        DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) resolved).getGenericParameters();
+        if (genericParameters.length != getArgumentTypeRefs().length) {
+            return DotNetGenericExtractor.EMPTY;
+        }
+        return CSharpGenericExtractor.create(genericParameters, getArgumentTypeRefs());
+    }
 
-	@Override
-	@Nonnull
-	public DotNetTypeRef[] getArgumentTypeRefs()
-	{
-		return myArguments;
-	}
+    @Override
+    @Nonnull
+    public DotNetTypeRef getInnerTypeRef() {
+        return myInnerTypeRef;
+    }
 
-	@Nonnull
-	@Override
-	public String getVmQName()
-	{
-		return CSharpTypeRefPresentationUtil.buildText(this);
-	}
+    @Override
+    @Nonnull
+    public DotNetTypeRef[] getArgumentTypeRefs() {
+        return myArguments;
+    }
 
-	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o)
-		{
-			return true;
-		}
-		if(o == null || getClass() != o.getClass())
-		{
-			return false;
-		}
+    @Nonnull
+    @Override
+    public String getVmQName() {
+        return CSharpTypeRefPresentationUtil.buildVmQName(this);
+    }
 
-		CSharpGenericWrapperTypeRef that = (CSharpGenericWrapperTypeRef) o;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-		if(myInnerTypeRef != null ? !myInnerTypeRef.equals(that.myInnerTypeRef) : that.myInnerTypeRef != null)
-		{
-			return false;
-		}
+        CSharpGenericWrapperTypeRef that = (CSharpGenericWrapperTypeRef) o;
 
-		if(!Arrays.equals(myArguments, that.myArguments))
-		{
-			return false;
-		}
+        if (myInnerTypeRef != null ? !myInnerTypeRef.equals(that.myInnerTypeRef) : that.myInnerTypeRef != null) {
+            return false;
+        }
 
-		return true;
-	}
+        if (!Arrays.equals(myArguments, that.myArguments)) {
+            return false;
+        }
 
-	@Override
-	public int hashCode()
-	{
-		int result = myInnerTypeRef != null ? myInnerTypeRef.hashCode() : 0;
-		result = 31 * result + (myArguments != null ? Arrays.hashCode(myArguments) : 0);
-		return result;
-	}
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = myInnerTypeRef != null ? myInnerTypeRef.hashCode() : 0;
+        result = 31 * result + (myArguments != null ? Arrays.hashCode(myArguments) : 0);
+        return result;
+    }
 }

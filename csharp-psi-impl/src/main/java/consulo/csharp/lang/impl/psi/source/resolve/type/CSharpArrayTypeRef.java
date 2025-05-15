@@ -78,7 +78,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	{
 		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(myProject, myResolveScope);
 		builder.withParentQName("System");
-		builder.withName("ArrayImpl[" + CSharpTypeRefPresentationUtil.buildText(myInnerTypeRef) + "]");
+		builder.withName("ArrayImpl[" + CSharpTypeRefPresentationUtil.buildVmQName(myInnerTypeRef) + "]");
 		builder.withHashAndEqualObject(this);
 		builder.addModifier(DotNetModifier.PUBLIC);
 
@@ -141,7 +141,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	@Override
 	public String getVmQName()
 	{
-		return CSharpTypeRefPresentationUtil.buildText(this);
+		return CSharpTypeRefPresentationUtil.buildVmQName(this);
 	}
 
 	@Override

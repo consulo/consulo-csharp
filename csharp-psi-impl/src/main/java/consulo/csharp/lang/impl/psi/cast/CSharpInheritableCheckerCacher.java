@@ -29,13 +29,15 @@ import consulo.language.psi.PsiModificationTrackerListener;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 import consulo.util.lang.Pair;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * @author VISTALL
@@ -44,54 +46,46 @@ import java.util.concurrent.ConcurrentHashMap;
 @Singleton
 @ServiceAPI(ComponentScope.PROJECT)
 @ServiceImpl
-public class CSharpInheritableCheckerCacher implements Disposable
-{
-	public static CSharpInheritableCheckerCacher getInstance(@Nonnull Project project)
-	{
-		return project.getInstance(CSharpInheritableCheckerCacher.class);
-	}
+public class CSharpInheritableCheckerCacher implements Disposable {
+    public static CSharpInheritableCheckerCacher getInstance(@Nonnull Project project) {
+        return project.getInstance(CSharpInheritableCheckerCacher.class);
+    }
 
-	private final Map<CSharpInheritKey, CSharpTypeUtil.InheritResult> myCache = new ConcurrentHashMap<>();
-	private final Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> myImplicitCast = new ConcurrentHashMap<>();
+    private final Map<CSharpInheritKey, CSharpTypeUtil.InheritResult> myCache = new ConcurrentHashMap<>();
+    private final Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> myImplicitCasts = new ConcurrentSkipListMap<>(Comparator.comparing(Object::toString));
 
-	@Inject
-	public CSharpInheritableCheckerCacher(Project project)
-	{
-		project.getMessageBus().connect(this).subscribe(PsiModificationTrackerListener.class, () ->
-		{
-			myCache.clear();
-			myImplicitCast.clear();
-		});
-	}
+    @Inject
+    public CSharpInheritableCheckerCacher(Project project) {
+        project.getMessageBus().connect(this).subscribe(PsiModificationTrackerListener.class, () -> {
+            myCache.clear();
+            myImplicitCasts.clear();
+        });
+    }
 
-	@Nonnull
-	@RequiredReadAction
-	public CSharpTypeUtil.InheritResult getOrCheck(DotNetTypeRef top,
-												   DotNetTypeRef target,
-												   @Nullable Pair<CSharpCastType, GlobalSearchScope> castTypeResolver)
-	{
-		CSharpInheritKey key = new CSharpInheritKey(top, target, castTypeResolver);
-		CSharpTypeUtil.InheritResult result = myCache.get(key);
-		if(result != null)
-		{
-			return result;
-		}
+    @Nonnull
+    @RequiredReadAction
+    public CSharpTypeUtil.InheritResult getOrCheck(DotNetTypeRef top,
+                                                   DotNetTypeRef target,
+                                                   @Nullable Pair<CSharpCastType, GlobalSearchScope> castTypeResolver) {
+        CSharpInheritKey key = new CSharpInheritKey(top, target, castTypeResolver);
+        CSharpTypeUtil.InheritResult result = myCache.get(key);
+        if (result != null) {
+            return result;
+        }
 
-		try (CSharpCastSession session = CSharpCastSession.start(myImplicitCast))
-		{
-			result = CSharpInheritableChecker.isInheritable(key.top(), key.target(), key.castResolvingInfo());
+        try (CSharpCastSession session = CSharpCastSession.start(myImplicitCasts)) {
+            result = CSharpInheritableChecker.isInheritable(key.top(), key.target(), key.castResolvingInfo());
 
-			myImplicitCast.putAll(session.getImplicitCast());
-		}
+            session.storeImplicit(myImplicitCasts);
+        }
 
-		// we can't use computeIfAbsent since we can call store data in recursive mode, which ConcurrentHashMap not allow
-		myCache.putIfAbsent(key, result);
-		return result;
-	}
+        // we can't use computeIfAbsent since we can call store data in recursive mode, which ConcurrentHashMap not allow
+        myCache.putIfAbsent(key, result);
+        return result;
+    }
 
-	@Override
-	public void dispose()
-	{
-		myCache.clear();
-	}
+    @Override
+    public void dispose() {
+        myCache.clear();
+    }
 }
