@@ -71,6 +71,12 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
     public static final int ALLOW_EMPTY_TYPE_ARGUMENTS = 1 << 5;
     public static final int INSIDE_DOC = 1 << 6;
     public static final int UNEXPECTED_TUPLE = 1 << 7;
+    /**
+     * by default bool System.Numerics.INumberBase<int>.TryConvertToSaturating<TOther>(int value, out TOther result)
+     *
+     * parsed as full expression, but need convert TOther to generic parameter, not type
+     */
+    public static final int TYPE_PARAMS_TO_GENERIC_PARAMS = 1 << 8;
 
     public static class TypeInfo {
         public IElementType nativeElementType;

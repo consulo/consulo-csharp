@@ -38,7 +38,7 @@ import jakarta.annotation.Nullable;
  */
 public class DeclarationParsing extends SharedParsingHelpers {
     // { (
-    private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR, THIS_KEYWORD);
+    private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR, THIS_KEYWORD, OPERATOR_KEYWORD);
 
     public static void parseAll(@Nonnull CSharpBuilderWrapper builder, boolean root, boolean isEnum) {
         if (isEnum) {
@@ -194,11 +194,18 @@ public class DeclarationParsing extends SharedParsingHelpers {
 
                         IElementType prevToken = null;
                         if (builder.getTokenType() == DOT) {
-                            builder.advanceLexer();
+                            if (builder.lookAhead(1) == CSharpTokens.OPERATOR_KEYWORD) {
+                                builder.advanceLexer();
+                                
+                                MethodParsing.parseMethodStartAfterType(builder, marker, typeInfo, MethodParsing.Target.METHOD, modifierSet);
+                                return;
+                            } else {
+                                builder.advanceLexer();
 
-                            prevToken = builder.getTokenType();
+                                prevToken = builder.getTokenType();
 
-                            doneThisOrIdentifier(builder);
+                                doneThisOrIdentifier(builder);
+                            }
                         }
                         else {
                             if (implementType.marker != null) {
@@ -292,6 +299,6 @@ public class DeclarationParsing extends SharedParsingHelpers {
         if (tokenType == THIS_KEYWORD) {
             return new TypeInfo();
         }
-        return parseType(builder, STUB_SUPPORT, NAME_STOPPERS);
+        return parseType(builder, STUB_SUPPORT | TYPE_PARAMS_TO_GENERIC_PARAMS, NAME_STOPPERS);
     }
 }

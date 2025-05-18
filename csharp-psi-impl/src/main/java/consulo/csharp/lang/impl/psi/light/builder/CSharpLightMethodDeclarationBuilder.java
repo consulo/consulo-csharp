@@ -56,7 +56,8 @@ public class CSharpLightMethodDeclarationBuilder extends CSharpLightLikeMethodDe
 		visitor.visitMethodDeclaration(this);
 	}
 
-	@Override
+	@RequiredReadAction
+    @Override
 	public boolean isDelegate()
 	{
 		return false;

@@ -25,7 +25,6 @@ import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetType;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -33,76 +32,71 @@ import jakarta.annotation.Nullable;
  * @author VISTALL
  * @since 13.01.14
  */
-public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarationWithImplType<CSharpMethodDeclaration> implements CSharpMethodDeclaration
-{
-	public CSharpLightMethodDeclaration(@Nonnull CSharpMethodDeclaration declaration)
-	{
-		this(declaration, declaration.getParameterList());
-	}
+public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarationWithImplType<CSharpMethodDeclaration> implements CSharpMethodDeclaration {
+    public CSharpLightMethodDeclaration(@Nonnull CSharpMethodDeclaration declaration) {
+        this(declaration, declaration.getParameterList());
+    }
 
-	public CSharpLightMethodDeclaration(CSharpMethodDeclaration original, @Nullable DotNetParameterList parameterList)
-	{
-		super(original, parameterList);
-	}
+    public CSharpLightMethodDeclaration(CSharpMethodDeclaration original, @Nullable DotNetParameterList parameterList) {
+        super(original, parameterList);
+    }
 
-	@Override
-	public boolean isDelegate()
-	{
-		return myOriginal.isDelegate();
-	}
+    @RequiredReadAction
+    @Override
+    public boolean isDelegate() {
+        return myOriginal.isDelegate();
+    }
 
-	@RequiredReadAction
-	@Override
-	public boolean isOperator()
-	{
-		return myOriginal.isOperator();
-	}
+    @RequiredReadAction
+    @Override
+    public boolean isCheckedOperator() {
+        return myOriginal.isCheckedOperator();
+    }
 
-	@Override
-	public boolean isExtension()
-	{
-		return myOriginal.isExtension();
-	}
+    @RequiredReadAction
+    @Override
+    public boolean isOperator() {
+        return myOriginal.isOperator();
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public IElementType getOperatorElementType()
-	{
-		return myOriginal.getOperatorElementType();
-	}
+    @Override
+    public boolean isExtension() {
+        return myOriginal.isExtension();
+    }
 
-	@Nullable
-	@Override
-	public PsiElement getNameIdentifier()
-	{
-		return myOriginal.getNameIdentifier();
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public IElementType getOperatorElementType() {
+        return myOriginal.getOperatorElementType();
+    }
 
-	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
-	{
-		visitor.visitMethodDeclaration(this);
-	}
+    @Nullable
+    @Override
+    public PsiElement getNameIdentifier() {
+        return myOriginal.getNameIdentifier();
+    }
 
-	@Nullable
-	@Override
-	public CSharpGenericConstraintList getGenericConstraintList()
-	{
-		return null;
-	}
+    @Override
+    public void accept(@Nonnull CSharpElementVisitor visitor) {
+        visitor.visitMethodDeclaration(this);
+    }
 
-	@Nonnull
-	@Override
-	public CSharpGenericConstraint[] getGenericConstraints()
-	{
-		return CSharpGenericConstraint.EMPTY_ARRAY;
-	}
+    @Nullable
+    @Override
+    public CSharpGenericConstraintList getGenericConstraintList() {
+        return null;
+    }
 
-	@Nullable
-	@Override
-	public DotNetType getTypeForImplement()
-	{
-		return myOriginal.getTypeForImplement();
-	}
+    @Nonnull
+    @Override
+    public CSharpGenericConstraint[] getGenericConstraints() {
+        return CSharpGenericConstraint.EMPTY_ARRAY;
+    }
+
+    @Nullable
+    @Override
+    public DotNetType getTypeForImplement() {
+        return myOriginal.getTypeForImplement();
+    }
 }

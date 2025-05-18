@@ -1609,7 +1609,10 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return parseQualifiedReference(builder, prevMarker, NONE, TokenSet.EMPTY);
     }
 
-    public static ReferenceInfo parseQualifiedReference(@Nonnull CSharpBuilderWrapper builder, @Nullable final PsiBuilder.Marker prevMarker, int flags, @Nonnull TokenSet nameStopperSet) {
+    public static ReferenceInfo parseQualifiedReference(@Nonnull CSharpBuilderWrapper builder,
+                                                        @Nullable final PsiBuilder.Marker prevMarker,
+                                                        int flags,
+                                                        @Nonnull TokenSet nameStopperSet) {
         if (prevMarker != null) {
             builder.advanceLexer(); // skip dot or coloncolon
         }

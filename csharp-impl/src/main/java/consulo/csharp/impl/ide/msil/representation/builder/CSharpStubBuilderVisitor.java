@@ -224,11 +224,27 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor {
         if (declaration.isDelegate()) {
             builder.append("delegate ");
         }
+        
         appendTypeRef(declaration.getProject(), builder, declaration.getReturnTypeRef());
-        builder.append(" ");
+
         if (declaration.isOperator()) {
+            builder.append(" ");
+
+            DotNetTypeRef typeRefForImplement = declaration.getTypeRefForImplement();
+            if (typeRefForImplement != DotNetTypeRef.ERROR_TYPE) {
+                appendTypeRef(declaration.getProject(), builder, typeRefForImplement);
+                builder.append(".");
+            }
+
             builder.append("operator ");
+        } else {
+            builder.append(" ");
         }
+
+        if (declaration.isCheckedOperator()) {
+            builder.append("checked ");
+        }
+
         appendName(declaration, builder);
         processGenericParameterList(builder, declaration);
         processParameterList(declaration, builder, '(', ')');
@@ -319,8 +335,12 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor {
     private static <T extends DotNetVirtualImplementOwner & DotNetNamedElement> void appendName(T element, StringBuilder builder) {
         DotNetTypeRef typeRefForImplement = element.getTypeRefForImplement();
         if (typeRefForImplement != DotNetTypeRef.ERROR_TYPE) {
-            appendTypeRef(element.getProject(), builder, typeRefForImplement);
-            builder.append(".");
+
+            if (element instanceof CSharpMethodDeclaration methodDeclaration && !methodDeclaration.isOperator()) {
+                appendTypeRef(element.getProject(), builder, typeRefForImplement);
+                builder.append(".");
+            }
+
             if (element instanceof CSharpIndexMethodDeclaration) {
                 builder.append("this");
             }

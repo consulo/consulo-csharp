@@ -65,6 +65,10 @@ public class MethodParsing extends MemberWithBodyParsing {
             if (builder.getTokenType() == OPERATOR_KEYWORD) {
                 builder.advanceLexer();
 
+                if (builder.getTokenType() == CHECKED_KEYWORD) {
+                    builder.advanceLexer();
+                }
+
                 IElementType tokenTypeGGLL = builder.getTokenTypeGGLL();
 
                 if (typeInfo != null && (typeInfo.nativeElementType == EXPLICIT_KEYWORD || typeInfo.nativeElementType == IMPLICIT_KEYWORD)) {

@@ -27,30 +27,34 @@ import jakarta.annotation.Nullable;
  * @author VISTALL
  * @since 30.11.13.
  */
-public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharpGenericConstraintOwner, CSharpSimpleLikeMethodAsElement, CSharpNamedElement
-{
-	public static final CSharpMethodDeclaration[] EMPTY_ARRAY = new CSharpMethodDeclaration[0];
+public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharpGenericConstraintOwner, CSharpSimpleLikeMethodAsElement, CSharpNamedElement {
+    public static final CSharpMethodDeclaration[] EMPTY_ARRAY = new CSharpMethodDeclaration[0];
 
-	public static ArrayFactory<CSharpMethodDeclaration> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpMethodDeclaration[count];
+    public static ArrayFactory<CSharpMethodDeclaration> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpMethodDeclaration[count];
 
-	boolean isDelegate();
+    @RequiredReadAction
+    boolean isDelegate();
 
-	@RequiredReadAction
-	boolean isOperator();
+    @RequiredReadAction
+    boolean isOperator();
 
-	boolean isExtension();
+    @RequiredReadAction
+    default boolean isCheckedOperator() {
+        return false;
+    }
 
-	@Nullable
-	@RequiredReadAction
-	IElementType getOperatorElementType();
+    boolean isExtension();
 
-	@Nonnull
-	@Override
-	CSharpCodeBodyProxy getCodeBlock();
+    @Nullable
+    @RequiredReadAction
+    IElementType getOperatorElementType();
 
-	@RequiredReadAction
-	default boolean isLocal()
-	{
-		return false;
-	}
+    @Nonnull
+    @Override
+    CSharpCodeBodyProxy getCodeBlock();
+
+    @RequiredReadAction
+    default boolean isLocal() {
+        return false;
+    }
 }
