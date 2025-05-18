@@ -45,362 +45,303 @@ import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.logging.Logger;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
-
 import jakarta.annotation.Nonnull;
+
 import java.util.*;
 
 /**
  * @author VISTALL
  * @since 14.12.14
  */
-public class OverrideUtil
-{
-	private static final Logger LOGGER = Logger.getInstance(OverrideUtil.class);
+public class OverrideUtil {
+    private static final Logger LOGGER = Logger.getInstance(OverrideUtil.class);
 
-	@RequiredReadAction
-	public static CSharpModifier getRequiredOverrideModifier(@Nonnull DotNetModifierListOwner modifierListOwner)
-	{
-		DotNetModifierList modifierList = modifierListOwner.getModifierList();
-		if(modifierList == null)
-		{
-			return null;
-		}
+    @RequiredReadAction
+    public static CSharpModifier getRequiredOverrideModifier(@Nonnull DotNetModifierListOwner modifierListOwner) {
+        DotNetModifierList modifierList = modifierListOwner.getModifierList();
+        if (modifierList == null) {
+            return null;
+        }
 
-		if(modifierList.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
-		{
-			return null;
-		}
+        if (modifierList.hasModifier(CSharpModifier.INTERFACE_ABSTRACT)) {
+            return null;
+        }
 
-		if(modifierList.hasModifierInTree(CSharpModifier.ABSTRACT) || modifierList.hasModifierInTree(CSharpModifier.VIRTUAL) || modifierList.hasModifierInTree(CSharpModifier.OVERRIDE))
-		{
-			return CSharpModifier.OVERRIDE;
-		}
-		return CSharpModifier.NEW;
-	}
+        if (modifierList.hasModifierInTree(CSharpModifier.ABSTRACT) || modifierList.hasModifierInTree(CSharpModifier.VIRTUAL) || modifierList.hasModifierInTree(CSharpModifier.OVERRIDE)) {
+            return CSharpModifier.OVERRIDE;
+        }
+        return CSharpModifier.NEW;
+    }
 
-	@Nonnull
-	public static Collection<PsiElement> filterOverrideElements(@Nonnull PsiScopeProcessor processor,
-																@Nonnull PsiElement scopeElement,
-																@Nonnull Collection<PsiElement> psiElements,
-																@Nonnull OverrideProcessor overrideProcessor)
-	{
-		if(psiElements.size() == 0)
-		{
-			return psiElements;
-		}
+    @Nonnull
+    public static Collection<PsiElement> filterOverrideElements(@Nonnull PsiScopeProcessor processor,
+                                                                @Nonnull PsiElement scopeElement,
+                                                                @Nonnull Collection<PsiElement> psiElements,
+                                                                @Nonnull OverrideProcessor overrideProcessor) {
+        if (psiElements.size() == 0) {
+            return psiElements;
+        }
 
-		if(!ExecuteTargetUtil.canProcess(processor, ExecuteTarget.ELEMENT_GROUP, ExecuteTarget.EVENT, ExecuteTarget.PROPERTY))
-		{
-			return CSharpResolveUtil.mergeGroupsToIterable(psiElements);
-		}
+        if (!ExecuteTargetUtil.canProcess(processor, ExecuteTarget.ELEMENT_GROUP, ExecuteTarget.EVENT, ExecuteTarget.PROPERTY)) {
+            return CSharpResolveUtil.mergeGroupsToIterable(psiElements);
+        }
 
-		List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
+        List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
 
-		return filterOverrideElements(scopeElement, elements, overrideProcessor);
-	}
+        return filterOverrideElements(scopeElement, elements, overrideProcessor);
+    }
 
-	@Nonnull
-	@SuppressWarnings("unchecked")
-	public static List<PsiElement> filterOverrideElements(@Nonnull PsiElement scopeElement, @Nonnull Collection<PsiElement> elements, @Nonnull OverrideProcessor overrideProcessor)
-	{
-		List<PsiElement> copyElements = new ArrayList<>(elements);
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    public static List<PsiElement> filterOverrideElements(@Nonnull PsiElement scopeElement, @Nonnull Collection<PsiElement> elements, @Nonnull OverrideProcessor overrideProcessor) {
+        List<PsiElement> copyElements = new ArrayList<>(elements);
 
-		for(PsiElement element : elements)
-		{
-			ProgressManager.checkCanceled();
+        for (PsiElement element : elements) {
+            ProgressManager.checkCanceled();
 
-			if(!copyElements.contains(element))
-			{
-				continue;
-			}
+            if (!copyElements.contains(element)) {
+                continue;
+            }
 
-			if(element instanceof DotNetVirtualImplementOwner)
-			{
-				if(element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isDelegate())
-				{
-					continue;
-				}
-				DotNetVirtualImplementOwner virtualImplementOwner = (DotNetVirtualImplementOwner) element;
+            if (element instanceof DotNetVirtualImplementOwner) {
+                if (element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isDelegate()) {
+                    continue;
+                }
+                DotNetVirtualImplementOwner virtualImplementOwner = (DotNetVirtualImplementOwner) element;
 
-				DotNetType typeForImplement = virtualImplementOwner.getTypeForImplement();
+                DotNetType typeForImplement = virtualImplementOwner.getTypeForImplement();
 
-				for(PsiElement tempIterateElement : elements)
-				{
-					// skip self
-					if(tempIterateElement == element)
-					{
-						continue;
-					}
+                for (PsiElement tempIterateElement : elements) {
+                    // skip self
+                    if (tempIterateElement == element) {
+                        continue;
+                    }
 
-					ProgressManager.checkCanceled();
+                    ProgressManager.checkCanceled();
 
-					if(CSharpElementCompareUtil.isEqual(tempIterateElement, element, CSharpElementCompareUtil.CHECK_RETURN_TYPE))
-					{
-						if(!overrideProcessor.elementOverride(virtualImplementOwner, (DotNetVirtualImplementOwner) tempIterateElement))
-						{
-							return Collections.emptyList();
-						}
-						copyElements.remove(tempIterateElement);
-					}
-				}
+                    if (CSharpElementCompareUtil.isEqual(tempIterateElement, element, CSharpElementCompareUtil.CHECK_RETURN_TYPE)) {
+                        if (!overrideProcessor.elementOverride(virtualImplementOwner, (DotNetVirtualImplementOwner) tempIterateElement)) {
+                            return Collections.emptyList();
+                        }
+                        copyElements.remove(tempIterateElement);
+                    }
+                }
 
-				// if he have hide impl, remove it
-				if(typeForImplement != null)
-				{
-					copyElements.remove(element);
-				}
-			}
-		}
+                // if he have hide impl, remove it
+                if (typeForImplement != null) {
+                    copyElements.remove(element);
+                }
+            }
+        }
 
-		List<PsiElement> groupElements = new SmartList<>();
-		List<PsiElement> elseElements = new SmartList<>();
+        List<PsiElement> groupElements = new SmartList<>();
+        List<PsiElement> elseElements = new SmartList<>();
 
-		for(PsiElement copyElement : copyElements)
-		{
-			ProgressManager.checkCanceled();
+        for (PsiElement copyElement : copyElements) {
+            ProgressManager.checkCanceled();
 
-			if(copyElement instanceof DotNetLikeMethodDeclaration)
-			{
-				groupElements.add(copyElement);
-			}
-			else
-			{
-				elseElements.add(copyElement);
-			}
-		}
+            if (copyElement instanceof DotNetLikeMethodDeclaration) {
+                groupElements.add(copyElement);
+            }
+            else {
+                elseElements.add(copyElement);
+            }
+        }
 
-		if(elseElements.isEmpty() && groupElements.isEmpty())
-		{
-			return Collections.emptyList();
-		}
-		else if(elseElements.isEmpty())
-		{
-			return Collections.singletonList(new CSharpElementGroupImpl<>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements));
-		}
-		else if(groupElements.isEmpty())
-		{
-			return elseElements;
-		}
-		else
-		{
-			elseElements.add(new CSharpElementGroupImpl<>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements));
-			return elseElements;
-		}
-	}
+        if (elseElements.isEmpty() && groupElements.isEmpty()) {
+            return Collections.emptyList();
+        }
+        else if (elseElements.isEmpty()) {
+            return Collections.singletonList(new CSharpElementGroupImpl<>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements));
+        }
+        else if (groupElements.isEmpty()) {
+            return elseElements;
+        }
+        else {
+            elseElements.add(new CSharpElementGroupImpl<>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements));
+            return elseElements;
+        }
+    }
 
-	@Nonnull
-	private static String getNameForGroup(List<PsiElement> elements)
-	{
-		assert !elements.isEmpty();
-		PsiElement element = elements.get(0);
-		if(element instanceof DotNetVariable)
-		{
-			return ((DotNetVariable) element).getName();
-		}
-		else if(element instanceof CSharpIndexMethodDeclaration)
-		{
-			return "this[]";
-		}
-		else if(element instanceof DotNetLikeMethodDeclaration)
-		{
-			String name = ((DotNetLikeMethodDeclaration) element).getName();
-			assert name != null : element.getClass().getName();
-			return name;
-		}
-		else
-		{
-			LOGGER.error(element.getClass() + " is not handled");
-			return "override";
-		}
-	}
+    @Nonnull
+    private static String getNameForGroup(List<PsiElement> elements) {
+        assert !elements.isEmpty();
+        PsiElement element = elements.get(0);
+        if (element instanceof DotNetVariable) {
+            return ((DotNetVariable) element).getName();
+        }
+        else if (element instanceof CSharpIndexMethodDeclaration) {
+            return "this[]";
+        }
+        else if (element instanceof DotNetLikeMethodDeclaration) {
+            String name = ((DotNetLikeMethodDeclaration) element).getName();
+            assert name != null : element.getClass().getName();
+            return name;
+        }
+        else {
+            LOGGER.error(element.getClass() + " is not handled");
+            return "override";
+        }
+    }
 
-	@RequiredReadAction
-	public static boolean isAllowForOverride(@Nonnull PsiElement parent)
-	{
-		if(!(parent instanceof DotNetVirtualImplementOwner))
-		{
-			return false;
-		}
+    @RequiredReadAction
+    public static boolean isAllowForOverride(@Nonnull PsiElement parent) {
+        if (!(parent instanceof DotNetVirtualImplementOwner)) {
+            return false;
+        }
 
-		if(parent instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) parent).isDelegate())
-		{
-			return false;
-		}
+        if (parent instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) parent).isDelegate()) {
+            return false;
+        }
 
-		if(parent instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) parent).hasModifier(CSharpModifier.STATIC))
-		{
-			return false;
-		}
-		return true;
-	}
+        if (parent instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) parent).hasModifier(CSharpModifier.STATIC)) {
+            return false;
+        }
+        return true;
+    }
 
-	@Nonnull
-	@RequiredReadAction
-	public static Collection<DotNetVirtualImplementOwner> collectOverridingMembers(final DotNetVirtualImplementOwner target)
-	{
-		PsiElement parent = target.getParent();
-		if(parent == null)
-		{
-			return Collections.emptyList();
-		}
-		OverrideProcessor.Collector overrideProcessor = new OverrideProcessor.Collector();
+    @Nonnull
+    @RequiredReadAction
+    public static Collection<DotNetVirtualImplementOwner> collectOverridingMembers(final DotNetVirtualImplementOwner target) {
+        PsiElement parent = target.getParent();
+        if (parent == null) {
+            return Collections.emptyList();
+        }
+        OverrideProcessor.Collector overrideProcessor = new OverrideProcessor.Collector();
 
-		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(parent, CommonProcessors.<ResolveResult>alwaysTrue(), new ExecuteTarget[]{
-				ExecuteTarget.MEMBER,
-				ExecuteTarget.ELEMENT_GROUP
-		}, overrideProcessor);
+        MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(parent, CommonProcessors.<ResolveResult>alwaysTrue(), new ExecuteTarget[]{
+            ExecuteTarget.MEMBER,
+            ExecuteTarget.ELEMENT_GROUP
+        }, overrideProcessor);
 
-		ResolveState state = ResolveState.initial();
-		if(target instanceof CSharpIndexMethodDeclaration)
-		{
-			state = state.put(CSharpResolveUtil.SELECTOR, StaticResolveSelectors.INDEX_METHOD_GROUP);
-		}
-		else
-		{
-			String name = ((PsiNamedElement) target).getName();
-			if(name == null)
-			{
-				return Collections.emptyList();
-			}
-			state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(name));
-		}
+        ResolveState state = ResolveState.initial();
+        if (target instanceof CSharpIndexMethodDeclaration) {
+            state = state.put(CSharpResolveUtil.SELECTOR, StaticResolveSelectors.INDEX_METHOD_GROUP);
+        }
+        else {
+            String name = ((PsiNamedElement) target).getName();
+            if (name == null) {
+                return Collections.emptyList();
+            }
+            state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(name));
+        }
 
-		CSharpResolveUtil.walkChildren(processor, parent, false, true, state);
+        CSharpResolveUtil.walkChildren(processor, parent, false, true, state);
 
-		List<DotNetVirtualImplementOwner> results = overrideProcessor.getResults();
+        List<DotNetVirtualImplementOwner> results = overrideProcessor.getResults();
 
-		// need filter result due it ill return all elements with target selector
-		ListIterator<DotNetVirtualImplementOwner> listIterator = results.listIterator();
-		while(listIterator.hasNext())
-		{
-			ProgressManager.checkCanceled();
+        // need filter result due it ill return all elements with target selector
+        ListIterator<DotNetVirtualImplementOwner> listIterator = results.listIterator();
+        while (listIterator.hasNext()) {
+            ProgressManager.checkCanceled();
 
-			DotNetVirtualImplementOwner next = listIterator.next();
-			if(!CSharpElementCompareUtil.isEqual(next, target, CSharpElementCompareUtil.CHECK_RETURN_TYPE))
-			{
-				listIterator.remove();
-			}
-		}
-		return results;
-	}
+            DotNetVirtualImplementOwner next = listIterator.next();
+            if (!CSharpElementCompareUtil.isEqual(next, target, CSharpElementCompareUtil.CHECK_RETURN_TYPE)) {
+                listIterator.remove();
+            }
+        }
+        return results;
+    }
 
-	@Nonnull
-	@RequiredReadAction
-	public static Collection<DotNetVirtualImplementOwner> collectOverridenMembers(final DotNetVirtualImplementOwner target)
-	{
-		PsiElement parent = target.getParent();
-		if(!(parent instanceof DotNetTypeDeclaration))
-		{
-			return Collections.emptyList();
-		}
-		final CSharpResolveSelector selector;
-		if(target instanceof CSharpIndexMethodDeclaration)
-		{
-			selector = StaticResolveSelectors.INDEX_METHOD_GROUP;
-		}
-		else
-		{
-			String name = ((PsiNamedElement) target).getName();
-			if(name != null)
-			{
-				selector = new MemberByNameSelector(name);
-			}
-			else
-			{
-				selector = null;
-			}
-		}
+    @Nonnull
+    @RequiredReadAction
+    public static Collection<DotNetVirtualImplementOwner> collectOverridenMembers(final DotNetVirtualImplementOwner target) {
+        PsiElement parent = target.getParent();
+        if (!(parent instanceof DotNetTypeDeclaration)) {
+            return Collections.emptyList();
+        }
+        final CSharpResolveSelector selector;
+        if (target instanceof CSharpIndexMethodDeclaration) {
+            selector = StaticResolveSelectors.INDEX_METHOD_GROUP;
+        }
+        else {
+            String name = ((PsiNamedElement) target).getName();
+            if (name != null) {
+                selector = new MemberByNameSelector(name);
+            }
+            else {
+                selector = null;
+            }
+        }
 
-		if(selector == null)
-		{
-			return Collections.emptyList();
-		}
-		final GlobalSearchScope resolveScope = target.getResolveScope();
+        if (selector == null) {
+            return Collections.emptyList();
+        }
+        final GlobalSearchScope resolveScope = target.getResolveScope();
 
-		final List<DotNetVirtualImplementOwner> list = new ArrayList<>();
-		Query<DotNetTypeDeclaration> search = TypeInheritorsSearch.search((DotNetTypeDeclaration) parent, true, CSharpTransform.INSTANCE);
-		search.forEach(new Processor<DotNetTypeDeclaration>()
-		{
-			@Override
-			@RequiredReadAction
-			public boolean process(DotNetTypeDeclaration typeDeclaration)
-			{
-				CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, resolveScope, typeDeclaration);
+        final List<DotNetVirtualImplementOwner> list = new ArrayList<>();
+        Query<DotNetTypeDeclaration> search = TypeInheritorsSearch.search((DotNetTypeDeclaration) parent, true, CSharpTransform.INSTANCE);
+        search.forEach(new Processor<DotNetTypeDeclaration>() {
+            @Override
+            @RequiredReadAction
+            public boolean process(DotNetTypeDeclaration typeDeclaration) {
+                CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, resolveScope, typeDeclaration);
 
-				Collection<PsiElement> elements = selector.doSelectElement(context, false);
-				for(PsiElement element : CSharpResolveUtil.mergeGroupsToIterable(elements))
-				{
-					if(element == target)
-					{
-						continue;
-					}
-					if(CSharpElementCompareUtil.isEqual(element, target, CSharpElementCompareUtil.CHECK_RETURN_TYPE))
-					{
-						list.add((DotNetVirtualImplementOwner) element);
-					}
-				}
-				return true;
-			}
-		});
+                Collection<PsiElement> elements = selector.doSelectElement(context, false);
+                for (PsiElement element : CSharpResolveUtil.mergeGroupsToIterable(elements)) {
+                    if (element == target) {
+                        continue;
+                    }
+                    if (CSharpElementCompareUtil.isEqual(element, target, CSharpElementCompareUtil.CHECK_RETURN_TYPE)) {
+                        list.add((DotNetVirtualImplementOwner) element);
+                    }
+                }
+                return true;
+            }
+        });
 
-		return list;
-	}
+        return list;
+    }
 
-	@Nonnull
-	@RequiredReadAction
-	public static Collection<DotNetModifierListOwner> collectMembersWithModifier(@Nonnull PsiElement element, @Nonnull DotNetGenericExtractor extractor, @Nonnull CSharpModifier modifier)
-	{
-		List<DotNetModifierListOwner> psiElements = new SmartList<>();
-		for(PsiElement psiElement : getAllMembers(element, element.getResolveScope(), extractor, false, true))
-		{
-			ProgressManager.checkCanceled();
+    @Nonnull
+    @RequiredReadAction
+    public static Collection<DotNetModifierListOwner> collectMembersWithModifier(@Nonnull PsiElement element, @Nonnull DotNetGenericExtractor extractor, @Nonnull CSharpModifier modifier) {
+        List<DotNetModifierListOwner> psiElements = new SmartList<>();
+        for (PsiElement psiElement : getAllMembers(element, element.getResolveScope(), extractor, false, true)) {
+            ProgressManager.checkCanceled();
 
-			if(psiElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) psiElement).hasModifier(modifier))
-			{
-				psiElements.add((DotNetModifierListOwner) psiElement);
-			}
-		}
-		return psiElements;
-	}
+            if (psiElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) psiElement).hasModifier(modifier)) {
+                psiElements.add((DotNetModifierListOwner) psiElement);
+            }
+        }
+        return psiElements;
+    }
 
-	@Nonnull
-	@RequiredReadAction
-	public static Collection<PsiElement> getAllMembers(@Nonnull final PsiElement targetTypeDeclaration,
-			@Nonnull GlobalSearchScope scope,
-			@Nonnull DotNetGenericExtractor extractor,
-			boolean completion,
-			boolean overrideTool)
-	{
-		final CommonProcessors.CollectProcessor<PsiElement> collectProcessor = new CommonProcessors.CollectProcessor<>();
-		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, scope, targetTypeDeclaration);
-		// process method & properties
-		context.processElements(collectProcessor, true);
-		// process index methods
-		CSharpElementGroup<CSharpIndexMethodDeclaration> group = context.indexMethodGroup(true);
-		if(group != null)
-		{
-			group.process(collectProcessor);
-		}
+    @Nonnull
+    @RequiredReadAction
+    public static Collection<PsiElement> getAllMembers(@Nonnull final PsiElement targetTypeDeclaration,
+                                                       @Nonnull GlobalSearchScope scope,
+                                                       @Nonnull DotNetGenericExtractor extractor,
+                                                       boolean completion,
+                                                       boolean overrideTool) {
+        final CommonProcessors.CollectProcessor<PsiElement> collectProcessor = new CommonProcessors.CollectProcessor<>();
+        CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, scope, targetTypeDeclaration);
+        // process method & properties
+        context.processElements(collectProcessor, true);
+        // process index methods
+        CSharpElementGroup<CSharpIndexMethodDeclaration> group = context.indexMethodGroup(true);
+        if (group != null) {
+            group.process(collectProcessor);
+        }
 
-		Collection<PsiElement> results = collectProcessor.getResults();
+        Collection<PsiElement> results = collectProcessor.getResults();
 
-		List<PsiElement> mergedElements = CSharpResolveUtil.mergeGroupsToIterable(results);
-		List<PsiElement> psiElements = OverrideUtil.filterOverrideElements(targetTypeDeclaration, mergedElements, OverrideProcessor.ALWAYS_TRUE);
+        List<PsiElement> mergedElements = CSharpResolveUtil.mergeGroupsToIterable(results);
+        List<PsiElement> psiElements = OverrideUtil.filterOverrideElements(targetTypeDeclaration, mergedElements, OverrideProcessor.ALWAYS_TRUE);
 
-		List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
-		if(overrideTool)
-		{
-			// filter self methods, we need it in circular extends
-			elements = ContainerUtil.filter(elements, element ->
-			{
-				ProgressManager.checkCanceled();
-				return element.getParent() != targetTypeDeclaration;
-			});
-		}
-		return completion ? elements : ContainerUtil.filter(elements, element ->
-		{
-			ProgressManager.checkCanceled();
-			return !(element instanceof DotNetTypeDeclaration);
-		});
-	}
+        List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
+        if (overrideTool) {
+            // filter self methods, we need it in circular extends
+            elements = ContainerUtil.filter(elements, element ->
+            {
+                ProgressManager.checkCanceled();
+                return element.getParent() != targetTypeDeclaration;
+            });
+        }
+        return completion ? elements : ContainerUtil.filter(elements, element ->
+        {
+            ProgressManager.checkCanceled();
+            return !(element instanceof DotNetTypeDeclaration);
+        });
+    }
 }
