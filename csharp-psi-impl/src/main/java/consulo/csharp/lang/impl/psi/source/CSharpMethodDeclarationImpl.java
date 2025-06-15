@@ -75,7 +75,12 @@ public class CSharpMethodDeclarationImpl extends CSharpStubLikeMethodDeclaration
             if (operatorElementType == null) {
                 return "<error-operator>";
             }
-            return CSharpOperatorNameHelper.getOperatorName(operatorElementType);
+
+            String operatorName = CSharpOperatorNameHelper.getOperatorName(operatorElementType);
+            if (isCheckedOperator()) {
+                return "checked " + operatorName;
+            }
+            return operatorName;
         }
         return super.getName();
     }

@@ -18,14 +18,13 @@ package consulo.csharp.lang.impl.psi.source.resolve;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.progress.ProgressManager;
-import consulo.application.util.function.Processor;
 import consulo.csharp.lang.impl.psi.CSharpContextUtil;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.impl.psi.CSharpVisibilityUtil;
 import consulo.csharp.lang.impl.psi.resolve.CSharpResolveContextUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
@@ -33,111 +32,98 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.scope.GlobalSearchScope;
-
 import jakarta.annotation.Nonnull;
+
+import java.util.function.Predicate;
 
 /**
  * @author VISTALL
  * @since 23.10.14
  */
-public class CompletionResolveScopeProcessor extends StubScopeProcessor
-{
-	@Nonnull
-	private final GlobalSearchScope myScope;
-	@Nonnull
-	private final PsiElement myPlace;
-	@Nonnull
-	private CSharpContextUtil.ContextType myContextType;
-	@Nonnull
-	private Processor<ResolveResult> myProcessor;
+public class CompletionResolveScopeProcessor extends StubScopeProcessor {
+    @Nonnull
+    private final GlobalSearchScope myScope;
+    @Nonnull
+    private final PsiElement myPlace;
+    @Nonnull
+    private CSharpContextUtil.ContextType myContextType;
+    @Nonnull
+    private Predicate<ResolveResult> myProcessor;
 
-	@RequiredReadAction
-	public CompletionResolveScopeProcessor(@Nonnull CSharpResolveOptions options, @Nonnull Processor<ResolveResult> processor, @Nonnull ExecuteTarget[] targets)
-	{
-		myProcessor = processor;
-		myPlace = options.getElement();
+    @RequiredReadAction
+    public CompletionResolveScopeProcessor(@Nonnull CSharpResolveOptions options,
+                                           @Nonnull Predicate<ResolveResult> processor,
+                                           @Nonnull ExecuteTarget[] targets) {
+        myProcessor = processor;
+        myPlace = options.getElement();
 
-		myScope = myPlace.getResolveScope();
-		CSharpContextUtil.ContextType completionContextType = options.getCompletionContextType();
-		if(completionContextType != null)
-		{
-			myContextType = completionContextType;
-		}
-		else
-		{
-			myContextType = myPlace instanceof CSharpReferenceExpression ? CSharpContextUtil.getParentContextTypeForReference((CSharpReferenceExpression) myPlace) : CSharpContextUtil.ContextType.ANY;
-		}
-		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
-	}
+        myScope = myPlace.getResolveScope();
+        CSharpContextUtil.ContextType completionContextType = options.getCompletionContextType();
+        if (completionContextType != null) {
+            myContextType = completionContextType;
+        }
+        else {
+            myContextType = myPlace instanceof CSharpReferenceExpression ? CSharpContextUtil.getParentContextTypeForReference((CSharpReferenceExpression) myPlace) : CSharpContextUtil.ContextType.ANY;
+        }
+        putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
+    }
 
-	@Override
-	public void pushResultExternally(@Nonnull ResolveResult resolveResult)
-	{
-		myProcessor.process(resolveResult);
-	}
+    @Override
+    public void pushResultExternally(@Nonnull ResolveResult resolveResult) {
+        myProcessor.test(resolveResult);
+    }
 
-	@Override
-	@RequiredReadAction
-	public boolean execute(@Nonnull PsiElement element, ResolveState state)
-	{
-		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
-		assert extractor != null;
+    @Override
+    @RequiredReadAction
+    public boolean execute(@Nonnull PsiElement element, ResolveState state) {
+        DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
+        assert extractor != null;
 
-		if(element instanceof CSharpTypeDeclaration)
-		{
-			for(PsiElement psiElement : OverrideUtil.getAllMembers(element, myScope, extractor, true, false))
-			{
-				ProgressManager.checkCanceled();
+        if (element instanceof CSharpTypeDeclaration) {
+            for (PsiElement psiElement : OverrideUtil.getAllMembers(element, myScope, extractor, true, false)) {
+                ProgressManager.checkCanceled();
 
-				processElement(psiElement);
-			}
-		}
-		else
-		{
-			CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myScope, element);
+                processElement(psiElement);
+            }
+        }
+        else {
+            CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myScope, element);
 
-			return context.processElements(it ->
-			{
-				processElement(it);
-				return true;
-			}, true);
-		}
+            return context.processElements(it ->
+            {
+                processElement(it);
+                return true;
+            }, true);
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@RequiredReadAction
-	private void processElement(@Nonnull PsiElement element)
-	{
-		if(!ExecuteTargetUtil.isMyElement(this, element))
-		{
-			return;
-		}
+    @RequiredReadAction
+    private void processElement(@Nonnull PsiElement element) {
+        if (!ExecuteTargetUtil.isMyElement(this, element)) {
+            return;
+        }
 
-		if(element instanceof DotNetModifierListOwner && !CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) element, myPlace))
-		{
-			return;
-		}
+        if (element instanceof DotNetModifierListOwner && !CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) element, myPlace)) {
+            return;
+        }
 
-		if(myContextType != CSharpContextUtil.ContextType.ANY)
-		{
-			CSharpContextUtil.ContextType contextForResolved = CSharpContextUtil.getContextForResolved(element);
-			switch(myContextType)
-			{
-				case INSTANCE:
-					if(contextForResolved == CSharpContextUtil.ContextType.STATIC)
-					{
-						return;
-					}
-					break;
-				case STATIC:
-					if(contextForResolved.isAllowInstance())
-					{
-						return;
-					}
-					break;
-			}
-		}
-		myProcessor.process(new CSharpResolveResult(element));
-	}
+        if (myContextType != CSharpContextUtil.ContextType.ANY) {
+            CSharpContextUtil.ContextType contextForResolved = CSharpContextUtil.getContextForResolved(element);
+            switch (myContextType) {
+                case INSTANCE:
+                    if (contextForResolved == CSharpContextUtil.ContextType.STATIC) {
+                        return;
+                    }
+                    break;
+                case STATIC:
+                    if (contextForResolved.isAllowInstance()) {
+                        return;
+                    }
+                    break;
+            }
+        }
+        myProcessor.test(new CSharpResolveResult(element));
+    }
 }

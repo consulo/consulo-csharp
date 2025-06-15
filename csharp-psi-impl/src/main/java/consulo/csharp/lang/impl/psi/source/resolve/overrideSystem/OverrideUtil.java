@@ -19,7 +19,6 @@ package consulo.csharp.lang.impl.psi.source.resolve.overrideSystem;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.progress.ProgressManager;
 import consulo.application.util.function.CommonProcessors;
-import consulo.application.util.function.Processor;
 import consulo.application.util.query.Query;
 import consulo.csharp.lang.impl.psi.CSharpElementCompareUtil;
 import consulo.csharp.lang.impl.psi.msil.CSharpTransform;
@@ -48,6 +47,7 @@ import consulo.util.collection.SmartList;
 import jakarta.annotation.Nonnull;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * @author VISTALL
@@ -93,6 +93,7 @@ public class OverrideUtil {
 
     @Nonnull
     @SuppressWarnings("unchecked")
+    @RequiredReadAction
     public static List<PsiElement> filterOverrideElements(@Nonnull PsiElement scopeElement, @Nonnull Collection<PsiElement> elements, @Nonnull OverrideProcessor overrideProcessor) {
         List<PsiElement> copyElements = new ArrayList<>(elements);
 
@@ -271,10 +272,10 @@ public class OverrideUtil {
 
         final List<DotNetVirtualImplementOwner> list = new ArrayList<>();
         Query<DotNetTypeDeclaration> search = TypeInheritorsSearch.search((DotNetTypeDeclaration) parent, true, CSharpTransform.INSTANCE);
-        search.forEach(new Processor<DotNetTypeDeclaration>() {
+        search.forEach(new Predicate<>() {
             @Override
             @RequiredReadAction
-            public boolean process(DotNetTypeDeclaration typeDeclaration) {
+            public boolean test(DotNetTypeDeclaration typeDeclaration) {
                 CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, resolveScope, typeDeclaration);
 
                 Collection<PsiElement> elements = selector.doSelectElement(context, false);

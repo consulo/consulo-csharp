@@ -55,12 +55,12 @@ import java.util.function.Consumer;
 public class OperatorsProvider implements CSharpAdditionalMemberProvider {
     @RequiredReadAction
     @Override
-    public void processAdditionalMembers(@Nonnull DotNetElement element, @Nonnull DotNetGenericExtractor extractor, @Nonnull Consumer<PsiElement> consumer) {
-        if (element instanceof CSharpTypeDeclaration) {
+    public void processAdditionalMembers(@Nonnull DotNetElement element,
+                                         @Nonnull DotNetGenericExtractor extractor,
+                                         @Nonnull Consumer<PsiElement> consumer) {
+        if (element instanceof CSharpTypeDeclaration typeDeclaration) {
             Project project = element.getProject();
             GlobalSearchScope resolveScope = element.getResolveScope();
-
-            CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
 
             CSharpMethodDeclaration methodDeclaration = typeDeclaration.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE);
             DotNetTypeRef selfTypeRef;
@@ -141,7 +141,7 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider {
             return DotNetElement.EMPTY_ARRAY;
         }
 
-        List<DotNetElement> elements = new ArrayList<DotNetElement>();
+        List<DotNetElement> elements = new ArrayList<>();
 
         DotNetTypeDeclaration forAddOperatorsElement = (DotNetTypeDeclaration) typeResolveResultElement;
 
@@ -153,6 +153,7 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider {
         return ContainerUtil.toArray(elements, DotNetElement.ARRAY_FACTORY);
     }
 
+    @RequiredReadAction
     private static void buildOperators(@Nonnull Project project,
                                        @Nonnull GlobalSearchScope resolveScope,
                                        @Nonnull DotNetTypeRef selfTypeRef,
@@ -168,6 +169,12 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider {
                 // ignore see ConversionMethodsProvider
             }
             else {
+                if (operator.myBlocker != null
+                    && parent instanceof CSharpTypeDeclaration typeDeclaration
+                    && typeDeclaration.isInheritor(operator.myBlocker, true)) {
+                    continue;
+                }
+
                 CSharpLightMethodDeclarationBuilder temp = new CSharpLightMethodDeclarationBuilder(project);
                 temp.setOperator(operator.myOperatorToken);
 

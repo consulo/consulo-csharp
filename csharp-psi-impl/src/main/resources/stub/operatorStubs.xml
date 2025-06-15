@@ -572,7 +572,7 @@
 	</type>
 
 	<type name="System.Int32">
-		<operator name="PLUS">
+		<operator name="PLUS" blocker="System.Numerics.IUnaryPlusOperators`2">
 			<parameter/>
 		</operator>
 
@@ -580,7 +580,7 @@
 			<parameter/>
 		</operator>
 
-		<operator name="MINUS">
+		<operator name="MINUS" blocker="System.Numerics.IUnaryNegationOperators`2">
 			<parameter/>
 		</operator>
 
@@ -605,7 +605,7 @@
 			<parameter/>
 		</operator>
 
-		<operator name="PLUS">
+		<operator name="PLUS" blocker="System.Numerics.IAdditionOperators`3">
 			<parameter/>
 			<parameter/>
 		</operator>

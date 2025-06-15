@@ -31,6 +31,7 @@ import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.MethodResolve
 import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.NCallArgumentBuilder;
 import consulo.csharp.lang.impl.psi.source.resolve.operatorResolving.ImplicitCastInfo;
 import consulo.csharp.lang.impl.psi.source.resolve.operatorResolving.ImplicitOperatorArgumentAsCallArgumentWrapper;
+import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideProcessor;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpOperatorNameHelper;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpPointerTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
@@ -42,6 +43,7 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.resolve.DotNetPointerTypeRef;
+import consulo.dotnet.psi.resolve.DotNetPsiSearcher;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.util.ArrayUtil2;
@@ -368,7 +370,23 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
             }
 
             AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
-            MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element(this), psiElementProcessor, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
+            OverrideProcessor overrideProcessor = OverrideProcessor.ALWAYS_TRUE;
+
+            DotNetPsiSearcher searcher = DotNetPsiSearcher.getInstance(element.getProject());
+            // net7 + supports own operators
+            if (searcher.findType("System.Numerics.IBitwiseOperators`3", element.getResolveScope()) != null) {
+                overrideProcessor = (target, hidedMember) -> {
+                    psiElementProcessor.test(new CSharpResolveResult(hidedMember));
+                    return true;
+                };
+            }
+
+            MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(
+                this,
+                psiElementProcessor,
+                new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP},
+                overrideProcessor
+            );
 
             ResolveState state = ResolveState.initial();
             state = state.put(CSharpResolveUtil.SELECTOR, new OperatorByTokenSelector(elementType));
