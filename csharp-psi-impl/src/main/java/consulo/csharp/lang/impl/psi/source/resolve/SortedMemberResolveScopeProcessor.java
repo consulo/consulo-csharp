@@ -18,54 +18,49 @@ package consulo.csharp.lang.impl.psi.source.resolve;
 
 import consulo.application.progress.ProgressManager;
 import consulo.application.util.function.CommonProcessors;
-import consulo.application.util.function.Processor;
 import consulo.language.psi.ResolveResult;
 import consulo.util.collection.ContainerUtil;
-
+import consulo.util.lang.function.Predicates;
 import jakarta.annotation.Nonnull;
+
 import java.util.Comparator;
 import java.util.LinkedHashSet;
+import java.util.function.Predicate;
 
 
 /**
  * @author VISTALL
  * @since 27.07.2015
  */
-public class SortedMemberResolveScopeProcessor extends MemberResolveScopeProcessor
-{
-	private final Processor<ResolveResult> myOriginalProcessor;
-	private Comparator<ResolveResult> myComparator;
+public class SortedMemberResolveScopeProcessor extends MemberResolveScopeProcessor {
+    private final Predicate<ResolveResult> myOriginalProcessor;
+    private Comparator<ResolveResult> myComparator;
 
-	public SortedMemberResolveScopeProcessor(@Nonnull CSharpResolveOptions options,
-			@Nonnull Processor<ResolveResult> resultProcessor,
-			@Nonnull Comparator<ResolveResult> comparator,
-			ExecuteTarget[] targets)
-	{
-		super(options, CommonProcessors.<ResolveResult>alwaysTrue(), targets);
-		myOriginalProcessor = resultProcessor;
-		myComparator = comparator;
-		initThisProcessor();
-	}
+    public SortedMemberResolveScopeProcessor(@Nonnull CSharpResolveOptions options,
+                                             @Nonnull Predicate<ResolveResult> resultProcessor,
+                                             @Nonnull Comparator<ResolveResult> comparator,
+                                             ExecuteTarget[] targets) {
+        super(options, Predicates.<ResolveResult>alwaysTrue(), targets);
+        myOriginalProcessor = resultProcessor;
+        myComparator = comparator;
+        initThisProcessor();
+    }
 
-	private void initThisProcessor()
-	{
-		myResultProcessor = new CommonProcessors.CollectProcessor<>(new LinkedHashSet<>());
-	}
+    private void initThisProcessor() {
+        myResultProcessor = new CommonProcessors.CollectProcessor<>(new LinkedHashSet<>());
+    }
 
-	public void consumeAll()
-	{
-		ResolveResult[] resolveResults = ((CommonProcessors.CollectProcessor<ResolveResult>) myResultProcessor).toArray(ResolveResult.ARRAY_FACTORY);
+    public void consumeAll() {
+        ResolveResult[] resolveResults = ((CommonProcessors.CollectProcessor<ResolveResult>) myResultProcessor).toArray(ResolveResult.ARRAY_FACTORY);
 
-		ContainerUtil.sort(resolveResults, myComparator);
+        ContainerUtil.sort(resolveResults, myComparator);
 
-		for(ResolveResult result : resolveResults)
-		{
-			ProgressManager.checkCanceled();
+        for (ResolveResult result : resolveResults) {
+            ProgressManager.checkCanceled();
 
-			if(!myOriginalProcessor.process(result))
-			{
-				return;
-			}
-		}
-	}
+            if (!myOriginalProcessor.test(result)) {
+                return;
+            }
+        }
+    }
 }

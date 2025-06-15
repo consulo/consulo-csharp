@@ -16,34 +16,30 @@
 
 package consulo.csharp.lang.impl.psi.source.resolve;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import jakarta.annotation.Nonnull;
-
-import consulo.application.util.function.Processor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
+import jakarta.annotation.Nonnull;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * @author VISTALL
  * @since 27.07.2015
  */
-public class AsPsiElementProcessor implements Processor<ResolveResult>
-{
-	private Set<PsiElement> myElements = new LinkedHashSet<PsiElement>();
+public class AsPsiElementProcessor implements Predicate<ResolveResult> {
+    private Set<PsiElement> myElements = new LinkedHashSet<>();
 
-	@Override
-	public boolean process(ResolveResult resolveResult)
-	{
-		PsiElement element = resolveResult.getElement();
-		myElements.add(element);
-		return true;
-	}
+    @Override
+    public boolean test(ResolveResult resolveResult) {
+        PsiElement element = resolveResult.getElement();
+        myElements.add(element);
+        return true;
+    }
 
-	@Nonnull
-	public Set<PsiElement> getElements()
-	{
-		return myElements;
-	}
+    @Nonnull
+    public Set<PsiElement> getElements() {
+        return myElements;
+    }
 }

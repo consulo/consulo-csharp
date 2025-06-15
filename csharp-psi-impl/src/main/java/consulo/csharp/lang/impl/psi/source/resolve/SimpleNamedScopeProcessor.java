@@ -17,7 +17,6 @@
 package consulo.csharp.lang.impl.psi.source.resolve;
 
 import consulo.annotation.access.RequiredReadAction;
-import consulo.application.util.function.Processor;
 import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.resolve.CSharpNamedResolveSelector;
 import consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
@@ -25,67 +24,58 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.ResolveResult;
 import consulo.language.psi.resolve.ResolveState;
-
 import jakarta.annotation.Nonnull;
+
+import java.util.function.Predicate;
 
 /**
  * @author VISTALL
  * @since 09.10.14
  */
-public class SimpleNamedScopeProcessor extends StubScopeProcessor
-{
-	private Processor<ResolveResult> myCompletionProcessor;
-	private boolean myCompletion;
+public class SimpleNamedScopeProcessor extends StubScopeProcessor {
+    private Predicate<ResolveResult> myCompletionProcessor;
+    private boolean myCompletion;
 
-	public SimpleNamedScopeProcessor(@Nonnull final StubScopeProcessor completionProcessor, boolean completion, ExecuteTarget... targets)
-	{
-		this(resolveResult ->
-		{
-			completionProcessor.pushResultExternally(resolveResult);
-			return true;
-		}, completion, targets);
-	}
+    public SimpleNamedScopeProcessor(@Nonnull final StubScopeProcessor completionProcessor, boolean completion, ExecuteTarget... targets) {
+        this(resolveResult ->
+        {
+            completionProcessor.pushResultExternally(resolveResult);
+            return true;
+        }, completion, targets);
+    }
 
-	public SimpleNamedScopeProcessor(@Nonnull Processor<ResolveResult> completionProcessor, boolean completion, ExecuteTarget... targets)
-	{
-		myCompletionProcessor = completionProcessor;
-		myCompletion = completion;
-		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
-	}
+    public SimpleNamedScopeProcessor(@Nonnull Predicate<ResolveResult> completionProcessor, boolean completion, ExecuteTarget... targets) {
+        myCompletionProcessor = completionProcessor;
+        myCompletion = completion;
+        putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
+    }
 
-	@RequiredReadAction
-	@Override
-	public boolean execute(@Nonnull PsiElement element, ResolveState state)
-	{
-		if(!(element instanceof PsiNamedElement) || !ExecuteTargetUtil.isMyElement(this, element))
-		{
-			return true;
-		}
+    @RequiredReadAction
+    @Override
+    public boolean execute(@Nonnull PsiElement element, ResolveState state) {
+        if (!(element instanceof PsiNamedElement) || !ExecuteTargetUtil.isMyElement(this, element)) {
+            return true;
+        }
 
-		String name = ((PsiNamedElement) element).getName();
-		if(name == null)
-		{
-			return true;
-		}
+        String name = ((PsiNamedElement) element).getName();
+        if (name == null) {
+            return true;
+        }
 
-		if(myCompletion)
-		{
-			return myCompletionProcessor.process(new CSharpResolveResult(element));
-		}
-		else
-		{
-			CSharpResolveSelector selector = state.get(CSharpResolveUtil.SELECTOR);
-			if(!(selector instanceof CSharpNamedResolveSelector))
-			{
-				return true;
-			}
+        if (myCompletion) {
+            return myCompletionProcessor.test(new CSharpResolveResult(element));
+        }
+        else {
+            CSharpResolveSelector selector = state.get(CSharpResolveUtil.SELECTOR);
+            if (!(selector instanceof CSharpNamedResolveSelector)) {
+                return true;
+            }
 
-			if(((CSharpNamedResolveSelector) selector).isNameEqual(name))
-			{
-				myCompletionProcessor.process(new CSharpResolveResult(element));
-				return false;
-			}
-		}
-		return true;
-	}
+            if (((CSharpNamedResolveSelector) selector).isNameEqual(name)) {
+                myCompletionProcessor.test(new CSharpResolveResult(element));
+                return false;
+            }
+        }
+        return true;
+    }
 }

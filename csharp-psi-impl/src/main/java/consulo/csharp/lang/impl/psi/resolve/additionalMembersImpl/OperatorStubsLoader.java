@@ -33,84 +33,72 @@ import java.util.List;
  * @author VISTALL
  * @since 07.03.2016
  */
-public class OperatorStubsLoader
-{
-	public static class Operator
-	{
-		public static class Parameter
-		{
-			public String myTypeRef;
+public class OperatorStubsLoader {
+    public static class Operator {
+        public static class Parameter {
+            public String myTypeRef;
 
-			public Parameter(String type)
-			{
-				myTypeRef = type;
-			}
-		}
+            public Parameter(String type) {
+                myTypeRef = type;
+            }
+        }
 
-		public final IElementType myOperatorToken;
-		public final String myReturnTypeRef;
-		public final List<Parameter> myParameterTypes = new ArrayList<Parameter>(5);
+        public final IElementType myOperatorToken;
+        public final String myReturnTypeRef;
+        public final String myBlocker;
+        public final List<Parameter> myParameterTypes = new ArrayList<>(5);
 
-		public Operator(String name, String returnType)
-		{
-			Field declaredField = ReflectionUtil.getDeclaredField(CSharpTokens.class, name);
-			assert declaredField != null;
-			try
-			{
-				myOperatorToken = (IElementType) declaredField.get(null);
-			}
-			catch(IllegalAccessException e)
-			{
-				throw new Error();
-			}
-			myReturnTypeRef = returnType;
-		}
-	}
+        public Operator(String name, String returnType, String blocker) {
+            Field declaredField = ReflectionUtil.getDeclaredField(CSharpTokens.class, name);
+            assert declaredField != null;
+            try {
+                myOperatorToken = (IElementType) declaredField.get(null);
+            }
+            catch (IllegalAccessException e) {
+                throw new Error();
+            }
+            myBlocker = blocker;
+            myReturnTypeRef = returnType;
+        }
+    }
 
-	public MultiMap<String, Operator> myTypeOperators = new MultiMap<String, Operator>();
+    public MultiMap<String, Operator> myTypeOperators = new MultiMap<>();
 
-	public List<Operator> myEnumOperators = new ArrayList<Operator>();
+    public List<Operator> myEnumOperators = new ArrayList<>();
 
-	private OperatorStubsLoader()
-	{
-		try
-		{
-			Document document = JDOMUtil.loadDocument(getClass(), "/stub/operatorStubs.xml");
-			for(Element e : document.getRootElement().getChildren())
-			{
-				Collection<Operator> list = null;
-				if("type".equals(e.getName()))
-				{
-					String className = e.getAttributeValue("name");
-					list = myTypeOperators.getModifiable(className);
-				}
-				else if("enum".equals(e.getName()))
-				{
-					list = myEnumOperators;
-				}
-				assert list != null;
+    private OperatorStubsLoader() {
+        try {
+            Document document = JDOMUtil.loadDocument(getClass(), "/stub/operatorStubs.xml");
+            for (Element e : document.getRootElement().getChildren()) {
+                Collection<Operator> list = null;
+                if ("type".equals(e.getName())) {
+                    String className = e.getAttributeValue("name");
+                    list = myTypeOperators.getModifiable(className);
+                }
+                else if ("enum".equals(e.getName())) {
+                    list = myEnumOperators;
+                }
+                assert list != null;
 
-				for(Element opElement : e.getChildren())
-				{
-					String operatorName = opElement.getAttributeValue("name");
-					String returnType = opElement.getAttributeValue("type");
+                for (Element opElement : e.getChildren()) {
+                    String operatorName = opElement.getAttributeValue("name");
+                    String returnType = opElement.getAttributeValue("type");
+                    String blockerVmQName = opElement.getAttributeValue("blocker");
 
-					Operator operator = new Operator(operatorName, returnType);
+                    Operator operator = new Operator(operatorName, returnType, blockerVmQName);
 
-					for(Element parameterElement : opElement.getChildren())
-					{
-						String parameterType = parameterElement.getAttributeValue("type");
-						operator.myParameterTypes.add(new Operator.Parameter(parameterType));
-					}
-					list.add(operator);
-				}
-			}
-		}
-		catch(Exception e)
-		{
-			throw new Error(e);
-		}
-	}
+                    for (Element parameterElement : opElement.getChildren()) {
+                        String parameterType = parameterElement.getAttributeValue("type");
+                        operator.myParameterTypes.add(new Operator.Parameter(parameterType));
+                    }
+                    list.add(operator);
+                }
+            }
+        }
+        catch (Exception e) {
+            throw new Error(e);
+        }
+    }
 
-	public static OperatorStubsLoader INSTANCE = new OperatorStubsLoader();
+    public static OperatorStubsLoader INSTANCE = new OperatorStubsLoader();
 }

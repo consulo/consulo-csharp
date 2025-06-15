@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.source.resolve;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.progress.ProgressManager;
-import consulo.application.util.function.Processor;
 import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.impl.psi.resolve.CSharpElementGroupImpl;
 import consulo.csharp.lang.impl.psi.resolve.CSharpResolveContextUtil;
@@ -46,6 +45,7 @@ import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * @author VISTALL
@@ -53,11 +53,13 @@ import java.util.List;
  */
 public class MemberResolveScopeProcessor extends StubScopeProcessor {
     private final PsiElement myScopeElement;
-    protected Processor<ResolveResult> myResultProcessor;
+    protected Predicate<ResolveResult> myResultProcessor;
     private final GlobalSearchScope myResolveScope;
     private final OverrideProcessor myOverrideProcessor;
 
-    public MemberResolveScopeProcessor(@Nonnull CSharpResolveOptions options, @Nonnull Processor<ResolveResult> resultProcessor, ExecuteTarget[] targets) {
+    public MemberResolveScopeProcessor(@Nonnull CSharpResolveOptions options,
+                                       @Nonnull Predicate<ResolveResult> resultProcessor,
+                                       ExecuteTarget[] targets) {
         myScopeElement = options.getElement();
         myResolveScope = myScopeElement.getResolveScope();
         myResultProcessor = resultProcessor;
@@ -66,7 +68,7 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor {
     }
 
     public MemberResolveScopeProcessor(@Nonnull PsiElement scopeElement,
-                                       @Nonnull Processor<ResolveResult> resultProcessor,
+                                       @Nonnull Predicate<ResolveResult> resultProcessor,
                                        @Nullable ExecuteTarget[] targets,
                                        @Nullable OverrideProcessor overrideProcessor) {
         myScopeElement = scopeElement;
@@ -78,7 +80,7 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor {
 
     @Override
     public void pushResultExternally(@Nonnull ResolveResult resolveResult) {
-        myResultProcessor.process(resolveResult);
+        myResultProcessor.test(resolveResult);
     }
 
     @RequiredReadAction
@@ -109,7 +111,7 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor {
             result.setProvider(element);
             result.setAssignable(myScopeElement);
 
-            if (!myResultProcessor.process(result)) {
+            if (!myResultProcessor.test(result)) {
                 return false;
             }
         }
