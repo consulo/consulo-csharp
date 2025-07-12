@@ -58,3 +58,5 @@ nullable.option.annotations:
   text: annotations
 nullable.option.warnings:
   text: warnings
+csharp.preprocessor.language.display.name:
+    text: C# Preprocessor

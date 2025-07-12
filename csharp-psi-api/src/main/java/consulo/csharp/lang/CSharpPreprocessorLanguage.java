@@ -16,8 +16,11 @@
 
 package consulo.csharp.lang;
 
+import consulo.csharp.api.localize.CSharpLocalize;
 import consulo.language.Language;
 import consulo.language.template.TemplateLanguage;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,10 +35,11 @@ public class CSharpPreprocessorLanguage extends Language implements TemplateLang
 		super("C#Preprocessor");
 	}
 
-	@Override
-	public String getDisplayName()
+	@Nonnull
+    @Override
+	public LocalizeValue getDisplayName()
 	{
-		return "C# Preprocessor";
+		return CSharpLocalize.csharpPreprocessorLanguageDisplayName();
 	}
 
 	@Override

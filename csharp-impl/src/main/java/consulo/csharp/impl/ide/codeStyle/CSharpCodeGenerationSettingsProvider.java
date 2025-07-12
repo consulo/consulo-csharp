@@ -17,7 +17,7 @@
 package consulo.csharp.impl.ide.codeStyle;
 
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.ApplicationBundle;
+import consulo.application.localize.ApplicationLocalize;
 import consulo.configurable.Configurable;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
@@ -25,6 +25,7 @@ import consulo.language.Language;
 import consulo.language.codeStyle.CodeStyleSettings;
 import consulo.language.codeStyle.CustomCodeStyleSettings;
 import consulo.language.codeStyle.setting.CodeStyleSettingsProvider;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -41,10 +42,11 @@ public class CSharpCodeGenerationSettingsProvider extends CodeStyleSettingsProvi
 		return false;
 	}
 
-	@Override
-	public String getConfigurableDisplayName()
+	@Nonnull
+    @Override
+	public LocalizeValue getConfigurableDisplayName()
 	{
-		return ApplicationBundle.message("title.code.generation");
+		return ApplicationLocalize.titleCodeGeneration();
 	}
 
 	@Nullable
