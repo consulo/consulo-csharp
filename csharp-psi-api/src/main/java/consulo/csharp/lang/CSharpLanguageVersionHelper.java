@@ -18,12 +18,10 @@ package consulo.csharp.lang;
 
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
+import consulo.application.Application;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.ide.ServiceManager;
 import consulo.language.version.LanguageVersion;
-
 import jakarta.annotation.Nonnull;
-
 
 /**
  * @author VISTALL
@@ -35,7 +33,7 @@ public abstract class CSharpLanguageVersionHelper
 	@Nonnull
 	public static CSharpLanguageVersionHelper getInstance()
 	{
-		return ServiceManager.getService(CSharpLanguageVersionHelper.class);
+		return Application.get().getService(CSharpLanguageVersionHelper.class);
 	}
 
 	@Nonnull
