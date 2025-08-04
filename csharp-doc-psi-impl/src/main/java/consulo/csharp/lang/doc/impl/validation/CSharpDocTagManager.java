@@ -19,11 +19,10 @@ package consulo.csharp.lang.doc.impl.validation;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.inject.Singleton;
-
-import jakarta.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,7 +40,7 @@ public class CSharpDocTagManager
 	@Nonnull
 	public static CSharpDocTagManager getInstance()
 	{
-		return ServiceManager.getService(CSharpDocTagManager.class);
+		return Application.get().getInstance(CSharpDocTagManager.class);
 	}
 
 	private Map<String, CSharpDocTagInfo> myTags = new HashMap<String, CSharpDocTagInfo>();

@@ -21,7 +21,6 @@ import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.disposer.Disposable;
-import consulo.ide.ServiceManager;
 import consulo.language.psi.AnyPsiChangeListener;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.module.content.layer.event.ModuleRootAdapter;
@@ -48,7 +47,7 @@ public class CSharpPartialElementManager implements Disposable
 	@Nonnull
 	public static CSharpPartialElementManager getInstance(@Nonnull Project project)
 	{
-		return ServiceManager.getService(project, CSharpPartialElementManager.class);
+		return project.getInstance(CSharpPartialElementManager.class);
 	}
 
 	private final Map<GlobalSearchScope, Map<String, CSharpTypeDeclaration>> myCache = ContainerUtil.createConcurrentWeakMap();

@@ -19,14 +19,13 @@ package consulo.csharp.impl.ide.codeInsight;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
+import consulo.application.Application;
 import consulo.component.persist.PersistentStateComponent;
 import consulo.component.persist.State;
 import consulo.component.persist.Storage;
-import consulo.ide.ServiceManager;
 import consulo.util.xml.serializer.XmlSerializerUtil;
-import jakarta.inject.Singleton;
-
 import jakarta.annotation.Nonnull;
+import jakarta.inject.Singleton;
 
 /**
  * @author VISTALL
@@ -41,7 +40,7 @@ public class CSharpCodeInsightSettings implements PersistentStateComponent<CShar
 	@Nonnull
 	public static CSharpCodeInsightSettings getInstance()
 	{
-		return ServiceManager.getService(CSharpCodeInsightSettings.class);
+		return Application.get().getInstance(CSharpCodeInsightSettings.class);
 	}
 
 	public boolean OPTIMIZE_IMPORTS_ON_THE_FLY = true;

@@ -19,16 +19,15 @@ package consulo.csharp.lang.impl.psi.source.resolve.genericInference;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
-import consulo.ide.ServiceManager;
 import consulo.component.util.SimpleModificationTracker;
 import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;
-import jakarta.inject.Singleton;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.inject.Singleton;
+
 import java.util.function.Function;
 
 /**
@@ -43,7 +42,7 @@ public class GenericInferenceManager extends SimpleModificationTracker
 	@Nonnull
 	public static GenericInferenceManager getInstance(@Nonnull Project project)
 	{
-		return ServiceManager.getService(project, GenericInferenceManager.class);
+		return project.getInstance(GenericInferenceManager.class);
 	}
 
 	public final ThreadLocal<InferenceSessionData> myInsideInferenceSession = new ThreadLocal<>();
