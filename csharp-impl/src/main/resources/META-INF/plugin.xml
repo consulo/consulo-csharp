@@ -15,32 +15,28 @@
   -->
 
 <consulo-plugin url="https://github.com/consulo/consulo-csharp">
-	<id>consulo.csharp</id>
-	<name>C#</name>
-	<category>Custom Languages</category>
-	<version>SNAPSHOT</version>
-	<vendor>consulo.io</vendor>
-	<localize>consulo.csharp.api.CSharpLocalize</localize>
-	<tags>
-		<tag>custom.language</tag>
-	</tags>
+    <id>consulo.csharp</id>
+    <name>C#</name>
+    <category>Custom Languages</category>
+    <version>SNAPSHOT</version>
+    <vendor>consulo.io</vendor>
+    <localize>consulo.csharp.api.CSharpLocalize</localize>
+    <tags>
+        <tag>custom.language</tag>
+    </tags>
 
-	<depends>consulo.dotnet</depends>
-	<depends>com.intellij.xml</depends>
-	<depends optional="true">consulo.dotnet.microsoft</depends>
-	<depends optional="true">consulo.dotnet.mono</depends>
+    <depends>consulo.dotnet</depends>
+    <depends>com.intellij.xml</depends>
+    <depends optional="true">consulo.dotnet.microsoft</depends>
+    <depends optional="true">consulo.dotnet.mono</depends>
 
-	<actions>
-		<action id="CSharp.File" class="consulo.csharp.impl.ide.actions.CSharpCreateFileAction">
-			<add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewClass"/>
-		</action>
+    <actions>
+        <group id="CSharp.GenerateActions">
+            <action id="CSharp.GenerateReadOnlyProperty" class="consulo.csharp.impl.ide.actions.generate.GenerateReadOnlyPropertyAction"/>
+            <action id="CSharp.GenerateProperty" class="consulo.csharp.impl.ide.actions.generate.GeneratePropertyAction"/>
+            <action id="CSharp.GenerateConstructor" class="consulo.csharp.impl.ide.actions.generate.GenerateConstructorAction"/>
 
-		<group id="CSharp.GenerateActions">
-			<action id="CSharp.GenerateReadOnlyProperty" class="consulo.csharp.impl.ide.actions.generate.GenerateReadOnlyPropertyAction"/>
-			<action id="CSharp.GenerateProperty" class="consulo.csharp.impl.ide.actions.generate.GeneratePropertyAction"/>
-			<action id="CSharp.GenerateConstructor" class="consulo.csharp.impl.ide.actions.generate.GenerateConstructorAction"/>
-
-			<add-to-group group-id="GenerateGroup" anchor="first"/>
-		</group>
-	</actions>
+            <add-to-group group-id="GenerateGroup" anchor="first"/>
+        </group>
+    </actions>
 </consulo-plugin>

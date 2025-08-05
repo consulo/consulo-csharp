@@ -17,8 +17,13 @@
 package consulo.csharp.impl.ide.actions;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ActionImpl;
+import consulo.annotation.component.ActionParentRef;
+import consulo.annotation.component.ActionRef;
+import consulo.annotation.component.ActionRefAnchor;
 import consulo.application.AllIcons;
 import consulo.application.ReadAction;
+import consulo.csharp.api.localize.CSharpLocalize;
 import consulo.csharp.impl.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.impl.CSharpAssemblyConstants;
@@ -35,7 +40,6 @@ import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiPackage;
 import consulo.language.psi.PsiPackageManager;
-import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.module.Module;
 import consulo.project.Project;
@@ -59,34 +63,42 @@ import java.util.Set;
  * @author VISTALL
  * @since 15.12.13.
  */
+@ActionImpl(id = "CSharp.File", parents = @ActionParentRef(value = @ActionRef(id = "NewGroup1"), anchor = ActionRefAnchor.FIRST))
 public class CSharpCreateFileAction extends CreateFileFromTemplateAction {
     private static final Logger LOG = Logger.getInstance(CSharpCreateFileAction.class);
 
     public CSharpCreateFileAction() {
-        super(LocalizeValue.empty(), LocalizeValue.empty(), CSharpFileType.INSTANCE.getIcon());
+        super(CSharpLocalize.actionCsharpFileText(), CSharpLocalize.actionCsharpFileText(), CSharpFileType.INSTANCE.getIcon());
     }
 
     @Override
     @SuppressWarnings("unchecked")
+    @RequiredReadAction
     protected boolean isAvailable(DataContext dataContext) {
-        consulo.module.Module module = ReadAction.compute(() -> findModule(dataContext));
-        if (module == null) {
+        Map<PsiDirectory, Module> modules = ReadAction.compute(() -> findModules(dataContext));
+        if (modules == null || modules.isEmpty()) {
             return false;
         }
 
+        for (Map.Entry<PsiDirectory, Module> entry : modules.entrySet()) {
+            PsiDirectory key = entry.getKey();
+            Module value = entry.getValue();
+
+            if (checkModule(value, key)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @RequiredReadAction
+    @SuppressWarnings("unchecked")
+    private static boolean checkModule(Module module, PsiDirectory directory) {
         DotNetModuleExtension extension = module.getExtension(DotNetModuleExtension.class);
         if (extension != null && extension.isAllowSourceRoots()) {
-            final IdeView view = dataContext.getData(IdeView.KEY);
-            if (view == null) {
-                return false;
-            }
-
-            PsiDirectory orChooseDirectory = view.getOrChooseDirectory();
-            if (orChooseDirectory == null) {
-                return false;
-            }
             PsiPackage aPackage =
-                ReadAction.compute(() -> PsiPackageManager.getInstance(module.getProject()).findPackage(orChooseDirectory, DotNetModuleExtension.class));
+                ReadAction.compute(() -> PsiPackageManager.getInstance(module.getProject()).findPackage(directory, DotNetModuleExtension.class));
 
             if (aPackage == null) {
                 return false;
@@ -96,7 +108,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction {
     }
 
     @RequiredReadAction
-    private static Module findModule(DataContext dataContext) {
+    private static Map<PsiDirectory, Module> findModules(DataContext dataContext) {
         Project project = dataContext.getData(Project.KEY);
         if (project == null) {
             return null;
@@ -107,16 +119,20 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction {
             return null;
         }
 
-        PsiDirectory orChooseDirectory = view.getOrChooseDirectory();
-        if (orChooseDirectory == null) {
-            return null;
-        }
+        Map<PsiDirectory, Module> modules = Map.of();
+        for (PsiDirectory directory : view.getDirectories()) {
+            Module resolved = CSharpCreateFromTemplateHandler.findModuleByPsiDirectory(directory);
+            if (resolved == null) {
+                continue;
+            }
 
-        consulo.module.Module resolve = CSharpCreateFromTemplateHandler.findModuleByPsiDirectory(orChooseDirectory);
-        if (resolve != null) {
-            return resolve;
+            if (modules.isEmpty()) {
+                modules = new HashMap<>();
+            }
+
+            modules.put(directory, resolved);
         }
-        return dataContext.getData(Module.KEY);
+        return modules;
     }
 
     @Override
@@ -198,7 +214,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction {
     @RequiredReadAction
     @SuppressWarnings("unchecked")
     private static boolean isCreationOfAssemblyFileAvailable(PsiDirectory directory) {
-        consulo.module.Module module = directory.getModule();
+        Module module = directory.getModule();
         if (module != null) {
             DotNetModuleExtension extension = module.getExtension(DotNetModuleExtension.class);
             if (extension != null && extension.isAllowSourceRoots()) {
