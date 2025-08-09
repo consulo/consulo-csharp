@@ -36,19 +36,13 @@ import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import consulo.ide.impl.idea.refactoring.changeSignature.CallerChooserBase;
-import consulo.ide.impl.idea.refactoring.changeSignature.ChangeSignatureDialogBase;
-import consulo.ide.impl.idea.refactoring.changeSignature.MethodDescriptor;
-import consulo.ide.impl.idea.refactoring.changeSignature.ParameterTableModelItemBase;
-import consulo.ide.impl.idea.refactoring.ui.ComboBoxVisibilityPanel;
-import consulo.ide.impl.idea.refactoring.ui.VisibilityPanelBase;
 import consulo.ide.impl.idea.ui.TableColumnAnimator;
-import consulo.ide.impl.idea.util.ui.table.JBListTable;
-import consulo.ide.impl.idea.util.ui.table.JBTableRow;
-import consulo.ide.impl.idea.util.ui.table.JBTableRowEditor;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import consulo.language.editor.refactoring.BaseRefactoringProcessor;
-import consulo.language.editor.refactoring.changeSignature.ChangeSignatureProcessorBase;
+import consulo.language.editor.refactoring.changeSignature.*;
+import consulo.language.editor.refactoring.ui.ComboBoxVisibilityPanel;
+import consulo.language.editor.refactoring.ui.JBListTableWitEditors;
+import consulo.language.editor.refactoring.ui.VisibilityPanelBase;
 import consulo.language.editor.ui.awt.EditorTextField;
 import consulo.language.file.LanguageFileType;
 import consulo.language.psi.PsiCodeFragment;
@@ -59,6 +53,8 @@ import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.ComboBox;
 import consulo.ui.ex.awt.ListCellRendererWrapper;
+import consulo.ui.ex.awt.table.JBTableRow;
+import consulo.ui.ex.awt.table.JBTableRowEditor;
 import consulo.ui.ex.awt.table.TableView;
 import consulo.ui.ex.awt.tree.Tree;
 import consulo.usage.UsageInfo;
@@ -66,9 +62,9 @@ import consulo.usage.UsageViewDescriptor;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.StringUtil;
 import consulo.util.lang.function.PairFunction;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -81,6 +77,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+
+;
 
 /**
  * @author VISTALL
@@ -307,7 +305,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 		{
 			text += " //" + tail;
 		}
-		return JBListTable.createEditorTextFieldPresentation(getProject(), getFileType(), " " + text, selected, focused);
+		return JBListTableWitEditors.createEditorTextFieldPresentation(getProject(), getFileType(), " " + text, selected, focused);
 	}
 
 	@Override

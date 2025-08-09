@@ -16,7 +16,7 @@
 
 package consulo.csharp.impl.ide.refactoring.changeSignature;
 
-import consulo.ide.impl.idea.refactoring.changeSignature.ParameterTableModelItemBase;
+import consulo.language.editor.refactoring.changeSignature.ParameterTableModelItemBase;
 import consulo.language.psi.PsiCodeFragment;
 
 /**

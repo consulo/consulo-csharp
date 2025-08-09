@@ -16,15 +16,15 @@
 
 package consulo.csharp.impl.ide.refactoring.changeSignature;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetParameter;
-import consulo.ide.impl.idea.refactoring.changeSignature.MethodDescriptor;
+import consulo.language.editor.refactoring.changeSignature.MethodDescriptor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author VISTALL

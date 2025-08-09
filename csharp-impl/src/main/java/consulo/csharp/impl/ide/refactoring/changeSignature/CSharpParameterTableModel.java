@@ -16,28 +16,26 @@
 
 package consulo.csharp.impl.ide.refactoring.changeSignature;
 
-import java.awt.Component;
-import java.awt.Font;
-
+import consulo.csharp.lang.CSharpFileType;
+import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFactory;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.dotnet.DotNetTypes;
+import consulo.language.editor.refactoring.changeSignature.ParameterTableModelBase;
+import consulo.language.editor.refactoring.ui.StringTableCellEditor;
+import consulo.language.editor.ui.awt.EditorTextField;
+import consulo.language.psi.PsiCodeFragment;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.ui.ex.SimpleTextAttributes;
+import consulo.ui.ex.awt.ColoredTableCellRenderer;
 import jakarta.annotation.Nullable;
-import javax.swing.JTable;
+
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-
-import consulo.language.psi.PsiCodeFragment;
-import consulo.project.Project;
-import consulo.language.psi.PsiElement;
-import consulo.ide.impl.idea.refactoring.changeSignature.ParameterTableModelBase;
-import consulo.language.editor.refactoring.ui.StringTableCellEditor;
-import consulo.ui.ex.awt.ColoredTableCellRenderer;
-import consulo.language.editor.ui.awt.EditorTextField;
-import consulo.ui.ex.SimpleTextAttributes;
-import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFactory;
-import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
-import consulo.dotnet.DotNetTypes;
+import java.awt.*;
 
 /**
  * @author VISTALL
