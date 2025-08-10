@@ -16,17 +16,18 @@
 
 package consulo.csharp.impl.ide.codeStyle;
 
+import consulo.application.localize.ApplicationLocalize;
 import consulo.configurable.Configurable;
-import consulo.ide.impl.idea.application.options.codeStyle.CommenterForm;
-import consulo.application.ApplicationBundle;
 import consulo.configurable.ConfigurationException;
-import consulo.language.codeStyle.CodeStyleSettings;
-import consulo.ui.ex.awt.VerticalFlowLayout;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.ide.impl.idea.application.options.codeStyle.CommenterForm;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.localize.LocalizeValue;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.awt.VerticalFlowLayout;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
 
 import javax.swing.*;
 
@@ -56,11 +57,11 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		mySettings = settings.getCustomSettings(CSharpCodeGenerationSettings.class);
 	}
 
-	@Nls
-	@Override
-	public String getDisplayName()
+	@Nonnull
+    @Override
+	public LocalizeValue getDisplayName()
 	{
-		return ApplicationBundle.message("title.code.generation");
+		return ApplicationLocalize.titleCodeGeneration();
 	}
 
 	@RequiredUIAccess

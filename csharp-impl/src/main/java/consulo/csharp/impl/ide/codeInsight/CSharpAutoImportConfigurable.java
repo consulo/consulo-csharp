@@ -20,7 +20,9 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.application.localize.ApplicationLocalize;
 import consulo.configurable.ApplicationConfigurable;
 import consulo.configurable.SimpleConfigurableByProperties;
+import consulo.csharp.lang.CSharpLanguage;
 import consulo.disposer.Disposable;
+import consulo.localize.LocalizeValue;
 import consulo.ui.CheckBox;
 import consulo.ui.Component;
 import consulo.ui.annotation.RequiredUIAccess;
@@ -78,8 +80,8 @@ public class CSharpAutoImportConfigurable extends SimpleConfigurableByProperties
 
 	@Nonnull
 	@Override
-	public String getDisplayName()
+	public LocalizeValue getDisplayName()
 	{
-		return "C#";
+		return CSharpLanguage.INSTANCE.getDisplayName();
 	}
 }

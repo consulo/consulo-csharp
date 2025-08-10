@@ -16,6 +16,7 @@
 
 package consulo.csharp.impl.ide.codeStyle;
 
+import consulo.csharp.lang.CSharpLanguage;
 import consulo.language.codeStyle.CodeStyleSettings;
 import consulo.language.codeStyle.ui.setting.CodeStyleAbstractConfigurable;
 import consulo.language.codeStyle.ui.setting.CodeStyleAbstractPanel;
@@ -29,7 +30,7 @@ public class CSharpCodeStyleConfigurable extends CodeStyleAbstractConfigurable
 {
 	public CSharpCodeStyleConfigurable(@Nonnull CodeStyleSettings settings, CodeStyleSettings cloneSettings)
 	{
-		super(settings, cloneSettings, "C#");
+		super(settings, cloneSettings, CSharpLanguage.INSTANCE.getDisplayName());
 	}
 
 	@Override
