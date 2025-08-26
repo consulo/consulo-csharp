@@ -27,6 +27,7 @@ import consulo.csharp.api.localize.CSharpLocalize;
 import consulo.csharp.impl.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.impl.CSharpAssemblyConstants;
+import consulo.csharp.lang.psi.icon.CSharpPsiIconGroup;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dataContext.DataContext;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
@@ -40,6 +41,7 @@ import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiPackage;
 import consulo.language.psi.PsiPackageManager;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.module.Module;
 import consulo.project.Project;
@@ -68,7 +70,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction {
     private static final Logger LOG = Logger.getInstance(CSharpCreateFileAction.class);
 
     public CSharpCreateFileAction() {
-        super(CSharpLocalize.actionCsharpFileText(), CSharpLocalize.actionCsharpFileText(), CSharpFileType.INSTANCE.getIcon());
+        super(CSharpLocalize.actionCsharpFileText(), CSharpLocalize.actionCsharpFileText(), CSharpPsiIconGroup.csharp());
     }
 
     @Override
@@ -181,15 +183,15 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction {
             }
         });
 
-        addKind(builder, used, "Class", AllIcons.Nodes.Class, "CSharpClass");
-        addKind(builder, used, "Interface", AllIcons.Nodes.Interface, "CSharpInterface");
-        addKind(builder, used, "Enum", AllIcons.Nodes.Enum, "CSharpEnum");
-        addKind(builder, used, "Struct", AllIcons.Nodes.Struct, "CSharpStruct");
-        addKind(builder, used, "Attribute", AllIcons.Nodes.Attribute, "CSharpAttribute");
+        addKind(builder, used, LocalizeValue.localizeTODO("Class"), AllIcons.Nodes.Class, "CSharpClass");
+        addKind(builder, used, LocalizeValue.localizeTODO("Interface"), AllIcons.Nodes.Interface, "CSharpInterface");
+        addKind(builder, used, LocalizeValue.localizeTODO("Enum"), AllIcons.Nodes.Enum, "CSharpEnum");
+        addKind(builder, used, LocalizeValue.localizeTODO("Struct"), AllIcons.Nodes.Struct, "CSharpStruct");
+        addKind(builder, used, LocalizeValue.localizeTODO("Attribute"), AllIcons.Nodes.Attribute, "CSharpAttribute");
         if (isCreationOfAssemblyFileAvailable(psiDirectory)) {
-            addKind(builder, used, "Assembly File", AllIcons.FileTypes.Config, "CSharpAssemblyFile");
+            addKind(builder, used, LocalizeValue.localizeTODO("Assembly File"), AllIcons.FileTypes.Config, "CSharpAssemblyFile");
         }
-        addKind(builder, used, "Empty File", CSharpFileType.INSTANCE.getIcon(), "CSharpFile");
+        addKind(builder, used, LocalizeValue.localizeTODO("Empty File"), CSharpFileType.INSTANCE.getIcon(), "CSharpFile");
 
         final CSharpCreateFromTemplateHandler handler = CSharpCreateFromTemplateHandler.getInstance();
         for (FileTemplate template : FileTemplateManager.getInstance(project).getAllTemplates()) {
@@ -198,15 +200,19 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction {
                 if (!used.add(name)) {
                     name = template.getName();
                 }
-                addKind(builder, used, name, CSharpFileType.INSTANCE.getIcon(), template.getName());
+                addKind(builder, used, LocalizeValue.of(name), CSharpFileType.INSTANCE.getIcon(), template.getName());
             }
         }
 
-        builder.setTitle("Create New File");
+        builder.setTitle(LocalizeValue.localizeTODO("Create New File"));
     }
 
-    private static void addKind(CreateFileFromTemplateDialog.Builder builder, @Nonnull Set<String> used, @Nonnull String kind, @Nullable Image icon, @Nonnull String templateName) {
-        used.add(kind);
+    private static void addKind(CreateFileFromTemplateDialog.Builder builder,
+                                @Nonnull Set<String> used,
+                                @Nonnull LocalizeValue kind,
+                                @Nullable Image icon,
+                                @Nonnull String templateName) {
+        used.add(templateName);
 
         builder.addKind(kind, icon, templateName);
     }
@@ -246,7 +252,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction {
     }
 
     @Override
-    protected String getActionName(PsiDirectory psiDirectory, String s, String s2) {
-        return "Create C# File";
+    protected LocalizeValue getActionName(PsiDirectory psiDirectory, String s, String s2) {
+        return LocalizeValue.localizeTODO("Create C# File");
     }
 }
