@@ -37,9 +37,10 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.ResolveResult;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
 import consulo.util.collection.ContainerUtil;
-
 import jakarta.annotation.Nonnull;
+
 import java.util.List;
 
 /**
@@ -47,75 +48,64 @@ import java.util.List;
  * @since 02.12.14
  */
 @ExtensionImpl
-public class UnnecessaryNamedArgumentInspection extends CSharpGeneralLocalInspection
-{
-	@Nonnull
-	@Override
-	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)
-	{
-		return new CSharpElementVisitor()
-		{
-			@Override
-			public void visitNamedCallArgument(final CSharpNamedCallArgument argument)
-			{
-				DotNetExpression argumentExpression = argument.getArgumentExpression();
-				if(argumentExpression == null || CS1738.argumentIsInWrongPosition(argument))
-				{
-					return;
-				}
+public class UnnecessaryNamedArgumentInspection extends CSharpGeneralLocalInspection {
+    @Nonnull
+    @Override
+    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+        return new CSharpElementVisitor() {
+            @Override
+            public void visitNamedCallArgument(final CSharpNamedCallArgument argument) {
+                DotNetExpression argumentExpression = argument.getArgumentExpression();
+                if (argumentExpression == null || CS1738.argumentIsInWrongPosition(argument)) {
+                    return;
+                }
 
-				CSharpCallArgumentListOwner owner = PsiTreeUtil.getParentOfType(argument, CSharpCallArgumentListOwner.class);
+                CSharpCallArgumentListOwner owner = PsiTreeUtil.getParentOfType(argument, CSharpCallArgumentListOwner.class);
 
-				assert owner != null;
+                assert owner != null;
 
-				ResolveResult result = CSharpResolveUtil.findValidOrFirstMaybeResult(owner.multiResolve(false));
+                ResolveResult result = CSharpResolveUtil.findValidOrFirstMaybeResult(owner.multiResolve(false));
 
-				if(!(result instanceof MethodResolveResult))
-				{
-					return;
-				}
+                if (!(result instanceof MethodResolveResult)) {
+                    return;
+                }
 
-				List<NCallArgument> arguments = ((MethodResolveResult) result).getCalcResult().getArguments();
+                List<NCallArgument> arguments = ((MethodResolveResult) result).getCalcResult().getArguments();
 
-				NCallArgument nCallArgument = ContainerUtil.find(arguments, nCallArgument1 -> nCallArgument1.getCallArgument() == argument);
+                NCallArgument nCallArgument = ContainerUtil.find(arguments, nCallArgument1 -> nCallArgument1.getCallArgument() == argument);
 
-				if(nCallArgument == null)
-				{
-					return;
-				}
+                if (nCallArgument == null) {
+                    return;
+                }
 
-				PsiElement parameterElement = nCallArgument.getParameterElement();
-				if(!(parameterElement instanceof DotNetParameter))
-				{
-					return;
-				}
+                PsiElement parameterElement = nCallArgument.getParameterElement();
+                if (!(parameterElement instanceof DotNetParameter)) {
+                    return;
+                }
 
-				int positionInParameterList = ((DotNetParameter) parameterElement).getIndex();
+                int positionInParameterList = ((DotNetParameter) parameterElement).getIndex();
 
-				int positionInCall = arguments.indexOf(nCallArgument);
-				assert positionInCall != -1;
+                int positionInCall = arguments.indexOf(nCallArgument);
+                assert positionInCall != -1;
 
-				if(positionInCall == positionInParameterList)
-				{
-					CSharpReferenceExpression argumentNameReference = argument.getArgumentNameReference();
-					holder.registerProblem(argumentNameReference, "Unnecessary argument name specific", ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-							new IntentionWrapper(new ConvertNamedToSimpleArgumentFix(argument), owner.getContainingFile()));
-				}
-			}
-		};
-	}
+                if (positionInCall == positionInParameterList) {
+                    CSharpReferenceExpression argumentNameReference = argument.getArgumentNameReference();
+                    holder.registerProblem(argumentNameReference, "Unnecessary argument name specific", ProblemHighlightType.LIKE_UNUSED_SYMBOL,
+                        new IntentionWrapper(new ConvertNamedToSimpleArgumentFix(argument), owner.getContainingFile()));
+                }
+            }
+        };
+    }
 
-	@Nonnull
-	@Override
-	public String getDisplayName()
-	{
-		return "Unnecessary named argument";
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Unnecessary named argument");
+    }
 
-	@Nonnull
-	@Override
-	public HighlightDisplayLevel getDefaultLevel()
-	{
-		return HighlightDisplayLevel.WEAK_WARNING;
-	}
+    @Nonnull
+    @Override
+    public HighlightDisplayLevel getDefaultLevel() {
+        return HighlightDisplayLevel.WEAK_WARNING;
+    }
 }

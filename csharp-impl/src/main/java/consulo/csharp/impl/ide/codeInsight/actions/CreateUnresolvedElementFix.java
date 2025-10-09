@@ -37,6 +37,7 @@ import consulo.language.editor.template.Template;
 import consulo.language.editor.template.TemplateManager;
 import consulo.language.psi.*;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.navigation.OpenFileDescriptor;
 import consulo.navigation.OpenFileDescriptorFactory;
 import consulo.project.Project;
@@ -69,7 +70,7 @@ public abstract class CreateUnresolvedElementFix extends BaseIntentionAction imp
 
   @Nonnull
   @Override
-  public abstract String getText();
+  public abstract LocalizeValue getText();
 
   @RequiredReadAction
   public abstract void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context,

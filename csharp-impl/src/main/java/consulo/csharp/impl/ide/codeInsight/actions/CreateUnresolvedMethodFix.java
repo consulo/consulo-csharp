@@ -21,6 +21,7 @@ import consulo.csharp.impl.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.impl.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.impl.ide.liveTemplates.expression.ReturnStatementExpression;
 import consulo.csharp.impl.ide.liveTemplates.expression.TypeRefExpression;
+import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.impl.psi.CSharpContextUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
@@ -36,135 +37,114 @@ import consulo.language.editor.template.Template;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
-
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
 import java.util.List;
 
 /**
  * @author VISTALL
  * @since 01.07.14
  */
-public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
-{
-	public CreateUnresolvedMethodFix(CSharpReferenceExpression expression)
-	{
-		super(expression);
-	}
+public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix {
+    public CreateUnresolvedMethodFix(CSharpReferenceExpression expression) {
+        super(expression);
+    }
 
-	@Nonnull
-	@Override
-	public String getTemplateText()
-	{
-		return "Create method ''{0}({1})''";
-	}
+    @Override
+    protected LocalizeValue createText(String referenceName, String arguments) {
+        return CSharpErrorLocalize.createMethod01(referenceName, arguments);
+    }
 
-	@Override
-	@Nullable
-	@RequiredReadAction
-	protected CreateUnresolvedElementFixContext createGenerateContext()
-	{
-		CSharpReferenceExpression element = myPointer.getElement();
-		if(element == null)
-		{
-			return null;
-		}
+    @Override
+    @Nullable
+    @RequiredReadAction
+    protected CreateUnresolvedElementFixContext createGenerateContext() {
+        CSharpReferenceExpression element = myPointer.getElement();
+        if (element == null) {
+            return null;
+        }
 
-		if(element.kind() == CSharpReferenceExpression.ResolveToKind.METHOD)
-		{
-			PsiElement qualifier = element.getQualifier();
-			if(qualifier == null)
-			{
-				final DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
-				if(qualifiedElement == null)
-				{
-					return null;
-				}
+        if (element.kind() == CSharpReferenceExpression.ResolveToKind.METHOD) {
+            PsiElement qualifier = element.getQualifier();
+            if (qualifier == null) {
+                final DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
+                if (qualifiedElement == null) {
+                    return null;
+                }
 
-				PsiElement parent = qualifiedElement.getParent();
-				if(parent instanceof DotNetMemberOwner && parent.isWritable())
-				{
-					return new CreateUnresolvedElementFixContext(element, (DotNetMemberOwner) parent);
-				}
-			}
-			else
-			{
-				DotNetTypeRef typeRef = ((DotNetExpression) qualifier).toTypeRef(true);
+                PsiElement parent = qualifiedElement.getParent();
+                if (parent instanceof DotNetMemberOwner && parent.isWritable()) {
+                    return new CreateUnresolvedElementFixContext(element, (DotNetMemberOwner) parent);
+                }
+            }
+            else {
+                DotNetTypeRef typeRef = ((DotNetExpression) qualifier).toTypeRef(true);
 
-				DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
+                DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 
-				PsiElement typeResolveResultElement = typeResolveResult.getElement();
-				if(typeResolveResultElement instanceof DotNetMemberOwner && typeResolveResultElement.isWritable())
-				{
-					return new CreateUnresolvedElementFixContext(element, (DotNetMemberOwner) typeResolveResultElement);
-				}
-			}
-		}
-		return null;
-	}
+                PsiElement typeResolveResultElement = typeResolveResult.getElement();
+                if (typeResolveResultElement instanceof DotNetMemberOwner && typeResolveResultElement.isWritable()) {
+                    return new CreateUnresolvedElementFixContext(element, (DotNetMemberOwner) typeResolveResultElement);
+                }
+            }
+        }
+        return null;
+    }
 
-	@RequiredReadAction
-	@Override
-	public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @Nonnull PsiFile file, @Nonnull Template template)
-	{
-		boolean forInterface = context.getTargetForGenerate() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) context.getTargetForGenerate()).isInterface();
+    @RequiredReadAction
+    @Override
+    public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @Nonnull PsiFile file, @Nonnull Template template) {
+        boolean forInterface = context.getTargetForGenerate() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) context.getTargetForGenerate()).isInterface();
 
-		if(!forInterface)
-		{
-			template.addTextSegment(calcModifier(context).getPresentableText());
-			template.addTextSegment(" ");
-			if(contextType == CSharpContextUtil.ContextType.STATIC)
-			{
-				template.addTextSegment("static ");
-			}
-		}
+        if (!forInterface) {
+            template.addTextSegment(calcModifier(context).getPresentableText());
+            template.addTextSegment(" ");
+            if (contextType == CSharpContextUtil.ContextType.STATIC) {
+                template.addTextSegment("static ");
+            }
+        }
 
-		// get expected from method call expression not reference
-		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(context.getExpression().getParent());
+        // get expected from method call expression not reference
+        List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(context.getExpression().getParent());
 
-		if(!expectedTypeRefs.isEmpty())
-		{
-			template.addVariable(new TypeRefExpression(expectedTypeRefs, file), true);
-		}
-		else
-		{
-			template.addVariable(new TypeRefExpression(new CSharpTypeRefByQName(file, DotNetTypes.System.Void), file), true);
-		}
+        if (!expectedTypeRefs.isEmpty()) {
+            template.addVariable(new TypeRefExpression(expectedTypeRefs, file), true);
+        }
+        else {
+            template.addVariable(new TypeRefExpression(new CSharpTypeRefByQName(file, DotNetTypes.System.Void), file), true);
+        }
 
-		template.addTextSegment(" ");
-		template.addTextSegment(myReferenceName);
+        template.addTextSegment(" ");
+        template.addTextSegment(myReferenceName);
 
-		buildParameterList(context, file, template);
+        buildParameterList(context, file, template);
 
-		if(forInterface)
-		{
-			template.addTextSegment(";");
-		}
-		else
-		{
-			template.addTextSegment("{\n");
+        if (forInterface) {
+            template.addTextSegment(";");
+        }
+        else {
+            template.addTextSegment("{\n");
 
-			template.addVariable("$RETURN_STATEMENT$", new ReturnStatementExpression(), false);
-			template.addEndVariable();
+            template.addVariable("$RETURN_STATEMENT$", new ReturnStatementExpression(), false);
+            template.addEndVariable();
 
-			template.addTextSegment("}");
-		}
-	}
+            template.addTextSegment("}");
+        }
+    }
 
-	@Nonnull
-	static CSharpAccessModifier calcModifier(@Nonnull CreateUnresolvedElementFixContext context)
-	{
-		final CSharpTypeDeclaration thisType = PsiTreeUtil.getParentOfType(context.getExpression(), CSharpTypeDeclaration.class);
-		if(thisType == null)
-		{
-			return CSharpAccessModifier.PUBLIC;
-		}
+    @Nonnull
+    static CSharpAccessModifier calcModifier(@Nonnull CreateUnresolvedElementFixContext context) {
+        final CSharpTypeDeclaration thisType = PsiTreeUtil.getParentOfType(context.getExpression(), CSharpTypeDeclaration.class);
+        if (thisType == null) {
+            return CSharpAccessModifier.PUBLIC;
+        }
 
-		if(context.getTargetForGenerate() == thisType)
-		{
-			return CSharpAccessModifier.PRIVATE;
-		}
+        if (context.getTargetForGenerate() == thisType) {
+            return CSharpAccessModifier.PRIVATE;
+        }
 
-		return CSharpAccessModifier.PUBLIC;
-	}
+        return CSharpAccessModifier.PUBLIC;
+    }
 }

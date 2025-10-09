@@ -31,7 +31,7 @@ import consulo.language.editor.intention.IntentionWrapper;
 import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
-
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 
 /**
@@ -39,49 +39,40 @@ import jakarta.annotation.Nonnull;
  * @since 17.11.2015
  */
 @ExtensionImpl
-public class UnnecessaryModifierInspection extends CSharpGeneralLocalInspection
-{
-	@Nonnull
-	@Override
-	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)
-	{
-		return new CSharpElementVisitor()
-		{
-			@Override
-			@RequiredReadAction
-			public void visitTypeDeclaration(CSharpTypeDeclaration declaration)
-			{
-				DotNetModifierList modifierList = declaration.getModifierList();
-				if(modifierList == null)
-				{
-					return;
-				}
+public class UnnecessaryModifierInspection extends CSharpGeneralLocalInspection {
+    @Nonnull
+    @Override
+    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+        return new CSharpElementVisitor() {
+            @Override
+            @RequiredReadAction
+            public void visitTypeDeclaration(CSharpTypeDeclaration declaration) {
+                DotNetModifierList modifierList = declaration.getModifierList();
+                if (modifierList == null) {
+                    return;
+                }
 
-				PsiElement modifierElement = modifierList.getModifierElement(CSharpModifier.PARTIAL);
-				if(modifierElement != null)
-				{
-					CSharpCompositeTypeDeclaration compositeType = CSharpCompositeTypeDeclaration.findCompositeType(declaration);
-					if(compositeType == null)
-					{
-						holder.registerProblem(modifierElement, "Unnecessary modifier", ProblemHighlightType.LIKE_UNUSED_SYMBOL, new IntentionWrapper(new RemoveModifierFix(CSharpModifier.PARTIAL,
-								declaration), declaration.getContainingFile()));
-					}
-				}
-			}
-		};
-	}
+                PsiElement modifierElement = modifierList.getModifierElement(CSharpModifier.PARTIAL);
+                if (modifierElement != null) {
+                    CSharpCompositeTypeDeclaration compositeType = CSharpCompositeTypeDeclaration.findCompositeType(declaration);
+                    if (compositeType == null) {
+                        holder.registerProblem(modifierElement, "Unnecessary modifier", ProblemHighlightType.LIKE_UNUSED_SYMBOL, new IntentionWrapper(new RemoveModifierFix(CSharpModifier.PARTIAL,
+                            declaration), declaration.getContainingFile()));
+                    }
+                }
+            }
+        };
+    }
 
-	@Nonnull
-	@Override
-	public String getDisplayName()
-	{
-		return "Unnecessary modifier";
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Unnecessary modifier");
+    }
 
-	@Nonnull
-	@Override
-	public HighlightDisplayLevel getDefaultLevel()
-	{
-		return HighlightDisplayLevel.WARNING;
-	}
+    @Nonnull
+    @Override
+    public HighlightDisplayLevel getDefaultLevel() {
+        return HighlightDisplayLevel.WARNING;
+    }
 }

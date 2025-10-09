@@ -20,51 +20,37 @@ import consulo.csharp.lang.psi.CSharpNamespaceProvider;
 import consulo.language.editor.inspection.LocalQuickFixOnPsiElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import org.jetbrains.annotations.Nls;
-
 import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 2019-07-24
  */
-public class ChangeNamespaceFix extends LocalQuickFixOnPsiElement
-{
-	private final String myExpectedNamespace;
+public class ChangeNamespaceFix extends LocalQuickFixOnPsiElement {
+    private final String myExpectedNamespace;
 
-	public ChangeNamespaceFix(@Nonnull CSharpNamespaceProvider element, @Nonnull String expectedNamespace)
-	{
-		super(element);
-		myExpectedNamespace = expectedNamespace;
-	}
+    public ChangeNamespaceFix(@Nonnull CSharpNamespaceProvider element, @Nonnull String expectedNamespace) {
+        super(element);
+        myExpectedNamespace = expectedNamespace;
+    }
 
-	@Override
-	public void invoke(@Nonnull Project project, @Nonnull PsiFile psiFile, @Nonnull PsiElement element1, @Nonnull PsiElement element2)
-	{
-		CSharpNamespaceProvider declaration = (CSharpNamespaceProvider) element1;
+    @Override
+    public void invoke(@Nonnull Project project, @Nonnull PsiFile psiFile, @Nonnull PsiElement element1, @Nonnull PsiElement element2) {
+        CSharpNamespaceProvider declaration = (CSharpNamespaceProvider) element1;
 
-		new ChangeNamespaceProcessor(project, declaration, myExpectedNamespace).run();
-	}
+        new ChangeNamespaceProcessor(project, declaration, myExpectedNamespace).run();
+    }
 
-	@Override
-	public boolean startInWriteAction()
-	{
-		return false;
-	}
+    @Override
+    public boolean startInWriteAction() {
+        return false;
+    }
 
-	@Nonnull
-	@Override
-	public String getText()
-	{
-		return "Change declaration to '" + myExpectedNamespace + "'";
-	}
-
-	@Nls
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return "C#";
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return LocalizeValue.localizeTODO("Change declaration to '" + myExpectedNamespace + "'");
+    }
 }

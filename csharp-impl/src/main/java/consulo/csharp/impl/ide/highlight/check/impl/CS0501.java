@@ -31,6 +31,7 @@ import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.*;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
 import jakarta.annotation.Nonnull;
@@ -50,8 +51,8 @@ public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner> {
 
     @Nonnull
     @Override
-    public String getText() {
-      return "Create empty code block";
+    public LocalizeValue getText() {
+      return LocalizeValue.localizeTODO("Create empty code block");
     }
 
     @Override

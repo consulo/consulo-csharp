@@ -39,9 +39,10 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiUtilCore;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-
 import jakarta.annotation.Nonnull;
+
 import java.util.Map;
 
 /**
@@ -49,136 +50,107 @@ import java.util.Map;
  * @since 16.04.2016
  */
 @ExtensionImpl
-public class LanguageKeywordUsageInspection extends CSharpGeneralLocalInspection
-{
-	public static class ReplaceByKeywordFix extends LocalQuickFixOnPsiElement
-	{
-		private IElementType myKeywordElementType;
+public class LanguageKeywordUsageInspection extends CSharpGeneralLocalInspection {
+    public static class ReplaceByKeywordFix extends LocalQuickFixOnPsiElement {
+        private IElementType myKeywordElementType;
 
-		public ReplaceByKeywordFix(@Nonnull PsiElement element, IElementType keywordElementType)
-		{
-			super(element);
-			myKeywordElementType = keywordElementType;
-		}
+        public ReplaceByKeywordFix(@Nonnull PsiElement element, IElementType keywordElementType) {
+            super(element);
+            myKeywordElementType = keywordElementType;
+        }
 
-		@Nonnull
-		@Override
-		public String getText()
-		{
-			return "Replace by '" + CSharpCompletionUtil.textOfKeyword(myKeywordElementType) + "' keyword";
-		}
+        @Nonnull
+        @Override
+        public LocalizeValue getText() {
+            return LocalizeValue.localizeTODO("Replace by '" + CSharpCompletionUtil.textOfKeyword(myKeywordElementType) + "' keyword");
+        }
 
-		@Override
-		public void invoke(@Nonnull final Project project, @Nonnull PsiFile file, @Nonnull final PsiElement startElement, @Nonnull PsiElement endElement)
-		{
-			new WriteCommandAction.Simple<Object>(project, file)
-			{
-				@Override
-				@RequiredWriteAction
-				protected void run() throws Throwable
-				{
-					CSharpReferenceExpression refExpression = (CSharpReferenceExpression) startElement.getParent();
+        @Override
+        public void invoke(@Nonnull final Project project, @Nonnull PsiFile file, @Nonnull final PsiElement startElement, @Nonnull PsiElement endElement) {
+            new WriteCommandAction.Simple<Object>(project, file) {
+                @Override
+                @RequiredWriteAction
+                protected void run() throws Throwable {
+                    CSharpReferenceExpression refExpression = (CSharpReferenceExpression) startElement.getParent();
 
-					PsiElement parent = refExpression.getParent();
-					String text = CSharpCompletionUtil.textOfKeyword(myKeywordElementType);
+                    PsiElement parent = refExpression.getParent();
+                    String text = CSharpCompletionUtil.textOfKeyword(myKeywordElementType);
 
-					if(parent instanceof CSharpUserType)
-					{
-						DotNetType stubType = CSharpFileFactory.createMaybeStubType(project, text, (DotNetType) parent);
-						parent.replace(stubType);
-					}
-					else
-					{
-						// hack due simple keyword parsed not as expression
-						CSharpReferenceExpression expression = (CSharpReferenceExpression) CSharpFileFactory.createExpression(project, text + ".call");
+                    if (parent instanceof CSharpUserType) {
+                        DotNetType stubType = CSharpFileFactory.createMaybeStubType(project, text, (DotNetType) parent);
+                        parent.replace(stubType);
+                    }
+                    else {
+                        // hack due simple keyword parsed not as expression
+                        CSharpReferenceExpression expression = (CSharpReferenceExpression) CSharpFileFactory.createExpression(project, text + ".call");
 
-						DotNetExpression qualifier = expression.getQualifier();
-						assert qualifier != null;
+                        DotNetExpression qualifier = expression.getQualifier();
+                        assert qualifier != null;
 
-						refExpression.replace(qualifier);
-					}
-				}
-			}.execute();
-		}
+                        refExpression.replace(qualifier);
+                    }
+                }
+            }.execute();
+        }
+    }
 
-		@Nonnull
-		@Override
-		public String getFamilyName()
-		{
-			return "C#";
-		}
-	}
+    private static class Visitor extends CSharpElementVisitor {
+        private ProblemsHolder myHolder;
 
-	private static class Visitor extends CSharpElementVisitor
-	{
-		private ProblemsHolder myHolder;
+        public Visitor(ProblemsHolder holder) {
+            myHolder = holder;
+        }
 
-		public Visitor(ProblemsHolder holder)
-		{
-			myHolder = holder;
-		}
+        @Override
+        @RequiredReadAction
+        public void visitReferenceExpression(CSharpReferenceExpression expression) {
+            DotNetExpression qualifier = expression.getQualifier();
+            CSharpReferenceExpression.ResolveToKind kind = expression.kind();
+            if (qualifier != null || kind == CSharpReferenceExpression.ResolveToKind.BASE || kind == CSharpReferenceExpression.ResolveToKind.THIS) {
+                return;
+            }
 
-		@Override
-		@RequiredReadAction
-		public void visitReferenceExpression(CSharpReferenceExpression expression)
-		{
-			DotNetExpression qualifier = expression.getQualifier();
-			CSharpReferenceExpression.ResolveToKind kind = expression.kind();
-			if(qualifier != null || kind == CSharpReferenceExpression.ResolveToKind.BASE || kind == CSharpReferenceExpression.ResolveToKind.THIS)
-			{
-				return;
-			}
+            PsiElement referenceElement = expression.getReferenceElement();
+            if (referenceElement == null) {
+                return;
+            }
 
-			PsiElement referenceElement = expression.getReferenceElement();
-			if(referenceElement == null)
-			{
-				return;
-			}
+            PsiElement resolved = expression.resolve();
+            if (!(resolved instanceof CSharpTypeDeclaration)) {
+                return;
+            }
 
-			PsiElement resolved = expression.resolve();
-			if(!(resolved instanceof CSharpTypeDeclaration))
-			{
-				return;
-			}
+            String vmQName = ((CSharpTypeDeclaration) resolved).getVmQName();
+            assert vmQName != null;
+            for (Map.Entry<IElementType, String> entry : CSharpNativeTypeImplUtil.ourElementToQTypes.entrySet()) {
+                if (vmQName.equals(entry.getValue()) && PsiUtilCore.getElementType(referenceElement) != entry.getKey()) {
+                    myHolder.registerProblem(referenceElement, "Reference does not match the current code style, use '" + CSharpCompletionUtil.textOfKeyword(entry.getKey()) + "'", new ReplaceByKeywordFix(referenceElement, entry.getKey()));
+                    break;
+                }
+            }
+        }
+    }
 
-			String vmQName = ((CSharpTypeDeclaration) resolved).getVmQName();
-			assert vmQName != null;
-			for(Map.Entry<IElementType, String> entry : CSharpNativeTypeImplUtil.ourElementToQTypes.entrySet())
-			{
-				if(vmQName.equals(entry.getValue()) && PsiUtilCore.getElementType(referenceElement) != entry.getKey())
-				{
-					myHolder.registerProblem(referenceElement, "Reference does not match the current code style, use '" + CSharpCompletionUtil.textOfKeyword(entry.getKey()) + "'", new ReplaceByKeywordFix(referenceElement, entry.getKey()));
-					break;
-				}
-			}
-		}
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Language Keyword Usage");
+    }
 
-	@Nonnull
-	@Override
-	public String getDisplayName()
-	{
-		return "Language Keyword Usage";
-	}
+    @Nonnull
+    @Override
+    public HighlightDisplayLevel getDefaultLevel() {
+        return HighlightDisplayLevel.WEAK_WARNING;
+    }
 
-	@Nonnull
-	@Override
-	public HighlightDisplayLevel getDefaultLevel()
-	{
-		return HighlightDisplayLevel.WEAK_WARNING;
-	}
-
-	@Nonnull
-	@Override
-	public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly)
-	{
-		CSharpCodeGenerationSettings settings = CSharpCodeGenerationSettings.getInstance(holder.getProject());
-		if(!settings.USE_LANGUAGE_DATA_TYPES)
-		{
-			return new PsiElementVisitor()
-			{
-			};
-		}
-		return new Visitor(holder);
-	}
+    @Nonnull
+    @Override
+    public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly) {
+        CSharpCodeGenerationSettings settings = CSharpCodeGenerationSettings.getInstance(holder.getProject());
+        if (!settings.USE_LANGUAGE_DATA_TYPES) {
+            return new PsiElementVisitor() {
+            };
+        }
+        return new Visitor(holder);
+    }
 }

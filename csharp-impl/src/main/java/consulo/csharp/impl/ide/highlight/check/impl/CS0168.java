@@ -16,91 +16,74 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import consulo.language.editor.inspection.LocalQuickFixAndIntentionActionOnPsiElement;
-import consulo.codeEditor.Editor;
-import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.codeEditor.Editor;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.impl.psi.source.CSharpForeachStatementImpl;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.language.editor.inspection.LocalQuickFixAndIntentionActionOnPsiElement;
+import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.search.ReferencesSearch;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 20.05.14
  */
-public class CS0168 extends CompilerCheck<CSharpLocalVariable>
-{
-	public static final class DeleteLocalVariable extends LocalQuickFixAndIntentionActionOnPsiElement
-	{
-		public DeleteLocalVariable(@Nonnull PsiElement element)
-		{
-			super(element);
-		}
+public class CS0168 extends CompilerCheck<CSharpLocalVariable> {
+    public static final class DeleteLocalVariable extends LocalQuickFixAndIntentionActionOnPsiElement {
+        public DeleteLocalVariable(@Nonnull PsiElement element) {
+            super(element);
+        }
 
-		@Nonnull
-		@Override
-		public String getText()
-		{
-			return "Delete variable";
-		}
+        @Nonnull
+        @Override
+        public LocalizeValue getText() {
+            return LocalizeValue.localizeTODO("Delete variable");
+        }
 
-		@Override
-		public void invoke(@Nonnull Project project,
-				@Nonnull PsiFile psiFile,
-				@Nullable Editor editor,
-				@Nonnull PsiElement psiElement,
-				@Nonnull PsiElement psiElement1)
-		{
-			psiElement.delete();
-		}
+        @Override
+        public void invoke(@Nonnull Project project,
+                           @Nonnull PsiFile psiFile,
+                           @Nullable Editor editor,
+                           @Nonnull PsiElement psiElement,
+                           @Nonnull PsiElement psiElement1) {
+            psiElement.delete();
+        }
+    }
 
-		@Nonnull
-		@Override
-		public String getFamilyName()
-		{
-			return "C#";
-		}
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpLocalVariable element) {
+        if (element.getInitializer() != null) {
+            return null;
+        }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpLocalVariable element)
-	{
-		if(element.getInitializer() != null)
-		{
-			return null;
-		}
+        if (isUnused(element)) {
+            CompilerCheckBuilder builder = newBuilder(element.getNameIdentifier(), formatElement(element));
+            if (!(element.getParent() instanceof CSharpForeachStatementImpl)) {
+                builder.withQuickFix(new DeleteLocalVariable(element));
+            }
+            return builder;
+        }
 
-		if(isUnused(element))
-		{
-			CompilerCheckBuilder builder = newBuilder(element.getNameIdentifier(), formatElement(element));
-			if(!(element.getParent() instanceof CSharpForeachStatementImpl))
-			{
-				builder.withQuickFix(new DeleteLocalVariable(element));
-			}
-			return builder;
-		}
+        return null;
+    }
 
-		return null;
-	}
+    @RequiredReadAction
+    static boolean isUnused(@Nonnull CSharpLocalVariable element) {
+        PsiElement nameIdentifier = element.getNameIdentifier();
+        if (nameIdentifier == null) {
+            return false;
+        }
 
-	@RequiredReadAction
-	static boolean isUnused(@Nonnull CSharpLocalVariable element)
-	{
-		PsiElement nameIdentifier = element.getNameIdentifier();
-		if(nameIdentifier == null)
-		{
-			return false;
-		}
-
-		return ReferencesSearch.search(element).findFirst() == null;
-	}
+        return ReferencesSearch.search(element).findFirst() == null;
+    }
 }

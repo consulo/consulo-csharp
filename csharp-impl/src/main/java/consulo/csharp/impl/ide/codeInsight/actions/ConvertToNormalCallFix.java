@@ -31,6 +31,7 @@ import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.lang.StringUtil;
 
@@ -47,7 +48,7 @@ public class ConvertToNormalCallFix extends PsiElementBaseIntentionAction implem
   public static ConvertToNormalCallFix INSTANCE = new ConvertToNormalCallFix();
 
   public ConvertToNormalCallFix() {
-    setText("Convert to normal call");
+    setText(LocalizeValue.localizeTODO("Convert to normal call"));
   }
 
   @Override
@@ -85,7 +86,7 @@ public class ConvertToNormalCallFix extends PsiElementBaseIntentionAction implem
     builder.append(StringUtil.join(elements, element1 -> element1.getText(), ", "));
     builder.append(")");
 
-    new WriteCommandAction<Object>(project, getText(), element.getContainingFile()) {
+    new WriteCommandAction<Object>(project, getText().get(), element.getContainingFile()) {
       @Override
       protected void run(Result<Object> objectResult) throws Throwable {
         CSharpExpressionStatementImpl statement = (CSharpExpressionStatementImpl)CSharpFileFactory.createStatement(callExpression

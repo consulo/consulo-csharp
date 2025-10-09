@@ -34,6 +34,7 @@ import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.editor.refactoring.rename.RenameElementAction;
 import consulo.language.psi.*;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnAction;
@@ -71,8 +72,8 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl> {
 
     @Nonnull
     @Override
-    public String getText() {
-      return "Introduce temp variable";
+    public LocalizeValue getText() {
+      return LocalizeValue.localizeTODO("Introduce temp variable");
     }
 
     @Override

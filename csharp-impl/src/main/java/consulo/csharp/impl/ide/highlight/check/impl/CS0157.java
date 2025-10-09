@@ -29,6 +29,7 @@ import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
 import jakarta.annotation.Nonnull;
@@ -48,8 +49,8 @@ public class CS0157 extends CompilerCheck<CSharpReturnStatementImpl> {
 
     @Nonnull
     @Override
-    public String getText() {
-      return "Remove return statement";
+    public LocalizeValue getText() {
+      return LocalizeValue.localizeTODO("Remove return statement");
     }
 
     @Override

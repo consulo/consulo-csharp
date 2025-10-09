@@ -27,9 +27,9 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.lang.StringUtil;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -37,92 +37,77 @@ import jakarta.annotation.Nullable;
  * @author VISTALL
  * @since 18.11.14
  */
-public abstract class BaseModifierFix implements SyntheticIntentionAction
-{
-	private final DotNetModifier[] myModifiers;
-	private final SmartPsiElementPointer<DotNetModifierListOwner> myModifierElementOwnerPointer;
+public abstract class BaseModifierFix implements SyntheticIntentionAction {
+    private final DotNetModifier[] myModifiers;
+    private final SmartPsiElementPointer<DotNetModifierListOwner> myModifierElementOwnerPointer;
 
-	public BaseModifierFix(DotNetModifier[] modifiers, DotNetModifierListOwner parent)
-	{
-		myModifiers = modifiers;
-		myModifierElementOwnerPointer = SmartPointerManager.getInstance(parent.getProject()).createSmartPsiElementPointer(parent);
-	}
+    public BaseModifierFix(DotNetModifier[] modifiers, DotNetModifierListOwner parent) {
+        myModifiers = modifiers;
+        myModifierElementOwnerPointer = SmartPointerManager.getInstance(parent.getProject()).createSmartPsiElementPointer(parent);
+    }
 
-	public BaseModifierFix(DotNetModifier modifier, DotNetModifierListOwner parent)
-	{
-		this(new DotNetModifier[]{modifier}, parent);
-	}
+    public BaseModifierFix(DotNetModifier modifier, DotNetModifierListOwner parent) {
+        this(new DotNetModifier[]{modifier}, parent);
+    }
 
-	public abstract boolean isValidCondition(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier);
+    public abstract boolean isValidCondition(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier);
 
-	@Nonnull
-	public abstract String getActionName();
+    @Nonnull
+    public abstract LocalizeValue getActionName();
 
-	public abstract void doAction(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier);
+    public abstract void doAction(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier);
 
-	@Nonnull
-	@Override
-	public String getText()
-	{
-		if(myModifiers.length == 1)
-		{
-			return getActionName() + " '" + myModifiers[0].getPresentableText() + "' modifier";
-		}
-		else
-		{
-			return getActionName() + " " + StringUtil.join(myModifiers,
-					modifier -> "'" + modifier.getPresentableText() + "'",
-					" & ") + " modifiers";
-		}
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        if (myModifiers.length == 1) {
+            return LocalizeValue.localizeTODO(getActionName() + " '" + myModifiers[0].getPresentableText() + "' modifier");
+        }
+        else {
+            return LocalizeValue.localizeTODO(getActionName() + " " + StringUtil.join(myModifiers,
+                modifier -> "'" + modifier.getPresentableText() + "'",
+                " & ") + " modifiers");
+        }
+    }
 
-	@Override
-	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile)
-	{
-		DotNetModifierList modifierList = getModifierList();
-		if(modifierList == null)
-		{
-			return false;
-		}
+    @Override
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile) {
+        DotNetModifierList modifierList = getModifierList();
+        if (modifierList == null) {
+            return false;
+        }
 
-		for(DotNetModifier modifier : myModifiers)
-		{
-			if(isValidCondition(modifierList, modifier))
-			{
-				return true;
-			}
-		}
+        for (DotNetModifier modifier : myModifiers) {
+            if (isValidCondition(modifierList, modifier)) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
-	{
-		WriteCommandAction.runWriteCommandAction(project, () ->
-		{
-			DotNetModifierList modifierList = getModifierList();
-			if(modifierList == null)
-			{
-				return;
-			}
+    @Override
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
+        WriteCommandAction.runWriteCommandAction(project, () ->
+        {
+            DotNetModifierList modifierList = getModifierList();
+            if (modifierList == null) {
+                return;
+            }
 
-			for(DotNetModifier modifier : myModifiers)
-			{
-				doAction(modifierList, modifier);
-			}
-		});
-	}
+            for (DotNetModifier modifier : myModifiers) {
+                doAction(modifierList, modifier);
+            }
+        });
+    }
 
-	@Nullable
-	@RequiredReadAction
-	private DotNetModifierList getModifierList()
-	{
-		DotNetModifierListOwner element = myModifierElementOwnerPointer.getElement();
-		if(element == null)
-		{
-			return null;
-		}
-		return element.getModifierList();
-	}
+    @Nullable
+    @RequiredReadAction
+    private DotNetModifierList getModifierList() {
+        DotNetModifierListOwner element = myModifierElementOwnerPointer.getElement();
+        if (element == null) {
+            return null;
+        }
+        return element.getModifierList();
+    }
 }

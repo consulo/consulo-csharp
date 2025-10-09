@@ -19,6 +19,8 @@ package consulo.csharp.impl.ide.codeInspection;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.language.Language;
 import consulo.language.editor.inspection.LocalInspectionTool;
+import consulo.language.editor.inspection.localize.InspectionLocalize;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -26,19 +28,16 @@ import jakarta.annotation.Nullable;
  * @author VISTALL
  * @since 11-Sep-22
  */
-public abstract class CSharpGeneralLocalInspection extends LocalInspectionTool
-{
-	@Nullable
-	@Override
-	public final Language getLanguage()
-	{
-		return CSharpLanguage.INSTANCE;
-	}
+public abstract class CSharpGeneralLocalInspection extends LocalInspectionTool {
+    @Nullable
+    @Override
+    public final Language getLanguage() {
+        return CSharpLanguage.INSTANCE;
+    }
 
-	@Nonnull
-	@Override
-	public final String getGroupDisplayName()
-	{
-		return "General";
-	}
+    @Nonnull
+    @Override
+    public final LocalizeValue getGroupDisplayName() {
+        return InspectionLocalize.inspectionGeneralToolsGroupName();
+    }
 }

@@ -42,6 +42,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.collection.MultiMap;
 import consulo.util.lang.Pair;
@@ -61,7 +62,7 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl> {
 
     public ReplaceByEqualsCallFix(CSharpBinaryExpressionImpl element) {
       myElementPointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
-      setText("Replace by 'Equals()' call");
+      setText(LocalizeValue.localizeTODO("Replace by 'Equals()' call"));
     }
 
     @Override

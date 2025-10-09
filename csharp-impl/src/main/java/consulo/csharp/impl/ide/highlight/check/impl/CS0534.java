@@ -32,6 +32,7 @@ import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.SmartList;
@@ -50,8 +51,8 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration> {
   public static class ImplementMembersQuickFix implements SyntheticIntentionAction {
     @Nonnull
     @Override
-    public String getText() {
-      return "Implement members";
+    public LocalizeValue getText() {
+      return LocalizeValue.localizeTODO("Implement members");
     }
 
     @Override

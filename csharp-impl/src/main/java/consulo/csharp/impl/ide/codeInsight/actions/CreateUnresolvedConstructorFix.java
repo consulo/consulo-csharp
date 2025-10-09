@@ -16,91 +16,79 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.impl.localize.CSharpErrorLocalize;
+import consulo.csharp.lang.impl.psi.CSharpContextUtil;
 import consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import consulo.csharp.lang.impl.psi.CSharpContextUtil;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.dotnet.psi.DotNetMemberOwner;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.language.editor.template.Template;
 import consulo.language.psi.PsiElement;
-import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 30.12.14
  */
-public class CreateUnresolvedConstructorFix extends CreateUnresolvedLikeMethodFix
-{
-	public CreateUnresolvedConstructorFix(CSharpReferenceExpression expression)
-	{
-		super(expression);
-	}
+public class CreateUnresolvedConstructorFix extends CreateUnresolvedLikeMethodFix {
+    public CreateUnresolvedConstructorFix(CSharpReferenceExpression expression) {
+        super(expression);
+    }
 
-	@Nonnull
-	@Override
-	public PsiElement getElementForAfterAdd(@Nonnull DotNetNamedElement[] elements, @Nonnull CSharpBodyWithBraces targetForGenerate)
-	{
-		PsiElement last = targetForGenerate.getLeftBrace();
-		for(DotNetNamedElement element : elements)
-		{
-			if(element instanceof CSharpConstructorDeclaration)
-			{
-				last = element;
-			}
-		}
-		return last;
-	}
+    @Nonnull
+    @Override
+    public PsiElement getElementForAfterAdd(@Nonnull DotNetNamedElement[] elements, @Nonnull CSharpBodyWithBraces targetForGenerate) {
+        PsiElement last = targetForGenerate.getLeftBrace();
+        for (DotNetNamedElement element : elements) {
+            if (element instanceof CSharpConstructorDeclaration) {
+                last = element;
+            }
+        }
+        return last;
+    }
 
-	@Nonnull
-	@Override
-	public String getTemplateText()
-	{
-		return "Create constructor";
-	}
+    @Override
+    protected LocalizeValue createText(String referenceName, String arguments) {
+        return CSharpErrorLocalize.createConstructor();
+    }
 
-	@Override
-	@Nullable
-	public CreateUnresolvedElementFixContext createGenerateContext()
-	{
-		CSharpReferenceExpression element = myPointer.getElement();
-		if(element == null)
-		{
-			return null;
-		}
+    @Override
+    @Nullable
+    public CreateUnresolvedElementFixContext createGenerateContext() {
+        CSharpReferenceExpression element = myPointer.getElement();
+        if (element == null) {
+            return null;
+        }
 
-		if(element.kind() == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR)
-		{
-			final DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
-			if(qualifiedElement == null)
-			{
-				return null;
-			}
+        if (element.kind() == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR) {
+            final DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
+            if (qualifiedElement == null) {
+                return null;
+            }
 
-			PsiElement parent = qualifiedElement.getParent();
-			if(parent instanceof DotNetMemberOwner && parent.isWritable())
-			{
-				return new CreateUnresolvedElementFixContext(element, (DotNetMemberOwner) parent);
-			}
-		}
-		return null;
-	}
+            PsiElement parent = qualifiedElement.getParent();
+            if (parent instanceof DotNetMemberOwner && parent.isWritable()) {
+                return new CreateUnresolvedElementFixContext(element, (DotNetMemberOwner) parent);
+            }
+        }
+        return null;
+    }
 
-	@RequiredReadAction
-	@Override
-	public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @Nonnull PsiFile file, @Nonnull Template template)
-	{
-		template.addTextSegment("public ");
-		template.addTextSegment(myReferenceName);
-		buildParameterList(context, file, template);
-		template.addTextSegment("{\n");
-		template.addEndVariable();
-		template.addTextSegment("}");
-	}
+    @RequiredReadAction
+    @Override
+    public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @Nonnull PsiFile file, @Nonnull Template template) {
+        template.addTextSegment("public ");
+        template.addTextSegment(myReferenceName);
+        buildParameterList(context, file, template);
+        template.addTextSegment("{\n");
+        template.addEndVariable();
+        template.addTextSegment("}");
+    }
 }

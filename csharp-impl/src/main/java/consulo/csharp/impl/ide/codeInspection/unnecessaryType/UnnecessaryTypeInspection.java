@@ -36,7 +36,7 @@ import consulo.language.editor.inspection.ProblemsHolder;
 import consulo.language.editor.intention.IntentionWrapper;
 import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElementVisitor;
-
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 
 /**
@@ -44,76 +44,62 @@ import jakarta.annotation.Nonnull;
  * @since 18.05.14
  */
 @ExtensionImpl
-public class UnnecessaryTypeInspection extends CSharpGeneralLocalInspection
-{
-	@Nonnull
-	@Override
-	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)
-	{
-		CSharpLanguageVersion languageVersion = CSharpModuleUtil.findLanguageVersion(holder.getFile());
-		if(!languageVersion.isAtLeast(CSharpLanguageVersion._3_0))
-		{
-			return CSharpElementVisitor.EMPTY;
-		}
+public class UnnecessaryTypeInspection extends CSharpGeneralLocalInspection {
+    @Nonnull
+    @Override
+    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+        CSharpLanguageVersion languageVersion = CSharpModuleUtil.findLanguageVersion(holder.getFile());
+        if (!languageVersion.isAtLeast(CSharpLanguageVersion._3_0)) {
+            return CSharpElementVisitor.EMPTY;
+        }
 
-		return new CSharpElementVisitor()
-		{
-			@Override
-			@RequiredReadAction
-			public void visitLocalVariable(CSharpLocalVariable variable)
-			{
-				if(variable.isConstant() || variable.getParent() instanceof CSharpCatchStatementImpl)
-				{
-					return;
-				}
+        return new CSharpElementVisitor() {
+            @Override
+            @RequiredReadAction
+            public void visitLocalVariable(CSharpLocalVariable variable) {
+                if (variable.isConstant() || variable.getParent() instanceof CSharpCatchStatementImpl) {
+                    return;
+                }
 
-				DotNetExpression initializer = variable.getInitializer();
-				if(initializer != null)
-				{
-					DotNetTypeRef typeRef = initializer.toTypeRef(false);
-					if(typeRef instanceof CSharpLambdaTypeRef || typeRef instanceof CSharpNullTypeRef)
-					{
-						return;
-					}
-				}
-				else
-				{
-					return;
-				}
+                DotNetExpression initializer = variable.getInitializer();
+                if (initializer != null) {
+                    DotNetTypeRef typeRef = initializer.toTypeRef(false);
+                    if (typeRef instanceof CSharpLambdaTypeRef || typeRef instanceof CSharpNullTypeRef) {
+                        return;
+                    }
+                }
+                else {
+                    return;
+                }
 
-				DotNetTypeRef typeRef = variable.toTypeRef(false);
-				if(typeRef == DotNetTypeRef.AUTO_TYPE)
-				{
-					return;
-				}
-				else if(typeRef instanceof CSharpDynamicTypeRef)
-				{
-					return;
-				}
+                DotNetTypeRef typeRef = variable.toTypeRef(false);
+                if (typeRef == DotNetTypeRef.AUTO_TYPE) {
+                    return;
+                }
+                else if (typeRef instanceof CSharpDynamicTypeRef) {
+                    return;
+                }
 
-				DotNetType type = variable.getType();
-				if(type == null)
-				{
-					return;
-				}
+                DotNetType type = variable.getType();
+                if (type == null) {
+                    return;
+                }
 
-				holder.registerProblem(type, "Can replaced by 'var'", ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-						new IntentionWrapper(new ChangeVariableToTypeRefFix(variable, DotNetTypeRef.AUTO_TYPE), variable.getContainingFile()));
-			}
-		};
-	}
+                holder.registerProblem(type, "Can replaced by 'var'", ProblemHighlightType.LIKE_UNUSED_SYMBOL,
+                    new IntentionWrapper(new ChangeVariableToTypeRefFix(variable, DotNetTypeRef.AUTO_TYPE), variable.getContainingFile()));
+            }
+        };
+    }
 
-	@Nonnull
-	@Override
-	public String getDisplayName()
-	{
-		return "Unnecessary type";
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Unnecessary type");
+    }
 
-	@Nonnull
-	@Override
-	public HighlightDisplayLevel getDefaultLevel()
-	{
-		return HighlightDisplayLevel.WEAK_WARNING;
-	}
+    @Nonnull
+    @Override
+    public HighlightDisplayLevel getDefaultLevel() {
+        return HighlightDisplayLevel.WEAK_WARNING;
+    }
 }

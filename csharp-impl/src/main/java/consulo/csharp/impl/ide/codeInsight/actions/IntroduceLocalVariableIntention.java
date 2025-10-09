@@ -19,6 +19,7 @@ package consulo.csharp.impl.ide.codeInsight.actions;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.codeEditor.Editor;
 import consulo.csharp.impl.ide.refactoring.introduceVariable.CSharpIntroduceLocalVariableHandler;
+import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.impl.psi.source.CSharpAssignmentExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpExpressionStatementImpl;
 import consulo.dotnet.DotNetTypes;
@@ -27,11 +28,13 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import consulo.language.editor.CodeInsightBundle;
 import consulo.language.editor.intention.IntentionMetaData;
+import consulo.language.editor.localize.CodeInsightLocalize;
 import consulo.language.editor.refactoring.action.BaseRefactoringIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.SyntheticElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 
@@ -70,7 +73,7 @@ public class IntroduceLocalVariableIntention extends BaseRefactoringIntentionAct
 
   @Nonnull
   @Override
-  public String getText() {
-    return CodeInsightBundle.message("intention.introduce.variable.text");
+  public LocalizeValue getText() {
+    return CSharpErrorLocalize.intentionIntroduceVariableText();
   }
 }

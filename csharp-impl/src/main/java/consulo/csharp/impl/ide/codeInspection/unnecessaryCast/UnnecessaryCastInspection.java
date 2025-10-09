@@ -30,7 +30,7 @@ import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.editor.inspection.ProblemsHolder;
 import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElementVisitor;
-
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 
 /**
@@ -38,68 +38,56 @@ import jakarta.annotation.Nonnull;
  * @since 18.05.14
  */
 @ExtensionImpl
-public class UnnecessaryCastInspection extends CSharpGeneralLocalInspection
-{
-	@Nonnull
-	@Override
-	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)
-	{
-		return new CSharpElementVisitor()
-		{
-			@Override
-			@RequiredReadAction
-			public void visitTypeCastExpression(CSharpTypeCastExpressionImpl expression)
-			{
-				DotNetExpression innerExpression = expression.getInnerExpression();
-				if(innerExpression == null)
-				{
-					return;
-				}
+public class UnnecessaryCastInspection extends CSharpGeneralLocalInspection {
+    @Nonnull
+    @Override
+    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+        return new CSharpElementVisitor() {
+            @Override
+            @RequiredReadAction
+            public void visitTypeCastExpression(CSharpTypeCastExpressionImpl expression) {
+                DotNetExpression innerExpression = expression.getInnerExpression();
+                if (innerExpression == null) {
+                    return;
+                }
 
-				DotNetTypeRef innerType = innerExpression.toTypeRef(false);
-				DotNetTypeRef castType = expression.toTypeRef(false);
+                DotNetTypeRef innerType = innerExpression.toTypeRef(false);
+                DotNetTypeRef castType = expression.toTypeRef(false);
 
-				if(CSharpTypeUtil.isInheritable(innerType, castType) && CSharpTypeUtil.isInheritable(castType, innerType))
-				{
-					holder.registerProblem(expression.getType(), "Unnecessary cast", ProblemHighlightType.LIKE_UNUSED_SYMBOL);
-				}
-			}
+                if (CSharpTypeUtil.isInheritable(innerType, castType) && CSharpTypeUtil.isInheritable(castType, innerType)) {
+                    holder.registerProblem(expression.getType(), "Unnecessary cast", ProblemHighlightType.LIKE_UNUSED_SYMBOL);
+                }
+            }
 
-			@Override
-			@RequiredReadAction
-			public void visitAsExpression(CSharpAsExpressionImpl expression)
-			{
-				DotNetExpression innerExpression = expression.getInnerExpression();
-				if(innerExpression == null)
-				{
-					return;
-				}
+            @Override
+            @RequiredReadAction
+            public void visitAsExpression(CSharpAsExpressionImpl expression) {
+                DotNetExpression innerExpression = expression.getInnerExpression();
+                if (innerExpression == null) {
+                    return;
+                }
 
-				DotNetType type = expression.getType();
-				if(type == null)
-				{
-					return;
-				}
+                DotNetType type = expression.getType();
+                if (type == null) {
+                    return;
+                }
 
-				if(CSharpTypeUtil.isTypeEqual(innerExpression.toTypeRef(true), type.toTypeRef()))
-				{
-					holder.registerProblem(expression.getAsKeyword(), "Unnecessary 'as' expression", ProblemHighlightType.LIKE_UNUSED_SYMBOL);
-				}
-			}
-		};
-	}
+                if (CSharpTypeUtil.isTypeEqual(innerExpression.toTypeRef(true), type.toTypeRef())) {
+                    holder.registerProblem(expression.getAsKeyword(), "Unnecessary 'as' expression", ProblemHighlightType.LIKE_UNUSED_SYMBOL);
+                }
+            }
+        };
+    }
 
-	@Nonnull
-	@Override
-	public String getDisplayName()
-	{
-		return "Unnecessary cast";
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Unnecessary cast");
+    }
 
-	@Nonnull
-	@Override
-	public HighlightDisplayLevel getDefaultLevel()
-	{
-		return HighlightDisplayLevel.WARNING;
-	}
+    @Nonnull
+    @Override
+    public HighlightDisplayLevel getDefaultLevel() {
+        return HighlightDisplayLevel.WARNING;
+    }
 }

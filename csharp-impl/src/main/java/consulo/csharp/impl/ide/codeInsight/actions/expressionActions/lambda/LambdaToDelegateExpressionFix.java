@@ -35,6 +35,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiUtilCore;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.lang.StringUtil;
 import jakarta.annotation.Nonnull;
@@ -102,7 +103,7 @@ public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
 
   @Nonnull
   @Override
-  public String getText() {
-    return "To delegate";
+  public LocalizeValue getText() {
+    return LocalizeValue.localizeTODO("To delegate");
   }
 }

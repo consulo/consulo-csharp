@@ -36,6 +36,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.lang.Pair;
 
@@ -60,8 +61,8 @@ public class CS0702 extends CompilerCheck<CSharpGenericConstraintTypeValue> {
 
     @Nonnull
     @Override
-    public String getText() {
-      return "Replace by '" + myKeywordForReplace + "' constraint";
+    public LocalizeValue getText() {
+      return LocalizeValue.localizeTODO("Replace by '" + myKeywordForReplace + "' constraint");
     }
 
     @Override

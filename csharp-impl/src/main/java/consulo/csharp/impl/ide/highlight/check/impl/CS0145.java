@@ -35,6 +35,7 @@ import consulo.language.impl.ast.TreeElement;
 import consulo.language.impl.psi.CodeEditUtil;
 import consulo.language.psi.*;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 
@@ -51,7 +52,7 @@ public class CS0145 extends CompilerCheck<DotNetVariable> {
 
     public RemoveConstKeywordFix(DotNetVariable element) {
       myVariablePointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
-      setText("Remove 'const' keyword");
+      setText(LocalizeValue.localizeTODO("Remove 'const' keyword"));
     }
 
     @Override
@@ -90,8 +91,8 @@ public class CS0145 extends CompilerCheck<DotNetVariable> {
 
     @Nonnull
     @Override
-    public String getText() {
-      return "Initialize constant";
+    public LocalizeValue getText() {
+      return LocalizeValue.localizeTODO("Initialize constant");
     }
 
     @Override

@@ -28,6 +28,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
 import jakarta.annotation.Nonnull;
@@ -40,7 +41,7 @@ public class ConvertNamedToSimpleArgumentFix extends BaseIntentionAction impleme
   private SmartPsiElementPointer<CSharpNamedCallArgument> myPointer;
 
   public ConvertNamedToSimpleArgumentFix(CSharpNamedCallArgument element) {
-    setText("Convert to simple argument");
+    setText(LocalizeValue.localizeTODO("Convert to simple argument"));
     myPointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
   }
 

@@ -33,6 +33,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.collection.ArrayUtil;
 
@@ -49,7 +50,7 @@ public class CS1722 extends CompilerCheck<DotNetTypeList> {
 
     public MoveToFirstPositionFix(DotNetType baseType) {
       myTypePointer = SmartPointerManager.getInstance(baseType.getProject()).createSmartPsiElementPointer(baseType);
-      setText("Place base type at first");
+      setText(LocalizeValue.localizeTODO("Place base type at first"));
     }
 
     @Override

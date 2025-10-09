@@ -1,230 +1,252 @@
-conflicting.0.modifier.with.1.modifier:
-  text: Conflicting ''{0}'' modifier with ''{1}'' modifier
-impicit.cast.from.0.to.1:
-  text: Implicit cast from ''{0}'' to ''{1}''
-explicit.cast.from.0.to.1:
-  text: Explicit cast from ''{0}'' to ''{1}''
-CS0017:
-  text: Program has more than one entry point defined. Compile with /main to specify the type that contains the entry point.
-CS0019:
-  text: Operator ''{0}'' cannot be applied to operands of type ''{1}'' and ''{2}''
-CS0023:
-  text: The ''{0}'' operator cannot be applied to operand of type ''{1}''
-CS0026:
-  text: Keyword ''{0}'' is not valid in a static property, static method, or static field initializer
-CS0027:
-  text: Keyword ''{0}'' is not available in the current context
-CS0029:
-  text: Cannot implicitly convert type ''{0}'' to ''{1}''
-CS0030:
-  text: Cannot convert type ''{0}'' to ''{1}''
-CS0070:
-  text: The event ''{0}'' can only appear on the left hand side of += or -= (except when used from within the type ''{1}'')
-CS0077:
-  text: The ''{0}'' operator cannot be used with a non-nullable value type ''{1}''
-CS0100:
-  text: The parameter name ''{0}'' is a duplicate
-CS0101:
-  text: The namespace ''{0}'' already contains a definition for ''{1}''
-CS0102:
-  text: The type ''{0}'' already contains a definition for ''{1}''
-CS0106:
-  text: The modifier ''{0}'' is not valid for this item
-CS0107:
-  text: More than one protection modifier specified
-CS0113:
-  text: A member ''{0}'' marked as override cannot be marked as new or virtual
-CS0116:
-  text: A namespace cannot directly contain members such as fields or methods
-CS0120:
-  text: An object reference is required to access non-static member ''{0}''
-CS0122:
-  text: '''''{0}'''' is inaccessible due to its protection level'
-CS0128:
-  text: A local variable named ''{0}'' is already defined in this scope
-CS0132:
-  text: '''''{0}'''': The static constructor must be parameterless'
-CS0133:
-  text: The expression being assigned to ''{0}'' must be constant
-CS0136:
-  text: A local variable named ''{0}'' cannot be declared in this scope because it would give a different meaning to ''{1}'', which is already used in a ''{2}'' scope to denote something else
-CS0144:
-  text: Cannot create an instance of the abstract class or interface ''{0}''
-CS0145:
-  text: A const field requires a value to be provided
-CS0146:
-  text: Circular base class dependency involving ''{0}'' and ''{1}''
-CS0151:
-  text: A switch expression of type ''{0}'' cannot be converted to an integral type, bool, char, string, enum or nullable type
-CS0153:
-  text: A goto case is only valid inside a switch statement
-CS0155:
-  text: The type caught or thrown must be derived from System.Exception
-CS0157:
-  text: Control cannot leave the body of a finally clause
-CS0161:
-  text: '''''{0}'''': not all code paths return a value'
-CS0168:
-  text: The variable ''{0}'' is declared but never used
-CS0169:
-  text: The field ''{0}'' is never used
-CS0173:
-  text: Type of conditional expression cannot be determined because there is no implicit conversion between ''{0}'' and ''{1}''
-CS0176:
-  text: Static member ''{0}'' cannot be accessed with an instance reference, qualify it with a type name instead
-CS0200:
-  text: Property or indexer ''{0}'' cannot be assigned to -- it is read only
-CS0201:
-  text: Only assignment, call, increment, decrement, await, and new object expressions can be used as a statement
-CS0206:
-  text: A property, indexer or dynamic member access may not be passed as 'ref' or 'out' parameter
-CS0211:
-  text: Cannot take the address of the given expression
-CS0214:
-  text: Pointers and fixed size buffers may only be used in an unsafe context
-CS0219:
-  text: The variable ''{0}'' is assigned but its value is never used
-CS0227:
-  text: Unsafe code requires the 'unsafe' command line option to be specified
-CS0231:
-  text: A parameter array must be the last parameter in a formal parameter list
-CS0236:
-  text: A field initializer cannot reference the non-static field, method, or property ''{0}''
-CS0264:
-  text: Partial declarations of ''{0}'' must have the same type parameter names in the same order
-CS0304:
-  text: Cannot create an instance of the variable type ''{0}'' because it does not have the new() constraint
-CS0305:
-  text: Using the generic type ''{0}'' requires ''{1}'' type argument(s)
-CS0401:
-  text: The 'new()' constraint must be the last constraint specified
-CS0409:
-  text: A constraint clause has already been specified for type parameter ''{0}''
-CS0413:
-  text: The ''{0}'' operator cannot be used with a non-reference type parameter ''{1}''. Consider adding 'class' or a reference type constraint
-CS0418:
-  text: '''''{0}'''' : an abstract class cannot be sealed or static'
-CS0441:
-  text: '''''{0}'''': a class cannot be both static and sealed'
-CS0449:
-  text: The 'class' or 'struct' constraint must be the first constraint specified (CS0449)
-CS0453:
-  text: The type ''{0}'' must be a non-nullable value type in order to use it as type parameter 'T' in the generic type or method 'System.Nullable<T>'
-CS0500:
-  text: '''''{0}'''' cannot declare a body because it is marked abstract(or delegate)'
-CS0501:
-  text: '''''{0}'''' must have a body because it is not marked abstract, extern, partial, or delegate'
-CS0509:
-  text: '''''{0}'''': cannot derive from sealed type ''''{1}'''''
-CS0516:
-  text: Constructor ''{0}'' cannot call itself
-CS0518:
-  text: Dynamic operation cannot be compiled without 'Microsoft.CSharp.dll' assembly reference
-CS0531:
-  text: '''''{0}'''': interface members cannot have a definition'
-CS0534:
-  text: '''''{0}'''' does not implement inherited abstract member ''''{1}'''''
-CS0535:
-  text: '''''{0}'''' does not implement interface member ''''{1}'''''
-CS0539:
-  text: '''''{0}'''' in explicit interface declaration is not a member of interface'
-CS0542:
-  text: '''''{0}'''': member names cannot be the same as their enclosing type'
-CS0555:
-  text: User-defined operator cannot take an object of the enclosing type and convert to an object of the enclosing type
-CS0556:
-  text: User-defined conversion must convert to or from the enclosing type
-CS0568:
-  text: Structs cannot contain explicit parameterless constructors
-CS0673:
-  text: System.Void cannot be used from C#. Consider using ''void''
-CS0692:
-  text: Duplicate type parameter ''{0}''
-CS0693:
-  text: Type parameter ''{0}'' has the same name as the type parameter from outer type ''{1}''
-CS0702:
-  text: A constraint cannot be special class ''{0}''
-CS0708:
-  text: '''''{0}'''': cannot declare instance members in a static class'
-CS0709:
-  text: '''''{0}'''': Cannot derive from static class ''''{1}'''''
-CS0721:
-  text: '''''{0}'''': static types cannot be used as parameters'
-CS0722:
-  text: '''''{0}'''': static types cannot be used as return types'
-CS0723:
-  text: '''''{0}'''': cannot declare variables of static types'
-CS0815:
-  text: An implicitly typed local variable declaration cannot be initialized with ''{0}''
-CS0818:
-  text: An implicitly typed local variable declarator must include an initializer
-CS0820:
-  text: An implicitly typed local variable declarator cannot use an array initializer
-CS0826:
-  text: The type of an implicitly typed array cannot be inferred from the initializer. Try specifying array type explicitly
-CS1004:
-  text: Duplicate ''{0}'' modifier
-CS1008:
-  text: Type byte, sbyte, short, ushort, int, uint, long or ulong expected
-CS1021:
-  text: Integral constant is too large
-CS1100:
-  text: Method ''{0}'' has a parameter modifier 'this' which is not on the first parameter
-CS1105:
-  text: '''''{0}'''': Extension methods must be declared static'
-CS1106:
-  text: '''''{0}'''': Extension methods must be defined in a non-generic static class'
-CS0118:
-  text: '''''{0}'''' is a ''type'' but a ''variable'' was expected'
-CS1510:
-  text: A ref or out argument must be an assignable variable
-CS1511:
-  text: Keyword ''{0}'' is not available in a static method
-CS1535:
-  text: Overloaded unary operator ''{0}'' takes one parameter
-CS1547:
-  text: Keyword ''{0}'' cannot be used in this context
-CS1612:
-  text: Cannot modify a value type return value of ''{0}''. Consider storing the value in a temporary variable
-CS1614:
-  text: '''''{0}'''' is ambiguous between ''''{0}'''' and ''''{0}Attribute''''. Use either ''''@{0}'''' or ''''{0}Attribute'''''
-CS1620:
-  text: Argument {0} must be passed with the ''{1}'' keyword
-CS1644:
-  text: Feature ''{0}'' cannot be used because it is not part of the C# {1} language specification
-CS1656:
-  text: Cannot assign to ''{0}'' because it is a ''{1}''
-CS1674:
-  text: '''''{0}'''': type used in a using statement must be implicitly convertible to ''System.IDisposable'''
-CS1676:
-  text: Parameter ''{0}'' must be declared with the ''{1}'' keyword
-CS1722:
-  text: '''''{0}'''': Base class ''''{1}'''' must be specified as first'
-CS1729:
-  text: '''''{0}'''' does not contain a constructor that takes {1} arguments'
-CS1736:
-  text: Default parameter value for ''{0}'' must be a compile-time constant
-CS1737:
-  text: Optional parameters must appear after all required parameters
-CS1738:
-  text: Named argument specifications must appear after all fixed arguments have been specified
-CS1741:
-  text: Cannot specify a default value for the ''{0}'' parameter
-CS1960:
-  text: Variant type parameters can only be used with interfaces and delegates
-CS1980:
-  text: Dynamic keyword requires 'System.Runtime.CompilerServices.DynamicAttribute' to be defined. Are you missing System.Core.dll assembly reference?
-CS1984:
-  text: The ''{0}'' operator cannot be used in the body of a finally clause
-CS1985:
-  text: The ''{0}'' operator cannot be used in the body of a catch clause
-CS1998:
-  text: Async block lacks 'await' operator and will run synchronously
-CS4009:
-  text: '''''{0}'''': an entry point cannot be async method'
-CS8632:
-  text: The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-CS8625:
-  text: Cannot convert null literal to non-nullable reference type.
 CC0003:
-  text: Index method is not resolved
+    text: Index method is not resolved
+CS0017:
+    text: Program has more than one entry point defined. Compile with /main to specify the type that contains the entry point.
+CS0019:
+    text: Operator ''{0}'' cannot be applied to operands of type ''{1}'' and ''{2}''
+CS0023:
+    text: The ''{0}'' operator cannot be applied to operand of type ''{1}''
+CS0026:
+    text: Keyword ''{0}'' is not valid in a static property, static method, or static field initializer
+CS0027:
+    text: Keyword ''{0}'' is not available in the current context
+CS0029:
+    text: Cannot implicitly convert type ''{0}'' to ''{1}''
+CS0030:
+    text: Cannot convert type ''{0}'' to ''{1}''
+CS0070:
+    text: The event ''{0}'' can only appear on the left hand side of += or -= (except when used from within the type ''{1}'')
+CS0077:
+    text: The ''{0}'' operator cannot be used with a non-nullable value type ''{1}''
+CS0100:
+    text: The parameter name ''{0}'' is a duplicate
+CS0101:
+    text: The namespace ''{0}'' already contains a definition for ''{1}''
+CS0102:
+    text: The type ''{0}'' already contains a definition for ''{1}''
+CS0106:
+    text: The modifier ''{0}'' is not valid for this item
+CS0107:
+    text: More than one protection modifier specified
+CS0113:
+    text: A member ''{0}'' marked as override cannot be marked as new or virtual
+CS0116:
+    text: A namespace cannot directly contain members such as fields or methods
+CS0118:
+    text: '''''{0}'''' is a ''type'' but a ''variable'' was expected'
+CS0120:
+    text: An object reference is required to access non-static member ''{0}''
+CS0122:
+    text: '''''{0}'''' is inaccessible due to its protection level'
+CS0128:
+    text: A local variable named ''{0}'' is already defined in this scope
+CS0132:
+    text: '''''{0}'''': The static constructor must be parameterless'
+CS0133:
+    text: The expression being assigned to ''{0}'' must be constant
+CS0136:
+    text: A local variable named ''{0}'' cannot be declared in this scope because it would give a different meaning to ''{1}'', which is already used in a ''{2}'' scope to denote something else
+CS0144:
+    text: Cannot create an instance of the abstract class or interface ''{0}''
+CS0145:
+    text: A const field requires a value to be provided
+CS0146:
+    text: Circular base class dependency involving ''{0}'' and ''{1}''
+CS0151:
+    text: A switch expression of type ''{0}'' cannot be converted to an integral type, bool, char, string, enum or nullable type
+CS0153:
+    text: A goto case is only valid inside a switch statement
+CS0155:
+    text: The type caught or thrown must be derived from System.Exception
+CS0157:
+    text: Control cannot leave the body of a finally clause
+CS0161:
+    text: '''''{0}'''': not all code paths return a value'
+CS0168:
+    text: The variable ''{0}'' is declared but never used
+CS0169:
+    text: The field ''{0}'' is never used
+CS0173:
+    text: Type of conditional expression cannot be determined because there is no implicit conversion between ''{0}'' and ''{1}''
+CS0176:
+    text: Static member ''{0}'' cannot be accessed with an instance reference, qualify it with a type name instead
+CS0200:
+    text: Property or indexer ''{0}'' cannot be assigned to -- it is read only
+CS0201:
+    text: Only assignment, call, increment, decrement, await, and new object expressions can be used as a statement
+CS0206:
+    text: A property, indexer or dynamic member access may not be passed as 'ref' or 'out' parameter
+CS0211:
+    text: Cannot take the address of the given expression
+CS0214:
+    text: Pointers and fixed size buffers may only be used in an unsafe context
+CS0219:
+    text: The variable ''{0}'' is assigned but its value is never used
+CS0227:
+    text: Unsafe code requires the 'unsafe' command line option to be specified
+CS0231:
+    text: A parameter array must be the last parameter in a formal parameter list
+CS0236:
+    text: A field initializer cannot reference the non-static field, method, or property ''{0}''
+CS0264:
+    text: Partial declarations of ''{0}'' must have the same type parameter names in the same order
+CS0304:
+    text: Cannot create an instance of the variable type ''{0}'' because it does not have the new() constraint
+CS0305:
+    text: Using the generic type ''{0}'' requires ''{1}'' type argument(s)
+CS0401:
+    text: The 'new()' constraint must be the last constraint specified
+CS0409:
+    text: A constraint clause has already been specified for type parameter ''{0}''
+CS0413:
+    text: The ''{0}'' operator cannot be used with a non-reference type parameter ''{1}''. Consider adding 'class' or a reference type constraint
+CS0418:
+    text: '''''{0}'''' : an abstract class cannot be sealed or static'
+CS0441:
+    text: '''''{0}'''': a class cannot be both static and sealed'
+CS0449:
+    text: The 'class' or 'struct' constraint must be the first constraint specified (CS0449)
+CS0453:
+    text: The type ''{0}'' must be a non-nullable value type in order to use it as type parameter 'T' in the generic type or method 'System.Nullable<T>'
+CS0500:
+    text: '''''{0}'''' cannot declare a body because it is marked abstract(or delegate)'
+CS0501:
+    text: '''''{0}'''' must have a body because it is not marked abstract, extern, partial, or delegate'
+CS0509:
+    text: '''''{0}'''': cannot derive from sealed type ''''{1}'''''
+CS0516:
+    text: Constructor ''{0}'' cannot call itself
+CS0518:
+    text: Dynamic operation cannot be compiled without 'Microsoft.CSharp.dll' assembly reference
+CS0531:
+    text: '''''{0}'''': interface members cannot have a definition'
+CS0534:
+    text: '''''{0}'''' does not implement inherited abstract member ''''{1}'''''
+CS0535:
+    text: '''''{0}'''' does not implement interface member ''''{1}'''''
+CS0539:
+    text: '''''{0}'''' in explicit interface declaration is not a member of interface'
+CS0542:
+    text: '''''{0}'''': member names cannot be the same as their enclosing type'
+CS0555:
+    text: User-defined operator cannot take an object of the enclosing type and convert to an object of the enclosing type
+CS0556:
+    text: User-defined conversion must convert to or from the enclosing type
+CS0568:
+    text: Structs cannot contain explicit parameterless constructors
+CS0673:
+    text: System.Void cannot be used from C#. Consider using ''void''
+CS0692:
+    text: Duplicate type parameter ''{0}''
+CS0693:
+    text: Type parameter ''{0}'' has the same name as the type parameter from outer type ''{1}''
+CS0702:
+    text: A constraint cannot be special class ''{0}''
+CS0708:
+    text: '''''{0}'''': cannot declare instance members in a static class'
+CS0709:
+    text: '''''{0}'''': Cannot derive from static class ''''{1}'''''
+CS0721:
+    text: '''''{0}'''': static types cannot be used as parameters'
+CS0722:
+    text: '''''{0}'''': static types cannot be used as return types'
+CS0723:
+    text: '''''{0}'''': cannot declare variables of static types'
+CS0815:
+    text: An implicitly typed local variable declaration cannot be initialized with ''{0}''
+CS0818:
+    text: An implicitly typed local variable declarator must include an initializer
+CS0820:
+    text: An implicitly typed local variable declarator cannot use an array initializer
+CS0826:
+    text: The type of an implicitly typed array cannot be inferred from the initializer. Try specifying array type explicitly
+CS1004:
+    text: Duplicate ''{0}'' modifier
+CS1008:
+    text: Type byte, sbyte, short, ushort, int, uint, long or ulong expected
+CS1021:
+    text: Integral constant is too large
+CS1100:
+    text: Method ''{0}'' has a parameter modifier 'this' which is not on the first parameter
+CS1105:
+    text: '''''{0}'''': Extension methods must be declared static'
+CS1106:
+    text: '''''{0}'''': Extension methods must be defined in a non-generic static class'
+CS1510:
+    text: A ref or out argument must be an assignable variable
+CS1511:
+    text: Keyword ''{0}'' is not available in a static method
+CS1535:
+    text: Overloaded unary operator ''{0}'' takes one parameter
+CS1547:
+    text: Keyword ''{0}'' cannot be used in this context
+CS1612:
+    text: Cannot modify a value type return value of ''{0}''. Consider storing the value in a temporary variable
+CS1614:
+    text: '''''{0}'''' is ambiguous between ''''{0}'''' and ''''{0}Attribute''''. Use either ''''@{0}'''' or ''''{0}Attribute'''''
+CS1620:
+    text: Argument {0} must be passed with the ''{1}'' keyword
+CS1644:
+    text: Feature ''{0}'' cannot be used because it is not part of the C# {1} language specification
+CS1656:
+    text: Cannot assign to ''{0}'' because it is a ''{1}''
+CS1674:
+    text: '''''{0}'''': type used in a using statement must be implicitly convertible to ''System.IDisposable'''
+CS1676:
+    text: Parameter ''{0}'' must be declared with the ''{1}'' keyword
+CS1722:
+    text: '''''{0}'''': Base class ''''{1}'''' must be specified as first'
+CS1729:
+    text: '''''{0}'''' does not contain a constructor that takes {1} arguments'
+CS1736:
+    text: Default parameter value for ''{0}'' must be a compile-time constant
+CS1737:
+    text: Optional parameters must appear after all required parameters
+CS1738:
+    text: Named argument specifications must appear after all fixed arguments have been specified
+CS1741:
+    text: Cannot specify a default value for the ''{0}'' parameter
+CS1960:
+    text: Variant type parameters can only be used with interfaces and delegates
+CS1980:
+    text: Dynamic keyword requires 'System.Runtime.CompilerServices.DynamicAttribute' to be defined. Are you missing System.Core.dll assembly reference?
+CS1984:
+    text: The ''{0}'' operator cannot be used in the body of a finally clause
+CS1985:
+    text: The ''{0}'' operator cannot be used in the body of a catch clause
+CS1998:
+    text: Async block lacks 'await' operator and will run synchronously
+CS4009:
+    text: '''''{0}'''': an entry point cannot be async method'
+CS8625:
+    text: Cannot convert null literal to non-nullable reference type.
+CS8632:
+    text: The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+change.return.type.to.0.fix:
+    text: Make ''{0}'' return to ''{1}''
+conflicting.0.modifier.with.1.modifier:
+    text: Conflicting ''{0}'' modifier with ''{1}'' modifier
+create.event.0.text:
+    text: Create event ''{0}''
+create.field.0.text:
+    text: Create field ''{0}''
+create.property.0.text:
+    text: Create property ''{0}''
+explicit.cast.from.0.to.1:
+    text: Explicit cast from ''{0}'' to ''{1}''
+impicit.cast.from.0.to.1:
+    text: Implicit cast from ''{0}'' to ''{1}''
+cast.to.0.fix:
+    text: Cast to ''{0}''
+cast.argument.0.to.1:
+    text: Cast ''{0}'' argument to ''{1}''
+change.0.type.to.1.fix:
+    text: Change ''{0}'' type to ''{1}''
+create.method.0.1:
+    text: Create method ''{0}({1})''
+create.constructor:
+    text: Create constructor
+intention.introduce.variable.text:
+    text: Introduce local variable
+add.using:
+    text: Add Using

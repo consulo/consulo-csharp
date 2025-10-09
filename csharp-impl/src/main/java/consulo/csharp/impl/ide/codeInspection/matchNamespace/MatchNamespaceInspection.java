@@ -28,8 +28,8 @@ import consulo.language.psi.PsiCodeFragment;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.ModuleUtilCore;
+import consulo.localize.LocalizeValue;
 import consulo.util.dataholder.Key;
-
 import jakarta.annotation.Nonnull;
 
 /**
@@ -37,62 +37,52 @@ import jakarta.annotation.Nonnull;
  * @since 05-Nov-17
  */
 @ExtensionImpl
-public class MatchNamespaceInspection extends CSharpGeneralLocalInspection
-{
-	private static final Key<MatchNamespaceVisitor> KEY = Key.create("MatchNamespaceVisitor");
+public class MatchNamespaceInspection extends CSharpGeneralLocalInspection {
+    private static final Key<MatchNamespaceVisitor> KEY = Key.create("MatchNamespaceVisitor");
 
-	@Nonnull
-	@Override
-	@RequiredReadAction
-	public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session, @Nonnull Object state)
-	{
-		PsiFile file = holder.getFile();
-		if(!(file instanceof CSharpFile))
-		{
-			return PsiElementVisitor.EMPTY_VISITOR;
-		}
+    @Nonnull
+    @Override
+    @RequiredReadAction
+    public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session, @Nonnull Object state) {
+        PsiFile file = holder.getFile();
+        if (!(file instanceof CSharpFile)) {
+            return PsiElementVisitor.EMPTY_VISITOR;
+        }
 
-		if(file instanceof PsiCodeFragment)
-		{
-			return PsiElementVisitor.EMPTY_VISITOR;
-		}
+        if (file instanceof PsiCodeFragment) {
+            return PsiElementVisitor.EMPTY_VISITOR;
+        }
 
-		DotNetSimpleModuleExtension extension = ModuleUtilCore.getExtension(file, DotNetSimpleModuleExtension.class);
-		if(extension == null)
-		{
-			return PsiElementVisitor.EMPTY_VISITOR;
-		}
+        DotNetSimpleModuleExtension extension = ModuleUtilCore.getExtension(file, DotNetSimpleModuleExtension.class);
+        if (extension == null) {
+            return PsiElementVisitor.EMPTY_VISITOR;
+        }
 
-		MatchNamespaceVisitor visitor = session.getUserData(KEY);
-		if(visitor == null)
-		{
-			session.putUserData(KEY, visitor = new MatchNamespaceVisitor(holder, extension));
-		}
-		return visitor;
-	}
+        MatchNamespaceVisitor visitor = session.getUserData(KEY);
+        if (visitor == null) {
+            session.putUserData(KEY, visitor = new MatchNamespaceVisitor(holder, extension));
+        }
+        return visitor;
+    }
 
-	@Override
-	public void inspectionFinished(@Nonnull LocalInspectionToolSession session, @Nonnull ProblemsHolder problemsHolder, @Nonnull Object state)
-	{
-		MatchNamespaceVisitor visitor = session.getUserData(KEY);
-		if(visitor == null)
-		{
-			return;
-		}
-		visitor.report();
-	}
+    @Override
+    public void inspectionFinished(@Nonnull LocalInspectionToolSession session, @Nonnull ProblemsHolder problemsHolder, @Nonnull Object state) {
+        MatchNamespaceVisitor visitor = session.getUserData(KEY);
+        if (visitor == null) {
+            return;
+        }
+        visitor.report();
+    }
 
-	@Nonnull
-	@Override
-	public String getDisplayName()
-	{
-		return "Namespace match vfs inspection";
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Namespace match vfs inspection");
+    }
 
-	@Nonnull
-	@Override
-	public HighlightDisplayLevel getDefaultLevel()
-	{
-		return HighlightDisplayLevel.WARNING;
-	}
+    @Nonnull
+    @Override
+    public HighlightDisplayLevel getDefaultLevel() {
+        return HighlightDisplayLevel.WARNING;
+    }
 }

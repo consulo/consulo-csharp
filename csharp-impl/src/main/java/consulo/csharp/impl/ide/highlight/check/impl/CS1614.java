@@ -30,13 +30,12 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.*;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
-
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL
@@ -45,17 +44,16 @@ import jakarta.annotation.Nonnull;
 public class CS1614 extends CompilerCheck<CSharpAttribute> {
   public static abstract class BaseUseTypeFix implements SyntheticIntentionAction {
     private SmartPsiElementPointer<CSharpReferenceExpressionEx> myPointer;
-    private String myText;
+    private LocalizeValue myText;
 
     public BaseUseTypeFix(CSharpReferenceExpressionEx referenceExpression, CSharpTypeDeclaration typeDeclaration) {
       myPointer = SmartPointerManager.getInstance(referenceExpression.getProject()).createSmartPsiElementPointer(referenceExpression);
-      myText = "Use '" + typeDeclaration.getPresentableQName() + "'";
+      myText = LocalizeValue.localizeTODO("Use '" + typeDeclaration.getPresentableQName() + "'");
     }
 
-    @Nls
     @Nonnull
     @Override
-    public String getText() {
+    public LocalizeValue getText() {
       return myText;
     }
 

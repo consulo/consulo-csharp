@@ -31,10 +31,11 @@ import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.dataholder.Key;
-
 import jakarta.annotation.Nonnull;
+
 import java.util.Map;
 
 /**
@@ -42,96 +43,73 @@ import java.util.Map;
  * @since 05.03.2016
  */
 @ExtensionImpl
-public class UnusedUsingInspection extends CSharpGeneralLocalInspection
-{
-	public static final class DeleteStatement extends LocalQuickFixOnPsiElement
-	{
-		protected DeleteStatement(@Nonnull PsiElement element)
-		{
-			super(element);
-		}
+public class UnusedUsingInspection extends CSharpGeneralLocalInspection {
+    public static final class DeleteStatement extends LocalQuickFixOnPsiElement {
+        protected DeleteStatement(@Nonnull PsiElement element) {
+            super(element);
+        }
 
-		@Nonnull
-		@Override
-		public String getText()
-		{
-			return "Delete statement";
-		}
+        @Nonnull
+        @Override
+        public LocalizeValue getText() {
+            return LocalizeValue.localizeTODO("Delete statement");
+        }
 
-		@Override
-		public void invoke(@Nonnull Project project, @Nonnull PsiFile psiFile, @Nonnull final PsiElement element, @Nonnull PsiElement element2)
-		{
-			new WriteCommandAction.Simple<Object>(project, psiFile)
-			{
-				@Override
-				protected void run() throws Throwable
-				{
-					element.delete();
-				}
-			}.execute();
-		}
+        @Override
+        public void invoke(@Nonnull Project project, @Nonnull PsiFile psiFile, @Nonnull final PsiElement element, @Nonnull PsiElement element2) {
+            new WriteCommandAction.Simple<Object>(project, psiFile) {
+                @Override
+                protected void run() throws Throwable {
+                    element.delete();
+                }
+            }.execute();
+        }
+    }
 
-		@Nonnull
-		@Override
-		public String getFamilyName()
-		{
-			return "C#";
-		}
-	}
+    private static final Key<UnusedUsingVisitor> KEY = Key.create("UnusedUsingVisitor");
 
-	private static final Key<UnusedUsingVisitor> KEY = Key.create("UnusedUsingVisitor");
+    @Nonnull
+    @Override
+    public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session, @Nonnull Object state) {
+        UnusedUsingVisitor visitor = session.getUserData(KEY);
+        if (visitor == null) {
+            session.putUserData(KEY, visitor = new UnusedUsingVisitor());
+        }
+        return visitor;
+    }
 
-	@Nonnull
-	@Override
-	public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session, @Nonnull Object state)
-	{
-		UnusedUsingVisitor visitor = session.getUserData(KEY);
-		if(visitor == null)
-		{
-			session.putUserData(KEY, visitor = new UnusedUsingVisitor());
-		}
-		return visitor;
-	}
+    @Override
+    @RequiredReadAction
+    public void inspectionFinished(@Nonnull LocalInspectionToolSession session, @Nonnull ProblemsHolder problemsHolder, @Nonnull Object state) {
+        UnusedUsingVisitor visitor = session.getUserData(KEY);
+        if (visitor == null) {
+            return;
+        }
 
-	@Override
-	@RequiredReadAction
-	public void inspectionFinished(@Nonnull LocalInspectionToolSession session, @Nonnull ProblemsHolder problemsHolder, @Nonnull Object state)
-	{
-		UnusedUsingVisitor visitor = session.getUserData(KEY);
-		if(visitor == null)
-		{
-			return;
-		}
+        Map<CSharpUsingListChild, Boolean> usingContext = visitor.getUsingContext();
+        for (Map.Entry<CSharpUsingListChild, Boolean> entry : usingContext.entrySet()) {
+            if (entry.getValue()) {
+                continue;
+            }
 
-		Map<CSharpUsingListChild, Boolean> usingContext = visitor.getUsingContext();
-		for(Map.Entry<CSharpUsingListChild, Boolean> entry : usingContext.entrySet())
-		{
-			if(entry.getValue())
-			{
-				continue;
-			}
+            CSharpUsingListChild element = entry.getKey();
+            if (element instanceof CSharpUsingNamespaceStatement usingNamespaceStatement && usingNamespaceStatement.isGlobal()) {
+                continue;
+            }
 
-			CSharpUsingListChild element = entry.getKey();
-			if(element instanceof CSharpUsingNamespaceStatement usingNamespaceStatement && usingNamespaceStatement.isGlobal())
-			{
-				continue;
-			}
+            problemsHolder.registerProblem(element, "Using statement is not used", ProblemHighlightType.LIKE_UNUSED_SYMBOL, new DeleteStatement(element));
+        }
+    }
 
-			problemsHolder.registerProblem(element, "Using statement is not used", ProblemHighlightType.LIKE_UNUSED_SYMBOL, new DeleteStatement(element));
-		}
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Unused using");
+    }
 
-	@Nonnull
-	@Override
-	public String getDisplayName()
-	{
-		return "Unused using";
-	}
-
-	@Nonnull
-	@Override
-	public HighlightDisplayLevel getDefaultLevel()
-	{
-		return HighlightDisplayLevel.WARNING;
-	}
+    @Nonnull
+    @Override
+    public HighlightDisplayLevel getDefaultLevel() {
+        return HighlightDisplayLevel.WARNING;
+    }
 }

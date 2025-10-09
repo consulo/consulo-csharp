@@ -36,6 +36,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.language.util.ModuleUtilCore;
+import consulo.localize.LocalizeValue;
 import consulo.module.Module;
 import consulo.module.content.ModuleRootManager;
 import consulo.module.content.layer.ModifiableRootModel;
@@ -52,8 +53,8 @@ public class CS0227 extends CompilerCheck<DotNetElement> {
   public static class AllowUnsafeCodeFix implements SyntheticIntentionAction {
     @Nonnull
     @Override
-    public String getText() {
-      return "Allow unsafe code";
+    public LocalizeValue getText() {
+      return LocalizeValue.localizeTODO("Allow unsafe code");
     }
 
     @Override

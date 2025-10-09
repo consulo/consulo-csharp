@@ -30,6 +30,7 @@ import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.*;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
 import jakarta.annotation.Nonnull;
@@ -51,7 +52,7 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx> {
     @Nonnull
     @Override
     @RequiredReadAction
-    public String getText() {
+    public LocalizeValue getText() {
       CSharpReferenceExpressionEx element = myReferenceExpressionPointer.getElement();
       if (element == null) {
         throw new IllegalArgumentException();
@@ -59,9 +60,9 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx> {
 
       PsiElement resolvedElement = element.resolve();
       if (resolvedElement == null) {
-        return "";
+        return LocalizeValue.of();
       }
-      return "Replace qualifier by '" + formatElement(resolvedElement.getParent()) + "'";
+      return LocalizeValue.localizeTODO("Replace qualifier by '" + formatElement(resolvedElement.getParent()) + "'");
     }
 
     @Override

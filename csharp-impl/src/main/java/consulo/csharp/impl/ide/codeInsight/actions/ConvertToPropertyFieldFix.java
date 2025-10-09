@@ -32,6 +32,7 @@ import consulo.language.editor.intention.IntentionMetaData;
 import consulo.language.editor.intention.PsiElementBaseIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.StringUtil;
@@ -46,7 +47,7 @@ import jakarta.annotation.Nonnull;
 @IntentionMetaData(ignoreId = "csharp.convert.property.to.field", categories = "C#", fileExtensions = "cs")
 public class ConvertToPropertyFieldFix extends PsiElementBaseIntentionAction {
   public ConvertToPropertyFieldFix() {
-    setText("Convert to property");
+    setText(LocalizeValue.localizeTODO("Convert to property"));
   }
 
   @Override

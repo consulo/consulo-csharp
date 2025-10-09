@@ -16,24 +16,25 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
-import consulo.language.editor.template.Template;
-import consulo.language.editor.template.ConstantNode;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.component.util.localize.BundleBase;
 import consulo.csharp.impl.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
-import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.psi.CSharpCallArgument;
+import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import consulo.csharp.lang.psi.CSharpNamedCallArgument;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.editor.template.ConstantNode;
+import consulo.language.editor.template.Template;
 import consulo.language.impl.DebugUtil;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
-import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ContainerUtil;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -43,117 +44,99 @@ import java.util.Collection;
  * @author VISTALL
  * @since 30.12.14
  */
-public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElementFix
-{
-	private static final Logger LOG = Logger.getInstance(CreateUnresolvedLikeMethodFix.class);
+public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElementFix {
+    private static final Logger LOG = Logger.getInstance(CreateUnresolvedLikeMethodFix.class);
 
-	public CreateUnresolvedLikeMethodFix(CSharpReferenceExpression expression)
-	{
-		super(expression);
-	}
+    public CreateUnresolvedLikeMethodFix(CSharpReferenceExpression expression) {
+        super(expression);
+    }
 
-	@Nonnull
-	@Override
-	@RequiredUIAccess
-	public String getText()
-	{
-		String arguments = buildArgumentTypeRefs();
-		if(arguments == null)
-		{
-			return "invalid";
-		}
-		return BundleBase.format(getTemplateText(), myReferenceName, arguments);
-	}
+    @Nonnull
+    @Override
+    @RequiredReadAction
+    public LocalizeValue getText() {
+        String arguments = buildArgumentTypeRefs();
+        if (arguments == null) {
+            return LocalizeValue.of();
+        }
+        return createText(myReferenceName, arguments);
+    }
 
-	@Nonnull
-	public abstract String getTemplateText();
+    protected abstract LocalizeValue createText(String referenceName, String arguments);
 
-	@Nullable
-	@RequiredReadAction
-	public String buildArgumentTypeRefs()
-	{
-		CSharpReferenceExpression element = myPointer.getElement();
-		if(element == null || !element.isValid())
-		{
-			return null;
-		}
+    @Nullable
+    @RequiredReadAction
+    public String buildArgumentTypeRefs() {
+        CSharpReferenceExpression element = myPointer.getElement();
+        if (element == null || !element.isValid()) {
+            return null;
+        }
 
-		StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 
-		CSharpCallArgumentListOwner parent = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
+        CSharpCallArgumentListOwner parent = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
 
-		if(parent == null)
-		{
-			LOG.error("Can't find parent by 'CSharpCallArgumentListOwner'. Element: " + DebugUtil.psiToString(element, true));
-			return null;
-		}
+        if (parent == null) {
+            LOG.error("Can't find parent by 'CSharpCallArgumentListOwner'. Element: " + DebugUtil.psiToString(element, true));
+            return null;
+        }
 
-		CSharpCallArgument[] callArguments = parent.getCallArguments();
+        CSharpCallArgument[] callArguments = parent.getCallArguments();
 
-		for(int i = 0; i < callArguments.length; i++)
-		{
-			if(i != 0)
-			{
-				builder.append(", ");
-			}
+        for (int i = 0; i < callArguments.length; i++) {
+            if (i != 0) {
+                builder.append(", ");
+            }
 
-			CSharpCallArgument callArgument = callArguments[i];
+            CSharpCallArgument callArgument = callArguments[i];
 
-			DotNetExpression argumentExpression = callArgument.getArgumentExpression();
-			if(argumentExpression != null)
-			{
-				DotNetTypeRef typeRef = argumentExpression.toTypeRef(false);
-				builder.append(CSharpTypeRefPresentationUtil.buildShortText(typeRef));
-			}
-			else
-			{
-				builder.append("object");
-			}
-		}
-		return builder.toString();
-	}
+            DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+            if (argumentExpression != null) {
+                DotNetTypeRef typeRef = argumentExpression.toTypeRef(false);
+                builder.append(CSharpTypeRefPresentationUtil.buildShortText(typeRef));
+            }
+            else {
+                builder.append("object");
+            }
+        }
+        return builder.toString();
+    }
 
-	@RequiredReadAction
-	protected void buildParameterList(@Nonnull CreateUnresolvedElementFixContext context, @Nonnull PsiFile file, @Nonnull Template template)
-	{
-		template.addTextSegment("(");
+    @RequiredReadAction
+    protected void buildParameterList(@Nonnull CreateUnresolvedElementFixContext context, @Nonnull PsiFile file, @Nonnull Template template) {
+        template.addTextSegment("(");
 
-		CSharpCallArgumentListOwner parent = PsiTreeUtil.getParentOfType(context.getExpression(), CSharpCallArgumentListOwner.class);
+        CSharpCallArgumentListOwner parent = PsiTreeUtil.getParentOfType(context.getExpression(), CSharpCallArgumentListOwner.class);
 
-		assert parent != null;
+        assert parent != null;
 
-		CSharpCallArgument[] callArguments = parent.getCallArguments();
+        CSharpCallArgument[] callArguments = parent.getCallArguments();
 
-		for(int i = 0; i < callArguments.length; i++)
-		{
-			if(i != 0)
-			{
-				template.addTextSegment(", ");
-			}
+        for (int i = 0; i < callArguments.length; i++) {
+            if (i != 0) {
+                template.addTextSegment(", ");
+            }
 
-			CSharpCallArgument callArgument = callArguments[i];
+            CSharpCallArgument callArgument = callArguments[i];
 
-			DotNetTypeRef parameterTypeRef = new CSharpTypeRefByQName(callArgument, DotNetTypes.System.Object);
-			DotNetExpression argumentExpression = callArgument.getArgumentExpression();
-			if(argumentExpression != null)
-			{
-				parameterTypeRef = argumentExpression.toTypeRef(false);
-			}
+            DotNetTypeRef parameterTypeRef = new CSharpTypeRefByQName(callArgument, DotNetTypes.System.Object);
+            DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+            if (argumentExpression != null) {
+                parameterTypeRef = argumentExpression.toTypeRef(false);
+            }
 
-			template.addVariable(new ConstantNode(CSharpTypeRefPresentationUtil.buildShortText(parameterTypeRef)), true);
+            template.addVariable(new ConstantNode(CSharpTypeRefPresentationUtil.buildShortText(parameterTypeRef)), true);
 
-			template.addTextSegment(" ");
-			if(callArgument instanceof CSharpNamedCallArgument)
-			{
-				template.addVariable(new ConstantNode(((CSharpNamedCallArgument) callArgument).getName()), true);
-			}
-			else
-			{
-				Collection<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(argumentExpression);
-				String item = ContainerUtil.getFirstItem(suggestedNames);
-				template.addVariable(new ConstantNode(item + i), true);
-			}
-		}
-		template.addTextSegment(")");
-	}
+            template.addTextSegment(" ");
+            if (callArgument instanceof CSharpNamedCallArgument) {
+                template.addVariable(new ConstantNode(((CSharpNamedCallArgument) callArgument).getName()), true);
+            }
+            else {
+                Collection<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(argumentExpression);
+                String item = ContainerUtil.getFirstItem(suggestedNames);
+                template.addVariable(new ConstantNode(item + i), true);
+            }
+        }
+        template.addTextSegment(")");
+    }
 }

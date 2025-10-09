@@ -16,40 +16,35 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
-import jakarta.annotation.Nonnull;
-
-import consulo.component.util.localize.BundleBase;
-import consulo.ui.annotation.RequiredUIAccess;
+import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.localize.LocalizeValue;
+import consulo.ui.annotation.RequiredUIAccess;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 30.12.14
  */
-public class CastNArgumentToTypeRefFix extends CastExpressionToTypeRef
-{
-	@Nonnull
-	private final String myParameterName;
+public class CastNArgumentToTypeRefFix extends CastExpressionToTypeRef {
+    @Nonnull
+    private final String myParameterName;
 
-	public CastNArgumentToTypeRefFix(@Nonnull DotNetExpression expression, @Nonnull DotNetTypeRef expectedTypeRef, @Nonnull String parameterName)
-	{
-		super(expression, expectedTypeRef);
-		myParameterName = parameterName;
-	}
+    public CastNArgumentToTypeRefFix(@Nonnull DotNetExpression expression, @Nonnull DotNetTypeRef expectedTypeRef, @Nonnull String parameterName) {
+        super(expression, expectedTypeRef);
+        myParameterName = parameterName;
+    }
 
-	@RequiredUIAccess
-	@Nonnull
-	@Override
-	public String getText()
-	{
-		DotNetExpression element = myExpressionPointer.getElement();
-		if(element == null)
-		{
-			return "invalid";
-		}
-		return BundleBase.format("Cast ''{0}'' argument to ''{1}''", myParameterName, CSharpTypeRefPresentationUtil.buildTextWithKeyword
-				(myExpectedTypeRef));
-	}
+    @RequiredUIAccess
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        DotNetExpression element = myExpressionPointer.getElement();
+        if (element == null) {
+            return LocalizeValue.of();
+        }
+        return CSharpErrorLocalize.castArgument0To1(myParameterName, CSharpTypeRefPresentationUtil.buildTextWithKeyword(myExpectedTypeRef));
+    }
 }

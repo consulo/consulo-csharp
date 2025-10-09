@@ -16,43 +16,38 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
-import jakarta.annotation.Nonnull;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 10.06.14
  */
-public class AddModifierFix extends BaseModifierFix
-{
-	public AddModifierFix(DotNetModifier[] modifiers, DotNetModifierListOwner parent)
-	{
-		super(modifiers, parent);
-	}
+public class AddModifierFix extends BaseModifierFix {
+    public AddModifierFix(DotNetModifier[] modifiers, DotNetModifierListOwner parent) {
+        super(modifiers, parent);
+    }
 
-	public AddModifierFix(DotNetModifier modifier, DotNetModifierListOwner parent)
-	{
-		super(modifier, parent);
-	}
+    public AddModifierFix(DotNetModifier modifier, DotNetModifierListOwner parent) {
+        super(modifier, parent);
+    }
 
-	@Override
-	public boolean isValidCondition(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier)
-	{
-		return !modifierList.hasModifier(modifier);
-	}
+    @Override
+    public boolean isValidCondition(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier) {
+        return !modifierList.hasModifier(modifier);
+    }
 
-	@Nonnull
-	@Override
-	public String getActionName()
-	{
-		return "Add";
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getActionName() {
+        return LocalizeValue.localizeTODO("Add");
+    }
 
-	@Override
-	public void doAction(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier)
-	{
-		modifierList.addModifier(modifier);
-	}
+    @Override
+    public void doAction(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier) {
+        modifierList.addModifier(modifier);
+    }
 }

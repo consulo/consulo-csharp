@@ -18,7 +18,7 @@ package consulo.csharp.impl.ide.codeInsight.actions;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
-import consulo.component.util.localize.BundleBase;
+import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -30,8 +30,8 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-
 import jakarta.annotation.Nonnull;
 
 /**
@@ -50,13 +50,13 @@ public class ChangeReturnToTypeRefFix implements SyntheticIntentionAction {
 
   @Nonnull
   @Override
-  public String getText() {
+  @RequiredReadAction
+  public LocalizeValue getText() {
     DotNetLikeMethodDeclaration element = myMethodPointer.getElement();
     if (element == null) {
-      return "invalid";
+      return LocalizeValue.of();
     }
-    return BundleBase.format("Make ''{0}'' return to ''{1}''", element.getName(), CSharpTypeRefPresentationUtil.buildTextWithKeyword
-      (myToTypeRef));
+    return CSharpErrorLocalize.changeReturnTypeTo0Fix(element.getName(), CSharpTypeRefPresentationUtil.buildTextWithKeyword(myToTypeRef));
   }
 
   @Override

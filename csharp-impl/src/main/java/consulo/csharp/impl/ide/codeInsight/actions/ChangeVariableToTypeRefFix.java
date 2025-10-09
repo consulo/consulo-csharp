@@ -16,8 +16,9 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
-import consulo.component.util.localize.BundleBase;
+import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetType;
@@ -29,9 +30,9 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
-
 import jakarta.annotation.Nonnull;
 
 /**
@@ -50,13 +51,14 @@ public class ChangeVariableToTypeRefFix implements SyntheticIntentionAction {
 
   @Nonnull
   @Override
-  public String getText() {
+  @RequiredReadAction
+  public LocalizeValue getText() {
     DotNetVariable element = myVariablePointer.getElement();
     if (element == null) {
-      return "invalid";
+      return LocalizeValue.of();
     }
-    return BundleBase.format("Change ''{0}'' type to ''{1}''", element.getName(), CSharpTypeRefPresentationUtil.buildTextWithKeyword
-      (myToTypeRef));
+
+    return CSharpErrorLocalize.change0TypeTo1Fix(element.getName(), CSharpTypeRefPresentationUtil.buildTextWithKeyword(myToTypeRef));
   }
 
   @Override

@@ -21,6 +21,7 @@ import consulo.application.progress.ProgressManager;
 import consulo.application.util.function.Processors;
 import consulo.codeEditor.Editor;
 import consulo.csharp.impl.libraryAnalyzer.NamespaceReference;
+import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.impl.psi.CSharpGenericConstraintUtil;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.lang.impl.psi.msil.MsilToCSharpUtil;
@@ -51,6 +52,7 @@ import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilMethodEntry;
 import consulo.project.Project;
@@ -328,8 +330,8 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction, Synthe
 
   @Nonnull
   @Override
-  public String getText() {
-    return DotNetBundle.message("add.using");
+  public LocalizeValue getText() {
+    return CSharpErrorLocalize.addUsing();
   }
 
   @Override

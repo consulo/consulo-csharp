@@ -21,8 +21,8 @@ import consulo.application.ApplicationProperties;
 import consulo.colorScheme.TextAttributesKey;
 import consulo.csharp.impl.ide.CSharpElementPresentationUtil;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.document.util.TextRange;
 import consulo.dotnet.psi.*;
@@ -35,9 +35,9 @@ import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.localize.LocalizeKey;
 import consulo.localize.LocalizeValue;
 import consulo.util.lang.StringUtil;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,273 +47,208 @@ import java.util.Locale;
  * @author VISTALL
  * @since 09.03.14
  */
-public abstract class CompilerCheck<T extends PsiElement>
-{
-	public static interface HighlightInfoFactory
-	{
-		@Nullable
-		public abstract HighlightInfo create(boolean insideDoc);
+public abstract class CompilerCheck<T extends PsiElement> {
+    private static final String LOCALIZE_ID = "consulo.csharp.impl.CSharpErrorLocalize";
 
-		@Nonnull
-		default List<IntentionAction> getQuickFixes()
-		{
-			return Collections.emptyList();
-		}
-	}
+    public static interface HighlightInfoFactory {
+        @Nullable
+        public abstract HighlightInfo create(boolean insideDoc);
 
-	public static class CompilerCheckBuilder implements HighlightInfoFactory
-	{
-		private LocalizeValue myTextValue = LocalizeValue.empty();
-		private TextRange myTextRange;
-		private HighlightInfoType myHighlightInfoType;
-		private TextAttributesKey myTextAttributesKey;
+        @Nonnull
+        default List<IntentionAction> getQuickFixes() {
+            return Collections.emptyList();
+        }
+    }
 
-		private List<IntentionAction> myQuickFixes = Collections.emptyList();
+    public static class CompilerCheckBuilder implements HighlightInfoFactory {
+        private LocalizeValue myTextValue = LocalizeValue.empty();
+        private TextRange myTextRange;
+        private HighlightInfoType myHighlightInfoType;
+        private TextAttributesKey myTextAttributesKey;
 
-		public TextRange getTextRange()
-		{
-			return myTextRange;
-		}
+        private List<IntentionAction> myQuickFixes = Collections.emptyList();
 
-		public CompilerCheckBuilder withTextRange(TextRange textRange)
-		{
-			myTextRange = textRange;
-			return this;
-		}
+        public TextRange getTextRange() {
+            return myTextRange;
+        }
 
-		public LocalizeValue getText()
-		{
-			return myTextValue;
-		}
+        public CompilerCheckBuilder withTextRange(TextRange textRange) {
+            myTextRange = textRange;
+            return this;
+        }
 
-		public CompilerCheckBuilder withText(LocalizeValue text)
-		{
-			myTextValue = text;
-			return this;
-		}
+        public LocalizeValue getText() {
+            return myTextValue;
+        }
 
-		public HighlightInfoType getHighlightInfoType()
-		{
-			return myHighlightInfoType;
-		}
+        public CompilerCheckBuilder withText(LocalizeValue text) {
+            myTextValue = text;
+            return this;
+        }
 
-		public TextAttributesKey getTextAttributesKey()
-		{
-			return myTextAttributesKey;
-		}
+        public HighlightInfoType getHighlightInfoType() {
+            return myHighlightInfoType;
+        }
 
-		public CompilerCheckBuilder withTextAttributesKey(TextAttributesKey textAttributesKey)
-		{
-			myTextAttributesKey = textAttributesKey;
-			return this;
-		}
+        public TextAttributesKey getTextAttributesKey() {
+            return myTextAttributesKey;
+        }
 
-		public CompilerCheckBuilder withHighlightInfoType(HighlightInfoType highlightInfoType)
-		{
-			myHighlightInfoType = highlightInfoType;
-			return this;
-		}
+        public CompilerCheckBuilder withTextAttributesKey(TextAttributesKey textAttributesKey) {
+            myTextAttributesKey = textAttributesKey;
+            return this;
+        }
 
-		public CompilerCheckBuilder withQuickFix(IntentionAction a)
-		{
-			if(myQuickFixes.isEmpty())
-			{
-				myQuickFixes = new ArrayList<>(3);
-			}
-			myQuickFixes.add(a);
-			return this;
-		}
+        public CompilerCheckBuilder withHighlightInfoType(HighlightInfoType highlightInfoType) {
+            myHighlightInfoType = highlightInfoType;
+            return this;
+        }
 
-		@Override
-		@Nonnull
-		public List<IntentionAction> getQuickFixes()
-		{
-			return myQuickFixes;
-		}
+        public CompilerCheckBuilder withQuickFix(IntentionAction a) {
+            if (myQuickFixes.isEmpty()) {
+                myQuickFixes = new ArrayList<>(3);
+            }
+            myQuickFixes.add(a);
+            return this;
+        }
 
-		@Nullable
-		@Override
-		public HighlightInfo create(boolean insideDoc)
-		{
-			HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(insideDoc ? HighlightInfoType.WEAK_WARNING : getHighlightInfoType());
-			builder = builder.descriptionAndTooltip(getText());
-			builder = builder.range(getTextRange());
+        @Override
+        @Nonnull
+        public List<IntentionAction> getQuickFixes() {
+            return myQuickFixes;
+        }
 
-			TextAttributesKey textAttributesKey = getTextAttributesKey();
-			if(textAttributesKey != null)
-			{
-				builder = builder.textAttributes(textAttributesKey);
-			}
-			return builder.create();
-		}
-	}
+        @Nullable
+        @Override
+        public HighlightInfo create(boolean insideDoc) {
+            HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(insideDoc ? HighlightInfoType.WEAK_WARNING : getHighlightInfoType());
+            builder = builder.descriptionAndTooltip(getText());
+            builder = builder.range(getTextRange());
 
-	@Nonnull
-	@RequiredReadAction
-	public List<? extends HighlightInfoFactory> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull T element)
-	{
-		HighlightInfoFactory check = checkImpl(languageVersion, highlightContext, element);
-		if(check == null)
-		{
-			return Collections.emptyList();
-		}
-		return Collections.singletonList(check);
-	}
+            TextAttributesKey textAttributesKey = getTextAttributesKey();
+            if (textAttributesKey != null) {
+                builder = builder.textAttributes(textAttributesKey);
+            }
+            return builder.create();
+        }
+    }
 
-	@Nullable
-	@RequiredReadAction
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull T element)
-	{
-		return null;
-	}
+    @Nonnull
+    @RequiredReadAction
+    public List<? extends HighlightInfoFactory> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull T element) {
+        HighlightInfoFactory check = checkImpl(languageVersion, highlightContext, element);
+        if (check == null) {
+            return Collections.emptyList();
+        }
+        return Collections.singletonList(check);
+    }
 
-	@Nonnull
-	@RequiredReadAction
-	public CompilerCheckBuilder newBuilder(@Nonnull PsiElement range, Object... args)
-	{
-		return newBuilderImpl(getClass(), range, args);
-	}
+    @Nullable
+    @RequiredReadAction
+    public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull T element) {
+        return null;
+    }
 
-	@Nonnull
-	@RequiredReadAction
-	public CompilerCheckBuilder newBuilder(@Nonnull TextRange range, Object... args)
-	{
-		return newBuilderImpl(getClass(), range, args);
-	}
+    @Nonnull
+    @RequiredReadAction
+    public CompilerCheckBuilder newBuilder(@Nonnull PsiElement range, Object... args) {
+        return newBuilderImpl(getClass(), range, args);
+    }
 
-	@Nonnull
-	@RequiredReadAction
-	public static CompilerCheckBuilder newBuilderImpl(@Nonnull Class<?> clazz, @Nonnull PsiElement range, Object... args)
-	{
-		return newBuilderImpl(clazz, range.getTextRange(), args);
-	}
+    @Nonnull
+    @RequiredReadAction
+    public CompilerCheckBuilder newBuilder(@Nonnull TextRange range, Object... args) {
+        return newBuilderImpl(getClass(), range, args);
+    }
 
-	@Nonnull
-	@RequiredReadAction
-	public static CompilerCheckBuilder newBuilderImpl(@Nonnull Class<?> clazz, @Nonnull TextRange range, Object... args)
-	{
-		CompilerCheckBuilder result = new CompilerCheckBuilder();
-		result.withText(message(clazz, args));
-		result.withTextRange(range);
-		return result;
-	}
+    @Nonnull
+    @RequiredReadAction
+    public static CompilerCheckBuilder newBuilderImpl(@Nonnull Class<?> clazz, @Nonnull PsiElement range, Object... args) {
+        return newBuilderImpl(clazz, range.getTextRange(), args);
+    }
 
-	@Nonnull
-	public static LocalizeValue message(@Nonnull Class<?> aClass, Object... args)
-	{
-		String id = aClass.getSimpleName();
+    @Nonnull
+    @RequiredReadAction
+    public static CompilerCheckBuilder newBuilderImpl(@Nonnull Class<?> clazz, @Nonnull TextRange range, Object... args) {
+        CompilerCheckBuilder result = new CompilerCheckBuilder();
+        result.withText(message(clazz, args));
+        result.withTextRange(range);
+        return result;
+    }
 
-		LocalizeValue value = getValue(LocalizeKey.of("consulo.csharp.impl.CSharpErrorLocalize", id), args);
+    @Nonnull
+    public static LocalizeValue message(@Nonnull Class<?> aClass, Object... args) {
+        String id = aClass.getSimpleName();
 
-		return ApplicationProperties.isInSandbox() ? value.map((localizeManager, s) -> id + ": " + s) : value;
-	}
+        LocalizeValue value = getValue(LocalizeKey.of(LOCALIZE_ID, id), args);
 
-	@Nonnull
-	private static LocalizeValue getValue(LocalizeKey key, Object... args)
-	{
-		if(args.length == 0)
-		{
-			return key.getValue();
-		}
-		else if(args.length == 1)
-		{
-			return key.getValue(args[0]);
-		}
-		else if(args.length == 2)
-		{
-			return key.getValue(args[0], args[1]);
-		}
-		else if(args.length == 3)
-		{
-			return key.getValue(args[0], args[1], args[2]);
-		}
-		else if(args.length == 4)
-		{
-			return key.getValue(args[0], args[1], args[2], args[3]);
-		}
-		else if(args.length == 5)
-		{
-			return key.getValue(args[0], args[1], args[2], args[3], args[4]);
-		}
+        return ApplicationProperties.isInSandbox() ? value.map((localizeManager, s) -> id + ": " + s) : value;
+    }
 
-		throw new UnsupportedOperationException("Size " + args.length);
-	}
+    @Nonnull
+    private static LocalizeValue getValue(LocalizeKey key, Object... args) {
+        return args.length == 0 ? key.getValue() : key.getValue(args);
+    }
 
-	@Nonnull
-	@RequiredReadAction
-	public static PsiElement getNameIdentifier(PsiElement element)
-	{
-		if(element instanceof PsiNameIdentifierOwner)
-		{
-			PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
-			if(nameIdentifier != null)
-			{
-				return nameIdentifier;
-			}
-		}
-		return element;
-	}
+    @Nonnull
+    @RequiredReadAction
+    public static PsiElement getNameIdentifier(PsiElement element) {
+        if (element instanceof PsiNameIdentifierOwner) {
+            PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
+            if (nameIdentifier != null) {
+                return nameIdentifier;
+            }
+        }
+        return element;
+    }
 
-	@RequiredReadAction
-	@Nullable
-	public static String formatElement(PsiElement e)
-	{
-		if(e instanceof DotNetParameter)
-		{
-			return ((DotNetParameter) e).getName();
-		}
-		else if(e instanceof DotNetGenericParameter)
-		{
-			return ((DotNetGenericParameter) e).getName();
-		}
-		else if(e instanceof CSharpLocalVariable)
-		{
-			return ((CSharpLocalVariable) e).getName();
-		}
-		else if(e instanceof DotNetXAccessor)
-		{
-			PsiElement parent = e.getParent();
-			return formatElement(parent) + "." + ((DotNetXAccessor) e).getAccessorKind().name().toLowerCase(Locale.US);
-		}
+    @RequiredReadAction
+    @Nullable
+    public static String formatElement(PsiElement e) {
+        if (e instanceof DotNetParameter) {
+            return ((DotNetParameter) e).getName();
+        }
+        else if (e instanceof DotNetGenericParameter) {
+            return ((DotNetGenericParameter) e).getName();
+        }
+        else if (e instanceof CSharpLocalVariable) {
+            return ((CSharpLocalVariable) e).getName();
+        }
+        else if (e instanceof DotNetXAccessor) {
+            PsiElement parent = e.getParent();
+            return formatElement(parent) + "." + ((DotNetXAccessor) e).getAccessorKind().name().toLowerCase(Locale.US);
+        }
 
-		String parentName = null;
-		PsiElement parent = e.getParent();
-		if(parent instanceof DotNetNamespaceDeclaration)
-		{
-			parentName = ((DotNetNamespaceDeclaration) parent).getPresentableQName();
-		}
-		else if(parent instanceof DotNetTypeDeclaration)
-		{
-			parentName = DotNetElementPresentationUtil.formatTypeWithGenericParameters((DotNetTypeDeclaration) parent);
-		}
+        String parentName = null;
+        PsiElement parent = e.getParent();
+        if (parent instanceof DotNetNamespaceDeclaration) {
+            parentName = ((DotNetNamespaceDeclaration) parent).getPresentableQName();
+        }
+        else if (parent instanceof DotNetTypeDeclaration) {
+            parentName = DotNetElementPresentationUtil.formatTypeWithGenericParameters((DotNetTypeDeclaration) parent);
+        }
 
-		String currentText = "Unknown element : " + e.getClass().getSimpleName();
-		if(e instanceof DotNetLikeMethodDeclaration)
-		{
-			currentText = CSharpElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) e, 0);
-		}
-		else if(e instanceof DotNetTypeDeclaration)
-		{
-			currentText = DotNetElementPresentationUtil.formatTypeWithGenericParameters((DotNetTypeDeclaration) e);
-		}
-		else if(e instanceof DotNetVariable && e instanceof DotNetQualifiedElement)
-		{
-			currentText = ((DotNetQualifiedElement) e).getName();
-		}
+        String currentText = "Unknown element : " + e.getClass().getSimpleName();
+        if (e instanceof DotNetLikeMethodDeclaration) {
+            currentText = CSharpElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) e, 0);
+        }
+        else if (e instanceof DotNetTypeDeclaration) {
+            currentText = DotNetElementPresentationUtil.formatTypeWithGenericParameters((DotNetTypeDeclaration) e);
+        }
+        else if (e instanceof DotNetVariable && e instanceof DotNetQualifiedElement) {
+            currentText = ((DotNetQualifiedElement) e).getName();
+        }
 
-		if(StringUtil.isEmpty(parentName))
-		{
-			return currentText;
-		}
-		else
-		{
-			return parentName + "." + currentText;
-		}
-	}
+        if (StringUtil.isEmpty(parentName)) {
+            return currentText;
+        }
+        else {
+            return parentName + "." + currentText;
+        }
+    }
 
-	@RequiredReadAction
-	public static String formatTypeRef(@Nonnull DotNetTypeRef typeRef)
-	{
-		return CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(typeRef);
-	}
+    @RequiredReadAction
+    public static String formatTypeRef(@Nonnull DotNetTypeRef typeRef) {
+        return CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(typeRef);
+    }
 }

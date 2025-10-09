@@ -24,6 +24,7 @@ import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.language.editor.intention.PsiElementBaseIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ArrayUtil;
@@ -88,7 +89,7 @@ public abstract class AddXModifierFix extends PsiElementBaseIntentionAction {
 
   @Nonnull
   @Override
-  public String getText() {
-    return "Make " + StringUtil.join(myModifiers, modifier -> modifier.getPresentableText(), " ");
+  public LocalizeValue getText() {
+    return LocalizeValue.localizeTODO("Make " + StringUtil.join(myModifiers, modifier -> modifier.getPresentableText(), " "));
   }
 }

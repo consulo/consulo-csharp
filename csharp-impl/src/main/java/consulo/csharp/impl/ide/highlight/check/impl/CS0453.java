@@ -33,6 +33,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
 import jakarta.annotation.Nonnull;
@@ -48,7 +49,7 @@ public class CS0453 extends CompilerCheck<CSharpNullableType> {
 
     public DeleteQuestMarkQuickFix(CSharpNullableType nullableType) {
       myPointer = SmartPointerManager.getInstance(nullableType.getProject()).createSmartPsiElementPointer(nullableType);
-      setText("Remove '?'");
+      setText(LocalizeValue.localizeTODO("Remove '?'"));
     }
 
     @Override

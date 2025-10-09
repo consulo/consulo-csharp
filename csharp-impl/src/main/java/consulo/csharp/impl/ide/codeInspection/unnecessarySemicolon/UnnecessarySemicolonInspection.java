@@ -28,8 +28,8 @@ import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-
 import jakarta.annotation.Nonnull;
 
 /**
@@ -37,66 +37,48 @@ import jakarta.annotation.Nonnull;
  * @since 5/9/2016
  */
 @ExtensionImpl
-public class UnnecessarySemicolonInspection extends CSharpGeneralLocalInspection
-{
-	private static class RemoveSemicolonFix extends LocalQuickFixOnPsiElement
-	{
-		private RemoveSemicolonFix(@Nonnull PsiElement element)
-		{
-			super(element);
-		}
+public class UnnecessarySemicolonInspection extends CSharpGeneralLocalInspection {
+    private static class RemoveSemicolonFix extends LocalQuickFixOnPsiElement {
+        private RemoveSemicolonFix(@Nonnull PsiElement element) {
+            super(element);
+        }
 
-		@Nonnull
-		@Override
-		public String getText()
-		{
-			return "Remove unnecessary semicolon";
-		}
+        @Nonnull
+        @Override
+        public LocalizeValue getText() {
+            return LocalizeValue.localizeTODO("Remove unnecessary semicolon");
+        }
 
-		@Override
-		public void invoke(@Nonnull Project project, @Nonnull PsiFile file, @Nonnull PsiElement startElement, @Nonnull PsiElement endElement)
-		{
-			startElement.delete();
-		}
+        @Override
+        public void invoke(@Nonnull Project project, @Nonnull PsiFile file, @Nonnull PsiElement startElement, @Nonnull PsiElement endElement) {
+            startElement.delete();
+        }
+    }
 
-		@Nonnull
-		@Override
-		public String getFamilyName()
-		{
-			return "C#";
-		}
-	}
+    @Nonnull
+    @Override
+    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+        return new CSharpElementVisitor() {
+            @Override
+            @RequiredReadAction
+            public void visitEmptyStatement(CSharpEmptyStatementImpl statement) {
+                PsiElement parent = statement.getParent();
+                if (parent instanceof CSharpBlockStatementImpl) {
+                    holder.registerProblem(statement, null, "Unnecessary Semicolon", new RemoveSemicolonFix(statement));
+                }
+            }
+        };
+    }
 
-	@Nonnull
-	@Override
-	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)
-	{
-		return new CSharpElementVisitor()
-		{
-			@Override
-			@RequiredReadAction
-			public void visitEmptyStatement(CSharpEmptyStatementImpl statement)
-			{
-				PsiElement parent = statement.getParent();
-				if(parent instanceof CSharpBlockStatementImpl)
-				{
-					holder.registerProblem(statement, null, "Unnecessary Semicolon", new RemoveSemicolonFix(statement));
-				}
-			}
-		};
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Unnecessary semicolon");
+    }
 
-	@Nonnull
-	@Override
-	public String getDisplayName()
-	{
-		return "Unnecessary semicolon";
-	}
-
-	@Nonnull
-	@Override
-	public HighlightDisplayLevel getDefaultLevel()
-	{
-		return HighlightDisplayLevel.WARNING;
-	}
+    @Nonnull
+    @Override
+    public HighlightDisplayLevel getDefaultLevel() {
+        return HighlightDisplayLevel.WARNING;
+    }
 }

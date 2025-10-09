@@ -17,7 +17,7 @@
 package consulo.csharp.impl.ide.codeInsight.actions;
 
 import consulo.codeEditor.Editor;
-import consulo.component.util.localize.BundleBase;
+import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.DotNetTypes;
@@ -29,9 +29,9 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
-
 import jakarta.annotation.Nonnull;
 
 /**
@@ -39,56 +39,56 @@ import jakarta.annotation.Nonnull;
  * @since 30.12.14
  */
 public class CastExpressionToTypeRef implements SyntheticIntentionAction {
-  @Nonnull
-  protected final SmartPsiElementPointer<DotNetExpression> myExpressionPointer;
-  @Nonnull
-  protected final DotNetTypeRef myExpectedTypeRef;
+    @Nonnull
+    protected final SmartPsiElementPointer<DotNetExpression> myExpressionPointer;
+    @Nonnull
+    protected final DotNetTypeRef myExpectedTypeRef;
 
-  public CastExpressionToTypeRef(@Nonnull DotNetExpression expression, @Nonnull DotNetTypeRef expectedTypeRef) {
-    myExpressionPointer = SmartPointerManager.getInstance(expression.getProject()).createSmartPsiElementPointer(expression);
-    myExpectedTypeRef = expectedTypeRef;
-  }
-
-  @Nonnull
-  @Override
-  @RequiredUIAccess
-  public String getText() {
-    DotNetExpression element = myExpressionPointer.getElement();
-    if (element == null) {
-      return "invalid";
-    }
-    return BundleBase.format("Cast to ''{0}''", CSharpTypeRefPresentationUtil.buildTextWithKeyword(myExpectedTypeRef));
-  }
-
-  @Override
-  @RequiredUIAccess
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-    if (myExpectedTypeRef == DotNetTypeRef.UNKNOWN_TYPE) {
-      return false;
-    }
-    DotNetExpression element = myExpressionPointer.getElement();
-    if (element == null) {
-      return false;
+    public CastExpressionToTypeRef(@Nonnull DotNetExpression expression, @Nonnull DotNetTypeRef expectedTypeRef) {
+        myExpressionPointer = SmartPointerManager.getInstance(expression.getProject()).createSmartPsiElementPointer(expression);
+        myExpectedTypeRef = expectedTypeRef;
     }
 
-    if (DotNetTypeRefUtil.isVmQNameEqual(myExpectedTypeRef, DotNetTypes.System.Void)) {
-      return false;
-    }
-    return true;
-  }
-
-  @Override
-  @RequiredUIAccess
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-    DotNetExpression element = myExpressionPointer.getElement();
-    if (element == null) {
-      return;
+    @Nonnull
+    @Override
+    @RequiredUIAccess
+    public LocalizeValue getText() {
+        DotNetExpression element = myExpressionPointer.getElement();
+        if (element == null) {
+            return LocalizeValue.of();
+        }
+        return CSharpErrorLocalize.castTo0Fix(CSharpTypeRefPresentationUtil.buildTextWithKeyword(myExpectedTypeRef));
     }
 
-    String typeText = CSharpTypeRefPresentationUtil.buildShortText(myExpectedTypeRef);
+    @Override
+    @RequiredUIAccess
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+        if (myExpectedTypeRef == DotNetTypeRef.UNKNOWN_TYPE) {
+            return false;
+        }
+        DotNetExpression element = myExpressionPointer.getElement();
+        if (element == null) {
+            return false;
+        }
 
-    DotNetExpression expression = CSharpFileFactory.createExpression(project, "(" + typeText + ") " + element.getText());
+        if (DotNetTypeRefUtil.isVmQNameEqual(myExpectedTypeRef, DotNetTypes.System.Void)) {
+            return false;
+        }
+        return true;
+    }
 
-    element.replace(expression);
-  }
+    @Override
+    @RequiredUIAccess
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+        DotNetExpression element = myExpressionPointer.getElement();
+        if (element == null) {
+            return;
+        }
+
+        String typeText = CSharpTypeRefPresentationUtil.buildShortText(myExpectedTypeRef);
+
+        DotNetExpression expression = CSharpFileFactory.createExpression(project, "(" + typeText + ") " + element.getText());
+
+        element.replace(expression);
+    }
 }

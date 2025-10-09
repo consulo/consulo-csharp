@@ -29,6 +29,7 @@ import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
 import jakarta.annotation.Nonnull;
@@ -45,7 +46,7 @@ public class ReplaceTypeQuickFix extends BaseIntentionAction implements Syntheti
     myPointer = SmartPointerManager.getInstance(type.getProject()).createSmartPsiElementPointer(type);
 
     myTypeText = CSharpTypeRefPresentationUtil.buildShortText(typeRef);
-    setText("Replace '" + type.getText() + "' by '" + myTypeText + "'");
+    setText(LocalizeValue.localizeTODO("Replace '" + type.getText() + "' by '" + myTypeText + "'"));
   }
 
   @Override

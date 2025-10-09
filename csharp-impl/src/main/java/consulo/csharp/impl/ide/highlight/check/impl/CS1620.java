@@ -39,6 +39,7 @@ import consulo.language.editor.intention.BaseIntentionAction;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.*;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 
@@ -59,7 +60,7 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl> {
       myType = type;
       myPointer = SmartPointerManager.getInstance(expression.getProject()).createSmartPsiElementPointer(expression);
 
-      setText("Wrap with '" + myType + "'");
+      setText(LocalizeValue.localizeTODO("Wrap with '" + myType + "'"));
     }
 
     @Override

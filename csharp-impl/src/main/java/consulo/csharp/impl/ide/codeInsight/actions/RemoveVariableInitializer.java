@@ -30,6 +30,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
 import jakarta.annotation.Nonnull;
@@ -43,7 +44,7 @@ public class RemoveVariableInitializer extends BaseIntentionAction implements Sy
 
   public RemoveVariableInitializer(DotNetVariable variable) {
     myPointer = SmartPointerManager.getInstance(variable.getProject()).createSmartPsiElementPointer(variable);
-    setText(variable instanceof DotNetParameter ? "Remove initializer" : "Remove default value");
+    setText(variable instanceof DotNetParameter ? LocalizeValue.localizeTODO("Remove initializer") : LocalizeValue.localizeTODO("Remove default value"));
   }
 
   @Override

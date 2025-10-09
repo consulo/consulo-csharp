@@ -36,11 +36,11 @@ import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiNamedElement;
+import consulo.localize.LocalizeValue;
 import consulo.msil.impl.lang.stubbing.MsilCustomAttributeArgumentList;
 import consulo.msil.impl.lang.stubbing.MsilCustomAttributeStubber;
 import consulo.msil.impl.lang.stubbing.values.MsiCustomAttributeValue;
 import consulo.msil.lang.psi.MsilCustomAttribute;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -51,129 +51,104 @@ import java.util.List;
  * @since 28.08.14
  */
 @ExtensionImpl
-public class ObsoleteInspection extends CSharpGeneralLocalInspection
-{
-	@Nonnull
-	@Override
-	public String getDisplayName()
-	{
-		return "Obsolete declarations";
-	}
+public class ObsoleteInspection extends CSharpGeneralLocalInspection {
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Obsolete declarations");
+    }
 
-	@Nonnull
-	@Override
-	public HighlightDisplayLevel getDefaultLevel()
-	{
-		return HighlightDisplayLevel.WARNING;
-	}
+    @Nonnull
+    @Override
+    public HighlightDisplayLevel getDefaultLevel() {
+        return HighlightDisplayLevel.WARNING;
+    }
 
-	@Nonnull
-	@Override
-	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly)
-	{
-		return new CSharpElementVisitor()
-		{
-			@Override
-			@RequiredReadAction
-			public void visitReferenceExpression(CSharpReferenceExpression expression)
-			{
-				PsiElement resolve = expression.resolve();
-				if(resolve == null)
-				{
-					return;
-				}
+    @Nonnull
+    @Override
+    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+        return new CSharpElementVisitor() {
+            @Override
+            @RequiredReadAction
+            public void visitReferenceExpression(CSharpReferenceExpression expression) {
+                PsiElement resolve = expression.resolve();
+                if (resolve == null) {
+                    return;
+                }
 
-				PsiElement referenceElement = expression.getReferenceElement();
-				if(referenceElement == null)
-				{
-					return;
-				}
+                PsiElement referenceElement = expression.getReferenceElement();
+                if (referenceElement == null) {
+                    return;
+                }
 
-				IElementType elementType = referenceElement.getNode().getElementType();
-				if(CSharpTokenSets.KEYWORDS.contains(elementType))
-				{
-					return;
-				}
+                IElementType elementType = referenceElement.getNode().getElementType();
+                if (CSharpTokenSets.KEYWORDS.contains(elementType)) {
+                    return;
+                }
 
-				process(holder, referenceElement, resolve);
-			}
-		};
-	}
+                process(holder, referenceElement, resolve);
+            }
+        };
+    }
 
-	@RequiredReadAction
-	private static void process(@Nonnull ProblemsHolder holder, @Nullable PsiElement range, @Nonnull PsiElement target)
-	{
-		if(range == null)
-		{
-			return;
-		}
+    @RequiredReadAction
+    private static void process(@Nonnull ProblemsHolder holder, @Nullable PsiElement range, @Nonnull PsiElement target) {
+        if (range == null) {
+            return;
+        }
 
-		// #hasAttribute() is cache result, #findAttribute() not
-		if(DotNetAttributeUtil.hasAttribute(target, DotNetTypes.System.ObsoleteAttribute))
-		{
-			DotNetAttribute attribute = DotNetAttributeUtil.findAttribute(target, DotNetTypes.System.ObsoleteAttribute);
-			if(attribute == null)
-			{
-				return;
-			}
-			String message = getMessage(attribute);
-			if(message == null)
-			{
-				message = CSharpInspectionLocalize.targetIsObsolete(CSharpElementTreeNode.getPresentableText((PsiNamedElement) target)).getValue();
-			}
+        // #hasAttribute() is cache result, #findAttribute() not
+        if (DotNetAttributeUtil.hasAttribute(target, DotNetTypes.System.ObsoleteAttribute)) {
+            DotNetAttribute attribute = DotNetAttributeUtil.findAttribute(target, DotNetTypes.System.ObsoleteAttribute);
+            if (attribute == null) {
+                return;
+            }
+            String message = getMessage(attribute);
+            if (message == null) {
+                message = CSharpInspectionLocalize.targetIsObsolete(CSharpElementTreeNode.getPresentableText((PsiNamedElement) target)).getValue();
+            }
 
-			holder.registerProblem(range, message, ProblemHighlightType.LIKE_DEPRECATED);
-		}
-	}
+            holder.registerProblem(range, message, ProblemHighlightType.LIKE_DEPRECATED);
+        }
+    }
 
-	@RequiredReadAction
-	public static String getMessage(DotNetAttribute attribute)
-	{
-		if(attribute instanceof CSharpAttribute)
-		{
-			CSharpCallArgumentList parameterList = ((CSharpAttribute) attribute).getParameterList();
-			if(parameterList == null)
-			{
-				return null;
-			}
+    @RequiredReadAction
+    public static String getMessage(DotNetAttribute attribute) {
+        if (attribute instanceof CSharpAttribute) {
+            CSharpCallArgumentList parameterList = ((CSharpAttribute) attribute).getParameterList();
+            if (parameterList == null) {
+                return null;
+            }
 
-			DotNetExpression[] expressions = parameterList.getExpressions();
-			if(expressions.length == 0)
-			{
-				for(CSharpFieldOrPropertySet namedCallArgument : parameterList.getSets())
-				{
-					if(namedCallArgument instanceof CSharpNamedFieldOrPropertySet)
-					{
-						CSharpReferenceExpression argumentNameReference = (CSharpReferenceExpression) namedCallArgument.getNameElement();
-						if("Message".equals(argumentNameReference.getReferenceName()))
-						{
-							return new ConstantExpressionEvaluator(namedCallArgument.getValueExpression()).getValueAs(String.class);
-						}
-					}
-				}
-			}
-			else
-			{
-				DotNetExpression expression = expressions[0];
-				return new ConstantExpressionEvaluator(expression).getValueAs(String.class);
-			}
-		}
-		else if(attribute instanceof MsilCustomAttribute)
-		{
-			MsilCustomAttributeArgumentList attributeArgumentList = MsilCustomAttributeStubber.build((MsilCustomAttribute) attribute);
+            DotNetExpression[] expressions = parameterList.getExpressions();
+            if (expressions.length == 0) {
+                for (CSharpFieldOrPropertySet namedCallArgument : parameterList.getSets()) {
+                    if (namedCallArgument instanceof CSharpNamedFieldOrPropertySet) {
+                        CSharpReferenceExpression argumentNameReference = (CSharpReferenceExpression) namedCallArgument.getNameElement();
+                        if ("Message".equals(argumentNameReference.getReferenceName())) {
+                            return new ConstantExpressionEvaluator(namedCallArgument.getValueExpression()).getValueAs(String.class);
+                        }
+                    }
+                }
+            }
+            else {
+                DotNetExpression expression = expressions[0];
+                return new ConstantExpressionEvaluator(expression).getValueAs(String.class);
+            }
+        }
+        else if (attribute instanceof MsilCustomAttribute) {
+            MsilCustomAttributeArgumentList attributeArgumentList = MsilCustomAttributeStubber.build((MsilCustomAttribute) attribute);
 
-			List<MsiCustomAttributeValue> constructorArguments = attributeArgumentList.getConstructorArguments();
-			if(!constructorArguments.isEmpty())
-			{
-				MsiCustomAttributeValue msiCustomAttributeValue = constructorArguments.get(0);
+            List<MsiCustomAttributeValue> constructorArguments = attributeArgumentList.getConstructorArguments();
+            if (!constructorArguments.isEmpty()) {
+                MsiCustomAttributeValue msiCustomAttributeValue = constructorArguments.get(0);
 
-				Object value = msiCustomAttributeValue.getValue();
-				if(value instanceof String)
-				{
-					return (String) value;
-				}
-			}
-		}
-		return null;
-	}
+                Object value = msiCustomAttributeValue.getValue();
+                if (value instanceof String) {
+                    return (String) value;
+                }
+            }
+        }
+        return null;
+    }
 }

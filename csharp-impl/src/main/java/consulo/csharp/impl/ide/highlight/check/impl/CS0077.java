@@ -30,9 +30,8 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import org.jetbrains.annotations.Nls;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -48,11 +47,10 @@ public class CS0077 extends CompilerCheck<CSharpAsExpressionImpl> {
       myPointer = SmartPointerManager.getInstance(type.getProject()).createSmartPsiElementPointer(type);
     }
 
-    @Nls
     @Nonnull
     @Override
-    public String getText() {
-      return "Add '?'";
+    public LocalizeValue getText() {
+      return LocalizeValue.localizeTODO("Add '?'");
     }
 
     @Override

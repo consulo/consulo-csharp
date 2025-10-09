@@ -29,6 +29,7 @@ import consulo.dotnet.psi.DotNetCodeBlockOwner;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.*;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.Nls;
@@ -47,11 +48,10 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration> {
       myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
     }
 
-    @Nls
     @Nonnull
     @Override
-    public String getText() {
-      return "Remove code block";
+    public LocalizeValue getText() {
+      return LocalizeValue.localizeTODO("Remove code block");
     }
 
     @Override

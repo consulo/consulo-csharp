@@ -16,6 +16,7 @@
 
 package consulo.csharp.impl.ide.highlight.quickFix;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.language.editor.intention.BaseIntentionAction;
 import consulo.language.editor.intention.SyntheticIntentionAction;
@@ -24,6 +25,7 @@ import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
 import jakarta.annotation.Nonnull;
@@ -36,10 +38,11 @@ public class RenameQuickFix extends BaseIntentionAction implements SyntheticInte
   private final String myNewName;
   private final SmartPsiElementPointer<PsiNamedElement> myPointer;
 
+  @RequiredReadAction
   public RenameQuickFix(@Nonnull String newName, @Nonnull PsiNamedElement namedElement) {
     myNewName = newName;
     myPointer = SmartPointerManager.getInstance(namedElement.getProject()).createSmartPsiElementPointer(namedElement);
-    setText("Rename '" + namedElement.getName() + "' to '" + myNewName + "'");
+    setText(LocalizeValue.localizeTODO("Rename '" + namedElement.getName() + "' to '" + myNewName + "'"));
   }
 
   @Override

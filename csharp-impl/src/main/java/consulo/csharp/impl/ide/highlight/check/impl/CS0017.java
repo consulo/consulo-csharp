@@ -34,6 +34,7 @@ import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.language.util.ModuleUtilCore;
+import consulo.localize.LocalizeValue;
 import consulo.module.content.ModuleRootManager;
 import consulo.module.content.layer.ModifiableRootModel;
 import consulo.project.Project;
@@ -53,7 +54,7 @@ public class CS0017 extends CompilerCheck<CSharpMethodDeclaration> {
     @RequiredReadAction
     public SetMainTypeFix(@Nonnull DotNetTypeDeclaration typeDeclaration) {
       myVmQName = typeDeclaration.getVmQName();
-      setText("Set main to '" + myVmQName + "'");
+      setText(LocalizeValue.localizeTODO("Set main to '" + myVmQName + "'"));
     }
 
     @Override
