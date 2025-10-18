@@ -18,19 +18,18 @@ package consulo.csharp.impl.ide.highlight.check.impl;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.eap.EarlyAccessProgramDescriptor;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 
 /**
-* @author VISTALL
-* @since 11-Sep-22
-*/
+ * @author VISTALL
+ * @since 11-Sep-22
+ */
 @ExtensionImpl
-public class CS0030TypeCastEapDescriptor extends EarlyAccessProgramDescriptor
-{
-	@Nonnull
-	@Override
-	public String getName()
-	{
-		return "CS0030 Type cast checks";
-	}
+public class CS0030TypeCastEapDescriptor extends EarlyAccessProgramDescriptor {
+    @Nonnull
+    @Override
+    public LocalizeValue getName() {
+        return LocalizeValue.localizeTODO("CS0030 Type cast checks");
+    }
 }

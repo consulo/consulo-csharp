@@ -18,20 +18,18 @@ package consulo.csharp.impl.ide.assemblyInfo;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.eap.EarlyAccessProgramDescriptor;
-
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 
 /**
-* @author VISTALL
-* @since 11-Sep-22
-*/
+ * @author VISTALL
+ * @since 11-Sep-22
+ */
 @ExtensionImpl
-public class CSharpAssemblyFileEditorEapDescriptor extends EarlyAccessProgramDescriptor
-{
-	@Nonnull
-	@Override
-	public String getName()
-	{
-		return "AssemblyInfo.cs UI Editor";
-	}
+public class CSharpAssemblyFileEditorEapDescriptor extends EarlyAccessProgramDescriptor {
+    @Nonnull
+    @Override
+    public LocalizeValue getName() {
+        return LocalizeValue.localizeTODO("AssemblyInfo.cs UI Editor");
+    }
 }
