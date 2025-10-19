@@ -35,144 +35,118 @@ import java.util.List;
  * @author VISTALL
  * @since 10.06.14
  */
-public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
-{
-	public static enum Owners
-	{
-		Constructor(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
-		StaticConstructor(CSharpModifier.STATIC),
-		Constant(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
-		DeConstructor,
-		InterfaceMember(CSharpModifier.NEW),
-		GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
-		Parameter(CSharpModifier.REF, CSharpModifier.OUT, CSharpModifier.PARAMS, CSharpModifier.THIS),
-		NamespaceStruct(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
-		NestedStruct(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.PRIVATE, CSharpModifier.INTERNAL),
-		NamespaceType(CSharpModifier.STATIC, CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED, CSharpModifier.UNSAFE),
-		NestedType(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED,
-				CSharpModifier.STATIC, CSharpModifier.NEW),
-		Unknown
-				{
-					@Override
-					public boolean isValidModifier(DotNetModifier modifier)
-					{
-						return true;
-					}
-				};
+public class CS0106 extends CompilerCheck<DotNetModifierListOwner> {
+    public static enum Owners {
+        Constructor(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
+        StaticConstructor(CSharpModifier.STATIC),
+        Constant(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
+        DeConstructor,
+        InterfaceMember(CSharpModifier.NEW),
+        GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
+        Parameter(CSharpModifier.REF, CSharpModifier.OUT, CSharpModifier.PARAMS, CSharpModifier.THIS),
+        NamespaceStruct(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.UNSAFE),
+        NestedStruct(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.PRIVATE, CSharpModifier.INTERNAL, CSharpModifier.UNSAFE),
+        NamespaceType(CSharpModifier.STATIC, CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED),
+        NestedType(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED,
+            CSharpModifier.STATIC, CSharpModifier.NEW),
+        Unknown {
+            @Override
+            public boolean isValidModifier(DotNetModifier modifier) {
+                return true;
+            }
+        };
 
-		private DotNetModifier[] myValidModifiers;
+        private DotNetModifier[] myValidModifiers;
 
-		Owners(DotNetModifier... validModifiers)
-		{
-			myValidModifiers = validModifiers;
-		}
+        Owners(DotNetModifier... validModifiers) {
+            myValidModifiers = validModifiers;
+        }
 
-		public boolean isValidModifier(DotNetModifier modifier)
-		{
-			return ArrayUtil.contains(modifier, myValidModifiers);
-		}
-	}
+        public boolean isValidModifier(DotNetModifier modifier) {
+            return ArrayUtil.contains(modifier, myValidModifiers);
+        }
+    }
 
-	@RequiredReadAction
-	@Nonnull
-	@Override
-	public List<CompilerCheckBuilder> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetModifierListOwner element)
-	{
-		DotNetModifierList modifierList = element.getModifierList();
-		if(modifierList == null)
-		{
-			return Collections.emptyList();
-		}
+    @RequiredReadAction
+    @Nonnull
+    @Override
+    public List<CompilerCheckBuilder> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetModifierListOwner element) {
+        DotNetModifierList modifierList = element.getModifierList();
+        if (modifierList == null) {
+            return Collections.emptyList();
+        }
 
-		List<CompilerCheckBuilder> list = Collections.emptyList();
-		Owners owners = toOwners(element);
+        List<CompilerCheckBuilder> list = Collections.emptyList();
+        Owners owners = toOwners(element);
 
-		DotNetModifier[] modifiers = modifierList.getModifiers();
-		if(modifiers.length == 0)
-		{
-			return list;
-		}
+        DotNetModifier[] modifiers = modifierList.getModifiers();
+        if (modifiers.length == 0) {
+            return list;
+        }
 
-		for(DotNetModifier modifier : modifiers)
-		{
-			if(!owners.isValidModifier(modifier))
-			{
-				PsiElement modifierElement = modifierList.getModifierElement(modifier);
-				if(modifierElement == null)
-				{
-					continue;
-				}
+        for (DotNetModifier modifier : modifiers) {
+            if (!owners.isValidModifier(modifier)) {
+                PsiElement modifierElement = modifierList.getModifierElement(modifier);
+                if (modifierElement == null) {
+                    continue;
+                }
 
-				if(list.isEmpty())
-				{
-					list = new ArrayList<>(2);
-				}
+                if (list.isEmpty()) {
+                    list = new ArrayList<>(2);
+                }
 
-				list.add(newBuilder(modifierElement, modifier.getPresentableText()).withQuickFix(new RemoveModifierFix(modifier, element)));
-			}
-		}
-		return list;
-	}
+                list.add(newBuilder(modifierElement, modifier.getPresentableText()).withQuickFix(new RemoveModifierFix(modifier, element)));
+            }
+        }
+        return list;
+    }
 
-	@RequiredReadAction
-	public static Owners toOwners(DotNetModifierListOwner owner)
-	{
-		if(owner instanceof CSharpFieldDeclaration && ((CSharpFieldDeclaration) owner).isConstant())
-		{
-			return Owners.Constant;
-		}
+    @RequiredReadAction
+    public static Owners toOwners(DotNetModifierListOwner owner) {
+        if (owner instanceof CSharpFieldDeclaration && ((CSharpFieldDeclaration) owner).isConstant()) {
+            return Owners.Constant;
+        }
 
-		if(owner instanceof CSharpConstructorDeclaration)
-		{
-			if(((CSharpConstructorDeclaration) owner).isDeConstructor())
-			{
-				return Owners.DeConstructor;
-			}
+        if (owner instanceof CSharpConstructorDeclaration) {
+            if (((CSharpConstructorDeclaration) owner).isDeConstructor()) {
+                return Owners.DeConstructor;
+            }
 
-			if(owner.hasModifier(DotNetModifier.STATIC))
-			{
-				return Owners.StaticConstructor;
-			}
-			return Owners.Constructor;
-		}
+            if (owner.hasModifier(DotNetModifier.STATIC)) {
+                return Owners.StaticConstructor;
+            }
+            return Owners.Constructor;
+        }
 
-		if(owner instanceof CSharpMethodDeclaration || owner instanceof CSharpPropertyDeclaration || owner instanceof CSharpIndexMethodDeclaration)
-		{
-			PsiElement parent = owner.getParent();
+        if (owner instanceof CSharpMethodDeclaration || owner instanceof CSharpPropertyDeclaration || owner instanceof CSharpIndexMethodDeclaration) {
+            PsiElement parent = owner.getParent();
 
-			if(parent instanceof CSharpTypeDeclaration)
-			{
-				if(((CSharpTypeDeclaration) parent).isInterface())
-				{
-					return Owners.InterfaceMember;
-				}
-			}
-		}
+            if (parent instanceof CSharpTypeDeclaration) {
+                if (((CSharpTypeDeclaration) parent).isInterface()) {
+                    return Owners.InterfaceMember;
+                }
+            }
+        }
 
-		if(owner instanceof DotNetGenericParameter)
-		{
-			return Owners.GenericParameter;
-		}
+        if (owner instanceof DotNetGenericParameter) {
+            return Owners.GenericParameter;
+        }
 
-		if(owner instanceof DotNetTypeDeclaration)
-		{
-			boolean struct = ((DotNetTypeDeclaration) owner).isEnum() || ((DotNetTypeDeclaration) owner).isStruct();
+        if (owner instanceof DotNetTypeDeclaration) {
+            boolean struct = ((DotNetTypeDeclaration) owner).isEnum() || ((DotNetTypeDeclaration) owner).isStruct();
 
-			PsiElement parent = owner.getParent();
-			if(parent instanceof CSharpNamespaceDeclaration || parent instanceof CSharpFile)
-			{
-				return struct ? Owners.NamespaceStruct : Owners.NamespaceType;
-			}
-			else if(parent instanceof DotNetTypeDeclaration)
-			{
-				return struct ? Owners.NestedStruct : Owners.NestedType;
-			}
-		}
+            PsiElement parent = owner.getParent();
+            if (parent instanceof CSharpNamespaceDeclaration || parent instanceof CSharpFile) {
+                return struct ? Owners.NamespaceStruct : Owners.NamespaceType;
+            }
+            else if (parent instanceof DotNetTypeDeclaration) {
+                return struct ? Owners.NestedStruct : Owners.NestedType;
+            }
+        }
 
-		if(owner instanceof DotNetParameter)
-		{
-			return Owners.Parameter;
-		}
-		return Owners.Unknown;
-	}
+        if (owner instanceof DotNetParameter) {
+            return Owners.Parameter;
+        }
+        return Owners.Unknown;
+    }
 }
