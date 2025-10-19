@@ -16,34 +16,20 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import jakarta.annotation.Nonnull;
-
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import consulo.csharp.lang.psi.CSharpFile;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.*;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.*;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayUtil;
+import jakarta.annotation.Nonnull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -62,7 +48,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 		Parameter(CSharpModifier.REF, CSharpModifier.OUT, CSharpModifier.PARAMS, CSharpModifier.THIS),
 		NamespaceStruct(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
 		NestedStruct(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.PRIVATE, CSharpModifier.INTERNAL),
-		NamespaceType(CSharpModifier.STATIC, CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED),
+		NamespaceType(CSharpModifier.STATIC, CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED, CSharpModifier.UNSAFE),
 		NestedType(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED,
 				CSharpModifier.STATIC, CSharpModifier.NEW),
 		Unknown
