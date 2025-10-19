@@ -28,89 +28,80 @@ import java.util.Map;
  * @author VISTALL
  * @since 06.01.14.
  */
-public enum CSharpModifier implements DotNetModifier
-{
-	PUBLIC,
-	PRIVATE,
-	PROTECTED,
-	STATIC,
-	SEALED,
-	READONLY,
-	UNSAFE,
-	PARAMS,
-	THIS,
-	ABSTRACT,
-	PARTIAL,
-	INTERNAL,
-	REF,
-	NEW,
-	OVERRIDE,
-	VIRTUAL,
-	OUT,
-	ASYNC,
-	IN,
-	EXTERN,
-	INTERFACE_ABSTRACT, // dummy modifier
-	OPTIONAL; // dummy modifier
+public enum CSharpModifier implements DotNetModifier {
+    PUBLIC,
+    PRIVATE,
+    PROTECTED,
+    STATIC,
+    SEALED,
+    READONLY,
+    UNSAFE,
+    PARAMS,
+    THIS,
+    ABSTRACT,
+    PARTIAL,
+    INTERNAL,
+    REF,
+    NEW,
+    OVERRIDE,
+    VIRTUAL,
+    OUT,
+    ASYNC,
+    IN,
+    EXTERN,
+    INTERFACE_ABSTRACT, // dummy modifier
+    OPTIONAL, // dummy modifier
+    FIXED;
 
-	public static final CSharpModifier[] EMPTY_ARRAY = new CSharpModifier[0];
+    public static final CSharpModifier[] EMPTY_ARRAY = new CSharpModifier[0];
 
-	public static ArrayFactory<CSharpModifier> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpModifier[count];
+    public static ArrayFactory<CSharpModifier> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpModifier[count];
 
-	private static Map<DotNetModifier, CSharpModifier> ourReplaceMap = new HashMap<DotNetModifier, CSharpModifier>()
-	{
-		{
-			put(DotNetModifier.STATIC, CSharpModifier.STATIC);
-			put(DotNetModifier.PRIVATE, CSharpModifier.PRIVATE);
-			put(DotNetModifier.PUBLIC, CSharpModifier.PUBLIC);
-			put(DotNetModifier.PROTECTED, CSharpModifier.PROTECTED);
-			put(DotNetModifier.INTERNAL, CSharpModifier.INTERNAL);
-			put(DotNetModifier.ABSTRACT, CSharpModifier.ABSTRACT);
-			put(DotNetModifier.SEALED, CSharpModifier.SEALED);
-			put(DotNetModifier.COVARIANT, CSharpModifier.OUT);
-			put(DotNetModifier.CONTRAVARIANT, CSharpModifier.IN);
-		}
-	};
+    private static Map<DotNetModifier, CSharpModifier> ourReplaceMap = new HashMap<>() {
+        {
+            put(DotNetModifier.STATIC, CSharpModifier.STATIC);
+            put(DotNetModifier.PRIVATE, CSharpModifier.PRIVATE);
+            put(DotNetModifier.PUBLIC, CSharpModifier.PUBLIC);
+            put(DotNetModifier.PROTECTED, CSharpModifier.PROTECTED);
+            put(DotNetModifier.INTERNAL, CSharpModifier.INTERNAL);
+            put(DotNetModifier.ABSTRACT, CSharpModifier.ABSTRACT);
+            put(DotNetModifier.SEALED, CSharpModifier.SEALED);
+            put(DotNetModifier.COVARIANT, CSharpModifier.OUT);
+            put(DotNetModifier.CONTRAVARIANT, CSharpModifier.IN);
+        }
+    };
 
-	private int myMask;
+    private int myMask;
 
-	CSharpModifier()
-	{
-		myMask = 1 << ordinal();
-	}
+    CSharpModifier() {
+        myMask = 1 << ordinal();
+    }
 
-	public int mask()
-	{
-		return myMask;
-	}
+    public int mask() {
+        return myMask;
+    }
 
-	@Override
-	public String toString()
-	{
-		return getPresentableText();
-	}
+    @Override
+    public String toString() {
+        return getPresentableText();
+    }
 
-	@Override
-	public String getPresentableText()
-	{
-		return name().toLowerCase(Locale.US);
-	}
+    @Override
+    public String getPresentableText() {
+        return name().toLowerCase(Locale.US);
+    }
 
-	@Nonnull
-	public static CSharpModifier as(DotNetModifier modifierWithMask)
-	{
-		if(modifierWithMask instanceof CSharpModifier)
-		{
-			return (CSharpModifier) modifierWithMask;
-		}
-		else
-		{
-			CSharpModifier cSharpModifier = ourReplaceMap.get(modifierWithMask);
-			if(cSharpModifier != null)
-			{
-				return cSharpModifier;
-			}
-			throw new IllegalArgumentException(modifierWithMask + " is cant be casted to CSharpModifier");
-		}
-	}
+    @Nonnull
+    public static CSharpModifier as(DotNetModifier modifierWithMask) {
+        if (modifierWithMask instanceof CSharpModifier) {
+            return (CSharpModifier) modifierWithMask;
+        }
+        else {
+            CSharpModifier cSharpModifier = ourReplaceMap.get(modifierWithMask);
+            if (cSharpModifier != null) {
+                return cSharpModifier;
+            }
+            throw new IllegalArgumentException(modifierWithMask + " is cant be casted to CSharpModifier");
+        }
+    }
 }

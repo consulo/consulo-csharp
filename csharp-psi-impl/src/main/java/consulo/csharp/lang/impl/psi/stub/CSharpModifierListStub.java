@@ -25,59 +25,49 @@ import consulo.language.psi.stub.StubElement;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
 import consulo.util.lang.BitUtil;
-
 import jakarta.annotation.Nonnull;
+
 import java.util.List;
 
 /**
  * @author VISTALL
  * @since 17.10.14
  */
-public class CSharpModifierListStub extends StubBase<DotNetModifierList>
-{
-	private final int myModifierMask;
+public class CSharpModifierListStub extends StubBase<DotNetModifierList> {
+    private final int myModifierMask;
 
-	public CSharpModifierListStub(StubElement parent, IStubElementType elementType, int modifierMask)
-	{
-		super(parent, elementType);
-		myModifierMask = modifierMask;
-	}
+    public CSharpModifierListStub(StubElement parent, IStubElementType elementType, int modifierMask) {
+        super(parent, elementType);
+        myModifierMask = modifierMask;
+    }
 
-	public int getModifierMask()
-	{
-		return myModifierMask;
-	}
+    public int getModifierMask() {
+        return myModifierMask;
+    }
 
-	public static int getModifierMask(@Nonnull DotNetModifierList list)
-	{
-		int val = 0;
-		for(CSharpModifier modifier : CSharpModifier.values())
-		{
-			if(list.hasModifierInTree(modifier))
-			{
-				val |= modifier.mask();
-			}
-		}
-		return val;
-	}
+    public static int getModifierMask(@Nonnull DotNetModifierList list) {
+        int val = 0;
+        for (CSharpModifier modifier : CSharpModifier.values()) {
+            if (list.hasModifierInTree(modifier)) {
+                val |= modifier.mask();
+            }
+        }
+        return val;
+    }
 
-	@Nonnull
-	public CSharpModifier[] getModifiers()
-	{
-		List<CSharpModifier> list = new SmartList<>();
-		for(CSharpModifier modifier : CSharpModifier.values())
-		{
-			if(hasModifier(modifier))
-			{
-				list.add(modifier);
-			}
-		}
-		return ContainerUtil.toArray(list, CSharpModifier.ARRAY_FACTORY);
-	}
+    @Nonnull
+    public CSharpModifier[] getModifiers() {
+        List<CSharpModifier> list = new SmartList<>();
+        for (CSharpModifier modifier : CSharpModifier.values()) {
+            if (hasModifier(modifier)) {
+                list.add(modifier);
+            }
+        }
+        return ContainerUtil.toArray(list, CSharpModifier.ARRAY_FACTORY);
+    }
 
-	public boolean hasModifier(DotNetModifier modifier)
-	{
-		CSharpModifier as = CSharpModifier.as(modifier);
-		return BitUtil.isSet(myModifierMask, as.mask());
-	}
+    public boolean hasModifier(DotNetModifier modifier) {
+        CSharpModifier as = CSharpModifier.as(modifier);
+        return BitUtil.isSet(myModifierMask, as.mask());
+    }
 }

@@ -43,8 +43,8 @@ import consulo.project.Project;
 import consulo.util.dataholder.Key;
 import consulo.virtualFileSystem.VirtualFile;
 import jakarta.annotation.Nonnull;
-
 import jakarta.annotation.Nullable;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -55,146 +55,122 @@ import java.util.Set;
  * @author VISTALL
  * @since 15.12.13.
  */
-public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileStub>
-{
-	public static final Key<Set<String>> PREPROCESSOR_VARIABLES = Key.create("csharp.preprocessor.variables");
+public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileStub> {
+    public static final Key<Set<String>> PREPROCESSOR_VARIABLES = Key.create("csharp.preprocessor.variables");
 
-	public CSharpFileStubElementType()
-	{
-		super("CSHARP_FILE", CSharpLanguage.INSTANCE);
-	}
+    public CSharpFileStubElementType() {
+        super("CSHARP_FILE", CSharpLanguage.INSTANCE);
+    }
 
-	@Override
-	public StubBuilder getBuilder()
-	{
-		return new DefaultStubBuilder()
-		{
-			@Nonnull
-			@Override
-			protected StubElement createStubForFile(@Nonnull PsiFile file)
-			{
-				if(file instanceof CSharpFileImpl)
-				{
-					return new CSharpFileStub((CSharpFileImpl) file);
-				}
-				return super.createStubForFile(file);
-			}
+    @Override
+    public StubBuilder getBuilder() {
+        return new DefaultStubBuilder() {
+            @Nonnull
+            @Override
+            protected StubElement createStubForFile(@Nonnull PsiFile file) {
+                if (file instanceof CSharpFileImpl) {
+                    return new CSharpFileStub((CSharpFileImpl) file);
+                }
+                return super.createStubForFile(file);
+            }
 
-			@Override
-			public boolean skipChildProcessingWhenBuildingStubs(@Nonnull ASTNode parent, @Nonnull ASTNode node)
-			{
-				// skip any lazy parseable elements, like preprocessors or code blocks etc
-				if(node.getElementType() instanceof ILazyParseableElementType)
-				{
-					return true;
-				}
-				return false;
-			}
-		};
-	}
+            @Override
+            public boolean skipChildProcessingWhenBuildingStubs(@Nonnull ASTNode parent, @Nonnull ASTNode node) {
+                // skip any lazy parseable elements, like preprocessors or code blocks etc
+                if (node.getElementType() instanceof ILazyParseableElementType) {
+                    return true;
+                }
+                return false;
+            }
+        };
+    }
 
-	@RequiredReadAction
-	@Override
-	protected ASTNode doParseContents(@Nonnull ASTNode chameleon, @Nonnull PsiElement psi)
-	{
-		final Project project = psi.getProject();
-		final Language languageForParser = getLanguageForParser(psi);
-		final LanguageVersion tempLanguageVersion = chameleon.getUserData(LanguageVersion.KEY);
-		final CSharpLanguageVersionWrapper languageVersion = (CSharpLanguageVersionWrapper) (tempLanguageVersion == null ? psi.getLanguageVersion() : tempLanguageVersion);
+    @RequiredReadAction
+    @Override
+    protected ASTNode doParseContents(@Nonnull ASTNode chameleon, @Nonnull PsiElement psi) {
+        final Project project = psi.getProject();
+        final Language languageForParser = getLanguageForParser(psi);
+        final LanguageVersion tempLanguageVersion = chameleon.getUserData(LanguageVersion.KEY);
+        final CSharpLanguageVersionWrapper languageVersion = (CSharpLanguageVersionWrapper) (tempLanguageVersion == null ? psi.getLanguageVersion() : tempLanguageVersion);
 
-		Set<String> defVariables = getStableDefines((PsiFile) psi);
+        Set<String> defVariables = getStableDefines((PsiFile) psi);
 
-		final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
-		builder.putUserData(PREPROCESSOR_VARIABLES, defVariables);
+        final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
+        builder.putUserData(PREPROCESSOR_VARIABLES, defVariables);
 
-		final PsiParser parser = ParserDefinition.forLanguage(languageForParser).createParser(languageVersion);
-		return parser.parse(this, builder, languageVersion).getFirstChildNode();
-	}
+        final PsiParser parser = ParserDefinition.forLanguage(languageForParser).createParser(languageVersion);
+        return parser.parse(this, builder, languageVersion).getFirstChildNode();
+    }
 
-	@Nonnull
-	@RequiredReadAction
-	public static Set<String> getStableDefines(@Nonnull PsiFile psi)
-	{
-		FileViewProvider viewProvider = psi.getViewProvider();
-		VirtualFile virtualFile = viewProvider.getVirtualFile();
-		if(virtualFile instanceof LightVirtualFile)
-		{
-			virtualFile = ((LightVirtualFile) virtualFile).getOriginalFile();
-			// we need call second time, due second original file will be light
-			if(virtualFile instanceof LightVirtualFile)
-			{
-				virtualFile = ((LightVirtualFile) virtualFile).getOriginalFile();
-			}
-		}
-		if(virtualFile == null)
-		{
-			virtualFile = psi.getUserData(IndexingDataKeys.VIRTUAL_FILE);
-		}
+    @Nonnull
+    @RequiredReadAction
+    public static Set<String> getStableDefines(@Nonnull PsiFile psi) {
+        FileViewProvider viewProvider = psi.getViewProvider();
+        VirtualFile virtualFile = viewProvider.getVirtualFile();
+        if (virtualFile instanceof LightVirtualFile) {
+            virtualFile = ((LightVirtualFile) virtualFile).getOriginalFile();
+            // we need call second time, due second original file will be light
+            if (virtualFile instanceof LightVirtualFile) {
+                virtualFile = ((LightVirtualFile) virtualFile).getOriginalFile();
+            }
+        }
+        if (virtualFile == null) {
+            virtualFile = psi.getUserData(IndexingDataKeys.VIRTUAL_FILE);
+        }
 
-		Set<String> defVariables = Set.of();
-		if(virtualFile != null)
-		{
-			Collection<String> variables = findVariables(virtualFile, psi.getProject());
+        Set<String> defVariables = Set.of();
+        if (virtualFile != null) {
+            Collection<String> variables = findVariables(virtualFile, psi.getProject());
 
-			if(variables != null)
-			{
-				defVariables = new HashSet<>(variables);
-			}
-		}
-		return defVariables;
-	}
+            if (variables != null) {
+                defVariables = new HashSet<>(variables);
+            }
+        }
+        return defVariables;
+    }
 
-	@Nullable
-	@RequiredReadAction
-	private static Collection<String> findVariables(@Nonnull VirtualFile virtualFile, @Nonnull Project project)
-	{
-		Module module = ModuleUtilCore.findModuleForFile(virtualFile, project);
-		if(module == null)
-		{
-			List<OrderEntry> orderEntriesForFile = ProjectFileIndex.getInstance(project).getOrderEntriesForFile(virtualFile);
+    @Nullable
+    @RequiredReadAction
+    private static Collection<String> findVariables(@Nonnull VirtualFile virtualFile, @Nonnull Project project) {
+        Module module = ModuleUtilCore.findModuleForFile(virtualFile, project);
+        if (module == null) {
+            List<OrderEntry> orderEntriesForFile = ProjectFileIndex.getInstance(project).getOrderEntriesForFile(virtualFile);
 
-			Set<String> variables = new HashSet<>();
+            Set<String> variables = new HashSet<>();
 
-			for(OrderEntry orderEntry : orderEntriesForFile)
-			{
-				Module ownerModule = orderEntry.getOwnerModule();
+            for (OrderEntry orderEntry : orderEntriesForFile) {
+                Module ownerModule = orderEntry.getOwnerModule();
 
-				DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(ownerModule, DotNetSimpleModuleExtension.class);
-				if(extension != null)
-				{
-					variables.addAll(extension.getVariables());
-				}
-			}
-			return variables;
-		}
-		else
-		{
-			DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(module, DotNetSimpleModuleExtension.class);
-			if(extension != null)
-			{
-				return extension.getVariables();
-			}
-		}
-		return null;
-	}
+                DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(ownerModule, DotNetSimpleModuleExtension.class);
+                if (extension != null) {
+                    variables.addAll(extension.getVariables());
+                }
+            }
+            return variables;
+        }
+        else {
+            DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(module, DotNetSimpleModuleExtension.class);
+            if (extension != null) {
+                return extension.getVariables();
+            }
+        }
+        return null;
+    }
 
-	@Nonnull
-	@Override
-	public CSharpFileStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException
-	{
-		return new CSharpFileStub(null);
-	}
+    @Nonnull
+    @Override
+    public CSharpFileStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
+        return new CSharpFileStub(null);
+    }
 
-	@Override
-	public int getStubVersion()
-	{
-		return 125;
-	}
+    @Override
+    public int getStubVersion() {
+        return 126;
+    }
 
-	@Nonnull
-	@Override
-	public String getExternalId()
-	{
-		return "csharp.file";
-	}
+    @Nonnull
+    @Override
+    public String getExternalId() {
+        return "csharp.file";
+    }
 }

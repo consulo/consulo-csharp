@@ -16,133 +16,126 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFactory;
 import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFileImpl;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpConstantTypeRef;
 import consulo.csharp.lang.impl.psi.stub.CSharpVariableDeclStub;
-import consulo.dotnet.psi.*;
+import consulo.csharp.lang.psi.CSharpFieldDeclaration;
+import consulo.csharp.lang.psi.CSharpFixedSizeBufferInitializer;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetFieldDeclaration;
+import consulo.dotnet.psi.DotNetModifierList;
+import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.ASTNode;
-
+import consulo.language.psi.PsiElement;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
 import java.lang.ref.WeakReference;
 
 /**
  * @author VISTALL
  * @since 04.12.13.
  */
-public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<DotNetFieldDeclaration>> implements CSharpFieldDeclaration
-{
-	private volatile WeakReference<DotNetExpression> myInitializerExpression;
+public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<DotNetFieldDeclaration>> implements CSharpFieldDeclaration {
+    private volatile WeakReference<DotNetExpression> myInitializerExpression;
 
-	public CSharpFieldDeclarationImpl(@Nonnull ASTNode node)
-	{
-		super(node);
-	}
+    public CSharpFieldDeclarationImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-	public CSharpFieldDeclarationImpl(@Nonnull CSharpVariableDeclStub<DotNetFieldDeclaration> stub)
-	{
-		super(stub, CSharpStubElements.FIELD_DECLARATION);
-	}
+    public CSharpFieldDeclarationImpl(@Nonnull CSharpVariableDeclStub<DotNetFieldDeclaration> stub) {
+        super(stub, CSharpStubElements.FIELD_DECLARATION);
+    }
 
-	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
-	{
-		visitor.visitFieldDeclaration(this);
-	}
+    @Override
+    public void accept(@Nonnull CSharpElementVisitor visitor) {
+        visitor.visitFieldDeclaration(this);
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public DotNetType getType()
-	{
-		return CSharpStubVariableImplUtil.getType(this);
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public DotNetType getType() {
+        return CSharpStubVariableImplUtil.getType(this);
+    }
 
-	@RequiredReadAction
-	@Nonnull
-	@Override
-	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
-	{
-		DotNetTypeRef defaultTypeRef = super.toTypeRefImpl(resolveFromInitializer);
-		if(isConstant())
-		{
-			DotNetExpression initializer = getInitializer();
-			if(initializer instanceof CSharpConstantExpressionImpl)
-			{
-				return new CSharpConstantTypeRef((CSharpConstantExpressionImpl) initializer, defaultTypeRef);
-			}
-		}
-		return defaultTypeRef;
-	}
+    @RequiredReadAction
+    @Nonnull
+    @Override
+    public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer) {
+        DotNetTypeRef defaultTypeRef = super.toTypeRefImpl(resolveFromInitializer);
+        if (isConstant()) {
+            DotNetExpression initializer = getInitializer();
+            if (initializer instanceof CSharpConstantExpressionImpl) {
+                return new CSharpConstantTypeRef((CSharpConstantExpressionImpl) initializer, defaultTypeRef);
+            }
+        }
+        return defaultTypeRef;
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public DotNetModifierList getModifierList()
-	{
-		return CSharpStubVariableImplUtil.getModifierList(this);
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public DotNetModifierList getModifierList() {
+        return CSharpStubVariableImplUtil.getModifierList(this);
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public PsiElement getConstantKeywordElement()
-	{
-		return CSharpStubVariableImplUtil.getConstantKeywordElement(this);
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public PsiElement getConstantKeywordElement() {
+        return CSharpStubVariableImplUtil.getConstantKeywordElement(this);
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public DotNetExpression getInitializer()
-	{
-		CSharpVariableDeclStub<DotNetFieldDeclaration> stub = getStub();
-		if(stub != null)
-		{
-			if(myInitializerExpression != null)
-			{
-				return myInitializerExpression.get();
-			}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public DotNetExpression getInitializer() {
+        CSharpVariableDeclStub<DotNetFieldDeclaration> stub = getStub();
+        if (stub != null) {
+            if (myInitializerExpression != null) {
+                return myInitializerExpression.get();
+            }
 
-			String initializerText = stub.getInitializerText();
-			if(initializerText != null)
-			{
-				CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(getProject(), initializerText, this);
-				DotNetExpression value = (DotNetExpression) expressionFragment.getChildren()[0];
-				myInitializerExpression = new WeakReference<>(value);
-				return value;
-			}
+            String initializerText = stub.getInitializerText();
+            if (initializerText != null) {
+                CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(getProject(), initializerText, this);
+                DotNetExpression value = (DotNetExpression) expressionFragment.getChildren()[0];
+                myInitializerExpression = new WeakReference<>(value);
+                return value;
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		myInitializerExpression = null;
-		return findChildByClass(DotNetExpression.class);
-	}
+        myInitializerExpression = null;
+        return findChildByClass(DotNetExpression.class);
+    }
 
-	@Override
-	protected void clearUserData()
-	{
-		super.clearUserData();
-		myInitializerExpression = null;
-	}
+    @Override
+    protected void clearUserData() {
+        super.clearUserData();
+        myInitializerExpression = null;
+    }
 
-	@RequiredReadAction
-	@Override
-	public boolean isConstant()
-	{
-		CSharpVariableDeclStub<DotNetFieldDeclaration> stub = getGreenStub();
-		if(stub != null)
-		{
-			return stub.isConstant();
-		}
-		return CSharpStubVariableImplUtil.getConstantKeywordElement(this) != null;
-	}
+    @RequiredReadAction
+    @Override
+    public boolean isConstant() {
+        CSharpVariableDeclStub<DotNetFieldDeclaration> stub = getGreenStub();
+        if (stub != null) {
+            return stub.isConstant();
+        }
+        return CSharpStubVariableImplUtil.getConstantKeywordElement(this) != null;
+    }
+
+    @Nullable
+    @Override
+    public CSharpFixedSizeBufferInitializer getFixedSizeBufferInitializer() {
+        return findChildByClass(CSharpFixedSizeBufferInitializer.class);
+    }
 }

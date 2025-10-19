@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2025 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,17 @@
 
 package consulo.csharp.lang.psi;
 
-import consulo.dotnet.psi.DotNetFieldDeclaration;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.dotnet.psi.DotNetElement;
+import consulo.dotnet.psi.DotNetExpression;
 import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL
- * @since 15.01.14
+ * @since 2025-10-19
  */
-public interface CSharpFieldDeclaration extends DotNetFieldDeclaration, CSharpNamedElement {
+public interface CSharpFixedSizeBufferInitializer extends DotNetElement {
     @Nullable
-    default CSharpFixedSizeBufferInitializer getFixedSizeBufferInitializer() {
-        return null;
-    }
+    @RequiredReadAction
+    DotNetExpression getInitializer();
 }
