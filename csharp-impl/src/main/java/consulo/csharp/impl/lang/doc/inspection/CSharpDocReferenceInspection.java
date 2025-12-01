@@ -90,7 +90,9 @@ public class CSharpDocReferenceInspection extends LocalInspectionTool {
                     if (highlightInfo == null) {
                         continue;
                     }
-                    holder.registerProblem(expression, highlightInfo.getDescription());
+                    holder.newProblem(highlightInfo.getDescription())
+                        .range((PsiElement) expression)
+                        .create();
                 }
             }
         };
