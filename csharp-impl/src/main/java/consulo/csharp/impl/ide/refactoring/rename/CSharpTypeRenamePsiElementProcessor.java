@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.refactoring.rename;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.codeEditor.Editor;
 import consulo.content.scope.SearchScope;
@@ -35,117 +35,101 @@ import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
 import consulo.util.collection.MultiMap;
 import jakarta.annotation.Nonnull;
 
 import jakarta.annotation.Nullable;
+
 import java.util.Map;
 
 /**
  * @author VISTALL
- * @since 17.01.15
+ * @since 2015-01-17
  */
 @ExtensionImpl
-public class CSharpTypeRenamePsiElementProcessor extends RenamePsiElementProcessor
-{
-	@Nullable
-	@Override
-	public PsiElement substituteElementToRename(PsiElement element, @Nullable Editor editor)
-	{
-		if(element instanceof CSharpConstructorDeclaration)
-		{
-			return PsiTreeUtil.getParentOfType(element, CSharpTypeDeclaration.class);
-		}
-		return super.substituteElementToRename(element, editor);
-	}
+public class CSharpTypeRenamePsiElementProcessor extends RenamePsiElementProcessor {
+    @Nullable
+    @Override
+    public PsiElement substituteElementToRename(PsiElement element, @Nullable Editor editor) {
+        if (element instanceof CSharpConstructorDeclaration) {
+            return PsiTreeUtil.getParentOfType(element, CSharpTypeDeclaration.class);
+        }
+        return super.substituteElementToRename(element, editor);
+    }
 
-	@Override
-	public boolean canProcessElement(@Nonnull PsiElement element)
-	{
-		return element instanceof CSharpTypeDeclaration || element instanceof CSharpConstructorDeclaration;
-	}
+    @Override
+    public boolean canProcessElement(@Nonnull PsiElement element) {
+        return element instanceof CSharpTypeDeclaration || element instanceof CSharpConstructorDeclaration;
+    }
 
-	@Override
-	public void findExistingNameConflicts(PsiElement element,
-										  String newName,
-										  MultiMap<PsiElement, String> conflicts,
-										  Map<PsiElement, String> allRenames)
-	{
-		for(Map.Entry<PsiElement, String> entry : allRenames.entrySet())
-		{
-			if(entry.getKey() instanceof CSharpFile)
-			{
-				CSharpFile key = (CSharpFile) entry.getKey();
-				PsiDirectory parent = key.getParent();
-				if(parent == null)
-				{
-					continue;
-				}
+    @Override
+    public void findExistingNameConflicts(
+        PsiElement element,
+        String newName,
+        @Nonnull MultiMap<PsiElement, LocalizeValue> conflicts,
+        @Nonnull Map<PsiElement, String> allRenames
+    ) {
+        for (Map.Entry<PsiElement, String> entry : allRenames.entrySet()) {
+            if (entry.getKey() instanceof CSharpFile) {
+                CSharpFile key = (CSharpFile) entry.getKey();
+                PsiDirectory parent = key.getParent();
+                if (parent == null) {
+                    continue;
+                }
 
-				PsiFile file = parent.findFile(entry.getValue());
-				if(file != null)
-				{
-					conflicts.putValue(file, entry.getValue() + " already exists in parent directory");
-				}
-			}
-		}
-	}
+                PsiFile file = parent.findFile(entry.getValue());
+                if (file != null) {
+                    conflicts.putValue(file, LocalizeValue.localizeTODO(entry.getValue() + " already exists in parent directory"));
+                }
+            }
+        }
+    }
 
-	@Override
-	public void prepareRenaming(PsiElement element, String newName, Map<PsiElement, String> allRenames, SearchScope scope)
-	{
-		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, element.getResolveScope(), element);
+    @Override
+    @RequiredReadAction
+    public void prepareRenaming(PsiElement element, String newName, Map<PsiElement, String> allRenames, SearchScope scope) {
+        CSharpResolveContext context =
+            CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, element.getResolveScope(), element);
 
-		CSharpElementGroup<CSharpConstructorDeclaration> constructors = context.constructorGroup();
-		if(constructors != null)
-		{
-			for(CSharpConstructorDeclaration declaration : constructors.getElements())
-			{
-				allRenames.put(declaration, newName);
-			}
-		}
-		constructors = context.deConstructorGroup();
-		if(constructors != null)
-		{
-			for(CSharpConstructorDeclaration declaration : constructors.getElements())
-			{
-				allRenames.put(declaration, newName);
-			}
-		}
+        CSharpElementGroup<CSharpConstructorDeclaration> constructors = context.constructorGroup();
+        if (constructors != null) {
+            for (CSharpConstructorDeclaration declaration : constructors.getElements()) {
+                allRenames.put(declaration, newName);
+            }
+        }
+        constructors = context.deConstructorGroup();
+        if (constructors != null) {
+            for (CSharpConstructorDeclaration declaration : constructors.getElements()) {
+                allRenames.put(declaration, newName);
+            }
+        }
 
-		CSharpTypeDeclaration[] typesIfPartial = getTypesIfPartial(context);
+        CSharpTypeDeclaration[] typesIfPartial = getTypesIfPartial(context);
 
-		for(CSharpTypeDeclaration typeDeclaration : typesIfPartial)
-		{
-			allRenames.put(typeDeclaration, newName);
+        for (CSharpTypeDeclaration typeDeclaration : typesIfPartial) {
+            allRenames.put(typeDeclaration, newName);
 
-			PsiFile containingFile = typeDeclaration.getContainingFile();
-			if(containingFile instanceof CSharpFile)
-			{
-				DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElement((CSharpFile) containingFile);
-				if(typeDeclaration.isEquivalentTo(singleElement))
-				{
-					allRenames.put(containingFile, newName + "." + containingFile.getFileType().getDefaultExtension());
-				}
-			}
-		}
-	}
+            if (typeDeclaration.getContainingFile() instanceof CSharpFile containingFile) {
+                DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElement(containingFile);
+                if (typeDeclaration.isEquivalentTo(singleElement)) {
+                    allRenames.put(containingFile, newName + "." + containingFile.getFileType().getDefaultExtension());
+                }
+            }
+        }
+    }
 
-	private static CSharpTypeDeclaration[] getTypesIfPartial(CSharpResolveContext context)
-	{
-		if(context instanceof CSharpTypeResolveContext)
-		{
-			// if we have composite - that partial type, need append other types
-			CSharpTypeDeclaration maybeCompositeType = ((CSharpTypeResolveContext) context).getElement();
-			if(maybeCompositeType instanceof CSharpCompositeTypeDeclaration)
-			{
-				return ((CSharpCompositeTypeDeclaration) maybeCompositeType).getTypeDeclarations();
-			}
-			else
-			{
-				return new CSharpTypeDeclaration[]{maybeCompositeType};
-			}
-		}
-		return CSharpTypeDeclaration.EMPTY_ARRAY;
-	}
+    private static CSharpTypeDeclaration[] getTypesIfPartial(CSharpResolveContext context) {
+        if (context instanceof CSharpTypeResolveContext typeResolveContext) {
+            // if we have composite - that partial type, need append other types
+            CSharpTypeDeclaration maybeCompositeType = typeResolveContext.getElement();
+            if (maybeCompositeType instanceof CSharpCompositeTypeDeclaration compositeTypeDeclaration) {
+                return compositeTypeDeclaration.getTypeDeclarations();
+            }
+            else {
+                return new CSharpTypeDeclaration[]{maybeCompositeType};
+            }
+        }
+        return CSharpTypeDeclaration.EMPTY_ARRAY;
+    }
 }
