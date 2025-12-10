@@ -33,13 +33,12 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.search.ReferencesSearch;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
 import consulo.usage.UsageInfo;
 import consulo.util.collection.MultiMap;
 import consulo.util.lang.StringUtil;
-import consulo.util.lang.function.PairFunction;
 import consulo.util.lang.ref.SimpleReference;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,11 +57,11 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
         }
         final List<UsageInfo> list = new ArrayList<>();
 
-        final ReadActionProcessor<PsiReference> refProcessor = new ReadActionProcessor<>() {
-            @RequiredReadAction
+        ReadActionProcessor<PsiReference> refProcessor = new ReadActionProcessor<>() {
             @Override
-            public boolean processInReadAction(final PsiReference ref) {
-                final PsiElement resolve = ref.resolve();
+            @RequiredReadAction
+            public boolean processInReadAction(PsiReference ref) {
+                PsiElement resolve = ref.resolve();
                 if (resolve != info.getMethod()) {
                     return true;
                 }
@@ -79,7 +78,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 
     @Nonnull
     @Override
-    public MultiMap<PsiElement, String> findConflicts(@Nonnull ChangeInfo info, SimpleReference<UsageInfo[]> refUsages) {
+    public MultiMap<PsiElement, LocalizeValue> findConflicts(@Nonnull ChangeInfo info, SimpleReference<UsageInfo[]> refUsages) {
         return MultiMap.empty();
     }
 
@@ -91,11 +90,10 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
         boolean beforeMethodChange,
         @Nonnull UsageInfo[] usages
     ) {
-        if (!(changeInfo instanceof CSharpChangeInfo)) {
+        if (!(changeInfo instanceof CSharpChangeInfo sharpChangeInfo)) {
             return false;
         }
-        PsiElement element = usageInfo.getElement();
-        if (!(element instanceof DotNetReferenceExpression)) {
+        if (!(usageInfo.getElement() instanceof DotNetReferenceExpression refExpr)) {
             return false;
         }
 
@@ -103,19 +101,18 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
             return true;
         }
 
-        if (changeInfo.isNameChanged()) {
-            ((DotNetReferenceExpression)element).handleElementRename(changeInfo.getNewName());
+        if (sharpChangeInfo.isNameChanged()) {
+            refExpr.handleElementRename(sharpChangeInfo.getNewName());
         }
 
-        if (((CSharpChangeInfo)changeInfo).isParametersChanged()) {
-            PsiElement parent = element.getParent();
-            if (parent instanceof CSharpCallArgumentListOwner) {
-                CSharpCallArgumentList parameterList = ((CSharpCallArgumentListOwner)parent).getParameterList();
+        if (sharpChangeInfo.isParametersChanged()) {
+            if (refExpr.getParent() instanceof CSharpCallArgumentListOwner argListOwner) {
+                CSharpCallArgumentList parameterList = argListOwner.getParameterList();
                 if (parameterList == null) {
                     return true;
                 }
 
-                CSharpParameterInfo[] newParameters = ((CSharpChangeInfo)changeInfo).getNewParameters();
+                CSharpParameterInfo[] newParameters = sharpChangeInfo.getNewParameters();
 
                 DotNetExpression[] expressions = parameterList.getExpressions();
                 String[] newArguments = new String[newParameters.length];
@@ -145,10 +142,9 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
     @Override
     @RequiredWriteAction
     public boolean processPrimaryMethod(@Nonnull ChangeInfo changeInfo) {
-        if (!(changeInfo instanceof CSharpChangeInfo)) {
+        if (!(changeInfo instanceof CSharpChangeInfo sharpChangeInfo)) {
             return false;
         }
-        CSharpChangeInfo sharpChangeInfo = (CSharpChangeInfo)changeInfo;
 
         DotNetLikeMethodDeclaration method = sharpChangeInfo.getMethod();
 
@@ -164,8 +160,8 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
             builder.append(newVisibility.getPresentableText()).append(" ");
         }
         if (method instanceof CSharpMethodDeclaration) {
-            if (changeInfo.isReturnTypeChanged()) {
-                builder.append(((CSharpChangeInfo)changeInfo).getNewReturnType()).append(" ");
+            if (sharpChangeInfo.isReturnTypeChanged()) {
+                builder.append(sharpChangeInfo.getNewReturnType()).append(" ");
             }
             else {
                 builder.append(CSharpTypeRefPresentationUtil.buildShortText(method.getReturnTypeRef())).append(" ");
@@ -174,10 +170,10 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
         builder.append(method.getName());
         builder.append("(");
 
-        StubBlockUtil.join(builder, sharpChangeInfo.getNewParameters(), new PairFunction<>() {
-            @Nullable
-            @Override
-            public Void fun(StringBuilder stringBuilder, CSharpParameterInfo parameterInfo) {
+        StubBlockUtil.join(
+            builder,
+            sharpChangeInfo.getNewParameters(),
+            (stringBuilder, parameterInfo) -> {
                 CSharpModifier modifier = parameterInfo.getModifier();
                 if (modifier != null) {
                     stringBuilder.append(modifier.getPresentableText()).append(" ");
@@ -186,8 +182,9 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
                 stringBuilder.append(" ");
                 stringBuilder.append(parameterInfo.getName());
                 return null;
-            }
-        }, ", ");
+            },
+            ", "
+        );
 
         builder.append(");");
 
@@ -215,7 +212,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
         if (sharpChangeInfo.isParametersChanged()) {
             CSharpParameterInfo[] newParameters = sharpChangeInfo.getNewParameters();
 
-            for (final CSharpParameterInfo newParameter : newParameters) {
+            for (CSharpParameterInfo newParameter : newParameters) {
                 DotNetParameter originalParameter = newParameter.getParameter();
                 if (originalParameter != null) {
                     ReferencesSearch.SearchParameters searchParameters =
