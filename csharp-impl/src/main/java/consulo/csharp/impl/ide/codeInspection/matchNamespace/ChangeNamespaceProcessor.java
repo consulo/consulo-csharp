@@ -26,6 +26,7 @@ import consulo.language.editor.refactoring.BaseRefactoringProcessor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.search.ReferencesSearch;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.usage.UsageInfo;
 import consulo.usage.UsageViewDescriptor;
@@ -42,90 +43,81 @@ import java.util.Set;
  * @author VISTALL
  * @since 2019-07-24
  */
-public class ChangeNamespaceProcessor extends BaseRefactoringProcessor
-{
-	class UsageViewDescriptorImpl implements UsageViewDescriptor
-	{
-		@Nonnull
-		@Override
-		public PsiElement[] getElements()
-		{
-			return new PsiElement[] {myNamespaceProvider};
-		}
+public class ChangeNamespaceProcessor extends BaseRefactoringProcessor {
+    class UsageViewDescriptorImpl implements UsageViewDescriptor {
+        @Nonnull
+        @Override
+        public PsiElement[] getElements() {
+            return new PsiElement[]{myNamespaceProvider};
+        }
 
-		@Override
-		public String getProcessedElementsHeader()
-		{
-			return getCommandName();
-		}
+        @Override
+        public String getProcessedElementsHeader() {
+            return getCommandName().get();
+        }
 
-		@Override
-		public String getCodeReferencesText(int usagesCount, int filesCount)
-		{
-			return null;
-		}
+        @Override
+        public String getCodeReferencesText(int usagesCount, int filesCount) {
+            return null;
+        }
 
-		@Nullable
-		@Override
-		public String getCommentReferencesText(int usagesCount, int filesCount)
-		{
-			return null;
-		}
-	}
+        @Nullable
+        @Override
+        public String getCommentReferencesText(int usagesCount, int filesCount) {
+            return null;
+        }
+    }
 
-	@Nonnull
-	private final CSharpNamespaceProvider myNamespaceProvider;
-	@Nonnull
-	private final String myExpectedNamespace;
+    @Nonnull
+    private final CSharpNamespaceProvider myNamespaceProvider;
+    @Nonnull
+    private final String myExpectedNamespace;
 
-	protected ChangeNamespaceProcessor(@Nonnull Project project, @Nonnull CSharpNamespaceProvider namespaceProvider, @Nonnull String expectedNamespace)
-	{
-		super(project);
-		myNamespaceProvider = namespaceProvider;
-		myExpectedNamespace = expectedNamespace;
-	}
+    protected ChangeNamespaceProcessor(
+        @Nonnull Project project,
+        @Nonnull CSharpNamespaceProvider namespaceProvider,
+        @Nonnull String expectedNamespace
+    ) {
+        super(project);
+        myNamespaceProvider = namespaceProvider;
+        myExpectedNamespace = expectedNamespace;
+    }
 
-	@Nonnull
-	@Override
-	protected UsageViewDescriptor createUsageViewDescriptor(@Nonnull UsageInfo[] usages)
-	{
-		return new UsageViewDescriptorImpl();
-	}
+    @Nonnull
+    @Override
+    protected UsageViewDescriptor createUsageViewDescriptor(@Nonnull UsageInfo[] usages) {
+        return new UsageViewDescriptorImpl();
+    }
 
-	@Nonnull
-	@Override
-	@RequiredReadAction
-	protected UsageInfo[] findUsages()
-	{
-		List<UsageInfo> result = new ArrayList<>();
-		Set<Couple<DotNetNamedElement>> children = CSharpMoveClassesUtil.findTypesAndNamespaces(myNamespaceProvider);
+    @Nonnull
+    @Override
+    @RequiredReadAction
+    protected UsageInfo[] findUsages() {
+        List<UsageInfo> result = new ArrayList<>();
+        Set<Couple<DotNetNamedElement>> children = CSharpMoveClassesUtil.findTypesAndNamespaces(myNamespaceProvider);
 
-		for(Couple<DotNetNamedElement> couple : children)
-		{
-			DotNetNamedElement second = couple.getSecond();
+        for (Couple<DotNetNamedElement> couple : children) {
+            DotNetNamedElement second = couple.getSecond();
 
-			for(PsiReference reference : ReferencesSearch.search(second, CSharpClassesMoveProcessor.mapScope(second)))
-			{
-				result.add(new CSharpClassesMoveProcessor.MyUsageInfo(reference.getElement(), couple, reference));
-			}
-		}
+            for (PsiReference reference : ReferencesSearch.search(second, CSharpClassesMoveProcessor.mapScope(second))) {
+                result.add(new CSharpClassesMoveProcessor.MyUsageInfo(reference.getElement(), couple, reference));
+            }
+        }
 
-		return result.toArray(new UsageInfo[result.size()]);
-	}
+        return result.toArray(new UsageInfo[result.size()]);
+    }
 
-	@Override
-	@RequiredWriteAction
-	protected void performRefactoring(@Nonnull UsageInfo[] usages)
-	{
-		myNamespaceProvider.setNamespace(myExpectedNamespace);
+    @Override
+    @RequiredWriteAction
+    protected void performRefactoring(@Nonnull UsageInfo[] usages) {
+        myNamespaceProvider.setNamespace(myExpectedNamespace);
 
-		CSharpClassesMoveProcessor.retargetUsages(usages);
-	}
+        CSharpClassesMoveProcessor.retargetUsages(usages);
+    }
 
-	@Nonnull
-	@Override
-	protected String getCommandName()
-	{
-		return "Change namespace to '" + myExpectedNamespace + "'";
-	}
+    @Nonnull
+    @Override
+    protected LocalizeValue getCommandName() {
+        return LocalizeValue.localizeTODO("Change namespace to '" + myExpectedNamespace + "'");
+    }
 }
