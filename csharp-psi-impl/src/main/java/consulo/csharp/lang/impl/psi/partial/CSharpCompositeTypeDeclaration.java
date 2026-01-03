@@ -90,8 +90,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	@Nullable
 	public static CSharpCompositeTypeDeclaration findCompositeType(@Nonnull CSharpTypeDeclaration parent)
 	{
-		Object cachedValue = LanguageCachedValueUtil.getCachedValue(parent, () -> CachedValueProvider.Result.create(findCompositeTypeImpl(parent), PsiModificationTracker
-				.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT));
+		Object cachedValue = LanguageCachedValueUtil.getCachedValue(parent, () -> CachedValueProvider.Result.create(findCompositeTypeImpl(parent), PsiModificationTracker.MODIFICATION_COUNT));
 		return cachedValue == ObjectUtil.NULL ? null : (CSharpCompositeTypeDeclaration) cachedValue;
 	}
 

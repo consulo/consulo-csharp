@@ -92,7 +92,7 @@ public class CSharpModifierListImplUtil {
                     modifiers.add(modifier);
                 }
             }
-            return CachedValueProvider.Result.create(modifiers.isEmpty() ? emptySet : EnumSet.copyOf(modifiers), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+            return CachedValueProvider.Result.create(modifiers.isEmpty() ? emptySet : EnumSet.copyOf(modifiers), PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
 

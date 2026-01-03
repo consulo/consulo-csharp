@@ -32,61 +32,51 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiModificationTracker;
 import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.util.collection.ArrayUtil;
-
 import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGenericParameterStub> implements CSharpGenericParameter
-{
-	public CSharpGenericParameterImpl(@Nonnull ASTNode node)
-	{
-		super(node);
-	}
+public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGenericParameterStub> implements CSharpGenericParameter {
+    public CSharpGenericParameterImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-	public CSharpGenericParameterImpl(@Nonnull CSharpGenericParameterStub stub)
-	{
-		super(stub, CSharpStubElements.GENERIC_PARAMETER);
-	}
+    public CSharpGenericParameterImpl(@Nonnull CSharpGenericParameterStub stub) {
+        super(stub, CSharpStubElements.GENERIC_PARAMETER);
+    }
 
-	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
-	{
-		visitor.visitGenericParameter(this);
-	}
+    @Override
+    public void accept(@Nonnull CSharpElementVisitor visitor) {
+        visitor.visitGenericParameter(this);
+    }
 
-	@Override
-	public int getIndex()
-	{
-		PsiElement parentByStub = getParentByStub();
-		if(parentByStub instanceof DotNetGenericParameterList)
-		{
-			return ArrayUtil.find(((DotNetGenericParameterList) parentByStub).getParameters(), this);
-		}
-		return -1;
-	}
+    @Override
+    public int getIndex() {
+        PsiElement parentByStub = getParentByStub();
+        if (parentByStub instanceof DotNetGenericParameterList) {
+            return ArrayUtil.find(((DotNetGenericParameterList) parentByStub).getParameters(), this);
+        }
+        return -1;
+    }
 
-	@RequiredReadAction
-	@Nonnull
-	@Override
-	public DotNetAttribute[] getAttributes()
-	{
-		DotNetModifierList modifierList = getModifierList();
-		if(modifierList != null)
-		{
-			return modifierList.getAttributes();
-		}
-		return DotNetAttribute.EMPTY_ARRAY;
-	}
+    @RequiredReadAction
+    @Nonnull
+    @Override
+    public DotNetAttribute[] getAttributes() {
+        DotNetModifierList modifierList = getModifierList();
+        if (modifierList != null) {
+            return modifierList.getAttributes();
+        }
+        return DotNetAttribute.EMPTY_ARRAY;
+    }
 
-	@RequiredReadAction
-	@Nonnull
-	@Override
-	public DotNetTypeRef[] getExtendTypeRefs()
-	{
-		return LanguageCachedValueUtil.getCachedValue(this, () -> CachedValueProvider.Result.create(CSharpGenericConstraintUtil.getExtendTypes(CSharpGenericParameterImpl.this), PsiModificationTracker
-				.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT));
-	}
+    @RequiredReadAction
+    @Nonnull
+    @Override
+    public DotNetTypeRef[] getExtendTypeRefs() {
+        return LanguageCachedValueUtil.getCachedValue(this, () -> CachedValueProvider.Result.create(CSharpGenericConstraintUtil.getExtendTypes(CSharpGenericParameterImpl.this), PsiModificationTracker
+            .MODIFICATION_COUNT));
+    }
 }
