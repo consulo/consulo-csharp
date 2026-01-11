@@ -58,7 +58,7 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
     public LocalizeValue getText() {
         String arguments = buildArgumentTypeRefs();
         if (arguments == null) {
-            return LocalizeValue.of();
+            return LocalizeValue.empty();
         }
         return CSharpErrorLocalize.createMethod01(myReferenceName, arguments);
     }

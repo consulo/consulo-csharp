@@ -55,7 +55,7 @@ public class CastExpressionToTypeRef implements SyntheticIntentionAction {
     public LocalizeValue getText() {
         DotNetExpression element = myExpressionPointer.getElement();
         if (element == null) {
-            return LocalizeValue.of();
+            return LocalizeValue.empty();
         }
         return CSharpErrorLocalize.castTo0Fix(CSharpTypeRefPresentationUtil.buildTextWithKeyword(myExpectedTypeRef));
     }

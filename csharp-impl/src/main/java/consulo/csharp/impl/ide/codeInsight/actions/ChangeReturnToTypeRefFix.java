@@ -54,7 +54,7 @@ public class ChangeReturnToTypeRefFix implements SyntheticIntentionAction {
   public LocalizeValue getText() {
     DotNetLikeMethodDeclaration element = myMethodPointer.getElement();
     if (element == null) {
-      return LocalizeValue.of();
+      return LocalizeValue.empty();
     }
     return CSharpErrorLocalize.changeReturnTypeTo0Fix(element.getName(), CSharpTypeRefPresentationUtil.buildTextWithKeyword(myToTypeRef));
   }
