@@ -161,7 +161,7 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
     @Nonnull
     @Override
     public LocalizeValue getPreviewFileText() {
-        return LocalizeValue.of();
+        return LocalizeValue.empty();
     }
 
     @Nonnull

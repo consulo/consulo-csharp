@@ -55,7 +55,7 @@ public class ChangeVariableToTypeRefFix implements SyntheticIntentionAction {
   public LocalizeValue getText() {
     DotNetVariable element = myVariablePointer.getElement();
     if (element == null) {
-      return LocalizeValue.of();
+      return LocalizeValue.empty();
     }
 
     return CSharpErrorLocalize.change0TypeTo1Fix(element.getName(), CSharpTypeRefPresentationUtil.buildTextWithKeyword(myToTypeRef));
