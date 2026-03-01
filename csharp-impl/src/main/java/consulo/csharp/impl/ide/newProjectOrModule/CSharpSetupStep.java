@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.newProjectOrModule;
 
 import consulo.content.bundle.SdkTable;
@@ -30,80 +29,72 @@ import consulo.ui.model.ListModel;
 import consulo.ui.util.FormBuilder;
 
 import jakarta.annotation.Nonnull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author VISTALL
- * @since 05.06.14
+ * @since 2014-06-05
  */
-public class CSharpSetupStep extends UnifiedProjectOrModuleNameStep<CSharpNewModuleContext>
-{
-	private DotNetTarget myForceTarget;
+public class CSharpSetupStep extends UnifiedProjectOrModuleNameStep<CSharpNewModuleContext> {
+    private DotNetTarget myForceTarget;
 
-	private ComboBox<DotNetTarget> myTargetComboBox;
-	private BundleBox myBundleBox;
+    private ComboBox<DotNetTarget> myTargetComboBox;
+    private BundleBox myBundleBox;
 
-	public CSharpSetupStep(CSharpNewModuleContext context)
-	{
-		super(context);
-	}
+    public CSharpSetupStep(CSharpNewModuleContext context) {
+        super(context);
+    }
 
+    @Override
 	@RequiredUIAccess
-	@Override
-	protected void extend(@Nonnull FormBuilder builder, @Nonnull Disposable uiDisposable)
-	{
-		super.extend(builder, uiDisposable);
+    protected void extend(@Nonnull FormBuilder builder, @Nonnull Disposable uiDisposable) {
+        super.extend(builder, uiDisposable);
 
-		if(myForceTarget == null)
-		{
-			myTargetComboBox = ComboBox.create(DotNetTarget.values());
-			myTargetComboBox.setValue(DotNetTarget.EXECUTABLE);
-			myTargetComboBox.setTextRender(DotNetTarget::getDescription);
+        if (myForceTarget == null) {
+            myTargetComboBox = ComboBox.create(DotNetTarget.values());
+            myTargetComboBox.setValue(DotNetTarget.EXECUTABLE);
+            myTargetComboBox.setTextRenderer(DotNetTarget::getDescription);
 
-			builder.addLabeled(LocalizeValue.localizeTODO("Target:"), myTargetComboBox);
-		}
+            builder.addLabeled(LocalizeValue.localizeTODO("Target:"), myTargetComboBox);
+        }
 
-		List<String> validSdkTypes = new ArrayList<>();
-		for(Map.Entry<String, String[]> entry : CSharpNewModuleBuilder.ourExtensionMapping.entrySet())
-		{
-			// need check C# extension
-			ModuleExtensionProvider provider = ModuleExtensionProvider.findProvider(entry.getValue()[1]);
-			if(provider == null)
-			{
-				continue;
-			}
-			validSdkTypes.add(entry.getKey());
-		}
+        List<String> validSdkTypes = new ArrayList<>();
+        for (Map.Entry<String, String[]> entry : CSharpNewModuleBuilder.ourExtensionMapping.entrySet()) {
+            // need check C# extension
+            ModuleExtensionProvider provider = ModuleExtensionProvider.findProvider(entry.getValue()[1]);
+            if (provider == null) {
+                continue;
+            }
+            validSdkTypes.add(entry.getKey());
+        }
 
-		BundleBoxBuilder boxBuilder = BundleBoxBuilder.create(uiDisposable);
-		boxBuilder.withSdkTypeFilter(sdkTypeId -> validSdkTypes.contains(sdkTypeId.getId()));
+        BundleBoxBuilder boxBuilder = BundleBoxBuilder.create(uiDisposable);
+        boxBuilder.withSdkTypeFilter(sdkTypeId -> validSdkTypes.contains(sdkTypeId.getId()));
 
-		myBundleBox = boxBuilder.build();
-		ListModel<BundleBox.BundleBoxItem> listModel = myBundleBox.getComponent().getListModel();
-		// select first
-		if(listModel.getSize() > 0)
-		{
-			myBundleBox.getComponent().setValue(listModel.get(0));
-		}
-		builder.addLabeled(LocalizeValue.localizeTODO(".NET SDK:"), myBundleBox.getComponent());
-	}
+        myBundleBox = boxBuilder.build();
+        ListModel<BundleBox.BundleBoxItem> listModel = myBundleBox.getComponent().getListModel();
+        // select first
+        if (listModel.getSize() > 0) {
+            myBundleBox.getComponent().setValue(listModel.get(0));
+        }
+        builder.addLabeled(LocalizeValue.localizeTODO(".NET SDK:"), myBundleBox.getComponent());
+    }
 
-	@Override
-	public void onStepLeave(@Nonnull CSharpNewModuleContext context)
-	{
-		super.onStepLeave(context);
+    @Override
+    public void onStepLeave(@Nonnull CSharpNewModuleContext context) {
+        super.onStepLeave(context);
 
-		context.setTarget(myForceTarget != null ? myForceTarget : myTargetComboBox.getValueOrError());
+        context.setTarget(myForceTarget != null ? myForceTarget : myTargetComboBox.getValueOrError());
 
-		context.setSdk(SdkTable.getInstance().findSdk(myBundleBox.getSelectedBundleName()));
-	}
+        context.setSdk(SdkTable.getInstance().findSdk(myBundleBox.getSelectedBundleName()));
+    }
 
-	@Nonnull
-	public CSharpSetupStep disableTargetComboBox(@Nonnull DotNetTarget target)
-	{
-		myForceTarget = target;
-		return this;
-	}
+    @Nonnull
+    public CSharpSetupStep disableTargetComboBox(@Nonnull DotNetTarget target) {
+        myForceTarget = target;
+        return this;
+    }
 }

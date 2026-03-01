@@ -43,7 +43,7 @@ public class CastNArgumentToTypeRefFix extends CastExpressionToTypeRef {
     public LocalizeValue getText() {
         DotNetExpression element = myExpressionPointer.getElement();
         if (element == null) {
-            return LocalizeValue.of();
+            return LocalizeValue.empty();
         }
         return CSharpErrorLocalize.castArgument0To1(myParameterName, CSharpTypeRefPresentationUtil.buildTextWithKeyword(myExpectedTypeRef));
     }

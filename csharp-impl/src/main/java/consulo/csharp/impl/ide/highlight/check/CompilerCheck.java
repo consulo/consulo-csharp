@@ -182,7 +182,7 @@ public abstract class CompilerCheck<T extends PsiElement> {
 
         LocalizeValue value = getValue(LocalizeKey.of(LOCALIZE_ID, id), args);
 
-        return ApplicationProperties.isInSandbox() ? value.map((localizeManager, s) -> id + ": " + s) : value;
+        return ApplicationProperties.isInSandbox() ? value.map(s -> id + ": " + s) : value;
     }
 
     @Nonnull

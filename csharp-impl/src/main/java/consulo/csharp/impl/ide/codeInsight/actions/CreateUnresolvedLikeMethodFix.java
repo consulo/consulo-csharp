@@ -57,7 +57,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
     public LocalizeValue getText() {
         String arguments = buildArgumentTypeRefs();
         if (arguments == null) {
-            return LocalizeValue.of();
+            return LocalizeValue.empty();
         }
         return createText(myReferenceName, arguments);
     }

@@ -60,7 +60,7 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx> {
 
       PsiElement resolvedElement = element.resolve();
       if (resolvedElement == null) {
-        return LocalizeValue.of();
+        return LocalizeValue.empty();
       }
       return LocalizeValue.localizeTODO("Replace qualifier by '" + formatElement(resolvedElement.getParent()) + "'");
     }
