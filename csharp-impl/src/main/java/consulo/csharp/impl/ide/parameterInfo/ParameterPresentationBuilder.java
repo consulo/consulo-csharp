@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.parameterInfo;
 
 import consulo.application.AccessToken;
@@ -21,8 +20,8 @@ import consulo.document.util.TextRange;
 import consulo.document.util.UnfairTextRange;
 import consulo.util.lang.ObjectUtil;
 import consulo.util.lang.xml.XmlStringUtil;
-
 import jakarta.annotation.Nonnull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,56 +29,46 @@ import java.util.Map;
  * @author VISTALL
  * @since 2020-05-31
  */
-public class ParameterPresentationBuilder<P>
-{
-	private static final TextRange ourInvalidRange = new UnfairTextRange(-1, -1);
+public class ParameterPresentationBuilder<P> {
+    private static final TextRange ourInvalidRange = new UnfairTextRange(-1, -1);
 
-	private StringBuilder myBuilder = new StringBuilder();
+    private StringBuilder myBuilder = new StringBuilder();
 
-	private Map<Integer, TextRange> myRanges = new HashMap<>();
+    private Map<Integer, TextRange> myRanges = new HashMap<>();
 
-	public ParameterPresentationBuilder()
-	{
-	}
+    public ParameterPresentationBuilder() {
+    }
 
-	public AccessToken beginParameter(int index)
-	{
-		int start = myBuilder.length();
-		return new AccessToken()
-		{
-			@Override
-			public void finish()
-			{
-				myRanges.put(index, new TextRange(start, myBuilder.length()));
-			}
-		};
-	}
+    public AccessToken beginParameter(int index) {
+        int start = myBuilder.length();
+        return new AccessToken() {
+            @Override
+            public void finish() {
+                myRanges.put(index, new TextRange(start, myBuilder.length()));
+            }
+        };
+    }
 
-	public void add(String text)
-	{
-		myBuilder.append(text);
-	}
+    public void add(String text) {
+        myBuilder.append(text);
+    }
 
-	public void addEscaped(String text)
-	{
-		myBuilder.append(XmlStringUtil.escapeString(text));
-	}
+    public void addEscaped(String text) {
+        XmlStringUtil.escapeText(text, myBuilder);
+    }
 
-	public void addSpace()
-	{
-		myBuilder.append(" ");
-	}
+    public void addSpace() {
+        myBuilder.append(" ");
+    }
 
-	@Nonnull
-	public TextRange getParameterRange(int index)
-	{
-		TextRange textRange = myRanges.get(index);
-		return ObjectUtil.notNull(textRange, ourInvalidRange);
-	}
+    @Nonnull
+    public TextRange getParameterRange(int index) {
+        TextRange textRange = myRanges.get(index);
+        return ObjectUtil.notNull(textRange, ourInvalidRange);
+    }
 
-	@Override
-	public String toString()
-	{
-		return myBuilder.toString();
-	}
+    @Override
+    public String toString() {
+        return myBuilder.toString();
+    }
 }
