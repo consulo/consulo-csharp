@@ -23,8 +23,7 @@ import consulo.dotnet.psi.DotNetGenericParameterList;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ContainerUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ import java.util.List;
 public class MsilGenericParameterListAsCSharpGenericParameterList extends MsilElementWrapper<DotNetGenericParameterList> implements DotNetGenericParameterList
 {
 	@Nullable
-	public static DotNetGenericParameterList build(@Nonnull PsiElement parent, @Nullable DotNetGenericParameterList parameterList, GenericParameterContext context)
+	public static DotNetGenericParameterList build(PsiElement parent, @Nullable DotNetGenericParameterList parameterList, GenericParameterContext context)
 	{
 		if(parameterList == null)
 		{
@@ -49,7 +48,6 @@ public class MsilGenericParameterListAsCSharpGenericParameterList extends MsilEl
 
 	private final NotNullLazyValue<DotNetGenericParameter[]> myParametersValue = new NotNullLazyValue<DotNetGenericParameter[]>()
 	{
-		@Nonnull
 		@Override
 		protected DotNetGenericParameter[] compute()
 		{
@@ -75,14 +73,14 @@ public class MsilGenericParameterListAsCSharpGenericParameterList extends MsilEl
 	};
 	private final GenericParameterContext myGenericParameterContext;
 
-	private MsilGenericParameterListAsCSharpGenericParameterList(@Nonnull PsiElement parent, DotNetGenericParameterList msilElement, GenericParameterContext genericParameterContext)
+	private MsilGenericParameterListAsCSharpGenericParameterList(PsiElement parent, DotNetGenericParameterList msilElement, GenericParameterContext genericParameterContext)
 	{
 		super(parent, msilElement);
 		myGenericParameterContext = genericParameterContext;
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericParameterList(this);
 	}
@@ -93,7 +91,6 @@ public class MsilGenericParameterListAsCSharpGenericParameterList extends MsilEl
 		return "MsilGenericParameterListAsCSharpGenericParameterList";
 	}
 
-	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getParameters()
 	{

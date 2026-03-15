@@ -19,8 +19,7 @@ package consulo.csharp.lang.impl.psi;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,8 +39,7 @@ public class CSharpMethodUtil
 		return element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isDelegate();
 	}
 
-	@Nonnull
-	public static Result isCanInheritGeneric(@Nonnull CSharpMethodDeclaration methodDeclaration)
+	public static Result isCanInheritGeneric(CSharpMethodDeclaration methodDeclaration)
 	{
 		int genericParametersCount = methodDeclaration.getGenericParametersCount();
 		if(genericParametersCount == 0)

@@ -48,7 +48,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.ProcessingContext;
 
-import jakarta.annotation.Nonnull;
 
 import static consulo.language.pattern.StandardPatterns.or;
 import static consulo.language.pattern.StandardPatterns.psiElement;
@@ -115,7 +114,7 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(final CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, ourContinueAndBreakKeywords, (t, v) ->
 				{
@@ -130,7 +129,7 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(final CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				final CSharpSimpleLikeMethodAsElement pseudoMethod = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpSimpleLikeMethodAsElement.class);
 				assert pseudoMethod != null;
@@ -146,7 +145,7 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(final CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, ourContinueAndBreakKeywords, (t, v) ->
 				{
@@ -168,7 +167,7 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.BREAK_KEYWORD, null, null);
 				CSharpCompletionUtil.tokenSetToLookup(result, ourCaseAndDefaultKeywords, (t, v) ->
@@ -191,7 +190,7 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 		{
 			@Override
 			@RequiredReadAction
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, ourParStatementKeywords, (t, v) ->
 				{
@@ -206,7 +205,7 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				final PsiElement position = parameters.getPosition();
 				CSharpCompletionUtil.elementToLookup(result, CSharpSoftTokens.YIELD_KEYWORD, (t, v) ->
@@ -259,7 +258,7 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.CONST_KEYWORD, CSharpCompletionUtil.ourSpaceInsert, null);
 			}
@@ -269,7 +268,7 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				final PsiElement position = parameters.getPosition();
 				final CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(position, CSharpSimpleLikeMethodAsElement.class);
@@ -291,7 +290,7 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 				{
 					@RequiredReadAction
 					@Override
-					public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+					public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 					{
 						CSharpCompletionUtil.elementToLookup(result, CSharpTokens.IF_KEYWORD, (t, v) ->
 						{
@@ -306,7 +305,7 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				DotNetStatement statement = PsiTreeUtil.getParentOfType(parameters.getPosition(), DotNetStatement.class);
 				if(statement == null)
@@ -338,7 +337,7 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				if(CSharpModuleUtil.findLanguageVersion(parameters.getPosition()).isAtLeast(CSharpLanguageVersion._6_0))
 				{
@@ -352,7 +351,6 @@ class CSharpStatementCompletionContributor implements CSharpTokenSets
 		});
 	}
 
-	@Nonnull
 	public static InsertHandler<LookupElement> buildInsertHandler(final IElementType elementType)
 	{
 		char open = '(';

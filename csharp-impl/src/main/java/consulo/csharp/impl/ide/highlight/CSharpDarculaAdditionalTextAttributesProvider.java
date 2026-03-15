@@ -22,7 +22,6 @@ import consulo.colorScheme.EditorColorSchemeExtender;
 import consulo.colorScheme.EditorColorsScheme;
 import consulo.colorScheme.EffectType;
 import consulo.ui.color.RGBColor;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -60,7 +59,6 @@ public class CSharpDarculaAdditionalTextAttributesProvider implements EditorColo
             .build());
     }
 
-    @Nonnull
     @Override
     public String getColorSchemeId() {
         return EditorColorsScheme.DARCULA_SCHEME_NAME;

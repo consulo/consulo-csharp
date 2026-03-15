@@ -26,8 +26,7 @@ import consulo.ui.Label;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.layout.VerticalLayout;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import javax.swing.*;
 
 /**
@@ -36,7 +35,7 @@ import javax.swing.*;
  */
 public class MicrosoftCSharpMutableModuleExtension extends MicrosoftCSharpModuleExtension implements CSharpMutableModuleExtension<MicrosoftCSharpModuleExtension>, SwingMutableModuleExtension
 {
-	public MicrosoftCSharpMutableModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer module)
+	public MicrosoftCSharpMutableModuleExtension(String id, ModuleRootLayer module)
 	{
 		super(id, module);
 	}
@@ -44,7 +43,7 @@ public class MicrosoftCSharpMutableModuleExtension extends MicrosoftCSharpModule
 	@RequiredUIAccess
 	@Nullable
 	@Override
-	public Component createConfigurationComponent(@Nonnull Disposable disposable, @Nonnull Runnable runnable)
+	public Component createConfigurationComponent(Disposable disposable, Runnable runnable)
 	{
 		return VerticalLayout.create().add(Label.create("Unsupported UI"));
 	}
@@ -56,7 +55,7 @@ public class MicrosoftCSharpMutableModuleExtension extends MicrosoftCSharpModule
 	}
 
 	@Override
-	public boolean isModified(@Nonnull MicrosoftCSharpModuleExtension moduleExtension)
+	public boolean isModified(MicrosoftCSharpModuleExtension moduleExtension)
 	{
 		return isModifiedImpl(moduleExtension);
 	}
@@ -64,7 +63,7 @@ public class MicrosoftCSharpMutableModuleExtension extends MicrosoftCSharpModule
 	@RequiredUIAccess
 	@Nullable
 	@Override
-	public JComponent createConfigurablePanel(@Nonnull Disposable disposable, @Nonnull Runnable runnable)
+	public JComponent createConfigurablePanel(Disposable disposable, Runnable runnable)
 	{
 		return new CSharpConfigurationPanel(this);
 	}

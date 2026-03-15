@@ -28,8 +28,7 @@ import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.SmartList;
 import consulo.util.lang.function.Condition;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -93,7 +92,7 @@ public class UsefulPsiTreeUtil
 	}
 
 	@Nullable
-	public static List<PsiElement> getPathToParentOfType(@Nullable PsiElement element, @Nonnull Class<? extends PsiElement> aClass)
+	public static List<PsiElement> getPathToParentOfType(@Nullable PsiElement element, Class<? extends PsiElement> aClass)
 	{
 		if(element == null)
 		{
@@ -118,7 +117,7 @@ public class UsefulPsiTreeUtil
 	}
 
 	@Nullable
-	public static PsiElement getNextSiblingSkippingWhiteSpacesAndComments(@Nonnull PsiElement sibling)
+	public static PsiElement getNextSiblingSkippingWhiteSpacesAndComments(PsiElement sibling)
 	{
 		return getSiblingSkippingCondition(sibling, PsiElement::getNextSibling, UsefulPsiTreeUtil::isWhitespaceOrComment, true
 		);
@@ -181,7 +180,7 @@ public class UsefulPsiTreeUtil
 
 	@Nullable
 	public static <T extends PsiElement> T[] getChildrenOfType(@Nullable PsiElement element,
-																					@Nonnull Class<T> aClass,
+																					Class<T> aClass,
 																					@Nullable PsiElement lastParent)
 	{
 		if(element == null)
@@ -209,7 +208,7 @@ public class UsefulPsiTreeUtil
 		return result == null ? null : ArrayUtil.toObjectArray(result, aClass);
 	}
 
-	public static boolean isAncestor(@Nonnull PsiElement element, List<PsiElement> children, boolean strict)
+	public static boolean isAncestor(PsiElement element, List<PsiElement> children, boolean strict)
 	{
 		for(PsiElement child : children)
 		{

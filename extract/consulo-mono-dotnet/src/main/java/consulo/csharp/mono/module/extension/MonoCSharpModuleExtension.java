@@ -28,7 +28,6 @@ import consulo.module.content.layer.ModuleRootLayer;
 import consulo.mono.dotnet.sdk.MonoSdkType;
 import consulo.virtualFileSystem.VirtualFile;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -36,13 +35,13 @@ import jakarta.annotation.Nonnull;
  */
 public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSharpModuleExtension>
 {
-	public MonoCSharpModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer module)
+	public MonoCSharpModuleExtension(String id, ModuleRootLayer module)
 	{
 		super(id, module);
 	}
 
 	@Override
-	public void setCompilerExecutable(@Nonnull DotNetCompilerOptionsBuilder builder, @Nonnull VirtualFile executable)
+	public void setCompilerExecutable(DotNetCompilerOptionsBuilder builder, VirtualFile executable)
 	{
 		DotNetSimpleModuleExtension extension = getModuleRootLayer().getExtension(DotNetSimpleModuleExtension.class);
 		if(extension == null)
@@ -64,7 +63,6 @@ public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSh
 		msBuilder.addProgramArgument(executable.getPath());
 	}
 
-	@Nonnull
 	@Override
 	public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder() throws DotNetCompileFailedException
 	{

@@ -37,9 +37,8 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.localize.LocalizeValue;
 import consulo.util.collection.MultiMap;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 
@@ -59,7 +58,7 @@ public class CSharpTypeRenamePsiElementProcessor extends RenamePsiElementProcess
     }
 
     @Override
-    public boolean canProcessElement(@Nonnull PsiElement element) {
+    public boolean canProcessElement(PsiElement element) {
         return element instanceof CSharpTypeDeclaration || element instanceof CSharpConstructorDeclaration;
     }
 
@@ -67,8 +66,8 @@ public class CSharpTypeRenamePsiElementProcessor extends RenamePsiElementProcess
     public void findExistingNameConflicts(
         PsiElement element,
         String newName,
-        @Nonnull MultiMap<PsiElement, LocalizeValue> conflicts,
-        @Nonnull Map<PsiElement, String> allRenames
+        MultiMap<PsiElement, LocalizeValue> conflicts,
+        Map<PsiElement, String> allRenames
     ) {
         for (Map.Entry<PsiElement, String> entry : allRenames.entrySet()) {
             if (entry.getKey() instanceof CSharpFile) {

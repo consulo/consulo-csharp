@@ -24,7 +24,6 @@ import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.impl.psi.CSharpStoppableRecursiveElementVisitor;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,7 +64,6 @@ public class CSharpPreprocessorVisitor extends CSharpStoppableRecursiveElementVi
 		super.visitElement(element);
 	}
 
-	@Nonnull
 	public Set<String> getVariables()
 	{
 		return myVariables;

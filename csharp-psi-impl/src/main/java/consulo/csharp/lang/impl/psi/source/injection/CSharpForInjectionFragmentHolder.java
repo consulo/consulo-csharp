@@ -20,7 +20,6 @@ import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.language.ast.IElementType;
 import consulo.language.impl.psi.LazyParseablePsiElement;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,13 +29,12 @@ public class CSharpForInjectionFragmentHolder extends LazyParseablePsiElement
 {
 	private final CSharpReferenceExpression.ResolveToKind myKind;
 
-	public CSharpForInjectionFragmentHolder(@Nonnull IElementType type, CharSequence buffer, CSharpReferenceExpression.ResolveToKind kind)
+	public CSharpForInjectionFragmentHolder(IElementType type, CharSequence buffer, CSharpReferenceExpression.ResolveToKind kind)
 	{
 		super(type, buffer);
 		myKind = kind;
 	}
 
-	@Nonnull
 	public CSharpReferenceExpression.ResolveToKind getKind()
 	{
 		return myKind;

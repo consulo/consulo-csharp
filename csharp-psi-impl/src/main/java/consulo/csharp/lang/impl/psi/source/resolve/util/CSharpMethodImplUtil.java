@@ -21,8 +21,7 @@ import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -30,7 +29,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpMethodImplUtil
 {
-	public static boolean isExtensionMethod(@Nonnull PsiElement element)
+	public static boolean isExtensionMethod(PsiElement element)
 	{
 		if(element instanceof CSharpMethodDeclaration)
 		{

@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
@@ -26,7 +25,7 @@ import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.util.ArrayUtil2;
 import consulo.util.collection.ArrayUtil;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -37,7 +36,7 @@ public class CS1737 extends CompilerCheck<DotNetParameter>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetParameter dotNetParameter)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetParameter dotNetParameter)
 	{
 		if(dotNetParameter.getInitializer() == null)
 		{

@@ -48,8 +48,7 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,16 +165,14 @@ public class MsilToCSharpUtil
 		return false;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static PsiElement wrap(@Nonnull PsiElement element, @Nullable PsiElement parent)
+	public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent)
 	{
 		return wrap(element, parent, new GenericParameterContext(null));
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static PsiElement wrap(@Nonnull PsiElement element, @Nullable PsiElement parent, @Nonnull GenericParameterContext context)
+	public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent, GenericParameterContext context)
 	{
 		if(element instanceof MsilClassEntry)
 		{
@@ -218,7 +215,7 @@ public class MsilToCSharpUtil
 
 	@Nullable
 	@RequiredReadAction
-	private static CSharpMethodDeclaration wrapToDelegateMethod(@Nonnull MsilClassEntry typeDeclaration, @Nullable PsiElement parent, @Nonnull GenericParameterContext context)
+	private static CSharpMethodDeclaration wrapToDelegateMethod(MsilClassEntry typeDeclaration, @Nullable PsiElement parent, GenericParameterContext context)
 	{
 		if(DotNetInheritUtil.isInheritor(typeDeclaration, DotNetTypes.System.MulticastDelegate, false))
 		{
@@ -235,9 +232,8 @@ public class MsilToCSharpUtil
 		}
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef extractToCSharp(@Nonnull DotNetTypeRef typeRef)
+	public static DotNetTypeRef extractToCSharp(DotNetTypeRef typeRef)
 	{
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{

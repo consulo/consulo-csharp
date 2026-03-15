@@ -28,7 +28,7 @@ import consulo.dotnet.psi.DotNetGenericParameterList;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.msil.lang.psi.MsilGenericParameter;
 import consulo.msil.lang.psi.MsilUserType;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;

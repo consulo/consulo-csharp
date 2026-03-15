@@ -37,7 +37,6 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 
 import javax.swing.*;
 import java.util.List;
@@ -51,7 +50,7 @@ public class CSharpExtractMethodDialog extends CSharpChangeSignatureDialog
 	private Processor<DotNetLikeMethodDeclaration> myProcessor;
 
 	public CSharpExtractMethodDialog(Project project, CSharpMethodDescriptor method, boolean allowDelegation, PsiElement defaultValueContext,
-									 @Nonnull @RequiredUIAccess Processor<DotNetLikeMethodDeclaration> processor)
+									 @RequiredUIAccess Processor<DotNetLikeMethodDeclaration> processor)
 	{
 		super(project, method, allowDelegation, defaultValueContext);
 		myProcessor = processor;

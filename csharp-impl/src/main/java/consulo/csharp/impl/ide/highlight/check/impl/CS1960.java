@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -30,7 +29,7 @@ import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -43,7 +42,7 @@ public class CS1960 extends CompilerCheck<DotNetGenericParameter>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetGenericParameter element)
+	public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetGenericParameter element)
 	{
 		DotNetModifierList modifierList = element.getModifierList();
 		if(modifierList == null)

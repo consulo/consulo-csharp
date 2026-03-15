@@ -17,8 +17,7 @@
 package consulo.csharp.lang.psi;
 
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -29,6 +28,5 @@ public interface CSharpGenericConstraintOwner extends DotNetGenericParameterList
 	@Nullable
 	CSharpGenericConstraintList getGenericConstraintList();
 
-	@Nonnull
 	CSharpGenericConstraint[] getGenericConstraints();
 }

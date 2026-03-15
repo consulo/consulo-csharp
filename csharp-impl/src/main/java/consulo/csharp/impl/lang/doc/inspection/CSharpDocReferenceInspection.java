@@ -32,8 +32,7 @@ import consulo.language.editor.rawHighlight.HighlightInfo;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,13 +43,11 @@ import java.util.List;
  */
 @ExtensionImpl
 public class CSharpDocReferenceInspection extends LocalInspectionTool {
-    @Nonnull
     @Override
     public LocalizeValue getDisplayName() {
         return LocalizeValue.localizeTODO("Documentation reference problems");
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getGroupDisplayName() {
         return LocalizeValue.localizeTODO("Documentation");
@@ -62,15 +59,13 @@ public class CSharpDocReferenceInspection extends LocalInspectionTool {
         return CSharpLanguage.INSTANCE;
     }
 
-    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WARNING;
     }
 
-    @Nonnull
     @Override
-    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+    public PsiElementVisitor buildVisitor(final ProblemsHolder holder, boolean isOnTheFly) {
         return new CSharpElementVisitor() {
             @Override
             @RequiredReadAction

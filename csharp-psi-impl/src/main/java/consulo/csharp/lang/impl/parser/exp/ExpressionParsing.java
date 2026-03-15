@@ -30,8 +30,7 @@ import consulo.language.ast.IElementType;
 import consulo.language.ast.TokenSet;
 import consulo.language.parser.PsiBuilder;
 import consulo.util.lang.BitUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ExpressionParsing extends SharedParsingHelpers {
     private enum ExprType {
@@ -66,8 +65,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
     private static final TokenSet ID_OR_SUPER = TokenSet.create(CSharpTokens.IDENTIFIER, BASE_KEYWORD);
     private static final TokenSet THIS_OR_BASE = TokenSet.create(THIS_KEYWORD, BASE_KEYWORD);
 
-    @Nullable
-    public static PsiBuilder.Marker parseVariableInitializer(@Nonnull CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+    public static PsiBuilder.@Nullable Marker parseVariableInitializer(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         IElementType tokenType = builder.getTokenType();
 
         if (tokenType == LBRACE) {
@@ -78,18 +76,15 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
     }
 
-    @Nullable
-    public static PsiBuilder.Marker parse(final CSharpBuilderWrapper builder, ModifierSet set) {
+    public static PsiBuilder.@Nullable Marker parse(final CSharpBuilderWrapper builder, ModifierSet set) {
         return parse(builder, set, 0);
     }
 
-    @Nullable
-    public static PsiBuilder.Marker parse(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+    public static PsiBuilder.@Nullable Marker parse(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         return parseAssignment(builder, set, flags);
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parseAssignment(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+    private static PsiBuilder.@Nullable Marker parseAssignment(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         final PsiBuilder.Marker left = parseConditional(builder, set, flags);
         if (left == null) {
             return null;
@@ -114,8 +109,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return left;
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parseConditional(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+    private static PsiBuilder.@Nullable Marker parseConditional(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         final PsiBuilder.Marker condition = parseExpression(builder, ExprType.CONDITIONAL_OR, set, flags);
         if (condition == null) {
             return null;
@@ -165,8 +159,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parseExpression(final CSharpBuilderWrapper builder, final ExprType type, ModifierSet set, int flags) {
+    private static PsiBuilder.@Nullable Marker parseExpression(final CSharpBuilderWrapper builder, final ExprType type, ModifierSet set, int flags) {
         switch (type) {
             case CONDITIONAL_OR:
                 return parseBinary(builder, ExprType.CONDITIONAL_AND, CONDITIONAL_OR_OPS, set, flags);
@@ -224,8 +217,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parseMaybeNullableType(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+    private static PsiBuilder.@Nullable Marker parseMaybeNullableType(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         TypeInfo typeInfo = parseType(builder, NONE);
         if (typeInfo == null) {
             return null;
@@ -257,8 +249,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parseUnary(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+    private static PsiBuilder.@Nullable Marker parseUnary(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         final IElementType tokenType = builder.getTokenType();
 
         if (PREFIX_OPS.contains(tokenType)) {
@@ -308,8 +299,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parsePostfix(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+    private static PsiBuilder.@Nullable Marker parsePostfix(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         PsiBuilder.Marker operand = parsePrimary(builder, set, flags);
         if (operand == null) {
             return null;
@@ -327,8 +317,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return operand;
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parseBinary(final CSharpBuilderWrapper builder, final ExprType type, final TokenSet ops, ModifierSet set, int flags) {
+    private static PsiBuilder.@Nullable Marker parseBinary(final CSharpBuilderWrapper builder, final ExprType type, final TokenSet ops, ModifierSet set, int flags) {
         PsiBuilder.Marker result = parseExpression(builder, type, set, flags);
         if (result == null) {
             return null;
@@ -362,8 +351,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return result;
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parseRelational(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+    private static PsiBuilder.@Nullable Marker parseRelational(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         PsiBuilder.Marker left = parseExpression(builder, ExprType.SHIFT, set, flags);
         if (left == null) {
             return null;
@@ -414,8 +402,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
     }
 
 
-    @Nullable
-    private static PsiBuilder.Marker parsePrimary(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+    private static PsiBuilder.@Nullable Marker parsePrimary(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         PsiBuilder.Marker startMarker = builder.mark();
 
         PsiBuilder.Marker expr = parsePrimaryExpressionStart(builder, set, flags);
@@ -614,8 +601,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parsePrimaryExpressionStart(final CSharpBuilderWrapper builder, ModifierSet modifierSet, int flags) {
+    private static PsiBuilder.@Nullable Marker parsePrimaryExpressionStart(final CSharpBuilderWrapper builder, ModifierSet modifierSet, int flags) {
         CSharpLanguageVersion version = builder.getVersion();
         builder.enableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
 
@@ -825,7 +811,6 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return null;
     }
 
-    @Nonnull
     private static PsiBuilder.Marker parseDefaultExpression(CSharpBuilderWrapper builder) {
         PsiBuilder.Marker marker = builder.mark();
         builder.advanceLexer();
@@ -969,7 +954,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return mark;
     }
 
-    private static PsiBuilder.Marker parseAwaitExpression(@Nonnull CSharpBuilderWrapper builder, ModifierSet set) {
+    private static PsiBuilder.Marker parseAwaitExpression(CSharpBuilderWrapper builder, ModifierSet set) {
         PsiBuilder.Marker marker = builder.mark();
         builder.advanceLexer();
 
@@ -981,7 +966,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return marker;
     }
 
-    private static PsiBuilder.Marker parseDelegateExpression(@Nonnull CSharpBuilderWrapper builder, ModifierSet set) {
+    private static PsiBuilder.Marker parseDelegateExpression(CSharpBuilderWrapper builder, ModifierSet set) {
         PsiBuilder.Marker marker = builder.mark();
 
         if (builder.getTokenType() == CSharpSoftTokens.ASYNC_KEYWORD) {
@@ -1004,8 +989,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return marker;
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parseLambdaAfterParenth(final CSharpBuilderWrapper builder, @Nullable final PsiBuilder.Marker typeList, ModifierSet set) {
+    private static PsiBuilder.@Nullable Marker parseLambdaAfterParenth(final CSharpBuilderWrapper builder, final PsiBuilder.@Nullable Marker typeList, ModifierSet set) {
         final boolean isLambda;
 
         final IElementType nextToken1 = builder.lookAhead(1);
@@ -1048,8 +1032,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return isLambda ? parseLambdaExpression(builder, typeList, set) : null;
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parseLambdaExpression(final CSharpBuilderWrapper builder, @Nullable final PsiBuilder.Marker typeList, ModifierSet set) {
+    private static PsiBuilder.@Nullable Marker parseLambdaExpression(final CSharpBuilderWrapper builder, final PsiBuilder.@Nullable Marker typeList, ModifierSet set) {
         PsiBuilder.Marker start = typeList != null ? typeList.precede() : builder.mark();
 
         if (builder.getTokenType() == ASYNC_KEYWORD) {
@@ -1247,7 +1230,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return newExpr;
     }
 
-    private static boolean parseArrayLength(@Nonnull CSharpBuilderWrapper builder, ModifierSet set) {
+    private static boolean parseArrayLength(CSharpBuilderWrapper builder, ModifierSet set) {
         if (builder.getTokenType() == LBRACKET) {
             PsiBuilder.Marker arrayMarker = builder.mark();
             builder.advanceLexer();
@@ -1301,7 +1284,6 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return newExpr;
     }
 
-    @Nonnull
     private static AfterNewParsingTarget getTarget(CSharpBuilderWrapper builderWrapper, boolean forceArray, TypeInfo typeInfo) {
         if (typeInfo != null && typeInfo.isArray) {
             return AfterNewParsingTarget.ARRAY_INITIALZER;
@@ -1605,14 +1587,14 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
     }
 
-    public static ReferenceInfo parseQualifiedReference(@Nonnull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker prevMarker) {
+    public static ReferenceInfo parseQualifiedReference(CSharpBuilderWrapper builder, PsiBuilder.@Nullable Marker prevMarker) {
         return parseQualifiedReference(builder, prevMarker, NONE, TokenSet.EMPTY);
     }
 
-    public static ReferenceInfo parseQualifiedReference(@Nonnull CSharpBuilderWrapper builder,
-                                                        @Nullable final PsiBuilder.Marker prevMarker,
+    public static ReferenceInfo parseQualifiedReference(CSharpBuilderWrapper builder,
+                                                        PsiBuilder.@Nullable Marker prevMarker,
                                                         int flags,
-                                                        @Nonnull TokenSet nameStopperSet) {
+                                                        TokenSet nameStopperSet) {
         if (prevMarker != null) {
             builder.advanceLexer(); // skip dot or coloncolon
         }
@@ -1660,8 +1642,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return referenceInfo;
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parseReferenceTypeArgumentList(@Nonnull CSharpBuilderWrapper builder, int flags) {
+    private static PsiBuilder.@Nullable Marker parseReferenceTypeArgumentList(CSharpBuilderWrapper builder, int flags) {
         IElementType startElementType = BitUtil.isSet(flags, INSIDE_DOC) ? LBRACE : LT;
 
         if (builder.getTokenType() != startElementType) {
@@ -1680,8 +1661,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return parseReferenceTypeArgumentListImpl(builder, flags);
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parseReferenceEmptyTypeArgumentListImpl(@Nonnull CSharpBuilderWrapper builder) {
+    private static PsiBuilder.@Nullable Marker parseReferenceEmptyTypeArgumentListImpl(CSharpBuilderWrapper builder) {
         PsiBuilder.Marker mark = builder.mark();
         builder.advanceLexer();
 
@@ -1715,8 +1695,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return mark;
     }
 
-    @Nullable
-    private static PsiBuilder.Marker parseReferenceTypeArgumentListImpl(@Nonnull CSharpBuilderWrapper builder, int flags) {
+    private static PsiBuilder.@Nullable Marker parseReferenceTypeArgumentListImpl(CSharpBuilderWrapper builder, int flags) {
         PsiBuilder.Marker mark = builder.mark();
         builder.advanceLexer();
 
@@ -1752,7 +1731,6 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return mark;
     }
 
-    @Nonnull
     private static IElementType referenceExpression(int flags) {
         return BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.REFERENCE_EXPRESSION : CSharpElements.REFERENCE_EXPRESSION;
     }

@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.source.resolve.type;
 
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
 
@@ -38,9 +37,7 @@ public interface CSharpLikeTypeRef extends DotNetTypeRef {
         return false;
     }
 
-    @Nonnull
     DotNetTypeRef getInnerTypeRef();
 
-    @Nonnull
     DotNetGenericExtractor getExtractor();
 }

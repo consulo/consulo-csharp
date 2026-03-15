@@ -25,7 +25,6 @@ import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.StubOutputStream;
 
-import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -39,37 +38,34 @@ public class CSharpXAccessorStubElementType extends CSharpAbstractStubElementTyp
 		super("XACCESSOR");
 	}
 
-	@Nonnull
 	@Override
-	public CSharpXAccessorImpl createElement(@Nonnull ASTNode astNode)
+	public CSharpXAccessorImpl createElement(ASTNode astNode)
 	{
 		return new CSharpXAccessorImpl(astNode);
 	}
 
 	@Override
-	public CSharpXAccessorImpl createPsi(@Nonnull CSharpXAccessorStub stub)
+	public CSharpXAccessorImpl createPsi(CSharpXAccessorStub stub)
 	{
 		return new CSharpXAccessorImpl(stub);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	@Override
-	public CSharpXAccessorStub createStub(@Nonnull DotNetXAccessor accessor, StubElement stubElement)
+	public CSharpXAccessorStub createStub(DotNetXAccessor accessor, StubElement stubElement)
 	{
 		int otherModifiers = CSharpXAccessorStub.getOtherModifiers(accessor);
 		return new CSharpXAccessorStub(stubElement, otherModifiers);
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpXAccessorStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpXAccessorStub stub, StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeVarInt(stub.getOtherModifierMask());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpXAccessorStub deserialize(@Nonnull StubInputStream inputStream, StubElement stubElement) throws IOException
+	public CSharpXAccessorStub deserialize(StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
 		int otherModifiers = inputStream.readVarInt();
 		return new CSharpXAccessorStub(stubElement, otherModifiers);

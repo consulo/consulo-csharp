@@ -25,8 +25,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.impl.psi.LightElement;
 import consulo.language.psi.PsiManager;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -53,7 +52,7 @@ public class ImplicitOperatorArgumentAsCallArgumentWrapper extends LightElement 
 
 	private LightExpression myExpression;
 
-	public ImplicitOperatorArgumentAsCallArgumentWrapper(@Nonnull DotNetExpression originalExpression, @Nonnull DotNetTypeRef implicitTypeRef)
+	public ImplicitOperatorArgumentAsCallArgumentWrapper(DotNetExpression originalExpression, DotNetTypeRef implicitTypeRef)
 	{
 		super(PsiManager.getInstance(originalExpression.getProject()), CSharpLanguage.INSTANCE);
 		myExpression = new LightExpression(getManager(), implicitTypeRef, originalExpression);

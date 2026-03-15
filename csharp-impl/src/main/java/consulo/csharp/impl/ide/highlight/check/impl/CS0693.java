@@ -16,8 +16,7 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -38,7 +37,7 @@ public class CS0693 extends CompilerCheck<DotNetGenericParameter>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetGenericParameter element)
+	public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetGenericParameter element)
 	{
 		PsiElement nameIdentifier = element.getNameIdentifier();
 		if(nameIdentifier == null)

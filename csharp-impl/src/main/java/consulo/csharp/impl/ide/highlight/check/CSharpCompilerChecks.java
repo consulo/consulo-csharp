@@ -22,7 +22,6 @@ import consulo.csharp.impl.ide.highlight.CSharpHighlightInfoType;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.editor.rawHighlight.HighlightInfoType;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
@@ -182,7 +181,6 @@ public enum CSharpCompilerChecks {
         }
     }
 
-    @Nonnull
     @RequiredReadAction
     public List<? extends CompilerCheck.HighlightInfoFactory> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, PsiElement element) {
         List<? extends CompilerCheck.HighlightInfoFactory> results = myCheck.check(languageVersion, highlightContext, element);
@@ -206,12 +204,10 @@ public enum CSharpCompilerChecks {
         return type != HighlightInfoType.ERROR;
     }
 
-    @Nonnull
     public CSharpLanguageVersion getLanguageVersion() {
         return myLanguageVersion;
     }
 
-    @Nonnull
     public Class<?> getTargetClass() {
         return myTargetClass;
     }

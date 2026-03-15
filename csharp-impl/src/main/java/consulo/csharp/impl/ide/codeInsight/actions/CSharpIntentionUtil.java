@@ -16,8 +16,7 @@
 
 package consulo.csharp.impl.ide.codeInsight.actions;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpIdentifier;
@@ -32,7 +31,7 @@ public class CSharpIntentionUtil
 {
 	@Nullable
 	@RequiredReadAction
-	public static DotNetModifierListOwner findOwner(@Nonnull PsiElement element)
+	public static DotNetModifierListOwner findOwner(PsiElement element)
 	{
 		PsiElement parent = element.getParent();
 		if(element instanceof CSharpIdentifier && parent instanceof DotNetModifierListOwner)

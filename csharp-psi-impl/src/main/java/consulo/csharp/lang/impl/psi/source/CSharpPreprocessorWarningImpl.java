@@ -19,7 +19,6 @@ package consulo.csharp.lang.impl.psi.source;
 import consulo.csharp.lang.impl.psi.CSharpMacroElementVisitor;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.language.ast.IElementType;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -33,7 +32,7 @@ public class CSharpPreprocessorWarningImpl extends CSharpPreprocessorElementImpl
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
+	public void accept(CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitWarning(this);
 	}

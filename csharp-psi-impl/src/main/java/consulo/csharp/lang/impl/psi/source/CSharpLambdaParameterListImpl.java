@@ -22,7 +22,6 @@ import consulo.csharp.lang.psi.CSharpLambdaParameter;
 import consulo.csharp.lang.psi.CSharpLambdaParameterList;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,26 +29,24 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpLambdaParameterListImpl extends CSharpElementImpl implements CSharpLambdaParameterList
 {
-	public CSharpLambdaParameterListImpl(@Nonnull IElementType elementType)
+	public CSharpLambdaParameterListImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLambdaParameterList(this);
 	}
 
 	@Override
-	@Nonnull
 	public CSharpLambdaParameter[] getParameters()
 	{
 		return findChildrenByClass(CSharpLambdaParameter.class);
 	}
 
 	@Override
-	@Nonnull
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
 		CSharpLambdaParameter[] parameters = getParameters();

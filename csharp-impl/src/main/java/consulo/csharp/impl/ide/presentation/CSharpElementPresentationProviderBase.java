@@ -29,9 +29,8 @@ import consulo.navigation.NavigationItem;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -97,7 +96,6 @@ public abstract class CSharpElementPresentationProviderBase<T extends DotNetQual
 		}
 	}
 
-	@Nonnull
 	@Override
 	public ItemPresentation getPresentation(T qualifiedElement)
 	{

@@ -23,8 +23,7 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -32,7 +31,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpCheckedExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpCheckedExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpCheckedExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -43,13 +42,12 @@ public class CSharpCheckedExpressionImpl extends CSharpExpressionImpl implements
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitCheckedExpression(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{

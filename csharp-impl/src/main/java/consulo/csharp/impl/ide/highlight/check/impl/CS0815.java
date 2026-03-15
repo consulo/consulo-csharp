@@ -27,8 +27,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -39,7 +38,7 @@ public class CS0815 extends CompilerCheck<CSharpLocalVariable>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpLocalVariable localVariable)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpLocalVariable localVariable)
 	{
 		DotNetTypeRef dotNetTypeRef = localVariable.toTypeRef(false);
 		if(dotNetTypeRef == DotNetTypeRef.AUTO_TYPE)

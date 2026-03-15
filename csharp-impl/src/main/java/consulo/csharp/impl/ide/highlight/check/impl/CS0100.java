@@ -26,8 +26,7 @@ import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -41,7 +40,7 @@ public class CS0100 extends CompilerCheck<DotNetElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetElement element)
+	public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetElement element)
 	{
 		DotNetVariable[] parameters = getParameters(element);
 		if(parameters == null)

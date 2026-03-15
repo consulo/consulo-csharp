@@ -20,7 +20,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.ToNativeElementTransformers;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 import java.util.function.Function;
 
 /**
@@ -31,7 +30,6 @@ public class CSharpTransformer implements Function<PsiElement, PsiElement>
 {
 	public static final CSharpTransformer INSTANCE = new CSharpTransformer();
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public PsiElement apply(PsiElement element)

@@ -13,8 +13,7 @@ import consulo.language.editor.folding.FoldingBuilderEx;
 import consulo.language.editor.folding.FoldingDescriptor;
 import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -24,9 +23,8 @@ import jakarta.annotation.Nullable;
 public class CSharpDocFoldingBuilder extends FoldingBuilderEx
 {
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public FoldingDescriptor[] buildFoldRegions(@Nonnull PsiElement root, @Nonnull Document document, boolean quick)
+	public FoldingDescriptor[] buildFoldRegions(PsiElement root, Document document, boolean quick)
 	{
 		// build by CSharpFoldingBuilder
 		return FoldingDescriptor.EMPTY;
@@ -35,7 +33,7 @@ public class CSharpDocFoldingBuilder extends FoldingBuilderEx
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public String getPlaceholderText(@Nonnull ASTNode node)
+	public String getPlaceholderText(ASTNode node)
 	{
 		PsiElement psi = node.getPsi();
 		if(psi instanceof CSharpDocRoot)
@@ -54,12 +52,11 @@ public class CSharpDocFoldingBuilder extends FoldingBuilderEx
 
 	@RequiredReadAction
 	@Override
-	public boolean isCollapsedByDefault(@Nonnull ASTNode node)
+	public boolean isCollapsedByDefault(ASTNode node)
 	{
 		return CodeFoldingSettings.getInstance().COLLAPSE_DOC_COMMENTS;
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

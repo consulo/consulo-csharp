@@ -29,8 +29,7 @@ import consulo.language.parser.WhitespacesAndCommentsBinder;
 import consulo.language.parser.WhitespacesBinders;
 import consulo.util.lang.BitUtil;
 import consulo.util.lang.Pair;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -111,7 +110,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
         }
     }
 
-    protected static void advanceUnexpectedToken(@Nonnull PsiBuilder builder) {
+    protected static void advanceUnexpectedToken(PsiBuilder builder) {
         PsiBuilder.Marker mark = builder.mark();
         builder.advanceLexer();
         mark.error("Unexpected token");
@@ -131,11 +130,11 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
         }
     }
 
-    protected static boolean parseTypeList(@Nonnull CSharpBuilderWrapper builder, int flags) {
+    protected static boolean parseTypeList(CSharpBuilderWrapper builder, int flags) {
         return parseTypeList(builder, flags, TokenSet.EMPTY);
     }
 
-    protected static boolean parseTypeList(@Nonnull CSharpBuilderWrapper builder, int flags, @Nonnull TokenSet nameStopperSet) {
+    protected static boolean parseTypeList(CSharpBuilderWrapper builder, int flags, TokenSet nameStopperSet) {
         boolean empty = true;
         while (!builder.eof()) {
             TypeInfo marker = parseType(builder, flags, nameStopperSet);
@@ -159,17 +158,17 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
     }
 
     @Nullable
-    public static TypeInfo parseType(@Nonnull CSharpBuilderWrapper builder) {
+    public static TypeInfo parseType(CSharpBuilderWrapper builder) {
         return parseType(builder, NONE, TokenSet.EMPTY);
     }
 
     @Nullable
-    public static TypeInfo parseType(@Nonnull CSharpBuilderWrapper builder, int flags) {
+    public static TypeInfo parseType(CSharpBuilderWrapper builder, int flags) {
         return parseType(builder, flags, TokenSet.EMPTY);
     }
 
     @Nullable
-    public static TypeInfo parseType(@Nonnull CSharpBuilderWrapper builder, int flags, @Nonnull TokenSet nameStopperSet) {
+    public static TypeInfo parseType(CSharpBuilderWrapper builder, int flags, TokenSet nameStopperSet) {
         TypeInfo typeInfo = parseInnerType(builder, flags, nameStopperSet);
         if (typeInfo == null) {
             return null;
@@ -284,7 +283,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
         return typeInfo;
     }
 
-    private static TypeInfo parseInnerType(@Nonnull CSharpBuilderWrapper builder, int flags, TokenSet nameStopperSet) {
+    private static TypeInfo parseInnerType(CSharpBuilderWrapper builder, int flags, TokenSet nameStopperSet) {
         TypeInfo typeInfo = new TypeInfo();
 
         PsiBuilder.Marker marker = builder.mark();
@@ -423,7 +422,6 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
         return mark;
     }
 
-    @Nonnull
     protected static Pair<PsiBuilder.Marker, ModifierSet> parseModifierList(CSharpBuilderWrapper builder, int flags) {
         PsiBuilder.Marker marker = builder.mark();
 
@@ -468,12 +466,10 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
         }
     }
 
-    @Nonnull
     protected static <T> Pair<PsiBuilder.Marker, T> parseWithSoftElements(Function<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, T>> func, CSharpBuilderWrapper builderWrapper, IElementType... softs) {
         return parseWithSoftElements(func, builderWrapper, TokenSet.create(softs));
     }
 
-    @Nonnull
     protected static <T> Pair<PsiBuilder.Marker, T> parseWithSoftElements(Function<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, T>> func, CSharpBuilderWrapper builderWrapper, TokenSet softs) {
         builderWrapper.enableSoftKeywords(softs);
         Pair<PsiBuilder.Marker, T> fun = func.apply(builderWrapper);
@@ -482,7 +478,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
     }
 
     @Nullable
-    public static IElementType exprType(@Nullable final PsiBuilder.Marker marker) {
+    public static IElementType exprType(PsiBuilder.@Nullable Marker marker) {
         return marker != null ? ((LighterASTNode) marker).getTokenType() : null;
     }
 

@@ -33,8 +33,7 @@ import consulo.language.psi.PsiElement;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -93,12 +92,11 @@ public class CSharpCompletionUtil
 		return false;
 	}
 
-	public static boolean isTypeLikeElementWithNamespace(@Nonnull PsiElement element)
+	public static boolean isTypeLikeElementWithNamespace(PsiElement element)
 	{
 		return CSharpPsiUtilImpl.isTypeLikeElement(element) || element instanceof DotNetNamespaceAsElement;
 	}
 
-	@Nonnull
 	public static String textOfKeyword(IElementType elementType)
 	{
 		String firstElement = ourCache.get(elementType);
@@ -106,8 +104,8 @@ public class CSharpCompletionUtil
 		return firstElement;
 	}
 
-	public static void tokenSetToLookup(@Nonnull CompletionResultSet resultSet,
-			@Nonnull TokenSet tokenSet,
+	public static void tokenSetToLookup(CompletionResultSet resultSet,
+			TokenSet tokenSet,
 			@Nullable BiFunction<LookupElementBuilder, IElementType, LookupElement> decorator,
 			@Nullable Predicate<IElementType> condition)
 	{
@@ -117,8 +115,8 @@ public class CSharpCompletionUtil
 		}
 	}
 
-	public static void elementToLookup(@Nonnull CompletionResultSet resultSet,
-			@Nonnull IElementType elementType,
+	public static void elementToLookup(CompletionResultSet resultSet,
+			IElementType elementType,
 			@Nullable BiFunction<LookupElementBuilder, IElementType, LookupElement> decorator,
 			@Nullable Predicate<IElementType> condition)
 	{

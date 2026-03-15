@@ -28,7 +28,6 @@ import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.model.ListModel;
 import consulo.ui.util.FormBuilder;
 
-import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +49,7 @@ public class CSharpSetupStep extends UnifiedProjectOrModuleNameStep<CSharpNewMod
 
     @Override
 	@RequiredUIAccess
-    protected void extend(@Nonnull FormBuilder builder, @Nonnull Disposable uiDisposable) {
+    protected void extend(FormBuilder builder, Disposable uiDisposable) {
         super.extend(builder, uiDisposable);
 
         if (myForceTarget == null) {
@@ -84,7 +83,7 @@ public class CSharpSetupStep extends UnifiedProjectOrModuleNameStep<CSharpNewMod
     }
 
     @Override
-    public void onStepLeave(@Nonnull CSharpNewModuleContext context) {
+    public void onStepLeave(CSharpNewModuleContext context) {
         super.onStepLeave(context);
 
         context.setTarget(myForceTarget != null ? myForceTarget : myTargetComboBox.getValueOrError());
@@ -92,8 +91,7 @@ public class CSharpSetupStep extends UnifiedProjectOrModuleNameStep<CSharpNewMod
         context.setSdk(SdkTable.getInstance().findSdk(myBundleBox.getSelectedBundleName()));
     }
 
-    @Nonnull
-    public CSharpSetupStep disableTargetComboBox(@Nonnull DotNetTarget target) {
+    public CSharpSetupStep disableTargetComboBox(DotNetTarget target) {
         myForceTarget = target;
         return this;
     }

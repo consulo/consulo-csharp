@@ -67,8 +67,7 @@ import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -90,7 +89,7 @@ class CSharpExpressionCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(final CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				final CSharpReferenceExpressionEx parent = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 				if(parent.getQualifier() == null && (parent.kind() == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER || parent.kind() == CSharpReferenceExpression.ResolveToKind
@@ -179,7 +178,7 @@ class CSharpExpressionCompletionContributor
 		{
 			@Override
 			@RequiredReadAction
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				List<ExpectedTypeInfo> expectedTypeInfos = CSharpInheritCompletionWeighter.getExpectedTypeInfosForExpression(parameters, context);
 
@@ -217,7 +216,7 @@ class CSharpExpressionCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) parameters.getPosition().getParent();
 				if(referenceExpression.getQualifier() != null)
@@ -303,7 +302,7 @@ class CSharpExpressionCompletionContributor
 		{
 			@Override
 			@RequiredReadAction
-			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull final CompletionResultSet result)
+			public void addCompletions(final CompletionParameters parameters, ProcessingContext context, final CompletionResultSet result)
 			{
 				final CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 
@@ -479,7 +478,7 @@ class CSharpExpressionCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				if(isCorrectPosition(parameters.getPosition()))
 				{
@@ -521,7 +520,7 @@ class CSharpExpressionCompletionContributor
 		{
 			@Override
 			@RequiredReadAction
-			public void addCompletions(@Nonnull final CompletionParameters parameters, ProcessingContext context, @Nonnull final CompletionResultSet result)
+			public void addCompletions(final CompletionParameters parameters, ProcessingContext context, final CompletionResultSet result)
 			{
 				final CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 
@@ -589,7 +588,7 @@ class CSharpExpressionCompletionContributor
 
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull final CompletionParameters completionParameters, ProcessingContext processingContext, @Nonnull CompletionResultSet completionResultSet)
+			public void addCompletions(final CompletionParameters completionParameters, ProcessingContext processingContext, CompletionResultSet completionResultSet)
 			{
 				CSharpCodeGenerationSettings codeGenerationSettings = CSharpCodeGenerationSettings.getInstance(completionParameters.getPosition().getProject());
 				if(!codeGenerationSettings.USE_LANGUAGE_DATA_TYPES)
@@ -736,7 +735,6 @@ class CSharpExpressionCompletionContributor
 		return false;
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	private static LookupElement buildForMethodReference(final CSharpMethodDeclaration methodDeclaration, CSharpTypeDeclaration contextType, final CSharpReferenceExpressionEx expression)
 	{

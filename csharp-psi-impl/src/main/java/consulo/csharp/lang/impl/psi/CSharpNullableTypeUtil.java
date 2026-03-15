@@ -34,7 +34,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 import consulo.util.lang.Comparing;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -43,7 +42,7 @@ import jakarta.annotation.Nonnull;
 public class CSharpNullableTypeUtil
 {
 	@RequiredReadAction
-	public static boolean containsNullableCalls(@Nonnull PsiElement element)
+	public static boolean containsNullableCalls(PsiElement element)
 	{
 		if(element instanceof CSharpReferenceExpression)
 		{
@@ -74,9 +73,8 @@ public class CSharpNullableTypeUtil
 		return false;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef boxIfNeed(@Nonnull DotNetTypeRef typeRef)
+	public static DotNetTypeRef boxIfNeed(DotNetTypeRef typeRef)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		if(typeResolveResult.isNullable())
@@ -88,16 +86,14 @@ public class CSharpNullableTypeUtil
 		return new CSharpGenericWrapperTypeRef(project, resolveScope, new CSharpTypeRefByQName(project, resolveScope, DotNetTypes.System.Nullable$1), typeRef);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef box(@Nonnull DotNetTypeRef typeRef)
+	public static DotNetTypeRef box(DotNetTypeRef typeRef)
 	{
 		return new CSharpPossibleNullableTypeRef(typeRef);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef unbox(@Nonnull DotNetTypeRef typeRef)
+	public static DotNetTypeRef unbox(DotNetTypeRef typeRef)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		PsiElement element = typeResolveResult.getElement();

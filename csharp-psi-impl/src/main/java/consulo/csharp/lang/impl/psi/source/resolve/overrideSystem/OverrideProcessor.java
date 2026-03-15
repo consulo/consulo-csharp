@@ -19,7 +19,6 @@ package consulo.csharp.lang.impl.psi.source.resolve.overrideSystem;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.util.collection.SmartList;
 
-import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -48,7 +47,6 @@ public interface OverrideProcessor
 			return true;
 		}
 
-		@Nonnull
 		public List<DotNetVirtualImplementOwner> getResults()
 		{
 			return myResults;

@@ -26,7 +26,6 @@ import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -37,7 +36,7 @@ public class CSharpTupleTypeRef extends DotNetTypeRefWithCachedResult
 	private DotNetTypeRef[] myTypeRefs;
 	private PsiNameIdentifierOwner[] myVariables;
 
-	public CSharpTupleTypeRef(Project project, GlobalSearchScope resolveScope, DotNetTypeRef[] typeRefs, @Nonnull PsiNameIdentifierOwner[] variables)
+	public CSharpTupleTypeRef(Project project, GlobalSearchScope resolveScope, DotNetTypeRef[] typeRefs, PsiNameIdentifierOwner[] variables)
 	{
 		super(project, resolveScope);
 		myTypeRefs = typeRefs;
@@ -55,7 +54,6 @@ public class CSharpTupleTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -68,7 +66,6 @@ public class CSharpTupleTypeRef extends DotNetTypeRefWithCachedResult
 		return new CSharpUserTypeRef.Result<>(new CSharpTupleTypeDeclaration(type, myVariables, myTypeRefs), extractor);
 	}
 
-	@Nonnull
 	@Override
 	public String getVmQName()
 	{

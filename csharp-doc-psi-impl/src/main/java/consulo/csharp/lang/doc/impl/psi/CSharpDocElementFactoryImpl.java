@@ -19,7 +19,6 @@ package consulo.csharp.lang.doc.impl.psi;
 import consulo.annotation.component.ServiceImpl;
 import consulo.csharp.lang.doc.psi.CSharpDocElementFactory;
 import consulo.language.ast.IElementType;
-import jakarta.annotation.Nonnull;
 import jakarta.inject.Singleton;
 
 /**
@@ -30,7 +29,6 @@ import jakarta.inject.Singleton;
 @ServiceImpl
 public class CSharpDocElementFactoryImpl implements CSharpDocElementFactory
 {
-	@Nonnull
 	@Override
 	public IElementType getDocRootElementType()
 	{

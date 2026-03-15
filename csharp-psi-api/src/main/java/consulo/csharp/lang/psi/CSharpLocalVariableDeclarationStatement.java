@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.dotnet.psi.DotNetStatement;
 
@@ -26,6 +25,5 @@ import consulo.dotnet.psi.DotNetStatement;
  */
 public interface CSharpLocalVariableDeclarationStatement extends DotNetStatement
 {
-	@Nonnull
 	CSharpLocalVariable[] getVariables();
 }

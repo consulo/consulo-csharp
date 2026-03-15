@@ -23,7 +23,6 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.psi.resolve.ResolveState;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,25 +30,24 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpLocalMethodDeclarationStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpLocalMethodDeclarationStatementImpl(@Nonnull IElementType elementType)
+	public CSharpLocalMethodDeclarationStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLocalMethodDeclarationStatement(this);
 	}
 
-	@Nonnull
 	public CSharpMethodDeclaration getMethod()
 	{
 		return findNotNullChildByClass(CSharpMethodDeclaration.class);
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		CSharpMethodDeclaration method = getMethod();
 		if(!processor.execute(method, state))

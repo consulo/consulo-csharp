@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.highlight.util;
 
-import jakarta.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.quickFix.RenameQuickFix;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
@@ -27,7 +26,7 @@ import consulo.language.editor.rawHighlight.HighlightInfoType;
 import consulo.language.editor.intention.QuickFixAction;
 import consulo.language.psi.PsiElement;
 import consulo.util.lang.Comparing;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -37,7 +36,7 @@ public class ConstructorHighlightUtil
 {
 	@Nullable
 	@RequiredReadAction
-	public static HighlightInfo checkConstructorDeclaration(@Nonnull CSharpConstructorDeclaration declaration)
+	public static HighlightInfo checkConstructorDeclaration(CSharpConstructorDeclaration declaration)
 	{
 		PsiElement nameIdentifier = declaration.getNameIdentifier();
 

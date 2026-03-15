@@ -31,8 +31,7 @@ import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.ResolveResult;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,10 +44,10 @@ public class ThisKindProcessor implements KindProcessor
 {
 	@RequiredReadAction
 	@Override
-	public void process(@Nonnull CSharpResolveOptions options,
-			@Nonnull DotNetGenericExtractor defaultExtractor,
+	public void process(CSharpResolveOptions options,
+			DotNetGenericExtractor defaultExtractor,
 			@Nullable PsiElement forceQualifierElement,
-			@Nonnull Processor<ResolveResult> processor)
+			Processor<ResolveResult> processor)
 	{
 		DotNetTypeDeclaration thisTypeDeclaration = PsiTreeUtil.getContextOfType(options.getElement(), DotNetTypeDeclaration.class);
 		if(thisTypeDeclaration != null)

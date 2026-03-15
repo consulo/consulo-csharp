@@ -30,8 +30,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -39,19 +38,19 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpNamespaceStatementImpl extends CSharpStubElementImpl<CSharpNamespaceProviderStub<CSharpNamespaceStatementImpl>> implements CSharpNamespaceStatement
 {
-	public CSharpNamespaceStatementImpl(@Nonnull ASTNode node)
+	public CSharpNamespaceStatementImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpNamespaceStatementImpl(@Nonnull CSharpNamespaceProviderStub<CSharpNamespaceStatementImpl> stub,
-										@Nonnull IStubElementType<? extends CSharpNamespaceProviderStub<CSharpNamespaceStatementImpl>, ?> nodeType)
+	public CSharpNamespaceStatementImpl(CSharpNamespaceProviderStub<CSharpNamespaceStatementImpl> stub,
+										IStubElementType<? extends CSharpNamespaceProviderStub<CSharpNamespaceStatementImpl>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitNamespaceStatement(this);
 	}
@@ -64,7 +63,7 @@ public class CSharpNamespaceStatementImpl extends CSharpStubElementImpl<CSharpNa
 
 	@Override
 	@RequiredWriteAction
-	public void setNamespace(@Nonnull String namespace)
+	public void setNamespace(String namespace)
 	{
 		PsiElement referenceToken = CSharpFileFactory.createExpression(getProject(), namespace);
 

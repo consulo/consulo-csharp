@@ -37,8 +37,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -52,7 +51,6 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
         myLikeMethod = likeMethod;
     }
 
-    @Nonnull
     @Override
     @RequiredReadAction
     public LocalizeValue getText() {
@@ -125,7 +123,7 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
 
     @RequiredReadAction
     @Override
-    public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @Nonnull PsiFile file, @Nonnull Template template) {
+    public void buildTemplate(CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, PsiFile file, Template template) {
         template.addTextSegment(CreateUnresolvedMethodFix.calcModifier(context).getPresentableText());
         template.addTextSegment(" ");
         if (contextType == CSharpContextUtil.ContextType.STATIC) {
@@ -145,7 +143,7 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
         template.addTextSegment("}");
     }
 
-    protected void buildParameterList(@Nonnull CreateUnresolvedElementFixContext context, @Nonnull PsiFile file, @Nonnull Template template) {
+    protected void buildParameterList(CreateUnresolvedElementFixContext context, PsiFile file, Template template) {
         template.addTextSegment("(");
 
         CSharpSimpleParameterInfo[] parameterInfos = myLikeMethod.getParameterInfos();

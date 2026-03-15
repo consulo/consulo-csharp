@@ -16,8 +16,7 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.codeInsight.actions.AddModifierFix;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -40,7 +39,7 @@ public class CS0708 extends CompilerCheck<DotNetModifierListOwner>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetModifierListOwner element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetModifierListOwner element)
 	{
 		PsiElement parent = element.getParent();
 		if(parent instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) parent).hasModifier(DotNetModifier.STATIC))

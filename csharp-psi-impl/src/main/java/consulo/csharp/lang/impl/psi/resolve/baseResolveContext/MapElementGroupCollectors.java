@@ -29,8 +29,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.function.Consumer;
 
 /**
@@ -41,12 +40,11 @@ public class MapElementGroupCollectors
 {
 	public static class ConversionMethod extends MapElementGroupCollector<CSharpCastType, CSharpConversionMethodDeclaration>
 	{
-		public ConversionMethod(@Nonnull CSharpBaseResolveContext<?> context)
+		public ConversionMethod(CSharpBaseResolveContext<?> context)
 		{
 			super(CSharpAdditionalMemberProvider.Target.CONVERSION_METHOD, context);
 		}
 
-		@Nonnull
 		@Override
 		public DotNetGenericExtractor getExtractor()
 		{
@@ -66,9 +64,8 @@ public class MapElementGroupCollectors
 			return CSharpCastType.EXPLICIT;
 		}
 
-		@Nonnull
 		@Override
-		protected CSharpElementVisitor createVisitor(@Nonnull final Consumer<CSharpConversionMethodDeclaration> consumer)
+		protected CSharpElementVisitor createVisitor(final Consumer<CSharpConversionMethodDeclaration> consumer)
 		{
 			return new CSharpElementVisitor()
 			{
@@ -83,7 +80,7 @@ public class MapElementGroupCollectors
 
 	public static class OperatorMethod extends MapElementGroupCollector<IElementType, CSharpMethodDeclaration>
 	{
-		public OperatorMethod(@Nonnull CSharpBaseResolveContext<?> context)
+		public OperatorMethod(CSharpBaseResolveContext<?> context)
 		{
 			super(CSharpAdditionalMemberProvider.Target.OPERATOR_METHOD, context);
 		}
@@ -96,9 +93,8 @@ public class MapElementGroupCollectors
 			return element.getOperatorElementType();
 		}
 
-		@Nonnull
 		@Override
-		protected CSharpElementVisitor createVisitor(@Nonnull final Consumer<CSharpMethodDeclaration> consumer)
+		protected CSharpElementVisitor createVisitor(final Consumer<CSharpMethodDeclaration> consumer)
 		{
 			return new CSharpElementVisitor()
 			{
@@ -116,7 +112,7 @@ public class MapElementGroupCollectors
 
 	public static class Other extends MapElementGroupCollector<String, PsiElement>
 	{
-		public Other(@Nonnull CSharpBaseResolveContext<?> context)
+		public Other(CSharpBaseResolveContext<?> context)
 		{
 			super(CSharpAdditionalMemberProvider.Target.OTHER, context);
 		}
@@ -133,9 +129,8 @@ public class MapElementGroupCollectors
 			return null;
 		}
 
-		@Nonnull
 		@Override
-		protected CSharpElementVisitor createVisitor(@Nonnull final Consumer<PsiElement> consumer)
+		protected CSharpElementVisitor createVisitor(final Consumer<PsiElement> consumer)
 		{
 			return new CSharpElementVisitor()
 			{

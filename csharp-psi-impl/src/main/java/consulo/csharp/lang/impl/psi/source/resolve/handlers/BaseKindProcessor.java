@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.source.resolve.handlers;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.function.Processor;
 import consulo.csharp.lang.impl.psi.source.CSharpTypeDeclarationImplUtil;
@@ -38,10 +37,10 @@ public class BaseKindProcessor implements KindProcessor
 {
 	@RequiredReadAction
 	@Override
-	public void process(@Nonnull CSharpResolveOptions options,
-			@Nonnull DotNetGenericExtractor defaultExtractor,
+	public void process(CSharpResolveOptions options,
+			DotNetGenericExtractor defaultExtractor,
 			@Nullable PsiElement forceQualifierElement,
-			@Nonnull Processor<ResolveResult> processor)
+			Processor<ResolveResult> processor)
 	{
 		PsiElement element = options.getElement();
 		DotNetTypeDeclaration thisTypeDeclaration = PsiTreeUtil.getParentOfType(element, DotNetTypeDeclaration.class);

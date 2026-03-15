@@ -16,8 +16,7 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -38,7 +37,7 @@ public class CS0539 extends CompilerCheck<DotNetVirtualImplementOwner>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetVirtualImplementOwner element)
+	public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetVirtualImplementOwner element)
 	{
 		PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
 		if(nameIdentifier == null)

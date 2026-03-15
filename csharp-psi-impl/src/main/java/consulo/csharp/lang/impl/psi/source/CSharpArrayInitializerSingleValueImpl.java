@@ -31,8 +31,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 import consulo.language.psi.util.PsiTreeUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,13 +39,13 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpArrayInitializerSingleValueImpl extends CSharpElementImpl implements CSharpArrayInitializerValue, CSharpCallArgument, CSharpCallArgumentListOwner
 {
-	public CSharpArrayInitializerSingleValueImpl(@Nonnull IElementType elementType)
+	public CSharpArrayInitializerSingleValueImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitArrayInitializerSingleValue(this);
 	}
@@ -70,7 +69,6 @@ public class CSharpArrayInitializerSingleValueImpl extends CSharpElementImpl imp
 		return false;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -89,7 +87,6 @@ public class CSharpArrayInitializerSingleValueImpl extends CSharpElementImpl imp
 		return CSharpResolveUtil.findFirstValidElement(resolveResults);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public ResolveResult[] multiResolve(boolean b)
@@ -120,7 +117,6 @@ public class CSharpArrayInitializerSingleValueImpl extends CSharpElementImpl imp
 		return ResolveResult.EMPTY_ARRAY;
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{

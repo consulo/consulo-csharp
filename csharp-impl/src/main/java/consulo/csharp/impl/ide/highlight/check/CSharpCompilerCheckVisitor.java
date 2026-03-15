@@ -31,7 +31,6 @@ import consulo.language.editor.rawHighlight.HighlightInfoHolder;
 import consulo.language.editor.rawHighlight.HighlightVisitor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
-import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -91,13 +90,13 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 	}
 
 	@Override
-	public void visit(@Nonnull PsiElement element)
+	public void visit(PsiElement element)
 	{
 		element.accept(this);
 	}
 
 	@Override
-	public boolean analyze(@Nonnull PsiFile psiFile, boolean b, @Nonnull HighlightInfoHolder highlightInfoHolder, @Nonnull Runnable runnable)
+	public boolean analyze(PsiFile psiFile, boolean b, HighlightInfoHolder highlightInfoHolder, Runnable runnable)
 	{
 		myPragmaContext = CSharpPragmaContext.get(psiFile);
 		myHighlightContext = new CSharpHighlightContext(psiFile);

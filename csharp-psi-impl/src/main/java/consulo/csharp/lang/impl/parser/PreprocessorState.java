@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.parser;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
@@ -32,7 +31,7 @@ public class PreprocessorState
 	{
 		Deque<Boolean> ifDirectives = new ArrayDeque<>();
 
-		public SubState(@Nonnull Boolean initialValue)
+		public SubState(Boolean initialValue)
 		{
 			ifDirectives.add(initialValue);
 		}
@@ -58,8 +57,7 @@ public class PreprocessorState
 
 	private Deque<SubState> myStates = new ArrayDeque<>();
 
-	@Nonnull
-	public SubState newState(@Nonnull Boolean value)
+	public SubState newState(Boolean value)
 	{
 		SubState e = new SubState(value);
 		myStates.addLast(e);

@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
 import java.io.IOException;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.csharp.lang.psi.CSharpUserType;
 import consulo.csharp.lang.impl.psi.source.CSharpStubUserTypeImpl;
@@ -42,36 +41,34 @@ public class CSharpUserTypeStubElementType extends CSharpAbstractStubElementType
 		super("USER_TYPE");
 	}
 
-	@Nonnull
 	@Override
-	public PsiElement createElement(@Nonnull ASTNode astNode)
+	public PsiElement createElement(ASTNode astNode)
 	{
 		return new CSharpStubUserTypeImpl(astNode);
 	}
 
 	@Override
-	public CSharpUserType createPsi(@Nonnull CSharpWithStringValueStub<CSharpUserType> stub)
+	public CSharpUserType createPsi(CSharpWithStringValueStub<CSharpUserType> stub)
 	{
 		return new CSharpStubUserTypeImpl(stub, this);
 	}
 
 	@Override
-	public CSharpWithStringValueStub<CSharpUserType> createStub(@Nonnull CSharpUserType cSharpUserType, StubElement stubElement)
+	public CSharpWithStringValueStub<CSharpUserType> createStub(CSharpUserType cSharpUserType, StubElement stubElement)
 	{
 
 		return new CSharpWithStringValueStub<CSharpUserType>(stubElement, this, cSharpUserType.getReferenceText());
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpWithStringValueStub<CSharpUserType> stub,
-			@Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpWithStringValueStub<CSharpUserType> stub,
+			StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getReferenceText());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpWithStringValueStub<CSharpUserType> deserialize(@Nonnull StubInputStream stubInputStream,
+	public CSharpWithStringValueStub<CSharpUserType> deserialize(StubInputStream stubInputStream,
 			StubElement stubElement) throws IOException
 	{
 		StringRef ref = stubInputStream.readName();

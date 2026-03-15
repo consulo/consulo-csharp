@@ -29,8 +29,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.search.ReferencesSearch;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -38,22 +37,21 @@ import jakarta.annotation.Nullable;
  */
 public class CS0168 extends CompilerCheck<CSharpLocalVariable> {
     public static final class DeleteLocalVariable extends LocalQuickFixAndIntentionActionOnPsiElement {
-        public DeleteLocalVariable(@Nonnull PsiElement element) {
+        public DeleteLocalVariable(PsiElement element) {
             super(element);
         }
 
-        @Nonnull
         @Override
         public LocalizeValue getText() {
             return LocalizeValue.localizeTODO("Delete variable");
         }
 
         @Override
-        public void invoke(@Nonnull Project project,
-                           @Nonnull PsiFile psiFile,
+        public void invoke(Project project,
+                           PsiFile psiFile,
                            @Nullable Editor editor,
-                           @Nonnull PsiElement psiElement,
-                           @Nonnull PsiElement psiElement1) {
+                           PsiElement psiElement,
+                           PsiElement psiElement1) {
             psiElement.delete();
         }
     }
@@ -61,7 +59,7 @@ public class CS0168 extends CompilerCheck<CSharpLocalVariable> {
     @RequiredReadAction
     @Nullable
     @Override
-    public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpLocalVariable element) {
+    public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpLocalVariable element) {
         if (element.getInitializer() != null) {
             return null;
         }
@@ -78,7 +76,7 @@ public class CS0168 extends CompilerCheck<CSharpLocalVariable> {
     }
 
     @RequiredReadAction
-    static boolean isUnused(@Nonnull CSharpLocalVariable element) {
+    static boolean isUnused(CSharpLocalVariable element) {
         PsiElement nameIdentifier = element.getNameIdentifier();
         if (nameIdentifier == null) {
             return false;

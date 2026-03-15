@@ -19,8 +19,7 @@ package consulo.csharp.lang.psi;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.util.collection.ArrayFactory;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -32,7 +31,6 @@ public interface CSharpAttribute extends DotNetAttribute, CSharpCallArgumentList
 
 	public static ArrayFactory<CSharpAttribute> ARRAY_FACTORY = new ArrayFactory<CSharpAttribute>()
 	{
-		@Nonnull
 		@Override
 		public CSharpAttribute[] create(int count)
 		{

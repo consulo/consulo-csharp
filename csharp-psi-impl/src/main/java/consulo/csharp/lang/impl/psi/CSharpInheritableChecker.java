@@ -34,8 +34,7 @@ import consulo.dotnet.psi.resolve.*;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.util.lang.Pair;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashSet;
 
@@ -52,7 +51,7 @@ public class CSharpInheritableChecker {
      * int - int type, ill 'top'
      * return false due it not be casted
      */
-    public static CSharpInheritableChecker create(@Nonnull DotNetTypeRef top, @Nonnull DotNetTypeRef target) {
+    public static CSharpInheritableChecker create(DotNetTypeRef top, DotNetTypeRef target) {
         return new CSharpInheritableChecker(top, target);
     }
 
@@ -61,13 +60,12 @@ public class CSharpInheritableChecker {
 
     private Pair<CSharpCastType, GlobalSearchScope> myCastTypeResolver;
 
-    private CSharpInheritableChecker(@Nonnull DotNetTypeRef top, @Nonnull DotNetTypeRef target) {
+    private CSharpInheritableChecker(DotNetTypeRef top, DotNetTypeRef target) {
         myTop = top;
         myTarget = target;
     }
 
-    @Nonnull
-    public CSharpInheritableChecker withCastType(@Nonnull CSharpCastType castType, @Nonnull GlobalSearchScope resolveScope) {
+    public CSharpInheritableChecker withCastType(CSharpCastType castType, GlobalSearchScope resolveScope) {
         if (myCastTypeResolver != null) {
             throw new IllegalArgumentException("already set");
         }
@@ -76,7 +74,6 @@ public class CSharpInheritableChecker {
         return this;
     }
 
-    @Nonnull
     @RequiredReadAction
     public CSharpTypeUtil.InheritResult check() {
         if (myTop == DotNetTypeRef.ERROR_TYPE || myTarget == DotNetTypeRef.ERROR_TYPE) {
@@ -104,10 +101,9 @@ public class CSharpInheritableChecker {
         return checkerCacher.getOrCheck(myTop, myTarget, myCastTypeResolver);
     }
 
-    @Nonnull
     @RequiredReadAction
-    public static CSharpTypeUtil.InheritResult isInheritable(@Nonnull DotNetTypeRef top,
-                                                             @Nonnull DotNetTypeRef target,
+    public static CSharpTypeUtil.InheritResult isInheritable(DotNetTypeRef top,
+                                                             DotNetTypeRef target,
                                                              @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo) {
         ProgressManager.checkCanceled();
 
@@ -340,7 +336,6 @@ public class CSharpInheritableChecker {
         return fail();
     }
 
-    @Nonnull
     private static CSharpTypeUtil.InheritResult fail() {
         if (ApplicationProperties.isInSandbox()) {
             return new CSharpTypeUtil.InheritResult(false, null);

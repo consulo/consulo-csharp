@@ -44,7 +44,6 @@ import consulo.undoRedo.CommandProcessor;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Couple;
 
-import jakarta.annotation.Nonnull;
 
 import java.util.*;
 import java.util.function.Function;
@@ -182,8 +181,7 @@ public class CSharpMoveClassesUtil {
      * <p>
      * if first element is namespace declaration - second will namespace as element (global namespace object not c# file declaration)
      */
-    @Nonnull
-    public static Set<Couple<DotNetNamedElement>> findTypesAndNamespaces(@Nonnull PsiElement element) {
+    public static Set<Couple<DotNetNamedElement>> findTypesAndNamespaces(PsiElement element) {
         Set<Couple<DotNetNamedElement>> result = new LinkedHashSet<>();
         element.accept(new CSharpRecursiveElementVisitor() {
             @Override

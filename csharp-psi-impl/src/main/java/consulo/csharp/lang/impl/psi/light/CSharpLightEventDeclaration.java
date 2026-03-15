@@ -24,9 +24,8 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -45,7 +44,6 @@ public class CSharpLightEventDeclaration extends CSharpLightVariable<CSharpEvent
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -53,19 +51,17 @@ public class CSharpLightEventDeclaration extends CSharpLightVariable<CSharpEvent
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitEventDeclaration(this);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetXAccessor[] getAccessors()
 	{
 		return myOriginal.getAccessors();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -107,7 +103,6 @@ public class CSharpLightEventDeclaration extends CSharpLightVariable<CSharpEvent
 		return myOriginal.getTypeForImplement();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{

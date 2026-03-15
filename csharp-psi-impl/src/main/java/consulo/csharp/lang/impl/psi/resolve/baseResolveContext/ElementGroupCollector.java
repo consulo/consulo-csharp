@@ -22,7 +22,6 @@ import consulo.csharp.lang.impl.psi.resolve.CSharpBaseResolveContext;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
 
 import java.util.function.Consumer;
 
@@ -35,22 +34,19 @@ public abstract class ElementGroupCollector<E extends PsiElement>
 	protected final CSharpAdditionalMemberProvider.Target myTarget;
 	protected final CSharpBaseResolveContext<?> myResolveContext;
 
-	public ElementGroupCollector(@Nonnull CSharpAdditionalMemberProvider.Target target, @Nonnull CSharpBaseResolveContext<?> context)
+	public ElementGroupCollector(CSharpAdditionalMemberProvider.Target target, CSharpBaseResolveContext<?> context)
 	{
 		myTarget = target;
 		myResolveContext = context;
 	}
 
-	@Nonnull
-	protected abstract CSharpElementVisitor createVisitor(@Nonnull Consumer<E> consumer);
+	protected abstract CSharpElementVisitor createVisitor(Consumer<E> consumer);
 
-	@Nonnull
 	public Project getProject()
 	{
 		return myResolveContext.getElement().getProject();
 	}
 
-	@Nonnull
 	public DotNetGenericExtractor getExtractor()
 	{
 		return myResolveContext.getExtractor();

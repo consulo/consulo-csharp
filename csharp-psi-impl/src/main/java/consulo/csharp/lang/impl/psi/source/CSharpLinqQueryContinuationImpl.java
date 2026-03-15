@@ -23,8 +23,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -32,12 +31,11 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpLinqQueryContinuationImpl extends CSharpElementImpl
 {
-	public CSharpLinqQueryContinuationImpl(@Nonnull IElementType elementType)
+	public CSharpLinqQueryContinuationImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public CSharpLinqIntoClauseImpl getIntoClause()
 	{
@@ -51,14 +49,14 @@ public class CSharpLinqQueryContinuationImpl extends CSharpElementImpl
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqQueryContinuation(this);
 	}
 
 	@Override
 	@RequiredReadAction
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		CSharpLinqIntoClauseImpl intoClause = getIntoClause();
 		return intoClause.processDeclarations(processor, state, lastParent, place);

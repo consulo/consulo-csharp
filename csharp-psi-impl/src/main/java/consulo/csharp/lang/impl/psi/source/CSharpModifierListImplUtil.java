@@ -28,7 +28,6 @@ import consulo.language.psi.PsiModificationTracker;
 import consulo.language.psi.PsiParserFacade;
 import consulo.language.psi.PsiWhiteSpace;
 import consulo.language.psi.util.LanguageCachedValueUtil;
-import jakarta.annotation.Nonnull;
 
 import java.util.*;
 
@@ -69,17 +68,15 @@ public class CSharpModifierListImplUtil {
         ourModifiers.put(CSharpModifier.OPTIONAL, ourDummyUnregisteredModifier);
     }
 
-    @Nonnull
-    public static IElementType asElementType(@Nonnull DotNetModifier modifier) {
+    public static IElementType asElementType(DotNetModifier modifier) {
         CSharpModifier mod = CSharpModifier.as(modifier);
         return Objects.requireNonNull(ourModifiers.get(mod), "Unknown modifier: " + mod);
     }
 
     private static final EnumSet<CSharpModifier> emptySet = EnumSet.noneOf(CSharpModifier.class);
 
-    @Nonnull
     @RequiredReadAction
-    public static EnumSet<CSharpModifier> getModifiersCached(@Nonnull CSharpModifierList modifierList) {
+    public static EnumSet<CSharpModifier> getModifiersCached(CSharpModifierList modifierList) {
         if (!modifierList.isValid()) {
             return emptySet;
         }
@@ -97,7 +94,7 @@ public class CSharpModifierListImplUtil {
     }
 
     @RequiredReadAction
-    public static boolean hasModifier(@Nonnull CSharpModifierList modifierList, @Nonnull DotNetModifier modifier) {
+    public static boolean hasModifier(CSharpModifierList modifierList, DotNetModifier modifier) {
         if (modifierList.hasModifierInTree(modifier)) {
             return true;
         }
@@ -181,9 +178,8 @@ public class CSharpModifierListImplUtil {
         return false;
     }
 
-    @Nonnull
     @RequiredReadAction
-    private static CSharpAccessModifier findModifier(@Nonnull CSharpModifierList list, CSharpModifier skipModifier) {
+    private static CSharpAccessModifier findModifier(CSharpModifierList list, CSharpModifier skipModifier) {
         loop:
         for (CSharpAccessModifier value : CSharpAccessModifier.VALUES) {
             if (value == CSharpAccessModifier.NONE) {
@@ -205,7 +201,7 @@ public class CSharpModifierListImplUtil {
     }
 
     @RequiredReadAction
-    public static void addModifier(@Nonnull CSharpModifierList modifierList, @Nonnull DotNetModifier modifier) {
+    public static void addModifier(CSharpModifierList modifierList, DotNetModifier modifier) {
         PsiElement anchor = modifierList.getLastChild();
 
         CSharpFieldDeclaration field = CSharpFileFactory.createField(modifierList.getProject(), modifier.getPresentableText() + " int b");
@@ -215,7 +211,7 @@ public class CSharpModifierListImplUtil {
         modifierList.addAfter(PsiParserFacade.SERVICE.getInstance(modifierList.getProject()).createWhiteSpaceFromText(" "), psiElement);
     }
 
-    public static void removeModifier(@Nonnull CSharpModifierList modifierList, @Nonnull DotNetModifier modifier) {
+    public static void removeModifier(CSharpModifierList modifierList, DotNetModifier modifier) {
         CSharpModifier as = CSharpModifier.as(modifier);
         PsiElement modifierElement = modifierList.getModifierElement(as);
         if (modifierElement != null) {

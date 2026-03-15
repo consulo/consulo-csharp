@@ -28,8 +28,7 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,7 +39,7 @@ public class CS0721 extends CompilerCheck<DotNetParameter>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetParameter element)
+	public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetParameter element)
 	{
 		DotNetType type = element.getType();
 		PsiElement resolved = DotNetTypeRefUtil.resolve(type);

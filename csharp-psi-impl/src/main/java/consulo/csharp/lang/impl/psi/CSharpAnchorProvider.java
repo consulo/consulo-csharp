@@ -24,8 +24,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.language.psi.SmartPointerAnchorProvider;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -37,7 +36,7 @@ public class CSharpAnchorProvider implements SmartPointerAnchorProvider
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public PsiElement getAnchor(@Nonnull PsiElement element)
+	public PsiElement getAnchor(PsiElement element)
 	{
 		if(element instanceof MsilElementWrapper || !element.isPhysical())
 		{
@@ -59,7 +58,7 @@ public class CSharpAnchorProvider implements SmartPointerAnchorProvider
 
 	@Nullable
 	@Override
-	public PsiElement restoreElement(@Nonnull PsiElement anchor)
+	public PsiElement restoreElement(PsiElement anchor)
 	{
 		return anchor.getParent();
 	}

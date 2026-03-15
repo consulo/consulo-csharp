@@ -28,9 +28,8 @@ import consulo.msil.representation.MsilRepresentationNavigateUtil;
 import consulo.navigation.Navigatable;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.ref.Ref;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.function.Consumer;
 
 /**
@@ -134,7 +133,6 @@ public abstract class MsilElementWrapper<T extends PsiElement> extends CSharpLig
 		MsilRepresentationNavigateUtil.navigateToRepresentation(myOriginal, CSharpFileType.INSTANCE, consumer);
 	}
 
-	@Nonnull
 	@Override
 	public PsiElement getNavigationElement()
 	{

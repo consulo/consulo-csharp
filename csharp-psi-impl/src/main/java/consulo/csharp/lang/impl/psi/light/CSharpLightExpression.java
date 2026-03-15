@@ -21,7 +21,6 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.impl.psi.LightElement;
 import consulo.language.psi.PsiManager;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,13 +30,12 @@ public class CSharpLightExpression extends LightElement implements DotNetExpress
 {
 	private final DotNetTypeRef myTypeRef;
 
-	public CSharpLightExpression(@Nonnull PsiManager manager, @Nonnull DotNetTypeRef typeRef)
+	public CSharpLightExpression(PsiManager manager, DotNetTypeRef typeRef)
 	{
 		super(manager, CSharpLanguage.INSTANCE);
 		myTypeRef = typeRef;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean b)
 	{

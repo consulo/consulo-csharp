@@ -26,8 +26,7 @@ import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.MultiHostInjectorByAttributeHelper;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -38,7 +37,7 @@ public class CSharpMultiHostInjectorByAttributeHelper implements MultiHostInject
 {
 	@Nullable
 	@Override
-	public String getLanguageId(@Nonnull DotNetAttribute attribute)
+	public String getLanguageId(DotNetAttribute attribute)
 	{
 		if(!(attribute instanceof CSharpAttribute))
 		{
@@ -55,7 +54,7 @@ public class CSharpMultiHostInjectorByAttributeHelper implements MultiHostInject
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public TextRange getTextRangeForInject(@Nonnull DotNetExpression expression)
+	public TextRange getTextRangeForInject(DotNetExpression expression)
 	{
 		if(expression instanceof CSharpConstantExpressionImpl)
 		{

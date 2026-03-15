@@ -31,7 +31,7 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL

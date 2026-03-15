@@ -27,7 +27,6 @@ import consulo.language.spellcheker.tokenizer.TokenConsumer;
 import consulo.language.spellcheker.tokenizer.Tokenizer;
 import consulo.language.spellcheker.tokenizer.splitter.IdentifierTokenSplitter;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -39,7 +38,7 @@ public class CSharpUserTypeTokenizer extends Tokenizer<CSharpUserType>
 
 	@Override
 	@RequiredReadAction
-	public void tokenize(@Nonnull CSharpUserType element, TokenConsumer consumer)
+	public void tokenize(CSharpUserType element, TokenConsumer consumer)
 	{
 		consume(element, consumer);
 	}

@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
@@ -39,23 +38,22 @@ import consulo.language.psi.PsiElement;
  */
 public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<CSharpPropertyDeclarationImpl>> implements CSharpPropertyDeclaration
 {
-	public CSharpPropertyDeclarationImpl(@Nonnull ASTNode node)
+	public CSharpPropertyDeclarationImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpPropertyDeclarationImpl(@Nonnull CSharpVariableDeclStub<CSharpPropertyDeclarationImpl> stub)
+	public CSharpPropertyDeclarationImpl(CSharpVariableDeclStub<CSharpPropertyDeclarationImpl> stub)
 	{
 		super(stub, CSharpStubElements.PROPERTY_DECLARATION);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitPropertyDeclaration(this);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetXAccessor[] getAccessors()
 	{
@@ -71,7 +69,6 @@ public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharp
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -99,7 +96,6 @@ public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharp
 		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 1);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{

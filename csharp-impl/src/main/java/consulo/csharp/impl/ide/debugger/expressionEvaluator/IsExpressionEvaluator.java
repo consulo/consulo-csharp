@@ -24,7 +24,6 @@ import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.DotNetVirtualMachineProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -40,7 +39,7 @@ public class IsExpressionEvaluator extends Evaluator
 	}
 
 	@Override
-	public void evaluate(@Nonnull CSharpEvaluateContext context)
+	public void evaluate(CSharpEvaluateContext context)
 	{
 		DotNetValueProxy pop = context.popValue();
 

@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpIdentifier;
@@ -33,18 +32,18 @@ import consulo.language.psi.stub.IStubElementType;
  */
 public class CSharpStubIdentifierImpl extends CSharpStubElementImpl<CSharpIdentifierStub> implements CSharpIdentifier
 {
-	public CSharpStubIdentifierImpl(@Nonnull ASTNode node)
+	public CSharpStubIdentifierImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubIdentifierImpl(@Nonnull CSharpIdentifierStub stub, @Nonnull IStubElementType<? extends CSharpIdentifierStub, ?> nodeType)
+	public CSharpStubIdentifierImpl(CSharpIdentifierStub stub, IStubElementType<? extends CSharpIdentifierStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitIdentifier(this);
 	}

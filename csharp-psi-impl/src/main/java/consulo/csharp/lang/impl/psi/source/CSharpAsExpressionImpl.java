@@ -25,8 +25,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -34,7 +33,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpAsExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpAsExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpAsExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -51,7 +50,6 @@ public class CSharpAsExpressionImpl extends CSharpExpressionImpl implements DotN
 		return findChildByClass(DotNetType.class);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public PsiElement getAsKeyword()
 	{
@@ -59,12 +57,11 @@ public class CSharpAsExpressionImpl extends CSharpExpressionImpl implements DotN
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitAsExpression(this);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)

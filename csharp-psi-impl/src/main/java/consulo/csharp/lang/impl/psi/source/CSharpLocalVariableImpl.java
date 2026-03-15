@@ -42,10 +42,8 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
 import consulo.util.collection.SmartList;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 /**
@@ -56,13 +54,13 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 {
 	private static final Logger LOG = Logger.getInstance(CSharpLocalVariableImpl.class);
 
-	public CSharpLocalVariableImpl(@Nonnull IElementType elementType)
+	public CSharpLocalVariableImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLocalVariable(this);
 	}
@@ -84,7 +82,6 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{
@@ -124,7 +121,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return false;
 	}
@@ -170,7 +167,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, s);
 		return this;
@@ -191,7 +188,6 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		return findPsiChildByType(CSharpTokens.CONST_KEYWORD);
 	}
 
-	@Nonnull
 	@Override
 	public SearchScope getUseScope()
 	{
@@ -317,7 +313,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 
 	@Override
 	@RequiredReadAction
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		if(!processor.execute(this, state))
 		{

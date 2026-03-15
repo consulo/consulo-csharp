@@ -31,8 +31,7 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.language.psi.PsiElement;
 import consulo.util.dataholder.Key;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -47,7 +46,7 @@ public class CS1547 extends CompilerCheck<CSharpNativeType>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpNativeType element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpNativeType element)
 	{
 		if(highlightContext.getFile().getUserData(ourReturnTypeFlag) == Boolean.TRUE)
 		{

@@ -25,8 +25,7 @@ import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 /**
@@ -36,15 +35,13 @@ import java.util.Objects;
 public class CSharpLightConversionMethodDeclaration extends CSharpLightLikeMethodDeclaration<CSharpConversionMethodDeclaration> implements
 		CSharpConversionMethodDeclaration
 {
-	@Nonnull
 	private final DotNetTypeRef myReturnTypeRef;
-	@Nonnull
 	private final DotNetGenericExtractor myExtractor;
 
 	public CSharpLightConversionMethodDeclaration(CSharpConversionMethodDeclaration original,
 												  @Nullable DotNetParameterList parameterList,
-												  @Nonnull DotNetTypeRef returnTypeRef,
-												  @Nonnull DotNetGenericExtractor extractor)
+												  DotNetTypeRef returnTypeRef,
+												  DotNetGenericExtractor extractor)
 	{
 		super(original, parameterList);
 		myExtractor = extractor;
@@ -58,7 +55,6 @@ public class CSharpLightConversionMethodDeclaration extends CSharpLightLikeMetho
 		return myOriginal.isImplicit();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getConversionTypeRef()
 	{
@@ -80,13 +76,12 @@ public class CSharpLightConversionMethodDeclaration extends CSharpLightLikeMetho
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitConversionMethodDeclaration(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{

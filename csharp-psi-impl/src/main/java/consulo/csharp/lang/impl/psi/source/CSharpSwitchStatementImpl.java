@@ -25,8 +25,7 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -34,12 +33,11 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpSwitchStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpSwitchStatementImpl(@Nonnull IElementType elementType)
+	public CSharpSwitchStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public CSharpSwitchLabelStatement[] getStatements()
 	{
@@ -54,14 +52,14 @@ public class CSharpSwitchStatementImpl extends CSharpElementImpl implements DotN
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitSwitchStatement(this);
 	}
 
 	@Override
 	@RequiredReadAction
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		CSharpSwitchLabelStatement[] statements = getStatements();
 		for(CSharpSwitchLabelStatement statement : statements)

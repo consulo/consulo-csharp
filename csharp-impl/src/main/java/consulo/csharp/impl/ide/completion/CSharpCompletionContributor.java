@@ -22,7 +22,6 @@ import consulo.csharp.lang.CSharpLanguage;
 import consulo.language.Language;
 import consulo.language.editor.completion.*;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -47,7 +46,7 @@ public class CSharpCompletionContributor extends CompletionContributor
 	}
 
 	@Override
-	public void beforeCompletion(@Nonnull CompletionInitializationContext context)
+	public void beforeCompletion(CompletionInitializationContext context)
 	{
 		context.setDummyIdentifier(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED);
 	}
@@ -63,7 +62,6 @@ public class CSharpCompletionContributor extends CompletionContributor
 		CSharpNoVariantsDelegator.fillCompletionVariants(parameters, resultSet);
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

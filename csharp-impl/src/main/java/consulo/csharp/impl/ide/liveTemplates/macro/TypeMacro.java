@@ -22,8 +22,7 @@ import consulo.language.editor.template.ExpressionContext;
 import consulo.language.editor.template.Result;
 import consulo.language.editor.template.TextResult;
 import consulo.language.editor.template.macro.Macro;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -46,7 +45,7 @@ public class TypeMacro extends Macro
 
 	@Nullable
 	@Override
-	public Result calculateResult(@Nonnull Expression[] params, ExpressionContext context)
+	public Result calculateResult(Expression[] params, ExpressionContext context)
 	{
 		return new TextResult("TYPE");
 	}

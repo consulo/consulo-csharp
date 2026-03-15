@@ -31,9 +31,8 @@ import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayFactory;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -162,7 +161,6 @@ public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetCons
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getPresentationText()
 	{

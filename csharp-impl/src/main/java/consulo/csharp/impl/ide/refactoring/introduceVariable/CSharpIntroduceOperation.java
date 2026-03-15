@@ -25,7 +25,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.project.Project;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author Fedor.Korotkov

@@ -38,7 +38,6 @@ import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author michael.shumenko
@@ -48,15 +47,15 @@ import jakarta.annotation.Nonnull;
 @IntentionMetaData(ignoreId = "csharp.introduce.local.var", categories = "C#", fileExtensions = "cs")
 public class IntroduceLocalVariableIntention extends BaseRefactoringIntentionAction {
   @Override
-  public void invoke(@Nonnull Project project,
+  public void invoke(Project project,
                      Editor editor,
-                     @Nonnull PsiElement element) throws IncorrectOperationException {
+                     PsiElement element) throws IncorrectOperationException {
     new CSharpIntroduceLocalVariableHandler().invoke(project, editor, element.getContainingFile(), null);
   }
 
   @Override
   @RequiredUIAccess
-  public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement psi) {
+  public boolean isAvailable(Project project, Editor editor, PsiElement psi) {
     CSharpExpressionStatementImpl exprStmt = PsiTreeUtil.getParentOfType(psi, CSharpExpressionStatementImpl.class);
     if (psi instanceof SyntheticElement || exprStmt == null) {
       return false;
@@ -71,7 +70,6 @@ public class IntroduceLocalVariableIntention extends BaseRefactoringIntentionAct
     return !(ref == DotNetTypeRef.ERROR_TYPE || DotNetTypeRefUtil.isVmQNameEqual(ref, DotNetTypes.System.Void));
   }
 
-  @Nonnull
   @Override
   public LocalizeValue getText() {
     return CSharpErrorLocalize.intentionIntroduceVariableText();

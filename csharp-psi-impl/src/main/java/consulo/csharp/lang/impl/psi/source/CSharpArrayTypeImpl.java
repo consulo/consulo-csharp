@@ -25,7 +25,6 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpArrayTypeRef;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -33,13 +32,12 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpArrayTypeImpl extends CSharpTypeElementImpl implements CSharpArrayType
 {
-	public CSharpArrayTypeImpl(@Nonnull IElementType elementType)
+	public CSharpArrayTypeImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
@@ -56,13 +54,12 @@ public class CSharpArrayTypeImpl extends CSharpTypeElementImpl implements CSharp
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitArrayType(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetType getInnerType()
 	{

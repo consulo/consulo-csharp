@@ -26,7 +26,6 @@ import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.language.psi.stub.IndexSink;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -45,22 +44,21 @@ public class CSharpFieldStubElementType extends CSharpQVariableStubElementType<D
 		return BitUtil.isSet(modifiers, CSharpVariableDeclStub.CONSTANT_MASK);
 	}
 
-	@Nonnull
 	@Override
-	public DotNetFieldDeclaration createElement(@Nonnull ASTNode astNode)
+	public DotNetFieldDeclaration createElement(ASTNode astNode)
 	{
 		return new CSharpFieldDeclarationImpl(astNode);
 	}
 
 	@Override
-	public DotNetFieldDeclaration createPsi(@Nonnull CSharpVariableDeclStub<DotNetFieldDeclaration> fieldStub)
+	public DotNetFieldDeclaration createPsi(CSharpVariableDeclStub<DotNetFieldDeclaration> fieldStub)
 	{
 		return new CSharpFieldDeclarationImpl(fieldStub);
 	}
 
 	@Override
 	@RequiredReadAction
-	public void indexStub(@Nonnull CSharpVariableDeclStub<DotNetFieldDeclaration> stub, @Nonnull IndexSink indexSink)
+	public void indexStub(CSharpVariableDeclStub<DotNetFieldDeclaration> stub, IndexSink indexSink)
 	{
 		String name = getNameWithoutAt(stub);
 		if(!StringUtil.isEmpty(name))

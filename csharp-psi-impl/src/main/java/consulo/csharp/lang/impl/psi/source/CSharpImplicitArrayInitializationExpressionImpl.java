@@ -27,9 +27,8 @@ import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -45,7 +44,6 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 		}
 
 		@RequiredReadAction
-		@Nonnull
 		@Override
 		public String getVmQName()
 		{
@@ -53,7 +51,6 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 		}
 
 		@RequiredReadAction
-		@Nonnull
 		@Override
 		protected DotNetTypeResolveResult resolveResult()
 		{
@@ -63,7 +60,7 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 		@RequiredReadAction
 		@Nullable
 		@Override
-		public DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another)
+		public DotNetTypeRef doMirror(DotNetTypeRef another)
 		{
 			if(another instanceof DotNetArrayTypeRef)
 			{
@@ -79,25 +76,23 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 		}
 	}
 
-	public CSharpImplicitArrayInitializationExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpImplicitArrayInitializationExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitImplicitArrayInitializationExpression(this);
 	}
 
-	@Nonnull
 	public DotNetExpression[] getExpressions()
 	{
 		return findChildrenByClass(DotNetExpression.class);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{

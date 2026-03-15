@@ -20,7 +20,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -28,7 +27,6 @@ import jakarta.annotation.Nonnull;
  */
 public interface CSharpGenericParameter extends DotNetGenericParameter
 {
-	@Nonnull
 	@RequiredReadAction
 	DotNetTypeRef[] getExtendTypeRefs();
 }

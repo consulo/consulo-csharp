@@ -18,7 +18,6 @@ package consulo.csharp.lang.psi;
 
 import consulo.language.psi.PsiNameIdentifierOwner;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -27,6 +26,5 @@ import jakarta.annotation.Nonnull;
 public interface CSharpNamedFieldOrPropertySet extends CSharpFieldOrPropertySet, PsiNameIdentifierOwner
 {
 	@Override
-	@Nonnull
 	CSharpReferenceExpression getNameElement();
 }

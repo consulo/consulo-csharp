@@ -23,8 +23,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -32,7 +31,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpAnonymFieldOrPropertySetImpl extends CSharpElementImpl implements CSharpAnonymFieldOrPropertySet
 {
-	public CSharpAnonymFieldOrPropertySetImpl(@Nonnull IElementType elementType)
+	public CSharpAnonymFieldOrPropertySetImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -50,19 +49,17 @@ public class CSharpAnonymFieldOrPropertySetImpl extends CSharpElementImpl implem
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitFieldOrPropertySet(this);
 	}
 
-	@Nonnull
 	@Override
 	public PsiElement getNameElement()
 	{
 		return getFirstChild();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetExpression getValueExpression()
 	{

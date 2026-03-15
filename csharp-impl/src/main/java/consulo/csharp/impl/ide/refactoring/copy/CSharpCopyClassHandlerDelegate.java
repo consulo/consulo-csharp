@@ -57,8 +57,7 @@ import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.util.VirtualFileUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,7 +107,7 @@ public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 	}
 
 	@RequiredReadAction
-	private static void doCopy(@Nonnull CSharpTypeDeclaration typeDeclaration, @Nullable PsiDirectory defaultTargetDirectory, Project project)
+	private static void doCopy(CSharpTypeDeclaration typeDeclaration, @Nullable PsiDirectory defaultTargetDirectory, Project project)
 	{
 		PsiDirectory targetDirectory;
 		String newName;
@@ -176,9 +175,9 @@ public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 	}
 
 	@RequiredReadAction
-	private static void doCopy(@Nonnull final CSharpTypeDeclaration target,
+	private static void doCopy(final CSharpTypeDeclaration target,
 							   @Nullable final String newName,
-							   @Nonnull final PsiDirectory targetDirectory,
+							   final PsiDirectory targetDirectory,
 							   final boolean doClone,
 							   final boolean openInEditor)
 	{
@@ -278,7 +277,7 @@ public class CSharpCopyClassHandlerDelegate extends CopyHandlerDelegateBase
 
 	@Nullable
 	@RequiredReadAction
-	private static PsiDirectory tryNotNullizeDirectory(@Nonnull Project project, @Nullable PsiDirectory defaultTargetDirectory)
+	private static PsiDirectory tryNotNullizeDirectory(Project project, @Nullable PsiDirectory defaultTargetDirectory)
 	{
 		if(defaultTargetDirectory == null)
 		{

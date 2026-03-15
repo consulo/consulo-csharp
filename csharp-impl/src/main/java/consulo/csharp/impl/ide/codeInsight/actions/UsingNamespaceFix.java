@@ -60,7 +60,6 @@ import consulo.util.lang.StringUtil;
 import consulo.util.lang.function.Condition;
 import consulo.util.lang.function.Conditions;
 
-import jakarta.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -76,11 +75,10 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction, Synthe
 
   private final SmartPsiElementPointer<CSharpReferenceExpression> myRefPointer;
 
-  public UsingNamespaceFix(@Nonnull CSharpReferenceExpression ref) {
+  public UsingNamespaceFix(CSharpReferenceExpression ref) {
     myRefPointer = SmartPointerManager.getInstance(ref.getProject()).createSmartPsiElementPointer(ref);
   }
 
-  @Nonnull
   @RequiredReadAction
   public PopupResult doFix(Editor editor) {
     CSharpReferenceExpression element = myRefPointer.getElement();
@@ -150,7 +148,6 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction, Synthe
     return false;
   }
 
-  @Nonnull
   @RequiredReadAction
   private static Set<NamespaceReference> collectAllAvailableNamespaces(CSharpReferenceExpression ref,
                                                                        CSharpReferenceExpression.ResolveToKind kind) {
@@ -324,18 +321,17 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction, Synthe
   }
 
   @Override
-  public boolean showHint(@Nonnull Editor editor) {
+  public boolean showHint(Editor editor) {
     return doFix(editor) == PopupResult.SHOW_HIT;
   }
 
-  @Nonnull
   @Override
   public LocalizeValue getText() {
     return CSharpErrorLocalize.addUsing();
   }
 
   @Override
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile) {
+  public boolean isAvailable(Project project, Editor editor, PsiFile psiFile) {
     CSharpReferenceExpression element = myRefPointer.getElement();
     if (element == null) {
       return false;
@@ -345,7 +341,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction, Synthe
   }
 
   @Override
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
+  public void invoke(Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
 
   }
 

@@ -41,7 +41,6 @@ import consulo.language.psi.*;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,12 +63,12 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl> {
     }
 
     @Override
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       return myPointer.getElement() != null;
     }
 
     @Override
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       DotNetExpression element = myPointer.getElement();
       if (element == null) {
         return;
@@ -82,11 +81,10 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl> {
   }
 
   @RequiredReadAction
-  @Nonnull
   @Override
-  public List<CompilerCheckBuilder> check(@Nonnull CSharpLanguageVersion languageVersion,
-                                          @Nonnull CSharpHighlightContext highlightContext,
-                                          @Nonnull CSharpMethodCallExpressionImpl element) {
+  public List<CompilerCheckBuilder> check(CSharpLanguageVersion languageVersion,
+                                          CSharpHighlightContext highlightContext,
+                                          CSharpMethodCallExpressionImpl element) {
     ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(element.multiResolve(true));
     if (!(resolveResult instanceof MethodResolveResult)) {
       return Collections.emptyList();

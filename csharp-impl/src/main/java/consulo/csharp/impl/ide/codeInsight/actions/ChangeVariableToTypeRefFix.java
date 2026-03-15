@@ -33,7 +33,6 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -41,15 +40,13 @@ import jakarta.annotation.Nonnull;
  */
 public class ChangeVariableToTypeRefFix implements SyntheticIntentionAction {
   private final SmartPsiElementPointer<DotNetVariable> myVariablePointer;
-  @Nonnull
   private final DotNetTypeRef myToTypeRef;
 
-  public ChangeVariableToTypeRefFix(@Nonnull DotNetVariable element, @Nonnull DotNetTypeRef toTypeRef) {
+  public ChangeVariableToTypeRefFix(DotNetVariable element, DotNetTypeRef toTypeRef) {
     myVariablePointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
     myToTypeRef = toTypeRef;
   }
 
-  @Nonnull
   @Override
   @RequiredReadAction
   public LocalizeValue getText() {
@@ -62,13 +59,13 @@ public class ChangeVariableToTypeRefFix implements SyntheticIntentionAction {
   }
 
   @Override
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+  public boolean isAvailable(Project project, Editor editor, PsiFile file) {
     return myVariablePointer.getElement() != null;
   }
 
   @Override
   @RequiredUIAccess
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+  public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
     PsiDocumentManager.getInstance(project).commitAllDocuments();
 
     DotNetVariable element = myVariablePointer.getElement();

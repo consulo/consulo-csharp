@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.source.resolve.handlers;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.function.Processor;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -24,7 +24,6 @@ import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveOptions;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -34,10 +33,10 @@ public class ExpressionOrTypeLikeKindProcessor implements KindProcessor
 {
 	@RequiredReadAction
 	@Override
-	public void process(@Nonnull CSharpResolveOptions options,
-			@Nonnull DotNetGenericExtractor defaultExtractor,
+	public void process(CSharpResolveOptions options,
+			DotNetGenericExtractor defaultExtractor,
 			@Nullable PsiElement forceQualifierElement,
-			@Nonnull Processor<ResolveResult> processor)
+			Processor<ResolveResult> processor)
 	{
 		options.kind(CSharpReferenceExpression.ResolveToKind.ANY_MEMBER);
 		new AnyMemberKindProcessor().process(options, defaultExtractor, forceQualifierElement, processor);

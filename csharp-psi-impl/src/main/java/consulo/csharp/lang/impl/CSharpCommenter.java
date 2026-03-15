@@ -24,9 +24,8 @@ import consulo.language.CodeDocumentationAwareCommenter;
 import consulo.language.Language;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiComment;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -118,7 +117,6 @@ public class CSharpCommenter implements CodeDocumentationAwareCommenter
 		return false;
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

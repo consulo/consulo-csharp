@@ -28,7 +28,6 @@ import consulo.dotnet.DotNetTypes;
 import consulo.language.editor.template.Template;
 import consulo.language.psi.PsiFile;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -41,7 +40,6 @@ public class CreateUnresolvedEventFix extends CreateUnresolvedFieldFix {
         super(expression);
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getText() {
         return CSharpErrorLocalize.createEvent0Text(myReferenceName);
@@ -49,10 +47,10 @@ public class CreateUnresolvedEventFix extends CreateUnresolvedFieldFix {
 
     @RequiredReadAction
     @Override
-    public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context,
+    public void buildTemplate(CreateUnresolvedElementFixContext context,
                               CSharpContextUtil.ContextType contextType,
-                              @Nonnull PsiFile file,
-                              @Nonnull Template template) {
+                              PsiFile file,
+                              Template template) {
         template.addTextSegment("public ");
 
         if (contextType == CSharpContextUtil.ContextType.STATIC) {

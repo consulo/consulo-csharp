@@ -32,7 +32,6 @@ import consulo.project.Project;
 import consulo.project.event.DumbModeListener;
 import consulo.util.collection.MultiMap;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -48,7 +47,6 @@ import java.util.Collections;
 @Singleton
 public class DotNetLibraryAnalyzerComponent {
     public static class EapDescriptor extends EarlyAccessProgramDescriptor {
-        @Nonnull
         @Override
         public LocalizeValue getName() {
             return LocalizeValue.localizeTODO("C#: support adding external library via using fix");
@@ -60,7 +58,6 @@ public class DotNetLibraryAnalyzerComponent {
         }
     }
 
-    @Nonnull
     public static DotNetLibraryAnalyzerComponent getInstance(Project project) {
         return project.getComponent(DotNetLibraryAnalyzerComponent.class);
     }
@@ -102,7 +99,7 @@ public class DotNetLibraryAnalyzerComponent {
 //		connect.subscribe(ModuleExtensionChangeListener.class, new ModuleExtensionChangeListener()
 //		{
 //			@Override
-//			public void beforeExtensionChanged(@Nonnull ModuleExtension<?> moduleExtension, @Nonnull final ModuleExtension<?> moduleExtension2)
+//			public void beforeExtensionChanged(ModuleExtension<?> moduleExtension, final ModuleExtension<?> moduleExtension2)
 //			{
 //				if(moduleExtension2 instanceof DotNetSimpleModuleExtension && moduleExtension2.isEnabled())
 //				{
@@ -120,7 +117,7 @@ public class DotNetLibraryAnalyzerComponent {
 
     }
 
-    private void runAnalyzerFor(@Nonnull final DotNetSimpleModuleExtension<?> extension) {
+    private void runAnalyzerFor(final DotNetSimpleModuleExtension<?> extension) {
         /*new Task.Backgroundable(extension.getProject(), "Analyzing .NET libraries for module: " + extension.getModule().getName())
 		{
 			@Override
@@ -182,8 +179,7 @@ public class DotNetLibraryAnalyzerComponent {
     /**
      * @return couple library + namespace
      */
-    @Nonnull
-    public Collection<NamespaceReference> get(@Nonnull consulo.module.Module module, @Nonnull String typeName) {
+    public Collection<NamespaceReference> get(consulo.module.Module module, String typeName) {
 		/*MultiMap<String, NamespaceReference> map = myCacheMap.get(module);
 		if(map == null)
 		{
@@ -193,9 +189,8 @@ public class DotNetLibraryAnalyzerComponent {
         return Collections.emptyList();
     }
 
-    @Nonnull
     @SuppressWarnings("unchecked")
-    public Collection<NamespaceReference> getAll(@Nonnull Module module) {
+    public Collection<NamespaceReference> getAll(Module module) {
 		/*MultiMap<String, NamespaceReference> map = myCacheMap.get(module);
 		if(map == null)
 		{

@@ -31,8 +31,7 @@ import consulo.util.collection.primitive.ints.IntLists;
 import consulo.util.lang.StringUtil;
 import consulo.util.lang.ref.Ref;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +44,6 @@ public class SomeTypeParser
 {
 	private static final Logger LOGGER = Logger.getInstance(SomeTypeParser.class);
 
-	@Nonnull
 	public static DotNetTypeRef toDotNetTypeRef(String text, String nameFromBytecode, PsiElement scope)
 	{
 		SomeType someType = parseType(text, nameFromBytecode);
@@ -57,7 +55,7 @@ public class SomeTypeParser
 		return convert(someType, scope);
 	}
 
-	public static DotNetTypeRef convert(@Nonnull SomeType type, @Nonnull final PsiElement scope)
+	public static DotNetTypeRef convert(SomeType type, final PsiElement scope)
 	{
 		final Ref<DotNetTypeRef> typeRefRef = new Ref<>();
 		type.accept(new SomeTypeVisitor()

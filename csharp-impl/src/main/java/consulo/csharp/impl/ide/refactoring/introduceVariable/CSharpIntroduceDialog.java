@@ -27,7 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.editor.ui.awt.EditorComboBoxRenderer;
@@ -36,7 +36,6 @@ import consulo.ui.ex.awt.ComboBox;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.language.editor.ui.awt.EditorComboBoxEditor;
 import consulo.language.editor.ui.awt.StringComboboxEditor;
-import jakarta.annotation.Nonnull;
 
 /**
  * User: Fedor.Korotkov
@@ -51,7 +50,7 @@ public class CSharpIntroduceDialog extends DialogWrapper {
   private final int myOccurrencesCount;
   private final DotNetExpression myExpression;
 
-  public CSharpIntroduceDialog(@Nonnull final Project project, @Nonnull final String caption, final CSharpIntroduceOperation operation) {
+  public CSharpIntroduceDialog(final Project project, final String caption, final CSharpIntroduceOperation operation) {
     super(project, true);
     myOccurrencesCount = operation.getOccurrences().size();
     myProject = project;

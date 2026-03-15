@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
-import jakarta.annotation.Nonnull;
 import consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import consulo.csharp.lang.impl.psi.source.CSharpTypeDefStatementImpl;
 import consulo.language.ast.ASTNode;
@@ -33,15 +32,14 @@ public class CSharpTypeDefStubElementType extends CSharpEmptyStubElementType<CSh
 		super("TYPE_DEF");
 	}
 
-	@Nonnull
 	@Override
-	public CSharpTypeDefStatement createElement(@Nonnull ASTNode astNode)
+	public CSharpTypeDefStatement createElement(ASTNode astNode)
 	{
 		return new CSharpTypeDefStatementImpl(astNode);
 	}
 
 	@Override
-	public CSharpTypeDefStatement createPsi(@Nonnull EmptyStub<CSharpTypeDefStatement> stub)
+	public CSharpTypeDefStatement createPsi(EmptyStub<CSharpTypeDefStatement> stub)
 	{
 		return new CSharpTypeDefStatementImpl(stub);
 	}

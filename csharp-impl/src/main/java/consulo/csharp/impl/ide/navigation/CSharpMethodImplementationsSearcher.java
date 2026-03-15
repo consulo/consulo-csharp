@@ -24,7 +24,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.search.DefinitionsScopedSearch;
 import consulo.language.psi.search.DefinitionsScopedSearchExecutor;
 import consulo.util.collection.ContainerUtil;
-import jakarta.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -36,7 +35,7 @@ import java.util.function.Predicate;
 @ExtensionImpl
 public class CSharpMethodImplementationsSearcher implements DefinitionsScopedSearchExecutor {
     @Override
-    public boolean execute(@Nonnull DefinitionsScopedSearch.SearchParameters queryParameters, @Nonnull Predicate<? super PsiElement> consumer) {
+    public boolean execute(DefinitionsScopedSearch.SearchParameters queryParameters, Predicate<? super PsiElement> consumer) {
         PsiElement element = queryParameters.getElement();
         if (element instanceof DotNetVirtualImplementOwner) {
             Collection<DotNetVirtualImplementOwner> members = ReadAction.compute(() -> OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) element));

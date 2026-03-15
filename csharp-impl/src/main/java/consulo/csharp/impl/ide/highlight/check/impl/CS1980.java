@@ -27,8 +27,7 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetPsiSearcher;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Map;
@@ -45,7 +44,7 @@ public class CS1980 extends CompilerCheck<CSharpNativeType>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpNativeType element)
+	public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpNativeType element)
 	{
 		PsiElement typeElement = element.getTypeElement();
 		if(element.getTypeElementType() == CSharpTokens.DYNAMIC_KEYWORD)
@@ -69,7 +68,7 @@ public class CS1980 extends CompilerCheck<CSharpNativeType>
 	}
 
 	@RequiredReadAction
-	private boolean noRuntimeType(@Nonnull CSharpNativeType element)
+	private boolean noRuntimeType(CSharpNativeType element)
 	{
 		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(element.getProject()).findType(ourCheckType, element.getResolveScope());
 		if(type == null)

@@ -30,7 +30,6 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.util.lang.ObjectUtil;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,16 +40,14 @@ import java.util.List;
 public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 {
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public List<CompilerCheckBuilder> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpTypeDeclaration element)
+	public List<CompilerCheckBuilder> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpTypeDeclaration element)
 	{
 		return doCheck(this, element);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static List<CompilerCheckBuilder> doCheck(@Nonnull CompilerCheck<? extends DotNetMemberOwner> compilerCheck, @Nonnull DotNetMemberOwner t)
+	public static List<CompilerCheckBuilder> doCheck(CompilerCheck<? extends DotNetMemberOwner> compilerCheck, DotNetMemberOwner t)
 	{
 		List<CompilerCheckBuilder> results = new ArrayList<>();
 

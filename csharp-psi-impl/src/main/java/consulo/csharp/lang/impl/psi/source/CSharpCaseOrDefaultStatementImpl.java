@@ -21,8 +21,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -30,7 +29,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpCaseOrDefaultStatementImpl extends CSharpElementImpl implements CSharpSwitchLabelStatement
 {
-	public CSharpCaseOrDefaultStatementImpl(@Nonnull IElementType elementType)
+	public CSharpCaseOrDefaultStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -43,7 +42,7 @@ public class CSharpCaseOrDefaultStatementImpl extends CSharpElementImpl implemen
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitSwitchLabelStatement(this);
 	}

@@ -33,8 +33,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -42,25 +41,25 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl>> implements CSharpNamespaceDeclaration
 {
-	public CSharpNamespaceDeclarationImpl(@Nonnull ASTNode node)
+	public CSharpNamespaceDeclarationImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpNamespaceDeclarationImpl(@Nonnull CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> stub)
+	public CSharpNamespaceDeclarationImpl(CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> stub)
 	{
 		super(stub, CSharpStubElements.NAMESPACE_DECLARATION);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitNamespaceDeclaration(this);
 	}
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return false;
 	}
@@ -87,7 +86,7 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		return null;
 	}
@@ -107,7 +106,6 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetQualifiedElement[] getMembers()
 	{
@@ -122,7 +120,7 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 
 	@Override
 	@RequiredWriteAction
-	public void setNamespace(@Nonnull String namespace)
+	public void setNamespace(String namespace)
 	{
 		PsiElement referenceToken = CSharpFileFactory.createExpression(getProject(), namespace);
 
@@ -181,7 +179,6 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 		return childByClass != null ? StringUtil.strip(childByClass.getText(), CSharpReferenceExpression.DEFAULT_REF_FILTER) : null;
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public CSharpUsingListChild[] getUsingStatements()

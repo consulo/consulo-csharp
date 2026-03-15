@@ -39,8 +39,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.scope.GlobalSearchScope;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,8 +56,8 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor {
     private final GlobalSearchScope myResolveScope;
     private final OverrideProcessor myOverrideProcessor;
 
-    public MemberResolveScopeProcessor(@Nonnull CSharpResolveOptions options,
-                                       @Nonnull Predicate<ResolveResult> resultProcessor,
+    public MemberResolveScopeProcessor(CSharpResolveOptions options,
+                                       Predicate<ResolveResult> resultProcessor,
                                        ExecuteTarget[] targets) {
         myScopeElement = options.getElement();
         myResolveScope = myScopeElement.getResolveScope();
@@ -67,8 +66,8 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor {
         putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
     }
 
-    public MemberResolveScopeProcessor(@Nonnull PsiElement scopeElement,
-                                       @Nonnull Predicate<ResolveResult> resultProcessor,
+    public MemberResolveScopeProcessor(PsiElement scopeElement,
+                                       Predicate<ResolveResult> resultProcessor,
                                        @Nullable ExecuteTarget[] targets,
                                        @Nullable OverrideProcessor overrideProcessor) {
         myScopeElement = scopeElement;
@@ -79,13 +78,13 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor {
     }
 
     @Override
-    public void pushResultExternally(@Nonnull ResolveResult resolveResult) {
+    public void pushResultExternally(ResolveResult resolveResult) {
         myResultProcessor.test(resolveResult);
     }
 
     @RequiredReadAction
     @Override
-    public boolean execute(@Nonnull PsiElement element, ResolveState state) {
+    public boolean execute(PsiElement element, ResolveState state) {
         CSharpResolveSelector selector = state.get(CSharpResolveUtil.SELECTOR);
         if (selector == null) {
             return true;

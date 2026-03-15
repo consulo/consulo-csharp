@@ -26,8 +26,7 @@ import consulo.navigation.ItemPresentation;
 import consulo.navigation.ItemPresentationProvider;
 import consulo.navigation.Navigatable;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -61,7 +60,7 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 	}
 
 	@SuppressWarnings("unchecked")
-	public S withParent(@Nonnull PsiElement parent)
+	public S withParent(PsiElement parent)
 	{
 		myParent = parent;
 		return (S) this;
@@ -82,7 +81,6 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public PsiElement getNavigationElement()
 	{
@@ -134,7 +132,7 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 	}
 
 	@Override
-	public final void accept(@Nonnull PsiElementVisitor visitor)
+	public final void accept(PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{
@@ -146,7 +144,7 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 		}
 	}
 
-	public abstract void accept(@Nonnull CSharpElementVisitor visitor);
+	public abstract void accept(CSharpElementVisitor visitor);
 
 	@Override
 	public String toString()

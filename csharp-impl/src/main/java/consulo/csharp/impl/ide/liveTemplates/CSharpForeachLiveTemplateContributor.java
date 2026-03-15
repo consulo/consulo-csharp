@@ -5,26 +5,23 @@ import consulo.csharp.api.localize.CSharpLocalize;
 import consulo.csharp.impl.ide.liveTemplates.context.CSharpStatementContextType;
 import consulo.language.editor.template.LiveTemplateContributor;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
 import java.lang.Override;
 import java.lang.String;
 
 @ExtensionImpl
 public class CSharpForeachLiveTemplateContributor implements LiveTemplateContributor {
   @Override
-  @Nonnull
   public String groupId() {
     return "csharpforeach";
   }
 
   @Override
-  @Nonnull
   public LocalizeValue groupName() {
     return LocalizeValue.localizeTODO("C# Foreach");
   }
 
   @Override
-  public void contribute(@Nonnull LiveTemplateContributor.Factory factory) {
+  public void contribute(LiveTemplateContributor.Factory factory) {
     try(Builder builder = factory.newBuilder("csharpforeachIter", "iter", "foreach ($FOREACH_COMPONENT_TYPE$ $VAR$ in $FOREACH_TYPE$) {\n"
         + "  $END$\n"
         + "}", CSharpLocalize.livetemplatesForv())) {

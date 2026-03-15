@@ -27,7 +27,6 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,9 +58,8 @@ public class CSharpNativeTypeImplUtil
 		ourElementToQTypes.put(CSharpTokens.DECIMAL_KEYWORD, DotNetTypes.System.Decimal);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef toTypeRef(@Nonnull CSharpNativeType nativeType)
+	public static DotNetTypeRef toTypeRef(CSharpNativeType nativeType)
 	{
 		IElementType elementType = nativeType.getTypeElementType();
 		if(elementType == CSharpSoftTokens.VAR_KEYWORD)

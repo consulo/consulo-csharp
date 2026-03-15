@@ -52,8 +52,7 @@ import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -70,20 +69,19 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 {
 	private static final Logger LOGGER = Logger.getInstance(CSharpDebuggerProvider.class);
 
-	@Nonnull
 	@Override
-	public PsiFile createExpressionCodeFragment(@Nonnull Project project, @Nullable PsiElement sourcePosition, @Nonnull String text, boolean isPhysical)
+	public PsiFile createExpressionCodeFragment(Project project, @Nullable PsiElement sourcePosition, String text, boolean isPhysical)
 	{
 		return CSharpFragmentFactory.createExpressionFragment(project, text, sourcePosition);
 	}
 
 	@Override
 	@RequiredUIAccess
-	public void evaluate(@Nonnull DotNetStackFrameProxy frame,
-						 @Nonnull DotNetDebugContext debuggerContext,
-						 @Nonnull String expression,
+	public void evaluate(DotNetStackFrameProxy frame,
+						 DotNetDebugContext debuggerContext,
+						 String expression,
 						 @Nullable PsiElement elementAt,
-						 @Nonnull XDebuggerEvaluator.XEvaluationCallback callback,
+						 XDebuggerEvaluator.XEvaluationCallback callback,
 						 @Nullable XSourcePosition sourcePosition)
 	{
 		if(elementAt == null)
@@ -198,11 +196,11 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 	}
 
 	@Override
-	public void evaluate(@Nonnull DotNetStackFrameProxy frame,
-						 @Nonnull DotNetDebugContext debuggerContext,
-						 @Nonnull DotNetReferenceExpression referenceExpression,
-						 @Nonnull Set<Object> visitedVariables,
-						 @Nonnull Consumer<XNamedValue> consumer)
+	public void evaluate(DotNetStackFrameProxy frame,
+						 DotNetDebugContext debuggerContext,
+						 DotNetReferenceExpression referenceExpression,
+						 Set<Object> visitedVariables,
+						 Consumer<XNamedValue> consumer)
 	{
 		try
 		{
@@ -267,7 +265,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 
 	@RequiredReadAction
     @Override
-	public boolean isSupported(@Nonnull PsiFile psiFile)
+	public boolean isSupported(PsiFile psiFile)
 	{
 		return psiFile.getFileType() == CSharpFileType.INSTANCE;
 	}

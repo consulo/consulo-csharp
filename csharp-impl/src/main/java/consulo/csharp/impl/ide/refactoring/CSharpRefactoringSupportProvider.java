@@ -39,8 +39,7 @@ import consulo.language.psi.scope.LocalSearchScope;
 import consulo.language.psi.search.PsiSearchHelper;
 import consulo.language.psi.util.PsiTreeUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -100,7 +99,7 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 	}
 
 	@RequiredReadAction
-	public static boolean mayRenameInplace(@Nonnull PsiElement elementToRename, @Nullable final PsiElement nameSuggestionContext)
+	public static boolean mayRenameInplace(PsiElement elementToRename, @Nullable final PsiElement nameSuggestionContext)
 	{
 		if(nameSuggestionContext != null && nameSuggestionContext.getContainingFile() != elementToRename.getContainingFile())
 		{
@@ -133,7 +132,6 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 		return PsiTreeUtil.isAncestor(containingFile, scopeElements[0], false);
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

@@ -27,7 +27,6 @@ import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.language.psi.PsiElement;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.function.PairConsumer;
-import jakarta.annotation.Nonnull;
 
 import java.util.Locale;
 
@@ -46,7 +45,6 @@ public class XAccessorOwnerChooseMember extends ImplementMemberChooseObject<CSha
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	@RequiredUIAccess
 	public String getPresentationText()

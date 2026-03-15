@@ -27,7 +27,7 @@ import consulo.language.editor.highlight.usage.HighlightUsagesHandlerFactory;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL

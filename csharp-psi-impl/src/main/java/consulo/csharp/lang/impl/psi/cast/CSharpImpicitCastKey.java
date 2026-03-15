@@ -19,16 +19,15 @@ package consulo.csharp.lang.impl.psi.cast;
 import consulo.csharp.lang.CSharpCastType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.scope.GlobalSearchScope;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 2023-12-31
  */
-public record CSharpImpicitCastKey(@Nonnull DotNetTypeRef to,
-                                   @Nonnull DotNetTypeRef from,
-                                   @Nonnull CSharpCastType castType,
-                                   @Nonnull GlobalSearchScope searchScope) {
+public record CSharpImpicitCastKey(DotNetTypeRef to,
+                                   DotNetTypeRef from,
+                                   CSharpCastType castType,
+                                   GlobalSearchScope searchScope) {
 
     
 }

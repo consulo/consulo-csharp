@@ -25,8 +25,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -34,25 +33,23 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpAwaitExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpAwaitExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpAwaitExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	public PsiElement getAwaitKeywordElement()
 	{
 		return findNotNullChildByType(CSharpSoftTokens.AWAIT_KEYWORD);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitAwaitExpression(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean b)
 	{

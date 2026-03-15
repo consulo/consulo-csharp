@@ -33,7 +33,6 @@ import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.util.collection.MultiMap;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,13 +45,13 @@ import java.util.stream.Collectors;
  */
 public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpBodyWithBraces
 {
-	public CSharpBlockStatementImpl(@Nonnull IElementType elementType)
+	public CSharpBlockStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitBlockStatement(this);
 	}
@@ -71,14 +70,12 @@ public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNe
 		return findPsiChildByType(CSharpTokens.RBRACE);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public DotNetStatement[] getStatements()
 	{
 		return LanguageCachedValueUtil.getCachedValue(this, () -> CachedValueProvider.Result.create(findChildrenByClass(DotNetStatement.class),PsiModificationTracker.MODIFICATION_COUNT));
 	}
 
-	@Nonnull
 	private Collection<CSharpElementGroup<CSharpMethodDeclaration>> getLocalMethods()
 	{
 		return LanguageCachedValueUtil.getCachedValue(this, () -> {
@@ -105,7 +102,7 @@ public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNe
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		DotNetStatement[] statements = getStatements();
 

@@ -21,7 +21,6 @@ import com.intellij.testFramework.TestModuleDescriptor;
 import consulo.ide.impl.idea.util.Function;
 import consulo.language.psi.ResolveResult;
 import consulo.testFramework.ResolvingTestCase;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -62,14 +61,12 @@ public abstract class MethodReferenceResolveTest extends ResolvingTestCase
 	{
 	}
 
-	@Nonnull
 	@Override
 	protected TestModuleDescriptor createTestModuleDescriptor()
 	{
 		return new CSharpMockModuleDescriptor();
 	}
 
-	@Nonnull
 	@Override
 	protected consulo.ide.impl.idea.util.Function<ResolveResult, String> createReferenceResultBuilder()
 	{

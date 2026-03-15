@@ -25,8 +25,7 @@ import consulo.csharp.lang.psi.CSharpCallArgumentList;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -34,18 +33,16 @@ import jakarta.annotation.Nullable;
  */
 public abstract class CSharpExpressionWithOperatorImpl extends CSharpExpressionImpl implements DotNetExpression, CSharpCallArgumentListOwner
 {
-	public CSharpExpressionWithOperatorImpl(@Nonnull IElementType elementType)
+	public CSharpExpressionWithOperatorImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	public CSharpOperatorReferenceImpl getOperatorElement()
 	{
 		return findNotNullChildByClass(CSharpOperatorReferenceImpl.class);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
@@ -55,7 +52,6 @@ public abstract class CSharpExpressionWithOperatorImpl extends CSharpExpressionI
 		return operatorElement.resolveToTypeRef();
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
@@ -75,7 +71,6 @@ public abstract class CSharpExpressionWithOperatorImpl extends CSharpExpressionI
 		return getOperatorElement().getParameterList();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -89,7 +84,6 @@ public abstract class CSharpExpressionWithOperatorImpl extends CSharpExpressionI
 		return getOperatorElement().resolve();
 	}
 
-	@Nonnull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{

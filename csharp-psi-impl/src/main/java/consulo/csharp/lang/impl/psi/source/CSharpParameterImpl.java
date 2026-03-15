@@ -32,10 +32,8 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.scope.LocalSearchScope;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -43,13 +41,13 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpParameterImpl extends CSharpElementImpl implements DotNetParameter, CSharpNamedElement
 {
-	public CSharpParameterImpl(@Nonnull IElementType elementType)
+	public CSharpParameterImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitParameter(this);
 	}
@@ -70,7 +68,6 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -88,7 +85,6 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetType getType()
 	{
@@ -113,7 +109,7 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		if(modifier == CSharpModifier.OPTIONAL)
 		{
@@ -155,13 +151,12 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 
 	@Override
 	@RequiredReadAction
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, s);
 		return this;
 	}
 
-	@Nonnull
 	@Override
 	public SearchScope getUseScope()
 	{

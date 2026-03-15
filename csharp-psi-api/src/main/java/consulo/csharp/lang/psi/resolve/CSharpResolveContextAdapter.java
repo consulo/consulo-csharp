@@ -19,7 +19,6 @@ package consulo.csharp.lang.psi.resolve;
 import consulo.annotation.DeprecationInfo;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 
 /**
 * @author VISTALL
@@ -29,7 +28,6 @@ import jakarta.annotation.Nonnull;
 @DeprecationInfo("Use CSharpResolveContext")
 public class CSharpResolveContextAdapter implements CSharpResolveContext
 {
-	@Nonnull
 	@Override
 	public PsiElement getElement()
 	{

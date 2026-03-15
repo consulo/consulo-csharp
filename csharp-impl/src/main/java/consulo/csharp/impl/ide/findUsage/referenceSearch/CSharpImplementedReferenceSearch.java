@@ -27,7 +27,6 @@ import consulo.language.psi.PsiReference;
 import consulo.language.psi.search.ReferencesSearch;
 import consulo.language.psi.search.ReferencesSearchQueryExecutor;
 import consulo.project.util.query.QueryExecutorBase;
-import jakarta.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -41,7 +40,7 @@ import java.util.function.Supplier;
 @ExtensionImpl
 public class CSharpImplementedReferenceSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> implements ReferencesSearchQueryExecutor {
     @Override
-    public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Predicate<? super PsiReference> consumer) {
+    public void processQuery(ReferencesSearch.SearchParameters queryParameters, Predicate<? super PsiReference> consumer) {
         final PsiElement elementToSearch = queryParameters.getElementToSearch();
         if (elementToSearch instanceof CSharpMethodDeclaration) {
             Collection<DotNetVirtualImplementOwner> targets = ApplicationManager.getApplication().runReadAction((Supplier<Collection<DotNetVirtualImplementOwner>>) () -> {

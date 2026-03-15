@@ -34,9 +34,8 @@ import consulo.language.util.CommentUtilCore;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.*;
 
 /**
@@ -53,7 +52,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 	private List<ASTNode> myAdditionalNodes = Collections.emptyList();
 	private CSharpFormattingBlock myParent;
 
-	public CSharpFormattingBlock(@Nonnull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment, @Nonnull CodeStyleSettings settings, @Nonnull CSharpSpacingSettings spacingSettings)
+	public CSharpFormattingBlock(ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment, CodeStyleSettings settings, CSharpSpacingSettings spacingSettings)
 	{
 		super(node, wrap, alignment);
 		mySettings = settings;
@@ -67,7 +66,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 
 	@Nullable
 	@Override
-	public Spacing getSpacing(@Nullable Block child1, @Nonnull Block child2)
+	public Spacing getSpacing(@Nullable Block child1, Block child2)
 	{
 		if((!(child1 instanceof ASTBlock) || !(child2 instanceof ASTBlock)))
 		{
@@ -82,7 +81,6 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 		return getNode().getFirstChildNode() == null || getNode().getElementType() == NON_ACTIVE_SYMBOL;
 	}
 
-	@Nonnull
 	@Override
 	public TextRange getTextRange()
 	{
@@ -262,7 +260,6 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 		myParent = (CSharpFormattingBlock) newParent;
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public IElementType getElementType()
 	{

@@ -44,7 +44,6 @@ import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.logging.Logger;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
-import jakarta.annotation.Nonnull;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -57,7 +56,7 @@ public class OverrideUtil {
     private static final Logger LOGGER = Logger.getInstance(OverrideUtil.class);
 
     @RequiredReadAction
-    public static CSharpModifier getRequiredOverrideModifier(@Nonnull DotNetModifierListOwner modifierListOwner) {
+    public static CSharpModifier getRequiredOverrideModifier(DotNetModifierListOwner modifierListOwner) {
         DotNetModifierList modifierList = modifierListOwner.getModifierList();
         if (modifierList == null) {
             return null;
@@ -73,11 +72,10 @@ public class OverrideUtil {
         return CSharpModifier.NEW;
     }
 
-    @Nonnull
-    public static Collection<PsiElement> filterOverrideElements(@Nonnull PsiScopeProcessor processor,
-                                                                @Nonnull PsiElement scopeElement,
-                                                                @Nonnull Collection<PsiElement> psiElements,
-                                                                @Nonnull OverrideProcessor overrideProcessor) {
+    public static Collection<PsiElement> filterOverrideElements(PsiScopeProcessor processor,
+                                                                PsiElement scopeElement,
+                                                                Collection<PsiElement> psiElements,
+                                                                OverrideProcessor overrideProcessor) {
         if (psiElements.size() == 0) {
             return psiElements;
         }
@@ -91,10 +89,9 @@ public class OverrideUtil {
         return filterOverrideElements(scopeElement, elements, overrideProcessor);
     }
 
-    @Nonnull
     @SuppressWarnings("unchecked")
     @RequiredReadAction
-    public static List<PsiElement> filterOverrideElements(@Nonnull PsiElement scopeElement, @Nonnull Collection<PsiElement> elements, @Nonnull OverrideProcessor overrideProcessor) {
+    public static List<PsiElement> filterOverrideElements(PsiElement scopeElement, Collection<PsiElement> elements, OverrideProcessor overrideProcessor) {
         List<PsiElement> copyElements = new ArrayList<>(elements);
 
         for (PsiElement element : elements) {
@@ -164,7 +161,6 @@ public class OverrideUtil {
         }
     }
 
-    @Nonnull
     private static String getNameForGroup(List<PsiElement> elements) {
         assert !elements.isEmpty();
         PsiElement element = elements.get(0);
@@ -186,7 +182,7 @@ public class OverrideUtil {
     }
 
     @RequiredReadAction
-    public static boolean isAllowForOverride(@Nonnull PsiElement parent) {
+    public static boolean isAllowForOverride(PsiElement parent) {
         if (!(parent instanceof DotNetVirtualImplementOwner)) {
             return false;
         }
@@ -201,7 +197,6 @@ public class OverrideUtil {
         return true;
     }
 
-    @Nonnull
     @RequiredReadAction
     public static Collection<DotNetVirtualImplementOwner> collectOverridingMembers(final DotNetVirtualImplementOwner target) {
         PsiElement parent = target.getParent();
@@ -244,7 +239,6 @@ public class OverrideUtil {
         return results;
     }
 
-    @Nonnull
     @RequiredReadAction
     public static Collection<DotNetVirtualImplementOwner> collectOverridenMembers(final DotNetVirtualImplementOwner target) {
         PsiElement parent = target.getParent();
@@ -294,9 +288,8 @@ public class OverrideUtil {
         return list;
     }
 
-    @Nonnull
     @RequiredReadAction
-    public static Collection<DotNetModifierListOwner> collectMembersWithModifier(@Nonnull PsiElement element, @Nonnull DotNetGenericExtractor extractor, @Nonnull CSharpModifier modifier) {
+    public static Collection<DotNetModifierListOwner> collectMembersWithModifier(PsiElement element, DotNetGenericExtractor extractor, CSharpModifier modifier) {
         List<DotNetModifierListOwner> psiElements = new SmartList<>();
         for (PsiElement psiElement : getAllMembers(element, element.getResolveScope(), extractor, false, true)) {
             ProgressManager.checkCanceled();
@@ -308,11 +301,10 @@ public class OverrideUtil {
         return psiElements;
     }
 
-    @Nonnull
     @RequiredReadAction
-    public static Collection<PsiElement> getAllMembers(@Nonnull final PsiElement targetTypeDeclaration,
-                                                       @Nonnull GlobalSearchScope scope,
-                                                       @Nonnull DotNetGenericExtractor extractor,
+    public static Collection<PsiElement> getAllMembers(final PsiElement targetTypeDeclaration,
+                                                       GlobalSearchScope scope,
+                                                       DotNetGenericExtractor extractor,
                                                        boolean completion,
                                                        boolean overrideTool) {
         final CommonProcessors.CollectProcessor<PsiElement> collectProcessor = new CommonProcessors.CollectProcessor<>();

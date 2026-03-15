@@ -33,8 +33,7 @@ import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Objects;
@@ -51,9 +50,8 @@ public class CSharpLambdaResolveResultUtil
 		return element != null ? element.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE) : null;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static CSharpTypeDeclaration createTypeFromDelegate(@Nonnull CSharpMethodDeclaration declaration, @Nonnull DotNetGenericExtractor extractor)
+	public static CSharpTypeDeclaration createTypeFromDelegate(CSharpMethodDeclaration declaration, DotNetGenericExtractor extractor)
 	{
 		Project project = declaration.getProject();
 

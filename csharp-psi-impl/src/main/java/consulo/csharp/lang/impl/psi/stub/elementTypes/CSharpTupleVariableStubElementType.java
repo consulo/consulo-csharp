@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
@@ -36,14 +35,13 @@ public class CSharpTupleVariableStubElementType extends CSharpBaseVariableStubEl
 	}
 
 	@Override
-	public CSharpTupleVariable createPsi(@Nonnull CSharpVariableDeclStub<CSharpTupleVariable> stub)
+	public CSharpTupleVariable createPsi(CSharpVariableDeclStub<CSharpTupleVariable> stub)
 	{
 		return new CSharpStubTupleVariableImpl(stub, this);
 	}
 
-	@Nonnull
 	@Override
-	public PsiElement createElement(@Nonnull ASTNode astNode)
+	public PsiElement createElement(ASTNode astNode)
 	{
 		return new CSharpStubTupleVariableImpl(astNode);
 	}

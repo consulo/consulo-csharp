@@ -43,8 +43,7 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.ObjectUtil;
 import consulo.virtualFileSystem.VirtualFile;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jdom.Element;
 
 import java.util.ArrayList;
@@ -63,26 +62,24 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	protected CSharpCustomCompilerSdkPointer myCustomCompilerSdkPointer;
 	protected CSharpNullableOption myNullableOption = CSharpNullableOption.UNSPECIFIED;
 
-	public BaseCSharpModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer layer)
+	public BaseCSharpModuleExtension(String id, ModuleRootLayer layer)
 	{
 		super(id, layer);
 		myCustomCompilerSdkPointer = new CSharpCustomCompilerSdkPointer(layer, id);
 	}
 
 	@Override
-	public void setCompilerExecutable(@Nonnull DotNetCompilerOptionsBuilder builder, @Nonnull VirtualFile executable)
+	public void setCompilerExecutable(DotNetCompilerOptionsBuilder builder, VirtualFile executable)
 	{
 		((MSBaseDotNetCompilerOptionsBuilder) builder).setExecutable(executable.getPath());
 	}
 
-	@Nonnull
 	@Override
 	public MutableModuleInheritableNamedPointer<Sdk> getCustomCompilerSdkPointer()
 	{
 		return myCustomCompilerSdkPointer;
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public PsiElement[] getEntryPointElements()
@@ -147,7 +144,6 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public CSharpPlatform getPlatform()
 	{
@@ -160,7 +156,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		return myOptimizeCode;
 	}
 
-	public void setPlatform(@Nonnull CSharpPlatform platform)
+	public void setPlatform(CSharpPlatform platform)
 	{
 		myPlatform = platform;
 	}
@@ -171,7 +167,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	}
 
 	@Override
-	public boolean isModifiedImpl(@Nonnull T mutableModuleExtension)
+	public boolean isModifiedImpl(T mutableModuleExtension)
 	{
 		return super.isModifiedImpl(mutableModuleExtension) ||
 				myOptimizeCode != mutableModuleExtension.myOptimizeCode ||
@@ -183,7 +179,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 
 	@RequiredReadAction
 	@Override
-	protected void loadStateImpl(@Nonnull Element element)
+	protected void loadStateImpl(Element element)
 	{
 		super.loadStateImpl(element);
 
@@ -195,7 +191,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	}
 
 	@Override
-	protected void getStateImpl(@Nonnull Element element)
+	protected void getStateImpl(Element element)
 	{
 		super.getStateImpl(element);
 
@@ -212,21 +208,20 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		myCustomCompilerSdkPointer.toXml(element);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpNullableOption getNullableOption()
 	{
 		return myNullableOption;
 	}
 
-	public void setNullableOption(@Nonnull CSharpNullableOption nullableOption)
+	public void setNullableOption(CSharpNullableOption nullableOption)
 	{
 		myNullableOption = nullableOption;
 	}
 
 	@RequiredReadAction
 	@Override
-	public void commit(@Nonnull T mutableModuleExtension)
+	public void commit(T mutableModuleExtension)
 	{
 		super.commit(mutableModuleExtension);
 

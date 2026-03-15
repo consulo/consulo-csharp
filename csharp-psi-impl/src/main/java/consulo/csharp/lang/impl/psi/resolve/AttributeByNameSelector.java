@@ -28,7 +28,6 @@ import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.UserDataHolderBase;
-import jakarta.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -49,10 +48,9 @@ public class AttributeByNameSelector implements CSharpResolveSelector
 		myNameWithAt = nameWithAt;
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
-	public Collection<PsiElement> doSelectElement(@Nonnull CSharpResolveContext context, boolean deep)
+	public Collection<PsiElement> doSelectElement(CSharpResolveContext context, boolean deep)
 	{
 		if(myNameWithAt.isEmpty())
 		{

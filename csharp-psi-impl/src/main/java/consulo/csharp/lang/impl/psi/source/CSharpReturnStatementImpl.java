@@ -24,8 +24,7 @@ import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -33,12 +32,11 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpReturnStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpReturnStatementImpl(@Nonnull IElementType elementType)
+	public CSharpReturnStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public PsiElement getReturnKeyword()
 	{
@@ -52,7 +50,7 @@ public class CSharpReturnStatementImpl extends CSharpElementImpl implements DotN
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitReturnStatement(this);
 	}

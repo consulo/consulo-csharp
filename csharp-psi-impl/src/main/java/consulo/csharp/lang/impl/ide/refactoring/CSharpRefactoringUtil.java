@@ -32,9 +32,8 @@ import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.*;
 
 /**
@@ -58,12 +57,12 @@ public class CSharpRefactoringUtil
 		nameIdentifier.replace(newIdentifier);
 	}
 
-	public static Set<String> collectUsedNames(@Nonnull PsiElement context, @Nullable PsiElement toSkip)
+	public static Set<String> collectUsedNames(PsiElement context, @Nullable PsiElement toSkip)
 	{
 		return new HashSet<>(ContainerUtil.map(collectUsedComponents(context, toSkip), PsiNamedElement::getName));
 	}
 
-	public static Set<PsiNamedElement> collectUsedComponents(@Nonnull PsiElement context, @Nullable PsiElement toSkip)
+	public static Set<PsiNamedElement> collectUsedComponents(PsiElement context, @Nullable PsiElement toSkip)
 	{
 		final Set<PsiNamedElement> usedComponentNames = new HashSet<>();
 		PsiTreeUtil.treeWalkUp(new ComponentNameScopeProcessor(usedComponentNames, toSkip), context, null, new ResolveState());
@@ -71,10 +70,10 @@ public class CSharpRefactoringUtil
 	}
 
 	@Nullable
-	public static DotNetExpression getSelectedExpression(@Nonnull final Project project,
-			@Nonnull PsiFile file,
-			@Nonnull final PsiElement element1,
-			@Nonnull final PsiElement element2)
+	public static DotNetExpression getSelectedExpression(final Project project,
+			PsiFile file,
+			final PsiElement element1,
+			final PsiElement element2)
 	{
 		PsiElement parent = PsiTreeUtil.findCommonParent(element1, element2);
 		if(parent == null)
@@ -88,8 +87,7 @@ public class CSharpRefactoringUtil
 		return PsiTreeUtil.getParentOfType(parent, DotNetExpression.class);
 	}
 
-	@Nonnull
-	public static List<PsiElement> getOccurrences(@Nonnull final PsiElement pattern, @Nullable final PsiElement context)
+	public static List<PsiElement> getOccurrences(final PsiElement pattern, @Nullable final PsiElement context)
 	{
 		if(context == null)
 		{

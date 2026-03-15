@@ -23,7 +23,6 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,19 +30,18 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpStackAllocExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpStackAllocExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpStackAllocExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitStackAllocExpression(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean b)
 	{

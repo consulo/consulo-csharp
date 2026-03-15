@@ -17,7 +17,6 @@
 package consulo.csharp.lang.psi;
 
 import consulo.dotnet.psi.DotNetExpression;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -25,7 +24,6 @@ import jakarta.annotation.Nonnull;
  */
 public interface CSharpAnonymFieldOrPropertySet extends CSharpFieldOrPropertySet
 {
-	@Nonnull
 	@Override
 	DotNetExpression getValueExpression();
 }

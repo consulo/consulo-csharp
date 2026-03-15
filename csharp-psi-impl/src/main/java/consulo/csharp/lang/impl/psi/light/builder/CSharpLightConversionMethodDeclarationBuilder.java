@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.light.builder;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpStaticTypeRef;
@@ -24,7 +24,6 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.project.Project;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -47,7 +46,6 @@ public class CSharpLightConversionMethodDeclarationBuilder  extends
 		return getConversionTypeRef() == CSharpStaticTypeRef.IMPLICIT;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getConversionTypeRef()
 	{
@@ -69,7 +67,7 @@ public class CSharpLightConversionMethodDeclarationBuilder  extends
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitConversionMethodDeclaration(this);
 	}

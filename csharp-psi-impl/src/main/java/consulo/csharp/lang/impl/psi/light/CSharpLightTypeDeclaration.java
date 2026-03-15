@@ -28,9 +28,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.util.lang.lazy.LazyValue;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.NonNls;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -80,7 +78,6 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
         return myOriginal.getVmQName();
     }
 
-    @Nonnull
     public DotNetGenericExtractor getExtractor() {
         return myExtractor;
     }
@@ -103,14 +100,13 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
         return myOriginal.getGenericConstraintList();
     }
 
-    @Nonnull
     @Override
     public CSharpGenericConstraint[] getGenericConstraints() {
         return myOriginal.getGenericConstraints();
     }
 
     @Override
-    public void accept(@Nonnull CSharpElementVisitor visitor) {
+    public void accept(CSharpElementVisitor visitor) {
         visitor.visitTypeDeclaration(this);
     }
 
@@ -140,7 +136,6 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
         return myOriginal.getExtendList();
     }
 
-    @Nonnull
     @Override
     @RequiredReadAction
     public DotNetTypeRef[] getExtendTypeRefs() {
@@ -155,7 +150,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 
     @RequiredReadAction
     @Override
-    public boolean isInheritor(@Nonnull String s, boolean b) {
+    public boolean isInheritor(String s, boolean b) {
         return myOriginal.isInheritor(s, b);
     }
 
@@ -189,7 +184,6 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
         return myOriginal.getGenericParameterList();
     }
 
-    @Nonnull
     @Override
     public DotNetGenericParameter[] getGenericParameters() {
         return myOriginal.getGenericParameters();
@@ -200,7 +194,6 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
         return myOriginal.getGenericParametersCount();
     }
 
-    @Nonnull
     @Override
     @RequiredReadAction
     public DotNetNamedElement[] getMembers() {
@@ -209,7 +202,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 
     @RequiredReadAction
     @Override
-    public boolean hasModifier(@Nonnull DotNetModifier dotNetModifier) {
+    public boolean hasModifier(DotNetModifier dotNetModifier) {
         return myOriginal.hasModifier(dotNetModifier);
     }
 
@@ -241,7 +234,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
     }
 
     @Override
-    public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException {
+    public PsiElement setName(String name) throws IncorrectOperationException {
         return myOriginal.setName(name);
     }
 }

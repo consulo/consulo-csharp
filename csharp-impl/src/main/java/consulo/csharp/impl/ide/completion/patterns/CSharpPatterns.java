@@ -31,7 +31,6 @@ import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetType;
 import consulo.language.util.ProcessingContext;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -39,13 +38,12 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpPatterns
 {
-	@Nonnull
 	public static PsiElementPattern.Capture<PsiElement> expressionStart()
 	{
 		return StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class).with(new PatternCondition<PsiElement>("csharp-expression")
 		{
 			@Override
-			public boolean accepts(@Nonnull PsiElement element, ProcessingContext processingContext)
+			public boolean accepts(PsiElement element, ProcessingContext processingContext)
 			{
 				CSharpReferenceExpression expression = PsiTreeUtil.getParentOfType(element, CSharpReferenceExpression.class);
 				assert expression != null;
@@ -81,14 +79,13 @@ public class CSharpPatterns
 		});
 	}
 
-	@Nonnull
 	public static PsiElementPattern.Capture<PsiElement> statementStart()
 	{
 		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).with(new PatternCondition<PsiElement>("csharp-statement")
 		{
 			@Override
 			@RequiredReadAction
-			public boolean accepts(@Nonnull PsiElement element, ProcessingContext processingContext)
+			public boolean accepts(PsiElement element, ProcessingContext processingContext)
 			{
 				PsiElement parent = element.getParent();
 				PsiElement parent2 = parent == null ? null : parent.getParent();
@@ -182,14 +179,13 @@ public class CSharpPatterns
 		}); */
 	}
 
-	@Nonnull
 	public static PsiElementPattern.Capture<PsiElement> fieldStart()
 	{
 		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).withSuperParent(3, CSharpFieldDeclaration.class).with(new PatternCondition<PsiElement>("field-type-no-qualifier")
 		{
 			@Override
 			@RequiredReadAction
-			public boolean accepts(@Nonnull PsiElement element, ProcessingContext context)
+			public boolean accepts(PsiElement element, ProcessingContext context)
 			{
 				CSharpFieldDeclaration declaration = PsiTreeUtil.getParentOfType(element, CSharpFieldDeclaration.class);
 				if(declaration == null)

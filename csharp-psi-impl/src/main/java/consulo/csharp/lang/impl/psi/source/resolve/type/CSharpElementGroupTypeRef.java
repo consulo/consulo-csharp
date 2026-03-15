@@ -29,8 +29,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -47,7 +46,6 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRefWithCachedResult imp
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -55,7 +53,6 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRefWithCachedResult imp
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getVmQName()
 	{
@@ -65,7 +62,7 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRefWithCachedResult imp
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another)
+	public DotNetTypeRef doMirror(DotNetTypeRef another)
 	{
 		DotNetTypeResolveResult typeResolveResult = another.resolve();
 		if(typeResolveResult instanceof CSharpLambdaResolveResult)

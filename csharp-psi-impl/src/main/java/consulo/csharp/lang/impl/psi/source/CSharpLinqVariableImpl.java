@@ -37,8 +37,7 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.util.IncorrectOperationException;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -49,7 +48,6 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 	private static final CSharpTypeRefCacher<CSharpLinqVariableImpl> ourCacheSystem = new CSharpTypeRefCacher<CSharpLinqVariableImpl>(true)
 	{
 		@RequiredReadAction
-		@Nonnull
 		@Override
 		protected DotNetTypeRef toTypeRefImpl(CSharpLinqVariableImpl element, boolean resolveFromParentOrInitializer)
 		{
@@ -62,13 +60,13 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		}
 	};
 
-	public CSharpLinqVariableImpl(@Nonnull IElementType elementType)
+	public CSharpLinqVariableImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqVariable(this);
 	}
@@ -89,14 +87,12 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolve)
 	{
 		return ourCacheSystem.toTypeRef(this, resolve);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	private DotNetTypeRef resolveTypeRef()
 	{
@@ -198,7 +194,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return false;
 	}
@@ -229,7 +225,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@Nonnull String name) throws IncorrectOperationException
+	public PsiElement setName(String name) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, name);
 		return this;

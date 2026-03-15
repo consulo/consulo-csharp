@@ -35,8 +35,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.ResolveState;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 
 /**
@@ -47,7 +46,7 @@ public class CSharpSearchUtil
 {
 	@Nullable
 	@RequiredReadAction
-	public static DotNetPropertyDeclaration findPropertyByName(@Nonnull final String name, @Nullable String parentQName, @Nonnull DotNetTypeRef typeRef)
+	public static DotNetPropertyDeclaration findPropertyByName(final String name, @Nullable String parentQName, DotNetTypeRef typeRef)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		PsiElement resolvedElement = typeResolveResult.getElement();
@@ -61,7 +60,7 @@ public class CSharpSearchUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetPropertyDeclaration findPropertyByName(@Nonnull final String name, @Nonnull PsiElement owner, @Nullable String parentQName, @Nonnull DotNetGenericExtractor extractor)
+	public static DotNetPropertyDeclaration findPropertyByName(final String name, PsiElement owner, @Nullable String parentQName, DotNetGenericExtractor extractor)
 	{
 		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
 		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner, psiElementProcessor, new ExecuteTarget[]{ExecuteTarget.PROPERTY},
@@ -84,7 +83,7 @@ public class CSharpSearchUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetMethodDeclaration findMethodByName(@Nonnull final String name, @Nullable String parentQName, @Nonnull DotNetTypeRef typeRef, int parameterSize)
+	public static DotNetMethodDeclaration findMethodByName(final String name, @Nullable String parentQName, DotNetTypeRef typeRef, int parameterSize)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		PsiElement resolvedElement = typeResolveResult.getElement();
@@ -97,10 +96,10 @@ public class CSharpSearchUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetMethodDeclaration findMethodByName(@Nonnull final String name,
-			@Nonnull PsiElement owner,
+	public static DotNetMethodDeclaration findMethodByName(final String name,
+			PsiElement owner,
 			@Nullable String parentQName,
-			@Nonnull DotNetGenericExtractor extractor,
+			DotNetGenericExtractor extractor,
 			final int parameterSize)
 	{
 		//TODO [VISTALL] some hack until we dont make override more powerfull
@@ -152,7 +151,7 @@ public class CSharpSearchUtil
 		return null;
 	}
 
-	private static boolean isMyElement(@Nonnull PsiElement element, @Nullable String parentQName)
+	private static boolean isMyElement(PsiElement element, @Nullable String parentQName)
 	{
 		if(parentQName == null)
 		{

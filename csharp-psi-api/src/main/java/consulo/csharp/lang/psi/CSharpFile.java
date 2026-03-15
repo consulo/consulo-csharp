@@ -19,8 +19,7 @@ package consulo.csharp.lang.psi;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetFile;
 import consulo.dotnet.psi.DotNetQualifiedElement;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +30,6 @@ import java.util.List;
  */
 public interface CSharpFile extends DotNetFile, CSharpUsingListOwner
 {
-	@Nonnull
 	@Override
 	DotNetQualifiedElement[] getMembers();
 
@@ -41,7 +39,6 @@ public interface CSharpFile extends DotNetFile, CSharpUsingListOwner
 		return null;
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	default Collection<String> getGlobalUsings()
 	{

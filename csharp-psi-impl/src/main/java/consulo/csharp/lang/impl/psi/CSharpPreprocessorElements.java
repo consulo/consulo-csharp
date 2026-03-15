@@ -31,9 +31,7 @@ import consulo.language.parser.PsiParser;
 import consulo.language.psi.PsiElement;
 import consulo.language.version.LanguageVersion;
 import consulo.project.Project;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -43,13 +41,13 @@ public interface CSharpPreprocessorElements
 {
 	class DirectiveElementType extends ILazyParseableElementType
 	{
-		public DirectiveElementType(@Nonnull @NonNls String debugName)
+		public DirectiveElementType(String debugName)
 		{
 			super(debugName, CSharpLanguage.INSTANCE);
 		}
 
 		@Override
-		protected ASTNode doParseContents(@Nonnull ASTNode chameleon, @Nonnull PsiElement psi)
+		protected ASTNode doParseContents(ASTNode chameleon, PsiElement psi)
 		{
 			final Project project = psi.getProject();
 			final Language languageForParser = getLanguageForParser(psi);

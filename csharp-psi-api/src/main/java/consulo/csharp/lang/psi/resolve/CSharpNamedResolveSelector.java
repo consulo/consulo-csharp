@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -24,5 +23,5 @@ import jakarta.annotation.Nonnull;
  */
 public interface CSharpNamedResolveSelector extends CSharpResolveSelector
 {
-	boolean isNameEqual(@Nonnull String name);
+	boolean isNameEqual(String name);
 }

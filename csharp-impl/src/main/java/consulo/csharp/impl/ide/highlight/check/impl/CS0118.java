@@ -25,8 +25,7 @@ import consulo.csharp.lang.impl.psi.source.CSharpNameOfExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -37,7 +36,7 @@ public class CS0118 extends CompilerCheck<CSharpReferenceExpression>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpReferenceExpression element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpReferenceExpression element)
 	{
 		CSharpReferenceExpression.ResolveToKind kind = element.kind();
 		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || kind == CSharpReferenceExpression.ResolveToKind.THIS)

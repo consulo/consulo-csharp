@@ -29,8 +29,7 @@ import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.module.ui.awt.SdkComboBox;
 import consulo.virtualFileSystem.VirtualFile;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -42,15 +41,15 @@ public abstract class CSharpCompilerProvider
 	public static final ExtensionPointName<CSharpCompilerProvider> EP_NAME = ExtensionPointName.create(CSharpCompilerProvider.class);
 
 	@Nullable
-	public abstract SdkType getBundleType(@Nonnull DotNetSimpleModuleExtension<?> moduleExtension);
+	public abstract SdkType getBundleType(DotNetSimpleModuleExtension<?> moduleExtension);
 
-	public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, @Nonnull SdkComboBox comboBox)
+	public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, SdkComboBox comboBox)
 	{
 	}
 
-	public abstract void setupCompiler(@Nonnull DotNetModuleExtension<?> netExtension,
-			@Nonnull CSharpModuleExtension<?> csharpExtension,
-			@Nonnull MSBaseDotNetCompilerOptionsBuilder builder,
+	public abstract void setupCompiler(DotNetModuleExtension<?> netExtension,
+			CSharpModuleExtension<?> csharpExtension,
+			MSBaseDotNetCompilerOptionsBuilder builder,
 			@Nullable VirtualFile compilerSdkHome) throws DotNetCompileFailedException;
 
 	protected final void setExecutable(CSharpModuleExtension cSharpModuleExtension, DotNetCompilerOptionsBuilder builder, @Nullable VirtualFile executable) throws DotNetCompileFailedException
@@ -63,7 +62,7 @@ public abstract class CSharpCompilerProvider
 		cSharpModuleExtension.setCompilerExecutable(builder, executable);
 	}
 
-	public boolean isSelected(@Nonnull DotNetSimpleModuleExtension<?> moduleExtension, @Nonnull String name, @Nullable Sdk sdk)
+	public boolean isSelected(DotNetSimpleModuleExtension<?> moduleExtension, String name, @Nullable Sdk sdk)
 	{
 		return sdk != null && getBundleType(moduleExtension) == sdk.getSdkType();
 	}

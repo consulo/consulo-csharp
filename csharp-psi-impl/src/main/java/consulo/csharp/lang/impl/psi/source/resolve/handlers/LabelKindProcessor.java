@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.source.resolve.handlers;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveOptions;
@@ -30,7 +29,7 @@ import consulo.language.psi.ResolveResult;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.application.util.function.Processor;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,10 +39,10 @@ public class LabelKindProcessor implements KindProcessor
 {
 	@RequiredReadAction
 	@Override
-	public void process(@Nonnull CSharpResolveOptions options,
-			@Nonnull DotNetGenericExtractor defaultExtractor,
+	public void process(CSharpResolveOptions options,
+			DotNetGenericExtractor defaultExtractor,
 			@Nullable PsiElement forceQualifierElement,
-			@Nonnull Processor<ResolveResult> processor)
+			Processor<ResolveResult> processor)
 	{
 		PsiElement element = options.getElement();
 

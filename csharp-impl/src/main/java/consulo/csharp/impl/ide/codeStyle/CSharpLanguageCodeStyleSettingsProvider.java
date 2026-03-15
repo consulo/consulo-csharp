@@ -26,7 +26,6 @@ import consulo.language.codeStyle.setting.LanguageCodeStyleSettingsProvider;
 import consulo.language.codeStyle.ui.setting.SmartIndentOptionsEditor;
 import consulo.util.io.FileUtil;
 
-import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -36,7 +35,6 @@ import java.io.IOException;
 @ExtensionImpl
 public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSettingsProvider
 {
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{
@@ -58,7 +56,7 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 	}
 
 	@Override
-	public void customizeSettings(@Nonnull CodeStyleSettingsCustomizable consumer, @Nonnull SettingsType settingsType)
+	public void customizeSettings(CodeStyleSettingsCustomizable consumer, SettingsType settingsType)
 	{
 		if(settingsType == SettingsType.SPACING_SETTINGS)
 		{
@@ -141,7 +139,7 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 	}
 
 	@Override
-	public String getCodeSample(@Nonnull SettingsType settingsType)
+	public String getCodeSample(SettingsType settingsType)
 	{
 		if(settingsType == SettingsType.SPACING_SETTINGS)
 		{

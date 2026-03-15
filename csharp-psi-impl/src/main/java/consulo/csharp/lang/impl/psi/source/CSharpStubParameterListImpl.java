@@ -25,7 +25,6 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.EmptyStub;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -33,18 +32,18 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpStubParameterListImpl extends CSharpStubElementImpl<EmptyStub<DotNetParameterList>> implements DotNetParameterList
 {
-	public CSharpStubParameterListImpl(@Nonnull ASTNode node)
+	public CSharpStubParameterListImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubParameterListImpl(@Nonnull EmptyStub<DotNetParameterList> stub)
+	public CSharpStubParameterListImpl(EmptyStub<DotNetParameterList> stub)
 	{
 		super(stub, CSharpStubElements.PARAMETER_LIST);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitParameterList(this);
 	}
@@ -55,14 +54,12 @@ public class CSharpStubParameterListImpl extends CSharpStubElementImpl<EmptyStub
 		return DotNetPsiCountUtil.countChildrenOfType(this, CSharpStubElements.PARAMETER);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
 		return getStubOrPsiChildren(CSharpStubElements.PARAMETER, DotNetParameter.ARRAY_FACTORY);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{

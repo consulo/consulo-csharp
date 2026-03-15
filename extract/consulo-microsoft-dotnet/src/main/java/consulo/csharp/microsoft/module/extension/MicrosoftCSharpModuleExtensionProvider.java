@@ -25,8 +25,7 @@ import consulo.module.extension.ModuleExtension;
 import consulo.module.extension.MutableModuleExtension;
 import consulo.ui.image.Image;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,7 +34,6 @@ import jakarta.annotation.Nullable;
 @ExtensionImpl
 public class MicrosoftCSharpModuleExtensionProvider implements ModuleExtensionProvider<MicrosoftCSharpModuleExtension>
 {
-	@Nonnull
 	@Override
 	public String getId()
 	{
@@ -49,30 +47,26 @@ public class MicrosoftCSharpModuleExtensionProvider implements ModuleExtensionPr
 		return "microsoft-dotnet";
 	}
 
-	@Nonnull
 	@Override
 	public LocalizeValue getName()
 	{
 		return LocalizeValue.localizeTODO("C#");
 	}
 
-	@Nonnull
 	@Override
 	public Image getIcon()
 	{
 		return MicrosoftDotNetIconGroup.dotnet();
 	}
 
-	@Nonnull
 	@Override
-	public ModuleExtension<MicrosoftCSharpModuleExtension> createImmutableExtension(@Nonnull ModuleRootLayer moduleRootLayer)
+	public ModuleExtension<MicrosoftCSharpModuleExtension> createImmutableExtension(ModuleRootLayer moduleRootLayer)
 	{
 		return new MicrosoftCSharpModuleExtension(getId(), moduleRootLayer);
 	}
 
-	@Nonnull
 	@Override
-	public MutableModuleExtension<MicrosoftCSharpModuleExtension> createMutableExtension(@Nonnull ModuleRootLayer moduleRootLayer)
+	public MutableModuleExtension<MicrosoftCSharpModuleExtension> createMutableExtension(ModuleRootLayer moduleRootLayer)
 	{
 		return new MicrosoftCSharpMutableModuleExtension(getId(), moduleRootLayer);
 	}

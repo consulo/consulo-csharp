@@ -40,7 +40,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
-import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,9 +54,9 @@ import java.util.function.Consumer;
 public class OperatorsProvider implements CSharpAdditionalMemberProvider {
     @RequiredReadAction
     @Override
-    public void processAdditionalMembers(@Nonnull DotNetElement element,
-                                         @Nonnull DotNetGenericExtractor extractor,
-                                         @Nonnull Consumer<PsiElement> consumer) {
+    public void processAdditionalMembers(DotNetElement element,
+                                         DotNetGenericExtractor extractor,
+                                         Consumer<PsiElement> consumer) {
         if (element instanceof CSharpTypeDeclaration typeDeclaration) {
             Project project = element.getProject();
             GlobalSearchScope resolveScope = element.getResolveScope();
@@ -87,7 +86,6 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider {
         }
     }
 
-    @Nonnull
     @Override
     public Target getTarget() {
         return Target.OPERATOR_METHOD;
@@ -116,14 +114,13 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider {
         }
     }
 
-    @Nonnull
     @RequiredReadAction
-    private DotNetElement[] buildNullableOperators(@Nonnull Project project,
-                                                   @Nonnull GlobalSearchScope resolveScope,
-                                                   @Nonnull DotNetTypeRef selfTypeRef,
-                                                   @Nonnull CSharpTypeDeclaration typeDeclaration,
-                                                   @Nonnull DotNetGenericExtractor extractor,
-                                                   @Nonnull Consumer<PsiElement> consumer) {
+    private DotNetElement[] buildNullableOperators(Project project,
+                                                   GlobalSearchScope resolveScope,
+                                                   DotNetTypeRef selfTypeRef,
+                                                   CSharpTypeDeclaration typeDeclaration,
+                                                   DotNetGenericExtractor extractor,
+                                                   Consumer<PsiElement> consumer) {
         DotNetGenericParameter[] genericParameters = typeDeclaration.getGenericParameters();
         if (genericParameters.length == 0) {
             return DotNetElement.EMPTY_ARRAY;
@@ -154,12 +151,12 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider {
     }
 
     @RequiredReadAction
-    private static void buildOperators(@Nonnull Project project,
-                                       @Nonnull GlobalSearchScope resolveScope,
-                                       @Nonnull DotNetTypeRef selfTypeRef,
-                                       @Nonnull DotNetElement parent,
-                                       @Nonnull Collection<OperatorStubsLoader.Operator> operators,
-                                       @Nonnull Consumer<PsiElement> consumer) {
+    private static void buildOperators(Project project,
+                                       GlobalSearchScope resolveScope,
+                                       DotNetTypeRef selfTypeRef,
+                                       DotNetElement parent,
+                                       Collection<OperatorStubsLoader.Operator> operators,
+                                       Consumer<PsiElement> consumer) {
         if (operators.isEmpty()) {
             return;
         }

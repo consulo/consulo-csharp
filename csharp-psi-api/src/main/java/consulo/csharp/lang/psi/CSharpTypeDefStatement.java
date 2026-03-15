@@ -22,8 +22,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.util.collection.ArrayFactory;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -39,7 +38,6 @@ public interface CSharpTypeDefStatement extends CSharpNamedElement, PsiNameIdent
 	@RequiredReadAction
 	DotNetType getType();
 
-	@Nonnull
 	@RequiredReadAction
 	DotNetTypeRef toTypeRef();
 }

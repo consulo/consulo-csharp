@@ -25,8 +25,7 @@ import consulo.module.ui.awt.SdkComboBox;
 import consulo.ui.image.Image;
 import consulo.virtualFileSystem.VirtualFile;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -36,24 +35,23 @@ public abstract class BaseInternalCompilerProvider extends CSharpCompilerProvide
 {
 	public abstract String getExtensionId();
 
-	@Nonnull
 	public abstract Image getIcon();
 
 	@Nullable
 	@Override
-	public SdkType getBundleType(@Nonnull DotNetSimpleModuleExtension<?> moduleExtension)
+	public SdkType getBundleType(DotNetSimpleModuleExtension<?> moduleExtension)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean isSelected(@Nonnull DotNetSimpleModuleExtension<?> moduleExtension, @Nonnull String name, @Nullable Sdk sdk)
+	public boolean isSelected(DotNetSimpleModuleExtension<?> moduleExtension, String name, @Nullable Sdk sdk)
 	{
 		return moduleExtension.getId().equals(getExtensionId()) && name.equals(CSharpModuleExtension.INTERNAL_SDK_KEY);
 	}
 
 	@Override
-	public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, @Nonnull SdkComboBox comboBox)
+	public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, SdkComboBox comboBox)
 	{
 		if(extension == null)
 		{

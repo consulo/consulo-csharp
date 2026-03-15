@@ -23,7 +23,6 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,19 +30,18 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpMakeRefExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpMakeRefExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpMakeRefExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitMakeRefExpression(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean b)
 	{

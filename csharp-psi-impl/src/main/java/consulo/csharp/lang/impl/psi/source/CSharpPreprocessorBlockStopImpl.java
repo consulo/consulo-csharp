@@ -22,8 +22,7 @@ import consulo.language.ast.TokenSet;
 import consulo.csharp.lang.impl.psi.CSharpMacroElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -49,7 +48,7 @@ public class CSharpPreprocessorBlockStopImpl extends CSharpPreprocessorElementIm
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
+	public void accept(CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitMacroBlockStop(this);
 	}

@@ -42,7 +42,6 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,8 +53,7 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 {
 	public static final Key<List<ExpectedTypeInfo>> EXPECTED_TYPE_INFOS = Key.create("ExpectedTypeInfo");
 
-	@Nonnull
-	public static List<ExpectedTypeInfo> findExpectedTypeRefs(@Nonnull PsiElement psiElement)
+	public static List<ExpectedTypeInfo> findExpectedTypeRefs(PsiElement psiElement)
 	{
 		if(!psiElement.isValid())
 		{
@@ -71,7 +69,6 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 		return LanguageCachedValueUtil.getCachedValue(psiElement, () -> CachedValueProvider.Result.create(findExpectedTypeRefsImpl(psiElement), PsiModificationTracker.MODIFICATION_COUNT));
 	}
 
-	@Nonnull
 	private static List<ExpectedTypeInfo> findExpectedTypeRefsImpl(PsiElement psiElement)
 	{
 		PsiElement parent = psiElement.getParent();

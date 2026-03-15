@@ -23,8 +23,7 @@ import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.IStubElementType;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -34,12 +33,12 @@ public class CSharpDummyDeclarationImpl extends CSharpStubMemberImpl<CSharpDummy
 {
 	public static final String DUMMY = "<dummy>";
 
-	public CSharpDummyDeclarationImpl(@Nonnull ASTNode node)
+	public CSharpDummyDeclarationImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpDummyDeclarationImpl(@Nonnull CSharpDummyDeclStub stub, @Nonnull IStubElementType<? extends CSharpDummyDeclStub, ?> nodeType)
+	public CSharpDummyDeclarationImpl(CSharpDummyDeclStub stub, IStubElementType<? extends CSharpDummyDeclStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -60,7 +59,7 @@ public class CSharpDummyDeclarationImpl extends CSharpStubMemberImpl<CSharpDummy
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitDummyDeclaration(this);
 	}

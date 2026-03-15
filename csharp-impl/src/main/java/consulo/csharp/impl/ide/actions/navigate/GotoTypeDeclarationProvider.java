@@ -27,9 +27,8 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.editor.action.TypeDeclarationProvider;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -41,7 +40,7 @@ public class GotoTypeDeclarationProvider extends TypeDeclarationProvider
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public PsiElement[] getSymbolTypeDeclarations(@Nonnull PsiElement symbol, Editor editor, int offset)
+	public PsiElement[] getSymbolTypeDeclarations(PsiElement symbol, Editor editor, int offset)
 	{
 		if(symbol.getLanguage() != CSharpLanguage.INSTANCE)
 		{

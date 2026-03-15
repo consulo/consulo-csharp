@@ -34,8 +34,7 @@ import consulo.util.dataholder.Key;
 import consulo.util.lang.function.Conditions;
 import consulo.virtualFileSystem.FileAttribute;
 import consulo.virtualFileSystem.VirtualFile;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -54,7 +53,6 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
     public static final Key<CSharpFileAttribute> ourCSharpFileAttributeKey = Key.create("CSharpFilePropertyPusher.PREPROCESSOR_VARIABLES");
     private static final FileAttribute ourFileAttribute = new FileAttribute("csharp-file-preprocessor-variables", 2, false);
 
-    @Nonnull
     @Override
     public Key<CSharpFileAttribute> getFileDataKey() {
         return ourCSharpFileAttributeKey;
@@ -65,7 +63,6 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
         return false;
     }
 
-    @Nonnull
     @Override
     public CSharpFileAttribute getDefaultValue() {
         return CSharpFileAttribute.DEFAULT;
@@ -74,7 +71,7 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
     @Nullable
     @Override
     @RequiredReadAction
-    public CSharpFileAttribute getImmediateValue(@Nonnull Project project, @Nullable VirtualFile virtualFile) {
+    public CSharpFileAttribute getImmediateValue(Project project, @Nullable VirtualFile virtualFile) {
         if (virtualFile == null) {
             return CSharpFileAttribute.DEFAULT;
         }
@@ -86,7 +83,7 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
     @Nullable
     @Override
     @RequiredReadAction
-    public CSharpFileAttribute getImmediateValue(@Nonnull consulo.module.Module module) {
+    public CSharpFileAttribute getImmediateValue(consulo.module.Module module) {
         DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(module, DotNetSimpleModuleExtension.class);
         if (extension != null) {
             CSharpSimpleModuleExtension csharpExtension = ModuleUtilCore.getExtension(module, CSharpSimpleModuleExtension.class);
@@ -95,7 +92,7 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
         return CSharpFileAttribute.DEFAULT;
     }
 
-    private static int varHashCode(@Nonnull Collection<String> vars) {
+    private static int varHashCode(Collection<String> vars) {
         Set<String> sortedSet = new TreeSet<>(vars);
         IntSet intSet = IntSets.newHashSet();
         for (String varName : sortedSet) {
@@ -105,17 +102,17 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
     }
 
     @Override
-    public boolean acceptsFile(@Nonnull VirtualFile virtualFile, @Nullable Project project) {
+    public boolean acceptsFile(VirtualFile virtualFile, @Nullable Project project) {
         return virtualFile.getFileType() == CSharpFileType.INSTANCE;
     }
 
     @Override
-    public boolean acceptsDirectory(@Nonnull VirtualFile virtualFile, @Nonnull Project project) {
+    public boolean acceptsDirectory(VirtualFile virtualFile, Project project) {
         return true;
     }
 
     @Override
-    public void persistAttribute(@Nonnull Project project, @Nonnull VirtualFile virtualFile, @Nonnull CSharpFileAttribute newAttribute) throws IOException {
+    public void persistAttribute(Project project, VirtualFile virtualFile, CSharpFileAttribute newAttribute) throws IOException {
         DataInputStream inputStream = ourFileAttribute.readAttribute(virtualFile);
         if (inputStream != null) {
             try {
@@ -139,7 +136,7 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<CSharpFileAt
     }
 
     @Override
-    public void afterRootsChanged(@Nonnull Project project) {
+    public void afterRootsChanged(Project project) {
         PushedFilePropertiesUpdater.getInstance(project).pushAll(this);
     }
 }

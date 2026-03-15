@@ -32,8 +32,7 @@ import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.language.psi.util.QualifiedName;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -43,18 +42,17 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 {
 	public static final String GLOBAL_PREFIX = "global::";
 
-	public CSharpUsingNamespaceStatementImpl(@Nonnull ASTNode node)
+	public CSharpUsingNamespaceStatementImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpUsingNamespaceStatementImpl(@Nonnull CSharpUsingNamespaceStub stub)
+	public CSharpUsingNamespaceStatementImpl(CSharpUsingNamespaceStub stub)
 	{
 		super(stub, CSharpStubElements.USING_NAMESPACE_STATEMENT);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public PsiElement getUsingKeywordElement()
 	{
@@ -131,7 +129,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 
 	@Nullable
 	@RequiredReadAction
-	private DotNetNamespaceAsElement tryResolveRelativeNamespace(@Nonnull CSharpNamespaceDeclaration parent, @Nonnull String text, @Nonnull DotNetPsiSearcher psiSearcher)
+	private DotNetNamespaceAsElement tryResolveRelativeNamespace(CSharpNamespaceDeclaration parent, String text, DotNetPsiSearcher psiSearcher)
 	{
 		DotNetReferenceExpression namespaceReference = parent.getNamespaceReference();
 		if(namespaceReference == null)
@@ -167,7 +165,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitUsingNamespaceStatement(this);
 	}

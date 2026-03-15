@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
@@ -30,7 +29,7 @@ import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.EmptyStub;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -38,25 +37,24 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpStubNullableTypeImpl extends CSharpStubTypeElementImpl<EmptyStub<CSharpNullableType>> implements CSharpNullableType
 {
-	public CSharpStubNullableTypeImpl(@Nonnull ASTNode node)
+	public CSharpStubNullableTypeImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubNullableTypeImpl(@Nonnull EmptyStub<CSharpNullableType> stub,
-			@Nonnull IStubElementType<? extends EmptyStub<CSharpNullableType>, ?> nodeType)
+	public CSharpStubNullableTypeImpl(EmptyStub<CSharpNullableType> stub,
+			IStubElementType<? extends EmptyStub<CSharpNullableType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitNullableType(this);
 	}
 
 	@Override
-	@Nonnull
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl()
 	{
@@ -78,7 +76,6 @@ public class CSharpStubNullableTypeImpl extends CSharpStubTypeElementImpl<EmptyS
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	public PsiElement getQuestElement()
 	{
 		return findNotNullChildByType(CSharpTokens.QUEST);

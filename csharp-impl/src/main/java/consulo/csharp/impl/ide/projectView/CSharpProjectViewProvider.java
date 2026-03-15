@@ -32,8 +32,7 @@ import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.tree.TreeHelper;
 import jakarta.inject.Inject;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -67,7 +66,6 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 		return TreeHelper.calculateYieldingToWriteAction(() -> doModify(oldNodes, settings));
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	private List<AbstractTreeNode> doModify(Collection<AbstractTreeNode> oldNodes, ViewSettings settings)
 	{

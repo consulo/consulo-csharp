@@ -34,8 +34,7 @@ import consulo.language.parser.PsiParser;
 import consulo.language.version.LanguageVersion;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -58,7 +57,7 @@ public class CSharpInjectExpressionElementType extends ILazyParseableElementType
 
 	private final CSharpReferenceExpression.ResolveToKind myResolveToKind;
 
-	public CSharpInjectExpressionElementType(@Nonnull String debugName, @Nullable Language language, @Nonnull CSharpReferenceExpression.ResolveToKind resolveToKind)
+	public CSharpInjectExpressionElementType(String debugName, @Nullable Language language, CSharpReferenceExpression.ResolveToKind resolveToKind)
 	{
 		super(debugName, language);
 		myResolveToKind = resolveToKind;
@@ -66,7 +65,7 @@ public class CSharpInjectExpressionElementType extends ILazyParseableElementType
 
 	@Override
 	@RequiredReadAction
-	protected ASTNode doParseContents(@Nonnull final ASTNode chameleon, @Nonnull final PsiElement psi)
+	protected ASTNode doParseContents(final ASTNode chameleon, final PsiElement psi)
 	{
 		Project project = psi.getProject();
 		Language language = getLanguageForParser(psi);

@@ -32,8 +32,7 @@ import consulo.language.parser.PsiParser;
 import consulo.language.psi.PsiElement;
 import consulo.language.version.LanguageVersion;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import jakarta.inject.Singleton;
 
 /**
@@ -44,14 +43,13 @@ import jakarta.inject.Singleton;
 @ServiceImpl
 public class CSharpCfsElementTypeFactoryImpl implements CSharpCfsElementTypeFactory
 {
-	@Nonnull
 	@Override
 	public IElementType getInterpolationStringElementType()
 	{
 		return new ILazyParseableElementType("INTERPOLATION_STRING_LITERAL", CSharpLanguage.INSTANCE)
 		{
 			@Override
-			protected ASTNode doParseContents(@Nonnull final ASTNode chameleon, @Nonnull final PsiElement psi)
+			protected ASTNode doParseContents(final ASTNode chameleon, final PsiElement psi)
 			{
 				final Project project = psi.getProject();
 				final Language languageForParser = getLanguageForParser(psi);

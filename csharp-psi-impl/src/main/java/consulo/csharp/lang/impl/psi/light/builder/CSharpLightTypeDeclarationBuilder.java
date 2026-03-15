@@ -35,8 +35,7 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 /**
@@ -128,7 +127,6 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
@@ -137,12 +135,11 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 
 	@RequiredReadAction
 	@Override
-	public boolean isInheritor(@Nonnull String other, boolean deep)
+	public boolean isInheritor(String other, boolean deep)
 	{
 		return DotNetInheritUtil.isInheritor(this, other, deep);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	@Override
 	public DotNetTypeRef getTypeRefForEnumConstants()
@@ -157,7 +154,6 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
@@ -165,7 +161,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitTypeDeclaration(this);
 	}
@@ -177,7 +173,6 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetQualifiedElement[] getMembers()
 	{
@@ -186,7 +181,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return myModifiers.contains(CSharpModifier.as(modifier));
 	}
@@ -261,7 +256,6 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
@@ -274,28 +268,24 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return CSharpTypeDeclarationImplUtil.isEquivalentTo(this, another);
 	}
 
-	@Nonnull
 	public CSharpLightTypeDeclarationBuilder withParentQName(String parentQName)
 	{
 		myParentQName = parentQName;
 		return this;
 	}
 
-	@Nonnull
 	public CSharpLightTypeDeclarationBuilder addModifier(DotNetModifier modifier)
 	{
 		myModifiers.add(CSharpModifier.as(modifier));
 		return this;
 	}
 
-	@Nonnull
 	public CSharpLightTypeDeclarationBuilder addExtendType(DotNetTypeRef typeRef)
 	{
 		myExtendTypes.add(typeRef);
 		return this;
 	}
 
-	@Nonnull
 	public CSharpLightTypeDeclarationBuilder addGenericParameter(DotNetGenericParameter genericParameter)
 	{
 		if(genericParameter instanceof CSharpLightGenericParameterBuilder)
@@ -307,15 +297,13 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return this;
 	}
 
-	@Nonnull
 	public CSharpLightTypeDeclarationBuilder withType(Type type)
 	{
 		myType = type;
 		return this;
 	}
 
-	@Nonnull
-	public CSharpLightTypeDeclarationBuilder addMember(@Nonnull DotNetQualifiedElement element)
+	public CSharpLightTypeDeclarationBuilder addMember(DotNetQualifiedElement element)
 	{
 		if(element instanceof CSharpLightElementBuilder)
 		{

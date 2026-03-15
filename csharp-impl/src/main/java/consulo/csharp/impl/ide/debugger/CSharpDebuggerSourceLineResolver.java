@@ -25,7 +25,6 @@ import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
 import consulo.dotnet.debugger.DotNetDebuggerSourceLineResolver;
 import consulo.language.Language;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -38,9 +37,8 @@ import java.util.Set;
 public class CSharpDebuggerSourceLineResolver implements DotNetDebuggerSourceLineResolver
 {
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public Set<PsiElement> getAllExecutableChildren(@Nonnull PsiElement root)
+	public Set<PsiElement> getAllExecutableChildren(PsiElement root)
 	{
 		final Set<PsiElement> lambdas = new LinkedHashSet<>();
 		root.accept(new CSharpRecursiveElementVisitor()
@@ -60,7 +58,6 @@ public class CSharpDebuggerSourceLineResolver implements DotNetDebuggerSourceLin
 		return lambdas;
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

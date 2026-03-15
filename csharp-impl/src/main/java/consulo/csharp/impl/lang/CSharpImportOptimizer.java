@@ -42,8 +42,7 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.*;
 
 /**
@@ -59,7 +58,6 @@ public class CSharpImportOptimizer implements ImportOptimizer
 		return psiFile instanceof CSharpFile;
 	}
 
-	@Nonnull
 	@Override
 	public Runnable processFile(final PsiFile psiFile)
 	{
@@ -101,7 +99,7 @@ public class CSharpImportOptimizer implements ImportOptimizer
 				{
 					@Override
 					@RequiredReadAction
-					public void visitUsingChild(@Nonnull CSharpUsingListChild child)
+					public void visitUsingChild(CSharpUsingListChild child)
 					{
 						super.visitUsingChild(child);
 
@@ -159,7 +157,7 @@ public class CSharpImportOptimizer implements ImportOptimizer
 	}
 
 	@RequiredReadAction
-	private static void formatAndReplace(@Nonnull PsiFile file, @Nonnull List<CSharpUsingListChild> children)
+	private static void formatAndReplace(PsiFile file, List<CSharpUsingListChild> children)
 	{
 		PsiElement parent = children.get(0).getParent();
 
@@ -275,7 +273,6 @@ public class CSharpImportOptimizer implements ImportOptimizer
 		return name.startsWith("System");
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

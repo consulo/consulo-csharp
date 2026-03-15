@@ -19,7 +19,6 @@ package consulo.csharp.impl.ide.highlight.check.impl;
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -36,9 +35,8 @@ import consulo.dotnet.psi.DotNetMemberOwner;
 public class CS0101 extends CompilerCheck<DotNetMemberOwner>
 {
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public List<CompilerCheckBuilder> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetMemberOwner element)
+	public List<CompilerCheckBuilder> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetMemberOwner element)
 	{
 		if(element instanceof CSharpFile || element instanceof CSharpNamespaceDeclaration)
 		{

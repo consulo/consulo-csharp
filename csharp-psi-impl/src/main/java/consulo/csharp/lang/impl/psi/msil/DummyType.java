@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.msil;
 
-import jakarta.annotation.Nonnull;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.impl.psi.msil.typeParsing.SomeType;
 import consulo.csharp.lang.impl.psi.msil.typeParsing.SomeTypeParser;
@@ -49,7 +48,6 @@ public class DummyType extends LightElement implements DotNetType
 		return "DummyType";
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{

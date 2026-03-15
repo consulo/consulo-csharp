@@ -32,8 +32,7 @@ import consulo.language.psi.stub.StubElement;
 import consulo.navigation.ItemPresentation;
 import consulo.navigation.ItemPresentationProvider;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -41,22 +40,21 @@ import jakarta.annotation.Nullable;
  */
 public abstract class CSharpStubElementImpl<S extends StubElement> extends StubBasedPsiElementBase<S> implements StubBasedPsiElement<S>
 {
-	public CSharpStubElementImpl(@Nonnull ASTNode node)
+	public CSharpStubElementImpl(ASTNode node)
 	{
 		super(node);
 	}
 
 	@Nullable
 	@SuppressWarnings("unchecked")
-	public <T> T getStubOrPsiChildByIndex(@Nonnull TokenSet set, int index)
+	public <T> T getStubOrPsiChildByIndex(TokenSet set, int index)
 	{
 		PsiElement[] children = getStubOrPsiChildren(set, PsiElement.ARRAY_FACTORY);
 		return (T) ArrayUtil2.safeGet(children, index);
 	}
 
-	@Nonnull
 	@SuppressWarnings("unchecked")
-	public <T> T getRequiredStubOrPsiChildByIndex(@Nonnull TokenSet set, int index)
+	public <T> T getRequiredStubOrPsiChildByIndex(TokenSet set, int index)
 	{
 		T element = getStubOrPsiChildByIndex(set, index);
 		if(element == null)
@@ -67,7 +65,7 @@ public abstract class CSharpStubElementImpl<S extends StubElement> extends StubB
 	}
 
 	@Override
-	public void deleteChildInternal(@Nonnull ASTNode child)
+	public void deleteChildInternal(ASTNode child)
 	{
 		PsiFile containingFile = getContainingFile();
 		DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElementNoNameCheck((CSharpFileImpl) containingFile);
@@ -87,13 +85,13 @@ public abstract class CSharpStubElementImpl<S extends StubElement> extends StubB
 		return ItemPresentationProvider.getItemPresentation(this);
 	}
 
-	public CSharpStubElementImpl(@Nonnull S stub, @Nonnull IStubElementType<? extends S, ?> nodeType)
+	public CSharpStubElementImpl(S stub, IStubElementType<? extends S, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@Nonnull PsiElementVisitor visitor)
+	public void accept(PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{
@@ -111,5 +109,5 @@ public abstract class CSharpStubElementImpl<S extends StubElement> extends StubB
 		return getClass().getSimpleName() + " [" + getNode().getElementType() + "]";
 	}
 
-	public abstract void accept(@Nonnull CSharpElementVisitor visitor);
+	public abstract void accept(CSharpElementVisitor visitor);
 }

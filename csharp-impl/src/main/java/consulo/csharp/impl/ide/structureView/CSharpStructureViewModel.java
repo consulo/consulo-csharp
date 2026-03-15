@@ -30,8 +30,7 @@ import consulo.language.editor.structureView.StructureViewModelBase;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,7 +41,7 @@ import java.util.Collection;
  */
 public class CSharpStructureViewModel extends StructureViewModelBase implements StructureViewModel.ElementInfoProvider
 {
-	public CSharpStructureViewModel(@Nonnull PsiFile psiFile, @Nullable Editor editor)
+	public CSharpStructureViewModel(PsiFile psiFile, @Nullable Editor editor)
 	{
 		super(psiFile, editor, new CSharpNamedTreeElement(psiFile));
 
@@ -56,7 +55,6 @@ public class CSharpStructureViewModel extends StructureViewModelBase implements 
 		return element instanceof CSharpTypeDeclaration;
 	}
 
-	@Nonnull
 	@Override
 	public Collection<NodeProvider> getNodeProviders()
 	{

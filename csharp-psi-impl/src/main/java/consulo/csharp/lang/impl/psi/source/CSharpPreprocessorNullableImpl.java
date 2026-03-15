@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.source;
 
 import consulo.language.ast.IElementType;
 import consulo.csharp.lang.impl.psi.CSharpMacroElementVisitor;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,7 +31,7 @@ public class CSharpPreprocessorNullableImpl extends CSharpPreprocessorElementImp
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
+	public void accept(CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitNullable(this);
 	}

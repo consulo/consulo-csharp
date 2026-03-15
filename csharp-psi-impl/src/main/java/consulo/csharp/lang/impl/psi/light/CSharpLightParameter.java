@@ -21,8 +21,7 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -46,7 +45,6 @@ public class CSharpLightParameter extends CSharpLightVariable<DotNetParameter> i
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -54,7 +52,7 @@ public class CSharpLightParameter extends CSharpLightVariable<DotNetParameter> i
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitParameter(this);
 	}

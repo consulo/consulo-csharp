@@ -25,8 +25,7 @@ import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -47,7 +46,6 @@ public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPr
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -55,13 +53,12 @@ public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPr
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitPropertyDeclaration(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetXAccessor[] getAccessors()
 	{
@@ -69,7 +66,6 @@ public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPr
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -113,7 +109,6 @@ public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPr
 		return myOriginal.getTypeForImplement();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{

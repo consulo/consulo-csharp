@@ -38,8 +38,7 @@ import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.function.Condition;
 import consulo.util.lang.function.PairFunction;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +49,11 @@ import java.util.Locale;
  * @since 02.06.14
  */
 public class CSharpStubBuilderVisitor extends CSharpElementVisitor {
-    @Nonnull
     @RequiredReadAction
     public static List<StubBlock> buildBlocks(PsiElement qualifiedElement) {
         return buildBlocks(qualifiedElement, true);
     }
 
-    @Nonnull
     @RequiredReadAction
     public static List<StubBlock> buildBlocks(PsiElement qualifiedElement, boolean compiled) {
         CSharpStubBuilderVisitor visitor = new CSharpStubBuilderVisitor(compiled);
@@ -327,7 +324,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor {
     }
 
     @RequiredReadAction
-    public static void appendTypeRef(@Nonnull Project project, @Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef) {
+    public static void appendTypeRef(Project project, StringBuilder builder, DotNetTypeRef typeRef) {
         CSharpTypeRefPresentationUtil.appendTypeRef(builder, typeRef, CSharpTypeRefPresentationUtil.QUALIFIED_NAME | CSharpTypeRefPresentationUtil.FORCE_TYPE_KEYWORD);
     }
 

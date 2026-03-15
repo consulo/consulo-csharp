@@ -26,7 +26,6 @@ import consulo.dotnet.psi.DotNetModifierList;
 import consulo.language.psi.stub.StubElement;
 import consulo.language.psi.stub.StubOutputStream;
 
-import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -40,36 +39,34 @@ public class CSharpModifierListStubElementType extends CSharpAbstractStubElement
 		super("MODIFIER_LIST");
 	}
 
-	@Nonnull
 	@Override
-	public PsiElement createElement(@Nonnull ASTNode astNode)
+	public PsiElement createElement(ASTNode astNode)
 	{
 		return new CSharpStubModifierListImpl(astNode);
 	}
 
 	@Override
-	public DotNetModifierList createPsi(@Nonnull CSharpModifierListStub stub)
+	public DotNetModifierList createPsi(CSharpModifierListStub stub)
 	{
 		return new CSharpStubModifierListImpl(stub, this);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpModifierListStub createStub(@Nonnull DotNetModifierList modifierList, StubElement stubElement)
+	public CSharpModifierListStub createStub(DotNetModifierList modifierList, StubElement stubElement)
 	{
 		int modifierMask = CSharpModifierListStub.getModifierMask(modifierList);
 		return new CSharpModifierListStub(stubElement, this, modifierMask);
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpModifierListStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpModifierListStub stub, StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeVarInt(stub.getModifierMask());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpModifierListStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpModifierListStub deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int modifierMask = stubInputStream.readVarInt();
 		return new CSharpModifierListStub(stubElement, this, modifierMask);

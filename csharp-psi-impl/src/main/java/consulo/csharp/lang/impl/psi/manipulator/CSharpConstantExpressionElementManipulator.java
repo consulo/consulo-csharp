@@ -11,7 +11,6 @@ import consulo.language.ast.IElementType;
 import consulo.language.psi.AbstractElementManipulator;
 import consulo.language.util.IncorrectOperationException;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -22,7 +21,7 @@ public class CSharpConstantExpressionElementManipulator extends AbstractElementM
 {
 	@Override
 	@RequiredReadAction
-	public CSharpConstantExpressionImpl handleContentChange(@Nonnull CSharpConstantExpressionImpl element, @Nonnull TextRange textRange, String s) throws IncorrectOperationException
+	public CSharpConstantExpressionImpl handleContentChange(CSharpConstantExpressionImpl element, TextRange textRange, String s) throws IncorrectOperationException
 	{
 		StringBuilder builder = new StringBuilder();
 		IElementType elementType = element.getLiteralType();
@@ -46,15 +45,13 @@ public class CSharpConstantExpressionElementManipulator extends AbstractElementM
 		return (CSharpConstantExpressionImpl) element.updateText(builder.toString());
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
-	public TextRange getRangeInElement(@Nonnull CSharpConstantExpressionImpl element)
+	public TextRange getRangeInElement(CSharpConstantExpressionImpl element)
 	{
 		return CSharpConstantExpressionImpl.getStringValueTextRange(element);
 	}
 
-	@Nonnull
 	@Override
 	public Class getElementClass()
 	{

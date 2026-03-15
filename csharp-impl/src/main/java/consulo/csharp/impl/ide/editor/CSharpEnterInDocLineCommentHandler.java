@@ -29,7 +29,6 @@ import consulo.language.psi.PsiWhiteSpace;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.ref.SimpleReference;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -40,11 +39,11 @@ public class CSharpEnterInDocLineCommentHandler extends EnterHandlerDelegateAdap
 
     @Override
     @RequiredUIAccess
-    public Result preprocessEnter(@Nonnull final PsiFile file,
-                                  @Nonnull final Editor editor,
-                                  @Nonnull final SimpleReference<Integer> caretOffsetRef,
-                                  @Nonnull final SimpleReference<Integer> caretAdvance,
-                                  @Nonnull final DataContext dataContext,
+    public Result preprocessEnter(final PsiFile file,
+                                  final Editor editor,
+                                  final SimpleReference<Integer> caretOffsetRef,
+                                  final SimpleReference<Integer> caretAdvance,
+                                  final DataContext dataContext,
                                   final EditorActionHandler originalHandler) {
         final int caretOffset = caretOffsetRef.get();
         final Document document = editor.getDocument();

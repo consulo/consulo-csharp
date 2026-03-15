@@ -18,7 +18,7 @@ package consulo.csharp.lang.psi;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetElement;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL

@@ -24,7 +24,6 @@ import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,18 +31,17 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpLocalVariableDeclarationStatementImpl extends CSharpElementImpl implements CSharpLocalVariableDeclarationStatement
 {
-	public CSharpLocalVariableDeclarationStatementImpl(@Nonnull IElementType elementType)
+	public CSharpLocalVariableDeclarationStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLocalVariableDeclarationStatement(this);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpLocalVariable[] getVariables()
 	{
@@ -51,7 +49,7 @@ public class CSharpLocalVariableDeclarationStatementImpl extends CSharpElementIm
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement
 			place)
 	{
 		for(CSharpLocalVariable variable : getVariables())

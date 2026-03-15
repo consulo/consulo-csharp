@@ -27,8 +27,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiUtilCore;
 import consulo.virtualFileSystem.VirtualFile;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -36,18 +35,18 @@ import jakarta.annotation.Nullable;
  */
 public abstract class Evaluator
 {
-	public abstract void evaluate(@Nonnull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetThrowValueException, DotNetInvalidStackFrameException,
+	public abstract void evaluate(CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetThrowValueException, DotNetInvalidStackFrameException,
 			DotNetAbsentInformationException, DotNetNotSuspendedException;
 
 	@Nullable
-	public static DotNetValueProxy substituteStaticContext(@Nonnull DotNetValueProxy proxy)
+	public static DotNetValueProxy substituteStaticContext(DotNetValueProxy proxy)
 	{
 		return proxy == CSharpStaticValueProxy.INSTANCE ? null : proxy;
 	}
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetTypeProxy findTypeMirror(@Nonnull CSharpEvaluateContext context, @Nullable PsiElement element)
+	public static DotNetTypeProxy findTypeMirror(CSharpEvaluateContext context, @Nullable PsiElement element)
 	{
 		if(element instanceof CSharpTypeDeclaration)
 		{

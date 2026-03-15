@@ -26,8 +26,7 @@ import consulo.language.codeStyle.CodeStyleSettings;
 import consulo.language.codeStyle.CustomCodeStyleSettings;
 import consulo.language.codeStyle.setting.CodeStyleSettingsProvider;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -42,7 +41,6 @@ public class CSharpCodeGenerationSettingsProvider extends CodeStyleSettingsProvi
 		return false;
 	}
 
-	@Nonnull
     @Override
 	public LocalizeValue getConfigurableDisplayName()
 	{
@@ -63,7 +61,6 @@ public class CSharpCodeGenerationSettingsProvider extends CodeStyleSettingsProvi
 		return new CSharpCodeGenerationSettings(settings);
 	}
 
-	@Nonnull
 	@Override
 	public Configurable createSettingsPage(CodeStyleSettings settings, CodeStyleSettings originalSettings)
 	{

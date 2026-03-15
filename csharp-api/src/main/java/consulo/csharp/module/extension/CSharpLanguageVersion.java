@@ -21,7 +21,6 @@ import consulo.component.util.pointer.NamedPointer;
 import consulo.csharp.api.localize.CSharpLocalize;
 import consulo.localize.LocalizeValue;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -47,17 +46,16 @@ public enum CSharpLanguageVersion implements Named, NamedPointer<CSharpLanguageV
 
 	private final LocalizeValue myDescriptionValue;
 
-	CSharpLanguageVersion(@Nonnull LocalizeValue descriptionValue)
+	CSharpLanguageVersion(LocalizeValue descriptionValue)
 	{
 		myDescriptionValue = descriptionValue;
 	}
 
-	public boolean isAtLeast(@Nonnull CSharpLanguageVersion languageVersion)
+	public boolean isAtLeast(CSharpLanguageVersion languageVersion)
 	{
 		return ordinal() >= languageVersion.ordinal();
 	}
 
-	@Nonnull
 	public String getPresentableName()
 	{
 		String name = name();
@@ -66,20 +64,17 @@ public enum CSharpLanguageVersion implements Named, NamedPointer<CSharpLanguageV
 		return name;
 	}
 
-	@Nonnull
 	public LocalizeValue getDescriptionValue()
 	{
 		return myDescriptionValue;
 	}
 
-	@Nonnull
 	@Override
 	public CSharpLanguageVersion get()
 	{
 		return this;
 	}
 
-	@Nonnull
 	@Override
 	public String getName()
 	{

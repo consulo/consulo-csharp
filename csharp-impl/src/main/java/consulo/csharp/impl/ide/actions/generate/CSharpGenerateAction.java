@@ -16,8 +16,7 @@
 
 package consulo.csharp.impl.ide.actions.generate;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
@@ -37,7 +36,7 @@ public abstract class CSharpGenerateAction extends CodeInsightAction
 {
 	@Nullable
 	@RequiredReadAction
-	public static CSharpTypeDeclaration findTypeDeclaration(@Nonnull Editor editor, @Nonnull PsiFile file)
+	public static CSharpTypeDeclaration findTypeDeclaration(Editor editor, PsiFile file)
 	{
 		if(file.getFileType() != CSharpFileType.INSTANCE)
 		{
@@ -65,7 +64,6 @@ public abstract class CSharpGenerateAction extends CodeInsightAction
 		myHandler = handler;
 	}
 
-	@Nonnull
 	@Override
 	protected CodeInsightActionHandler getHandler()
 	{

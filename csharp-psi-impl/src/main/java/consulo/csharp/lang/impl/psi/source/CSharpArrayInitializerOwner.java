@@ -17,7 +17,7 @@
 package consulo.csharp.lang.impl.psi.source;
 
 import consulo.dotnet.psi.DotNetElement;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL

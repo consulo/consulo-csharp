@@ -33,8 +33,7 @@ import consulo.dotnet.psi.*;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.resolve.ResolveState;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -42,7 +41,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implements CSharpAnonymousMethodExpression, DotNetParameterListOwner
 {
-	public CSharpDelegateExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpDelegateExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -53,7 +52,6 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 		return findChildByClass(CSharpBlockStatementImpl.class);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
@@ -69,7 +67,6 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 	}
 
 	@Override
-	@Nonnull
 	public DotNetParameter[] getParameters()
 	{
 		DotNetParameterList parameterList = getParameterList();
@@ -77,13 +74,13 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitAnonymMethodExpression(this);
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER_OR_LOCAL_METHOD))
 		{
@@ -98,7 +95,6 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 		return true;
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
@@ -107,7 +103,6 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
@@ -122,7 +117,6 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -136,20 +130,18 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return getModifierList().hasModifier(modifier);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetModifierList getModifierList()
 	{
 		return CachedValuesManager.getManager(getProject()).createCachedValue(() -> CachedValueProvider.Result.<DotNetModifierList>create(new CSharpAnonymousModifierListImpl(CSharpDelegateExpressionImpl.this), CSharpDelegateExpressionImpl.this), false).getValue();
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCodeBodyProxy getCodeBlock()
 	{

@@ -22,7 +22,6 @@ import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.impl.DotNetPsiCountUtil;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,13 +29,13 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpParameterListImpl extends CSharpElementImpl implements DotNetParameterList
 {
-	public CSharpParameterListImpl(@Nonnull IElementType elementType)
+	public CSharpParameterListImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitParameterList(this);
 	}
@@ -47,14 +46,12 @@ public class CSharpParameterListImpl extends CSharpElementImpl implements DotNet
 		return DotNetPsiCountUtil.countChildrenOfType(getNode(), DotNetParameter.class);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
 		return findChildrenByClass(DotNetParameter.class);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{

@@ -39,8 +39,7 @@ import consulo.msil.impl.lang.psi.impl.type.MsilMethodGenericTypeRefImpl;
 import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilMethodEntry;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -67,7 +66,6 @@ public class MsilDelegateTypeRef extends DotNetTypeRefWithCachedResult
 			return ToNativeElementTransformers.transform(myElement);
 		}
 
-		@Nonnull
 		@Override
 		public DotNetGenericExtractor getGenericExtractor()
 		{
@@ -84,7 +82,6 @@ public class MsilDelegateTypeRef extends DotNetTypeRefWithCachedResult
 
 	private NotNullLazyValue<DotNetTypeResolveResult> myResultValue = new NotNullLazyValue<DotNetTypeResolveResult>()
 	{
-		@Nonnull
 		@Override
 		@RequiredReadAction
 		protected DotNetTypeResolveResult compute()
@@ -181,27 +178,25 @@ public class MsilDelegateTypeRef extends DotNetTypeRefWithCachedResult
 
 	private final DotNetTypeRef myTypeRef;
 
-	public MsilDelegateTypeRef(@Nonnull DotNetTypeRef typeRef)
+	public MsilDelegateTypeRef(DotNetTypeRef typeRef)
 	{
 		super(typeRef.getProject(), typeRef.getResolveScope());
 		myTypeRef = typeRef;
 	}
 
 	@Override
-	public boolean isEqualToVmQName(@Nonnull String vmQName)
+	public boolean isEqualToVmQName(String vmQName)
 	{
 		return myTypeRef.isEqualToVmQName(vmQName);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
 		return myResultValue.getValue();
 	}
 
-	@Nonnull
 	@Override
 	public String getVmQName()
 	{

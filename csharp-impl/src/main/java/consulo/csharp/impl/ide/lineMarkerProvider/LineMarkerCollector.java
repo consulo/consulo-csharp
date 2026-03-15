@@ -19,7 +19,6 @@ package consulo.csharp.impl.ide.lineMarkerProvider;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.gutter.LineMarkerInfo;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
 import java.util.function.Consumer;
 
@@ -30,5 +29,5 @@ import java.util.function.Consumer;
 public interface LineMarkerCollector
 {
 	@RequiredReadAction
-	void collect(PsiElement psiElement, @Nonnull Consumer<LineMarkerInfo> lineMarkerInfos);
+	void collect(PsiElement psiElement, Consumer<LineMarkerInfo> lineMarkerInfos);
 }

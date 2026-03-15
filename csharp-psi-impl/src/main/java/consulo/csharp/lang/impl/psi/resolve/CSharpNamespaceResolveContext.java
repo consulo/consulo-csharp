@@ -49,8 +49,7 @@ import consulo.util.collection.SmartList;
 import consulo.util.dataholder.UserDataHolder;
 import consulo.util.lang.ObjectUtil;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -87,14 +86,14 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
-	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@Nonnull String name)
+	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(String name)
 	{
 		Object o = myExtensionGroups.get(name);
 		return o == ObjectUtil.NULL ? null : (CSharpElementGroup<CSharpMethodDeclaration>) o;
 	}
 
 	@RequiredReadAction
-	private CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName0(@Nonnull String name)
+	private CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName0(String name)
 	{
 		int indexKey = CSharpMsilStubIndexer.makeExtensionMethodIndexKey(myNamespaceAsElement.getPresentableQName(), name);
 		Collection<DotNetLikeMethodDeclaration> declarations = ExtensionMethodByNamespacePlusNameIndex.getInstance().get(indexKey, myNamespaceAsElement.getProject(), myResolveScope);
@@ -116,7 +115,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@RequiredReadAction
 	@Override
-	public boolean processExtensionMethodGroups(@Nonnull final Processor<CSharpMethodDeclaration> processor)
+	public boolean processExtensionMethodGroups(final Processor<CSharpMethodDeclaration> processor)
 	{
 		int indexKey = DotNetNamespaceStubUtil.getIndexableNamespace(StringUtil.notNullize(myNamespaceAsElement.getPresentableQName())).hashCode();
 
@@ -136,7 +135,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@RequiredReadAction
-	private CSharpMethodDeclaration convertMethodIfNeed(@Nonnull DotNetLikeMethodDeclaration methodDeclaration)
+	private CSharpMethodDeclaration convertMethodIfNeed(DotNetLikeMethodDeclaration methodDeclaration)
 	{
 		if(methodDeclaration instanceof MsilEntry)
 		{
@@ -166,9 +165,8 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public Collection<PsiElement> findByName(@Nonnull String name, boolean deep, @Nonnull UserDataHolder holder)
+	public Collection<PsiElement> findByName(String name, boolean deep, UserDataHolder holder)
 	{
 		DotNetNamespaceAsElement.ChildrenFilter filter = holder.getUserData(BaseDotNetNamespaceAsElement.FILTER);
 		if(filter == null)
@@ -181,7 +179,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@RequiredReadAction
 	@Override
-	public boolean processElements(@Nonnull Processor<PsiElement> processor, boolean deep)
+	public boolean processElements(Processor<PsiElement> processor, boolean deep)
 	{
 		Set<String> partialTypesVisit = new HashSet<>();
 		return myNamespaceAsElement.processChildren(myResolveScope, CSharpTransformer.INSTANCE, DotNetNamespaceAsElement.ChildrenFilter.NONE, element ->
@@ -215,7 +213,6 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		});
 	}
 
-	@Nonnull
 	@Override
 	public PsiElement getElement()
 	{

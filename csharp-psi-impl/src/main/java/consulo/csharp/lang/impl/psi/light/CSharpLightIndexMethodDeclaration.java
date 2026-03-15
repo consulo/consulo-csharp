@@ -24,9 +24,8 @@ import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,19 +39,17 @@ public class CSharpLightIndexMethodDeclaration extends CSharpLightLikeMethodDecl
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitIndexMethodDeclaration(this);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetXAccessor[] getAccessors()
 	{
 		return myOriginal.getAccessors();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{

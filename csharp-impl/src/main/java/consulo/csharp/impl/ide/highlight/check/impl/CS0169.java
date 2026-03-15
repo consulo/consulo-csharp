@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.search.ReferencesSearch;
@@ -31,7 +30,7 @@ import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.language.psi.PsiReference;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -42,7 +41,7 @@ public class CS0169 extends CompilerCheck<CSharpFieldDeclaration>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpFieldDeclaration element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpFieldDeclaration element)
 	{
 		if(!element.hasModifier(CSharpModifier.PRIVATE))
 		{

@@ -20,8 +20,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetType;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -33,7 +32,6 @@ public interface CSharpNullableType extends DotNetType
 	@RequiredReadAction
 	DotNetType getInnerType();
 
-	@Nonnull
 	@RequiredReadAction
 	PsiElement getQuestElement();
 }

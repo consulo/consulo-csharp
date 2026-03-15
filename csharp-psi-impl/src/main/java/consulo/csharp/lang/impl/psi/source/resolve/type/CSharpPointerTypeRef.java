@@ -21,7 +21,6 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.*;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,14 +30,13 @@ public class CSharpPointerTypeRef extends DotNetTypeRefWithCachedResult implemen
 {
 	private final DotNetTypeRef myInnerTypeRef;
 
-	public CSharpPointerTypeRef(@Nonnull DotNetTypeRef innerTypeRef)
+	public CSharpPointerTypeRef(DotNetTypeRef innerTypeRef)
 	{
 		super(innerTypeRef.getProject(), innerTypeRef.getResolveScope());
 		myInnerTypeRef = innerTypeRef;
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -51,14 +49,12 @@ public class CSharpPointerTypeRef extends DotNetTypeRefWithCachedResult implemen
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getVmQName()
 	{
 		return myInnerTypeRef.getVmQName() + "*";
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getInnerTypeRef()
 	{

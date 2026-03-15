@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
@@ -27,7 +26,7 @@ import consulo.csharp.lang.impl.psi.source.CSharpPrefixExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.ast.IElementType;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -38,7 +37,7 @@ public class CS0211 extends CompilerCheck<CSharpPrefixExpressionImpl>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpPrefixExpressionImpl element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpPrefixExpressionImpl element)
 	{
 		IElementType operatorElementType = element.getOperatorElement().getOperatorElementType();
 		if(operatorElementType == CSharpTokens.AND)

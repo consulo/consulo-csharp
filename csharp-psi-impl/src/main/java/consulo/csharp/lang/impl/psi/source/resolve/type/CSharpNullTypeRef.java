@@ -24,7 +24,6 @@ import consulo.dotnet.psi.resolve.*;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -33,13 +32,12 @@ import jakarta.annotation.Nonnull;
 public class CSharpNullTypeRef extends DotNetTypeRefWithCachedResult
 {
 	@RequiredReadAction
-	public CSharpNullTypeRef(@Nonnull Project project, @Nonnull GlobalSearchScope scope)
+	public CSharpNullTypeRef(Project project, GlobalSearchScope scope)
 	{
 		super(project, scope);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -52,7 +50,6 @@ public class CSharpNullTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getVmQName()
 	{

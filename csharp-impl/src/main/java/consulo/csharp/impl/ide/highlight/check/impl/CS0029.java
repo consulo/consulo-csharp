@@ -53,8 +53,7 @@ import consulo.localize.LocalizeValue;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.ObjectUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,8 +110,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			DotNetTypes.System.UInt64,
 	};
 
-	@Nonnull
-	private static CheckTarget target(@Nonnull DotNetTypeRef expected, @Nonnull DotNetTypeRef actual, @Nonnull PsiElement target)
+	private static CheckTarget target(DotNetTypeRef expected, DotNetTypeRef actual, PsiElement target)
 	{
 		return new CheckTarget().expect(expected).actual(actual).target(target);
 	}
@@ -120,7 +118,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull PsiElement element)
+	public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, PsiElement element)
 	{
 		CheckTarget target = resolve(element);
 		if(target == null)

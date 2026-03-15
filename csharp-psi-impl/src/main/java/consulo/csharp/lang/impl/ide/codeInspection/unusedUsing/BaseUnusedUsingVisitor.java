@@ -28,8 +28,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -117,7 +116,7 @@ public abstract class BaseUnusedUsingVisitor extends CSharpElementVisitor
 		}
 	}
 
-	private void putState(@Nonnull ResolveResult firstValidResult, @Nullable PsiElement element)
+	private void putState(ResolveResult firstValidResult, @Nullable PsiElement element)
 	{
 		if(element == null)
 		{
@@ -136,12 +135,11 @@ public abstract class BaseUnusedUsingVisitor extends CSharpElementVisitor
 		}
 	}
 
-	protected boolean isProcessed(@Nonnull CSharpUsingListChild element)
+	protected boolean isProcessed(CSharpUsingListChild element)
 	{
 		return false;
 	}
 
-	@Nonnull
 	protected abstract Collection<? extends CSharpUsingListChild> getStatements();
 
 	protected abstract void putElement(CSharpUsingListChild child, PsiElement targetElement);

@@ -23,8 +23,7 @@ import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 import consulo.util.lang.Trinity;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -36,20 +35,17 @@ public interface ParameterResolveContext<T>
 	T getParameterByIndex(int i);
 
 	@Nullable
-	T getParameterByName(@Nonnull String name);
+	T getParameterByName(String name);
 
 	int getParametersSize();
 
 	@Nullable
 	DotNetParameter getParamsParameter();
 
-	@Nonnull
 	T[] getParameters();
 
-	@Nonnull
 	DotNetTypeRef getParamsParameterTypeRef();
 
-	@Nonnull
 	DotNetTypeRef getInnerParamsParameterTypeRef();
 
 	boolean isResolveFromParentTypeRef();
@@ -60,13 +56,10 @@ public interface ParameterResolveContext<T>
 	 * 2. TypeRef
 	 * 3. Optional flag
 	 */
-	@Nonnull
 	@RequiredReadAction
-	Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(@Nonnull T parameter);
+	Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(T parameter);
 
-	@Nonnull
 	Project getProject();
 
-	@Nonnull
 	GlobalSearchScope getResolveScope();
 }

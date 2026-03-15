@@ -21,7 +21,6 @@ import consulo.csharp.lang.impl.psi.source.CSharpGenericConstraintTypeValueImpl;
 import consulo.language.psi.PsiElement;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.EmptyStub;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -34,15 +33,14 @@ public class CSharpGenericConstraintTypeValueStubElementType extends CSharpEmpty
 		super("GENERIC_CONSTRAINT_TYPE_VALUE");
 	}
 
-	@Nonnull
 	@Override
-	public PsiElement createElement(@Nonnull ASTNode astNode)
+	public PsiElement createElement(ASTNode astNode)
 	{
 		return new CSharpGenericConstraintTypeValueImpl(astNode);
 	}
 
 	@Override
-	public CSharpGenericConstraintTypeValue createPsi(@Nonnull EmptyStub<CSharpGenericConstraintTypeValue> stub)
+	public CSharpGenericConstraintTypeValue createPsi(EmptyStub<CSharpGenericConstraintTypeValue> stub)
 	{
 		return new CSharpGenericConstraintTypeValueImpl(stub, this);
 	}

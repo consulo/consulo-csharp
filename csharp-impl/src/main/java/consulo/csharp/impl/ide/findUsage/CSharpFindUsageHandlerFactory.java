@@ -7,8 +7,7 @@ import consulo.find.FindUsagesHandler;
 import consulo.find.FindUsagesHandlerFactory;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -19,14 +18,14 @@ public class CSharpFindUsageHandlerFactory extends FindUsagesHandlerFactory
 {
 	@Override
 	@RequiredReadAction
-	public boolean canFindUsages(@Nonnull PsiElement element)
+	public boolean canFindUsages(PsiElement element)
 	{
 		return element.getLanguage() == CSharpLanguage.INSTANCE;
 	}
 
 	@Nullable
 	@Override
-	public FindUsagesHandler createFindUsagesHandler(@Nonnull PsiElement element, boolean forHighlightUsages)
+	public FindUsagesHandler createFindUsagesHandler(PsiElement element, boolean forHighlightUsages)
 	{
 		return new CSharpFindUsageHandler(element);
 	}

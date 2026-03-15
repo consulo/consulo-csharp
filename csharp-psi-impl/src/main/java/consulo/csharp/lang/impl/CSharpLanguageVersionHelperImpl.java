@@ -22,7 +22,6 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.version.LanguageVersion;
 import jakarta.inject.Singleton;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -51,23 +50,20 @@ public class CSharpLanguageVersionHelperImpl extends CSharpLanguageVersionHelper
 		assert myHighest != null;
 	}
 
-	@Nonnull
 	@Override
 	public LanguageVersion getHighestVersion()
 	{
 		return myHighest;
 	}
 
-	@Nonnull
 	@Override
 	public LanguageVersion[] getVersions()
 	{
 		return myWrappers;
 	}
 
-	@Nonnull
 	@Override
-	public LanguageVersion getWrapper(@Nonnull CSharpLanguageVersion version)
+	public LanguageVersion getWrapper(CSharpLanguageVersion version)
 	{
 		return myWrappers[version.ordinal()];
 	}

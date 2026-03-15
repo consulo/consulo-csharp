@@ -30,9 +30,8 @@ import consulo.injecting.InjectingContainerBuilder;
 import consulo.test.light.LightApplicationBuilder;
 import consulo.testFramework.AssertEx;
 import consulo.testFramework.util.TestUtil;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.io.File;
 import java.net.URISyntaxException;
 
@@ -52,14 +51,13 @@ public class CSharpHightlightLexerTest extends LexerTestCase
 		LightApplicationBuilder.DefaultRegistrator registrator = new LightApplicationBuilder.DefaultRegistrator()
 		{
 			@Override
-			public void registerServices(@Nonnull InjectingContainerBuilder builder)
+			public void registerServices(InjectingContainerBuilder builder)
 			{
 				super.registerServices(builder);
 
 				builder.bind(CSharpCfsElementTypeFactory.class).to(new CSharpCfsElementTypeFactory()
 				{
 
-					@Nonnull
 					@Override
 					public IElementType getInterpolationStringElementType()
 					{
@@ -69,7 +67,6 @@ public class CSharpHightlightLexerTest extends LexerTestCase
 
 				builder.bind(CSharpDocElementFactory.class).to(new CSharpDocElementFactory()
 				{
-					@Nonnull
 					@Override
 					public IElementType getDocRootElementType()
 					{

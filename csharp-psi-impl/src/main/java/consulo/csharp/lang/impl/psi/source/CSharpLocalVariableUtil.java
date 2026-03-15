@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.source;
 
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -26,7 +25,7 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpLocalVariableUtil
 {
-	public static boolean isForeachVariable(@Nonnull DotNetVariable variable)
+	public static boolean isForeachVariable(DotNetVariable variable)
 	{
 		PsiElement parent = variable.getParent();
 		return parent instanceof CSharpForeachStatementImpl;

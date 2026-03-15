@@ -57,8 +57,7 @@ import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
 import consulo.util.lang.ObjectUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -71,10 +70,9 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
     private static class OurResolver implements ResolveCache.PolyVariantResolver<CSharpOperatorReferenceImpl> {
         private static final OurResolver INSTANCE = new OurResolver();
 
-        @Nonnull
         @Override
         @RequiredReadAction
-        public ResolveResult[] resolve(@Nonnull CSharpOperatorReferenceImpl reference, boolean incompleteCode) {
+        public ResolveResult[] resolve(CSharpOperatorReferenceImpl reference, boolean incompleteCode) {
             if (incompleteCode) {
                 return multiResolveImpl(reference);
             }
@@ -91,7 +89,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
             }
         }
 
-        @Nonnull
         @RequiredReadAction
         private ResolveResult[] multiResolveImpl(CSharpOperatorReferenceImpl reference) {
             Object o = reference.resolveImpl();
@@ -142,7 +139,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
         ourAssignmentOperatorMap.put(CSharpTokens.XOREQ, CSharpTokens.XOR);
     }
 
-    public CSharpOperatorReferenceImpl(@Nonnull IElementType elementType) {
+    public CSharpOperatorReferenceImpl(IElementType elementType) {
         super(elementType);
     }
 
@@ -152,7 +149,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
     }
 
     @Override
-    public void accept(@Nonnull CSharpElementVisitor visitor) {
+    public void accept(CSharpElementVisitor visitor) {
         visitor.visitOperatorReference(this);
     }
 
@@ -162,7 +159,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
         return this;
     }
 
-    @Nonnull
     @Override
     @RequiredReadAction
     public TextRange getRangeInElement() {
@@ -170,13 +166,11 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
         return new TextRange(0, operator.getTextLength());
     }
 
-    @Nonnull
     @RequiredReadAction
     public PsiElement getOperatorElement() {
         return findNotNullChildByFilter(ourMergeSet);
     }
 
-    @Nonnull
     @RequiredReadAction
     public IElementType getOperatorElementType() {
         return PsiUtilCore.getElementType(getOperatorElement());
@@ -288,7 +282,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
     }
 
     @RequiredReadAction
-    private void processImplicitCasts(DotNetTypeRef expressionTypeRef, PsiElement parent, @Nonnull Consumer<DotNetTypeRef> consumer) {
+    private void processImplicitCasts(DotNetTypeRef expressionTypeRef, PsiElement parent, Consumer<DotNetTypeRef> consumer) {
         for (DotNetExpression dotNetExpression : ((CSharpExpressionWithOperatorImpl) parent).getParameterExpressions()) {
             List<DotNetTypeRef> implicitOrExplicitTypeRefs = CSharpTypeUtil.getImplicitOrExplicitTypeRefs(dotNetExpression.toTypeRef(true), expressionTypeRef, CSharpCastType.IMPLICIT, this);
 
@@ -298,7 +292,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
         }
     }
 
-    @Nonnull
     @RequiredReadAction
     public DotNetTypeRef resolveToTypeRef() {
         ResolveResult[] resolveResults = multiResolve(true);
@@ -325,10 +318,10 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
     }
 
     @RequiredReadAction
-    public void resolveUserDefinedOperators(@Nonnull IElementType elementType,
-                                            @Nonnull DotNetTypeRef originalTypeRef,
-                                            @Nonnull DotNetTypeRef typeRef,
-                                            @Nonnull Set<MethodResolveResult> last,
+    public void resolveUserDefinedOperators(IElementType elementType,
+                                            DotNetTypeRef originalTypeRef,
+                                            DotNetTypeRef typeRef,
+                                            Set<MethodResolveResult> last,
                                             @Nullable DotNetExpression implicitExpression) {
         Set<PsiElement> psiElements = resolveElements(elementType, typeRef);
         if (psiElements == null) {
@@ -350,7 +343,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
     @Nullable
     @RequiredReadAction
-    private Set<PsiElement> resolveElements(@Nonnull IElementType elementType, @Nonnull DotNetTypeRef typeRef) {
+    private Set<PsiElement> resolveElements(IElementType elementType, DotNetTypeRef typeRef) {
         if (typeRef instanceof DotNetPointerTypeRef) {
             if (elementType != CSharpTokens.PLUS && elementType != CSharpTokens.MINUS) {
                 return Collections.emptySet();
@@ -402,7 +395,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
     }
 
     @RequiredReadAction
-    @Nonnull
     private PsiElement buildOperatorForPointer(IElementType operatorElementType, DotNetTypeRef leftTypeRef, String typeVmQName) {
         Project project = getProject();
         CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(project);
@@ -413,7 +405,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
         return builder;
     }
 
-    @Nonnull
     @Override
     @RequiredReadAction
     public String getCanonicalText() {
@@ -430,7 +421,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
     @RequiredWriteAction
     @Override
-    public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
+    public PsiElement bindToElement(PsiElement element) throws IncorrectOperationException {
         return null;
     }
 
@@ -446,7 +437,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
         return resolve() == this;
     }
 
-    @Nonnull
     public DotNetTypeRef[] getTypeRefs() {
         DotNetExpression[] parameterExpressions = getParameterExpressions();
         DotNetTypeRef[] typeRefs = new DotNetTypeRef[parameterExpressions.length];
@@ -471,7 +461,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     public ResolveResult[] multiResolve(boolean incompleteCode) {
         if (CSharpReferenceExpressionImplUtil.isCacheDisabled(this)) {
@@ -480,7 +469,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
         return ResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, false, incompleteCode);
     }
 
-    @Nonnull
     @Override
     public DotNetExpression[] getParameterExpressions() {
         PsiElement parent = getParent();
@@ -490,13 +478,11 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
         return DotNetExpression.EMPTY_ARRAY;
     }
 
-    @Nonnull
     @Override
     public CSharpCallArgument[] getCallArguments() {
         return getCallArguments(null, null, null);
     }
 
-    @Nonnull
     public CSharpCallArgument[] getCallArguments(DotNetTypeRef originalTypeRef, DotNetExpression wrapExpression, DotNetTypeRef toTypeRef) {
         DotNetExpression[] parameterExpressions = getParameterExpressions();
         CSharpCallArgument[] array = new CSharpCallArgument[parameterExpressions.length];

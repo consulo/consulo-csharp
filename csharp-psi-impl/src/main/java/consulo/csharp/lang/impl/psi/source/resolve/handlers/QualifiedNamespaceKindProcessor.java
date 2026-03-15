@@ -37,8 +37,7 @@ import consulo.language.psi.ResolveResult;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -48,10 +47,10 @@ public class QualifiedNamespaceKindProcessor implements KindProcessor
 {
 	@RequiredReadAction
 	@Override
-	public void process(@Nonnull CSharpResolveOptions options,
-			@Nonnull DotNetGenericExtractor defaultExtractor,
+	public void process(CSharpResolveOptions options,
+			DotNetGenericExtractor defaultExtractor,
 			@Nullable PsiElement forceQualifierElement,
-			@Nonnull final Processor<ResolveResult> processor)
+			final Processor<ResolveResult> processor)
 	{
 		PsiElement element = options.getElement();
 
@@ -108,7 +107,7 @@ public class QualifiedNamespaceKindProcessor implements KindProcessor
 	}
 
 	@RequiredReadAction
-	private void processDefaultCompletion(@Nonnull Processor<ResolveResult> processor, PsiElement element, PsiElement qualifier)
+	private void processDefaultCompletion(Processor<ResolveResult> processor, PsiElement element, PsiElement qualifier)
 	{
 		DotNetNamespaceAsElement namespace;
 		String qualifiedText = "";
@@ -128,13 +127,13 @@ public class QualifiedNamespaceKindProcessor implements KindProcessor
 	}
 
 	@RequiredReadAction
-	private void processNamespaceChildren(@Nonnull final Processor<ResolveResult> processor, PsiElement element, DotNetNamespaceAsElement namespace)
+	private void processNamespaceChildren(final Processor<ResolveResult> processor, PsiElement element, DotNetNamespaceAsElement namespace)
 	{
 		StubScopeProcessor scopeProcessor = new StubScopeProcessor()
 		{
 			@RequiredReadAction
 			@Override
-			public boolean execute(@Nonnull PsiElement element, ResolveState state)
+			public boolean execute(PsiElement element, ResolveState state)
 			{
 				ProgressManager.checkCanceled();
 

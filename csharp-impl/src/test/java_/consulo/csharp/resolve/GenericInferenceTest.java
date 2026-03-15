@@ -16,7 +16,6 @@
 
 package consulo.csharp.resolve;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.ResolveResult;
 import com.intellij.testFramework.TestModuleDescriptor;
@@ -39,14 +38,12 @@ public abstract class GenericInferenceTest extends ResolvingTestCase
 	{
 	}
 
-	@Nonnull
 	@Override
 	protected TestModuleDescriptor createTestModuleDescriptor()
 	{
 		return new CSharpMockModuleDescriptor();
 	}
 
-	@Nonnull
 	@Override
 	protected Function<ResolveResult, String> createReferenceResultBuilder()
 	{

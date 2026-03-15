@@ -26,9 +26,8 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNameIdentifierOwner;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -39,7 +38,7 @@ public class CS0531 extends CompilerCheck<DotNetCodeBlockOwner>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetCodeBlockOwner element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetCodeBlockOwner element)
 	{
 		PsiElement superParent = null;
 

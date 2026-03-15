@@ -31,9 +31,8 @@ import consulo.language.psi.stub.StubIndex;
 import consulo.navigation.NavigationItem;
 import consulo.project.Project;
 import consulo.project.content.scope.ProjectAwareSearchScope;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -43,14 +42,14 @@ import jakarta.annotation.Nullable;
 public class CSharpTypeNameContributor implements GotoClassOrTypeContributor
 {
 	@Override
-	public void processNames(@Nonnull Processor<String> stringProcessor, @Nonnull SearchScope searchScope, @Nullable IdFilter idFilter)
+	public void processNames(Processor<String> stringProcessor, SearchScope searchScope, @Nullable IdFilter idFilter)
 	{
 		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.TYPE_INDEX, stringProcessor, (ProjectAwareSearchScope)searchScope, idFilter);
 		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.DELEGATE_METHOD_BY_NAME_INDEX, stringProcessor, (ProjectAwareSearchScope)searchScope, idFilter);
 	}
 
 	@Override
-	public void processElementsWithName(@Nonnull String name, @Nonnull final Processor<NavigationItem> navigationItemProcessor, @Nonnull FindSymbolParameters findSymbolParameters)
+	public void processElementsWithName(String name, final Processor<NavigationItem> navigationItemProcessor, FindSymbolParameters findSymbolParameters)
 	{
 		Project project = findSymbolParameters.getProject();
 		IdFilter idFilter = findSymbolParameters.getIdFilter();

@@ -19,7 +19,6 @@ package consulo.csharp.lang.psi;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.util.collection.ArrayFactory;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,6 +30,5 @@ public interface CSharpModifierList extends DotNetModifierList
 
 	public static ArrayFactory<CSharpModifierList> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpModifierList[count];
 
-	@Nonnull
 	CSharpAttributeList[] getAttributeLists();
 }

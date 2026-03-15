@@ -16,7 +16,6 @@
 
 package consulo.csharp.resolve;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.csharp.CSharpMockModuleDescriptor;
 import consulo.language.psi.ResolveResult;
@@ -75,7 +74,6 @@ public abstract class OtherResolveTest extends ResolvingTestCase
 	{
 	}
 
-	@Nonnull
 	@Override
 	protected TestModuleDescriptor createTestModuleDescriptor()
 	{
@@ -84,7 +82,6 @@ public abstract class OtherResolveTest extends ResolvingTestCase
 		return new CSharpMockModuleDescriptor(fullDataPath, testName);
 	}
 
-	@Nonnull
 	@Override
 	protected Function<ResolveResult, String> createReferenceResultBuilder()
 	{

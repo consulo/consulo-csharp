@@ -28,7 +28,6 @@ import consulo.index.io.StringRef;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.StubInputStream;
 import consulo.language.psi.stub.StubOutputStream;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -41,21 +40,20 @@ public class CSharpAttributeStubElementType extends CSharpAbstractStubElementTyp
 		super("ATTRIBUTE");
 	}
 
-	@Nonnull
 	@Override
-	public PsiElement createElement(@Nonnull ASTNode astNode)
+	public PsiElement createElement(ASTNode astNode)
 	{
 		return new CSharpStubAttributeImpl(astNode);
 	}
 
 	@Override
-	public CSharpAttribute createPsi(@Nonnull CSharpWithStringValueStub<CSharpAttribute> stub)
+	public CSharpAttribute createPsi(CSharpWithStringValueStub<CSharpAttribute> stub)
 	{
 		return new CSharpStubAttributeImpl(stub, this);
 	}
 
 	@Override
-	public CSharpWithStringValueStub<CSharpAttribute> createStub(@Nonnull CSharpAttribute attribute, StubElement stubElement)
+	public CSharpWithStringValueStub<CSharpAttribute> createStub(CSharpAttribute attribute, StubElement stubElement)
 	{
 		CSharpReferenceExpression referenceExpression = attribute.getReferenceExpression();
 		String referenceText = referenceExpression == null ? null : referenceExpression.getText();
@@ -63,14 +61,13 @@ public class CSharpAttributeStubElementType extends CSharpAbstractStubElementTyp
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpWithStringValueStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpWithStringValueStub stub, StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getReferenceText());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpWithStringValueStub<CSharpAttribute> deserialize(@Nonnull StubInputStream stubInputStream,
+	public CSharpWithStringValueStub<CSharpAttribute> deserialize(StubInputStream stubInputStream,
 			StubElement stubElement) throws IOException
 	{
 		StringRef referenceText = stubInputStream.readName();

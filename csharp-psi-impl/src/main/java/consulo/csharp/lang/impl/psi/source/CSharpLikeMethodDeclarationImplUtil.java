@@ -34,8 +34,7 @@ import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.util.lang.Pair;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -50,7 +49,7 @@ public class CSharpLikeMethodDeclarationImplUtil
 		NOT_FOUND
 	}
 
-	public static boolean isEquivalentTo(@Nonnull PsiElement o1, @Nullable PsiElement o2)
+	public static boolean isEquivalentTo(PsiElement o1, @Nullable PsiElement o2)
 	{
 		if(o2 == null)
 		{
@@ -82,9 +81,8 @@ public class CSharpLikeMethodDeclarationImplUtil
 		return false;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static Pair<ResolveVirtualImplementResult, PsiElement> resolveVirtualImplementation(@Nonnull DotNetVirtualImplementOwner owner, @Nonnull PsiElement scope)
+	public static Pair<ResolveVirtualImplementResult, PsiElement> resolveVirtualImplementation(DotNetVirtualImplementOwner owner, PsiElement scope)
 	{
 		DotNetType typeForImplement = owner.getTypeForImplement();
 		if(typeForImplement == null)
@@ -115,9 +113,8 @@ public class CSharpLikeMethodDeclarationImplUtil
 		return Pair.<ResolveVirtualImplementResult, PsiElement>create(ResolveVirtualImplementResult.NOT_FOUND, null);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static CSharpSimpleParameterInfo[] getParametersInfos(@Nonnull DotNetParameterListOwner parameterListOwner)
+	public static CSharpSimpleParameterInfo[] getParametersInfos(DotNetParameterListOwner parameterListOwner)
 	{
 		DotNetParameter[] parameters = parameterListOwner.getParameters();
 
@@ -130,11 +127,11 @@ public class CSharpLikeMethodDeclarationImplUtil
 		return parameterInfos;
 	}
 
-	public static boolean processDeclarations(@Nonnull DotNetLikeMethodDeclaration methodDeclaration,
-											  @Nonnull PsiScopeProcessor processor,
-											  @Nonnull ResolveState state,
+	public static boolean processDeclarations(DotNetLikeMethodDeclaration methodDeclaration,
+											  PsiScopeProcessor processor,
+											  ResolveState state,
 											  PsiElement lastParent,
-											  @Nonnull PsiElement place)
+											  PsiElement place)
 	{
 		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.GENERIC_PARAMETER))
 		{

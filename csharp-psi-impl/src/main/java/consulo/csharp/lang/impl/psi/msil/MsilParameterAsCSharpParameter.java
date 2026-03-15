@@ -36,8 +36,7 @@ import consulo.msil.impl.lang.psi.impl.MsilTypeByRefImpl;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Comparing;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -85,13 +84,11 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected MsilModifierListToCSharpModifierList createModifierList(CSharpModifier[] modifiers, DotNetVariable variable)
 	{
 		return new MsilModifierListToCSharpModifierList(modifiers, variable, variable.getModifierList())
 		{
-			@Nonnull
 			@Override
 			@RequiredReadAction
 			public List<ExternalAttributeNode> findAttributes(ExternalAttributeHolder holder)
@@ -128,7 +125,6 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 				return attributesFromExternal;
 			}
 
-			@Nonnull
 			@RequiredReadAction
 			private List<ExternalAttributeNode> getAttributesFromExternal(ExternalAttributeHolder holder, String vmQName)
 			{
@@ -194,7 +190,6 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 		};
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
@@ -233,7 +228,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitParameter(this);
 	}

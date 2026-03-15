@@ -28,7 +28,6 @@ import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.project.Project;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -36,9 +35,8 @@ import jakarta.annotation.Nonnull;
  */
 public class AddUsingUtil
 {
-	@Nonnull
 	@RequiredReadAction
-	private static PsiElement getElementForBeforeAdd(@Nonnull PsiFile file)
+	private static PsiElement getElementForBeforeAdd(PsiFile file)
 	{
 		if(file instanceof CSharpFile)
 		{
@@ -52,7 +50,7 @@ public class AddUsingUtil
 	}
 
 	@RequiredWriteAction
-	public static void addUsingNoCaretMoving(@Nonnull PsiFile file, @Nonnull String qName)
+	public static void addUsingNoCaretMoving(PsiFile file, String qName)
 	{
 		PsiElement elementForBeforeAdd = getElementForBeforeAdd(file);
 
@@ -83,7 +81,7 @@ public class AddUsingUtil
 	}
 
 	@RequiredReadAction
-	private static void addUsingStatementAfter(@Nonnull CSharpUsingListChild afterElement, @Nonnull CSharpUsingNamespaceStatement newStatement)
+	private static void addUsingStatementAfter(CSharpUsingListChild afterElement, CSharpUsingNamespaceStatement newStatement)
 	{
 		CSharpUsingListOwner parent = (CSharpUsingListOwner) afterElement.getParent();
 

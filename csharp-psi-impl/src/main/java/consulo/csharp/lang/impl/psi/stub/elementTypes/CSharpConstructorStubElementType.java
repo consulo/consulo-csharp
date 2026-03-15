@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
 import java.io.IOException;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.source.CSharpConstructorDeclarationImpl;
@@ -40,22 +39,21 @@ public class CSharpConstructorStubElementType extends CSharpAbstractStubElementT
 		super("CONSTRUCTOR_DECLARATION");
 	}
 
-	@Nonnull
 	@Override
-	public CSharpConstructorDeclarationImpl createElement(@Nonnull ASTNode astNode)
+	public CSharpConstructorDeclarationImpl createElement(ASTNode astNode)
 	{
 		return new CSharpConstructorDeclarationImpl(astNode);
 	}
 
 	@Override
-	public CSharpConstructorDeclarationImpl createPsi(@Nonnull CSharpMethodDeclStub cSharpTypeStub)
+	public CSharpConstructorDeclarationImpl createPsi(CSharpMethodDeclStub cSharpTypeStub)
 	{
 		return new CSharpConstructorDeclarationImpl(cSharpTypeStub, this);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpMethodDeclStub createStub(@Nonnull CSharpConstructorDeclarationImpl methodDeclaration, StubElement stubElement)
+	public CSharpMethodDeclStub createStub(CSharpConstructorDeclarationImpl methodDeclaration, StubElement stubElement)
 	{
 		String qname = methodDeclaration.getPresentableParentQName();
 		int otherModifierMask = CSharpMethodDeclStub.getOtherModifierMask(methodDeclaration);
@@ -63,15 +61,14 @@ public class CSharpConstructorStubElementType extends CSharpAbstractStubElementT
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpMethodDeclStub cSharpTypeStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpMethodDeclStub cSharpTypeStub, StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(cSharpTypeStub.getParentQName());
 		stubOutputStream.writeVarInt(cSharpTypeStub.getOtherModifierMask());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpMethodDeclStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpMethodDeclStub deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef qname = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readVarInt();

@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.light.builder;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.project.Project;
 import consulo.language.psi.PsiElement;
@@ -44,7 +43,7 @@ public class CSharpLightIndexMethodDeclarationBuilder extends CSharpLightLikeMet
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitIndexMethodDeclaration(this);
 	}
@@ -56,7 +55,6 @@ public class CSharpLightIndexMethodDeclarationBuilder extends CSharpLightLikeMet
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
@@ -78,7 +76,6 @@ public class CSharpLightIndexMethodDeclarationBuilder extends CSharpLightLikeMet
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetXAccessor[] getAccessors()
 	{
@@ -86,7 +83,6 @@ public class CSharpLightIndexMethodDeclarationBuilder extends CSharpLightLikeMet
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{

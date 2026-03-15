@@ -26,8 +26,7 @@ import consulo.language.psi.PsiElement;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -38,7 +37,7 @@ import java.util.List;
 public class CSharpGenericConstraintUtil
 {
 	@RequiredReadAction
-	public static DotNetTypeRef[] getExtendTypes(@Nonnull DotNetGenericParameter parameter)
+	public static DotNetTypeRef[] getExtendTypes(DotNetGenericParameter parameter)
 	{
 		CSharpGenericConstraint genericConstraint = findGenericConstraint(parameter);
 		if(genericConstraint == null)
@@ -75,7 +74,7 @@ public class CSharpGenericConstraintUtil
 	}
 
 	@Nullable
-	public static CSharpGenericConstraint findGenericConstraint(@Nonnull DotNetGenericParameter element)
+	public static CSharpGenericConstraint findGenericConstraint(DotNetGenericParameter element)
 	{
 		PsiElement firstParent = element.getParent();
 		if(firstParent == null)
@@ -91,7 +90,7 @@ public class CSharpGenericConstraintUtil
 	}
 
 	@Nullable
-	public static CSharpGenericConstraint forParameter(@Nonnull CSharpGenericConstraintOwner owner, @Nonnull DotNetGenericParameter parameter)
+	public static CSharpGenericConstraint forParameter(CSharpGenericConstraintOwner owner, DotNetGenericParameter parameter)
 	{
 		for(CSharpGenericConstraint constraint : owner.getGenericConstraints())
 		{

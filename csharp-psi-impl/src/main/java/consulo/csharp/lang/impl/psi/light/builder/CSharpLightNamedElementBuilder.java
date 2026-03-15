@@ -20,9 +20,7 @@ import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -45,7 +43,7 @@ public abstract class CSharpLightNamedElementBuilder<T extends CSharpLightNamedE
 	}
 
 	@SuppressWarnings("unchecked")
-	public T withName(@Nonnull String name)
+	public T withName(String name)
 	{
 		myName = name;
 		return (T)this;
@@ -58,7 +56,7 @@ public abstract class CSharpLightNamedElementBuilder<T extends CSharpLightNamedE
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		return null;
 	}

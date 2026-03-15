@@ -28,8 +28,7 @@ import consulo.csharp.lang.impl.psi.source.resolve.CSharpConstantBaseTypeRef;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -45,18 +44,17 @@ public class CSharpBinaryExpressionImpl extends CSharpExpressionWithOperatorImpl
 		}
 	}
 
-	public CSharpBinaryExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpBinaryExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitBinaryExpression(this);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
@@ -107,7 +105,7 @@ public class CSharpBinaryExpressionImpl extends CSharpExpressionWithOperatorImpl
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		DotNetExpression leftExpression = getLeftExpression();
 		if(leftExpression != null && !leftExpression.processDeclarations(processor, state, lastParent, place))

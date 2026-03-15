@@ -25,7 +25,6 @@ import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.StubElement;
 import consulo.language.psi.stub.StubInputStream;
 
-import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -39,35 +38,32 @@ public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementTyp
 		super("ARRAY_TYPE");
 	}
 
-	@Nonnull
 	@Override
-	public PsiElement createElement(@Nonnull ASTNode astNode)
+	public PsiElement createElement(ASTNode astNode)
 	{
 		return new CSharpStubArrayTypeImpl(astNode);
 	}
 
 	@Override
-	public CSharpArrayType createPsi(@Nonnull CSharpWithIntValueStub<CSharpArrayType> stub)
+	public CSharpArrayType createPsi(CSharpWithIntValueStub<CSharpArrayType> stub)
 	{
 		return new CSharpStubArrayTypeImpl(stub, this);
 	}
 
-	@Nonnull
 	@Override
-	public CSharpWithIntValueStub<CSharpArrayType> createStub(@Nonnull CSharpArrayType arrayType, StubElement stubElement)
+	public CSharpWithIntValueStub<CSharpArrayType> createStub(CSharpArrayType arrayType, StubElement stubElement)
 	{
 		return new CSharpWithIntValueStub<>(stubElement, this, arrayType.getDimensions());
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpWithIntValueStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpWithIntValueStub stub, StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeVarInt(stub.getValue());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpWithIntValueStub<CSharpArrayType> deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpWithIntValueStub<CSharpArrayType> deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int i = stubInputStream.readVarInt();
 		return new CSharpWithIntValueStub<>(stubElement, this, i);

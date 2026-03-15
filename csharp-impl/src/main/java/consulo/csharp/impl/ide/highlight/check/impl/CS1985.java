@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -25,7 +24,7 @@ import consulo.csharp.lang.impl.psi.source.CSharpAwaitExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpCatchStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.psi.util.PsiTreeUtil;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -36,7 +35,7 @@ public class CS1985 extends CompilerCheck<CSharpAwaitExpressionImpl>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpAwaitExpressionImpl element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpAwaitExpressionImpl element)
 	{
 		if(languageVersion.isAtLeast(CSharpLanguageVersion._6_0))
 		{

@@ -30,7 +30,6 @@ import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -39,25 +38,23 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class UnnecessarySemicolonInspection extends CSharpGeneralLocalInspection {
     private static class RemoveSemicolonFix extends LocalQuickFixOnPsiElement {
-        private RemoveSemicolonFix(@Nonnull PsiElement element) {
+        private RemoveSemicolonFix(PsiElement element) {
             super(element);
         }
 
-        @Nonnull
         @Override
         public LocalizeValue getText() {
             return LocalizeValue.localizeTODO("Remove unnecessary semicolon");
         }
 
         @Override
-        public void invoke(@Nonnull Project project, @Nonnull PsiFile file, @Nonnull PsiElement startElement, @Nonnull PsiElement endElement) {
+        public void invoke(Project project, PsiFile file, PsiElement startElement, PsiElement endElement) {
             startElement.delete();
         }
     }
 
-    @Nonnull
     @Override
-    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+    public PsiElementVisitor buildVisitor(final ProblemsHolder holder, boolean isOnTheFly) {
         return new CSharpElementVisitor() {
             @Override
             @RequiredReadAction
@@ -70,13 +67,11 @@ public class UnnecessarySemicolonInspection extends CSharpGeneralLocalInspection
         };
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getDisplayName() {
         return LocalizeValue.localizeTODO("Unnecessary semicolon");
     }
 
-    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WARNING;

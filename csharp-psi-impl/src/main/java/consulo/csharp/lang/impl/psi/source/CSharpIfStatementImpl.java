@@ -25,9 +25,8 @@ import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.util.collection.ArrayUtil;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,7 +34,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpIfStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpIfStatementImpl(@Nonnull IElementType elementType)
+	public CSharpIfStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -46,7 +45,6 @@ public class CSharpIfStatementImpl extends CSharpElementImpl implements DotNetSt
 		return findChildByClass(DotNetExpression.class);
 	}
 
-	@Nonnull
 	public PsiElement getIfKeywordElement()
 	{
 		return findNotNullChildByType(CSharpTokens.IF_KEYWORD);
@@ -101,13 +99,13 @@ public class CSharpIfStatementImpl extends CSharpElementImpl implements DotNetSt
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitIfStatement(this);
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		DotNetExpression conditionExpression = getConditionExpression();
 		if(conditionExpression != null)

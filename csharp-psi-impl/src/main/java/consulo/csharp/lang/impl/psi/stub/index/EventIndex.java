@@ -21,7 +21,6 @@ import consulo.dotnet.psi.DotNetEventDeclaration;
 import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,13 +29,11 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class EventIndex extends StringStubIndexExtension<DotNetEventDeclaration>
 {
-	@Nonnull
 	public static EventIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtension(EventIndex.class);
 	}
 
-	@Nonnull
 	@Override
 	public StubIndexKey<String, DotNetEventDeclaration> getKey()
 	{

@@ -21,7 +21,6 @@ import consulo.language.psi.stub.StubIndexExtension;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,13 +29,11 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class TypeIndex extends StringStubIndexExtension<CSharpTypeDeclaration>
 {
-	@Nonnull
 	public static TypeIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtensionOrFail(TypeIndex.class);
 	}
 
-	@Nonnull
 	@Override
 	public StubIndexKey<String, CSharpTypeDeclaration> getKey()
 	{

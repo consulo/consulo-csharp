@@ -18,7 +18,6 @@ package consulo.csharp.lang.psi;
 
 import consulo.dotnet.psi.DotNetElement;
 import consulo.util.collection.ArrayFactory;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,7 +29,6 @@ public interface CSharpGenericConstraintValue extends DotNetElement
 
 	public static ArrayFactory<CSharpGenericConstraintValue> ARRAY_FACTORY = new ArrayFactory<CSharpGenericConstraintValue>()
 	{
-		@Nonnull
 		@Override
 		public CSharpGenericConstraintValue[] create(int count)
 		{

@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
@@ -29,7 +28,7 @@ import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.util.lang.Comparing;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,7 +39,7 @@ public class CS0542 extends CompilerCheck<DotNetQualifiedElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetQualifiedElement element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetQualifiedElement element)
 	{
 		PsiElement parent = element.getParent();
 		if(!(parent instanceof CSharpTypeDeclaration) | !(element instanceof PsiNameIdentifierOwner) || element instanceof CSharpConstructorDeclaration || element instanceof

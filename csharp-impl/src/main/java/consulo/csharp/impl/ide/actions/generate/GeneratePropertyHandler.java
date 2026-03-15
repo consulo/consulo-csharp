@@ -46,8 +46,7 @@ import consulo.ui.ex.awt.ChooseElementsDialog;
 import consulo.ui.image.Image;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -73,7 +72,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 
 	@RequiredUIAccess
 	@Override
-	public void invoke(@Nonnull final Project project, @Nonnull final Editor editor, @Nonnull final PsiFile file)
+	public void invoke(final Project project, final Editor editor, final PsiFile file)
 	{
 		final CSharpTypeDeclaration typeDeclaration = CSharpGenerateAction.findTypeDeclaration(editor, file);
 		if(typeDeclaration == null)
@@ -146,7 +145,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 		new Task.Backgroundable(project, "Searching references", true)
 		{
 			@Override
-			public void run(@Nonnull ProgressIndicator indicator)
+			public void run(ProgressIndicator indicator)
 			{
 				new WriteCommandAction(project, "Generate property", file)
 				{
@@ -190,8 +189,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 		}.queue();
 	}
 
-	@Nonnull
-	public static String getClearFieldName(@Nonnull Project project, boolean isStatic, @Nonnull String name)
+	public static String getClearFieldName(Project project, boolean isStatic, String name)
 	{
 		CSharpCodeGenerationSettings customSettings = CSharpCodeGenerationSettings.getInstance(project);
 
@@ -216,7 +214,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 		return name;
 	}
 
-	public static String getPropertyName(@Nonnull Project project, boolean isStatic, @Nonnull String fieldName)
+	public static String getPropertyName(Project project, boolean isStatic, String fieldName)
 	{
 		CSharpCodeGenerationSettings customSettings = CSharpCodeGenerationSettings.getInstance(project);
 

@@ -19,7 +19,6 @@ package consulo.csharp.lang.impl.psi.source;
 import consulo.csharp.lang.impl.psi.CSharpMacroElementVisitor;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -33,7 +32,7 @@ public class CSharpPreprocessorEndRegionImpl extends CSharpPreprocessorElementIm
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
+	public void accept(CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitEndRegionDirective(this);
 	}

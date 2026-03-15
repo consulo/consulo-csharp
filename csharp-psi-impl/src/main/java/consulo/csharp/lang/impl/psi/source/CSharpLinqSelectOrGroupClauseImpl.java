@@ -22,8 +22,7 @@ import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.util.ArrayUtil2;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -31,7 +30,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpLinqSelectOrGroupClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqSelectOrGroupClauseImpl(@Nonnull IElementType elementType)
+	public CSharpLinqSelectOrGroupClauseImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -56,7 +55,7 @@ public class CSharpLinqSelectOrGroupClauseImpl extends CSharpElementImpl
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqSelectOrGroupClause(this);
 	}

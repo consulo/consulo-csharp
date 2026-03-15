@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -31,7 +30,7 @@ import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.util.lang.Comparing;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -42,7 +41,7 @@ public class CS0264 extends CompilerCheck<DotNetGenericParameter>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetGenericParameter element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetGenericParameter element)
 	{
 		DotNetGenericParameterListOwner listOwner = PsiTreeUtil.getParentOfType(element, DotNetGenericParameterListOwner.class);
 		if(listOwner instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) listOwner).hasModifier(CSharpModifier.PARTIAL))

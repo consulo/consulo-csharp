@@ -23,7 +23,7 @@ import consulo.language.ast.IElementType;
 import consulo.msil.impl.lang.psi.MsilTokens;
 import consulo.msil.lang.psi.MsilConstantValue;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL

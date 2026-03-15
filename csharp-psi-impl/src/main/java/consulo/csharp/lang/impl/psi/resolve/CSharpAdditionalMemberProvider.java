@@ -24,7 +24,6 @@ import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**
@@ -47,8 +46,7 @@ public interface CSharpAdditionalMemberProvider
 	}
 
 	@RequiredReadAction
-	void processAdditionalMembers(@Nonnull DotNetElement element, @Nonnull DotNetGenericExtractor extractor, @Nonnull Consumer<PsiElement> consumer);
+	void processAdditionalMembers(DotNetElement element, DotNetGenericExtractor extractor, Consumer<PsiElement> consumer);
 
-	@Nonnull
 	Target getTarget();
 }

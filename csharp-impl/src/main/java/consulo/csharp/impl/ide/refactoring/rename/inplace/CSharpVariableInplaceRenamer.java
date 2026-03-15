@@ -22,7 +22,6 @@ import consulo.csharp.lang.psi.CSharpNamedElement;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.language.editor.refactoring.rename.inplace.VariableInplaceRenamer;
 import consulo.language.psi.PsiNamedElement;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,7 +30,7 @@ import jakarta.annotation.Nonnull;
 public class CSharpVariableInplaceRenamer extends VariableInplaceRenamer
 {
 	@RequiredReadAction
-	public CSharpVariableInplaceRenamer(@Nonnull PsiNamedElement elementToRename, Editor editor)
+	public CSharpVariableInplaceRenamer(PsiNamedElement elementToRename, Editor editor)
 	{
 		super(elementToRename, editor, elementToRename.getProject(), CSharpNamedElement.getEscapedName((DotNetNamedElement) elementToRename), CSharpNamedElement.getEscapedName((DotNetNamedElement)
 				elementToRename));

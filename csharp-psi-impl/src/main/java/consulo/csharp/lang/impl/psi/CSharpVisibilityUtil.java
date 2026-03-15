@@ -29,7 +29,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.collection.SmartList;
 
-import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -39,7 +38,7 @@ import java.util.List;
 public class CSharpVisibilityUtil
 {
 	@RequiredReadAction
-	public static boolean isVisible(@Nonnull DotNetModifierListOwner target, @Nonnull PsiElement place)
+	public static boolean isVisible(DotNetModifierListOwner target, PsiElement place)
 	{
 		return isVisible(target, place, CSharpAccessModifier.findModifierOrDefault(target));
 	}
@@ -109,9 +108,8 @@ public class CSharpVisibilityUtil
 		return false;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	private static List<DotNetTypeDeclaration> collectAllTypes(@Nonnull PsiElement place)
+	private static List<DotNetTypeDeclaration> collectAllTypes(PsiElement place)
 	{
 		List<DotNetTypeDeclaration> typeDeclarations = new SmartList<>();
 		if(place instanceof CSharpTypeDeclaration)

@@ -33,8 +33,7 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -49,7 +48,6 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx> {
         SmartPointerManager.getInstance(referenceExpressionEx.getProject()).createSmartPsiElementPointer(referenceExpressionEx);
     }
 
-    @Nonnull
     @Override
     @RequiredReadAction
     public LocalizeValue getText() {
@@ -67,14 +65,14 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx> {
 
     @Override
     @RequiredReadAction
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       CSharpReferenceExpressionEx element = myReferenceExpressionPointer.getElement();
       return element != null && element.resolve() != null && element.getQualifier() != null;
     }
 
     @Override
     @RequiredWriteAction
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       CSharpReferenceExpressionEx element = myReferenceExpressionPointer.getElement();
       if (element == null) {
         return;
@@ -102,9 +100,9 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx> {
   @RequiredReadAction
   @Nullable
   @Override
-  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull CSharpReferenceExpressionEx element) {
+  public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        CSharpReferenceExpressionEx element) {
     PsiElement referenceElement = element.getReferenceElement();
     if (referenceElement == null) {
       return null;

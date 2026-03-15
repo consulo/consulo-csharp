@@ -43,8 +43,7 @@ import consulo.util.collection.ArrayFactory;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 /**
@@ -54,8 +53,7 @@ import java.util.List;
 @ExtensionImpl
 public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiElement, CSharpParameterInfoHandler.ItemToShow>
 {
-	@Nonnull
-	public static Object item(@Nonnull DotNetLikeMethodDeclaration e)
+	public static Object item(DotNetLikeMethodDeclaration e)
 	{
 		return new ItemToShow((CSharpSimpleLikeMethod) e, e);
 	}
@@ -70,7 +68,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		private PsiElement myScope;
 		private boolean myValid;
 
-		public ItemToShow(@Nonnull CSharpSimpleLikeMethod likeMethod, @Nonnull PsiElement scope)
+		public ItemToShow(CSharpSimpleLikeMethod likeMethod, PsiElement scope)
 		{
 			myLikeMethod = likeMethod;
 			myScope = scope;
@@ -154,7 +152,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 
 	@Override
 	@RequiredReadAction
-	public void showParameterInfo(@Nonnull PsiElement element, CreateParameterInfoContext context)
+	public void showParameterInfo(PsiElement element, CreateParameterInfoContext context)
 	{
 		ItemToShow[] itemsToShow = resolveToCallables(element, context);
 
@@ -165,7 +163,6 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		}
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	private static ItemToShow[] resolveToCallables(PsiElement element, CreateParameterInfoContext context)
 	{
@@ -246,7 +243,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	}
 
 	@Override
-	public void updateParameterInfo(@Nonnull PsiElement place, @Nonnull UpdateParameterInfoContext context)
+	public void updateParameterInfo(PsiElement place, UpdateParameterInfoContext context)
 	{
 		CSharpCallArgumentListOwner owner = resolveCallArgumentListOwner(place);
 		int parameterIndex = -1;
@@ -329,7 +326,6 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 				.getDefaultParameterColor());
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

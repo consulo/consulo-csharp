@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.stub;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.psi.stub.StubBase;
@@ -63,13 +62,11 @@ public class CSharpReferenceExpressionStub extends StubBase<CSharpReferenceExpre
 		return myMemberAccessTypeIndex;
 	}
 
-	@Nonnull
 	public CSharpReferenceExpression.AccessType getMemberAccessType()
 	{
 		return CSharpReferenceExpression.AccessType.VALUES[myMemberAccessTypeIndex];
 	}
 
-	@Nonnull
 	public CSharpReferenceExpression.ResolveToKind getKind()
 	{
 		return CSharpReferenceExpression.ResolveToKind.VALUES[myKindIndex];

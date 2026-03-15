@@ -35,8 +35,7 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.util.collection.ContainerUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -51,7 +50,6 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
         super(expression);
     }
 
-    @Nonnull
     @Override
     @RequiredReadAction
     public LocalizeValue getText() {
@@ -103,7 +101,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
     }
 
     @RequiredReadAction
-    protected void buildParameterList(@Nonnull CreateUnresolvedElementFixContext context, @Nonnull PsiFile file, @Nonnull Template template) {
+    protected void buildParameterList(CreateUnresolvedElementFixContext context, PsiFile file, Template template) {
         template.addTextSegment("(");
 
         CSharpCallArgumentListOwner parent = PsiTreeUtil.getParentOfType(context.getExpression(), CSharpCallArgumentListOwner.class);

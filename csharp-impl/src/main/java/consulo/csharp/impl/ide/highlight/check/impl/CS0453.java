@@ -36,8 +36,7 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -53,12 +52,12 @@ public class CS0453 extends CompilerCheck<CSharpNullableType> {
     }
 
     @Override
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       return myPointer.getElement() != null;
     }
 
     @Override
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       CSharpNullableType element = myPointer.getElement();
       if (element == null) {
         return;
@@ -77,9 +76,9 @@ public class CS0453 extends CompilerCheck<CSharpNullableType> {
   @RequiredReadAction
   @Nullable
   @Override
-  public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull CSharpNullableType element) {
+  public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        CSharpNullableType element) {
     // C# 8 have special handle
     if (languageVersion.isAtLeast(CSharpLanguageVersion._8_0)) {
       return null;

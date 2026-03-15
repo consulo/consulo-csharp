@@ -21,8 +21,7 @@ import consulo.dotnet.psi.DotNetElement;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayFactory;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -34,7 +33,6 @@ public interface CSharpUsingListChild extends DotNetElement
 
 	ArrayFactory<CSharpUsingListChild> ARRAY_FACTORY = ArrayFactory.of(CSharpUsingListChild[]::new);
 
-	@Nonnull
 	@RequiredReadAction
 	PsiElement getUsingKeywordElement();
 

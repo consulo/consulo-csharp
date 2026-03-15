@@ -16,12 +16,10 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.language.ast.ASTNode;
-import org.jetbrains.annotations.NonNls;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.EmptyStub;
 import consulo.language.util.IncorrectOperationException;
@@ -40,18 +38,17 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
  */
 public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<EmptyStub<CSharpTypeDefStatement>> implements CSharpTypeDefStatement
 {
-	public CSharpTypeDefStatementImpl(@Nonnull ASTNode node)
+	public CSharpTypeDefStatementImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpTypeDefStatementImpl(@Nonnull EmptyStub<CSharpTypeDefStatement> stub)
+	public CSharpTypeDefStatementImpl(EmptyStub<CSharpTypeDefStatement> stub)
 	{
 		super(stub, CSharpStubElements.TYPE_DEF_STATEMENT);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public PsiElement getUsingKeywordElement()
 	{
@@ -67,13 +64,13 @@ public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<EmptyStub<
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitTypeDefStatement(this);
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		return null;
 	}
@@ -88,7 +85,6 @@ public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<EmptyStub<
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	public DotNetTypeRef toTypeRef()
 	{
 		DotNetType type = getType();

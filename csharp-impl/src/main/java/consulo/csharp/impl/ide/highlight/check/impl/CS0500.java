@@ -31,10 +31,8 @@ import consulo.language.psi.*;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
+import org.jspecify.annotations.Nullable;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -48,19 +46,18 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration> {
       myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getText() {
       return LocalizeValue.localizeTODO("Remove code block");
     }
 
     @Override
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       return myPointer.getElement() != null;
     }
 
     @Override
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       DotNetCodeBlockOwner element = myPointer.getElement();
       if (element == null) {
         return;
@@ -76,9 +73,9 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration> {
   @RequiredReadAction
   @Nullable
   @Override
-  public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull CSharpMethodDeclaration element) {
+  public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        CSharpMethodDeclaration element) {
     PsiElement nameIdentifier = element.getNameIdentifier();
     if (nameIdentifier == null) {
       return null;

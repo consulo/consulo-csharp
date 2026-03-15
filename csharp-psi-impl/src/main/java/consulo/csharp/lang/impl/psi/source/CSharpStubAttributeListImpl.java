@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpAttributeList;
@@ -35,18 +34,18 @@ import consulo.language.psi.stub.IStubElementType;
  */
 public class CSharpStubAttributeListImpl extends CSharpStubElementImpl<CSharpAttributeListStub> implements CSharpAttributeList
 {
-	public CSharpStubAttributeListImpl(@Nonnull ASTNode node)
+	public CSharpStubAttributeListImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubAttributeListImpl(@Nonnull CSharpAttributeListStub stub, @Nonnull IStubElementType<? extends CSharpAttributeListStub, ?> nodeType)
+	public CSharpStubAttributeListImpl(CSharpAttributeListStub stub, IStubElementType<? extends CSharpAttributeListStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitAttributeList(this);
 	}
@@ -63,7 +62,6 @@ public class CSharpStubAttributeListImpl extends CSharpStubElementImpl<CSharpAtt
 		return CSharpAttributeListImpl.getAttributeType(findChildByType(CSharpTokenSets.ATTRIBUTE_TARGETS));
 	}
 
-	@Nonnull
 	@Override
 	public CSharpAttribute[] getAttributes()
 	{

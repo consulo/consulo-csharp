@@ -24,7 +24,6 @@ import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -41,7 +40,7 @@ public class CSharpRefTypeRef extends DotNetTypeRefWithCachedResult implements D
 	private final Type myType;
 	private final DotNetTypeRef myTypeRef;
 
-	public CSharpRefTypeRef(@Nonnull Project project, @Nonnull GlobalSearchScope scope, @Nonnull Type type, @Nonnull DotNetTypeRef typeRef)
+	public CSharpRefTypeRef(Project project, GlobalSearchScope scope, Type type, DotNetTypeRef typeRef)
 	{
 		super(project, scope);
 		myType = type;
@@ -54,7 +53,6 @@ public class CSharpRefTypeRef extends DotNetTypeRefWithCachedResult implements D
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -62,14 +60,12 @@ public class CSharpRefTypeRef extends DotNetTypeRefWithCachedResult implements D
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getVmQName()
 	{
 		return myType.name() + " " + myTypeRef.toString();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getInnerTypeRef()
 	{

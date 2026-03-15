@@ -23,9 +23,8 @@ import consulo.language.editor.structureView.PsiTreeElementBase;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNamedElement;
 import consulo.ui.annotation.RequiredUIAccess;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,7 +40,6 @@ public class CSharpNamedTreeElement extends PsiTreeElementBase<PsiNamedElement>
 		super(psiElement);
 	}
 
-	@Nonnull
 	@Override
 	public Collection<StructureViewTreeElement> getChildrenBase()
 	{

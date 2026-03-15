@@ -31,10 +31,9 @@ import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.logging.Logger;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.Comparing;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Contract;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -44,13 +43,13 @@ public class CSharpPsiUtilImpl
 {
 	private static final Logger LOGGER = Logger.getInstance(CSharpPsiUtilImpl.class);
 
-	public static boolean isTypeLikeElement(@Nonnull PsiElement element)
+	public static boolean isTypeLikeElement(PsiElement element)
 	{
 		return element instanceof CSharpTypeDeclaration || CSharpMethodUtil.isDelegate(element);
 	}
 
 	@RequiredReadAction
-	public static boolean isNullOrEmpty(@Nonnull PsiNameIdentifierOwner owner)
+	public static boolean isNullOrEmpty(PsiNameIdentifierOwner owner)
 	{
 		PsiElement nameIdentifier = owner.getNameIdentifier();
 		return nameIdentifier == null || nameIdentifier instanceof CSharpIdentifier && ((CSharpIdentifier) nameIdentifier).getValue() == null;
@@ -58,14 +57,14 @@ public class CSharpPsiUtilImpl
 
 	@Nullable
 	@RequiredReadAction
-	public static String getNameWithoutAt(@Nonnull PsiNameIdentifierOwner element)
+	public static String getNameWithoutAt(PsiNameIdentifierOwner element)
 	{
 		return getNameWithoutAt(getNameWithAt(element));
 	}
 
 	@Nullable
 	@RequiredReadAction
-	public static String getNameWithAt(@Nonnull PsiNameIdentifierOwner element)
+	public static String getNameWithAt(PsiNameIdentifierOwner element)
 	{
 		PsiElement nameIdentifier = element.getNameIdentifier();
 		if(nameIdentifier == null)
@@ -108,7 +107,7 @@ public class CSharpPsiUtilImpl
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetNamedElement findSingleElement(@Nonnull CSharpFile file)
+	public static DotNetNamedElement findSingleElement(CSharpFile file)
 	{
 		DotNetNamedElement member = findSingleElementNoNameCheck(file);
 		if(member != null && Comparing.equal(FileUtil.getNameWithoutExtension(file.getName()), member.getName()))
@@ -120,7 +119,7 @@ public class CSharpPsiUtilImpl
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetNamedElement findSingleElementNoNameCheck(@Nonnull CSharpFile file)
+	public static DotNetNamedElement findSingleElementNoNameCheck(CSharpFile file)
 	{
 		DotNetNamedElement[] members = file.getMembers();
 		if(members.length != 1)

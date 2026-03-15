@@ -24,8 +24,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -54,7 +53,6 @@ public class CSharpLightAttributeWithSelfTypeBuilder extends CSharpAbstractLight
 		return myType;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{

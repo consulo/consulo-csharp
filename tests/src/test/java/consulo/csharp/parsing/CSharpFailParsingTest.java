@@ -17,7 +17,6 @@
 package consulo.csharp.parsing;
 
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -31,25 +30,25 @@ public class CSharpFailParsingTest extends CSharpBaseParsingTest {
 
     @SetLanguageVersion
     @Test
-    public void testFailParsing(@Nonnull Context context) throws Exception {
+    public void testFailParsing(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion
     @Test
-    public void testLocalVarParsing(@Nonnull Context context) throws Exception {
+    public void testLocalVarParsing(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion
     @Test
-    public void testLambdaParameterListFailParsing(@Nonnull Context context) throws Exception {
+    public void testLambdaParameterListFailParsing(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue438(@Nonnull Context context) throws Exception {
+    public void testIssue438(Context context) throws Exception {
         doTest(context, null);
     }
 }

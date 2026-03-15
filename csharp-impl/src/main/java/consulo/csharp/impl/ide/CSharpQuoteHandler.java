@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.CSharpFileType;
@@ -115,7 +114,7 @@ public class CSharpQuoteHandler extends SimpleTokenSetQuoteHandler implements Ja
 	}
 
 	@Override
-	public boolean isAppropriateElementTypeForLiteral(final @Nonnull IElementType tokenType)
+	public boolean isAppropriateElementTypeForLiteral(final IElementType tokenType)
 	{
 		return isAppropriateElementTypeForLiteralStatic(tokenType);
 	}
@@ -140,7 +139,6 @@ public class CSharpQuoteHandler extends SimpleTokenSetQuoteHandler implements Ja
 				tokenType == CSharpTokens.CHARACTER_LITERAL;
 	}
 
-	@Nonnull
 	@Override
 	public FileType getFileType()
 	{

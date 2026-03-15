@@ -29,8 +29,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -42,7 +41,6 @@ import java.util.List;
 public class SuggestIndexVariableNameMacro extends Macro
 {
 	@Override
-	@Nonnull
 	public String getDefaultValue()
 	{
 		return "i";
@@ -63,7 +61,7 @@ public class SuggestIndexVariableNameMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredUIAccess
-	public Result calculateResult(@Nonnull Expression[] params, ExpressionContext context)
+	public Result calculateResult(Expression[] params, ExpressionContext context)
 	{
 		final Project project = context.getProject();
 		final int offset = context.getStartOffset();

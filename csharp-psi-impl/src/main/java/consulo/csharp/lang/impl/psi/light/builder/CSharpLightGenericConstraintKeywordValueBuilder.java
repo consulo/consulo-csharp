@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.light.builder;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
@@ -32,19 +31,18 @@ public class CSharpLightGenericConstraintKeywordValueBuilder extends CSharpLight
 {
 	private final IElementType myElementType;
 
-	public CSharpLightGenericConstraintKeywordValueBuilder(@Nonnull Project project, @Nonnull IElementType elementType)
+	public CSharpLightGenericConstraintKeywordValueBuilder(Project project, IElementType elementType)
 	{
 		super(project);
 		myElementType = elementType;
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericConstraintKeywordValue(this);
 	}
 
-	@Nonnull
 	@Override
 	public IElementType getKeywordElementType()
 	{

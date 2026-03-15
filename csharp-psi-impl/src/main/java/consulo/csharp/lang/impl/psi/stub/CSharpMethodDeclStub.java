@@ -26,8 +26,7 @@ import consulo.language.ast.IElementType;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.psi.stub.StubElement;
 import consulo.util.collection.ArrayUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -61,13 +60,13 @@ public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration> {
     }
 
     @RequiredReadAction
-    public static int getOperatorIndex(@Nonnull CSharpMethodDeclaration methodDeclaration) {
+    public static int getOperatorIndex(CSharpMethodDeclaration methodDeclaration) {
         IElementType operatorElementType = methodDeclaration.getOperatorElementType();
         return operatorElementType == null ? -1 : ArrayUtil.indexOf(CSharpTokenSets.OVERLOADING_OPERATORS_AS_ARRAY, operatorElementType);
     }
 
     @RequiredReadAction
-    public static int getOtherModifierMask(@Nonnull DotNetLikeMethodDeclaration methodDeclaration) {
+    public static int getOtherModifierMask(DotNetLikeMethodDeclaration methodDeclaration) {
         int i = 0;
         if (methodDeclaration instanceof CSharpMethodDeclaration method && method.isDelegate()) {
             i |= DELEGATE_MASK;

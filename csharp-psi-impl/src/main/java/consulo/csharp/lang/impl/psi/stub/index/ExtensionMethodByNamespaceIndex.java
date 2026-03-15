@@ -22,7 +22,6 @@ import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.language.psi.stub.StubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,13 +30,11 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class ExtensionMethodByNamespaceIndex extends IntStubIndexExtension<DotNetLikeMethodDeclaration>
 {
-	@Nonnull
 	public static ExtensionMethodByNamespaceIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtensionOrFail(ExtensionMethodByNamespaceIndex.class);
 	}
 
-	@Nonnull
 	@Override
 	public StubIndexKey<Integer, DotNetLikeMethodDeclaration> getKey()
 	{

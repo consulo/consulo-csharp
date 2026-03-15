@@ -27,9 +27,8 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.util.ArrayUtil2;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.ResolveState;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -37,13 +36,13 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpConditionalExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpConditionalExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpConditionalExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitConditionalExpression(this);
 	}
@@ -53,7 +52,6 @@ public class CSharpConditionalExpressionImpl extends CSharpExpressionImpl implem
 		return findChildrenByClass(DotNetExpression.class);
 	}
 
-	@Nonnull
 	public DotNetExpression getConditionExpression()
 	{
 		return ArrayUtil2.safeGet(getExpressions(), 0);
@@ -72,7 +70,6 @@ public class CSharpConditionalExpressionImpl extends CSharpExpressionImpl implem
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -115,7 +112,7 @@ public class CSharpConditionalExpressionImpl extends CSharpExpressionImpl implem
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		DotNetExpression conditionExpression = getConditionExpression();
 		if(!conditionExpression.processDeclarations(processor, state, lastParent, place))

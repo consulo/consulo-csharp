@@ -32,7 +32,6 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -41,9 +40,8 @@ import jakarta.annotation.Nonnull;
 public class CS0107 extends CompilerCheck<DotNetModifierListOwner>
 {
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public List<CompilerCheckBuilder> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetModifierListOwner element)
+	public List<CompilerCheckBuilder> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetModifierListOwner element)
 	{
 		DotNetModifierList modifierList = element.getModifierList();
 		if(modifierList == null)

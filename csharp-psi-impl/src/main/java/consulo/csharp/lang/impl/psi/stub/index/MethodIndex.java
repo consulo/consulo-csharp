@@ -22,7 +22,6 @@ import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -36,7 +35,6 @@ public class MethodIndex extends StringStubIndexExtension<DotNetLikeMethodDeclar
 		return StubIndexExtension.EP_NAME.findExtension(MethodIndex.class);
 	}
 
-	@Nonnull
 	@Override
 	public StubIndexKey<String, DotNetLikeMethodDeclaration> getKey()
 	{

@@ -31,7 +31,7 @@ import consulo.language.ast.IElementType;
 import consulo.language.editor.navigation.GotoDeclarationHandlerBase;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiUtilCore;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL

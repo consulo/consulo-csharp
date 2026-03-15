@@ -32,7 +32,6 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import consulo.localize.LocalizeValue;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,7 +43,6 @@ import java.util.List;
 @ExtensionImpl
 public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMemberHandler implements OverrideMethodHandler
 {
-	@Nonnull
 	@Override
 	public LocalizeValue getTitle()
 	{
@@ -53,7 +51,7 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 
 	@RequiredReadAction
 	@Override
-	public void appendAdditionalModifiers(@Nonnull StringBuilder builder, @Nonnull PsiElement item)
+	public void appendAdditionalModifiers(StringBuilder builder, PsiElement item)
 	{
 		CSharpModifier requiredOverrideModifier = OverrideUtil.getRequiredOverrideModifier((DotNetModifierListOwner) item);
 		if(requiredOverrideModifier != null)
@@ -64,13 +62,13 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 
 	@RequiredReadAction
 	@Override
-	public void appendReturnStatement(@Nonnull StringBuilder builder, @Nonnull PsiElement item)
+	public void appendReturnStatement(StringBuilder builder, PsiElement item)
 	{
 		generateReturn(builder, item);
 	}
 
 	@RequiredReadAction
-	public static void generateReturn(@Nonnull StringBuilder builder, @Nonnull PsiElement item)
+	public static void generateReturn(StringBuilder builder, PsiElement item)
 	{
 		if(item instanceof CSharpMethodDeclaration)
 		{
@@ -101,9 +99,8 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public Collection<PsiElement> getItems(@Nonnull CSharpTypeDeclaration typeDeclaration)
+	public Collection<PsiElement> getItems(CSharpTypeDeclaration typeDeclaration)
 	{
 		Collection<PsiElement> allMembers = OverrideUtil.getAllMembers(typeDeclaration, typeDeclaration.getResolveScope(), DotNetGenericExtractor.EMPTY, false, true);
 

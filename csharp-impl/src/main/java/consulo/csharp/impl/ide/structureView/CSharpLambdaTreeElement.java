@@ -23,8 +23,7 @@ import consulo.csharp.lang.impl.psi.source.CSharpDelegateExpressionImpl;
 import consulo.fileEditor.structureView.StructureViewTreeElement;
 import consulo.ui.image.Image;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -39,7 +38,6 @@ public class CSharpLambdaTreeElement extends PsiTreeElementBase<CSharpAnonymousM
 		super(psiElement);
 	}
 
-	@Nonnull
 	@Override
 	public Collection<StructureViewTreeElement> getChildrenBase()
 	{

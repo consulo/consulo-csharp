@@ -30,8 +30,7 @@ import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -39,19 +38,18 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpArglistExpressionImpl extends CSharpExpressionImpl implements DotNetExpression, CSharpCallArgumentListOwner
 {
-	public CSharpArglistExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpArglistExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitArglistExpression(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean b)
 	{
@@ -72,7 +70,6 @@ public class CSharpArglistExpressionImpl extends CSharpExpressionImpl implements
 		return false;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -87,14 +84,12 @@ public class CSharpArglistExpressionImpl extends CSharpExpressionImpl implements
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public ResolveResult[] multiResolve(boolean b)
 	{
 		return ResolveResult.EMPTY_ARRAY;
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{

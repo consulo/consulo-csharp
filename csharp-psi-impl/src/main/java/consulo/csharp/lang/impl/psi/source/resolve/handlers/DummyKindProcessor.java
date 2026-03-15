@@ -23,8 +23,7 @@ import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveOptions;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -41,10 +40,10 @@ public class DummyKindProcessor implements KindProcessor
 
 	@RequiredReadAction
 	@Override
-	public void process(@Nonnull CSharpResolveOptions options,
-			@Nonnull DotNetGenericExtractor defaultExtractor,
+	public void process(CSharpResolveOptions options,
+			DotNetGenericExtractor defaultExtractor,
 			@Nullable PsiElement forceQualifierElement,
-			@Nonnull Processor<ResolveResult> processor)
+			Processor<ResolveResult> processor)
 	{
 		throw new UnsupportedOperationException(myValue.name());
 	}

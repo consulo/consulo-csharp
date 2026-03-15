@@ -18,7 +18,6 @@ package consulo.csharp.impl.ide.structureView.sorters;
 
 import java.util.Comparator;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.csharp.impl.ide.projectView.CSharpElementTreeNode;
 import consulo.csharp.impl.ide.structureView.CSharpNamedTreeElement;
@@ -64,14 +63,12 @@ public class CSharpMemberSorter implements Sorter
 		return false;
 	}
 
-	@Nonnull
 	@Override
 	public ActionPresentation getPresentation()
 	{
 		throw new IllegalArgumentException();
 	}
 
-	@Nonnull
 	@Override
 	public String getName()
 	{

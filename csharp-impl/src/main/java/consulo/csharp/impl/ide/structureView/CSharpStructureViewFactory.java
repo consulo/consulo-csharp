@@ -26,9 +26,8 @@ import consulo.csharp.lang.impl.psi.source.CSharpFileImpl;
 import consulo.fileEditor.structureView.StructureViewBuilder;
 import consulo.fileEditor.structureView.TreeBasedStructureViewBuilder;
 import consulo.language.psi.PsiFile;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -45,7 +44,6 @@ public class CSharpStructureViewFactory implements PsiStructureViewFactory
 		{
 			return new TreeBasedStructureViewBuilder()
 			{
-				@Nonnull
 				@Override
 				public StructureViewModel createStructureViewModel(@Nullable Editor editor)
 				{
@@ -59,7 +57,6 @@ public class CSharpStructureViewFactory implements PsiStructureViewFactory
 		}
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

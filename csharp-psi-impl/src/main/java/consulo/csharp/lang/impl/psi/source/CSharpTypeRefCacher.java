@@ -23,7 +23,6 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.util.dataholder.Key;
 
-import jakarta.annotation.Nonnull;
 import java.util.function.Function;
 
 /**
@@ -43,7 +42,6 @@ public abstract class CSharpTypeRefCacher<E extends PsiElement>
 			myValue = value;
 		}
 
-		@Nonnull
 		@Override
 		@RequiredReadAction
 		public DotNetTypeRef apply(E e)
@@ -65,11 +63,9 @@ public abstract class CSharpTypeRefCacher<E extends PsiElement>
 		myLocal = local;
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	protected abstract DotNetTypeRef toTypeRefImpl(E element, boolean resolveFromParentOrInitializer);
 
-	@Nonnull
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRef(E element, boolean resolveFromParentOrInitializer)
 	{
@@ -83,7 +79,6 @@ public abstract class CSharpTypeRefCacher<E extends PsiElement>
 		return myLocal ? DotNetTypeRefCacheUtil.localCacheTypeRef(key, element, resolver) : DotNetTypeRefCacheUtil.cacheTypeRef(key, element, resolver);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRef(E element, boolean resolveFromParentOrInitializer, Object... dropKeys)
 	{

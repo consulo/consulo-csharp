@@ -17,7 +17,6 @@
 package consulo.csharp.parsing;
 
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -31,163 +30,163 @@ public class CSharpParsingTest extends CSharpBaseParsingTest {
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testVarVar(@Nonnull Context context) throws Exception {
+    public void testVarVar(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testUsingStatic(@Nonnull Context context) throws Exception {
+    public void testUsingStatic(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._5_0)
     @Test
-    public void testSoftKeywords(@Nonnull Context context) throws Exception {
+    public void testSoftKeywords(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._5_0)
     @Test
-    public void testGenericParameters(@Nonnull Context context) throws Exception {
+    public void testGenericParameters(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testNameOf(@Nonnull Context context) throws Exception {
+    public void testNameOf(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue40(@Nonnull Context context) throws Exception {
+    public void testIssue40(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue70(@Nonnull Context context) throws Exception {
+    public void testIssue70(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue89(@Nonnull Context context) throws Exception {
+    public void testIssue89(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue121(@Nonnull Context context) throws Exception {
+    public void testIssue121(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue191(@Nonnull Context context) throws Exception {
+    public void testIssue191(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue233(@Nonnull Context context) throws Exception {
+    public void testIssue233(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue240(@Nonnull Context context) throws Exception {
+    public void testIssue240(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue246(@Nonnull Context context) throws Exception {
+    public void testIssue246(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue248(@Nonnull Context context) throws Exception {
+    public void testIssue248(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue251(@Nonnull Context context) throws Exception {
+    public void testIssue251(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue267(@Nonnull Context context) throws Exception {
+    public void testIssue267(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue469(@Nonnull Context context) throws Exception {
+    public void testIssue469(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue470(@Nonnull Context context) throws Exception {
+    public void testIssue470(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._5_0)
     @Test
-    public void testNameOfNotAllowed(@Nonnull Context context) throws Exception {
+    public void testNameOfNotAllowed(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testNamespaceInsideClass(@Nonnull Context context) throws Exception {
+    public void testNamespaceInsideClass(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testEnumParsing(@Nonnull Context context) throws Exception {
+    public void testEnumParsing(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testRootAttribute(@Nonnull Context context) throws Exception {
+    public void testRootAttribute(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testAssemblyAttributeBeforeAndAfterMember(@Nonnull Context context) throws Exception {
+    public void testAssemblyAttributeBeforeAndAfterMember(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testWhereWhere(@Nonnull Context context) throws Exception {
+    public void testWhereWhere(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue438(@Nonnull Context context) throws Exception {
+    public void testIssue438(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue441(@Nonnull Context context) throws Exception {
+    public void testIssue441(Context context) throws Exception {
         doTest(context, null);
     }
 
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
-    public void testIssue475(@Nonnull Context context) throws Exception {
+    public void testIssue475(Context context) throws Exception {
         doTest(context, null);
     }
 }

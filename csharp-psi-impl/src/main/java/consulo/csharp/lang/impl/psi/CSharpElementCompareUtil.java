@@ -25,7 +25,6 @@ import consulo.language.psi.PsiElement;
 import consulo.util.lang.BitUtil;
 import consulo.util.lang.Comparing;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -37,19 +36,19 @@ public class CSharpElementCompareUtil
 	public static final int CHECK_VIRTUAL_IMPL_TYPE = 1 << 1;
 
 	@RequiredReadAction
-	public static boolean isEqual(@Nonnull PsiElement element, @Nonnull PsiElement element2)
+	public static boolean isEqual(PsiElement element, PsiElement element2)
 	{
 		return isEqual(element, element2, 0);
 	}
 
 	@RequiredReadAction
-	public static boolean isEqualWithVirtualImpl(@Nonnull PsiElement element, @Nonnull PsiElement element2)
+	public static boolean isEqualWithVirtualImpl(PsiElement element, PsiElement element2)
 	{
 		return isEqual(element, element2, CHECK_VIRTUAL_IMPL_TYPE);
 	}
 
 	@RequiredReadAction
-	public static boolean isEqual(@Nonnull PsiElement element, @Nonnull PsiElement element2, int flags)
+	public static boolean isEqual(PsiElement element, PsiElement element2, int flags)
 	{
 		if(element == element2)
 		{
@@ -183,7 +182,7 @@ public class CSharpElementCompareUtil
 	}
 
 	@RequiredReadAction
-	private static boolean compareReturnTypeRef(@Nonnull PsiElement o1, @Nonnull PsiElement o2, int flags)
+	private static boolean compareReturnTypeRef(PsiElement o1, PsiElement o2, int flags)
 	{
 		if(!BitUtil.isSet(flags, CHECK_RETURN_TYPE))
 		{
@@ -195,7 +194,7 @@ public class CSharpElementCompareUtil
 	}
 
 	@RequiredReadAction
-	private static boolean compareVirtualImpl(@Nonnull PsiElement o1, @Nonnull PsiElement o2, int flags)
+	private static boolean compareVirtualImpl(PsiElement o1, PsiElement o2, int flags)
 	{
 		if(!BitUtil.isSet(flags, CHECK_VIRTUAL_IMPL_TYPE))
 		{
@@ -218,7 +217,7 @@ public class CSharpElementCompareUtil
 	}
 
 	@RequiredReadAction
-	private static boolean compareParameterList(@Nonnull PsiElement listOwner, @Nonnull PsiElement listOwner2)
+	private static boolean compareParameterList(PsiElement listOwner, PsiElement listOwner2)
 	{
 		DotNetTypeRef[] parameterTypeRefs = ((DotNetParameterListOwner) listOwner).getParameterTypeRefs();
 		DotNetTypeRef[] parameterTypeRefs1 = ((DotNetParameterListOwner) listOwner2).getParameterTypeRefs();

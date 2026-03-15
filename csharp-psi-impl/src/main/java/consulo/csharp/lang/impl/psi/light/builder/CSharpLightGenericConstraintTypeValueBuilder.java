@@ -21,8 +21,7 @@ import consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -33,14 +32,14 @@ public class CSharpLightGenericConstraintTypeValueBuilder extends CSharpLightEle
 {
 	private final DotNetTypeRef myTypeRef;
 
-	public CSharpLightGenericConstraintTypeValueBuilder(@Nonnull Project project, @Nonnull DotNetTypeRef typeRef)
+	public CSharpLightGenericConstraintTypeValueBuilder(Project project, DotNetTypeRef typeRef)
 	{
 		super(project);
 		myTypeRef = typeRef;
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericConstraintTypeValue(this);
 	}
@@ -52,7 +51,6 @@ public class CSharpLightGenericConstraintTypeValueBuilder extends CSharpLightEle
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{

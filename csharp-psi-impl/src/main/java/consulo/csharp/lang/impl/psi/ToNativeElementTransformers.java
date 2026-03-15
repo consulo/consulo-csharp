@@ -19,7 +19,6 @@ package consulo.csharp.lang.impl.psi;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -27,9 +26,8 @@ import jakarta.annotation.Nonnull;
  */
 public class ToNativeElementTransformers
 {
-	@Nonnull
 	@RequiredReadAction
-	public static PsiElement transform(@Nonnull PsiElement element)
+	public static PsiElement transform(PsiElement element)
 	{
 		PsiElement transform = element.getProject().getApplication().getExtensionPoint(ToNativeElementTransformer.class).computeSafeIfAny(it -> it.transform(element));
 		if(transform != null)

@@ -27,8 +27,7 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +39,8 @@ import java.util.Set;
  */
 public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTypeDeclaration> {
     @RequiredReadAction
-    public CSharpTypeResolveContext(@Nonnull CSharpTypeDeclaration element,
-                                    @Nonnull DotNetGenericExtractor genericExtractor,
+    public CSharpTypeResolveContext(CSharpTypeDeclaration element,
+                                    DotNetGenericExtractor genericExtractor,
                                     @Nullable Set<String> recursiveGuardSet) {
         super(element, genericExtractor, recursiveGuardSet);
     }
@@ -57,7 +56,7 @@ public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTyp
 
     @RequiredReadAction
     @Override
-    public boolean processExtensionMethodGroups(@Nonnull Processor<CSharpMethodDeclaration> processor) {
+    public boolean processExtensionMethodGroups(Processor<CSharpMethodDeclaration> processor) {
         for (DotNetNamedElement element : myElement.getMembers()) {
             if (element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isExtension()) {
                 if (!processor.process((CSharpMethodDeclaration) element)) {
@@ -69,7 +68,6 @@ public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTyp
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     protected List<DotNetTypeRef> getExtendTypeRefs() {
         DotNetTypeRef[] typeRefs = myElement.getExtendTypeRefs();

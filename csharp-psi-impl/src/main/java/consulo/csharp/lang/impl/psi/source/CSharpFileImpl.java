@@ -44,8 +44,7 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.fileType.FileType;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -56,20 +55,18 @@ import java.util.List;
  */
 public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 {
-	public CSharpFileImpl(@Nonnull FileViewProvider viewProvider)
+	public CSharpFileImpl(FileViewProvider viewProvider)
 	{
 		super(viewProvider, CSharpLanguage.INSTANCE);
 	}
 
 	@Override
-	@Nonnull
 	@RequiredReadAction
 	public CSharpUsingListChild[] getUsingStatements()
 	{
 		return LanguageCachedValueUtil.getCachedValue(this, () -> CachedValueProvider.Result.create(getUsingStatementsInner(), PsiModificationTracker.MODIFICATION_COUNT));
 	}
 
-	@Nonnull
 	private CSharpUsingListChild[] getUsingStatementsInner()
 	{
 		StubElement<?> stub = getStub();
@@ -95,7 +92,7 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 	}
 
 	@Override
-	public void accept(@Nonnull PsiElementVisitor visitor)
+	public void accept(PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{
@@ -107,7 +104,6 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 		}
 	}
 
-	@Nonnull
 	@Override
 	public FileType getFileType()
 	{
@@ -127,7 +123,6 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public Collection<String> getGlobalUsings()
 	{
@@ -144,7 +139,6 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 		return uniquesProcessor.getResults().stream().map(s -> StringUtil.trimStart(s, CSharpUsingNamespaceStatementImpl.GLOBAL_PREFIX)).toList();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetQualifiedElement[] getMembers()
 	{

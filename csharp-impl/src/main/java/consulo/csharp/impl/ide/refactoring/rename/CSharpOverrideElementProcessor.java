@@ -26,7 +26,6 @@ import consulo.language.psi.PsiElement;
 import consulo.ui.ex.awt.MessageDialogBuilder;
 import consulo.ui.ex.awt.Messages;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -80,7 +79,6 @@ public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 		}
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public static Set<DotNetVirtualImplementOwner> getAllElements(PsiElement element)
 	{
@@ -94,7 +92,7 @@ public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 
 	@Override
 	@RequiredReadAction
-	public boolean canProcessElement(@Nonnull PsiElement element)
+	public boolean canProcessElement(PsiElement element)
 	{
 		return OverrideUtil.isAllowForOverride(element);
 	}

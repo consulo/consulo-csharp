@@ -30,8 +30,7 @@ import consulo.language.psi.PsiUtilCore;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Comparing;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.function.Function;
@@ -45,7 +44,7 @@ public class CSharpLineMarkerUtil
 	public static final Function<PsiElement, PsiElement> BY_PARENT = element -> element.getParent();
 
 	@RequiredReadAction
-	public static void openTargets(@Nonnull Collection<? extends PsiElement> members, @Nonnull MouseEvent mouseEvent, @Nonnull String text, @Nonnull final Function<PsiElement, PsiElement> map)
+	public static void openTargets(Collection<? extends PsiElement> members, MouseEvent mouseEvent, String text, final Function<PsiElement, PsiElement> map)
 	{
 		NavigatablePsiElement[] navigatablePsiElements = members.toArray(new NavigatablePsiElement[members.size()]);
 		ContainerUtil.sort(navigatablePsiElements, (o1, o2) ->
@@ -63,7 +62,7 @@ public class CSharpLineMarkerUtil
 	}
 
 	@Nullable
-	public static DotNetVirtualImplementOwner findElementForLineMarker(@Nonnull PsiElement element)
+	public static DotNetVirtualImplementOwner findElementForLineMarker(PsiElement element)
 	{
 		PsiElement superParent = null;
 		IElementType elementType = PsiUtilCore.getElementType(element);
@@ -85,7 +84,7 @@ public class CSharpLineMarkerUtil
 
 	@Nullable
 	@SuppressWarnings("unchecked")
-	public static <T> T getNameIdentifierAs(@Nullable PsiElement element, @Nonnull Class<T> clazz)
+	public static <T> T getNameIdentifierAs(@Nullable PsiElement element, Class<T> clazz)
 	{
 		if(element == null)
 		{
@@ -101,7 +100,7 @@ public class CSharpLineMarkerUtil
 	}
 
 	@Nullable
-	public static PsiElement getParentIfIsIdentifier(@Nonnull PsiElement element)
+	public static PsiElement getParentIfIsIdentifier(PsiElement element)
 	{
 		IElementType elementType = PsiUtilCore.getElementType(element);
 		if(elementType == CSharpTokens.IDENTIFIER && element.getParent() instanceof CSharpIdentifier)

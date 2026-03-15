@@ -31,8 +31,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.psi.PsiElement;
 import consulo.util.dataholder.UserDataHolder;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -46,7 +45,6 @@ public class CSharpUsingNamespaceOrTypeResolveContext implements CSharpResolveCo
 
 	private NotNullLazyValue<CSharpResolveContext> myContextValue = new NotNullLazyValue<>()
 	{
-		@Nonnull
 		@Override
 		@RequiredReadAction
 		protected CSharpResolveContext compute()
@@ -74,12 +72,11 @@ public class CSharpUsingNamespaceOrTypeResolveContext implements CSharpResolveCo
 		}
 	};
 
-	public CSharpUsingNamespaceOrTypeResolveContext(@Nonnull CSharpUsingListChild usingListChild)
+	public CSharpUsingNamespaceOrTypeResolveContext(CSharpUsingListChild usingListChild)
 	{
 		myUsingListChild = usingListChild;
 	}
 
-	@Nonnull
 	@Override
 	public PsiElement getElement()
 	{
@@ -89,29 +86,28 @@ public class CSharpUsingNamespaceOrTypeResolveContext implements CSharpResolveCo
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@Nonnull String name)
+	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(String name)
 	{
 		return myContextValue.getValue().findExtensionMethodGroupByName(name);
 	}
 
 	@RequiredReadAction
 	@Override
-	public boolean processExtensionMethodGroups(@Nonnull Processor<CSharpMethodDeclaration> processor)
+	public boolean processExtensionMethodGroups(Processor<CSharpMethodDeclaration> processor)
 	{
 		return myContextValue.getValue().processExtensionMethodGroups(processor);
 	}
 
 	@RequiredReadAction
 	@Override
-	public boolean processElements(@Nonnull Processor<PsiElement> processor, boolean deep)
+	public boolean processElements(Processor<PsiElement> processor, boolean deep)
 	{
 		return myContextValue.getValue().processElements(processor, deep);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public Collection<PsiElement> findByName(@Nonnull String name, boolean deep, @Nonnull UserDataHolder holder)
+	public Collection<PsiElement> findByName(String name, boolean deep, UserDataHolder holder)
 	{
 		return myContextValue.getValue().findByName(name, deep, holder);
 	}

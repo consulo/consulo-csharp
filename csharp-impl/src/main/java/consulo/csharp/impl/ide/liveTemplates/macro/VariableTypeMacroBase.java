@@ -27,8 +27,7 @@ import consulo.language.editor.template.Result;
 import consulo.language.editor.template.macro.Macro;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -46,7 +45,7 @@ public abstract class VariableTypeMacroBase extends Macro
 
 	@Override
 	@RequiredReadAction
-	public LookupElement[] calculateLookupItems(@Nonnull Expression[] params, final ExpressionContext context)
+	public LookupElement[] calculateLookupItems(Expression[] params, final ExpressionContext context)
 	{
 		final PsiElement[] vars = getVariables(params, context);
 		if(vars == null || vars.length < 2)
@@ -57,7 +56,7 @@ public abstract class VariableTypeMacroBase extends Macro
 	}
 
 	@Override
-	public Result calculateResult(@Nonnull Expression[] params, ExpressionContext context)
+	public Result calculateResult(Expression[] params, ExpressionContext context)
 	{
 		final PsiElement[] vars = getVariables(params, context);
 		if(vars == null || vars.length == 0)
@@ -80,7 +79,6 @@ public abstract class VariableTypeMacroBase extends Macro
 	}
 
 	@Override
-	@Nonnull
 	public String getDefaultValue()
 	{
 		return "a";

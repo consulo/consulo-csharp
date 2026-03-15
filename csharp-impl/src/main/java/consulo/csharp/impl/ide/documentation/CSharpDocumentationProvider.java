@@ -46,8 +46,7 @@ import consulo.virtualFileSystem.VirtualFile;
 import org.emonic.base.codehierarchy.CodeHierarchyHelper;
 import org.emonic.base.documentation.IDocumentation;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -393,7 +392,7 @@ public class CSharpDocumentationProvider implements LanguageDocumentationProvide
     }
 
     @RequiredReadAction
-    private static void wrapToLink(@Nonnull PsiElement resolved, StringBuilder builder, boolean qualified) {
+    private static void wrapToLink(PsiElement resolved, StringBuilder builder, boolean qualified) {
         String parentQName =
             qualified ? resolved instanceof DotNetQualifiedElement ? ((DotNetQualifiedElement) resolved).getPresentableParentQName() : null : null;
 
@@ -415,7 +414,6 @@ public class CSharpDocumentationProvider implements LanguageDocumentationProvide
         builder.append("\">").append(((PsiNamedElement) resolved).getName()).append("</a>");
     }
 
-    @Nonnull
     @Override
     public Language getLanguage() {
         return CSharpLanguage.INSTANCE;

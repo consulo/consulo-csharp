@@ -18,7 +18,6 @@ package consulo.csharp.lang.psi;
 
 import consulo.dotnet.psi.DotNetAttributeList;
 import consulo.util.collection.ArrayFactory;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,7 +29,6 @@ public interface CSharpAttributeList extends DotNetAttributeList
 
 	ArrayFactory<CSharpAttributeList> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpAttributeList[count];
 
-	@Nonnull
 	@Override
 	CSharpAttribute[] getAttributes();
 }

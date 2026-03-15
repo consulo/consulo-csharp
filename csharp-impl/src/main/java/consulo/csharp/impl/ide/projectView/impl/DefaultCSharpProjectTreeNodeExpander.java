@@ -30,8 +30,7 @@ import consulo.csharp.lang.impl.psi.source.CSharpDummyDeclarationImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetNamedElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -43,7 +42,7 @@ public class DefaultCSharpProjectTreeNodeExpander implements CSharpProjectTreeNo
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public AbstractTreeNode<?> expandFile(@Nonnull Project project, @Nonnull ViewSettings settings, @Nonnull AbstractTreeNode<?> treeNode)
+	public AbstractTreeNode<?> expandFile(Project project, ViewSettings settings, AbstractTreeNode<?> treeNode)
 	{
 		Object value = treeNode.getValue();
 

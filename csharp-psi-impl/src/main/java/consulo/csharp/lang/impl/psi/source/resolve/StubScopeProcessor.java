@@ -24,8 +24,7 @@ import consulo.language.psi.resolve.ResolveState;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.UserDataHolderBase;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -33,21 +32,21 @@ import jakarta.annotation.Nullable;
  */
 public class StubScopeProcessor extends UserDataHolderBase implements PsiScopeProcessor
 {
-	public void pushResultExternally(@Nonnull ResolveResult resolveResult)
+	public void pushResultExternally(ResolveResult resolveResult)
 	{
 
 	}
 
 	@Override
 	@RequiredReadAction
-	public boolean execute(@Nonnull PsiElement element, ResolveState state)
+	public boolean execute(PsiElement element, ResolveState state)
 	{
 		return false;
 	}
 
 	@Nullable
 	@Override
-	public <T> T getHint(@Nonnull Key<T> tKey)
+	public <T> T getHint(Key<T> tKey)
 	{
 		return getUserData(tKey);
 	}

@@ -21,10 +21,8 @@ import consulo.dotnet.psi.*;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -53,7 +51,6 @@ public abstract class CSharpLightVariable<S extends DotNetVariable> extends CSha
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -78,7 +75,7 @@ public abstract class CSharpLightVariable<S extends DotNetVariable> extends CSha
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return myOriginal.hasModifier(modifier);
 	}
@@ -99,7 +96,7 @@ public abstract class CSharpLightVariable<S extends DotNetVariable> extends CSha
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		return myOriginal.setName(s);
 	}

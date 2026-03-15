@@ -39,8 +39,7 @@ import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -56,12 +55,12 @@ public class CS0145 extends CompilerCheck<DotNetVariable> {
     }
 
     @Override
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       return myVariablePointer.getElement() != null;
     }
 
     @Override
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       DotNetVariable element = myVariablePointer.getElement();
       if (element == null) {
         return;
@@ -89,7 +88,6 @@ public class CS0145 extends CompilerCheck<DotNetVariable> {
       myVariablePointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getText() {
       return LocalizeValue.localizeTODO("Initialize constant");
@@ -97,13 +95,13 @@ public class CS0145 extends CompilerCheck<DotNetVariable> {
 
     @Override
     @RequiredUIAccess
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       return myVariablePointer.getElement() != null;
     }
 
     @Override
     @RequiredUIAccess
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       DotNetVariable element = myVariablePointer.getElement();
       if (element == null) {
         return;
@@ -142,9 +140,9 @@ public class CS0145 extends CompilerCheck<DotNetVariable> {
   @RequiredReadAction
   @Nullable
   @Override
-  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull DotNetVariable element) {
+  public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        DotNetVariable element) {
     PsiElement constantKeywordElement = element.getConstantKeywordElement();
     if (constantKeywordElement != null) {
       PsiElement nameIdentifier = element.getNameIdentifier();

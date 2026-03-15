@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.util.collection.ArrayFactory;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL

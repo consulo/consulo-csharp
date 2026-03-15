@@ -24,7 +24,6 @@ import consulo.language.psi.PsiFile;
 import consulo.language.editor.refactoring.RefactoringBundle;
 import consulo.usage.UsageViewBundle;
 import consulo.usage.UsageViewUtil;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -64,7 +63,6 @@ public class CSharpClassesViewDescriptor implements UsageViewDescriptor
 	}
 
 	@Override
-	@Nonnull
 	public PsiElement[] getElements()
 	{
 		return myElementsToMove;

@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.debugger.expressionEvaluator;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.debugger.CSharpEvaluateContext;
@@ -35,14 +34,14 @@ public class ParameterEvaluator extends LocalVariableOrParameterEvaluator<DotNet
 	private int myIndex;
 
 	@RequiredReadAction
-	public ParameterEvaluator(@Nonnull DotNetParameter parameter)
+	public ParameterEvaluator(DotNetParameter parameter)
 	{
 		super(parameter);
 		myIndex = parameter.getIndex();
 	}
 
 	@Override
-	protected boolean tryEvaluateFromStackFrame(@Nonnull CSharpEvaluateContext context, DotNetStackFrameProxy frame, DotNetMethodProxy method)
+	protected boolean tryEvaluateFromStackFrame(CSharpEvaluateContext context, DotNetStackFrameProxy frame, DotNetMethodProxy method)
 	{
 		DotNetMethodParameterProxy methodParameterMirror = method.getParameters()[myIndex];
 

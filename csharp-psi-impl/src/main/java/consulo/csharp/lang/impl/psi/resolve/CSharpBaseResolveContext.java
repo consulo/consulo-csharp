@@ -41,8 +41,7 @@ import consulo.language.psi.PsiElement;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
 import consulo.util.dataholder.UserDataHolder;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -52,7 +51,6 @@ import java.util.*;
  */
 public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetModifierListOwner> implements CSharpResolveContext {
     private final NotNullLazyValue<SimpleElementGroupCollectors.IndexMethod> myIndexMethodCollectorValue = new NotNullLazyValue<SimpleElementGroupCollectors.IndexMethod>() {
-        @Nonnull
         @Override
         protected SimpleElementGroupCollectors.IndexMethod compute() {
             return new SimpleElementGroupCollectors.IndexMethod(CSharpBaseResolveContext.this);
@@ -60,7 +58,6 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
     };
 
     private final NotNullLazyValue<SimpleElementGroupCollectors.Constructor> myConstructorCollectorValue = new NotNullLazyValue<SimpleElementGroupCollectors.Constructor>() {
-        @Nonnull
         @Override
         protected SimpleElementGroupCollectors.Constructor compute() {
             return new SimpleElementGroupCollectors.Constructor(CSharpBaseResolveContext.this);
@@ -68,7 +65,6 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
     };
 
     private final NotNullLazyValue<SimpleElementGroupCollectors.DeConstructor> myDeConstructorCollectorValue = new NotNullLazyValue<SimpleElementGroupCollectors.DeConstructor>() {
-        @Nonnull
         @Override
         protected SimpleElementGroupCollectors.DeConstructor compute() {
             return new SimpleElementGroupCollectors.DeConstructor(CSharpBaseResolveContext.this);
@@ -76,7 +72,6 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
     };
 
     private final NotNullLazyValue<MapElementGroupCollectors.ConversionMethod> myConversionMethodCollectorValue = new NotNullLazyValue<MapElementGroupCollectors.ConversionMethod>() {
-        @Nonnull
         @Override
         protected MapElementGroupCollectors.ConversionMethod compute() {
             return new MapElementGroupCollectors.ConversionMethod(CSharpBaseResolveContext.this);
@@ -84,7 +79,6 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
     };
 
     private final NotNullLazyValue<MapElementGroupCollectors.OperatorMethod> myOperatorMethodCollectorValue = new NotNullLazyValue<MapElementGroupCollectors.OperatorMethod>() {
-        @Nonnull
         @Override
         protected MapElementGroupCollectors.OperatorMethod compute() {
             return new MapElementGroupCollectors.OperatorMethod(CSharpBaseResolveContext.this);
@@ -92,23 +86,20 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
     };
 
     private final NotNullLazyValue<MapElementGroupCollectors.Other> myOtherCollectorValue = new NotNullLazyValue<MapElementGroupCollectors.Other>() {
-        @Nonnull
         @Override
         protected MapElementGroupCollectors.Other compute() {
             return new MapElementGroupCollectors.Other(CSharpBaseResolveContext.this);
         }
     };
 
-    @Nonnull
     protected final T myElement;
-    @Nonnull
     protected final DotNetGenericExtractor myExtractor;
     @Nullable
     private Set<String> myRecursiveGuardSet;
 
     @RequiredReadAction
-    public CSharpBaseResolveContext(@Nonnull T element,
-                                    @Nonnull DotNetGenericExtractor extractor,
+    public CSharpBaseResolveContext(T element,
+                                    DotNetGenericExtractor extractor,
                                     @Nullable Set<String> recursiveGuardSet) {
         myElement = element;
         myExtractor = extractor;
@@ -117,11 +108,9 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
     public abstract void acceptChildren(CSharpElementVisitor visitor);
 
-    @Nonnull
     @RequiredReadAction
     protected abstract List<DotNetTypeRef> getExtendTypeRefs();
 
-    @Nonnull
     @RequiredReadAction
     private CSharpResolveContext getSuperContext() {
         Set<String> alreadyProcessedItem = new HashSet<>();
@@ -131,7 +120,6 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
         return getSuperContextImpl(alreadyProcessedItem);
     }
 
-    @Nonnull
     @RequiredReadAction
     private CSharpResolveContext getSuperContextImpl(Set<String> alreadyProcessedItem) {
         ProgressIndicatorProvider.checkCanceled();
@@ -202,7 +190,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
     @RequiredReadAction
     @Nullable
     @Override
-    public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@Nonnull IElementType type, boolean deep) {
+    public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(IElementType type, boolean deep) {
         Map<IElementType, CSharpElementGroup<CSharpMethodDeclaration>> map = myOperatorMethodCollectorValue.getValue().toMap();
         if (map == null) {
             return deep ? getSuperContext().findOperatorGroupByTokenType(type, true) : null;
@@ -225,7 +213,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
     @RequiredReadAction
     @Nullable
     @Override
-    public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@Nonnull CSharpCastType castType, boolean deep) {
+    public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(CSharpCastType castType, boolean deep) {
         Map<CSharpCastType, CSharpElementGroup<CSharpConversionMethodDeclaration>> map = myConversionMethodCollectorValue.getValue().toMap();
         if (map == null) {
             return deep ? getSuperContext().findConversionMethodGroup(castType, true) : null;
@@ -248,7 +236,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
     @RequiredReadAction
     @Nullable
     @Override
-    public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@Nonnull String name) {
+    public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(String name) {
         Map<String, CSharpElementGroup<PsiElement>> map = myOtherCollectorValue.getValue().toMap();
         if (map == null) {
             return null;
@@ -279,8 +267,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
     @RequiredReadAction
     @Override
-    @Nonnull
-    public Collection<PsiElement> findByName(@Nonnull String name, boolean deep, @Nonnull UserDataHolder holder) {
+    public Collection<PsiElement> findByName(String name, boolean deep, UserDataHolder holder) {
         Map<String, CSharpElementGroup<PsiElement>> map = myOtherCollectorValue.getValue().toMap();
 
         Collection<PsiElement> selectedElements;
@@ -305,7 +292,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
     @RequiredReadAction
     @Override
-    public boolean processElements(@Nonnull final Processor<PsiElement> processor, boolean deep) {
+    public boolean processElements(final Processor<PsiElement> processor, boolean deep) {
         if (processElementsImpl(processor)) {
             return !deep || getSuperContext().processElements(processor, true);
         }
@@ -315,19 +302,17 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
     }
 
     @RequiredReadAction
-    public boolean processElementsImpl(@Nonnull Processor<PsiElement> processor) {
+    public boolean processElementsImpl(Processor<PsiElement> processor) {
         Map<String, CSharpElementGroup<PsiElement>> map = myOtherCollectorValue.getValue().toMap();
 
         return map == null || ContainerUtil.process(map.values(), processor);
     }
 
-    @Nonnull
     public DotNetGenericExtractor getExtractor() {
         return myExtractor;
     }
 
     @Override
-    @Nonnull
     public T getElement() {
         return myElement;
     }

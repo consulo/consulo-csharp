@@ -34,7 +34,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -47,9 +46,8 @@ public class CreateUnresolvedFieldFix extends CreateUnresolvedElementFix {
         super(expression);
     }
 
-    @Nonnull
     @Override
-    public PsiElement getElementForAfterAdd(@Nonnull DotNetNamedElement[] elements, @Nonnull CSharpBodyWithBraces targetForGenerate) {
+    public PsiElement getElementForAfterAdd(DotNetNamedElement[] elements, CSharpBodyWithBraces targetForGenerate) {
         PsiElement last = targetForGenerate.getLeftBrace();
         for (DotNetNamedElement element : elements) {
             if (element instanceof DotNetVariable) {
@@ -121,7 +119,6 @@ public class CreateUnresolvedFieldFix extends CreateUnresolvedElementFix {
         return null;
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getText() {
         return CSharpErrorLocalize.createField0Text(myReferenceName);
@@ -129,7 +126,7 @@ public class CreateUnresolvedFieldFix extends CreateUnresolvedElementFix {
 
     @RequiredReadAction
     @Override
-    public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @Nonnull PsiFile file, @Nonnull Template template) {
+    public void buildTemplate(CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, PsiFile file, Template template) {
         template.addTextSegment("public ");
 
         if (contextType == CSharpContextUtil.ContextType.STATIC) {

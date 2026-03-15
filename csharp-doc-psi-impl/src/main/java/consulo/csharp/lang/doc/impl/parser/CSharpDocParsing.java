@@ -26,8 +26,7 @@ import consulo.language.ast.ILazyParseableElementType;
 import consulo.language.parser.PsiBuilder;
 import consulo.util.collection.Stack;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author max
@@ -86,8 +85,7 @@ public class CSharpDocParsing
 		}
 	}
 
-	@Nullable
-	private static PsiBuilder.Marker flushError(PsiBuilder.Marker error)
+	private static PsiBuilder.@Nullable Marker flushError(PsiBuilder.Marker error)
 	{
 		if(error != null)
 		{
@@ -257,8 +255,7 @@ public class CSharpDocParsing
 		return tt == CSharpDocTokenType.XML_COMMENT_START;
 	}
 
-	@Nonnull
-	private PsiBuilder.Marker startText(@Nullable PsiBuilder.Marker xmlText)
+	private PsiBuilder.Marker startText(PsiBuilder.@Nullable Marker xmlText)
 	{
 		if(xmlText == null)
 		{
@@ -273,8 +270,7 @@ public class CSharpDocParsing
 		return myBuilder.mark();
 	}
 
-	@Nullable
-	private static PsiBuilder.Marker terminateText(@Nullable PsiBuilder.Marker xmlText)
+	private static PsiBuilder.@Nullable Marker terminateText(PsiBuilder.@Nullable Marker xmlText)
 	{
 		if(xmlText != null)
 		{

@@ -30,8 +30,7 @@ import consulo.dotnet.psi.*;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.stub.IStubElementType;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -39,12 +38,12 @@ import jakarta.annotation.Nullable;
  */
 public abstract class CSharpStubLikeMethodDeclarationImpl<T extends CSharpMethodDeclStub> extends CSharpStubMemberImpl<T> implements DotNetLikeMethodDeclaration
 {
-	public CSharpStubLikeMethodDeclarationImpl(@Nonnull ASTNode node)
+	public CSharpStubLikeMethodDeclarationImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubLikeMethodDeclarationImpl(@Nonnull T stub, @Nonnull IStubElementType<? extends T, ?> nodeType)
+	public CSharpStubLikeMethodDeclarationImpl(T stub, IStubElementType<? extends T, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -56,7 +55,6 @@ public abstract class CSharpStubLikeMethodDeclarationImpl<T extends CSharpMethod
 		return getStubOrPsiChild(CSharpStubElements.PARAMETER_LIST);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
@@ -64,7 +62,6 @@ public abstract class CSharpStubLikeMethodDeclarationImpl<T extends CSharpMethod
 		return parameterList == null ? DotNetParameter.EMPTY_ARRAY : parameterList.getParameters();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
@@ -72,7 +69,6 @@ public abstract class CSharpStubLikeMethodDeclarationImpl<T extends CSharpMethod
 		return parameterList == null ? DotNetTypeRef.EMPTY_ARRAY : parameterList.getParameterTypeRefs();
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCodeBodyProxyImpl getCodeBlock()
 	{
@@ -80,7 +76,6 @@ public abstract class CSharpStubLikeMethodDeclarationImpl<T extends CSharpMethod
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	public static CSharpCodeBodyProxyImpl getCodeBlockElement(PsiElement element)
 	{
 		return new CSharpCodeBodyProxyImpl((CSharpSimpleLikeMethodAsElement) element);
@@ -94,7 +89,6 @@ public abstract class CSharpStubLikeMethodDeclarationImpl<T extends CSharpMethod
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -103,7 +97,6 @@ public abstract class CSharpStubLikeMethodDeclarationImpl<T extends CSharpMethod
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
 		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
@@ -116,7 +109,6 @@ public abstract class CSharpStubLikeMethodDeclarationImpl<T extends CSharpMethod
 		return getStubOrPsiChild(CSharpStubElements.GENERIC_PARAMETER_LIST);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
@@ -132,10 +124,10 @@ public abstract class CSharpStubLikeMethodDeclarationImpl<T extends CSharpMethod
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
-									   @Nonnull ResolveState state,
+	public boolean processDeclarations(PsiScopeProcessor processor,
+									   ResolveState state,
 									   PsiElement lastParent,
-									   @Nonnull PsiElement place)
+									   PsiElement place)
 	{
 		return CSharpLikeMethodDeclarationImplUtil.processDeclarations(this, processor, state, lastParent, place);
 	}

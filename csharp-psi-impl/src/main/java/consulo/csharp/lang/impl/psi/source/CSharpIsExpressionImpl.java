@@ -28,8 +28,7 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -37,12 +36,11 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpIsExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpIsExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpIsExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public DotNetTypeRef getIsTypeRef()
 	{
@@ -50,20 +48,18 @@ public class CSharpIsExpressionImpl extends CSharpExpressionImpl implements DotN
 		return type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
 	}
 
-	@Nonnull
 	public DotNetExpression getExpression()
 	{
 		return findNotNullChildByClass(DotNetExpression.class);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitIsExpression(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -77,7 +73,7 @@ public class CSharpIsExpressionImpl extends CSharpExpressionImpl implements DotN
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		CSharpIsVariableImpl variable = getVariable();
 		if(variable != null && !processor.execute(variable, state))

@@ -29,8 +29,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -38,12 +37,11 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpLinqQueryBodyImpl extends CSharpElementImpl
 {
-	public CSharpLinqQueryBodyImpl(@Nonnull IElementType elementType)
+	public CSharpLinqQueryBodyImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public DotNetTypeRef calcTypeRef(boolean skipContinuation)
 	{
@@ -86,7 +84,6 @@ public class CSharpLinqQueryBodyImpl extends CSharpElementImpl
 		return DotNetTypeRef.ERROR_TYPE;
 	}
 
-	@Nonnull
 	private static DotNetTypeRef typeRefOrError(@Nullable DotNetExpression expression)
 	{
 		return expression == null ? DotNetTypeRef.ERROR_TYPE : expression.toTypeRef(true);
@@ -105,10 +102,10 @@ public class CSharpLinqQueryBodyImpl extends CSharpElementImpl
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
-			@Nonnull ResolveState state,
+	public boolean processDeclarations(PsiScopeProcessor processor,
+			ResolveState state,
 			PsiElement lastParent,
-			@Nonnull PsiElement place)
+			PsiElement place)
 	{
 		if(lastParent == null || !PsiTreeUtil.isAncestor(this, lastParent, false))
 		{
@@ -126,7 +123,7 @@ public class CSharpLinqQueryBodyImpl extends CSharpElementImpl
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqQueryBody(this);
 	}

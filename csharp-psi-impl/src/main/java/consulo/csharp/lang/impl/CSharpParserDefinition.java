@@ -29,7 +29,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.version.LanguageVersionableParserDefinition;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -38,21 +37,18 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class CSharpParserDefinition extends LanguageVersionableParserDefinition
 {
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{
 		return CSharpLanguage.INSTANCE;
 	}
 
-	@Nonnull
 	@Override
 	public IFileElementType getFileNodeType()
 	{
 		return CSharpStubElements.FILE;
 	}
 
-	@Nonnull
 	@Override
 	public PsiElement createElement(ASTNode astNode)
 	{
@@ -65,7 +61,6 @@ public class CSharpParserDefinition extends LanguageVersionableParserDefinition
 		return new CSharpFileImpl(fileViewProvider);
 	}
 
-	@Nonnull
 	@Override
 	public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode astNode, ASTNode astNode2)
 	{

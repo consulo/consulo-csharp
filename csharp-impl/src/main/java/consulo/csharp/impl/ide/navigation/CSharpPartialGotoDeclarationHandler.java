@@ -29,8 +29,7 @@ import consulo.language.editor.ui.PsiElementListCellRenderer;
 import consulo.language.editor.ui.navigation.GotoDeclarationHandlerEx;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -74,9 +73,8 @@ public class CSharpPartialGotoDeclarationHandler implements GotoDeclarationHandl
 		return null;
 	}
 
-	@Nonnull
 	@Override
-	public PsiElementListCellRenderer<PsiElement> createRender(@Nonnull PsiElement[] elements)
+	public PsiElementListCellRenderer<PsiElement> createRender(PsiElement[] elements)
 	{
 		return new PartialTypeCollector.OurRender();
 	}

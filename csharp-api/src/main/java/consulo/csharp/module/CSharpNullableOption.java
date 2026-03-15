@@ -18,7 +18,6 @@ package consulo.csharp.module;
 
 import consulo.csharp.api.localize.CSharpLocalize;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -34,12 +33,11 @@ public enum CSharpNullableOption
 
 	private LocalizeValue myDescription;
 
-	CSharpNullableOption(@Nonnull LocalizeValue description)
+	CSharpNullableOption(LocalizeValue description)
 	{
 		myDescription = description;
 	}
 
-	@Nonnull
 	public LocalizeValue getDescription()
 	{
 		return myDescription;

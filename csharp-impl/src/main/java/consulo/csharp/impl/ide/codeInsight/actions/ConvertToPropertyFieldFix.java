@@ -37,7 +37,6 @@ import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -52,7 +51,7 @@ public class ConvertToPropertyFieldFix extends PsiElementBaseIntentionAction {
 
   @Override
   @RequiredWriteAction
-  public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException {
+  public void invoke(Project project, Editor editor, PsiElement element) throws IncorrectOperationException {
     DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
     if (!(owner instanceof CSharpFieldDeclaration)) {
       return;
@@ -90,7 +89,7 @@ public class ConvertToPropertyFieldFix extends PsiElementBaseIntentionAction {
 
   @Override
   @RequiredUIAccess
-  public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) {
+  public boolean isAvailable(Project project, Editor editor, PsiElement element) {
     DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
     return owner != null && owner instanceof CSharpFieldDeclaration && owner.isWritable();
   }

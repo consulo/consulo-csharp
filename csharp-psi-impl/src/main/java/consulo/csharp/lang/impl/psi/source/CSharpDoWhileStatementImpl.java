@@ -22,8 +22,7 @@ import consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -31,7 +30,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpDoWhileStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpStatementAsStatementOwner
 {
-	public CSharpDoWhileStatementImpl(@Nonnull IElementType elementType)
+	public CSharpDoWhileStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -43,7 +42,7 @@ public class CSharpDoWhileStatementImpl extends CSharpElementImpl implements Dot
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitDoWhileStatement(this);
 	}

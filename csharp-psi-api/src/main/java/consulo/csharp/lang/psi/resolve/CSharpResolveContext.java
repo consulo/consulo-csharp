@@ -28,8 +28,7 @@ import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayFactory;
 import consulo.util.dataholder.UserDataHolder;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Set;
 
@@ -68,45 +67,43 @@ public interface CSharpResolveContext
 
 	@Nullable
 	@RequiredReadAction
-	default CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@Nonnull IElementType type, boolean deep)
+	default CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(IElementType type, boolean deep)
 	{
 		return null;
 	}
 
 	@Nullable
 	@RequiredReadAction
-	default CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@Nonnull CSharpCastType castType, boolean deep)
+	default CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(CSharpCastType castType, boolean deep)
 	{
 		return null;
 	}
 
 	@Nullable
 	@RequiredReadAction
-	default CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@Nonnull String name)
+	default CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(String name)
 	{
 		return null;
 	}
 
 	@RequiredReadAction
-	default boolean processExtensionMethodGroups(@Nonnull @RequiredReadAction Processor<CSharpMethodDeclaration> processor)
+	default boolean processExtensionMethodGroups(@RequiredReadAction Processor<CSharpMethodDeclaration> processor)
 	{
 		return true;
 	}
 
 	@RequiredReadAction
-	@Nonnull
-	default Collection<PsiElement> findByName(@Nonnull String name, boolean deep, @Nonnull UserDataHolder holder)
+	default Collection<PsiElement> findByName(String name, boolean deep, UserDataHolder holder)
 	{
 		return Set.of();
 	}
 
 	@RequiredReadAction
-	default boolean processElements(@Nonnull Processor<PsiElement> processor, boolean deep)
+	default boolean processElements(Processor<PsiElement> processor, boolean deep)
 	{
 		return true;
 	}
 
 
-	@Nonnull
 	PsiElement getElement();
 }

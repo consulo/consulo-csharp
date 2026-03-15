@@ -32,8 +32,7 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.ResolveResult;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -43,19 +42,18 @@ import java.util.List;
  */
 public class CSharpOutRefVariableImpl extends CSharpVariableImpl
 {
-	public CSharpOutRefVariableImpl(@Nonnull IElementType elementType)
+	public CSharpOutRefVariableImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitOutRefVariable(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{
@@ -94,7 +92,6 @@ public class CSharpOutRefVariableImpl extends CSharpVariableImpl
 		}
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	private CSharpRefTypeRef.Type getExpressionType()
 	{
@@ -102,7 +99,6 @@ public class CSharpOutRefVariableImpl extends CSharpVariableImpl
 		return parent.getExpressionType();
 	}
 
-	@Nonnull
 	public static DotNetTypeRef searchTypeRefFromCall(DotNetExpression expression)
 	{
 		PsiElement exprParent = expression.getParent();

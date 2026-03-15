@@ -22,7 +22,6 @@ import consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightElementBuilder;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -38,7 +37,6 @@ public class CSharpLightGenericConstraintList extends CSharpLightElementBuilder<
 		myGenericConstraints = constraints;
 	}
 
-	@Nonnull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
@@ -46,7 +44,7 @@ public class CSharpLightGenericConstraintList extends CSharpLightElementBuilder<
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericConstraintList(this);
 	}

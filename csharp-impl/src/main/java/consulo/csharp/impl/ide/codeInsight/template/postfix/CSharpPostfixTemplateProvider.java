@@ -18,7 +18,6 @@ package consulo.csharp.impl.ide.codeInsight.template.postfix;
 
 import java.util.Set;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.CSharpLanguage;
@@ -48,25 +47,23 @@ public class CSharpPostfixTemplateProvider extends PostfixTemplateProvider
 	}
 
 	@Override
-	public void preExpand(@Nonnull PsiFile file, @Nonnull Editor editor)
+	public void preExpand(PsiFile file, Editor editor)
 	{
 
 	}
 
 	@Override
-	public void afterExpand(@Nonnull PsiFile file, @Nonnull Editor editor)
+	public void afterExpand(PsiFile file, Editor editor)
 	{
 
 	}
 
-	@Nonnull
 	@Override
-	public PsiFile preCheck(@Nonnull final PsiFile copyFile, @Nonnull Editor realEditor, int currentOffset)
+	public PsiFile preCheck(final PsiFile copyFile, Editor realEditor, int currentOffset)
 	{
 		return copyFile;
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

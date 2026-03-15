@@ -27,7 +27,6 @@ import consulo.language.ast.IElementType;
 import consulo.language.ast.StringEscapesTokenTypes;
 import consulo.language.editor.highlight.SyntaxHighlighterBase;
 import consulo.language.lexer.Lexer;
-import jakarta.annotation.Nonnull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,14 +81,12 @@ public class CSharpSyntaxHighlighter extends SyntaxHighlighterBase
 		safeMap(ourKeys, CfsTokens.TEXT, CSharpHighlightKey.STRING);
 	}
 
-	@Nonnull
 	@Override
 	public Lexer getHighlightingLexer()
 	{
 		return new CSharpHighlighterLexer();
 	}
 
-	@Nonnull
 	@Override
 	public TextAttributesKey[] getTokenHighlights(IElementType elementType)
 	{

@@ -32,8 +32,7 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -47,19 +46,18 @@ public class CS0157 extends CompilerCheck<CSharpReturnStatementImpl> {
       myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getText() {
       return LocalizeValue.localizeTODO("Remove return statement");
     }
 
     @Override
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       return myPointer.getElement() != null;
     }
 
     @Override
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       CSharpReturnStatementImpl element = myPointer.getElement();
       if (element == null) {
         return;
@@ -71,9 +69,9 @@ public class CS0157 extends CompilerCheck<CSharpReturnStatementImpl> {
   @RequiredReadAction
   @Nullable
   @Override
-  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull CSharpReturnStatementImpl element) {
+  public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        CSharpReturnStatementImpl element) {
     CSharpFinallyStatementImpl finallyStatement = PsiTreeUtil.getParentOfType(element, CSharpFinallyStatementImpl.class);
     if (finallyStatement != null) {
       return newBuilder(element).withQuickFix(new RemoveReturnStatementFix(element));

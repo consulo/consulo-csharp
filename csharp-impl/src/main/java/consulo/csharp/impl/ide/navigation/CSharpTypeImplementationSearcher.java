@@ -23,7 +23,6 @@ import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.search.DefinitionsScopedSearch;
 import consulo.language.psi.search.DefinitionsScopedSearchExecutor;
-import jakarta.annotation.Nonnull;
 
 import java.util.function.Predicate;
 
@@ -34,7 +33,7 @@ import java.util.function.Predicate;
 @ExtensionImpl
 public class CSharpTypeImplementationSearcher implements DefinitionsScopedSearchExecutor {
     @Override
-    public boolean execute(@Nonnull DefinitionsScopedSearch.SearchParameters queryParameters, @Nonnull final Predicate<? super PsiElement> consumer) {
+    public boolean execute(DefinitionsScopedSearch.SearchParameters queryParameters, final Predicate<? super PsiElement> consumer) {
         final PsiElement element = queryParameters.getElement();
         if (element instanceof DotNetTypeDeclaration) {
             return TypeInheritorsSearch.search((DotNetTypeDeclaration) element, queryParameters.getScope(), queryParameters.isCheckDeep(), true, CSharpTransform.INSTANCE).forEach(consumer);

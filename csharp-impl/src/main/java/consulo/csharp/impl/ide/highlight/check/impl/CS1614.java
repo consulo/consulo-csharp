@@ -34,8 +34,7 @@ import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -51,19 +50,18 @@ public class CS1614 extends CompilerCheck<CSharpAttribute> {
       myText = LocalizeValue.localizeTODO("Use '" + typeDeclaration.getPresentableQName() + "'");
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getText() {
       return myText;
     }
 
     @Override
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       return myPointer.getElement() != null;
     }
 
     @Override
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       CSharpReferenceExpressionEx element = myPointer.getElement();
       if (element == null) {
         return;
@@ -106,9 +104,9 @@ public class CS1614 extends CompilerCheck<CSharpAttribute> {
   @RequiredReadAction
   @Nullable
   @Override
-  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull CSharpAttribute element) {
+  public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        CSharpAttribute element) {
     CSharpReferenceExpressionEx referenceExpression = (CSharpReferenceExpressionEx)element.getReferenceExpression();
     if (referenceExpression == null) {
       return null;

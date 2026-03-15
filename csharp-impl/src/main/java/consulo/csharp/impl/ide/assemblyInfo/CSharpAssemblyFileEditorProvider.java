@@ -32,7 +32,6 @@ import consulo.project.Project;
 import consulo.virtualFileSystem.VirtualFile;
 import org.jdom.Element;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -43,7 +42,7 @@ public class CSharpAssemblyFileEditorProvider implements FileEditorProvider
 {
 
 	@Override
-	public boolean accept(@Nonnull final Project project, @Nonnull final VirtualFile virtualFile)
+	public boolean accept(final Project project, final VirtualFile virtualFile)
 	{
 		if(!EarlyAccessProgramManager.getInstance().getState(CSharpAssemblyFileEditorEapDescriptor.class))
 		{
@@ -60,40 +59,36 @@ public class CSharpAssemblyFileEditorProvider implements FileEditorProvider
 		return virtualFile.getName().equals(CSharpAssemblyConstants.FileName) && file instanceof CSharpFileImpl;
 	}
 
-	@Nonnull
 	@Override
-	public FileEditor createEditor(@Nonnull Project project, @Nonnull VirtualFile virtualFile)
+	public FileEditor createEditor(Project project, VirtualFile virtualFile)
 	{
 		return new CSharpAssemblyFileEditor(project, virtualFile);
 	}
 
 	@Override
-	public void disposeEditor(@Nonnull FileEditor fileEditor)
+	public void disposeEditor(FileEditor fileEditor)
 	{
 
 	}
 
-	@Nonnull
 	@Override
-	public FileEditorState readState(@Nonnull Element element, @Nonnull Project project, @Nonnull VirtualFile virtualFile)
+	public FileEditorState readState(Element element, Project project, VirtualFile virtualFile)
 	{
 		return FileEditorState.INSTANCE;
 	}
 
 	@Override
-	public void writeState(@Nonnull FileEditorState fileEditorState, @Nonnull Project project, @Nonnull Element element)
+	public void writeState(FileEditorState fileEditorState, Project project, Element element)
 	{
 
 	}
 
-	@Nonnull
 	@Override
 	public String getEditorTypeId()
 	{
 		return "csharp.assembly.editor";
 	}
 
-	@Nonnull
 	@Override
 	public FileEditorPolicy getPolicy()
 	{

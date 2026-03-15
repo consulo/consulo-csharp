@@ -23,8 +23,7 @@ import consulo.dotnet.psi.DotNetAttributeUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -33,7 +32,7 @@ import jakarta.annotation.Nullable;
 public class CSharpAttributeUtil extends DotNetAttributeUtil
 {
 	@Nullable
-	public static <T> T findSingleAttributeValue(@Nonnull PsiElement owner, @Nonnull String qName, @Nonnull Class<T> clazz)
+	public static <T> T findSingleAttributeValue(PsiElement owner, String qName, Class<T> clazz)
 	{
 		DotNetAttribute attribute = findAttribute(owner, qName);
 		if(!(attribute instanceof CSharpAttribute))

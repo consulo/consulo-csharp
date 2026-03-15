@@ -37,8 +37,7 @@ import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.collection.ArrayUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -54,12 +53,12 @@ public class CS1722 extends CompilerCheck<DotNetTypeList> {
     }
 
     @Override
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       return myTypePointer.getElement() != null;
     }
 
     @Override
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       DotNetType element = myTypePointer.getElement();
       if (element == null) {
         return;
@@ -86,9 +85,9 @@ public class CS1722 extends CompilerCheck<DotNetTypeList> {
   @RequiredReadAction
   @Nullable
   @Override
-  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull DotNetTypeList element) {
+  public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        DotNetTypeList element) {
     if (element.getNode().getElementType() != CSharpStubElements.EXTENDS_LIST) {
       return null;
     }

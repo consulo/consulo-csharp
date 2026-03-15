@@ -29,8 +29,7 @@ import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -38,13 +37,13 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpCatchStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpCatchStatementImpl(@Nonnull IElementType elementType)
+	public CSharpCatchStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitCatchStatement(this);
 	}
@@ -87,7 +86,7 @@ public class CSharpCatchStatementImpl extends CSharpElementImpl implements DotNe
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		if(lastParent == null || !PsiTreeUtil.isAncestor(this, lastParent, false))
 		{

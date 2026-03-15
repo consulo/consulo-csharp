@@ -39,8 +39,7 @@ import consulo.util.collection.SmartList;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.Trinity;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +49,7 @@ import java.util.List;
  */
 public class NCallArgumentBuilder
 {
-	@Nonnull
-	private static List<NCallArgument> buildCallArguments(@Nonnull DotNetTypeRef[] callArgumentTypeRefs, @Nonnull DotNetTypeRef[] parameterTypeRefs)
+	private static List<NCallArgument> buildCallArguments(DotNetTypeRef[] callArgumentTypeRefs, DotNetTypeRef[] parameterTypeRefs)
 	{
 		List<NCallArgument> list = new ArrayList<>(callArgumentTypeRefs.length);
 
@@ -65,35 +63,31 @@ public class NCallArgumentBuilder
 		return list;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static List<NCallArgument> buildCallArguments(@Nonnull Project project, @Nonnull CSharpCallArgument[] callArguments, @Nonnull CSharpSimpleParameterInfo[] parameterInfos, @Nonnull GlobalSearchScope scope)
+	public static List<NCallArgument> buildCallArguments(Project project, CSharpCallArgument[] callArguments, CSharpSimpleParameterInfo[] parameterInfos, GlobalSearchScope scope)
 	{
 		return buildCallArguments(callArguments, scope, new SimpleParameterResolveContext(project, scope, parameterInfos));
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments,
-														 @Nonnull DotNetParameterListOwner parameterListOwner,
-														 @Nonnull GlobalSearchScope scope,
+	public static List<NCallArgument> buildCallArguments(CSharpCallArgument[] callArguments,
+														 DotNetParameterListOwner parameterListOwner,
+														 GlobalSearchScope scope,
 														 boolean resolveFromParent)
 	{
 		return buildCallArguments(callArguments, scope, new MethodParameterResolveContext(parameterListOwner, resolveFromParent));
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull GlobalSearchScope scope)
+	public static List<NCallArgument> buildCallArguments(CSharpCallArgument[] callArguments, DotNetParameterListOwner parameterListOwner, GlobalSearchScope scope)
 	{
 		return buildCallArguments(callArguments, parameterListOwner, scope, false);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	private static <T> List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments,
-															  @Nonnull GlobalSearchScope implicitCastResolveScope,
-															  @Nonnull ParameterResolveContext<T> context)
+	private static <T> List<NCallArgument> buildCallArguments(CSharpCallArgument[] callArguments,
+															  GlobalSearchScope implicitCastResolveScope,
+															  ParameterResolveContext<T> context)
 	{
 		List<NCallArgument> list = new ArrayList<>(context.getParametersSize());
 
@@ -299,51 +293,45 @@ public class NCallArgumentBuilder
 		return null;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgument[] callArguments,
-												 @Nonnull DotNetParameterListOwner parameterListOwner,
-												 @Nonnull GlobalSearchScope scope,
+	public static MethodResolvePriorityInfo calc(CSharpCallArgument[] callArguments,
+												 DotNetParameterListOwner parameterListOwner,
+												 GlobalSearchScope scope,
 												 boolean resolveFromParent)
 	{
 		List<NCallArgument> list = buildCallArguments(callArguments, parameterListOwner, scope, resolveFromParent);
 		return calc(list, scope);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgument[] callArguments, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull GlobalSearchScope scope)
+	public static MethodResolvePriorityInfo calc(CSharpCallArgument[] callArguments, DotNetParameterListOwner parameterListOwner, GlobalSearchScope scope)
 	{
 		return calc(callArguments, parameterListOwner, scope, false);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull CSharpSimpleParameterInfo[] p, @Nonnull GlobalSearchScope resolveScope)
+	public static MethodResolvePriorityInfo calc(CSharpCallArgumentListOwner callArgumentListOwner, CSharpSimpleParameterInfo[] p, GlobalSearchScope resolveScope)
 	{
 		List<NCallArgument> list = buildCallArguments(callArgumentListOwner.getCallArguments(), resolveScope, new SimpleParameterResolveContext(callArgumentListOwner.getProject(), resolveScope, p));
 		return calc(list, resolveScope);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull DotNetTypeRef[] expressionTypeRefs, @Nonnull DotNetTypeRef[] parameterTypeRefs, @Nonnull GlobalSearchScope scope)
+	public static MethodResolvePriorityInfo calc(DotNetTypeRef[] expressionTypeRefs, DotNetTypeRef[] parameterTypeRefs, GlobalSearchScope scope)
 	{
 		List<NCallArgument> list = buildCallArguments(expressionTypeRefs, parameterTypeRefs);
 		return calc(list, scope);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull CSharpCallArgumentListOwner callArgumentListOwner, @Nonnull DotNetParameterListOwner parameterListOwner, @Nonnull GlobalSearchScope scope)
+	public static MethodResolvePriorityInfo calc(CSharpCallArgumentListOwner callArgumentListOwner, DotNetParameterListOwner parameterListOwner, GlobalSearchScope scope)
 	{
 		List<NCallArgument> list = buildCallArguments(callArgumentListOwner.getCallArguments(), parameterListOwner, scope);
 		return calc(list, scope);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static MethodResolvePriorityInfo calc(@Nonnull List<NCallArgument> arguments, @Nonnull GlobalSearchScope castResolveScope)
+	public static MethodResolvePriorityInfo calc(List<NCallArgument> arguments, GlobalSearchScope castResolveScope)
 	{
 		int weight = 0;
 		boolean valid = true;

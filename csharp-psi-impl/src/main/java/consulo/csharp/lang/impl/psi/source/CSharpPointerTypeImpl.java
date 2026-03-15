@@ -26,8 +26,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,19 +34,18 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpPointerTypeImpl extends CSharpTypeElementImpl implements DotNetPointerType
 {
-	public CSharpPointerTypeImpl(@Nonnull IElementType elementType)
+	public CSharpPointerTypeImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitPointerType(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
@@ -66,7 +64,6 @@ public class CSharpPointerTypeImpl extends CSharpTypeElementImpl implements DotN
 		return findChildByClass(DotNetType.class);
 	}
 
-	@Nonnull
 	@Override
 	public PsiElement getAsterisk()
 	{

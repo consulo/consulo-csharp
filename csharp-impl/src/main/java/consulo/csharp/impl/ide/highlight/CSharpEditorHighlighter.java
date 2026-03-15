@@ -31,8 +31,7 @@ import consulo.language.editor.highlight.LayeredLexerEditorHighlighter;
 import consulo.language.lexer.Lexer;
 import consulo.language.lexer.StringLiteralLexer;
 import consulo.virtualFileSystem.VirtualFile;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,7 +39,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpEditorHighlighter extends LayeredLexerEditorHighlighter
 {
-	public CSharpEditorHighlighter(@Nullable final VirtualFile virtualFile, @Nonnull final EditorColorsScheme colors)
+	public CSharpEditorHighlighter(@Nullable final VirtualFile virtualFile, final EditorColorsScheme colors)
 	{
 		super(new CSharpSyntaxHighlighter(), colors);
 
@@ -48,7 +47,6 @@ public class CSharpEditorHighlighter extends LayeredLexerEditorHighlighter
 
 		registerLayer(CSharpTokens.STRING_LITERAL, new LayerDescriptor(new CSharpSyntaxHighlighter()
 		{
-			@Nonnull
 			@Override
 			public Lexer getHighlightingLexer()
 			{
@@ -58,7 +56,6 @@ public class CSharpEditorHighlighter extends LayeredLexerEditorHighlighter
 		registerLayer(CSharpTokensImpl.LINE_DOC_COMMENT, new LayerDescriptor(new CSharpDocSyntaxHighlighter(), ""));
 		registerLayer(CSharpTokens.CHARACTER_LITERAL, new LayerDescriptor(new CSharpSyntaxHighlighter()
 		{
-			@Nonnull
 			@Override
 			public Lexer getHighlightingLexer()
 			{
@@ -67,7 +64,6 @@ public class CSharpEditorHighlighter extends LayeredLexerEditorHighlighter
 		}, ""));
 		registerLayer(CSharpTokensImpl.INTERPOLATION_STRING_LITERAL, new LayerDescriptor(new CfsSyntaxHighlighter(CSharpCfsLanguageVersion.getInstance())
 		{
-			@Nonnull
 			@Override
 			public TextAttributesKey[] getTokenHighlights(IElementType elementType)
 			{

@@ -25,15 +25,14 @@ import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetType;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
  * @since 13.01.14
  */
 public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarationWithImplType<CSharpMethodDeclaration> implements CSharpMethodDeclaration {
-    public CSharpLightMethodDeclaration(@Nonnull CSharpMethodDeclaration declaration) {
+    public CSharpLightMethodDeclaration(CSharpMethodDeclaration declaration) {
         this(declaration, declaration.getParameterList());
     }
 
@@ -78,7 +77,7 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
     }
 
     @Override
-    public void accept(@Nonnull CSharpElementVisitor visitor) {
+    public void accept(CSharpElementVisitor visitor) {
         visitor.visitMethodDeclaration(this);
     }
 
@@ -88,7 +87,6 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
         return null;
     }
 
-    @Nonnull
     @Override
     public CSharpGenericConstraint[] getGenericConstraints() {
         return CSharpGenericConstraint.EMPTY_ARRAY;

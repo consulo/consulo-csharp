@@ -36,10 +36,8 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.collection.ArrayUtil;
-import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.NonNls;
+import org.jspecify.annotations.Nullable;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -51,18 +49,17 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 
 	public static ArrayFactory<CSharpLambdaParameterImpl> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpLambdaParameterImpl[count];
 
-	public CSharpLambdaParameterImpl(@Nonnull IElementType elementType)
+	public CSharpLambdaParameterImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLambdaParameter(this);
 	}
 
-	@Nonnull
 	@Override
 	protected Object[] getCacheKeys()
 	{
@@ -73,7 +70,6 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{
@@ -90,7 +86,6 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	private DotNetTypeRef toTypeRefImpl0(boolean resolveFromInitializer)
 	{
 		DotNetType type = getType();
@@ -115,7 +110,6 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 		return findChildByClass(DotNetType.class);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	private DotNetTypeRef resolveTypeForParameter()
 	{
@@ -133,13 +127,12 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, s);
 		return this;
 	}
 
-	@Nonnull
 	@Override
 	public SearchScope getUseScope()
 	{

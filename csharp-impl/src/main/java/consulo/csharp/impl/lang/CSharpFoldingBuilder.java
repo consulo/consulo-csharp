@@ -42,7 +42,6 @@ import consulo.language.editor.folding.FoldingDescriptor;
 import consulo.language.psi.*;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 
 import java.util.*;
 
@@ -55,7 +54,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 {
 	@RequiredReadAction
 	@Override
-	protected void buildLanguageFoldRegions(@Nonnull final List<FoldingDescriptor> descriptors, @Nonnull PsiElement root, @Nonnull Document document, boolean quick)
+	protected void buildLanguageFoldRegions(final List<FoldingDescriptor> descriptors, PsiElement root, Document document, boolean quick)
 	{
 		final Deque<PsiElement> regions = new ArrayDeque<>();
 		final Set<CSharpUsingListChild> processedUsingStatements = new LinkedHashSet<>();
@@ -127,7 +126,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 
 			@Override
 			@RequiredReadAction
-			public void visitUsingChild(@Nonnull CSharpUsingListChild child)
+			public void visitUsingChild(CSharpUsingListChild child)
 			{
 				super.visitUsingChild(child);
 
@@ -217,7 +216,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 
 	@Override
 	@RequiredReadAction
-	protected String getLanguagePlaceholderText(@Nonnull ASTNode node, @Nonnull TextRange range)
+	protected String getLanguagePlaceholderText(ASTNode node, TextRange range)
 	{
 		PsiElement psi = node.getPsi();
 		if(psi instanceof CSharpUsingListChild)
@@ -299,7 +298,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 	}
 
 	@Override
-	protected boolean isRegionCollapsedByDefault(@Nonnull ASTNode node)
+	protected boolean isRegionCollapsedByDefault(ASTNode node)
 	{
 		PsiElement psi = node.getPsi();
 		if(psi instanceof CSharpUsingListChild)
@@ -314,7 +313,6 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 		return false;
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

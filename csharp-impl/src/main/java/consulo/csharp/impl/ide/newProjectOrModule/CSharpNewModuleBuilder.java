@@ -36,7 +36,6 @@ import consulo.project.startup.StartupManager;
 import consulo.ui.ex.wizard.WizardStep;
 import consulo.virtualFileSystem.VirtualFile;
 
-import jakarta.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -68,13 +67,12 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 	};
 
 	@Override
-	public void setupContext(@Nonnull NewModuleContext context)
+	public void setupContext(NewModuleContext context)
 	{
 		NewModuleContextGroup group = context.addGroup("csharp", LocalizeValue.localizeTODO("C#"));
 
 		group.add(LocalizeValue.localizeTODO("Empty"), AllIcons.FileTypes.Any_type, new NewModuleBuilderProcessor<CSharpNewModuleContext>()
 		{
-			@Nonnull
 			@Override
 			public CSharpNewModuleContext createContext(boolean isNewProject)
 			{
@@ -82,14 +80,14 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 			}
 
 			@Override
-			public void buildSteps(@Nonnull Consumer<WizardStep<CSharpNewModuleContext>> consumer, @Nonnull CSharpNewModuleContext context)
+			public void buildSteps(Consumer<WizardStep<CSharpNewModuleContext>> consumer, CSharpNewModuleContext context)
 			{
 				consumer.accept(new CSharpSetupStep(context));
 			}
 
 			@RequiredReadAction
 			@Override
-			public void process(@Nonnull CSharpNewModuleContext context, @Nonnull ContentEntry contentEntry, @Nonnull ModifiableRootModel modifiableRootModel)
+			public void process(CSharpNewModuleContext context, ContentEntry contentEntry, ModifiableRootModel modifiableRootModel)
 			{
 				defaultSetup(context, modifiableRootModel);
 			}
@@ -98,7 +96,6 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 		group.add(LocalizeValue.localizeTODO("Console Application"), AllIcons.RunConfigurations.Application, new UnzipNewModuleBuilderProcessor<CSharpNewModuleContext>("/moduleTemplates" +
 				"/#CSharpConsoleApplication.zip")
 		{
-			@Nonnull
 			@Override
 			public CSharpNewModuleContext createContext(boolean isNewProject)
 			{
@@ -106,14 +103,14 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 			}
 
 			@Override
-			public void buildSteps(@Nonnull Consumer<WizardStep<CSharpNewModuleContext>> consumer, @Nonnull CSharpNewModuleContext context)
+			public void buildSteps(Consumer<WizardStep<CSharpNewModuleContext>> consumer, CSharpNewModuleContext context)
 			{
 				consumer.accept(new CSharpSetupStep(context).disableTargetComboBox(DotNetTarget.EXECUTABLE));
 			}
 
 			@RequiredReadAction
 			@Override
-			public void process(@Nonnull CSharpNewModuleContext context, @Nonnull ContentEntry contentEntry, @Nonnull ModifiableRootModel modifiableRootModel)
+			public void process(CSharpNewModuleContext context, ContentEntry contentEntry, ModifiableRootModel modifiableRootModel)
 			{
 				unzip(modifiableRootModel);
 
@@ -135,7 +132,7 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 		});
 	}
 
-	private static void defaultSetup(@Nonnull CSharpNewModuleContext context, @Nonnull ModifiableRootModel modifiableRootModel)
+	private static void defaultSetup(CSharpNewModuleContext context, ModifiableRootModel modifiableRootModel)
 	{
 		Sdk sdk = context.getSdk();
 		if(sdk == null)

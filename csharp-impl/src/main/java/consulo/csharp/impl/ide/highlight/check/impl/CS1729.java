@@ -40,8 +40,7 @@ import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.Pair;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -60,11 +59,11 @@ public class CS1729 extends CompilerCheck<DotNetQualifiedElement> {
 
         @Override
         @RequiredUIAccess
-        public void invoke(@Nonnull Project project,
-                           @Nonnull PsiFile psiFile,
+        public void invoke(Project project,
+                           PsiFile psiFile,
                            @Nullable Editor editor,
-                           @Nonnull PsiElement psiElement,
-                           @Nonnull PsiElement psiElement1) {
+                           PsiElement psiElement,
+                           PsiElement psiElement1) {
             myHandler.invoke(project, editor, psiFile);
         }
 
@@ -73,7 +72,6 @@ public class CS1729 extends CompilerCheck<DotNetQualifiedElement> {
             return myHandler.startInWriteAction();
         }
 
-        @Nonnull
         @Override
         public LocalizeValue getText() {
             return LocalizeValue.localizeTODO("Generate constructor");
@@ -83,7 +81,7 @@ public class CS1729 extends CompilerCheck<DotNetQualifiedElement> {
     @RequiredReadAction
     @Nullable
     @Override
-    public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetQualifiedElement t) {
+    public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetQualifiedElement t) {
         if (t instanceof CSharpConstructorDeclaration) {
             CSharpConstructorDeclaration element = (CSharpConstructorDeclaration) t;
 

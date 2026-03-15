@@ -23,8 +23,7 @@ import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.psi.ResolveResult;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -32,13 +31,13 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpConstructorSuperCallImpl extends CSharpElementImpl implements CSharpConstructorSuperCall
 {
-	public CSharpConstructorSuperCallImpl(@Nonnull IElementType elementType)
+	public CSharpConstructorSuperCallImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitConstructorSuperCall(this);
 	}
@@ -58,20 +57,17 @@ public class CSharpConstructorSuperCallImpl extends CSharpElementImpl implements
 	}
 
 	@Override
-	@Nonnull
 	public CSharpReferenceExpression getExpression()
 	{
 		return findNotNullChildByClass(CSharpReferenceExpression.class);
 	}
 
-	@Nonnull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
 		return getExpression().multiResolve(incompleteCode);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -79,7 +75,6 @@ public class CSharpConstructorSuperCallImpl extends CSharpElementImpl implements
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{

@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.refactoring.rename.inplace;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.codeEditor.Editor;
 import consulo.language.psi.PsiReference;
@@ -37,7 +36,7 @@ import consulo.dotnet.psi.DotNetNamedElement;
 public class CSharpMemberInplaceRenamer extends MemberInplaceRenamer
 {
 	@RequiredReadAction
-	public CSharpMemberInplaceRenamer(@Nonnull PsiNamedElement elementToRename, PsiElement substituted, Editor editor)
+	public CSharpMemberInplaceRenamer(PsiNamedElement elementToRename, PsiElement substituted, Editor editor)
 	{
 		super(elementToRename, substituted, editor, CSharpNamedElement.getEscapedName((DotNetNamedElement) elementToRename), CSharpNamedElement.getEscapedName((DotNetNamedElement) elementToRename));
 	}

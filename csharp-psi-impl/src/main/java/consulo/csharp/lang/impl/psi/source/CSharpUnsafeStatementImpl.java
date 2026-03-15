@@ -22,7 +22,6 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,19 +29,18 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpUnsafeStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpUnsafeStatementImpl(@Nonnull IElementType elementType)
+	public CSharpUnsafeStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	public PsiElement getUnsafeElement()
 	{
 		return findNotNullChildByType(CSharpTokens.UNSAFE_KEYWORD);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitUnsafeStatement(this);
 	}

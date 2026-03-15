@@ -25,9 +25,7 @@ import consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.NonNls;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,18 +33,17 @@ import org.jetbrains.annotations.NonNls;
  */
 public class CSharpNamedCallArgumentImpl extends CSharpElementImpl implements CSharpNamedCallArgument
 {
-	public CSharpNamedCallArgumentImpl(@Nonnull IElementType elementType)
+	public CSharpNamedCallArgumentImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitNamedCallArgument(this);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpReferenceExpression getArgumentNameReference()
 	{
@@ -62,7 +59,6 @@ public class CSharpNamedCallArgumentImpl extends CSharpElementImpl implements CS
 	}
 
 	@Override
-	@Nonnull
 	public String getName()
 	{
 		CSharpReferenceExpression argumentNameReference = getArgumentNameReference();
@@ -70,13 +66,13 @@ public class CSharpNamedCallArgumentImpl extends CSharpElementImpl implements CS
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
+	public PsiElement setName(String name) throws IncorrectOperationException
 	{
 		return getArgumentNameReference().handleElementRename(name);
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		DotNetExpression argumentExpression = getArgumentExpression();
 		return argumentExpression != null && argumentExpression.processDeclarations(processor, state, lastParent, place);

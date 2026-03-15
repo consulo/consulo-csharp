@@ -29,8 +29,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.util.lang.Comparing;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -39,13 +38,13 @@ import jakarta.annotation.Nullable;
 public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpGenericConstraint>> implements
 		CSharpGenericConstraint
 {
-	public CSharpGenericConstraintImpl(@Nonnull ASTNode node)
+	public CSharpGenericConstraintImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpGenericConstraintImpl(@Nonnull CSharpWithStringValueStub<CSharpGenericConstraint> stub,
-			@Nonnull IStubElementType<? extends CSharpWithStringValueStub<CSharpGenericConstraint>, ?> nodeType)
+	public CSharpGenericConstraintImpl(CSharpWithStringValueStub<CSharpGenericConstraint> stub,
+			IStubElementType<? extends CSharpWithStringValueStub<CSharpGenericConstraint>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -94,7 +93,6 @@ public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpWit
 		return findChildByClass(CSharpReferenceExpression.class);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpGenericConstraintValue[] getGenericConstraintValues()
 	{
@@ -102,7 +100,7 @@ public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpWit
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericConstraint(this);
 	}

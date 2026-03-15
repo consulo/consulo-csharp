@@ -18,8 +18,7 @@ package consulo.csharp.lang.doc.impl.psi;
 
 import java.util.List;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import consulo.language.ast.IElementType;
@@ -32,32 +31,30 @@ import consulo.language.impl.psi.LazyParseablePsiElement;
  */
 public class CSharpDocRootImpl extends LazyParseablePsiElement implements CSharpDocRoot
 {
-	public CSharpDocRootImpl(@Nonnull IElementType type, @Nullable CharSequence buffer)
+	public CSharpDocRootImpl(IElementType type, @Nullable CharSequence buffer)
 	{
 		super(type, buffer);
 	}
 
 	@Nullable
-	public String getTagText(@Nonnull String tagName)
+	public String getTagText(String tagName)
 	{
 		CSharpDocTagImpl tagElement = findTagElement(tagName);
 		return tagElement == null ? null : tagElement.getInnerText();
 	}
 
 	@Nullable
-	public CSharpDocTagImpl findTagElement(@Nonnull final String tagName)
+	public CSharpDocTagImpl findTagElement(final String tagName)
 	{
 		List<CSharpDocTagImpl> tags = findTagElements(tagName);
 		return ContainerUtil.getFirstItem(tags);
 	}
 
-	@Nonnull
-	public List<CSharpDocTagImpl> findTagElements(@Nonnull final String tagName)
+	public List<CSharpDocTagImpl> findTagElements(final String tagName)
 	{
 		return ContainerUtil.filter(getTagElements(), docTag -> tagName.equals(docTag.getName()));
 	}
 
-	@Nonnull
 	public CSharpDocTagImpl[] getTagElements()
 	{
 		return findChildrenByClass(CSharpDocTagImpl.class);

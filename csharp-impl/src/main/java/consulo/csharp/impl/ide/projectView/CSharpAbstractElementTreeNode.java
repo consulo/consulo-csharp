@@ -25,7 +25,6 @@ import consulo.project.Project;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiUtilCore;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -64,7 +63,7 @@ public abstract class CSharpAbstractElementTreeNode<T extends PsiElement> extend
 	}
 
 	@Override
-	public boolean contains(@Nonnull VirtualFile file)
+	public boolean contains(VirtualFile file)
 	{
 		T value = getValue();
 		return value != null && value.isValid() && PsiUtilCore.getVirtualFile(value) == file;

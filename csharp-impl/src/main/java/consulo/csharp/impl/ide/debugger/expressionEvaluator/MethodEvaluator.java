@@ -25,7 +25,6 @@ import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class MethodEvaluator extends Evaluator
 	}
 
 	@Override
-	public void evaluate(@Nonnull CSharpEvaluateContext context) throws DotNetThrowValueException
+	public void evaluate(CSharpEvaluateContext context) throws DotNetThrowValueException
 	{
 		List<DotNetValueProxy> values = new ArrayList<DotNetValueProxy>(myParameterTypes.size());
 		for(int i = 0; i < myParameterTypes.size(); i++)

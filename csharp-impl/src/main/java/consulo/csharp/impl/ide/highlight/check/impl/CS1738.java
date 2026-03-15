@@ -16,8 +16,7 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.codeInsight.actions.ConvertNamedToSimpleArgumentFix;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -38,7 +37,7 @@ public class CS1738 extends CompilerCheck<CSharpNamedCallArgument>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpNamedCallArgument element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpNamedCallArgument element)
 	{
 		if(argumentIsInWrongPosition(element))
 		{

@@ -30,8 +30,7 @@ import consulo.language.psi.PsiFile;
 import consulo.util.collection.BidirectionalMap;
 import consulo.virtualFileSystem.fileType.FileType;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 /**
@@ -115,7 +114,7 @@ public class CSharpDocBraceMatcher implements XmlAwareBraceMatcher, LanguageBrac
 	}
 
 	@Override
-	public boolean isPairedBracesAllowedBeforeType(@Nonnull final IElementType lbraceType, @Nullable final IElementType contextType)
+	public boolean isPairedBracesAllowedBeforeType(final IElementType lbraceType, @Nullable final IElementType contextType)
 	{
 		return true;
 	}
@@ -253,7 +252,7 @@ public class CSharpDocBraceMatcher implements XmlAwareBraceMatcher, LanguageBrac
 	}
 
 	@Override
-	public IElementType getOppositeBraceTokenType(@Nonnull final IElementType type)
+	public IElementType getOppositeBraceTokenType(final IElementType type)
 	{
 		PairedBraceMatcher matcher = PairedBraceMatcher.forLanguage(type.getLanguage());
 		if(matcher != null)
@@ -280,7 +279,6 @@ public class CSharpDocBraceMatcher implements XmlAwareBraceMatcher, LanguageBrac
 		return openingBraceOffset;
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

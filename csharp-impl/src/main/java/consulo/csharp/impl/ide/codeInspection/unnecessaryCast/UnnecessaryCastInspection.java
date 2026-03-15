@@ -31,7 +31,6 @@ import consulo.language.editor.inspection.ProblemsHolder;
 import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -39,9 +38,8 @@ import jakarta.annotation.Nonnull;
  */
 @ExtensionImpl
 public class UnnecessaryCastInspection extends CSharpGeneralLocalInspection {
-    @Nonnull
     @Override
-    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+    public PsiElementVisitor buildVisitor(final ProblemsHolder holder, boolean isOnTheFly) {
         return new CSharpElementVisitor() {
             @Override
             @RequiredReadAction
@@ -79,13 +77,11 @@ public class UnnecessaryCastInspection extends CSharpGeneralLocalInspection {
         };
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getDisplayName() {
         return LocalizeValue.localizeTODO("Unnecessary cast");
     }
 
-    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WARNING;

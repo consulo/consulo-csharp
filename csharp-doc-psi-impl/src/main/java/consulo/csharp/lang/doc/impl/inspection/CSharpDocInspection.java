@@ -33,8 +33,7 @@ import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiErrorElement;
 import consulo.localize.LocalizeValue;
 import consulo.util.collection.ContainerUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -44,9 +43,8 @@ import java.util.List;
  */
 @ExtensionImpl
 public class CSharpDocInspection extends LocalInspectionTool {
-    @Nonnull
     @Override
-    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+    public PsiElementVisitor buildVisitor(final ProblemsHolder holder, boolean isOnTheFly) {
         return new CSharpDocElementVisitor() {
             @Override
             @RequiredReadAction
@@ -99,19 +97,16 @@ public class CSharpDocInspection extends LocalInspectionTool {
         return CSharpLanguage.INSTANCE;
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getGroupDisplayName() {
         return LocalizeValue.localizeTODO("Documentation");
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getDisplayName() {
         return LocalizeValue.localizeTODO("Documentation problems");
     }
 
-    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WEAK_WARNING;

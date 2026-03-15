@@ -32,8 +32,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.util.ArrayUtil2;
 import consulo.util.lang.Pair;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -80,9 +79,8 @@ public enum CSharpImplicitReturnModel
 				}
 
 				@RequiredReadAction
-				@Nonnull
 				@Override
-				public DotNetTypeRef extractTypeRef(@Nonnull DotNetTypeRef expectedTypeRef, @Nonnull PsiElement scope)
+				public DotNetTypeRef extractTypeRef(DotNetTypeRef expectedTypeRef, PsiElement scope)
 				{
 					return expectedTypeRef;
 				}
@@ -114,16 +112,15 @@ public enum CSharpImplicitReturnModel
 		return myNoGenericTypeVmQName;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public DotNetTypeRef extractTypeRef(@Nonnull DotNetTypeRef expectedTypeRef, @Nonnull PsiElement scope)
+	public DotNetTypeRef extractTypeRef(DotNetTypeRef expectedTypeRef, PsiElement scope)
 	{
 		return ObjectUtil.notNull(extractTypeRefImpl(expectedTypeRef), DotNetTypeRef.ERROR_TYPE);
 	}
 
 	@Nullable
 	@RequiredReadAction
-	public DotNetTypeRef extractTypeRefImpl(@Nonnull DotNetTypeRef expectedTypeRef)
+	public DotNetTypeRef extractTypeRefImpl(DotNetTypeRef expectedTypeRef)
 	{
 		Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, myGenericVmQName);
 		if(typeInSuper != null)
@@ -150,7 +147,6 @@ public enum CSharpImplicitReturnModel
 		return null;
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public static CSharpImplicitReturnModel getImplicitReturnModel(CSharpReturnStatementImpl element, CSharpSimpleLikeMethodAsElement pseudoMethod)
 	{

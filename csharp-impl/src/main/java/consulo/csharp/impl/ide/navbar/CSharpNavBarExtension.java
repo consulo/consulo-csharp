@@ -34,9 +34,8 @@ import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.language.Language;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,7 +46,6 @@ import java.util.List;
 @ExtensionImpl
 public class CSharpNavBarExtension extends StructureAwareNavBarModelExtension
 {
-	@Nonnull
 	@Override
 	protected Language getLanguage()
 	{
@@ -62,7 +60,6 @@ public class CSharpNavBarExtension extends StructureAwareNavBarModelExtension
 		return getPresentableText(o, false);
 	}
 
-	@Nonnull
 	@Override
 	protected List<NodeProvider<?>> getApplicableNodeProviders()
 	{
@@ -103,7 +100,7 @@ public class CSharpNavBarExtension extends StructureAwareNavBarModelExtension
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public PsiElement getParent(@Nonnull PsiElement psiElement)
+	public PsiElement getParent(PsiElement psiElement)
 	{
 		if(psiElement instanceof DotNetNamedElement)
 		{

@@ -36,10 +36,8 @@ import consulo.navigation.Navigatable;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -154,7 +152,6 @@ public class CSharpTupleTypeDeclaration extends LightElement implements CSharpTy
 
 	@Override
 	@RequiredReadAction
-	@Nonnull
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
 		return myType.getExtendTypeRefs();
@@ -162,14 +159,13 @@ public class CSharpTupleTypeDeclaration extends LightElement implements CSharpTy
 
 	@Override
 	@RequiredReadAction
-	public boolean isInheritor(@Nonnull String s, boolean b)
+	public boolean isInheritor(String s, boolean b)
 	{
 		return myType.isInheritor(s, b);
 	}
 
 	@Override
 	@RequiredReadAction
-	@Nonnull
 	public DotNetTypeRef getTypeRefForEnumConstants()
 	{
 		return myType.getTypeRefForEnumConstants();
@@ -208,7 +204,6 @@ public class CSharpTupleTypeDeclaration extends LightElement implements CSharpTy
 	}
 
 	@Override
-	@NonNls
 	public String toString()
 	{
 		return myType.toString();
@@ -216,14 +211,14 @@ public class CSharpTupleTypeDeclaration extends LightElement implements CSharpTy
 
 	@Override
 	@RequiredWriteAction
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		return myType.setName(s);
 	}
 
 	@Override
 	@RequiredReadAction
-	public boolean hasModifier(@Nonnull DotNetModifier dotNetModifier)
+	public boolean hasModifier(DotNetModifier dotNetModifier)
 	{
 		return myType.hasModifier(dotNetModifier);
 	}
@@ -244,7 +239,6 @@ public class CSharpTupleTypeDeclaration extends LightElement implements CSharpTy
 	}
 
 	@Override
-	@Nonnull
 	public DotNetGenericParameter[] getGenericParameters()
 	{
 		return myType.getGenericParameters();
@@ -266,7 +260,6 @@ public class CSharpTupleTypeDeclaration extends LightElement implements CSharpTy
 
 	@Override
 	@RequiredReadAction
-	@Nonnull
 	public DotNetNamedElement[] getMembers()
 	{
 		return myMembers;
@@ -280,7 +273,6 @@ public class CSharpTupleTypeDeclaration extends LightElement implements CSharpTy
 	}
 
 	@Override
-	@Nonnull
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
 		return myType.getGenericConstraints();

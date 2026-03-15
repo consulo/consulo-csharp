@@ -28,8 +28,7 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.localize.LocalizeValue;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -52,10 +51,9 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
         "*.TryParse(*, *)"
     );
 
-    @Nonnull
     @Override
     @RequiredReadAction
-    public List<InlayInfo> getParameterHints(@Nonnull PsiElement psiElement) {
+    public List<InlayInfo> getParameterHints(PsiElement psiElement) {
         if (psiElement instanceof CSharpExpressionWithOperatorImpl || psiElement instanceof CSharpOperatorReferenceImpl) {
             return Collections.emptyList();
         }
@@ -95,7 +93,7 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
     }
 
     @RequiredReadAction
-    private static List<NCallArgument> buildCallArguments(@Nonnull CSharpCallArgument[] callArguments, @Nonnull PsiElement callable, @Nonnull PsiElement scopedElement) {
+    private static List<NCallArgument> buildCallArguments(CSharpCallArgument[] callArguments, PsiElement callable, PsiElement scopedElement) {
         if (callable instanceof DotNetVariable) {
             DotNetTypeRef ref = ((DotNetVariable) callable).toTypeRef(true);
             DotNetTypeResolveResult resolve = ref.resolve();
@@ -110,10 +108,9 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
         return Collections.emptyList();
     }
 
-    @Nullable
     @Override
     @RequiredReadAction
-    public HintInfo.MethodInfo getHintInfo(@Nonnull PsiElement call) {
+    public HintInfo.@Nullable MethodInfo getHintInfo(PsiElement call) {
         PsiElement callable;
         if (call instanceof CSharpCallArgumentListOwner) {
             callable = ((CSharpCallArgumentListOwner) call).resolveToCallable();
@@ -152,25 +149,21 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
         return new HintInfo.MethodInfo(name, paramNames);
     }
 
-    @Nonnull
     @Override
-    public String getInlayPresentation(@Nonnull String inlayText) {
+    public String getInlayPresentation(String inlayText) {
         return inlayText + "=";
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getPreviewFileText() {
         return LocalizeValue.empty();
     }
 
-    @Nonnull
     @Override
     public Set<String> getDefaultBlackList() {
         return ourDefaultBlacklist;
     }
 
-    @Nonnull
     @Override
     public Language getLanguage() {
         return CSharpLanguage.INSTANCE;

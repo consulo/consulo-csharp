@@ -52,7 +52,6 @@ import consulo.localize.LocalizeValue;
 import consulo.util.collection.primitive.ints.IntSet;
 import consulo.util.collection.primitive.ints.IntSets;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -73,7 +72,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 
 	@Override
 	@RequiredReadAction
-	public void visit(@Nonnull PsiElement element)
+	public void visit(PsiElement element)
 	{
 		if(element instanceof CSharpPreprocessorReferenceExpressionImpl)
 		{
@@ -306,7 +305,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@RequiredReadAction
-	private void highlightResolvedTarget(@Nonnull PsiReference reference, @Nonnull PsiElement referenceElement)
+	private void highlightResolvedTarget(PsiReference reference, PsiElement referenceElement)
 	{
 		PsiElement resolved = reference.resolve();
 
@@ -322,7 +321,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@RequiredReadAction
-	private void highlightMaybeImplicit(@Nonnull CSharpCallArgumentListOwner scope)
+	private void highlightMaybeImplicit(CSharpCallArgumentListOwner scope)
 	{
 		MethodResolvePriorityInfo methodCalcResult = null;
 		ResolveResult[] resolveResults = scope.multiResolve(false);
@@ -368,7 +367,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
-	public boolean analyze(@Nonnull PsiFile psiFile, boolean b, @Nonnull HighlightInfoHolder highlightInfoHolder, @Nonnull Runnable runnable)
+	public boolean analyze(PsiFile psiFile, boolean b, HighlightInfoHolder highlightInfoHolder, Runnable runnable)
 	{
 		myHighlightInfoHolder = highlightInfoHolder;
 		myProcessedLines.clear();

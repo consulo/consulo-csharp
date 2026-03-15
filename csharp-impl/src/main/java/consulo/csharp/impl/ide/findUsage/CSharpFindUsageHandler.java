@@ -8,7 +8,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiUtilCore;
 import consulo.ui.ex.awt.MessageDialogBuilder;
 import consulo.ui.ex.awt.Messages;
-import jakarta.annotation.Nonnull;
 
 import java.util.Collection;
 
@@ -18,12 +17,11 @@ import java.util.Collection;
  */
 public class CSharpFindUsageHandler extends FindUsagesHandler
 {
-	public CSharpFindUsageHandler(@Nonnull PsiElement psiElement)
+	public CSharpFindUsageHandler(PsiElement psiElement)
 	{
 		super(psiElement);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public PsiElement[] getPrimaryElements()
@@ -47,7 +45,6 @@ public class CSharpFindUsageHandler extends FindUsagesHandler
 		return super.getPrimaryElements();
 	}
 
-	@Nonnull
 	@Override
 	public PsiElement[] getSecondaryElements()
 	{

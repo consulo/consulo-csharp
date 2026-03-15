@@ -30,9 +30,8 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 import consulo.util.dataholder.UserDataHolderBase;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -43,12 +42,11 @@ import java.util.List;
  */
 public class NParamsCallArgument extends NCallArgument
 {
-	@Nonnull
 	private final List<CSharpCallArgument> myCallArguments;
 	private final NotNullLazyValue<DotNetTypeRef> myTypeRefValue;
 
 	@RequiredReadAction
-	public NParamsCallArgument(@Nonnull Project project, @Nonnull GlobalSearchScope resolveScope, @Nonnull List<CSharpCallArgument> callArguments, @Nullable DotNetParameter parameter)
+	public NParamsCallArgument(Project project, GlobalSearchScope resolveScope, List<CSharpCallArgument> callArguments, @Nullable DotNetParameter parameter)
 	{
 		super(DotNetTypeRef.ERROR_TYPE, null, parameter);
 		myCallArguments = callArguments;
@@ -72,14 +70,14 @@ public class NParamsCallArgument extends NCallArgument
 
 	@Override
 	@RequiredReadAction
-	public int calcValid(@Nonnull GlobalSearchScope implicitCastType)
+	public int calcValid(GlobalSearchScope implicitCastType)
 	{
 		myValid = validate(getParameterTypeRef(), getTypeRef(), this, implicitCastType);
 		return myValid;
 	}
 
 	@RequiredReadAction
-	protected static int validate(@Nullable DotNetTypeRef parameterTypeRef, @Nonnull DotNetTypeRef typeRef, @Nonnull UserDataHolderBase holder, @Nonnull GlobalSearchScope impilictCastResolveScope)
+	protected static int validate(@Nullable DotNetTypeRef parameterTypeRef, DotNetTypeRef typeRef, UserDataHolderBase holder, GlobalSearchScope impilictCastResolveScope)
 	{
 		int newVal = FAIL;
 		if(parameterTypeRef != null)
@@ -105,14 +103,12 @@ public class NParamsCallArgument extends NCallArgument
 		return newVal;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRef()
 	{
 		return myTypeRefValue.getValue();
 	}
 
-	@Nonnull
 	@Override
 	public Collection<CSharpCallArgument> getCallArguments()
 	{

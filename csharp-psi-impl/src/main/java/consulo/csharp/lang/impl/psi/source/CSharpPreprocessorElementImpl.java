@@ -22,7 +22,6 @@ import consulo.language.psi.PsiElementVisitor;
 import consulo.navigation.ItemPresentation;
 import consulo.navigation.ItemPresentationProvider;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -42,7 +41,7 @@ public abstract class CSharpPreprocessorElementImpl extends AdvancedCompositePsi
 	}
 
 	@Override
-	public void accept(@Nonnull PsiElementVisitor visitor)
+	public void accept(PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpMacroElementVisitor)
 		{
@@ -54,6 +53,6 @@ public abstract class CSharpPreprocessorElementImpl extends AdvancedCompositePsi
 		}
 	}
 
-	public abstract void accept(@Nonnull CSharpMacroElementVisitor visitor);
+	public abstract void accept(CSharpMacroElementVisitor visitor);
 }
 

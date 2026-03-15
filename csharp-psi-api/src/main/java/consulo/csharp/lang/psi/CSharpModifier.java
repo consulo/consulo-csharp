@@ -18,7 +18,6 @@ package consulo.csharp.lang.psi;
 
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.util.collection.ArrayFactory;
-import jakarta.annotation.Nonnull;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -91,7 +90,6 @@ public enum CSharpModifier implements DotNetModifier {
         return name().toLowerCase(Locale.US);
     }
 
-    @Nonnull
     public static CSharpModifier as(DotNetModifier modifierWithMask) {
         if (modifierWithMask instanceof CSharpModifier) {
             return (CSharpModifier) modifierWithMask;

@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.dotnet.psi.DotNetElement;
 
@@ -26,6 +25,5 @@ import consulo.dotnet.psi.DotNetElement;
  */
 public interface CSharpFieldOrPropertySetBlock extends DotNetElement
 {
-	@Nonnull
 	CSharpFieldOrPropertySet[] getSets();
 }

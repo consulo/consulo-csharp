@@ -37,8 +37,7 @@ import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.IdeActions;
 import consulo.ui.image.Image;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -53,33 +52,31 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 {
 	public static class MarkerInfo extends MergeableLineMarkerInfo<PsiElement>
 	{
-		public MarkerInfo(@Nonnull PsiElement element,
-				@Nonnull TextRange textRange,
+		public MarkerInfo(PsiElement element,
+				TextRange textRange,
 				Image icon,
 				int updatePass,
 				@Nullable Function<? super PsiElement, String> tooltipProvider,
 				@Nullable GutterIconNavigationHandler<PsiElement> navHandler,
-				@Nonnull GutterIconRenderer.Alignment alignment)
+				GutterIconRenderer.Alignment alignment)
 		{
 			super(element, textRange, icon, updatePass, tooltipProvider, navHandler, alignment);
 		}
 
 		@Override
-		public boolean canMergeWith(@Nonnull MergeableLineMarkerInfo<?> info)
+		public boolean canMergeWith(MergeableLineMarkerInfo<?> info)
 		{
 			return info instanceof MarkerInfo;
 		}
 
-		@Nonnull
 		@Override
-		public Image getCommonIcon(@Nonnull List<MergeableLineMarkerInfo> infos)
+		public Image getCommonIcon(List<MergeableLineMarkerInfo> infos)
 		{
 			return myIcon;
 		}
 
-		@Nonnull
 		@Override
-		public Function<? super PsiElement, String> getCommonTooltip(@Nonnull List<MergeableLineMarkerInfo> infos)
+		public Function<? super PsiElement, String> getCommonTooltip(List<MergeableLineMarkerInfo> infos)
 		{
 			return element -> "Navigate to lambda delegate";
 		}
@@ -87,7 +84,7 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @Nonnull Consumer<LineMarkerInfo> lineMarkerInfos)
+	public void collect(PsiElement psiElement, Consumer<LineMarkerInfo> lineMarkerInfos)
 	{
 		IElementType elementType = PsiUtilCore.getElementType(psiElement);
 		if(elementType == CSharpTokens.DARROW)

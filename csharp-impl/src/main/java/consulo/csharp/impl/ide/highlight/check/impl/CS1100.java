@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.codeInsight.actions.RemoveModifierFix;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -27,7 +26,7 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -38,7 +37,7 @@ public class CS1100 extends CompilerCheck<CSharpMethodDeclaration>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpMethodDeclaration methodDeclaration)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpMethodDeclaration methodDeclaration)
 	{
 		DotNetParameter[] parameters = methodDeclaration.getParameters();
 		for(int i = 0; i < parameters.length; i++)

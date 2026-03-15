@@ -27,7 +27,6 @@ import consulo.language.editor.ExpressionTypeProvider;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.lang.xml.XmlStringUtil;
-import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -37,22 +36,19 @@ import java.util.List;
  */
 @ExtensionImpl
 public class CSharpExpressionTypeProvider extends ExpressionTypeProvider<DotNetExpression> {
-    @Nonnull
     @Override
     @RequiredReadAction
-    public String getInformationHint(@Nonnull DotNetExpression expression) {
+    public String getInformationHint(DotNetExpression expression) {
         return XmlStringUtil.escapeText(CSharpTypeRefPresentationUtil.buildText(expression.toTypeRef(true)));
     }
 
-    @Nonnull
     @Override
     public String getErrorHint() {
         return "Expression not found";
     }
 
-    @Nonnull
     @Override
-    public List<DotNetExpression> getExpressionsAt(@Nonnull PsiElement psiElement) {
+    public List<DotNetExpression> getExpressionsAt(PsiElement psiElement) {
         DotNetExpression expression = PsiTreeUtil.getParentOfType(psiElement, DotNetExpression.class);
         if (expression instanceof CSharpReferenceExpression && expression.getParent() instanceof CSharpMethodCallExpressionImpl call) {
             expression = call;
@@ -64,7 +60,6 @@ public class CSharpExpressionTypeProvider extends ExpressionTypeProvider<DotNetE
         return List.of();
     }
 
-    @Nonnull
     @Override
     public Language getLanguage() {
         return CSharpLanguage.INSTANCE;

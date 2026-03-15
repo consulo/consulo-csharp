@@ -40,8 +40,7 @@ import consulo.module.content.layer.ModifiableRootModel;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -52,14 +51,14 @@ public class CS0017 extends CompilerCheck<CSharpMethodDeclaration> {
     private final String myVmQName;
 
     @RequiredReadAction
-    public SetMainTypeFix(@Nonnull DotNetTypeDeclaration typeDeclaration) {
+    public SetMainTypeFix(DotNetTypeDeclaration typeDeclaration) {
       myVmQName = typeDeclaration.getVmQName();
       setText(LocalizeValue.localizeTODO("Set main to '" + myVmQName + "'"));
     }
 
     @Override
     @RequiredWriteAction
-    public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiElement element) throws IncorrectOperationException {
       DotNetModuleExtension<?> extension = ModuleUtilCore.getExtension(element, DotNetModuleExtension.class);
       if (extension == null || extension.getMainType() != null) {
         return;
@@ -78,7 +77,7 @@ public class CS0017 extends CompilerCheck<CSharpMethodDeclaration> {
 
     @Override
     @RequiredUIAccess
-    public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) {
+    public boolean isAvailable(Project project, Editor editor, PsiElement element) {
       DotNetModuleExtension extension = ModuleUtilCore.getExtension(element, DotNetModuleExtension.class);
       return extension != null && extension.getMainType() == null;
     }
@@ -87,9 +86,9 @@ public class CS0017 extends CompilerCheck<CSharpMethodDeclaration> {
   @RequiredReadAction
   @Nullable
   @Override
-  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull CSharpMethodDeclaration element) {
+  public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        CSharpMethodDeclaration element) {
     DotNetSimpleModuleExtension<?> dotNetModuleExtension = highlightContext.getDotNetModuleExtension();
     // simple extensions - skip
     if (!(dotNetModuleExtension instanceof DotNetModuleExtension)) {

@@ -21,8 +21,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -32,7 +31,7 @@ public class NNamedParamsCallArgument extends NNamedCallArgument
 {
 	private final DotNetTypeRef myParamsInnerTypeRef;
 
-	public NNamedParamsCallArgument(@Nonnull DotNetTypeRef typeRef,
+	public NNamedParamsCallArgument(DotNetTypeRef typeRef,
 			@Nullable CSharpCallArgument callArgument,
 			@Nullable Object parameter,
 			@Nullable String name,
@@ -44,7 +43,7 @@ public class NNamedParamsCallArgument extends NNamedCallArgument
 
 	@RequiredReadAction
 	@Override
-	public int calcValid(@Nonnull GlobalSearchScope implicitCastResolveScope)
+	public int calcValid(GlobalSearchScope implicitCastResolveScope)
 	{
 		if(myParamsInnerTypeRef != null)
 		{

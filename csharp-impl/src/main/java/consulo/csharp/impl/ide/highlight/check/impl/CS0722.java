@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.codeInsight.actions.RemoveModifierFix;
@@ -30,7 +29,7 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -41,7 +40,7 @@ public class CS0722 extends CompilerCheck<DotNetLikeMethodDeclaration>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetLikeMethodDeclaration element)
+	public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetLikeMethodDeclaration element)
 	{
 		DotNetType type = element.getReturnType();
 		PsiElement resolve = DotNetTypeRefUtil.resolve(type);

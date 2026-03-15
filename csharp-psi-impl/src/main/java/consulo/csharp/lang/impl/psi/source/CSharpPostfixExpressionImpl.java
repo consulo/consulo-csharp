@@ -20,8 +20,7 @@ import consulo.language.ast.IElementType;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -29,13 +28,13 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpPostfixExpressionImpl extends CSharpExpressionWithOperatorImpl implements DotNetExpression
 {
-	public CSharpPostfixExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpPostfixExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitPostfixExpression(this);
 	}

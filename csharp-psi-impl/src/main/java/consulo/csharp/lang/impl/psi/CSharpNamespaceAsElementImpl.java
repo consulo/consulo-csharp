@@ -21,7 +21,6 @@ import consulo.dotnet.psi.impl.IndexBasedDotNetNamespaceAsElement;
 import consulo.dotnet.psi.impl.resolve.impl.IndexBasedDotNetPsiSearcherExtension;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -29,10 +28,10 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpNamespaceAsElementImpl extends IndexBasedDotNetNamespaceAsElement
 {
-	public CSharpNamespaceAsElementImpl(@Nonnull Project project,
-										@Nonnull String indexKey,
-										@Nonnull String qName,
-										@Nonnull IndexBasedDotNetPsiSearcherExtension searcher)
+	public CSharpNamespaceAsElementImpl(Project project,
+										String indexKey,
+										String qName,
+										IndexBasedDotNetPsiSearcherExtension searcher)
 	{
 		super(project, CSharpLanguage.INSTANCE, indexKey, qName, searcher);
 	}

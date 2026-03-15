@@ -28,8 +28,7 @@ import consulo.dotnet.psi.DotNetTypeList;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiUtilCore;
 import consulo.util.collection.ArrayUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -51,7 +50,7 @@ public class CS1008 extends CompilerCheck<DotNetType>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetType element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetType element)
 	{
 		PsiElement parent = element.getParent();
 		if(parent instanceof DotNetTypeList && PsiUtilCore.getElementType(parent) == CSharpElements.EXTENDS_LIST)

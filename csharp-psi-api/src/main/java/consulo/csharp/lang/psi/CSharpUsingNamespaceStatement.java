@@ -21,7 +21,7 @@ import consulo.dotnet.psi.DotNetReferenceExpression;
 import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
 import consulo.util.collection.ArrayFactory;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL

@@ -33,7 +33,6 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.language.ast.TokenSet;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -45,7 +44,7 @@ public class CS0304 extends CompilerCheck<CSharpNewExpression>
 
 	@RequiredReadAction
 	@Override
-	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpNewExpression element)
+	public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpNewExpression element)
 	{
 		PsiElement resolvedNewElement = element.toTypeRef(false).resolve().getElement();
 		if(resolvedNewElement instanceof DotNetGenericParameter)

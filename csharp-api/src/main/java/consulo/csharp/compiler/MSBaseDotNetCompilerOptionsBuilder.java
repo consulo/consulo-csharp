@@ -38,8 +38,7 @@ import consulo.virtualFileSystem.StandardFileSystems;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.VirtualFileManager;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -68,13 +67,13 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 	private final List<String> myArguments = new ArrayList<>();
 	private final List<String> myProgramArguments = new ArrayList<>();
 
-	public MSBaseDotNetCompilerOptionsBuilder addArgument(@Nonnull String arg)
+	public MSBaseDotNetCompilerOptionsBuilder addArgument(String arg)
 	{
 		myArguments.add(arg + "\n");
 		return this;
 	}
 
-	public MSBaseDotNetCompilerOptionsBuilder addProgramArgument(@Nonnull String arg)
+	public MSBaseDotNetCompilerOptionsBuilder addProgramArgument(String arg)
 	{
 		myProgramArguments.add(arg);
 		return this;
@@ -126,10 +125,9 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 	}
 
 	@Override
-	@Nonnull
-	public GeneralCommandLine createCommandLine(@Nonnull Module module,
-												@Nonnull VirtualFile[] results,
-												@Nonnull DotNetModuleExtension<?> extension) throws Exception
+	public GeneralCommandLine createCommandLine(Module module,
+												VirtualFile[] results,
+												DotNetModuleExtension<?> extension) throws Exception
 	{
 		if(myExecutable == null)
 		{
@@ -258,12 +256,12 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		return myExecutable;
 	}
 
-	public void setExecutable(@Nonnull String executable)
+	public void setExecutable(String executable)
 	{
 		myExecutable = executable;
 	}
 
-	public void setExecutableFromSdk(@Nonnull Sdk sdk, @Nonnull String executableFromSdk)
+	public void setExecutableFromSdk(Sdk sdk, String executableFromSdk)
 	{
 		myExecutable = sdk.getHomePath() + File.separatorChar + executableFromSdk;
 	}

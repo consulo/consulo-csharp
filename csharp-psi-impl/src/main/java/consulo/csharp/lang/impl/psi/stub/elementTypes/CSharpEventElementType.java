@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.csharp.lang.impl.psi.source.CSharpEventDeclarationImpl;
 import consulo.csharp.lang.impl.psi.stub.CSharpVariableDeclStub;
@@ -38,19 +37,19 @@ public class CSharpEventElementType extends CSharpQVariableStubElementType<DotNe
 	}
 
 	@Override
-	public DotNetEventDeclaration createElement(@Nonnull ASTNode astNode)
+	public DotNetEventDeclaration createElement(ASTNode astNode)
 	{
 		return new CSharpEventDeclarationImpl(astNode);
 	}
 
 	@Override
-	public DotNetEventDeclaration createPsi(@Nonnull CSharpVariableDeclStub<DotNetEventDeclaration> cSharpEventStub)
+	public DotNetEventDeclaration createPsi(CSharpVariableDeclStub<DotNetEventDeclaration> cSharpEventStub)
 	{
 		return new CSharpEventDeclarationImpl(cSharpEventStub);
 	}
 
 	@Override
-	public void indexStub(@Nonnull CSharpVariableDeclStub<DotNetEventDeclaration> stub, @Nonnull IndexSink indexSink)
+	public void indexStub(CSharpVariableDeclStub<DotNetEventDeclaration> stub, IndexSink indexSink)
 	{
 		String name = getNameWithoutAt(stub);
 		if(!StringUtil.isEmpty(name))

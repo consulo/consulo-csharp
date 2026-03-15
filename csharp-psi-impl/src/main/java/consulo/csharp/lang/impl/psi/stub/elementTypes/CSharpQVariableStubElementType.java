@@ -19,9 +19,8 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetVariable;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -29,7 +28,7 @@ import jakarta.annotation.Nullable;
  */
 public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & DotNetQualifiedElement> extends CSharpBaseVariableStubElementType<P>
 {
-	public CSharpQVariableStubElementType(@Nonnull String debugName)
+	public CSharpQVariableStubElementType(String debugName)
 	{
 		super(debugName);
 	}
@@ -43,7 +42,7 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	@RequiredReadAction
 	@Nullable
 	@Override
-	protected String getParentQName(@Nonnull P variable)
+	protected String getParentQName(P variable)
 	{
 		return variable.getPresentableParentQName();
 	}

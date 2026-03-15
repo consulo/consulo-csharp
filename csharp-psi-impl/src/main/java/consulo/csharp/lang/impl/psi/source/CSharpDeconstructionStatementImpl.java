@@ -26,7 +26,6 @@ import consulo.csharp.lang.psi.CSharpTupleType;
 import consulo.csharp.lang.psi.CSharpTupleVariable;
 import consulo.dotnet.psi.DotNetStatement;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -34,19 +33,17 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpDeconstructionStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpDeconstructionStatementImpl(@Nonnull IElementType elementType)
+	public CSharpDeconstructionStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public CSharpTupleType getTupleType()
 	{
 		return findNotNullChildByClass(CSharpTupleType.class);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public CSharpTupleVariable[] getVariables()
 	{
@@ -55,14 +52,14 @@ public class CSharpDeconstructionStatementImpl extends CSharpElementImpl impleme
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitDeconstructionStatement(this);
 	}
 
 	@Override
 	@RequiredReadAction
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		for(CSharpTupleVariable variable : getVariables())
 		{

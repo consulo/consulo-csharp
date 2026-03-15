@@ -30,8 +30,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 import consulo.util.dataholder.Key;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 /**
@@ -58,7 +57,6 @@ public class CSharpResolveResult implements ResolveResult
 		myValid = validResult;
 	}
 
-	@Nonnull
 	public CSharpResolveResult setProvider(@Nullable PsiElement element)
 	{
 		myProviderElement = element;
@@ -77,7 +75,7 @@ public class CSharpResolveResult implements ResolveResult
 	}
 
 	@RequiredReadAction
-	public void setAssignable(@Nonnull PsiElement place)
+	public void setAssignable(PsiElement place)
 	{
 		if(myAssignable != null)
 		{

@@ -62,8 +62,7 @@ import consulo.util.dataholder.Key;
 import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -89,7 +88,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				CSharpReferenceExpressionEx parent = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 				if(parent.getQualifier() != null || parent.kind() != CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
@@ -126,7 +125,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 				}
 			}
 
-			private void addPrivatMethodImpl(CSharpLambdaResolveResult typeResolveResult, @Nonnull CompletionParameters parameters, CompletionResultSet result, CSharpReferenceExpressionEx parent)
+			private void addPrivatMethodImpl(CSharpLambdaResolveResult typeResolveResult, CompletionParameters parameters, CompletionResultSet result, CSharpReferenceExpressionEx parent)
 			{
 				PsiElement maybeAssign = parent.getParent();
 				if(!(maybeAssign instanceof CSharpAssignmentExpressionImpl))
@@ -294,7 +293,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				CSharpReferenceExpression expression = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpReferenceExpression.class);
 
@@ -392,7 +391,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				PsiElement position = parameters.getPosition();
 				CSharpNewExpressionImpl newExpression = PsiTreeUtil.getParentOfType(position, CSharpNewExpressionImpl.class);
@@ -442,7 +441,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 
 			@Nullable
 			@RequiredReadAction
-			private Image getIconForInnerTypeRef(@Nonnull CSharpArrayTypeRef typeRef, @Nonnull PsiElement scope)
+			private Image getIconForInnerTypeRef(CSharpArrayTypeRef typeRef, PsiElement scope)
 			{
 				DotNetTypeRef innerTypeRef = typeRef.getInnerTypeRef();
 				if(innerTypeRef instanceof CSharpArrayTypeRef)
@@ -462,7 +461,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 
 			@Nullable
 			@RequiredReadAction
-			private Image getIconForInnerTypeRef(DotNetTypeRef innerTypeRef, @Nonnull PsiElement scope)
+			private Image getIconForInnerTypeRef(DotNetTypeRef innerTypeRef, PsiElement scope)
 			{
 				PsiElement element = innerTypeRef.resolve().getElement();
 				if(element != null)
@@ -486,7 +485,6 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 		});
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

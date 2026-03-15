@@ -19,9 +19,8 @@ package consulo.csharp.lang.psi;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetCallArgumentList;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -37,6 +36,5 @@ public interface CSharpCallArgumentList extends DotNetCallArgumentList, CSharpFi
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	CSharpCallArgument[] getArguments();
 }

@@ -40,8 +40,7 @@ import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.lang.Pair;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,19 +58,18 @@ public class CS0702 extends CompilerCheck<CSharpGenericConstraintTypeValue> {
       myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getText() {
       return LocalizeValue.localizeTODO("Replace by '" + myKeywordForReplace + "' constraint");
     }
 
     @Override
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       return myPointer.getElement() != null;
     }
 
     @Override
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       CSharpGenericConstraintTypeValue element = myPointer.getElement();
       if (element == null) {
         return;
@@ -97,9 +95,9 @@ public class CS0702 extends CompilerCheck<CSharpGenericConstraintTypeValue> {
   @RequiredReadAction
   @Nullable
   @Override
-  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull CSharpGenericConstraintTypeValue element) {
+  public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        CSharpGenericConstraintTypeValue element) {
     DotNetTypeRef typeRef = element.toTypeRef();
     Pair<String, DotNetTypeDeclaration> pair = CSharpTypeUtil.resolveTypeElement(typeRef);
     if (pair == null) {

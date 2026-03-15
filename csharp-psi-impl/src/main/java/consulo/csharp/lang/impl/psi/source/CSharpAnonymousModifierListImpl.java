@@ -25,9 +25,8 @@ import consulo.language.ast.ASTNode;
 import consulo.language.impl.psi.LightElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiParserFacade;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +52,7 @@ public class CSharpAnonymousModifierListImpl extends LightElement implements CSh
 	}
 
 	@Override
-	public void addModifier(@Nonnull DotNetModifier m)
+	public void addModifier(DotNetModifier m)
 	{
 		CSharpModifier modifier = CSharpModifier.as(m);
 		PsiElement anchor = myMethodExpression.getFirstChild();
@@ -66,12 +65,11 @@ public class CSharpAnonymousModifierListImpl extends LightElement implements CSh
 	}
 
 	@Override
-	public void removeModifier(@Nonnull DotNetModifier dotNetModifier)
+	public void removeModifier(DotNetModifier dotNetModifier)
 	{
 		CSharpModifierListImplUtil.removeModifier(this, dotNetModifier);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetModifier[] getModifiers()
 	{
@@ -87,7 +85,6 @@ public class CSharpAnonymousModifierListImpl extends LightElement implements CSh
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
@@ -95,13 +92,13 @@ public class CSharpAnonymousModifierListImpl extends LightElement implements CSh
 	}
 
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier dotNetModifier)
+	public boolean hasModifier(DotNetModifier dotNetModifier)
 	{
 		return getModifierElement(dotNetModifier) != null;
 	}
 
 	@Override
-	public boolean hasModifierInTree(@Nonnull DotNetModifier dotNetModifier)
+	public boolean hasModifierInTree(DotNetModifier dotNetModifier)
 	{
 		return getModifierElement(dotNetModifier) != null;
 	}
@@ -120,9 +117,8 @@ public class CSharpAnonymousModifierListImpl extends LightElement implements CSh
 		return null;
 	}
 
-	@Nonnull
 	@Override
-	public List<PsiElement> getModifierElements(@Nonnull DotNetModifier dotNetModifier)
+	public List<PsiElement> getModifierElements(DotNetModifier dotNetModifier)
 	{
 		PsiElement modifierElement = getModifierElement(dotNetModifier);
 		if(modifierElement == null)
@@ -132,7 +128,6 @@ public class CSharpAnonymousModifierListImpl extends LightElement implements CSh
 		return Collections.singletonList(modifierElement);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpAttributeList[] getAttributeLists()
 	{

@@ -42,8 +42,7 @@ import consulo.module.content.ModuleRootManager;
 import consulo.module.content.layer.ModifiableRootModel;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -51,7 +50,6 @@ import jakarta.annotation.Nullable;
  */
 public class CS0227 extends CompilerCheck<DotNetElement> {
   public static class AllowUnsafeCodeFix implements SyntheticIntentionAction {
-    @Nonnull
     @Override
     public LocalizeValue getText() {
       return LocalizeValue.localizeTODO("Allow unsafe code");
@@ -59,14 +57,14 @@ public class CS0227 extends CompilerCheck<DotNetElement> {
 
     @Override
     @RequiredUIAccess
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(file, CSharpSimpleModuleExtension.class);
       return extension != null && !extension.isAllowUnsafeCode();
     }
 
     @Override
     @RequiredWriteAction
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(file);
       if (moduleForPsiElement == null) {
         return;
@@ -87,9 +85,9 @@ public class CS0227 extends CompilerCheck<DotNetElement> {
   @RequiredReadAction
   @Nullable
   @Override
-  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull DotNetElement element) {
+  public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        DotNetElement element) {
     PsiElement targetElement = getElement(element);
     if (targetElement == null) {
       return null;

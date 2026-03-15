@@ -28,7 +28,6 @@ import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
 import consulo.language.psi.scope.EverythingGlobalScope;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -41,7 +40,7 @@ import java.util.function.Predicate;
 @ExtensionImpl
 public class CSharpDirectTypeInheritorsSearcherExecutor implements DirectTypeInheritorsSearchExecutor {
     @Override
-    public boolean execute(@Nonnull final DirectTypeInheritorsSearch.SearchParameters p, @Nonnull final Predicate<? super DotNetTypeDeclaration> consumer) {
+    public boolean execute(final DirectTypeInheritorsSearch.SearchParameters p, final Predicate<? super DotNetTypeDeclaration> consumer) {
         String vmQName = p.getVmQName();
 
 		/*if(DotNetTypes.System_Object.equals(qualifiedName))

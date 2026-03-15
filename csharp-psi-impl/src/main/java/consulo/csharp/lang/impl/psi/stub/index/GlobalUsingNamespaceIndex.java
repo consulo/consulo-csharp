@@ -21,7 +21,6 @@ import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,7 +29,6 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class GlobalUsingNamespaceIndex extends StringStubIndexExtension<CSharpUsingNamespaceStatement>
 {
-	@Nonnull
 	public static GlobalUsingNamespaceIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtensionOrFail(GlobalUsingNamespaceIndex.class);
@@ -42,7 +40,6 @@ public class GlobalUsingNamespaceIndex extends StringStubIndexExtension<CSharpUs
 		return 2;
 	}
 
-	@Nonnull
 	@Override
 	public StubIndexKey<String, CSharpUsingNamespaceStatement> getKey()
 	{

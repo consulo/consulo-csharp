@@ -23,7 +23,6 @@ import consulo.language.parser.PsiBuilder;
 import consulo.language.parser.PsiParser;
 import consulo.language.version.LanguageVersion;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,9 +30,8 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpPreprocessorParser implements PsiParser
 {
-	@Nonnull
 	@Override
-	public ASTNode parse(@Nonnull IElementType elementType, @Nonnull PsiBuilder builder, @Nonnull LanguageVersion languageVersion)
+	public ASTNode parse(IElementType elementType, PsiBuilder builder, LanguageVersion languageVersion)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 

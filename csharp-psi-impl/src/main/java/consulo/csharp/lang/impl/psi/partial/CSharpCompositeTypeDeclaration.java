@@ -46,10 +46,8 @@ import consulo.util.collection.MultiMap;
 import consulo.util.collection.SmartList;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.ObjectUtil;
-import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.NonNls;
+import org.jspecify.annotations.Nullable;
 
-import jakarta.annotation.Nonnull;
 
 import java.util.*;
 
@@ -60,8 +58,7 @@ import java.util.*;
 public class CSharpCompositeTypeDeclaration extends LightElement implements CSharpTypeDeclaration
 {
 	@RequiredReadAction
-	@Nonnull
-	public static DotNetTypeDeclaration selectCompositeOrSelfType(@Nonnull DotNetTypeDeclaration parent)
+	public static DotNetTypeDeclaration selectCompositeOrSelfType(DotNetTypeDeclaration parent)
 	{
 		if(parent.hasModifier(CSharpModifier.PARTIAL))
 		{
@@ -72,8 +69,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	}
 
 	@RequiredReadAction
-	@Nonnull
-	public static LocalSearchScope createLocalScope(@Nonnull DotNetTypeDeclaration parent)
+	public static LocalSearchScope createLocalScope(DotNetTypeDeclaration parent)
 	{
 		DotNetTypeDeclaration type = selectCompositeOrSelfType(parent);
 		if(type instanceof CSharpCompositeTypeDeclaration)
@@ -88,7 +84,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 
 	@RequiredReadAction
 	@Nullable
-	public static CSharpCompositeTypeDeclaration findCompositeType(@Nonnull CSharpTypeDeclaration parent)
+	public static CSharpCompositeTypeDeclaration findCompositeType(CSharpTypeDeclaration parent)
 	{
 		Object cachedValue = LanguageCachedValueUtil.getCachedValue(parent, () -> CachedValueProvider.Result.create(findCompositeTypeImpl(parent), PsiModificationTracker.MODIFICATION_COUNT));
 		return cachedValue == ObjectUtil.NULL ? null : (CSharpCompositeTypeDeclaration) cachedValue;
@@ -116,9 +112,8 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return ObjectUtil.NULL;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static Collection<PsiElement> wrapPartialTypes(@Nonnull GlobalSearchScope scope, @Nonnull Project project, @Nonnull Collection<PsiElement> elements)
+	public static Collection<PsiElement> wrapPartialTypes(GlobalSearchScope scope, Project project, Collection<PsiElement> elements)
 	{
 		MultiMap<String, CSharpTypeDeclaration> partialTypes = null;
 
@@ -188,7 +183,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	private GlobalSearchScope mySearchScope;
 	private CSharpTypeDeclaration[] myTypeDeclarations;
 
-	public CSharpCompositeTypeDeclaration(@Nonnull Project project, GlobalSearchScope searchScope, CSharpTypeDeclaration[] typeDeclarations)
+	public CSharpCompositeTypeDeclaration(Project project, GlobalSearchScope searchScope, CSharpTypeDeclaration[] typeDeclarations)
 	{
 		super(typeDeclarations[0].getManager(), typeDeclarations[0].getLanguage());
 		myProject = project;
@@ -197,7 +192,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	}
 
 	@Override
-	public <T> T getUserData(@Nonnull Key<T> key)
+	public <T> T getUserData(Key<T> key)
 	{
 		if(key == ModuleUtilCore.KEY_MODULE)
 		{
@@ -228,7 +223,6 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
@@ -279,7 +273,6 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
@@ -316,7 +309,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 
 	@RequiredReadAction
 	@Override
-	public boolean isInheritor(@Nonnull String typeDeclaration, boolean b)
+	public boolean isInheritor(String typeDeclaration, boolean b)
 	{
 		for(CSharpTypeDeclaration declaration : myTypeDeclarations)
 		{
@@ -328,7 +321,6 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return false;
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	@Override
 	public DotNetTypeRef getTypeRefForEnumConstants()
@@ -366,7 +358,6 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
@@ -380,7 +371,6 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -394,7 +384,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		// composite type dont hold partial modifier
 		if(modifier == CSharpModifier.PARTIAL)
@@ -464,7 +454,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
+	public PsiElement setName(String name) throws IncorrectOperationException
 	{
 		for(CSharpTypeDeclaration typeDeclaration : myTypeDeclarations)
 		{
@@ -473,7 +463,6 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return this;
 	}
 
-	@Nonnull
 	public CSharpTypeDeclaration[] getTypeDeclarations()
 	{
 		return myTypeDeclarations;

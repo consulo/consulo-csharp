@@ -20,7 +20,6 @@ import consulo.csharp.api.localize.CSharpLocalize;
 import consulo.language.Language;
 import consulo.language.template.TemplateLanguage;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -35,7 +34,6 @@ public class CSharpPreprocessorLanguage extends Language implements TemplateLang
 		super("C#Preprocessor");
 	}
 
-	@Nonnull
     @Override
 	public LocalizeValue getDisplayName()
 	{

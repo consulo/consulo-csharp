@@ -32,24 +32,20 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 30.12.14
  */
 public class CastExpressionToTypeRef implements SyntheticIntentionAction {
-    @Nonnull
     protected final SmartPsiElementPointer<DotNetExpression> myExpressionPointer;
-    @Nonnull
     protected final DotNetTypeRef myExpectedTypeRef;
 
-    public CastExpressionToTypeRef(@Nonnull DotNetExpression expression, @Nonnull DotNetTypeRef expectedTypeRef) {
+    public CastExpressionToTypeRef(DotNetExpression expression, DotNetTypeRef expectedTypeRef) {
         myExpressionPointer = SmartPointerManager.getInstance(expression.getProject()).createSmartPsiElementPointer(expression);
         myExpectedTypeRef = expectedTypeRef;
     }
 
-    @Nonnull
     @Override
     @RequiredUIAccess
     public LocalizeValue getText() {
@@ -62,7 +58,7 @@ public class CastExpressionToTypeRef implements SyntheticIntentionAction {
 
     @Override
     @RequiredUIAccess
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
         if (myExpectedTypeRef == DotNetTypeRef.UNKNOWN_TYPE) {
             return false;
         }
@@ -79,7 +75,7 @@ public class CastExpressionToTypeRef implements SyntheticIntentionAction {
 
     @Override
     @RequiredUIAccess
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
         DotNetExpression element = myExpressionPointer.getElement();
         if (element == null) {
             return;

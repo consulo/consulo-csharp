@@ -25,8 +25,7 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import org.emonic.base.documentation.IDocumentation;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ public class CSharpCommentDocumentationResolver implements DotNetDocumentationRe
 {
 	@Nullable
 	@Override
-	public IDocumentation resolveDocumentation(@Nonnull List<VirtualFile> virtualFile, @Nonnull PsiElement element)
+	public IDocumentation resolveDocumentation(List<VirtualFile> virtualFile, PsiElement element)
 	{
 		if(!(element instanceof DotNetQualifiedElement))
 		{

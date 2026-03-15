@@ -20,7 +20,6 @@ import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
 import consulo.csharp.lang.impl.psi.source.AdvancedCompositePsiElement;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -33,7 +32,6 @@ public class CSharpDocText extends AdvancedCompositePsiElement
 		super(type);
 	}
 
-	@Nonnull
 	public String getInnerText()
 	{
 		StringBuilder builder = new StringBuilder();

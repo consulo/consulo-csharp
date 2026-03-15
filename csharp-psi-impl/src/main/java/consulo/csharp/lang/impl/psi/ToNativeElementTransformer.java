@@ -21,8 +21,7 @@ import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ExtensionAPI;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -33,5 +32,5 @@ public interface ToNativeElementTransformer
 {
 	@Nullable
 	@RequiredReadAction
-	PsiElement transform(@Nonnull PsiElement element);
+	PsiElement transform(PsiElement element);
 }

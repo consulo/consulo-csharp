@@ -31,9 +31,8 @@ import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.util.lang.BitUtil;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -41,18 +40,18 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CSharpIndexMethodDeclStub> implements CSharpIndexMethodDeclaration
 {
-	public CSharpIndexMethodDeclarationImpl(@Nonnull ASTNode node)
+	public CSharpIndexMethodDeclarationImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpIndexMethodDeclarationImpl(@Nonnull CSharpIndexMethodDeclStub stub)
+	public CSharpIndexMethodDeclarationImpl(CSharpIndexMethodDeclStub stub)
 	{
 		super(stub, CSharpStubElements.INDEX_METHOD_DECLARATION);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitIndexMethodDeclaration(this);
 	}
@@ -71,7 +70,6 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpCodeBodyProxy getCodeBlock()
 	{
@@ -83,7 +81,6 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetXAccessor[] getAccessors()
 	{
@@ -91,7 +88,6 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetType getReturnType()
 	{
@@ -99,7 +95,6 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -108,7 +103,6 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
@@ -116,7 +110,6 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -130,7 +123,6 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 		return getStubOrPsiChild(CSharpStubElements.PARAMETER_LIST);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
@@ -138,7 +130,6 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 		return parameterList == null ? DotNetParameter.EMPTY_ARRAY : parameterList.getParameters();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
@@ -171,7 +162,6 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
@@ -191,7 +181,6 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 1);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
@@ -221,10 +210,10 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
-			@Nonnull ResolveState state,
+	public boolean processDeclarations(PsiScopeProcessor processor,
+			ResolveState state,
 			PsiElement lastParent,
-			@Nonnull PsiElement place)
+			PsiElement place)
 	{
 		return CSharpLikeMethodDeclarationImplUtil.processDeclarations(this, processor, state, lastParent, place);
 	}

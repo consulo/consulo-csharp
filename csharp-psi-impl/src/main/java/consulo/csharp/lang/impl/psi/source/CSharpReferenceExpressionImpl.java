@@ -32,8 +32,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiReference;
 import consulo.language.util.IncorrectOperationException;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -41,7 +40,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implements CSharpReferenceExpressionEx
 {
-	public CSharpReferenceExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpReferenceExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -61,7 +60,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitReferenceExpression(this);
 	}
@@ -105,7 +104,6 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 		return CSharpReferenceExpressionImplUtil.getRangeInElement(this);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public ResolveResult[] multiResolve(final boolean incompleteCode)
@@ -115,7 +113,6 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	public ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent)
 	{
 		return CSharpReferenceExpressionImplUtil.multiResolve(this, incompleteCode, resolveFromParent);
@@ -123,16 +120,14 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	public ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent)
 	{
 		return CSharpReferenceExpressionImplUtil.multiResolveImpl(kind, CSharpReferenceExpressionImplUtil.findCallArgumentListOwner(kind, this), this, resolveFromParent);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public ResolveResult[] tryResolveFromQualifier(@Nonnull PsiElement element)
+	public ResolveResult[] tryResolveFromQualifier(PsiElement element)
 	{
 		return CSharpReferenceExpressionImplUtil.tryResolveFromQualifier(this, element);
 	}
@@ -147,7 +142,6 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	public ResolveToKind kind()
 	{
 		return CSharpReferenceExpressionImplUtil.kind(this);
@@ -162,7 +156,6 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getTypeArgumentListRefs()
 	{
@@ -170,7 +163,6 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 		return typeArgumentList == null ? DotNetTypeRef.EMPTY_ARRAY : typeArgumentList.getTypeRefs();
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public String getCanonicalText()
@@ -191,7 +183,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
+	public PsiElement bindToElement(PsiElement element) throws IncorrectOperationException
 	{
 		return CSharpReferenceExpressionImplUtil.bindToElement(this, element);
 	}
@@ -226,7 +218,6 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 		return findPsiChildByType(CSharpReferenceExpressionImplUtil.ourAccessTokens);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public AccessType getMemberAccessType()
@@ -256,7 +247,6 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 		return AccessType.DOT;
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
@@ -266,7 +256,6 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	public DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent)
 	{
 		return CSharpReferenceExpressionImplUtil.toTypeRefWithoutCaching(this, kind, resolveFromParent);

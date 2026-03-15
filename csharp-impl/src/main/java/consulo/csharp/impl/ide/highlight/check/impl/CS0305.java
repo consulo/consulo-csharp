@@ -16,7 +16,7 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
@@ -28,7 +28,6 @@ import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpReferenceExpressionImplUtil;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -39,7 +38,7 @@ public class CS0305 extends CompilerCheck<CSharpReferenceExpression>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpReferenceExpression referenceExpression)
+	public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpReferenceExpression referenceExpression)
 	{
 		if(referenceExpression.getParent() instanceof CSharpMethodCallExpressionImpl)
 		{

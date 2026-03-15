@@ -39,8 +39,7 @@ import consulo.language.editor.rawHighlight.HighlightInfoType;
 import consulo.language.psi.PsiElement;
 import consulo.util.lang.ref.SimpleReference;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -51,7 +50,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@Nonnull final CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull PsiElement element)
+	public CompilerCheckBuilder checkImpl(final CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, PsiElement element)
 	{
 		final SimpleReference<CompilerCheckBuilder> ref = SimpleReference.create();
 		element.accept(new CSharpElementVisitor()

@@ -30,19 +30,17 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.scope.LocalSearchScope;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
  * @since 2019-10-01
  */
 public class CSharpLocalMethodDeclarationImpl extends CSharpMemberImpl implements CSharpMethodDeclaration {
-    public CSharpLocalMethodDeclarationImpl(@Nonnull IElementType elementType) {
+    public CSharpLocalMethodDeclarationImpl(IElementType elementType) {
         super(elementType);
     }
 
-    @Nonnull
     @Override
     public SearchScope getUseScope() {
         return new LocalSearchScope(getParent().getParent());
@@ -84,21 +82,19 @@ public class CSharpLocalMethodDeclarationImpl extends CSharpMemberImpl implement
         return null;
     }
 
-    @Nonnull
     @Override
     public CSharpGenericConstraint[] getGenericConstraints() {
         return CSharpGenericConstraint.EMPTY_ARRAY;
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     public CSharpSimpleParameterInfo[] getParameterInfos() {
         return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
     }
 
     @Override
-    public void accept(@Nonnull CSharpElementVisitor visitor) {
+    public void accept(CSharpElementVisitor visitor) {
         visitor.visitMethodDeclaration(this);
     }
 
@@ -110,14 +106,12 @@ public class CSharpLocalMethodDeclarationImpl extends CSharpMemberImpl implement
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     public DotNetTypeRef getReturnTypeRef() {
         DotNetType returnType = getReturnType();
         return returnType == null ? DotNetTypeRef.ERROR_TYPE : returnType.toTypeRef();
     }
 
-    @Nonnull
     @Override
     public CSharpCodeBodyProxyImpl getCodeBlock() {
         return CSharpStubLikeMethodDeclarationImpl.getCodeBlockElement(this);
@@ -130,7 +124,6 @@ public class CSharpLocalMethodDeclarationImpl extends CSharpMemberImpl implement
         return findChildByClass(DotNetGenericParameterList.class);
     }
 
-    @Nonnull
     @Override
     public DotNetGenericParameter[] getGenericParameters() {
         DotNetGenericParameterList genericParameterList = getGenericParameterList();
@@ -149,14 +142,12 @@ public class CSharpLocalMethodDeclarationImpl extends CSharpMemberImpl implement
         return findChildByClass(DotNetParameterList.class);
     }
 
-    @Nonnull
     @Override
     public DotNetParameter[] getParameters() {
         DotNetParameterList parameterList = getParameterList();
         return parameterList == null ? DotNetParameter.EMPTY_ARRAY : parameterList.getParameters();
     }
 
-    @Nonnull
     @Override
     public DotNetTypeRef[] getParameterTypeRefs() {
         DotNetParameterList parameterList = getParameterList();
@@ -183,14 +174,13 @@ public class CSharpLocalMethodDeclarationImpl extends CSharpMemberImpl implement
         return null;
     }
 
-    @Nonnull
     @Override
     public DotNetTypeRef getTypeRefForImplement() {
         return DotNetTypeRef.ERROR_TYPE;
     }
 
     @Override
-    public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place) {
+    public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place) {
         return CSharpLikeMethodDeclarationImplUtil.processDeclarations(this, processor, state, lastParent, place);
     }
 }

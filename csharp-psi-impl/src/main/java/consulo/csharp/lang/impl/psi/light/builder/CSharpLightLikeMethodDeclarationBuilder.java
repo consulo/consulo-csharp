@@ -29,8 +29,7 @@ import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,7 +54,6 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
 		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
@@ -76,7 +74,6 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -84,7 +81,6 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpCodeBodyProxy getCodeBlock()
 	{
@@ -98,7 +94,6 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
@@ -111,7 +106,6 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return myGenericParameters.size();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
@@ -132,7 +126,6 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
@@ -166,20 +159,18 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement
 			place)
 	{
 		return CSharpLikeMethodDeclarationImplUtil.processDeclarations(this, processor, state, lastParent, place);
 	}
 
-	@Nonnull
 	public T withReturnType(DotNetTypeRef type)
 	{
 		myReturnType = type;
 		return (T) this;
 	}
 
-	@Nonnull
 	public T withParentQName(String parentQName)
 	{
 		myParentQName = parentQName;
@@ -202,7 +193,6 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return (T) this;
 	}
 
-	@Nonnull
 	public T addParameter(DotNetParameter parameter)
 	{
 		if(myParameters.isEmpty())

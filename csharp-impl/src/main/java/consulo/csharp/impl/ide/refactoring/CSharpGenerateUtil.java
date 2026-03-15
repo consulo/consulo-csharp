@@ -18,7 +18,6 @@ package consulo.csharp.impl.ide.refactoring;
 
 import consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import consulo.csharp.lang.psi.CSharpTokens;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -26,7 +25,7 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpGenerateUtil
 {
-	public static void normalizeBraces(@Nonnull CSharpBodyWithBraces targetForGenerate)
+	public static void normalizeBraces(CSharpBodyWithBraces targetForGenerate)
 	{
 		if(targetForGenerate.getLeftBrace() == null)
 		{

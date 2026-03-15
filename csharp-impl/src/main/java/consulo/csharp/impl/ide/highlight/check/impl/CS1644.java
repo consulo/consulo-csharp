@@ -47,8 +47,7 @@ import consulo.module.content.ModuleRootManager;
 import consulo.module.content.layer.ModifiableRootModel;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +68,7 @@ public class CS1644 extends CompilerCheck<PsiElement> {
 
         @Override
         @RequiredWriteAction
-        public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException {
+        public void invoke(Project project, Editor editor, PsiElement element) throws IncorrectOperationException {
             CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);
             if (extension == null || !extension.isSupportedLanguageVersion(myLanguageVersion)) {
                 return;
@@ -88,7 +87,7 @@ public class CS1644 extends CompilerCheck<PsiElement> {
 
         @Override
         @RequiredUIAccess
-        public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) {
+        public boolean isAvailable(Project project, Editor editor, PsiElement element) {
             CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);
             return extension != null && extension.isSupportedLanguageVersion(myLanguageVersion) && extension.getLanguageVersion()
                 .ordinal() < myLanguageVersion.ordinal();
@@ -319,9 +318,9 @@ public class CS1644 extends CompilerCheck<PsiElement> {
     @RequiredReadAction
     @Nullable
     @Override
-    public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                          @Nonnull CSharpHighlightContext highlightContext,
-                                          @Nonnull PsiElement element) {
+    public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion,
+                                          CSharpHighlightContext highlightContext,
+                                          PsiElement element) {
         for (Feature feature : myFeatures) {
             if (languageVersion.ordinal() < feature.myLanguageVersion.ordinal()) {
                 PsiElement fun = feature.myFunc.apply(element);

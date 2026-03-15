@@ -24,7 +24,6 @@ import consulo.language.psi.PsiReference;
 import consulo.language.psi.search.ReferencesSearch;
 import consulo.language.psi.search.ReferencesSearchQueryExecutor;
 import consulo.project.util.query.QueryExecutorBase;
-import jakarta.annotation.Nonnull;
 
 import java.util.function.Predicate;
 
@@ -35,7 +34,7 @@ import java.util.function.Predicate;
 @ExtensionImpl
 public class AdditionalReferenceSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> implements ReferencesSearchQueryExecutor {
     @Override
-    public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Predicate<? super PsiReference> consumer) {
+    public void processQuery(ReferencesSearch.SearchParameters queryParameters, Predicate<? super PsiReference> consumer) {
         PsiElement elementToSearch = queryParameters.getElementToSearch();
 
         PsiElement declaration = elementToSearch.getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER);

@@ -25,7 +25,6 @@ import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.language.editor.action.CodeInsightActionHandler;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,7 @@ public class GeneratePropertyAction extends CSharpGenerateAction
 
 	@Override
 	@RequiredReadAction
-	protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file)
+	protected boolean isValidForFile(Project project, Editor editor, PsiFile file)
 	{
 		CSharpTypeDeclaration typeDeclaration = findTypeDeclaration(editor, file);
 

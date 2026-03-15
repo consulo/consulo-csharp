@@ -19,8 +19,7 @@ package consulo.csharp.lang.psi;
 import consulo.dotnet.psi.DotNetConstructorDeclaration;
 import consulo.language.psi.PsiNameIdentifierOwner;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -34,7 +33,6 @@ public interface CSharpConstructorDeclaration extends DotNetConstructorDeclarati
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	CSharpCodeBodyProxy getCodeBlock();
 }

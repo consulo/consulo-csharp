@@ -21,7 +21,6 @@ import consulo.language.file.LanguageFileType;
 import consulo.language.template.TemplateLanguageFileType;
 import consulo.localize.LocalizeValue;
 import consulo.ui.image.Image;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -39,28 +38,24 @@ public class CSharpFileType extends LanguageFileType implements TemplateLanguage
 		super(CSharpLanguage.INSTANCE);
 	}
 
-	@Nonnull
 	@Override
 	public String getId()
 	{
 		return "C#";
 	}
 
-	@Nonnull
 	@Override
 	public LocalizeValue getDescription()
 	{
 		return LocalizeValue.localizeTODO("C# files");
 	}
 
-	@Nonnull
 	@Override
 	public String getDefaultExtension()
 	{
 		return EXTENSION;
 	}
 
-	@Nonnull
 	@Override
 	public Image getIcon()
 	{

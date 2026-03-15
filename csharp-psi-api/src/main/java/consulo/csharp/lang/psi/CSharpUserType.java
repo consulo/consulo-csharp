@@ -17,7 +17,6 @@
 package consulo.csharp.lang.psi;
 
 import consulo.dotnet.psi.DotNetUserType;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -26,6 +25,5 @@ import jakarta.annotation.Nonnull;
 public interface CSharpUserType extends DotNetUserType
 {
 	@Override
-	@Nonnull
 	CSharpReferenceExpression getReferenceExpression();
 }

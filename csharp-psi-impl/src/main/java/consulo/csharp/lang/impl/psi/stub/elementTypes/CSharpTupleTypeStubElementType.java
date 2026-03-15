@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.EmptyStub;
@@ -34,15 +33,14 @@ public class CSharpTupleTypeStubElementType extends CSharpEmptyStubElementType<C
 		super("TUPLE_TYPE");
 	}
 
-	@Nonnull
 	@Override
-	public CSharpTupleType createElement(@Nonnull ASTNode astNode)
+	public CSharpTupleType createElement(ASTNode astNode)
 	{
 		return new CSharpStubTupleTypeImpl(astNode);
 	}
 
 	@Override
-	public CSharpTupleType createPsi(@Nonnull EmptyStub<CSharpTupleType> stub)
+	public CSharpTupleType createPsi(EmptyStub<CSharpTupleType> stub)
 	{
 		return new CSharpStubTupleTypeImpl(stub, this);
 	}

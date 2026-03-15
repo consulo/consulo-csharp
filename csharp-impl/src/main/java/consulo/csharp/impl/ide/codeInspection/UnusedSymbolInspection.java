@@ -19,7 +19,6 @@ package consulo.csharp.impl.ide.codeInspection;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -29,25 +28,21 @@ import jakarta.annotation.Nonnull;
 public class UnusedSymbolInspection extends CSharpGeneralLocalInspection {
     public static final String ID = "CSharpUnusedSymbol";
 
-    @Nonnull
     @Override
     public String getID() {
         return ID;
     }
 
-    @Nonnull
     @Override
     public String getShortName() {
         return ID;
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getDisplayName() {
         return LocalizeValue.localizeTODO("Unused Symbols");
     }
 
-    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WARNING;

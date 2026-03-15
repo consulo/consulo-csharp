@@ -28,9 +28,8 @@ import consulo.csharp.lang.impl.psi.stub.CSharpMethodDeclStub;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.ASTNode;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -39,12 +38,12 @@ import jakarta.annotation.Nullable;
 public class CSharpConversionMethodDeclarationImpl extends CSharpStubLikeMethodDeclarationImpl<CSharpMethodDeclStub> implements
 		CSharpConversionMethodDeclaration, CSharpSimpleLikeMethodAsElement
 {
-	public CSharpConversionMethodDeclarationImpl(@Nonnull ASTNode node)
+	public CSharpConversionMethodDeclarationImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpConversionMethodDeclarationImpl(@Nonnull CSharpMethodDeclStub stub)
+	public CSharpConversionMethodDeclarationImpl(CSharpMethodDeclStub stub)
 	{
 		super(stub, CSharpStubElements.CONVERSION_METHOD_DECLARATION);
 	}
@@ -84,7 +83,6 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpStubLikeMethodD
 		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 1);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getConversionTypeRef()
 	{
@@ -107,7 +105,7 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpStubLikeMethodD
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitConversionMethodDeclaration(this);
 	}

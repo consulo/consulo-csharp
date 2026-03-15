@@ -30,7 +30,6 @@ import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -44,7 +43,7 @@ public abstract class AddXModifierFix extends PsiElementBaseIntentionAction {
   }
 
   @Override
-  public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException {
+  public void invoke(Project project, Editor editor, PsiElement element) throws IncorrectOperationException {
     DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
     if (owner == null || !owner.isWritable()) {
       return;
@@ -72,7 +71,7 @@ public abstract class AddXModifierFix extends PsiElementBaseIntentionAction {
 
   @Override
   @RequiredUIAccess
-  public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) {
+  public boolean isAvailable(Project project, Editor editor, PsiElement element) {
     DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
     return owner != null && !hasModifiers(owner) && isAllow(owner, myModifiers) && owner.isWritable();
   }
@@ -87,7 +86,6 @@ public abstract class AddXModifierFix extends PsiElementBaseIntentionAction {
     return true;
   }
 
-  @Nonnull
   @Override
   public LocalizeValue getText() {
     return LocalizeValue.localizeTODO("Make " + StringUtil.join(myModifiers, modifier -> modifier.getPresentableText(), " "));

@@ -55,8 +55,7 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ArrayUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -120,19 +119,19 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 
 	protected final String myDialogTitle;
 
-	public CSharpIntroduceHandler(@Nonnull final String dialogTitle)
+	public CSharpIntroduceHandler(final String dialogTitle)
 	{
 		myDialogTitle = dialogTitle;
 	}
 
 	@Override
-	public void invoke(@Nonnull Project project, Editor editor, PsiFile file, DataContext dataContext)
+	public void invoke(Project project, Editor editor, PsiFile file, DataContext dataContext)
 	{
 		performAction(new CSharpIntroduceOperation(project, editor, file, null));
 	}
 
 	@Override
-	public void invoke(@Nonnull Project project, @Nonnull PsiElement[] elements, DataContext dataContext)
+	public void invoke(Project project, PsiElement[] elements, DataContext dataContext)
 	{
 	}
 
@@ -348,9 +347,8 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		performActionOnElementOccurrences(operation);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	protected Collection<String> getSuggestedNames(@Nonnull DotNetExpression initializer)
+	protected Collection<String> getSuggestedNames(DotNetExpression initializer)
 	{
 		return CSharpNameSuggesterUtil.getSuggestedNames(initializer);
 	}
@@ -400,7 +398,7 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		}
 	}
 
-	protected List<PsiElement> getOccurrences(PsiElement element, @Nonnull final DotNetExpression expression)
+	protected List<PsiElement> getOccurrences(PsiElement element, final DotNetExpression expression)
 	{
 		PsiElement context = PsiTreeUtil.getParentOfType(element, DotNetCodeBlockOwner.class);
 		if(context == null)
@@ -450,11 +448,10 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		introducer.performInplaceRefactoring(new LinkedHashSet<String>(operation.getSuggestedNames()));
 	}
 
-	@Nonnull
 	protected abstract InplaceVariableIntroducer<PsiElement> createVariableIntroducer(CSharpLocalVariable target, CSharpIntroduceOperation operation, List<PsiElement> occurrences);
 
 	@Nullable
-	protected PsiElement performRefactoring(@Nonnull CSharpIntroduceOperation operation)
+	protected PsiElement performRefactoring(CSharpIntroduceOperation operation)
 	{
 		PsiElement anchor = operation.isReplaceAll() ? findAnchor(operation.getOccurrences()) : findAnchor(operation.getInitializer());
 		if(anchor == null)
@@ -490,13 +487,12 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		return CSharpFileFactory.createStatement(project, assignmentText.trim());
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	protected abstract String getDeclarationString(CSharpIntroduceOperation operation, String initExpression);
 
 	@Nullable
 	@RequiredUIAccess
-	private PsiElement performReplace(@Nonnull final PsiElement declaration, final CSharpIntroduceOperation operation)
+	private PsiElement performReplace(final PsiElement declaration, final CSharpIntroduceOperation operation)
 	{
 		final DotNetExpression initializer = operation.getInitializer();
 		final Project project = operation.getProject();
@@ -562,14 +558,14 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		return pointer == null ? null : pointer.getElement();
 	}
 
-	protected PsiElement modifyDeclaration(@Nonnull PsiElement declaration)
+	protected PsiElement modifyDeclaration(PsiElement declaration)
 	{
 		PsiElement parent = declaration.getParent();
 		parent.addAfter(PsiParserFacade.SERVICE.getInstance(declaration.getProject()).createWhiteSpaceFromText("\n"), declaration);
 		return declaration;
 	}
 
-	private boolean isNeedReferenceOfVariable(@Nonnull DotNetExpression expression)
+	private boolean isNeedReferenceOfVariable(DotNetExpression expression)
 	{
 		PsiElement parent = expression.getParent();
 		if(parent instanceof CSharpExpressionStatementImpl)

@@ -20,8 +20,7 @@ import consulo.annotation.DeprecationInfo;
 import consulo.dotnet.psi.DotNetCallArgumentListOwner;
 import consulo.dotnet.psi.DotNetExpression;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,12 +34,10 @@ public interface CSharpCallArgumentListOwner extends DotNetCallArgumentListOwner
 	}
 
 	@Override
-	@Nonnull
 	@Deprecated
 	@DeprecationInfo("Use #getCallArguments() due we can have named arguments")
 	DotNetExpression[] getParameterExpressions();
 
-	@Nonnull
 	CSharpCallArgument[] getCallArguments();
 
 	@Override

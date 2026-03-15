@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.source;
 
 import consulo.language.ast.IElementType;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -26,13 +25,13 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpLinqWhereClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqWhereClauseImpl(@Nonnull IElementType elementType)
+	public CSharpLinqWhereClauseImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqWhereClause(this);
 	}

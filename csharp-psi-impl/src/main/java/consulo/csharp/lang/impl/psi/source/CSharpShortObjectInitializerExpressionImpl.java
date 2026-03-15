@@ -24,8 +24,7 @@ import consulo.csharp.lang.psi.CSharpFieldOrPropertySetBlock;
 import consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,7 +34,7 @@ public class CSharpShortObjectInitializerExpressionImpl extends CSharpExpression
 {
 	private final ThreadLocal<Boolean> myTypeRefProcessing = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
-	public CSharpShortObjectInitializerExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpShortObjectInitializerExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -47,7 +46,6 @@ public class CSharpShortObjectInitializerExpressionImpl extends CSharpExpression
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -78,7 +76,7 @@ public class CSharpShortObjectInitializerExpressionImpl extends CSharpExpression
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitShortObjectInitializerExpression(this);
 	}

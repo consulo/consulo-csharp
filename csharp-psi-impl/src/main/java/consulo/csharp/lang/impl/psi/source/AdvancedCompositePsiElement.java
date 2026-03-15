@@ -23,8 +23,7 @@ import consulo.language.ast.TokenSet;
 import consulo.language.impl.psi.CompositePsiElement;
 import consulo.language.psi.PsiElement;
 import consulo.logging.Logger;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -49,13 +48,11 @@ public class AdvancedCompositePsiElement extends CompositePsiElement {
         return nodes == null || nodes.length == 0 ? null : nodes[0].getPsi();
     }
 
-    @Nonnull
     @RequiredReadAction
     protected PsiElement findNotNullChildByFilter(TokenSet tokenSet) {
         return notNullChild(findChildByFilter(tokenSet));
     }
 
-    @Nonnull
     @RequiredReadAction
     protected <T extends PsiElement> List<T> findChildrenByType(IElementType elementType) {
         List<T> result = Collections.EMPTY_LIST;
@@ -73,19 +70,16 @@ public class AdvancedCompositePsiElement extends CompositePsiElement {
     }
 
 
-    @Nonnull
     @RequiredReadAction
     protected PsiElement findNotNullChildByType(IElementType type) {
         return notNullChild(findPsiChildByType(type));
     }
 
-    @Nonnull
     @RequiredReadAction
     protected PsiElement findNotNullChildByType(TokenSet type) {
         return notNullChild(findPsiChildByType(type));
     }
 
-    @Nonnull
     @RequiredReadAction
     protected <T> T notNullChild(T child) {
         if (child == null) {
@@ -94,7 +88,6 @@ public class AdvancedCompositePsiElement extends CompositePsiElement {
         return child;
     }
 
-    @Nonnull
     @RequiredReadAction
     protected <T> T[] findChildrenByClass(Class<T> aClass) {
         List<T> result = new ArrayList<>();
@@ -117,7 +110,6 @@ public class AdvancedCompositePsiElement extends CompositePsiElement {
         return null;
     }
 
-    @Nonnull
     @RequiredReadAction
     protected <T> T findNotNullChildByClass(Class<T> aClass) {
         return notNullChild(findChildByClass(aClass));

@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.stub.index;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -36,7 +35,6 @@ public class DelegateMethodIndex extends StringStubIndexExtension<CSharpMethodDe
 		return StubIndexExtension.EP_NAME.findExtension(DelegateMethodIndex.class);
 	}
 
-	@Nonnull
 	@Override
 	public StubIndexKey<String, CSharpMethodDeclaration> getKey()
 	{

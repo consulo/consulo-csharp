@@ -50,7 +50,6 @@ import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.Pair;
 import consulo.virtualFileSystem.fileType.FileType;
-import jakarta.annotation.Nonnull;
 
 import java.util.function.Predicate;
 
@@ -138,7 +137,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 
 	@Override
 	@RequiredUIAccess
-	public Result charTyped(char c, Project project, Editor editor, @Nonnull PsiFile file)
+	public Result charTyped(char c, Project project, Editor editor, PsiFile file)
 	{
 		if(c == '/')
 		{
@@ -193,7 +192,6 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 		return Result.CONTINUE;
 	}
 
-	@Nonnull
 	@RequiredUIAccess
 	private static Pair<CharSequence, Integer> buildDocComment(DotNetQualifiedElement qualifiedElement, Editor editor, int offset)
 	{

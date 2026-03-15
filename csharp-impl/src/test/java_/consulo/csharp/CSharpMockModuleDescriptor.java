@@ -18,7 +18,6 @@ package consulo.csharp;
 
 import java.io.File;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.content.bundle.Sdk;
 import consulo.content.library.LibraryTable;
@@ -35,7 +34,7 @@ import consulo.roots.types.BinariesOrderRootType;
 import consulo.testFramework.util.TestPathUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -58,12 +57,12 @@ public class CSharpMockModuleDescriptor implements TestModuleDescriptor
 	}
 
 	@Override
-	public void configureSdk(@Nonnull Consumer<Sdk> consumer)
+	public void configureSdk(Consumer<Sdk> consumer)
 	{
 	}
 
 	@Override
-	public void configureModule(@Nonnull Module module, @Nonnull ModifiableRootModel modifiableRootModel, @Nonnull ContentEntry contentEntry)
+	public void configureModule(Module module, ModifiableRootModel modifiableRootModel, ContentEntry contentEntry)
 	{
 		DotNetSimpleMutableModuleExtension<?> extension = modifiableRootModel.getExtensionWithoutCheck("mono-dotnet");
 		assert extension != null;

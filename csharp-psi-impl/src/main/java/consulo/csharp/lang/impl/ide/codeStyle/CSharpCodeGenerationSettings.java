@@ -21,7 +21,6 @@ import consulo.language.codeStyle.CodeStyleSettingsManager;
 import consulo.language.codeStyle.CustomCodeStyleSettings;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -29,8 +28,7 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpCodeGenerationSettings extends CustomCodeStyleSettings
 {
-	@Nonnull
-	public static CSharpCodeGenerationSettings getInstance(@Nonnull Project project)
+	public static CSharpCodeGenerationSettings getInstance(Project project)
 	{
 		CodeStyleSettingsManager codeStyleSettingsManager = CodeStyleSettingsManager.getInstance(project);
 		return codeStyleSettingsManager.getCurrentSettings().getCustomSettings(CSharpCodeGenerationSettings.class);

@@ -26,8 +26,7 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.wrapper.CSharpTupleTypeD
 import consulo.dotnet.psi.DotNetType;
 import consulo.language.psi.resolve.ResolveState;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,13 +34,13 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpTupleVariableImpl extends CSharpVariableImpl implements CSharpTupleVariable
 {
-	public CSharpTupleVariableImpl(@Nonnull IElementType elementType)
+	public CSharpTupleVariableImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitTupleVariable(this);
 	}
@@ -66,7 +65,7 @@ public class CSharpTupleVariableImpl extends CSharpVariableImpl implements CShar
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		if(!processor.execute(this, state))
 		{

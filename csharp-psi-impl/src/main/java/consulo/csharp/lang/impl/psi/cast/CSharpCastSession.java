@@ -21,8 +21,7 @@ import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.util.lang.Pair;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Closeable;
 import java.util.*;
@@ -34,14 +33,12 @@ import java.util.*;
 public class CSharpCastSession implements Closeable {
     private static final ThreadLocal<CSharpCastSession> ourSession = ThreadLocal.withInitial(CSharpCastSession::new);
 
-    @Nonnull
-    public static CSharpCastSession start(@Nonnull Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> implicitCast) {
+    public static CSharpCastSession start(Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> implicitCast) {
         CSharpCastSession session = get();
         session.myServiceImplicitMap = Collections.unmodifiableMap(implicitCast);
         return session;
     }
 
-    @Nonnull
     public static CSharpCastSession get() {
         return Objects.requireNonNull(ourSession.get());
     }
@@ -52,7 +49,7 @@ public class CSharpCastSession implements Closeable {
 
     private Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> myNewImplicitMap = new HashMap<>();
 
-    public boolean mark(@Nonnull DotNetTypeRef top, @Nonnull DotNetTypeRef target, @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo) {
+    public boolean mark(DotNetTypeRef top, DotNetTypeRef target, @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo) {
         CSharpInheritKey key = new CSharpInheritKey(top, target, castResolvingInfo);
         return myVisited.add(key);
     }
@@ -71,7 +68,7 @@ public class CSharpCastSession implements Closeable {
         return myNewImplicitMap.get(key);
     }
 
-    public void storeImplicit(@Nonnull Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> serviceImplicitMap) {
+    public void storeImplicit(Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> serviceImplicitMap) {
         serviceImplicitMap.putAll(myNewImplicitMap);
     }
 

@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.impl.parser.exp;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.csharp.lang.impl.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.impl.parser.ModifierSet;
 import consulo.csharp.lang.impl.parser.SharedParsingHelpers;
@@ -94,8 +94,7 @@ public class LinqParsing extends SharedParsingHelpers
 		}
 	}
 
-	@Nullable
-	private static PsiBuilder.Marker parseFromClause(final CSharpBuilderWrapper builder, boolean rollback, ModifierSet set)
+	private static PsiBuilder.@Nullable Marker parseFromClause(final CSharpBuilderWrapper builder, boolean rollback, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -176,8 +175,7 @@ public class LinqParsing extends SharedParsingHelpers
 		}
 	}
 
-	@Nullable
-	private static PsiBuilder.Marker parseQueryBodyClause(CSharpBuilderWrapper builder, ModifierSet set)
+	private static PsiBuilder.@Nullable Marker parseQueryBodyClause(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		IElementType tokenType = builder.getTokenType();
 		if(tokenType == FROM_KEYWORD)
@@ -203,8 +201,7 @@ public class LinqParsing extends SharedParsingHelpers
 		return null;
 	}
 
-	@Nullable
-	private static PsiBuilder.Marker parseJoinClause(final CSharpBuilderWrapper builder, ModifierSet set)
+	private static PsiBuilder.@Nullable Marker parseJoinClause(final CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 

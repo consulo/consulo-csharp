@@ -36,7 +36,6 @@ import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -45,25 +44,23 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class UnnecessaryEnumUnderlyingTypeInspection extends CSharpGeneralLocalInspection {
     private static class RemoveFix extends LocalQuickFixOnPsiElement {
-        protected RemoveFix(@Nonnull PsiElement element) {
+        protected RemoveFix(PsiElement element) {
             super(element);
         }
 
-        @Nonnull
         @Override
         public LocalizeValue getText() {
             return LocalizeValue.localizeTODO("Remove underlying type");
         }
 
         @Override
-        public void invoke(@Nonnull Project project, @Nonnull PsiFile psiFile, @Nonnull PsiElement psiElement, @Nonnull PsiElement psiElement1) {
+        public void invoke(Project project, PsiFile psiFile, PsiElement psiElement, PsiElement psiElement1) {
             psiElement.delete();
         }
     }
 
-    @Nonnull
     @Override
-    public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly) {
+    public PsiElementVisitor buildVisitor(ProblemsHolder holder, boolean isOnTheFly) {
         return new CSharpElementVisitor() {
             @Override
             @RequiredReadAction
@@ -89,13 +86,11 @@ public class UnnecessaryEnumUnderlyingTypeInspection extends CSharpGeneralLocalI
         };
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getDisplayName() {
         return LocalizeValue.localizeTODO("Unnecessary enum underlying type");
     }
 
-    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WARNING;

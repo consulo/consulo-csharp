@@ -23,8 +23,7 @@ import consulo.module.extension.ModuleExtension;
 import consulo.module.extension.ModuleInheritableNamedPointer;
 import consulo.virtualFileSystem.VirtualFile;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -36,14 +35,12 @@ public interface CSharpModuleExtension<T extends ModuleExtension<T>> extends CSh
 
 	boolean isOptimizeCode();
 
-	@Nonnull
 	CSharpPlatform getPlatform();
 
 	@Nullable
 	String getCompilerTarget();
 
-	@Nonnull
 	ModuleInheritableNamedPointer<Sdk> getCustomCompilerSdkPointer();
 
-	void setCompilerExecutable(@Nonnull DotNetCompilerOptionsBuilder builder, @Nonnull VirtualFile executable);
+	void setCompilerExecutable(DotNetCompilerOptionsBuilder builder, VirtualFile executable);
 }

@@ -29,7 +29,6 @@ import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.localize.LocalizeValue;
 
-import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -40,7 +39,6 @@ import java.util.Collections;
 @ExtensionImpl
 public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideMemberHandler implements ImplementMethodHandler
 {
-	@Nonnull
 	@Override
 	public LocalizeValue getTitle()
 	{
@@ -49,7 +47,7 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 
 	@RequiredReadAction
 	@Override
-	public void appendAdditionalModifiers(@Nonnull StringBuilder builder, @Nonnull PsiElement item)
+	public void appendAdditionalModifiers(StringBuilder builder, PsiElement item)
 	{
 		CSharpModifier requiredOverrideModifier = OverrideUtil.getRequiredOverrideModifier((DotNetModifierListOwner) item);
 		if(requiredOverrideModifier != null)
@@ -60,13 +58,13 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 
 	@RequiredReadAction
 	@Override
-	public void appendReturnStatement(@Nonnull StringBuilder builder, @Nonnull PsiElement item)
+	public void appendReturnStatement(StringBuilder builder, PsiElement item)
 	{
 		generateReturn(builder, item);
 	}
 
 	@RequiredReadAction
-	public static void generateReturn(@Nonnull StringBuilder builder, @Nonnull PsiElement item)
+	public static void generateReturn(StringBuilder builder, PsiElement item)
 	{
 		if(item instanceof CSharpMethodDeclaration)
 		{
@@ -91,7 +89,7 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 	}
 
 	@RequiredReadAction
-	private static void generateReturnForTypeRef(@Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement item)
+	private static void generateReturnForTypeRef(StringBuilder builder, DotNetTypeRef typeRef, PsiElement item)
 	{
 		String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(typeRef);
 		if(defaultValueForType != null)
@@ -101,9 +99,8 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public Collection<DotNetModifierListOwner> getItems(@Nonnull CSharpTypeDeclaration typeDeclaration)
+	public Collection<DotNetModifierListOwner> getItems(CSharpTypeDeclaration typeDeclaration)
 	{
 		if(typeDeclaration.isInterface())
 		{

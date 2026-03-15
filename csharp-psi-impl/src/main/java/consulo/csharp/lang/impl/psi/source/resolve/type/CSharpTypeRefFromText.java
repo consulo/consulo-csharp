@@ -26,7 +26,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.lang.lazy.LazyValue;
 
-import jakarta.annotation.Nonnull;
 import java.util.function.Supplier;
 
 /**
@@ -43,7 +42,6 @@ public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 		myDelegate = LazyValue.notNull(() -> getType(text, owner));
 	}
 
-	@Nonnull
 	private static DotNetType getType(String text, PsiElement owner)
 	{
 		CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(owner.getProject(), text, owner);
@@ -55,7 +53,6 @@ public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -63,7 +60,6 @@ public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getVmQName()
 	{

@@ -58,8 +58,7 @@ import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.MultiMap;
 import consulo.util.lang.function.PairFunction;
 import consulo.util.lang.ref.Ref;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Contract;
 
 import java.util.LinkedHashSet;
@@ -76,13 +75,13 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 	private static final DotNetStatement[] EMPTY_ARRAY = new DotNetStatement[0];
 
 	@Override
-	public void invoke(@Nonnull Project project, @Nonnull PsiElement[] elements, DataContext dataContext)
+	public void invoke(Project project, PsiElement[] elements, DataContext dataContext)
 	{
 	}
 
 	@Override
 	@RequiredUIAccess
-	public void invoke(@Nonnull final Project project, final Editor editor, final PsiFile file, DataContext dataContext)
+	public void invoke(final Project project, final Editor editor, final PsiFile file, DataContext dataContext)
 	{
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
 
@@ -270,7 +269,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 	}
 
 	@RequiredReadAction
-	public static CharSequence buildText(@Nonnull DotNetLikeMethodDeclaration methodDeclaration, DotNetStatement[] statements, @Nonnull String statementsText)
+	public static CharSequence buildText(DotNetLikeMethodDeclaration methodDeclaration, DotNetStatement[] statements, String statementsText)
 	{
 		List<StubBlock> stubBlocks = CSharpStubBuilderVisitor.buildBlocks(methodDeclaration, false);
 		StringBuilder builder = (StringBuilder) StubBlockUtil.buildText(stubBlocks);
@@ -340,7 +339,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 
 	@Nullable
 	@Contract("null, _ -> null")
-	public static <T extends PsiElement> T getTopmostParentOfType(@Nullable PsiElement element, @Nonnull Class<T> aClass)
+	public static <T extends PsiElement> T getTopmostParentOfType(@Nullable PsiElement element, Class<T> aClass)
 	{
 		T answer = PsiTreeUtil.getParentOfType(element, aClass);
 

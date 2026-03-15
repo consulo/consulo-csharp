@@ -19,8 +19,7 @@ package consulo.csharp.lang.impl.psi.source.resolve.type;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -30,7 +29,7 @@ public interface CSharpFastImplicitTypeRef extends DotNetTypeRef
 {
 	@Nullable
 	@RequiredReadAction
-	DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another);
+	DotNetTypeRef doMirror(DotNetTypeRef another);
 
 	boolean isConversion();
 }

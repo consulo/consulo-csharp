@@ -18,7 +18,6 @@ package consulo.csharp.lang.psi;
 
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -26,9 +25,7 @@ import jakarta.annotation.Nonnull;
  */
 public interface CSharpLambdaParameterList extends DotNetElement
 {
-	@Nonnull
 	CSharpLambdaParameter[] getParameters();
 
-	@Nonnull
 	DotNetTypeRef[] getParameterTypeRefs();
 }

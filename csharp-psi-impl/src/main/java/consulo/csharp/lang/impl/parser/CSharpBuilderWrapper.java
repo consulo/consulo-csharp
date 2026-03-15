@@ -31,8 +31,7 @@ import consulo.language.parser.PsiBuilder;
 import consulo.language.parser.PsiBuilderAdapter;
 import consulo.language.version.LanguageVersion;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -70,7 +69,6 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		putUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES, variables == null ? Collections.<String>emptySet() : variables);
 	}
 
-	@Nonnull
 	public CSharpLanguageVersion getVersion()
 	{
 		if(myLanguageVersion instanceof CSharpLanguageVersionWrapper)
@@ -80,17 +78,17 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		throw new UnsupportedOperationException(myLanguageVersion.toString());
 	}
 
-	public void enableSoftKeywords(@Nonnull TokenSet tokenSet)
+	public void enableSoftKeywords(TokenSet tokenSet)
 	{
 		mySoftSet = TokenSet.orSet(mySoftSet, tokenSet);
 	}
 
-	public void disableSoftKeywords(@Nonnull TokenSet tokenSet)
+	public void disableSoftKeywords(TokenSet tokenSet)
 	{
 		mySoftSet = TokenSet.andNot(mySoftSet, tokenSet);
 	}
 
-	public boolean enableSoftKeyword(@Nonnull IElementType elementType)
+	public boolean enableSoftKeyword(IElementType elementType)
 	{
 		if(mySoftSet.contains(elementType))
 		{
@@ -100,12 +98,12 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		return true;
 	}
 
-	public void disableSoftKeyword(@Nonnull IElementType elementType)
+	public void disableSoftKeyword(IElementType elementType)
 	{
 		mySoftSet = TokenSet.andNot(mySoftSet, TokenSet.create(elementType));
 	}
 
-	public boolean isSoftKeyword(@Nonnull IElementType elementType)
+	public boolean isSoftKeyword(IElementType elementType)
 	{
 		IElementType tokenType = getTokenType();
 		if(tokenType == CSharpTokens.IDENTIFIER)

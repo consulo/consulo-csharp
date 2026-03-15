@@ -21,7 +21,6 @@ import consulo.language.psi.PsiElement;
 import consulo.util.dataholder.UserDataHolderBase;
 import consulo.util.lang.Comparing;
 
-import jakarta.annotation.Nonnull;
 import java.util.Collection;
 
 /**
@@ -32,27 +31,25 @@ public class MemberByNameSelector extends UserDataHolderBase implements CSharpNa
 {
 	private String myName;
 
-	public MemberByNameSelector(@Nonnull String name)
+	public MemberByNameSelector(String name)
 	{
 		myName = name;
 	}
 
-	@Nonnull
 	public String getName()
 	{
 		return myName;
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public Collection<PsiElement> doSelectElement(@Nonnull CSharpResolveContext context, boolean deep)
+	public Collection<PsiElement> doSelectElement(CSharpResolveContext context, boolean deep)
 	{
 		return context.findByName(myName, deep, this);
 	}
 
 	@Override
-	public boolean isNameEqual(@Nonnull String name)
+	public boolean isNameEqual(String name)
 	{
 		return Comparing.equal(myName, name);
 	}

@@ -23,8 +23,7 @@ import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -32,13 +31,13 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpIdentifierImpl extends CSharpElementImpl implements CSharpIdentifier
 {
-	public CSharpIdentifierImpl(@Nonnull IElementType elementType)
+	public CSharpIdentifierImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitIdentifier(this);
 	}

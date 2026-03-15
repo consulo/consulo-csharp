@@ -18,7 +18,6 @@ package consulo.csharp.lang.psi;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetElement;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -26,7 +25,6 @@ import jakarta.annotation.Nonnull;
  */
 public interface CSharpUsingListOwner extends DotNetElement
 {
-	@Nonnull
 	@RequiredReadAction
 	CSharpUsingListChild[] getUsingStatements();
 }

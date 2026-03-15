@@ -24,8 +24,7 @@ import consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.stub.IStubElementType;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -33,19 +32,19 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpGenericConstraintTypeValueImpl extends CSharpStubElementImpl<EmptyStub<CSharpGenericConstraintTypeValue>> implements CSharpGenericConstraintTypeValue
 {
-	public CSharpGenericConstraintTypeValueImpl(@Nonnull ASTNode node)
+	public CSharpGenericConstraintTypeValueImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpGenericConstraintTypeValueImpl(@Nonnull EmptyStub<CSharpGenericConstraintTypeValue> stub,
-			@Nonnull IStubElementType<? extends EmptyStub<CSharpGenericConstraintTypeValue>, ?> nodeType)
+	public CSharpGenericConstraintTypeValueImpl(EmptyStub<CSharpGenericConstraintTypeValue> stub,
+			IStubElementType<? extends EmptyStub<CSharpGenericConstraintTypeValue>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericConstraintTypeValue(this);
 	}
@@ -57,7 +56,6 @@ public class CSharpGenericConstraintTypeValueImpl extends CSharpStubElementImpl<
 		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 0);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{

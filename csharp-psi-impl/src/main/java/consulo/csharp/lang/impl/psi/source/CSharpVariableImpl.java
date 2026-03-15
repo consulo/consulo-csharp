@@ -25,8 +25,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -37,7 +36,6 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 	private static final CSharpTypeRefCacher<CSharpVariableImpl> ourCacheSystem = new CSharpTypeRefCacher<CSharpVariableImpl>(true)
 	{
 		@RequiredReadAction
-		@Nonnull
 		@Override
 		protected DotNetTypeRef toTypeRefImpl(CSharpVariableImpl element, boolean resolveFromParentOrInitializer)
 		{
@@ -47,7 +45,7 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 
 	protected final ThreadLocal<Boolean> myTypeRefProcessing = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
-	public CSharpVariableImpl(@Nonnull IElementType elementType)
+	public CSharpVariableImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -61,21 +59,18 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
 		return ourCacheSystem.toTypeRef(this, resolveFromInitializer, getCacheKeys());
 	}
 
-	@Nonnull
 	protected Object[] getCacheKeys()
 	{
 		return new Object[]{PsiModificationTracker.MODIFICATION_COUNT};
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{
 		DotNetType type = getType();

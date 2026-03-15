@@ -20,7 +20,6 @@ import consulo.csharp.lang.impl.psi.source.*;
 import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.*;
 import consulo.language.psi.PsiElementVisitor;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -81,7 +80,7 @@ public class CSharpElementVisitor extends PsiElementVisitor {
         visitUsingChild(statement);
     }
 
-    public void visitUsingChild(@Nonnull CSharpUsingListChild child) {
+    public void visitUsingChild(CSharpUsingListChild child) {
         visitElement(child);
     }
 

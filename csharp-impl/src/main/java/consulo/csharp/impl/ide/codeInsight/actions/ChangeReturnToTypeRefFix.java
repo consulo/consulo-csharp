@@ -32,7 +32,6 @@ import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -40,15 +39,13 @@ import jakarta.annotation.Nonnull;
  */
 public class ChangeReturnToTypeRefFix implements SyntheticIntentionAction {
   private final SmartPsiElementPointer<DotNetLikeMethodDeclaration> myMethodPointer;
-  @Nonnull
   private final DotNetTypeRef myToTypeRef;
 
-  public ChangeReturnToTypeRefFix(@Nonnull DotNetLikeMethodDeclaration element, @Nonnull DotNetTypeRef toTypeRef) {
+  public ChangeReturnToTypeRefFix(DotNetLikeMethodDeclaration element, DotNetTypeRef toTypeRef) {
     myMethodPointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
     myToTypeRef = toTypeRef;
   }
 
-  @Nonnull
   @Override
   @RequiredReadAction
   public LocalizeValue getText() {
@@ -60,13 +57,13 @@ public class ChangeReturnToTypeRefFix implements SyntheticIntentionAction {
   }
 
   @Override
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+  public boolean isAvailable(Project project, Editor editor, PsiFile file) {
     return myMethodPointer.getElement() != null;
   }
 
   @Override
   @RequiredReadAction
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+  public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
     PsiDocumentManager.getInstance(project).commitAllDocuments();
 
     DotNetLikeMethodDeclaration element = myMethodPointer.getElement();

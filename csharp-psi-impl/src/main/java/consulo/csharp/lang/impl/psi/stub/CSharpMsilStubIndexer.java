@@ -29,8 +29,7 @@ import consulo.msil.impl.lang.psi.impl.elementType.stub.MsilMethodEntryStub;
 import consulo.msil.impl.lang.psi.impl.elementType.stub.MsilStubIndexer;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -41,13 +40,13 @@ import java.util.List;
 @ExtensionImpl
 public class CSharpMsilStubIndexer extends MsilStubIndexer
 {
-	public static int makeExtensionMethodIndexKey(@Nullable String namespace, @Nonnull String name)
+	public static int makeExtensionMethodIndexKey(@Nullable String namespace, String name)
 	{
 		return (DotNetNamespaceStubUtil.getIndexableNamespace(StringUtil.notNullize(namespace)) + "|" + name).hashCode();
 	}
 
 	@Override
-	public void indexMethod(@Nonnull MsilMethodEntryStub stub, @Nonnull IndexSink indexSink)
+	public void indexMethod(MsilMethodEntryStub stub, IndexSink indexSink)
 	{
 		boolean isExtension = false;
 

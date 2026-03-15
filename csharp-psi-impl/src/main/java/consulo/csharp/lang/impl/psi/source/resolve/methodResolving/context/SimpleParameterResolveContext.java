@@ -26,8 +26,7 @@ import consulo.project.Project;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.Trinity;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,14 +34,11 @@ import jakarta.annotation.Nullable;
  */
 public class SimpleParameterResolveContext implements ParameterResolveContext<CSharpSimpleParameterInfo>
 {
-	@Nonnull
 	private final Project myProject;
-	@Nonnull
 	private final GlobalSearchScope myResolveScope;
-	@Nonnull
 	private final CSharpSimpleParameterInfo[] myParameterInfos;
 
-	public SimpleParameterResolveContext(@Nonnull Project project, @Nonnull GlobalSearchScope resolveScope, @Nonnull CSharpSimpleParameterInfo[] parameterInfos)
+	public SimpleParameterResolveContext(Project project, GlobalSearchScope resolveScope, CSharpSimpleParameterInfo[] parameterInfos)
 	{
 		myProject = project;
 		myResolveScope = resolveScope;
@@ -50,14 +46,12 @@ public class SimpleParameterResolveContext implements ParameterResolveContext<CS
 	}
 
 	@Override
-	@Nonnull
 	public Project getProject()
 	{
 		return myProject;
 	}
 
 	@Override
-	@Nonnull
 	public GlobalSearchScope getResolveScope()
 	{
 		return myResolveScope;
@@ -72,7 +66,7 @@ public class SimpleParameterResolveContext implements ParameterResolveContext<CS
 
 	@Nullable
 	@Override
-	public CSharpSimpleParameterInfo getParameterByName(@Nonnull String name)
+	public CSharpSimpleParameterInfo getParameterByName(String name)
 	{
 		for(CSharpSimpleParameterInfo parameterInfo : myParameterInfos)
 		{
@@ -97,21 +91,18 @@ public class SimpleParameterResolveContext implements ParameterResolveContext<CS
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameters()
 	{
 		return myParameterInfos;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getParamsParameterTypeRef()
 	{
 		return DotNetTypeRef.ERROR_TYPE;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getInnerParamsParameterTypeRef()
 	{
@@ -125,9 +116,8 @@ public class SimpleParameterResolveContext implements ParameterResolveContext<CS
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(@Nonnull CSharpSimpleParameterInfo parameter)
+	public Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(CSharpSimpleParameterInfo parameter)
 	{
 		return Trinity.create(parameter.getNotNullName(), parameter.getTypeRef(), parameter.isOptional());
 	}

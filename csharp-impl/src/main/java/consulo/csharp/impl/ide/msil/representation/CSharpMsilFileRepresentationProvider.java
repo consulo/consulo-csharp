@@ -40,8 +40,7 @@ import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
 import consulo.virtualFileSystem.fileType.FileType;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,22 +55,20 @@ public class CSharpMsilFileRepresentationProvider implements MsilFileRepresentat
 {
 	@Nullable
 	@Override
-	public String getRepresentFileName(@Nonnull MsilFile msilFile)
+	public String getRepresentFileName(MsilFile msilFile)
 	{
 		return FileUtil.getNameWithoutExtension(msilFile.getName()) + CSharpFileType.DOT_EXTENSION;
 	}
 
-	@Nonnull
 	@Override
 	public FileType getFileType()
 	{
 		return CSharpFileType.INSTANCE;
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	@Override
-	public CharSequence buildContent(String fileName, @Nonnull final MsilFile msilFile)
+	public CharSequence buildContent(String fileName, final MsilFile msilFile)
 	{
 		List<StubBlock> list = new ArrayList<>();
 

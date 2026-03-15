@@ -25,10 +25,8 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
-import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -39,7 +37,6 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 	private MsilModifierListToCSharpModifierList myModifierList;
 	private NotNullLazyValue<DotNetTypeRef> myVariableTypRefValue = new NotNullLazyValue<DotNetTypeRef>()
 	{
-		@Nonnull
 		@Override
 		protected DotNetTypeRef compute()
 		{
@@ -61,7 +58,6 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 		myModifierList = createModifierList(modifiers, variable);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	protected MsilModifierListToCSharpModifierList createModifierList(CSharpModifier[] modifiers, DotNetVariable variable)
 	{
@@ -95,14 +91,12 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public final DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
 		return myVariableTypRefValue.getValue();
 	}
 
-	@Nonnull
 	public DotNetTypeRef toTypeRefImpl()
 	{
 		return MsilToCSharpUtil.extractToCSharp(myOriginal.toTypeRef(false));
@@ -126,7 +120,7 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		if(modifier == CSharpModifier.OPTIONAL)
 		{
@@ -166,7 +160,7 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		return null;
 	}

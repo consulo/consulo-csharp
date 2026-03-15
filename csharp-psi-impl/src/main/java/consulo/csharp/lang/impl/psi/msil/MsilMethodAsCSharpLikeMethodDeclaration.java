@@ -31,10 +31,8 @@ import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.msil.impl.lang.psi.MsilTokens;
 import consulo.msil.lang.psi.MsilMethodEntry;
-import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.NonNls;
+import org.jspecify.annotations.Nullable;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -56,7 +54,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 	}
 
 	@RequiredReadAction
-	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, @Nonnull CSharpModifier[] modifiers, MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, CSharpModifier[] modifiers, MsilMethodEntry methodEntry)
 	{
 		super(parent, methodEntry);
 		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, this, methodEntry.getModifierList());
@@ -74,7 +72,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		});
 	}
 
-	protected void setGenericParameterList(@Nonnull DotNetGenericParameterListOwner owner, @Nonnull GenericParameterContext genericParameterContext)
+	protected void setGenericParameterList(DotNetGenericParameterListOwner owner, GenericParameterContext genericParameterContext)
 	{
 		DotNetGenericParameterList genericParameterList = owner.getGenericParameterList();
 		myGenericParameterList = MsilGenericParameterListAsCSharpGenericParameterList.build(this, genericParameterList, genericParameterContext);
@@ -97,7 +95,6 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
 		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
@@ -110,7 +107,6 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetType getReturnType()
 	{
@@ -118,14 +114,12 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
 		return myReturnTypeRefValue.getValue();
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCodeBodyProxy getCodeBlock()
 	{
@@ -139,7 +133,6 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		return myGenericParameterList;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
@@ -154,7 +147,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return myModifierList.hasModifier(modifier);
 	}
@@ -167,7 +160,6 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		return myModifierList;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
@@ -181,7 +173,6 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		return myOriginal.getParameterList();
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetParameter[] getParameters()
@@ -224,7 +215,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		return null;
 	}

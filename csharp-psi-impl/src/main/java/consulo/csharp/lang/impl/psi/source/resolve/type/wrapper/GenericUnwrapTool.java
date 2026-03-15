@@ -27,9 +27,8 @@ import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 import consulo.util.lang.ObjectUtil;
 import consulo.util.lang.lazy.LazyValue;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -46,7 +45,6 @@ public class GenericUnwrapTool
 		@RequiredReadAction
 		DotNetTypeRef unwrap(PsiElement element);
 
-		@Nonnull
 		@RequiredReadAction
 		default DotNetGenericExtractor getExtractor()
 		{
@@ -79,7 +77,6 @@ public class GenericUnwrapTool
 		}
 
 		@RequiredReadAction
-		@Nonnull
 		@Override
 		public DotNetGenericExtractor getExtractor()
 		{
@@ -228,9 +225,8 @@ public class GenericUnwrapTool
 		return namedElement;
 	}
 
-	@Nonnull
 	@SuppressWarnings("unchecked")
-	private static <T extends DotNetNamedElement> T cast(@Nonnull PsiElement target, @Nullable PsiElement parent)
+	private static <T extends DotNetNamedElement> T cast(PsiElement target, @Nullable PsiElement parent)
 	{
 		if(parent != null && target instanceof CSharpLightElement)
 		{
@@ -248,23 +244,20 @@ public class GenericUnwrapTool
 		copy.withTypeRefForImplement(LazyValue.notNull(() -> exchangeTypeRef(original.getTypeRefForImplement(), extractor)));
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public static DotNetTypeRef[] exchangeTypeRefs(DotNetTypeRef[] typeRefs, DotNetGenericExtractor extractor)
 	{
 		return exchangeTypeRefs(typeRefs, new GenericExtractFunction(extractor));
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef exchangeTypeRef(@Nonnull DotNetTypeRef typeRef, @Nonnull DotNetGenericExtractor extractor)
+	public static DotNetTypeRef exchangeTypeRef(DotNetTypeRef typeRef, DotNetGenericExtractor extractor)
 	{
 		return exchangeTypeRef(typeRef, new GenericExtractFunction(extractor));
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef[] exchangeTypeRefs(@Nonnull DotNetTypeRef[] typeRefs, @Nonnull UnwrapTypeRefProcessor func)
+	public static DotNetTypeRef[] exchangeTypeRefs(DotNetTypeRef[] typeRefs, UnwrapTypeRefProcessor func)
 	{
 		if(typeRefs.length == 0)
 		{
@@ -279,9 +272,8 @@ public class GenericUnwrapTool
 		return newTypeRefs;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef exchangeTypeRef(@Nonnull DotNetTypeRef typeRef, @Nonnull UnwrapTypeRefProcessor func)
+	public static DotNetTypeRef exchangeTypeRef(DotNetTypeRef typeRef, UnwrapTypeRefProcessor func)
 	{
 		if(typeRef instanceof DotNetTypeRef.AdapterInternal)
 		{

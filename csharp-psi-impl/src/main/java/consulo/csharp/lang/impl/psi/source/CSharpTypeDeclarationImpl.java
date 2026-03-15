@@ -38,24 +38,23 @@ import consulo.language.psi.PsiModificationTracker;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.util.LanguageCachedValueUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
  * @since 28.11.13.
  */
 public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDeclStub> implements CSharpTypeDeclaration {
-    public CSharpTypeDeclarationImpl(@Nonnull ASTNode node) {
+    public CSharpTypeDeclarationImpl(ASTNode node) {
         super(node);
     }
 
-    public CSharpTypeDeclarationImpl(@Nonnull CSharpTypeDeclStub stub) {
+    public CSharpTypeDeclarationImpl(CSharpTypeDeclStub stub) {
         super(stub, CSharpStubElements.TYPE_DECLARATION);
     }
 
     @Override
-    public void accept(@Nonnull CSharpElementVisitor visitor) {
+    public void accept(CSharpElementVisitor visitor) {
         visitor.visitTypeDeclaration(this);
     }
 
@@ -77,7 +76,6 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
         return getStubOrPsiChild(CSharpStubElements.GENERIC_PARAMETER_LIST);
     }
 
-    @Nonnull
     @Override
     public DotNetGenericParameter[] getGenericParameters() {
         DotNetGenericParameterList genericParameterList = getGenericParameterList();
@@ -104,7 +102,6 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     public DotNetQualifiedElement[] getMembers() {
         return LanguageCachedValueUtil.getCachedValue(this, () -> CachedValueProvider.Result.create(getStubOrPsiChildren(CSharpStubElementSets.QUALIFIED_MEMBERS,
@@ -151,7 +148,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
     }
 
     @Override
-    public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place) {
+    public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place) {
         if (ExecuteTargetUtil.canProcess(processor, ExecuteTarget.GENERIC_PARAMETER)) {
             for (DotNetGenericParameter dotNetGenericParameter : getGenericParameters()) {
                 if (!processor.execute(dotNetGenericParameter, state)) {
@@ -174,7 +171,6 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     public DotNetTypeRef[] getExtendTypeRefs() {
         return LanguageCachedValueUtil.getCachedValue(this, new CachedValueProvider<DotNetTypeRef[]>() {
@@ -189,11 +185,10 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 
     @RequiredReadAction
     @Override
-    public boolean isInheritor(@Nonnull String other, boolean deep) {
+    public boolean isInheritor(String other, boolean deep) {
         return DotNetInheritUtil.isInheritor(this, other, deep);
     }
 
-    @Nonnull
     @RequiredReadAction
     @Override
     public DotNetTypeRef getTypeRefForEnumConstants() {
@@ -221,7 +216,6 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
         return getStubOrPsiChild(CSharpStubElements.GENERIC_CONSTRAINT_LIST);
     }
 
-    @Nonnull
     @Override
     public CSharpGenericConstraint[] getGenericConstraints() {
         CSharpGenericConstraintList genericConstraintList = getGenericConstraintList();

@@ -22,8 +22,7 @@ import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.language.psi.PsiElement;
 import consulo.msil.lang.psi.MsilFieldEntry;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -37,7 +36,7 @@ public class MsilFieldAsCSharpEnumConstantDeclaration extends MsilVariableAsCSha
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitEnumConstantDeclaration(this);
 	}

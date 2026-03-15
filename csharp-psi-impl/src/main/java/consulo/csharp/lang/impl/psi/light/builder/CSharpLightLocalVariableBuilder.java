@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.light.builder;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.dotnet.psi.DotNetType;
@@ -41,7 +40,7 @@ public class CSharpLightLocalVariableBuilder extends CSharpLightVariableBuilder<
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLocalVariable(this);
 	}

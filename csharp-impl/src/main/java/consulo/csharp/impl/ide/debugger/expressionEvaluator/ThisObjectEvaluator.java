@@ -24,8 +24,7 @@ import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.ObjectUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,21 +39,20 @@ public class ThisObjectEvaluator extends Evaluator
 	}
 
 	@Override
-	public void evaluate(@Nonnull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetInvalidStackFrameException, DotNetAbsentInformationException
+	public void evaluate(CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetInvalidStackFrameException, DotNetAbsentInformationException
 	{
 		DotNetStackFrameProxy frame = context.getFrame();
 
 		context.pull(calcThisObject(frame, frame.getThisObject()), null);
 	}
 
-	@Nonnull
-	public static DotNetValueProxy calcThisObject(@Nonnull DotNetStackFrameProxy proxy, DotNetValueProxy thisObject)
+	public static DotNetValueProxy calcThisObject(DotNetStackFrameProxy proxy, DotNetValueProxy thisObject)
 	{
 		return ObjectUtil.notNull(tryToFindObjectInsideYieldOrAsyncThis(proxy, thisObject), thisObject);
 	}
 
 	@Nullable
-	public static DotNetValueProxy tryToFindObjectInsideYieldOrAsyncThis(@Nonnull DotNetStackFrameProxy proxy, DotNetValueProxy thisObject)
+	public static DotNetValueProxy tryToFindObjectInsideYieldOrAsyncThis(DotNetStackFrameProxy proxy, DotNetValueProxy thisObject)
 	{
 		if(!(thisObject instanceof DotNetObjectValueProxy))
 		{

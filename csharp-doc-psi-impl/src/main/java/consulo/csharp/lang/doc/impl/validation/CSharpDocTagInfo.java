@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.doc.impl.validation;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,14 +36,12 @@ public class CSharpDocTagInfo
 		myName = name;
 	}
 
-	@Nonnull
-	public CSharpDocTagInfo add(@Nonnull CSharpDocAttributeInfo a)
+	public CSharpDocTagInfo add(CSharpDocAttributeInfo a)
 	{
 		myAttributes.put(a.getName(), a);
 		return this;
 	}
 
-	@Nonnull
 	public Collection<CSharpDocAttributeInfo> getAttributes()
 	{
 		return myAttributes.values();

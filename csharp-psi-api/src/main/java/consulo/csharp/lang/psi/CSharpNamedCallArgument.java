@@ -18,7 +18,6 @@ package consulo.csharp.lang.psi;
 
 import consulo.language.psi.PsiNamedElement;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -27,9 +26,7 @@ import jakarta.annotation.Nonnull;
 public interface CSharpNamedCallArgument extends CSharpCallArgument, PsiNamedElement
 {
 	@Override
-	@Nonnull
 	String getName();
 
-	@Nonnull
 	CSharpReferenceExpression getArgumentNameReference();
 }

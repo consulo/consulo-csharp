@@ -38,7 +38,6 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.logging.Logger;
 import consulo.util.lang.Pair;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * initial version from java plugin com.intellij.openapi.editor.actions.moveUpDown.StatementMover
@@ -50,7 +49,7 @@ class CSharpStatementMover extends LineMover
 	private PsiElement statementToSurroundWithCodeBlock;
 
 	@Override
-	public void beforeMove(@Nonnull final Editor editor, @Nonnull final MoveInfo info, final boolean down)
+	public void beforeMove(final Editor editor, final MoveInfo info, final boolean down)
 	{
 		super.beforeMove(editor, info, down);
 		if(statementToSurroundWithCodeBlock != null)
@@ -110,7 +109,7 @@ class CSharpStatementMover extends LineMover
 
 	@Override
 	@RequiredReadAction
-	public boolean checkAvailable(@Nonnull final Editor editor, @Nonnull final PsiFile file, @Nonnull final MoveInfo info, final boolean down)
+	public boolean checkAvailable(final Editor editor, final PsiFile file, final MoveInfo info, final boolean down)
 	{
 		//if (!(file instanceof PsiJavaFile)) return false;
 		final boolean available = super.checkAvailable(editor, file, info, down);
@@ -178,7 +177,7 @@ class CSharpStatementMover extends LineMover
 	}
 
 	@RequiredReadAction
-	private boolean calcInsertOffset(@Nonnull PsiFile file, @Nonnull Editor editor, @Nonnull LineRange range, @Nonnull final MoveInfo info, final boolean down)
+	private boolean calcInsertOffset(PsiFile file, Editor editor, LineRange range, final MoveInfo info, final boolean down)
 	{
 		int destLine = getDestLineForAnon(file, editor, range, info, down);
 
@@ -266,7 +265,7 @@ class CSharpStatementMover extends LineMover
 	}
 
 	@RequiredReadAction
-	private boolean checkMovingInsideOutside(PsiFile file, final Editor editor, LineRange range, @Nonnull final MoveInfo info, final boolean down)
+	private boolean checkMovingInsideOutside(PsiFile file, final Editor editor, LineRange range, final MoveInfo info, final boolean down)
 	{
 		final int offset = editor.getCaretModel().getOffset();
 

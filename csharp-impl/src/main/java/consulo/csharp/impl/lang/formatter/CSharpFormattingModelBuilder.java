@@ -24,7 +24,6 @@ import consulo.language.Language;
 import consulo.language.codeStyle.*;
 import consulo.language.psi.PsiFile;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -39,9 +38,8 @@ public class CSharpFormattingModelBuilder implements DelegatingFormattingModelBu
 		return true;
 	}
 
-	@Nonnull
 	@Override
-	public FormattingModel createModel(@Nonnull FormattingContext formattingContext)
+	public FormattingModel createModel(FormattingContext formattingContext)
 	{
 		CodeStyleSettings settings = formattingContext.getCodeStyleSettings();
 
@@ -59,7 +57,6 @@ public class CSharpFormattingModelBuilder implements DelegatingFormattingModelBu
 		return new PsiBasedFormattingModel(file, rootBlock, model);
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

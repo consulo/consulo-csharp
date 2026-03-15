@@ -30,7 +30,6 @@ import consulo.dotnet.psi.search.searches.AllTypesSearchExecutor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.scope.LocalSearchScope;
-import jakarta.annotation.Nonnull;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -44,7 +43,7 @@ import java.util.function.Supplier;
 @ExtensionImpl
 public class CSharpAllTypesSearchExecutor implements AllTypesSearchExecutor {
     @Override
-    public boolean execute(@Nonnull final AllTypesSearch.SearchParameters queryParameters, @Nonnull final Predicate<? super DotNetTypeDeclaration> consumer) {
+    public boolean execute(final AllTypesSearch.SearchParameters queryParameters, final Predicate<? super DotNetTypeDeclaration> consumer) {
         SearchScope scope = queryParameters.getScope();
 
         if (scope instanceof GlobalSearchScope) {

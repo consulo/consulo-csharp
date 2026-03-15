@@ -29,8 +29,7 @@ import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.ColoredTextContainer;
 import consulo.util.collection.ArrayFactory;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 
@@ -51,7 +50,6 @@ public abstract class CSharpMemberChooseObject<T extends DotNetElement> implemen
 		myDeclaration = declaration;
 	}
 
-	@Nonnull
 	public T getDeclaration()
 	{
 		return myDeclaration;
@@ -72,7 +70,6 @@ public abstract class CSharpMemberChooseObject<T extends DotNetElement> implemen
 		return null;
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public abstract String getPresentationText();
 

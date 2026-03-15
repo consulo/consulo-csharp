@@ -35,7 +35,6 @@ import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +51,7 @@ public class ConvertToNormalCallFix extends PsiElementBaseIntentionAction implem
   }
 
   @Override
-  public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException {
+  public void invoke(Project project, Editor editor, PsiElement element) throws IncorrectOperationException {
     final CSharpMethodCallExpressionImpl callExpression = PsiTreeUtil.getParentOfType(element, CSharpMethodCallExpressionImpl.class);
     assert callExpression != null;
     CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression)callExpression.getCallExpression();
@@ -100,7 +99,7 @@ public class ConvertToNormalCallFix extends PsiElementBaseIntentionAction implem
 
   @Override
   public boolean isAvailable(
-    @Nonnull Project project, Editor editor, @Nonnull PsiElement element) {
+    Project project, Editor editor, PsiElement element) {
     return true;
   }
 }

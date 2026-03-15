@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.language.psi.stub.StubElement;
 import consulo.language.psi.util.PsiTreeUtil;
@@ -37,7 +36,7 @@ public class CSharpStubVariableImplUtil
 {
 	private static final Logger LOGGER = Logger.getInstance(CSharpStubVariableImplUtil.class);
 
-	public static boolean isMultipleDeclaration(@Nonnull CSharpStubVariableImpl<?> variable)
+	public static boolean isMultipleDeclaration(CSharpStubVariableImpl<?> variable)
 	{
 		CSharpVariableDeclStub<?> stub = variable.getStub();
 		if(stub != null)
@@ -48,7 +47,7 @@ public class CSharpStubVariableImplUtil
 	}
 
 	@Nullable
-	public static DotNetType getType(@Nonnull CSharpStubVariableImpl<?> variable)
+	public static DotNetType getType(CSharpStubVariableImpl<?> variable)
 	{
 		DotNetType type = variable.getExplicitType();
 		if(type != null)
@@ -61,7 +60,7 @@ public class CSharpStubVariableImplUtil
 	}
 
 	@Nullable
-	public static DotNetModifierList getModifierList(@Nonnull CSharpStubVariableImpl<?> variable)
+	public static DotNetModifierList getModifierList(CSharpStubVariableImpl<?> variable)
 	{
 		DotNetModifierList list = variable.getExplicitModifierList();
 		if(list != null)
@@ -74,7 +73,7 @@ public class CSharpStubVariableImplUtil
 	}
 
 	@Nullable
-	public static PsiElement getConstantKeywordElement(@Nonnull CSharpStubVariableImpl<?> variable)
+	public static PsiElement getConstantKeywordElement(CSharpStubVariableImpl<?> variable)
 	{
 		PsiElement keywordElement = variable.getExplicitConstantKeywordElement();
 		if(keywordElement != null)
@@ -87,7 +86,7 @@ public class CSharpStubVariableImplUtil
 	}
 
 	@Nullable
-	private static DotNetVariable getPrevVariable(@Nonnull CSharpStubVariableImpl<?> variable)
+	private static DotNetVariable getPrevVariable(CSharpStubVariableImpl<?> variable)
 	{
 		if(isMultipleDeclaration(variable))
 		{

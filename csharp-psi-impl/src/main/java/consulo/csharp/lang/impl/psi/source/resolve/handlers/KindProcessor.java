@@ -23,8 +23,7 @@ import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -33,8 +32,8 @@ import jakarta.annotation.Nullable;
 public interface KindProcessor
 {
 	@RequiredReadAction
-	void process(@Nonnull CSharpResolveOptions options,
-			@Nonnull DotNetGenericExtractor defaultExtractor,
+	void process(CSharpResolveOptions options,
+			DotNetGenericExtractor defaultExtractor,
 			@Nullable PsiElement forceQualifierElement,
-			@Nonnull final Processor<ResolveResult> processor);
+			final Processor<ResolveResult> processor);
 }

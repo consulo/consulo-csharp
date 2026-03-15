@@ -27,7 +27,6 @@ import consulo.test.junit.impl.extension.ConsuloProjectLoader;
 import consulo.test.junit.impl.extension.NoParamDisplayNameGenerator;
 import consulo.test.junit.impl.language.SimpleParsingTest;
 import consulo.util.io.StreamUtil;
-import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
@@ -66,10 +65,10 @@ public class VmQNameTest {
 
     @RequiredReadAction
     @Test
-    private void assertEqualVmQName(@Nonnull TestInfo testInfo,
-                                    @Nonnull PsiFileFactory psiFileFactory,
-                                    @Nonnull String vmQName,
-                                    @Nonnull String vmName) throws Exception {
+    private void assertEqualVmQName(TestInfo testInfo,
+                                    PsiFileFactory psiFileFactory,
+                                    String vmQName,
+                                    String vmName) throws Exception {
         String testResName = NoParamDisplayNameGenerator.getName(testInfo.getTestMethod().get().getName(), false);
 
         InputStream stream = getClass().getResourceAsStream("/vmqname/" + testResName + CSharpFileType.DOT_EXTENSION);

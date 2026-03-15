@@ -16,8 +16,7 @@
 
 package consulo.csharp.impl.ide.debugger;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxyVisitor;
@@ -37,7 +36,6 @@ public class CSharpStaticValueProxy implements DotNetValueProxy
 		throw new UnsupportedOperationException();
 	}
 
-	@Nonnull
 	@Override
 	public Object getValue()
 	{

@@ -28,7 +28,6 @@ import consulo.language.ast.IElementType;
 import consulo.language.ast.TokenSet;
 import consulo.language.lexer.Lexer;
 import consulo.language.lexer.MergingLexerAdapter;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -37,7 +36,6 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class CSharpCfsLanguageVersion extends BaseExpressionCfsLanguageVersion
 {
-	@Nonnull
 	public static CSharpCfsLanguageVersion getInstance()
 	{
 		return CfsLanguage.INSTANCE.findVersionByClass(CSharpCfsLanguageVersion.class);
@@ -48,7 +46,6 @@ public class CSharpCfsLanguageVersion extends BaseExpressionCfsLanguageVersion
 		super(CSharpLanguage.INSTANCE);
 	}
 
-	@Nonnull
 	public IElementType getExpressionElementType()
 	{
 		if(myExpressionElementType == null)
@@ -64,7 +61,6 @@ public class CSharpCfsLanguageVersion extends BaseExpressionCfsLanguageVersion
 		return new CSharpInjectExpressionElementType("EXPRESSION", CfsLanguage.INSTANCE, CSharpReferenceExpression.ResolveToKind.ANY_MEMBER);
 	}
 
-	@Nonnull
 	@Override
 	public Lexer createInnerLexer()
 	{

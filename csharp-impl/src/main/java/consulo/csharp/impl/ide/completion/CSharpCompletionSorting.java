@@ -43,8 +43,7 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.UserDataHolder;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -87,7 +86,7 @@ public class CSharpCompletionSorting
 		@Nullable
 		@Override
 		@RequiredReadAction
-		public Type weigh(@Nonnull LookupElement element)
+		public Type weigh(LookupElement element)
 		{
 			Type type = element.getUserData(ourForceType);
 			if(type != null)
@@ -163,7 +162,7 @@ public class CSharpCompletionSorting
 		@Nullable
 		@Override
 		@RequiredReadAction
-		public Comparable weigh(@Nonnull LookupElement element)
+		public Comparable weigh(LookupElement element)
 		{
 			if(myExpectedNames.isEmpty())
 			{
@@ -203,7 +202,7 @@ public class CSharpCompletionSorting
 		@Nullable
 		@Override
 		@RequiredReadAction
-		public Comparable weigh(@Nonnull LookupElement element)
+		public Comparable weigh(LookupElement element)
 		{
 			Boolean obsoleteFlag = element.getCopyableUserData(CSharpLookupElementBuilder.OBSOLETE_FLAG);
 			if(obsoleteFlag == Boolean.TRUE)
@@ -232,10 +231,9 @@ public class CSharpCompletionSorting
 			myExpectedTypes = expectedTypes;
 		}
 
-		@Nonnull
 		@Override
 		@RequiredReadAction
-		public Comparable weigh(@Nonnull LookupElement element)
+		public Comparable weigh(LookupElement element)
 		{
 			final String name = getName(element);
 
@@ -304,7 +302,7 @@ public class CSharpCompletionSorting
 		return max;
 	}
 
-	private static String truncDigits(@Nonnull String name)
+	private static String truncDigits(String name)
 	{
 		int count = name.length() - 1;
 		while(count >= 0)
@@ -343,8 +341,7 @@ public class CSharpCompletionSorting
 		holder.putUserData(KindSorter.ourForceType, type);
 	}
 
-	@Nullable
-	public static KindSorter.Type getSort(UserDataHolder userDataHolder)
+	public static KindSorter.@Nullable Type getSort(UserDataHolder userDataHolder)
 	{
 		return userDataHolder.getUserData(KindSorter.ourForceType);
 	}

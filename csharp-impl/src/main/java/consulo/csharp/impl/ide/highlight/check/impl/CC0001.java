@@ -47,8 +47,7 @@ import consulo.ui.ex.JBColor;
 import consulo.ui.ex.awt.util.ColorUtil;
 import consulo.util.lang.StringUtil;
 import consulo.util.lang.xml.XmlStringUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
@@ -62,12 +61,11 @@ import java.util.List;
  */
 public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
     @RequiredReadAction
-    @Nonnull
     @Override
     public List<HighlightInfoFactory> check(
-        @Nonnull CSharpLanguageVersion languageVersion,
-        @Nonnull CSharpHighlightContext highlightContext,
-        @Nonnull CSharpReferenceExpression expression
+        CSharpLanguageVersion languageVersion,
+        CSharpHighlightContext highlightContext,
+        CSharpReferenceExpression expression
     ) {
         PsiElement referenceElement = expression.getReferenceElement();
         if (referenceElement == null || expression.isSoft() || CSharpDocUtil.isInsideDoc(expression)) {
@@ -83,11 +81,10 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
         return checkReference(expression, Arrays.asList(referenceElement));
     }
 
-    @Nonnull
     @RequiredReadAction
     public static List<HighlightInfoFactory> checkReference(
-        @Nonnull final PsiElement callElement,
-        @Nonnull List<? extends PsiElement> ranges
+        final PsiElement callElement,
+        List<? extends PsiElement> ranges
     ) {
         if (ranges.isEmpty()) {
             return Collections.emptyList();
@@ -177,7 +174,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
     }
 
     @RequiredReadAction
-    private static String getUnresolvedText(@Nonnull PsiElement element, @Nonnull PsiElement range) {
+    private static String getUnresolvedText(PsiElement element, PsiElement range) {
         CSharpCallArgumentListOwner callOwner = findCallOwner(element);
         if (callOwner != null) {
             String name;
@@ -213,7 +210,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
 
     @Nullable
     @RequiredReadAction
-    public static HighlightInfo createHighlightInfo(@Nonnull PsiElement element, @Nonnull ResolveResult resolveResult, boolean insideDoc) {
+    public static HighlightInfo createHighlightInfo(PsiElement element, ResolveResult resolveResult, boolean insideDoc) {
         if (!(resolveResult instanceof MethodResolveResult methodResolveResult)) {
             return null;
         }
@@ -325,7 +322,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
     }
 
     private static void registerQuickFixes(
-        @Nonnull CSharpCallArgumentListOwner element,
+        CSharpCallArgumentListOwner element,
         PsiElement resolveElement,
         List<NCallArgument> arguments,
         HighlightInfo highlightInfo
@@ -367,7 +364,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
     }
 
     @RequiredReadAction
-    private static void appendType(@Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope) {
+    private static void appendType(StringBuilder builder, DotNetTypeRef typeRef, PsiElement scope) {
         if (typeRef == DotNetTypeRef.ERROR_TYPE) {
             builder.append("?");
         }

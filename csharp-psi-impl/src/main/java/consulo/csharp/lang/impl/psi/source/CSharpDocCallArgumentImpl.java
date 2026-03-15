@@ -23,8 +23,7 @@ import consulo.csharp.lang.impl.psi.light.CSharpLightExpression;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -32,13 +31,13 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpDocCallArgumentImpl extends CSharpElementImpl implements CSharpCallArgument
 {
-	public CSharpDocCallArgumentImpl(@Nonnull IElementType elementType)
+	public CSharpDocCallArgumentImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitCallArgument(this);
 	}

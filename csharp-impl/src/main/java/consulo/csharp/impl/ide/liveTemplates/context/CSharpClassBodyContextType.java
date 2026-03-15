@@ -25,7 +25,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -41,7 +40,7 @@ public class CSharpClassBodyContextType extends BaseTemplateContextType
 
 	@Override
 	@RequiredReadAction
-	public boolean isInContext(@Nonnull PsiFile file, int offset)
+	public boolean isInContext(PsiFile file, int offset)
 	{
 		PsiElement elementAt = file.findElementAt(offset);
 

@@ -25,7 +25,6 @@ import consulo.language.psi.stub.StubElement;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
 import consulo.util.lang.BitUtil;
-import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class CSharpModifierListStub extends StubBase<DotNetModifierList> {
         return myModifierMask;
     }
 
-    public static int getModifierMask(@Nonnull DotNetModifierList list) {
+    public static int getModifierMask(DotNetModifierList list) {
         int val = 0;
         for (CSharpModifier modifier : CSharpModifier.values()) {
             if (list.hasModifierInTree(modifier)) {
@@ -55,7 +54,6 @@ public class CSharpModifierListStub extends StubBase<DotNetModifierList> {
         return val;
     }
 
-    @Nonnull
     public CSharpModifier[] getModifiers() {
         List<CSharpModifier> list = new SmartList<>();
         for (CSharpModifier modifier : CSharpModifier.values()) {

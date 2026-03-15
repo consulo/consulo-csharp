@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
@@ -40,19 +39,19 @@ import consulo.language.psi.stub.IStubElementType;
  */
 public class CSharpStubAttributeImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpAttribute>> implements CSharpAttribute
 {
-	public CSharpStubAttributeImpl(@Nonnull ASTNode node)
+	public CSharpStubAttributeImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubAttributeImpl(@Nonnull CSharpWithStringValueStub<CSharpAttribute> stub,
-			@Nonnull IStubElementType<? extends CSharpWithStringValueStub<CSharpAttribute>, ?> nodeType)
+	public CSharpStubAttributeImpl(CSharpWithStringValueStub<CSharpAttribute> stub,
+			IStubElementType<? extends CSharpWithStringValueStub<CSharpAttribute>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitAttribute(this);
 	}
@@ -75,7 +74,6 @@ public class CSharpStubAttributeImpl extends CSharpStubElementImpl<CSharpWithStr
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{
@@ -95,14 +93,12 @@ public class CSharpStubAttributeImpl extends CSharpStubElementImpl<CSharpWithStr
 	}
 
 	@Override
-	@Nonnull
 	public DotNetExpression[] getParameterExpressions()
 	{
 		CSharpCallArgumentList parameterList = getParameterList();
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
@@ -123,7 +119,6 @@ public class CSharpStubAttributeImpl extends CSharpStubElementImpl<CSharpWithStr
 		return ref.resolve();
 	}
 
-	@Nonnull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{

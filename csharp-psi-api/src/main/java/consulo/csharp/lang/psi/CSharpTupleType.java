@@ -17,7 +17,6 @@
 package consulo.csharp.lang.psi;
 
 import consulo.dotnet.psi.DotNetType;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -25,6 +24,5 @@ import jakarta.annotation.Nonnull;
  */
 public interface CSharpTupleType extends DotNetType
 {
-	@Nonnull
 	CSharpTupleVariable[] getVariables();
 }

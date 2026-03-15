@@ -23,7 +23,6 @@ import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.psi.resolve.SimpleTypeResolveResult;
 import consulo.language.psi.scope.GlobalSearchScope;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -40,7 +39,6 @@ public class CSharpTypeRefFromNamespace extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -48,7 +46,6 @@ public class CSharpTypeRefFromNamespace extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getVmQName()
 	{

@@ -36,8 +36,7 @@ import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.virtualFileSystem.VirtualFile;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.awt.event.MouseEvent;
 import java.util.function.Consumer;
 
@@ -80,7 +79,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @Nonnull Consumer<LineMarkerInfo> consumer)
+	public void collect(PsiElement psiElement, Consumer<LineMarkerInfo> consumer)
 	{
 		CSharpTypeDeclaration parent = CSharpLineMarkerUtil.getNameIdentifierAs(psiElement, CSharpTypeDeclaration.class);
 		if(parent != null)

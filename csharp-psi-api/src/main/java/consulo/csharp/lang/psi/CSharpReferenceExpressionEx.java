@@ -21,7 +21,6 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -29,19 +28,15 @@ import jakarta.annotation.Nonnull;
  */
 public interface CSharpReferenceExpressionEx extends CSharpReferenceExpression
 {
-	@Nonnull
 	@RequiredReadAction
 	DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent);
 
-	@Nonnull
 	@RequiredReadAction
 	ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent);
 
-	@Nonnull
 	@RequiredReadAction
 	ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent);
 
-	@Nonnull
 	@RequiredReadAction
-	ResolveResult[] tryResolveFromQualifier(@Nonnull PsiElement element);
+	ResolveResult[] tryResolveFromQualifier(PsiElement element);
 }

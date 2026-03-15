@@ -24,8 +24,7 @@ import consulo.language.editor.highlight.EditorHighlighterProvider;
 import consulo.project.Project;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.fileType.FileType;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -34,15 +33,13 @@ import jakarta.annotation.Nullable;
 @ExtensionImpl
 public class CSharpEditorHighlighterProvider implements EditorHighlighterProvider
 {
-	@Nonnull
 	@Override
-	public EditorHighlighter getEditorHighlighter(@Nullable Project project, @Nonnull FileType fileType, @Nullable VirtualFile virtualFile,
-												  @Nonnull EditorColorsScheme editorColorsScheme)
+	public EditorHighlighter getEditorHighlighter(@Nullable Project project, FileType fileType, @Nullable VirtualFile virtualFile,
+												  EditorColorsScheme editorColorsScheme)
 	{
 		return new CSharpEditorHighlighter(virtualFile, editorColorsScheme);
 	}
 
-	@Nonnull
 	@Override
 	public FileType getFileType()
 	{

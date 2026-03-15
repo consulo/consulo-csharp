@@ -24,7 +24,6 @@ import consulo.module.Module;
 import consulo.module.content.layer.ModuleRootLayer;
 import consulo.module.content.layer.extension.ModuleInheritableNamedPointerImpl;
 
-import jakarta.annotation.Nonnull;
 
 ;
 
@@ -36,14 +35,14 @@ public class CSharpLanguageVersionPointer extends ModuleInheritableNamedPointerI
 {
 	private final String myExtensionId;
 
-	public CSharpLanguageVersionPointer(@Nonnull ModuleRootLayer layer, @Nonnull String id)
+	public CSharpLanguageVersionPointer(ModuleRootLayer layer, String id)
 	{
 		super(layer, "language-version");
 		myExtensionId = id;
 	}
 
 	@Override
-	public String getItemNameFromModule(@Nonnull Module module)
+	public String getItemNameFromModule(Module module)
 	{
 		final CSharpSimpleModuleExtension extension = (CSharpSimpleModuleExtension) ModuleUtilCore.getExtension(module, myExtensionId);
 		if(extension != null)
@@ -54,7 +53,7 @@ public class CSharpLanguageVersionPointer extends ModuleInheritableNamedPointerI
 	}
 
 	@Override
-	public CSharpLanguageVersion getItemFromModule(@Nonnull Module module)
+	public CSharpLanguageVersion getItemFromModule(Module module)
 	{
 		final CSharpSimpleModuleExtension extension = (CSharpSimpleModuleExtension) ModuleUtilCore.getExtension(module, myExtensionId);
 		if(extension != null)
@@ -64,9 +63,8 @@ public class CSharpLanguageVersionPointer extends ModuleInheritableNamedPointerI
 		return null;
 	}
 
-	@Nonnull
 	@Override
-	public NamedPointer<CSharpLanguageVersion> getPointer(@Nonnull ModuleRootLayer layer, @Nonnull String name)
+	public NamedPointer<CSharpLanguageVersion> getPointer(ModuleRootLayer layer, String name)
 	{
 		return CSharpLanguageVersion.valueOf(name);
 	}

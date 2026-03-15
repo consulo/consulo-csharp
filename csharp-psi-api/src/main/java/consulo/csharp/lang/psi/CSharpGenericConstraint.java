@@ -19,9 +19,8 @@ package consulo.csharp.lang.psi;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.util.collection.ArrayFactory;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -39,6 +38,5 @@ public interface CSharpGenericConstraint extends DotNetElement
 	@Nullable
 	CSharpReferenceExpression getGenericParameterReference();
 
-	@Nonnull
 	CSharpGenericConstraintValue[] getGenericConstraintValues();
 }

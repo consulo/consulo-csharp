@@ -24,8 +24,7 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpNullTypeRef;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -36,7 +35,7 @@ public class CS0173 extends CompilerCheck<CSharpConditionalExpressionImpl>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpConditionalExpressionImpl element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpConditionalExpressionImpl element)
 	{
 		DotNetExpression trueExpression = element.getTrueExpression();
 		DotNetExpression falseExpression = element.getFalseExpression();

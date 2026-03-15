@@ -37,7 +37,6 @@ import consulo.language.editor.intention.IntentionWrapper;
 import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -45,9 +44,8 @@ import jakarta.annotation.Nonnull;
  */
 @ExtensionImpl
 public class UnnecessaryTypeInspection extends CSharpGeneralLocalInspection {
-    @Nonnull
     @Override
-    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+    public PsiElementVisitor buildVisitor(final ProblemsHolder holder, boolean isOnTheFly) {
         CSharpLanguageVersion languageVersion = CSharpModuleUtil.findLanguageVersion(holder.getFile());
         if (!languageVersion.isAtLeast(CSharpLanguageVersion._3_0)) {
             return CSharpElementVisitor.EMPTY;
@@ -91,13 +89,11 @@ public class UnnecessaryTypeInspection extends CSharpGeneralLocalInspection {
         };
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getDisplayName() {
         return LocalizeValue.localizeTODO("Unnecessary type");
     }
 
-    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WEAK_WARNING;

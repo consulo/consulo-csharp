@@ -32,9 +32,7 @@ import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.IndexSink;
 import consulo.language.psi.stub.StubElement;
 import consulo.language.psi.stub.StubInputStream;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,28 +43,26 @@ import java.util.List;
  */
 public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSharpTypeListStub, DotNetTypeList>
 {
-	public CSharpTypeListElementType(@Nonnull @NonNls String debugName)
+	public CSharpTypeListElementType(String debugName)
 	{
 		super(debugName);
 	}
 
-	@Nonnull
 	@Override
-	public DotNetTypeList createElement(@Nonnull ASTNode astNode)
+	public DotNetTypeList createElement(ASTNode astNode)
 	{
 		return new CSharpStubTypeListImpl(astNode);
 	}
 
 	@Override
-	public DotNetTypeList createPsi(@Nonnull CSharpTypeListStub cSharpTypeListStub)
+	public DotNetTypeList createPsi(CSharpTypeListStub cSharpTypeListStub)
 	{
 		return new CSharpStubTypeListImpl(cSharpTypeListStub, this);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	@Override
-	public CSharpTypeListStub createStub(@Nonnull DotNetTypeList dotNetTypeList, StubElement stubElement)
+	public CSharpTypeListStub createStub(DotNetTypeList dotNetTypeList, StubElement stubElement)
 	{
 		DotNetType[] types = dotNetTypeList.getTypes();
 		List<String> typeRefs = new ArrayList<>(types.length);
@@ -82,7 +78,7 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpTypeListStub cSharpTypeListStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpTypeListStub cSharpTypeListStub, StubOutputStream stubOutputStream) throws IOException
 	{
 		String[] references = cSharpTypeListStub.geShortReferences();
 		stubOutputStream.writeByte(references.length);
@@ -92,9 +88,8 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 		}
 	}
 
-	@Nonnull
 	@Override
-	public CSharpTypeListStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpTypeListStub deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		byte value = stubInputStream.readByte();
 		String[] refs = new String[value];
@@ -106,7 +101,7 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 	}
 
 	@Override
-	public void indexStub(@Nonnull CSharpTypeListStub cSharpTypeListStub, @Nonnull IndexSink indexSink)
+	public void indexStub(CSharpTypeListStub cSharpTypeListStub, IndexSink indexSink)
 	{
 		if(cSharpTypeListStub.getStubType() == CSharpStubElements.EXTENDS_LIST)
 		{

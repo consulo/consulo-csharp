@@ -25,7 +25,7 @@ import consulo.language.editor.template.Expression;
 import consulo.language.editor.template.ExpressionContext;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.SmartList;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 

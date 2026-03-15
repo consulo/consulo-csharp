@@ -24,10 +24,8 @@ import consulo.dotnet.psi.*;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -47,7 +45,6 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
 		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
@@ -66,14 +63,12 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 		return myParameterList;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
 		return myParameterList == null ? DotNetParameter.EMPTY_ARRAY : myParameterList.getParameters();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
@@ -81,7 +76,6 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpCodeBodyProxy getCodeBlock()
 	{
@@ -102,7 +96,6 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 		return myOriginal.getGenericParameterList();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
@@ -117,7 +110,7 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return myOriginal.hasModifier(modifier);
 	}
@@ -144,7 +137,7 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		return myOriginal.setName(s);
 	}

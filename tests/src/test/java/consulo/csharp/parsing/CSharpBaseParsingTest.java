@@ -23,7 +23,6 @@ import consulo.language.file.LanguageFileType;
 import consulo.language.version.LanguageVersion;
 import consulo.test.junit.impl.language.SimpleParsingTest;
 import consulo.virtualFileSystem.fileType.FileType;
-import jakarta.annotation.Nonnull;
 
 import java.lang.reflect.Method;
 
@@ -32,13 +31,12 @@ import java.lang.reflect.Method;
  * @since 22.05.2015
  */
 public abstract class CSharpBaseParsingTest extends SimpleParsingTest<Object> {
-    public CSharpBaseParsingTest(@Nonnull String dataPath) {
+    public CSharpBaseParsingTest(String dataPath) {
         super(dataPath, "cs");
     }
 
-    @Nonnull
     @Override
-    protected LanguageFileType getFileType(@Nonnull Context context, Object testContext) {
+    protected LanguageFileType getFileType(Context context, Object testContext) {
         return CSharpFileType.INSTANCE;
     }
 
@@ -48,9 +46,8 @@ public abstract class CSharpBaseParsingTest extends SimpleParsingTest<Object> {
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
-    public LanguageVersion resolveLanguageVersion(@Nonnull Context context, Object testContext, @Nonnull FileType fileType) {
+    public LanguageVersion resolveLanguageVersion(Context context, Object testContext, FileType fileType) {
         Method method = context.testInfo().getTestMethod().get();
         SetLanguageVersion annotation = method.getAnnotation(SetLanguageVersion.class);
         if (annotation != null) {

@@ -25,8 +25,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -44,7 +43,6 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRefWithCachedR
 		myDelegate = delegate;
 	}
 
-	@Nonnull
 	@Override
 	public String getVmQName()
 	{
@@ -52,7 +50,6 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRefWithCachedR
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -62,7 +59,7 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRefWithCachedR
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another)
+	public DotNetTypeRef doMirror(DotNetTypeRef another)
 	{
 		DotNetTypeRef anotherTypeRef = CSharpConstantTypeRef.testNumberConstant(myExpression, getPrefix(), another);
 		if(anotherTypeRef != null)
@@ -78,14 +75,12 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRefWithCachedR
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String toString()
 	{
 		return myDelegate.toString();
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	protected String getPrefix()
 	{

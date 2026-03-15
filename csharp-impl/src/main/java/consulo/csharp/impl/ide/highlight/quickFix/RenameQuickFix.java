@@ -28,7 +28,6 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -39,19 +38,19 @@ public class RenameQuickFix extends BaseIntentionAction implements SyntheticInte
   private final SmartPsiElementPointer<PsiNamedElement> myPointer;
 
   @RequiredReadAction
-  public RenameQuickFix(@Nonnull String newName, @Nonnull PsiNamedElement namedElement) {
+  public RenameQuickFix(String newName, PsiNamedElement namedElement) {
     myNewName = newName;
     myPointer = SmartPointerManager.getInstance(namedElement.getProject()).createSmartPsiElementPointer(namedElement);
     setText(LocalizeValue.localizeTODO("Rename '" + namedElement.getName() + "' to '" + myNewName + "'"));
   }
 
   @Override
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+  public boolean isAvailable(Project project, Editor editor, PsiFile file) {
     return myPointer.getElement() != null;
   }
 
   @Override
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+  public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
     PsiNamedElement element = myPointer.getElement();
     if (element == null) {
       return;

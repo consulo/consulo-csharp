@@ -22,8 +22,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayFactory;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,8 +34,7 @@ public class CSharpSimpleParameterInfo
 
 	public static ArrayFactory<CSharpSimpleParameterInfo> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpSimpleParameterInfo[count];
 
-	@Nonnull
-	public static DotNetTypeRef[] toTypeRefs(@Nonnull CSharpSimpleParameterInfo[] parameterInfos)
+	public static DotNetTypeRef[] toTypeRefs(CSharpSimpleParameterInfo[] parameterInfos)
 	{
 		if(parameterInfos.length == 0)
 		{
@@ -60,7 +58,7 @@ public class CSharpSimpleParameterInfo
 	private boolean myOptional;
 
 	@RequiredReadAction
-	public CSharpSimpleParameterInfo(int index, @Nonnull DotNetParameter parameter, @Nonnull DotNetTypeRef typeRef)
+	public CSharpSimpleParameterInfo(int index, DotNetParameter parameter, DotNetTypeRef typeRef)
 	{
 		myIndex = index;
 		myName = parameter.getName();
@@ -70,7 +68,7 @@ public class CSharpSimpleParameterInfo
 	}
 
 	@RequiredReadAction
-	public CSharpSimpleParameterInfo(int index, @Nullable String name, @Nullable PsiElement element, @Nonnull DotNetTypeRef typeRef)
+	public CSharpSimpleParameterInfo(int index, @Nullable String name, @Nullable PsiElement element, DotNetTypeRef typeRef)
 	{
 		myIndex = index;
 		myName = name;
@@ -100,13 +98,11 @@ public class CSharpSimpleParameterInfo
 		return myName;
 	}
 
-	@Nonnull
 	public String getNotNullName()
 	{
 		return myName == null ? "p" + myIndex : myName;
 	}
 
-	@Nonnull
 	public DotNetTypeRef getTypeRef()
 	{
 		return myTypeRef;

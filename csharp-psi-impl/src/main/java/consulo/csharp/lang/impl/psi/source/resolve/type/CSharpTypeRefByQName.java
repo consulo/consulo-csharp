@@ -24,35 +24,31 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.DumbService;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 26.10.14
  */
 public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult implements CSharpLikeTypeRef {
-    @Nonnull
     private final String myQualifiedName;
 
-    public CSharpTypeRefByQName(@Nonnull Project project, @Nonnull GlobalSearchScope searchScope, @Nonnull String qualifiedName) {
+    public CSharpTypeRefByQName(Project project, GlobalSearchScope searchScope, String qualifiedName) {
         super(project, searchScope);
         myQualifiedName = qualifiedName;
     }
 
     @RequiredReadAction
     @Deprecated
-    public CSharpTypeRefByQName(@Nonnull PsiElement scope, @Nonnull String qualifiedName) {
+    public CSharpTypeRefByQName(PsiElement scope, String qualifiedName) {
         this(scope.getProject(), scope.getResolveScope(), qualifiedName);
     }
 
-    @Nonnull
     @Override
     public String getVmQName() {
         return myQualifiedName;
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     protected DotNetTypeResolveResult resolveResult() {
         if (DumbService.isDumb(getProject())) {
@@ -69,12 +65,11 @@ public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult implemen
     }
 
     @Override
-    public boolean isEqualToVmQName(@Nonnull String vmQName) {
+    public boolean isEqualToVmQName(String vmQName) {
         return vmQName.equals(myQualifiedName);
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     public String toString() {
         return myQualifiedName;
@@ -93,7 +88,6 @@ public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult implemen
         return CSharpLikeTypeRef.hashCode(this);
     }
 
-    @Nonnull
     @Override
     public DotNetTypeRef getInnerTypeRef() {
         return new CSharpTypeRefByQName(myProject, myResolveScope, myQualifiedName);

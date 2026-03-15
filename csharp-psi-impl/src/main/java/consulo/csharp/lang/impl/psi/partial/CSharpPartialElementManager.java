@@ -31,7 +31,6 @@ import consulo.util.collection.ContainerUtil;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Map;
 
@@ -44,8 +43,7 @@ import java.util.Map;
 @ServiceImpl
 public class CSharpPartialElementManager implements Disposable
 {
-	@Nonnull
-	public static CSharpPartialElementManager getInstance(@Nonnull Project project)
+	public static CSharpPartialElementManager getInstance(Project project)
 	{
 		return project.getInstance(CSharpPartialElementManager.class);
 	}
@@ -54,7 +52,7 @@ public class CSharpPartialElementManager implements Disposable
 	private final Project myProject;
 
 	@Inject
-	public CSharpPartialElementManager(@Nonnull Project project)
+	public CSharpPartialElementManager(Project project)
 	{
 		myProject = project;
 		project.getMessageBus().connect().subscribe(AnyPsiChangeListener.class, new AnyPsiChangeListener()
@@ -76,8 +74,7 @@ public class CSharpPartialElementManager implements Disposable
 		});
 	}
 
-	@Nonnull
-	public CSharpTypeDeclaration getOrCreateCompositeType(@Nonnull final GlobalSearchScope scope, @Nonnull final String vmQName, @Nonnull final Collection<CSharpTypeDeclaration> typeDeclarations)
+	public CSharpTypeDeclaration getOrCreateCompositeType(final GlobalSearchScope scope, final String vmQName, final Collection<CSharpTypeDeclaration> typeDeclarations)
 	{
 		Map<String, CSharpTypeDeclaration> scopeMap = myCache.computeIfAbsent(scope, (c) -> ContainerUtil.createConcurrentWeakValueMap());
 

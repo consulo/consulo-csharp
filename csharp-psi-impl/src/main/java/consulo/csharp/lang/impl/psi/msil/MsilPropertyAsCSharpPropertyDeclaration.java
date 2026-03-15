@@ -39,8 +39,7 @@ import consulo.util.collection.SmartList;
 import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +73,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		});
 	}
 
-	public static DotNetXAccessor[] buildAccessors(@Nonnull PsiElement parent, @Nonnull List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs)
+	public static DotNetXAccessor[] buildAccessors(PsiElement parent, List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs)
 	{
 		List<DotNetXAccessor> accessors = new ArrayList<DotNetXAccessor>(2);
 
@@ -85,7 +84,6 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		return ContainerUtil.toArray(accessors, DotNetXAccessor.ARRAY_FACTORY);
 	}
 
-	@Nonnull
 	public static CSharpModifier[] getAdditionalModifiers(PsiElement parent, List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs)
 	{
 		PsiElement maybeTypeParent = parent.getParent();
@@ -139,7 +137,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitPropertyDeclaration(this);
 	}
@@ -164,14 +162,12 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetXAccessor[] getAccessors()
 	{
 		return myAccessors;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -201,7 +197,6 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		return myTypeForImplementValue.getValue();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{

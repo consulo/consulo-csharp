@@ -23,7 +23,6 @@ import consulo.language.ast.IElementType;
 import consulo.language.ast.TokenSet;
 import consulo.language.parser.PsiBuilder;
 
-import jakarta.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**
@@ -34,7 +33,7 @@ public class UsingStatementParsing extends SharedParsingHelpers
 {
 	public static final TokenSet ourStoppers = TokenSet.orSet(ourSemicolonSet, CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START, TokenSet.create(DELEGATE_KEYWORD, CONST_KEYWORD));
 
-	public static void parseUsing(@Nonnull CSharpBuilderWrapper builder, @Nonnull PsiBuilder.Marker marker, @Nonnull Consumer<CSharpBuilderWrapper> consumer)
+	public static void parseUsing(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, Consumer<CSharpBuilderWrapper> consumer)
 	{
 		consumer.accept(builder);
 

@@ -26,7 +26,6 @@ import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,9 +41,8 @@ public class CS0418 extends CompilerCheck<DotNetTypeDeclaration>
 	};
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public List<? extends HighlightInfoFactory> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetTypeDeclaration element)
+	public List<? extends HighlightInfoFactory> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetTypeDeclaration element)
 	{
 		if(element.hasModifier(CSharpModifier.ABSTRACT))
 		{

@@ -27,7 +27,6 @@ import consulo.language.editor.Pass;
 import consulo.language.editor.gutter.LineMarkerInfo;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
-import jakarta.annotation.Nonnull;
 
 import java.util.function.Consumer;
 
@@ -39,7 +38,7 @@ public class RecursiveCallCollector implements LineMarkerCollector
 {
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @Nonnull Consumer<LineMarkerInfo> consumer)
+	public void collect(PsiElement psiElement, Consumer<LineMarkerInfo> consumer)
 	{
 		if(psiElement.getNode().getElementType() == CSharpTokens.IDENTIFIER && psiElement.getParent() instanceof CSharpReferenceExpression &&
 				psiElement.getParent().getParent() instanceof CSharpMethodCallExpressionImpl)

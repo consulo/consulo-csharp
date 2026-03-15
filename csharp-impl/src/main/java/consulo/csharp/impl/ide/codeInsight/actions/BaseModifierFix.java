@@ -30,8 +30,7 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -50,14 +49,12 @@ public abstract class BaseModifierFix implements SyntheticIntentionAction {
         this(new DotNetModifier[]{modifier}, parent);
     }
 
-    public abstract boolean isValidCondition(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier);
+    public abstract boolean isValidCondition(DotNetModifierList modifierList, DotNetModifier modifier);
 
-    @Nonnull
     public abstract LocalizeValue getActionName();
 
-    public abstract void doAction(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier);
+    public abstract void doAction(DotNetModifierList modifierList, DotNetModifier modifier);
 
-    @Nonnull
     @Override
     public LocalizeValue getText() {
         if (myModifiers.length == 1) {
@@ -71,7 +68,7 @@ public abstract class BaseModifierFix implements SyntheticIntentionAction {
     }
 
     @Override
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile psiFile) {
         DotNetModifierList modifierList = getModifierList();
         if (modifierList == null) {
             return false;
@@ -87,7 +84,7 @@ public abstract class BaseModifierFix implements SyntheticIntentionAction {
     }
 
     @Override
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
         WriteCommandAction.runWriteCommandAction(project, () ->
         {
             DotNetModifierList modifierList = getModifierList();

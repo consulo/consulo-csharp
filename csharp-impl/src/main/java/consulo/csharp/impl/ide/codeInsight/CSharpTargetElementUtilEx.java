@@ -25,9 +25,8 @@ import consulo.language.editor.TargetElementUtilExtender;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiReference;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Set;
 
 /**
@@ -40,7 +39,7 @@ public class CSharpTargetElementUtilEx implements TargetElementUtilExtender
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public PsiElement modifyReferenceOrReferencedElement(@Nullable PsiElement refElement, @Nonnull PsiFile file, @Nonnull Editor editor, @Nonnull Set<String> flags, int offset)
+	public PsiElement modifyReferenceOrReferencedElement(@Nullable PsiElement refElement, PsiFile file, Editor editor, Set<String> flags, int offset)
 	{
 		PsiElement target = refElement;
 		CSharpReferenceExpression referenceExpression = refElement instanceof CSharpReferenceExpression ? (CSharpReferenceExpression) refElement : null;

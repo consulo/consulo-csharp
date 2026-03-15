@@ -31,9 +31,8 @@ import consulo.language.psi.PsiElement;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.MultiMap;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -84,12 +83,11 @@ public abstract class MapElementGroupCollector<K, E extends PsiElement> extends 
 		}
 	};
 
-	public MapElementGroupCollector(@Nonnull CSharpAdditionalMemberProvider.Target target, @Nonnull CSharpBaseResolveContext<?> context)
+	public MapElementGroupCollector(CSharpAdditionalMemberProvider.Target target, CSharpBaseResolveContext<?> context)
 	{
 		super(target, context);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	@SuppressWarnings("unchecked")
 	private MultiMap<K, E> calcElements()

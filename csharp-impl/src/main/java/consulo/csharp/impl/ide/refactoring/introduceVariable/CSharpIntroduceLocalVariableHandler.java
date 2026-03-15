@@ -51,8 +51,7 @@ import consulo.ui.ex.awt.JBUI;
 import consulo.ui.ex.awt.NonFocusableCheckBox;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -73,9 +72,8 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	protected Collection<String> getSuggestedNames(@Nonnull DotNetExpression initializer)
+	protected Collection<String> getSuggestedNames(DotNetExpression initializer)
 	{
 		Collection<String> suggestedNames = super.getSuggestedNames(initializer);
 		if(initializer instanceof CSharpMethodCallExpressionImpl)
@@ -94,7 +92,6 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected String getDeclarationString(CSharpIntroduceOperation operation, String initExpression)
 	{
@@ -112,7 +109,6 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 		return builder.toString();
 	}
 
-	@Nonnull
 	@Override
 	protected InplaceVariableIntroducer<PsiElement> createVariableIntroducer(CSharpLocalVariable target, CSharpIntroduceOperation operation, List<PsiElement> occurrences)
 	{
@@ -306,7 +302,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 	}
 
 	@RequiredReadAction
-	private static void buildVariableTypeString(@Nonnull Project project, @Nonnull DotNetExpression initializer, @Nonnull StringBuilder builder, boolean value)
+	private static void buildVariableTypeString(Project project, DotNetExpression initializer, StringBuilder builder, boolean value)
 	{
 		if(value && canUseVar(initializer))
 		{
@@ -338,7 +334,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 	}
 
 	@RequiredReadAction
-	public static boolean canUseVar(@Nonnull DotNetExpression initializer)
+	public static boolean canUseVar(DotNetExpression initializer)
 	{
 		if(!CSharpModuleUtil.findLanguageVersion(initializer).isAtLeast(CSharpLanguageVersion._3_0))
 		{

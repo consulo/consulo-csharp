@@ -19,7 +19,6 @@ package consulo.csharp.lang.impl.psi.source.resolve.methodResolving;
 import consulo.csharp.lang.impl.psi.source.resolve.WeightUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.util.dataholder.UserDataHolderBase;
-import jakarta.annotation.Nonnull;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,13 +42,11 @@ public class MethodResolvePriorityInfo extends UserDataHolderBase
 		myArguments = arguments;
 	}
 
-	@Nonnull
 	public MethodResolvePriorityInfo dupNoResult(int weight)
 	{
 		return new MethodResolvePriorityInfo(false, getWeight() + weight, getArguments());
 	}
 
-	@Nonnull
 	public MethodResolvePriorityInfo dupWithResult(int weight)
 	{
 		return new MethodResolvePriorityInfo(myValid, getWeight() + weight, getArguments());

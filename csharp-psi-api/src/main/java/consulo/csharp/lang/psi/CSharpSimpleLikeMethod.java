@@ -20,7 +20,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.util.collection.ArrayFactory;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,11 +31,9 @@ public interface CSharpSimpleLikeMethod
 
 	public static ArrayFactory<CSharpSimpleLikeMethod> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpSimpleLikeMethod[count];
 
-	@Nonnull
 	@RequiredReadAction
 	CSharpSimpleParameterInfo[] getParameterInfos();
 
-	@Nonnull
 	@RequiredReadAction
 	DotNetTypeRef getReturnTypeRef();
 }

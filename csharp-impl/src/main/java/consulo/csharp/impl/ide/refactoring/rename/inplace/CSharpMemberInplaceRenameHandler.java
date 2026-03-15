@@ -29,7 +29,6 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.util.PsiTreeUtil;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -53,9 +52,8 @@ public class CSharpMemberInplaceRenameHandler extends MemberInplaceRenameHandler
 	}
 
 	@Override
-	@Nonnull
 	@RequiredReadAction
-	protected MemberInplaceRenamer createMemberRenamer(@Nonnull PsiElement element, PsiNameIdentifierOwner elementToRename, Editor editor)
+	protected MemberInplaceRenamer createMemberRenamer(PsiElement element, PsiNameIdentifierOwner elementToRename, Editor editor)
 	{
 		return new CSharpMemberInplaceRenamer(elementToRename, element, editor);
 	}

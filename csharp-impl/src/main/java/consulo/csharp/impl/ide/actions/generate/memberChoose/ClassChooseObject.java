@@ -20,7 +20,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -34,7 +33,6 @@ public class ClassChooseObject extends CSharpMemberChooseObject<DotNetTypeDeclar
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getPresentationText()
 	{

@@ -21,7 +21,6 @@ import consulo.csharp.lang.CSharpLanguage;
 import consulo.language.Language;
 import consulo.language.editor.completion.SkipAutopopupInStrings;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,7 +29,6 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class CSharpSkipAutopopupInStrings extends SkipAutopopupInStrings
 {
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

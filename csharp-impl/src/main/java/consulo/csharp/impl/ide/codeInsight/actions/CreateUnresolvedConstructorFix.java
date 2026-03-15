@@ -30,8 +30,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -42,9 +41,8 @@ public class CreateUnresolvedConstructorFix extends CreateUnresolvedLikeMethodFi
         super(expression);
     }
 
-    @Nonnull
     @Override
-    public PsiElement getElementForAfterAdd(@Nonnull DotNetNamedElement[] elements, @Nonnull CSharpBodyWithBraces targetForGenerate) {
+    public PsiElement getElementForAfterAdd(DotNetNamedElement[] elements, CSharpBodyWithBraces targetForGenerate) {
         PsiElement last = targetForGenerate.getLeftBrace();
         for (DotNetNamedElement element : elements) {
             if (element instanceof CSharpConstructorDeclaration) {
@@ -83,7 +81,7 @@ public class CreateUnresolvedConstructorFix extends CreateUnresolvedLikeMethodFi
 
     @RequiredReadAction
     @Override
-    public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @Nonnull PsiFile file, @Nonnull Template template) {
+    public void buildTemplate(CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, PsiFile file, Template template) {
         template.addTextSegment("public ");
         template.addTextSegment(myReferenceName);
         buildParameterList(context, file, template);

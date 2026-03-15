@@ -31,8 +31,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 import consulo.language.psi.util.PsiTreeUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,13 +39,13 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpDictionaryInitializerImpl extends CSharpElementImpl implements CSharpCallArgumentList, CSharpCallArgumentListOwner
 {
-	public CSharpDictionaryInitializerImpl(@Nonnull IElementType elementType)
+	public CSharpDictionaryInitializerImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitDictionaryInitializer(this);
 	}
@@ -63,7 +62,6 @@ public class CSharpDictionaryInitializerImpl extends CSharpElementImpl implement
 		return false;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -83,7 +81,6 @@ public class CSharpDictionaryInitializerImpl extends CSharpElementImpl implement
 		return CSharpResolveUtil.findFirstValidElement(resolveResults);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public ResolveResult[] multiResolve(boolean b)
@@ -114,7 +111,6 @@ public class CSharpDictionaryInitializerImpl extends CSharpElementImpl implement
 		return ResolveResult.EMPTY_ARRAY;
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
@@ -144,21 +140,18 @@ public class CSharpDictionaryInitializerImpl extends CSharpElementImpl implement
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpCallArgument[] getArguments()
 	{
 		return findChildrenByClass(CSharpCallArgument.class);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpFieldOrPropertySet[] getSets()
 	{
 		return CSharpFieldOrPropertySet.EMPTY_ARRAY;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetExpression[] getExpressions()
 	{

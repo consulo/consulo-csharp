@@ -41,7 +41,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.function.Consumer;
 
@@ -58,7 +57,7 @@ public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 
 	@RequiredReadAction
 	@Override
-	public void processAdditionalMembers(@Nonnull DotNetElement element, @Nonnull DotNetGenericExtractor extractor, @Nonnull Consumer<PsiElement> consumer)
+	public void processAdditionalMembers(DotNetElement element, DotNetGenericExtractor extractor, Consumer<PsiElement> consumer)
 	{
 		if(element instanceof CSharpTypeDeclaration typeDeclaration)
 		{
@@ -90,7 +89,6 @@ public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 		}
 	}
 
-	@Nonnull
 	@Override
 	public Target getTarget()
 	{
@@ -99,11 +97,11 @@ public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 
 	@RequiredReadAction
 	private void buildNullableConversionMethods(Project project,
-												@Nonnull DotNetTypeRef selfTypeRef,
+												DotNetTypeRef selfTypeRef,
 												GlobalSearchScope resolveScope,
-												@Nonnull CSharpTypeDeclaration typeDeclaration,
-												@Nonnull DotNetGenericExtractor extractor,
-												@Nonnull Consumer<PsiElement> consumer)
+												CSharpTypeDeclaration typeDeclaration,
+												DotNetGenericExtractor extractor,
+												Consumer<PsiElement> consumer)
 	{
 		DotNetGenericParameter[] genericParameters = typeDeclaration.getGenericParameters();
 		if(genericParameters.length == 0)
@@ -135,12 +133,12 @@ public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 		}
 	}
 
-	private static void buildConversionMethods(@Nonnull Project project,
+	private static void buildConversionMethods(Project project,
 											   GlobalSearchScope resolveScope,
-											   @Nonnull DotNetTypeRef selfTypeRef,
-											   @Nonnull DotNetTypeDeclaration parent,
-											   @Nonnull Collection<OperatorStubsLoader.Operator> operators,
-											   @Nonnull Consumer<PsiElement> consumer)
+											   DotNetTypeRef selfTypeRef,
+											   DotNetTypeDeclaration parent,
+											   Collection<OperatorStubsLoader.Operator> operators,
+											   Consumer<PsiElement> consumer)
 	{
 		if(operators.isEmpty())
 		{

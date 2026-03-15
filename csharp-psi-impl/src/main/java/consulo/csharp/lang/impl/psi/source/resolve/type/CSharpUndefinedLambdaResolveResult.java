@@ -23,8 +23,7 @@ import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -49,7 +48,6 @@ public class CSharpUndefinedLambdaResolveResult implements CSharpLambdaResolveRe
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
@@ -57,7 +55,6 @@ public class CSharpUndefinedLambdaResolveResult implements CSharpLambdaResolveRe
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -71,7 +68,6 @@ public class CSharpUndefinedLambdaResolveResult implements CSharpLambdaResolveRe
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetGenericExtractor getGenericExtractor()
 	{

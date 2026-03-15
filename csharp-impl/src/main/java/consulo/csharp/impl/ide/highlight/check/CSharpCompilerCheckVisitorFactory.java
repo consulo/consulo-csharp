@@ -23,7 +23,6 @@ import consulo.language.editor.rawHighlight.HighlightVisitorFactory;
 import consulo.language.psi.PsiFile;
 import consulo.msil.impl.representation.fileSystem.MsilFileRepresentationVirtualFile;
 import consulo.virtualFileSystem.VirtualFile;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -33,13 +32,12 @@ import jakarta.annotation.Nonnull;
 public class CSharpCompilerCheckVisitorFactory implements HighlightVisitorFactory
 {
 	@Override
-	public boolean suitableForFile(@Nonnull PsiFile psiFile)
+	public boolean suitableForFile(PsiFile psiFile)
 	{
 		VirtualFile virtualFile = psiFile.getVirtualFile();
 		return !(virtualFile instanceof MsilFileRepresentationVirtualFile) && psiFile instanceof CSharpFile;
 	}
 
-	@Nonnull
 	@Override
 	public HighlightVisitor createVisitor()
 	{

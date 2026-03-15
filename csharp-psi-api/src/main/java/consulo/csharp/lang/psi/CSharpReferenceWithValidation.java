@@ -4,7 +4,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -12,9 +11,8 @@ import jakarta.annotation.Nonnull;
  */
 public interface CSharpReferenceWithValidation extends PsiReference
 {
-	@Nonnull
 	@RequiredReadAction
-	default LocalizeValue getErrorMessage(@Nonnull PsiElement element)
+	default LocalizeValue getErrorMessage(PsiElement element)
 	{
 		return LocalizeValue.localizeTODO("Not resolved");
 	}

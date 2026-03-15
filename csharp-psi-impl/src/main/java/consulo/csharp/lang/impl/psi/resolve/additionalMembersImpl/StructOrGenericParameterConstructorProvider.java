@@ -36,7 +36,6 @@ import consulo.language.psi.PsiElement;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.function.Condition;
 
-import jakarta.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**
@@ -48,9 +47,9 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 {
 	@RequiredReadAction
 	@Override
-	public void processAdditionalMembers(@Nonnull DotNetElement element,
-			@Nonnull DotNetGenericExtractor extractor,
-			@Nonnull Consumer<PsiElement> consumer)
+	public void processAdditionalMembers(DotNetElement element,
+			DotNetGenericExtractor extractor,
+			Consumer<PsiElement> consumer)
 	{
 		if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isStruct())
 		{
@@ -93,7 +92,6 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 		}
 	}
 
-	@Nonnull
 	@Override
 	public Target getTarget()
 	{
@@ -101,9 +99,9 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 	}
 
 	@RequiredReadAction
-	private static void buildDefaultConstructor(@Nonnull DotNetNamedElement element,
-			@Nonnull DotNetGenericExtractor extractor,
-			@Nonnull Consumer<PsiElement> consumer)
+	private static void buildDefaultConstructor(DotNetNamedElement element,
+			DotNetGenericExtractor extractor,
+			Consumer<PsiElement> consumer)
 	{
 		String name = element.getName();
 		if(name == null)
@@ -126,7 +124,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 	}
 
 	@RequiredReadAction
-	public static CSharpLightConstructorDeclarationBuilder buildDefaultConstructor(@Nonnull DotNetNamedElement element, @Nonnull String name)
+	public static CSharpLightConstructorDeclarationBuilder buildDefaultConstructor(DotNetNamedElement element, String name)
 	{
 		CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(element);
 		builder.addModifier(CSharpModifier.PUBLIC);

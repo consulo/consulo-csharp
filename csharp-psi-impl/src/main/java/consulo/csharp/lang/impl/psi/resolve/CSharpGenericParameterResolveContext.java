@@ -22,7 +22,6 @@ import consulo.csharp.lang.impl.psi.CSharpGenericConstraintUtil;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import jakarta.annotation.Nonnull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +32,7 @@ import java.util.List;
  */
 public class CSharpGenericParameterResolveContext extends CSharpBaseResolveContext<DotNetGenericParameter> {
     @RequiredReadAction
-    public CSharpGenericParameterResolveContext(@Nonnull DotNetGenericParameter element) {
+    public CSharpGenericParameterResolveContext(DotNetGenericParameter element) {
         super(element, DotNetGenericExtractor.EMPTY, null);
     }
 
@@ -43,7 +42,6 @@ public class CSharpGenericParameterResolveContext extends CSharpBaseResolveConte
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     protected List<DotNetTypeRef> getExtendTypeRefs() {
         return Arrays.asList(CSharpGenericConstraintUtil.getExtendTypes(myElement));

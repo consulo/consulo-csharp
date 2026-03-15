@@ -21,9 +21,8 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.navigation.NavigationItem;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -36,7 +35,6 @@ public interface CSharpConversionMethodDeclaration extends DotNetLikeMethodDecla
 	 */
 	boolean isImplicit();
 
-	@Nonnull
 	DotNetTypeRef getConversionTypeRef();
 
 	@Nullable

@@ -20,8 +20,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetReferenceExpression;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -41,5 +40,5 @@ public interface CSharpNamespaceProvider extends DotNetElement
 	DotNetReferenceExpression getNamespaceReference();
 
 	@RequiredWriteAction
-	void setNamespace(@Nonnull String namespace);
+	void setNamespace(String namespace);
 }

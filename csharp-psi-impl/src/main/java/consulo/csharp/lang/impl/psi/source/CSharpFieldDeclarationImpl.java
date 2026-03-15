@@ -32,8 +32,7 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 
@@ -44,16 +43,16 @@ import java.lang.ref.WeakReference;
 public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<DotNetFieldDeclaration>> implements CSharpFieldDeclaration {
     private volatile WeakReference<DotNetExpression> myInitializerExpression;
 
-    public CSharpFieldDeclarationImpl(@Nonnull ASTNode node) {
+    public CSharpFieldDeclarationImpl(ASTNode node) {
         super(node);
     }
 
-    public CSharpFieldDeclarationImpl(@Nonnull CSharpVariableDeclStub<DotNetFieldDeclaration> stub) {
+    public CSharpFieldDeclarationImpl(CSharpVariableDeclStub<DotNetFieldDeclaration> stub) {
         super(stub, CSharpStubElements.FIELD_DECLARATION);
     }
 
     @Override
-    public void accept(@Nonnull CSharpElementVisitor visitor) {
+    public void accept(CSharpElementVisitor visitor) {
         visitor.visitFieldDeclaration(this);
     }
 
@@ -65,7 +64,6 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer) {
         DotNetTypeRef defaultTypeRef = super.toTypeRefImpl(resolveFromInitializer);

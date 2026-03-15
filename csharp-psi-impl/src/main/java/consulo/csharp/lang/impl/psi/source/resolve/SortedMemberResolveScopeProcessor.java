@@ -21,7 +21,6 @@ import consulo.application.util.function.CommonProcessors;
 import consulo.language.psi.ResolveResult;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.function.Predicates;
-import jakarta.annotation.Nonnull;
 
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -36,9 +35,9 @@ public class SortedMemberResolveScopeProcessor extends MemberResolveScopeProcess
     private final Predicate<ResolveResult> myOriginalProcessor;
     private Comparator<ResolveResult> myComparator;
 
-    public SortedMemberResolveScopeProcessor(@Nonnull CSharpResolveOptions options,
-                                             @Nonnull Predicate<ResolveResult> resultProcessor,
-                                             @Nonnull Comparator<ResolveResult> comparator,
+    public SortedMemberResolveScopeProcessor(CSharpResolveOptions options,
+                                             Predicate<ResolveResult> resultProcessor,
+                                             Comparator<ResolveResult> comparator,
                                              ExecuteTarget[] targets) {
         super(options, Predicates.<ResolveResult>alwaysTrue(), targets);
         myOriginalProcessor = resultProcessor;

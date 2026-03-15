@@ -47,8 +47,7 @@ import consulo.project.Project;
 import consulo.util.collection.MultiMap;
 import consulo.util.lang.Pair;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -66,13 +65,13 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl> {
     }
 
     @Override
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       return myElementPointer.getElement() != null;
     }
 
     @Override
     @RequiredWriteAction
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       CSharpBinaryExpressionImpl element = myElementPointer.getElement();
       if (element == null) {
         return;
@@ -121,9 +120,9 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl> {
   @RequiredReadAction
   @Nullable
   @Override
-  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull CSharpBinaryExpressionImpl element) {
+  public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        CSharpBinaryExpressionImpl element) {
     CSharpOperatorReferenceImpl operatorElement = element.getOperatorElement();
     IElementType operatorElementType = operatorElement.getOperatorElementType();
     if (operatorElementType == CSharpTokens.EQEQ || operatorElementType == CSharpTokens.NTEQ) {

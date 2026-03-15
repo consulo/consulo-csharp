@@ -24,7 +24,6 @@ import consulo.language.psi.stub.AbstractStubIndex;
 import consulo.language.psi.stub.StubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
 
-import jakarta.annotation.Nonnull;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -53,26 +52,24 @@ public class AttributeListIndex extends AbstractStubIndex<DotNetAttributeTargetT
 		}
 
 		@Override
-		public void save(@Nonnull final DataOutput storage, @Nonnull final DotNetAttributeTargetType value) throws IOException
+		public void save(final DataOutput storage, final DotNetAttributeTargetType value) throws IOException
 		{
 			storage.writeInt(value.ordinal());
 		}
 
 		@Override
-		public DotNetAttributeTargetType read(@Nonnull final DataInput storage) throws IOException
+		public DotNetAttributeTargetType read(final DataInput storage) throws IOException
 		{
 			int i = storage.readInt();
 			return DotNetAttributeTargetType.values()[i];
 		}
 	}
 
-	@Nonnull
 	public static AttributeListIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtensionOrFail(AttributeListIndex.class);
 	}
 
-	@Nonnull
 	@Override
 	public StubIndexKey<DotNetAttributeTargetType, CSharpAttributeList> getKey()
 	{
@@ -85,7 +82,6 @@ public class AttributeListIndex extends AbstractStubIndex<DotNetAttributeTargetT
 		return 1;
 	}
 
-	@Nonnull
 	@Override
 	public KeyDescriptor<DotNetAttributeTargetType> getKeyDescriptor()
 	{

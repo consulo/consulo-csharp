@@ -21,9 +21,8 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,7 +39,6 @@ public class CSharpLightFieldDeclaration extends CSharpLightVariable<DotNetField
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -48,7 +46,7 @@ public class CSharpLightFieldDeclaration extends CSharpLightVariable<DotNetField
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitFieldDeclaration(this);
 	}

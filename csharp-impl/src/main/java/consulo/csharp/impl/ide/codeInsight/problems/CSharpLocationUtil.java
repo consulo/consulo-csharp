@@ -30,8 +30,7 @@ import consulo.msil.impl.representation.fileSystem.MsilFileRepresentationVirtual
 import consulo.project.Project;
 import consulo.virtualFileSystem.VirtualFile;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,7 +39,7 @@ import jakarta.annotation.Nullable;
 public class CSharpLocationUtil
 {
 	@RequiredReadAction
-	public static boolean isValidLocation(@Nonnull Project project, @Nullable VirtualFile virtualFile)
+	public static boolean isValidLocation(Project project, @Nullable VirtualFile virtualFile)
 	{
 		if(virtualFile == null || virtualFile.getFileType() != CSharpFileType.INSTANCE)
 		{

@@ -26,22 +26,20 @@ import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
  * @since 17.05.14
  */
 public class CSharpWithParenthesesSurrounder implements Surrounder {
-    @Nonnull
     @Override
     public LocalizeValue getTemplateDescription() {
         return LocalizeValue.localizeTODO("(expression)");
     }
 
     @Override
-    public boolean isApplicable(@Nonnull PsiElement[] elements) {
+    public boolean isApplicable(PsiElement[] elements) {
         return true;
     }
 
@@ -49,7 +47,7 @@ public class CSharpWithParenthesesSurrounder implements Surrounder {
     @Override
     @RequiredWriteAction
     public TextRange surroundElements(
-        @Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiElement[] elements) throws IncorrectOperationException {
+        Project project, Editor editor, PsiElement[] elements) throws IncorrectOperationException {
         DotNetExpression oldExpression = (DotNetExpression) elements[0];
 
         DotNetExpression newExpression = CSharpFileFactory.createExpression(project, "(" + oldExpression.getText() + ")");

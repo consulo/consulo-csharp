@@ -29,8 +29,7 @@ import consulo.language.psi.PsiModificationTrackerListener;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 import consulo.util.lang.Pair;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -47,7 +46,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 @ServiceAPI(ComponentScope.PROJECT)
 @ServiceImpl
 public class CSharpInheritableCheckerCacher implements Disposable {
-    public static CSharpInheritableCheckerCacher getInstance(@Nonnull Project project) {
+    public static CSharpInheritableCheckerCacher getInstance(Project project) {
         return project.getInstance(CSharpInheritableCheckerCacher.class);
     }
 
@@ -62,7 +61,6 @@ public class CSharpInheritableCheckerCacher implements Disposable {
         });
     }
 
-    @Nonnull
     @RequiredReadAction
     public CSharpTypeUtil.InheritResult getOrCheck(DotNetTypeRef top,
                                                    DotNetTypeRef target,

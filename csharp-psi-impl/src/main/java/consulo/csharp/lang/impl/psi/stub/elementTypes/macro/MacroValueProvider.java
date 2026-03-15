@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.stub.elementTypes.macro;
 
-import jakarta.annotation.Nonnull;
 
 import java.util.Set;
 
@@ -33,7 +32,7 @@ public class MacroValueProvider
 		myVariables = variables;
 	}
 
-	public boolean getMacroValueProperty(@Nonnull String text)
+	public boolean getMacroValueProperty(String text)
 	{
 		return myVariables.contains(text);
 	}

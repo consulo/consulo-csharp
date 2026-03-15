@@ -27,7 +27,6 @@ import consulo.csharp.lang.impl.psi.source.*;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.language.ast.IElementType;
 import consulo.language.ast.TokenSet;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -312,21 +311,21 @@ public interface CSharpElements {
 
     IElementType STATEMENT_METHOD_BODY = new BaseMethodBodyLazyElementType("CSHARP_STATEMENT_METHOD_BODY") {
         @Override
-        protected void parse(@Nonnull CSharpBuilderWrapper wrapper, @Nonnull ModifierSet set) {
+        protected void parse(CSharpBuilderWrapper wrapper, ModifierSet set) {
             StatementParsing.parse(wrapper, set);
         }
     };
 
     IElementType EMPTY_METHOD_BODY = new BaseMethodBodyLazyElementType("CSHARP_EMPTY_METHOD_BODY") {
         @Override
-        protected void parse(@Nonnull CSharpBuilderWrapper wrapper, @Nonnull ModifierSet set) {
+        protected void parse(CSharpBuilderWrapper wrapper, ModifierSet set) {
             SharedParsingHelpers.expect(wrapper, CSharpTokens.SEMICOLON, "';' expected");
         }
     };
 
     IElementType EXPRESSION_METHOD_BODY = new BaseMethodBodyLazyElementType("CSHARP_EXPRESSION_METHOD_BODY") {
         @Override
-        protected void parse(@Nonnull CSharpBuilderWrapper wrapper, @Nonnull ModifierSet set) {
+        protected void parse(CSharpBuilderWrapper wrapper, ModifierSet set) {
             // skip =>
             wrapper.advanceLexer();
 

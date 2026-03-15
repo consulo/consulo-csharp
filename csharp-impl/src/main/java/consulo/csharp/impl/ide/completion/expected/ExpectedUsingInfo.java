@@ -35,8 +35,7 @@ import consulo.language.psi.resolve.BaseScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -50,7 +49,7 @@ public class ExpectedUsingInfo
 {
 	@RequiredReadAction
 	@Nullable
-	public static ExpectedUsingInfo calculateFrom(@Nonnull PsiElement element)
+	public static ExpectedUsingInfo calculateFrom(PsiElement element)
 	{
 		Set<PsiElement> elements = new LinkedHashSet<>();
 
@@ -134,13 +133,13 @@ public class ExpectedUsingInfo
 
 	private final Set<PsiElement> myElements;
 
-	public ExpectedUsingInfo(@Nonnull Set<PsiElement> elements)
+	public ExpectedUsingInfo(Set<PsiElement> elements)
 	{
 		myElements = elements;
 	}
 
 	@RequiredWriteAction
-	public void insertUsingBefore(@Nonnull PsiElement element)
+	public void insertUsingBefore(PsiElement element)
 	{
 		boolean useLanguageDataTypes = CSharpCodeGenerationSettings.getInstance(element.getProject()).USE_LANGUAGE_DATA_TYPES;
 
@@ -188,7 +187,7 @@ public class ExpectedUsingInfo
 		{
 			@Override
 			@RequiredReadAction
-			public boolean execute(@Nonnull PsiElement psiElement, ResolveState resolveState)
+			public boolean execute(PsiElement psiElement, ResolveState resolveState)
 			{
 				if(psiElement instanceof CSharpUsingTypeStatement)
 				{

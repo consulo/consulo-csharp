@@ -26,7 +26,6 @@ import consulo.language.Language;
 import consulo.language.editor.moveLeftRight.MoveElementLeftRightHandler;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -36,9 +35,8 @@ import jakarta.annotation.Nonnull;
 public class CSharpMoveElementLeftRightHandler implements MoveElementLeftRightHandler
 {
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public PsiElement[] getMovableSubElements(@Nonnull PsiElement psiElement)
+	public PsiElement[] getMovableSubElements(PsiElement psiElement)
 	{
 		if(psiElement instanceof CSharpCallArgumentList callArgumentList)
 		{
@@ -55,7 +53,6 @@ public class CSharpMoveElementLeftRightHandler implements MoveElementLeftRightHa
 		return PsiElement.EMPTY_ARRAY;
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

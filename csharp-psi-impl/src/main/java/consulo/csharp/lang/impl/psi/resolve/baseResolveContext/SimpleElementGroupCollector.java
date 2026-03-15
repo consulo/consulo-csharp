@@ -31,8 +31,7 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
 import consulo.util.lang.ref.Ref;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -64,13 +63,12 @@ public abstract class SimpleElementGroupCollector<E extends PsiElement> extends 
 
 	protected final Object myKey;
 
-	public SimpleElementGroupCollector(@Nonnull Object key, @Nonnull CSharpAdditionalMemberProvider.Target target, @Nonnull CSharpBaseResolveContext<?> context)
+	public SimpleElementGroupCollector(Object key, CSharpAdditionalMemberProvider.Target target, CSharpBaseResolveContext<?> context)
 	{
 		super(target, context);
 		myKey = key;
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	@SuppressWarnings("unchecked")
 	private Collection<E> calcElements()

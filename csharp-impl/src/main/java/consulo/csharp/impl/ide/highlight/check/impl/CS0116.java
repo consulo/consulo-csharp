@@ -16,7 +16,7 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 
 import consulo.language.psi.PsiElement;
@@ -28,7 +28,6 @@ import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetQualifiedElement;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -39,7 +38,7 @@ public class CS0116 extends CompilerCheck<DotNetQualifiedElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetQualifiedElement element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetQualifiedElement element)
 	{
 		if(element instanceof CSharpTypeDeclaration ||
 				element instanceof CSharpNamespaceDeclaration ||

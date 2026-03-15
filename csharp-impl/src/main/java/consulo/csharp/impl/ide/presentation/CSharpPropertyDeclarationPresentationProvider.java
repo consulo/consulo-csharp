@@ -18,7 +18,6 @@ package consulo.csharp.impl.ide.presentation;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -27,7 +26,6 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class CSharpPropertyDeclarationPresentationProvider extends CSharpElementPresentationProviderBase<CSharpPropertyDeclaration>
 {
-	@Nonnull
 	@Override
 	public Class<CSharpPropertyDeclaration> getItemClass()
 	{

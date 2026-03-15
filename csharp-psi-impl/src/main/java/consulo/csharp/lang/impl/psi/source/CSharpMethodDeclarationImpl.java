@@ -36,24 +36,23 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiUtilCore;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.util.lang.BitUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
  * @since 28.11.13.
  */
 public class CSharpMethodDeclarationImpl extends CSharpStubLikeMethodDeclarationImpl<CSharpMethodDeclStub> implements CSharpMethodDeclaration {
-    public CSharpMethodDeclarationImpl(@Nonnull ASTNode node) {
+    public CSharpMethodDeclarationImpl(ASTNode node) {
         super(node);
     }
 
-    public CSharpMethodDeclarationImpl(@Nonnull CSharpMethodDeclStub stub, @Nonnull IStubElementType<? extends CSharpMethodDeclStub, ?> nodeType) {
+    public CSharpMethodDeclarationImpl(CSharpMethodDeclStub stub, IStubElementType<? extends CSharpMethodDeclStub, ?> nodeType) {
         super(stub, nodeType);
     }
 
     @Override
-    public void accept(@Nonnull CSharpElementVisitor visitor) {
+    public void accept(CSharpElementVisitor visitor) {
         visitor.visitMethodDeclaration(this);
     }
 
@@ -147,7 +146,6 @@ public class CSharpMethodDeclarationImpl extends CSharpStubLikeMethodDeclaration
         return getStubOrPsiChild(CSharpStubElements.GENERIC_CONSTRAINT_LIST);
     }
 
-    @Nonnull
     @Override
     public CSharpGenericConstraint[] getGenericConstraints() {
         CSharpGenericConstraintList genericConstraintList = getGenericConstraintList();
@@ -160,7 +158,6 @@ public class CSharpMethodDeclarationImpl extends CSharpStubLikeMethodDeclaration
         return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 1);
     }
 
-    @Nonnull
     @Override
     public DotNetTypeRef getTypeRefForImplement() {
         DotNetType typeForImplement = getTypeForImplement();

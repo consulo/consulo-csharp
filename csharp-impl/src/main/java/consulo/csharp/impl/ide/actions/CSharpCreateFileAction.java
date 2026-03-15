@@ -53,8 +53,7 @@ import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.fileType.FileType;
 import consulo.virtualFileSystem.util.VirtualFileUtil;
 import consulo.virtualFileSystem.util.VirtualFileVisitor;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -208,10 +207,10 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction {
     }
 
     private static void addKind(CreateFileFromTemplateDialog.Builder builder,
-                                @Nonnull Set<String> used,
-                                @Nonnull LocalizeValue kind,
+                                Set<String> used,
+                                LocalizeValue kind,
                                 @Nullable Image icon,
-                                @Nonnull String templateName) {
+                                String templateName) {
         used.add(templateName);
 
         builder.addKind(kind, icon, templateName);
@@ -239,7 +238,7 @@ public class CSharpCreateFileAction extends CreateFileFromTemplateAction {
 
         VirtualFileUtil.visitChildrenRecursively(moduleDir, new VirtualFileVisitor<>() {
             @Override
-            public boolean visitFile(@Nonnull VirtualFile file) {
+            public boolean visitFile(VirtualFile file) {
                 if (file.getName().equals(CSharpAssemblyConstants.FileName)) {
                     ref.set(file);
                     return false;

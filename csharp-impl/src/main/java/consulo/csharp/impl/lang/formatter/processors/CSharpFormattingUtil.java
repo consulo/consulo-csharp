@@ -24,9 +24,8 @@ import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.TokenSet;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -74,7 +73,7 @@ public class CSharpFormattingUtil
 	}
 
 	@RequiredReadAction
-	public static boolean isAutoAccessorOwner(@Nonnull PsiElement element)
+	public static boolean isAutoAccessorOwner(PsiElement element)
 	{
 		if(element instanceof CSharpXAccessorOwner)
 		{

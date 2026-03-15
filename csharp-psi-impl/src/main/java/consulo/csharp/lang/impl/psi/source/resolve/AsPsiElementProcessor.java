@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.source.resolve;
 
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
-import jakarta.annotation.Nonnull;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -38,7 +37,6 @@ public class AsPsiElementProcessor implements Predicate<ResolveResult> {
         return true;
     }
 
-    @Nonnull
     public Set<PsiElement> getElements() {
         return myElements;
     }

@@ -21,7 +21,6 @@ import consulo.dotnet.psi.DotNetPropertyDeclaration;
 import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -35,7 +34,6 @@ public class PropertyIndex extends StringStubIndexExtension<DotNetPropertyDeclar
 		return StubIndexExtension.EP_NAME.findExtension(PropertyIndex.class);
 	}
 
-	@Nonnull
 	@Override
 	public StubIndexKey<String, DotNetPropertyDeclaration> getKey()
 	{

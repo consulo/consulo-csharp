@@ -46,8 +46,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.editor.completion.CompletionLocation;
 import consulo.language.editor.completion.CompletionParameters;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
@@ -70,14 +69,12 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 			.getCompletionParameters().getPosition(), null));
 
 
-	@Nonnull
 	@RequiredReadAction
 	public static List<ExpectedTypeInfo> getExpectedTypeInfosForExpression(CompletionParameters parameters, @Nullable ProcessingContext context)
 	{
 		return getExpectedTypeInfosForExpression(parameters.getPosition(), context);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public static List<ExpectedTypeInfo> getExpectedTypeInfosForExpression(PsiElement position, @Nullable ProcessingContext context)
 	{
@@ -108,7 +105,7 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 
 	@Override
 	@RequiredReadAction
-	public Comparable weigh(@Nonnull LookupElement element, @Nonnull CompletionLocation completionLocation)
+	public Comparable weigh(LookupElement element, CompletionLocation completionLocation)
 	{
 		if(element.getPsiElement() instanceof CSharpConstructorDeclaration)
 		{
@@ -162,11 +159,11 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 	}
 
 	@RequiredReadAction
-	public Comparable weighElement(@Nonnull PsiElement psiElement,
+	public Comparable weighElement(PsiElement psiElement,
 			DotNetGenericExtractor extractor,
-			@Nonnull CSharpReferenceExpressionEx referenceExpressionEx,
-			@Nonnull List<ExpectedTypeInfo> expectedTypeRefs,
-			@Nonnull Position upPosition)
+			CSharpReferenceExpressionEx referenceExpressionEx,
+			List<ExpectedTypeInfo> expectedTypeRefs,
+			Position upPosition)
 	{
 		// if we have not type declaration, make types lower, dont allow int i = Int32 completion more high
 		if(referenceExpressionEx.kind() != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && CSharpCompletionUtil.isTypeLikeElementWithNamespace(psiElement) && upPosition == Position.UP_REF)
@@ -229,7 +226,7 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 
 	@Nullable
 	@RequiredReadAction
-	private static DotNetTypeRef typeRefFromTokeType(@Nonnull IElementType e, CSharpReferenceExpressionEx parent)
+	private static DotNetTypeRef typeRefFromTokeType(IElementType e, CSharpReferenceExpressionEx parent)
 	{
 		if(e == CSharpTokens.TRUE_KEYWORD || e == CSharpTokens.FALSE_KEYWORD)
 		{

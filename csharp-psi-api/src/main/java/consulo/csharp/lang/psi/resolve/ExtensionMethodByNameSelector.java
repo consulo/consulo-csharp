@@ -20,7 +20,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -38,9 +37,8 @@ public class ExtensionMethodByNameSelector implements CSharpResolveSelector
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public Collection<PsiElement> doSelectElement(@Nonnull CSharpResolveContext context, boolean deep)
+	public Collection<PsiElement> doSelectElement(CSharpResolveContext context, boolean deep)
 	{
 		CSharpElementGroup<CSharpMethodDeclaration> groupByName = context.findExtensionMethodGroupByName(myName);
 		if(groupByName == null)

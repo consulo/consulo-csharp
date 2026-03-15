@@ -21,7 +21,6 @@ import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.scope.GlobalSearchScope;
 
-import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -31,7 +30,7 @@ import java.util.List;
 public class NEmptyParamsCallArgument extends NParamsCallArgument
 {
 	@RequiredReadAction
-	public NEmptyParamsCallArgument(@Nonnull DotNetParameter parameter)
+	public NEmptyParamsCallArgument(DotNetParameter parameter)
 	{
 		super(parameter.getProject(), parameter.getResolveScope(), List.of(), parameter);
 	}
@@ -44,12 +43,11 @@ public class NEmptyParamsCallArgument extends NParamsCallArgument
 
 	@RequiredReadAction
 	@Override
-	public int calcValid(@Nonnull GlobalSearchScope implicitCastType)
+	public int calcValid(GlobalSearchScope implicitCastType)
 	{
 		return PARAMS;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRef()
 	{

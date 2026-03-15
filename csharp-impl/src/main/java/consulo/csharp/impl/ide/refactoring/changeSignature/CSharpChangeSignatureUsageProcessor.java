@@ -38,7 +38,6 @@ import consulo.usage.UsageInfo;
 import consulo.util.collection.MultiMap;
 import consulo.util.lang.StringUtil;
 import consulo.util.lang.ref.SimpleReference;
-import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,9 +48,8 @@ import java.util.List;
  */
 @ExtensionImpl
 public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsageProcessor {
-    @Nonnull
     @Override
-    public UsageInfo[] findUsages(@Nonnull final ChangeInfo info) {
+    public UsageInfo[] findUsages(final ChangeInfo info) {
         if (!(info instanceof CSharpChangeInfo)) {
             return UsageInfo.EMPTY_ARRAY;
         }
@@ -76,19 +74,18 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
         return list.toArray(UsageInfo.EMPTY_ARRAY);
     }
 
-    @Nonnull
     @Override
-    public MultiMap<PsiElement, LocalizeValue> findConflicts(@Nonnull ChangeInfo info, SimpleReference<UsageInfo[]> refUsages) {
+    public MultiMap<PsiElement, LocalizeValue> findConflicts(ChangeInfo info, SimpleReference<UsageInfo[]> refUsages) {
         return MultiMap.empty();
     }
 
     @Override
     @RequiredWriteAction
     public boolean processUsage(
-        @Nonnull ChangeInfo changeInfo,
-        @Nonnull UsageInfo usageInfo,
+        ChangeInfo changeInfo,
+        UsageInfo usageInfo,
         boolean beforeMethodChange,
-        @Nonnull UsageInfo[] usages
+        UsageInfo[] usages
     ) {
         if (!(changeInfo instanceof CSharpChangeInfo sharpChangeInfo)) {
             return false;
@@ -141,7 +138,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 
     @Override
     @RequiredWriteAction
-    public boolean processPrimaryMethod(@Nonnull ChangeInfo changeInfo) {
+    public boolean processPrimaryMethod(ChangeInfo changeInfo) {
         if (!(changeInfo instanceof CSharpChangeInfo sharpChangeInfo)) {
             return false;
         }
@@ -235,16 +232,16 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
     }
 
     @Override
-    public boolean shouldPreviewUsages(@Nonnull ChangeInfo changeInfo, @Nonnull UsageInfo[] usages) {
+    public boolean shouldPreviewUsages(ChangeInfo changeInfo, UsageInfo[] usages) {
         return false;
     }
 
     @Override
     public void registerConflictResolvers(
-        @Nonnull List<ResolveSnapshotProvider.ResolveSnapshot> snapshots,
-        @Nonnull ResolveSnapshotProvider resolveSnapshotProvider,
-        @Nonnull UsageInfo[] usages,
-        @Nonnull ChangeInfo changeInfo
+        List<ResolveSnapshotProvider.ResolveSnapshot> snapshots,
+        ResolveSnapshotProvider resolveSnapshotProvider,
+        UsageInfo[] usages,
+        ChangeInfo changeInfo
     ) {
     }
 }

@@ -21,8 +21,7 @@ import consulo.csharp.compiler.CSharpPlatform;
 import consulo.module.content.layer.ModuleRootLayer;
 import consulo.module.extension.MutableModuleExtension;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -33,14 +32,12 @@ public interface CSharpMutableModuleExtension<T extends CSharpModuleExtension<T>
 {
 	void setOptimizeCode(boolean value);
 
-	void setPlatform(@Nonnull CSharpPlatform platform);
+	void setPlatform(CSharpPlatform platform);
 
 	void setCompilerTarget(@Nullable String target);
 
 	@Override
-	@Nonnull
 	MutableModuleInheritableNamedPointer<Sdk> getCustomCompilerSdkPointer();
 
-	@Nonnull
 	ModuleRootLayer getModuleRootLayer();
 }

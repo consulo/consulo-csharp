@@ -27,8 +27,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiNamedElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -48,7 +47,7 @@ public class CSharpVariableInplaceRenamerHandler extends VariableInplaceRenameHa
 
 	@Nullable
 	@Override
-	protected VariableInplaceRenamer createRenamer(@Nonnull PsiElement elementToRename, Editor editor)
+	protected VariableInplaceRenamer createRenamer(PsiElement elementToRename, Editor editor)
 	{
 		return new CSharpVariableInplaceRenamer((PsiNamedElement) elementToRename, editor);
 	}

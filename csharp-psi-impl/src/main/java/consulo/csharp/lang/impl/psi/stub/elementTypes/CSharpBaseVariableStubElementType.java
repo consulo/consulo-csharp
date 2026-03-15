@@ -24,8 +24,7 @@ import consulo.index.io.StringRef;
 import consulo.language.psi.stub.StubElement;
 import consulo.language.psi.stub.StubInputStream;
 import consulo.language.psi.stub.StubOutputStream;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 
@@ -35,14 +34,14 @@ import java.io.IOException;
  */
 public abstract class CSharpBaseVariableStubElementType<V extends DotNetVariable> extends CSharpAbstractStubElementType<CSharpVariableDeclStub<V>, V>
 {
-	public CSharpBaseVariableStubElementType(@Nonnull String debugName)
+	public CSharpBaseVariableStubElementType(String debugName)
 	{
 		super(debugName);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpVariableDeclStub<V> createStub(@Nonnull V variable, StubElement stubElement)
+	public CSharpVariableDeclStub<V> createStub(V variable, StubElement stubElement)
 	{
 		int otherModifierMask = CSharpVariableDeclStub.getOtherModifierMask(variable);
 		String qName = null;
@@ -62,7 +61,7 @@ public abstract class CSharpBaseVariableStubElementType<V extends DotNetVariable
 
 	@Override
 	@RequiredReadAction
-	public void serialize(@Nonnull CSharpVariableDeclStub<V> variableStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpVariableDeclStub<V> variableStub, StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeVarInt(variableStub.getOtherModifierMask());
 
@@ -77,9 +76,8 @@ public abstract class CSharpBaseVariableStubElementType<V extends DotNetVariable
 		}
 	}
 
-	@Nonnull
 	@Override
-	public CSharpVariableDeclStub<V> deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpVariableDeclStub<V> deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int otherModifierMask = stubInputStream.readVarInt();
 
@@ -98,7 +96,7 @@ public abstract class CSharpBaseVariableStubElementType<V extends DotNetVariable
 	}
 
 	@RequiredReadAction
-	private String getInitializerText(@Nonnull V v)
+	private String getInitializerText(V v)
 	{
 		DotNetExpression initializer = v.getInitializer();
 		return initializer != null ? initializer.getText() : null;
@@ -111,7 +109,7 @@ public abstract class CSharpBaseVariableStubElementType<V extends DotNetVariable
 
 	@Nullable
 	@RequiredReadAction
-	protected String getParentQName(@Nonnull V variable)
+	protected String getParentQName(V variable)
 	{
 		return null;
 	}

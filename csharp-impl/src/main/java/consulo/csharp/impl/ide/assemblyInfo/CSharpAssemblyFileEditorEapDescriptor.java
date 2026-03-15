@@ -19,7 +19,6 @@ package consulo.csharp.impl.ide.assemblyInfo;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.eap.EarlyAccessProgramDescriptor;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -27,7 +26,6 @@ import jakarta.annotation.Nonnull;
  */
 @ExtensionImpl
 public class CSharpAssemblyFileEditorEapDescriptor extends EarlyAccessProgramDescriptor {
-    @Nonnull
     @Override
     public LocalizeValue getName() {
         return LocalizeValue.localizeTODO("AssemblyInfo.cs UI Editor");

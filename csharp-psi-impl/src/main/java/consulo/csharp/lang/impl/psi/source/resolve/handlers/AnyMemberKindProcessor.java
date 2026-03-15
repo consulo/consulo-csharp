@@ -32,8 +32,7 @@ import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,10 +45,10 @@ public class AnyMemberKindProcessor implements KindProcessor
 {
 	@RequiredReadAction
 	@Override
-	public void process(@Nonnull CSharpResolveOptions options,
-						@Nonnull DotNetGenericExtractor defaultExtractor,
+	public void process(CSharpResolveOptions options,
+						DotNetGenericExtractor defaultExtractor,
 						@Nullable PsiElement forceQualifierElement,
-						@Nonnull Processor<ResolveResult> processor)
+						Processor<ResolveResult> processor)
 	{
 		final PsiElement element = options.getElement();
 		GlobalSearchScope resolveScope = element.getResolveScope();

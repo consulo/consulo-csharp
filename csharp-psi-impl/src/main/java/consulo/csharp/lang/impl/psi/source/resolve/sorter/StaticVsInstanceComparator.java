@@ -31,8 +31,7 @@ import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.ResolveResult;
 import consulo.util.lang.Comparing;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Comparator;
 
 /**
@@ -41,9 +40,8 @@ import java.util.Comparator;
  */
 public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 {
-	@Nonnull
 	@RequiredReadAction
-	public static StaticVsInstanceComparator create(@Nonnull PsiElement element)
+	public static StaticVsInstanceComparator create(PsiElement element)
 	{
 		CSharpReferenceExpressionEx parent = null;
 		if(element instanceof CSharpReferenceExpression)
@@ -63,7 +61,7 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 	private int myTypeArgumentsSize;
 
 	@RequiredReadAction
-	public StaticVsInstanceComparator(@Nonnull PsiElement element, @Nullable CSharpReferenceExpressionEx parent)
+	public StaticVsInstanceComparator(PsiElement element, @Nullable CSharpReferenceExpressionEx parent)
 	{
 		myComparator = TypeLikeComparator.create(element);
 		myTypeArgumentsSize = CSharpReferenceExpressionImplUtil.getTypeArgumentListSize(element);
@@ -196,7 +194,7 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 
 	@Nullable
 	@RequiredReadAction
-	private static DotNetTypeDeclaration resolveTargetElement(@Nonnull PsiElement element, @Nonnull PsiElement scope)
+	private static DotNetTypeDeclaration resolveTargetElement(PsiElement element, PsiElement scope)
 	{
 		if(element instanceof CSharpTypeDeclaration)
 		{

@@ -34,8 +34,7 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -49,19 +48,18 @@ public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner> {
       myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getText() {
       return LocalizeValue.localizeTODO("Create empty code block");
     }
 
     @Override
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       return myPointer.getElement() != null;
     }
 
     @Override
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       DotNetCodeBlockOwner element = myPointer.getElement();
       if (element == null) {
         return;
@@ -93,9 +91,9 @@ public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner> {
   @RequiredReadAction
   @Nullable
   @Override
-  public CompilerCheckBuilder checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull DotNetCodeBlockOwner element) {
+  public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        DotNetCodeBlockOwner element) {
     if (element instanceof CSharpIndexMethodDeclaration) {
       return null;
     }

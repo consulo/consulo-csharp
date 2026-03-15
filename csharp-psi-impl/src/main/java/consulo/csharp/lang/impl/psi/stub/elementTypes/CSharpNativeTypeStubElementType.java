@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
 import java.io.IOException;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.csharp.lang.psi.CSharpNativeType;
 import consulo.csharp.lang.impl.psi.CSharpTokenSets;
@@ -42,21 +41,20 @@ public class CSharpNativeTypeStubElementType extends CSharpAbstractStubElementTy
 		super("NATIVE_TYPE");
 	}
 
-	@Nonnull
 	@Override
-	public PsiElement createElement(@Nonnull ASTNode astNode)
+	public PsiElement createElement(ASTNode astNode)
 	{
 		return new CSharpStubNativeTypeImpl(astNode);
 	}
 
 	@Override
-	public CSharpNativeType createPsi(@Nonnull CSharpWithIntValueStub<CSharpNativeType> stub)
+	public CSharpNativeType createPsi(CSharpWithIntValueStub<CSharpNativeType> stub)
 	{
 		return new CSharpStubNativeTypeImpl(stub, this);
 	}
 
 	@Override
-	public CSharpWithIntValueStub<CSharpNativeType> createStub(@Nonnull CSharpNativeType cSharpNativeType, StubElement stubElement)
+	public CSharpWithIntValueStub<CSharpNativeType> createStub(CSharpNativeType cSharpNativeType, StubElement stubElement)
 	{
 		int index = ArrayUtil.indexOf(CSharpTokenSets.NATIVE_TYPES_AS_ARRAY, cSharpNativeType.getTypeElementType());
 		assert index != -1;
@@ -64,14 +62,13 @@ public class CSharpNativeTypeStubElementType extends CSharpAbstractStubElementTy
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpWithIntValueStub<CSharpNativeType> stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpWithIntValueStub<CSharpNativeType> stub, StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeVarInt(stub.getValue());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpWithIntValueStub<CSharpNativeType> deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpWithIntValueStub<CSharpNativeType> deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int index = stubInputStream.readVarInt();
 		return new CSharpWithIntValueStub<CSharpNativeType>(stubElement, this, index);

@@ -21,7 +21,6 @@ import consulo.annotation.component.ServiceAPI;
 import consulo.application.Application;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.version.LanguageVersion;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,18 +29,14 @@ import jakarta.annotation.Nonnull;
 @ServiceAPI(ComponentScope.APPLICATION)
 public abstract class CSharpLanguageVersionHelper
 {
-	@Nonnull
 	public static CSharpLanguageVersionHelper getInstance()
 	{
 		return Application.get().getService(CSharpLanguageVersionHelper.class);
 	}
 
-	@Nonnull
 	public abstract LanguageVersion getHighestVersion();
 
-	@Nonnull
 	public abstract LanguageVersion[] getVersions();
 
-	@Nonnull
-	public abstract LanguageVersion getWrapper(@Nonnull CSharpLanguageVersion version);
+	public abstract LanguageVersion getWrapper(CSharpLanguageVersion version);
 }

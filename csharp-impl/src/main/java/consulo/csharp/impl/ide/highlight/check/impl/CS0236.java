@@ -16,7 +16,7 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -31,7 +31,6 @@ import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -42,7 +41,7 @@ public class CS0236 extends CompilerCheck<CSharpReferenceExpression>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpReferenceExpression element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpReferenceExpression element)
 	{
 		if(element.kind() == CSharpReferenceExpression.ResolveToKind.FIELD_OR_PROPERTY)
 		{

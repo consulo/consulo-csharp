@@ -21,20 +21,19 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpFixedSizeBufferInitializer;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.ast.IElementType;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
  * @since 2025-10-19
  */
 public class CSharpFixedSizeBufferInitializerImpl extends CSharpElementImpl implements CSharpFixedSizeBufferInitializer {
-    public CSharpFixedSizeBufferInitializerImpl(@Nonnull IElementType elementType) {
+    public CSharpFixedSizeBufferInitializerImpl(IElementType elementType) {
         super(elementType);
     }
 
     @Override
-    public void accept(@Nonnull CSharpElementVisitor visitor) {
+    public void accept(CSharpElementVisitor visitor) {
         visitor.visitFixedSizeBufferInitializer(this);
     }
 

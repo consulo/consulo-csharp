@@ -27,7 +27,6 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiWhiteSpace;
 import consulo.language.psi.util.PsiTreeUtil;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -40,14 +39,12 @@ public class CSharpExpressionSurroundDescriptor implements SurroundDescriptor
 		new CSharpWithParenthesesSurrounder()
 	};
 
-	@Nonnull
 	@Override
 	public Surrounder[] getSurrounders()
 	{
 		return mySurrounders;
 	}
 
-	@Nonnull
 	@Override
 	public PsiElement[] getElementsToSurround(PsiFile file, int startOffset, int endOffset)
 	{
@@ -85,7 +82,6 @@ public class CSharpExpressionSurroundDescriptor implements SurroundDescriptor
 		return false;
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

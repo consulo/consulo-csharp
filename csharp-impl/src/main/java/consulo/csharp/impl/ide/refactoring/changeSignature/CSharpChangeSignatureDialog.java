@@ -62,8 +62,7 @@ import consulo.usage.UsageViewDescriptor;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.StringUtil;
 import consulo.util.lang.function.PairFunction;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -112,7 +111,6 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 
 		return new ChangeSignatureProcessorBase(getProject(), changeInfo)
 		{
-			@Nonnull
 			@Override
 			protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages)
 			{
@@ -382,7 +380,6 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 		return letters * Toolkit.getDefaultToolkit().getFontMetrics(font).stringWidth("W");
 	}
 
-	@Nonnull
 	public DotNetLikeMethodDeclaration getMethodDeclaration()
 	{
 		return myMethod.getMethod();
@@ -456,13 +453,12 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	}
 
 	@RequiredReadAction
-	private String typeText(@Nonnull DotNetTypeRef typeRef)
+	private String typeText(DotNetTypeRef typeRef)
 	{
 		return CSharpTypeRefPresentationUtil.buildShortText(typeRef);
 	}
 
 	@Override
-	@Nonnull
 	@RequiredUIAccess
 	public List<CSharpParameterInfo> getParameters()
 	{

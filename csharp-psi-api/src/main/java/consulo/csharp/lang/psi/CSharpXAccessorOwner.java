@@ -21,7 +21,6 @@ import consulo.dotnet.psi.DotNetAccessorOwner;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetXAccessor;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -29,7 +28,6 @@ import jakarta.annotation.Nonnull;
  */
 public interface CSharpXAccessorOwner extends DotNetElement, CSharpBodyWithBraces, DotNetModifierListOwner, DotNetAccessorOwner
 {
-	@Nonnull
 	@RequiredReadAction
 	DotNetXAccessor[] getAccessors();
 }

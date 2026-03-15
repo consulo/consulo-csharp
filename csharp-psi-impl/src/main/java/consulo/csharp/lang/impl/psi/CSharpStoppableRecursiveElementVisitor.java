@@ -20,8 +20,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiRecursiveVisitor;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.progress.ProgressManager;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -58,7 +57,7 @@ public class CSharpStoppableRecursiveElementVisitor<T> extends CSharpRecursiveEl
 		return myValue;
 	}
 
-	public void stopWalk(@Nonnull T value)
+	public void stopWalk(T value)
 	{
 		myValue = value;
 	}

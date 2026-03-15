@@ -28,7 +28,6 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.IStubElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -36,18 +35,17 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpStubArrayTypeImpl extends CSharpStubTypeElementImpl<CSharpWithIntValueStub<CSharpArrayType>> implements CSharpArrayType
 {
-	public CSharpStubArrayTypeImpl(@Nonnull ASTNode node)
+	public CSharpStubArrayTypeImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubArrayTypeImpl(@Nonnull CSharpWithIntValueStub<CSharpArrayType> stub, @Nonnull IStubElementType<? extends CSharpWithIntValueStub<CSharpArrayType>, ?> nodeType)
+	public CSharpStubArrayTypeImpl(CSharpWithIntValueStub<CSharpArrayType> stub, IStubElementType<? extends CSharpWithIntValueStub<CSharpArrayType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
@@ -69,13 +67,12 @@ public class CSharpStubArrayTypeImpl extends CSharpStubTypeElementImpl<CSharpWit
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitArrayType(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetType getInnerType()
 	{

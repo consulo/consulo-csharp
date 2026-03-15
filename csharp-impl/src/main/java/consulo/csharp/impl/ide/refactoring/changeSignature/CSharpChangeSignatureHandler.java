@@ -30,8 +30,7 @@ import consulo.project.Project;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.editor.refactoring.changeSignature.ChangeSignatureHandler;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -92,13 +91,13 @@ public class CSharpChangeSignatureHandler implements ChangeSignatureHandler
 
 	@Override
 	public void invoke(
-			@Nonnull Project project, Editor editor, PsiFile file, DataContext dataContext)
+			Project project, Editor editor, PsiFile file, DataContext dataContext)
 	{
 	}
 
 	@Override
 	public void invoke(
-			@Nonnull Project project, @Nonnull PsiElement[] elements, @Nullable DataContext dataContext)
+			Project project, PsiElement[] elements, @Nullable DataContext dataContext)
 	{
 		PsiElement element = elements[0];
 		if(!(element instanceof DotNetLikeMethodDeclaration))

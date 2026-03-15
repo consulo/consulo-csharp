@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.stub;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.util.lang.BitUtil;
 import consulo.annotation.access.RequiredReadAction;

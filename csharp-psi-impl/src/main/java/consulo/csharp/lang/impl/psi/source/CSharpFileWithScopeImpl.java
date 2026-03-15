@@ -20,7 +20,6 @@ import consulo.language.file.FileViewProvider;
 import consulo.language.psi.PsiCodeFragment;
 import consulo.language.psi.scope.GlobalSearchScope;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,7 +29,7 @@ public class CSharpFileWithScopeImpl extends CSharpFileImpl implements PsiCodeFr
 {
 	private GlobalSearchScope myScope;
 
-	public CSharpFileWithScopeImpl(@Nonnull FileViewProvider viewProvider)
+	public CSharpFileWithScopeImpl(FileViewProvider viewProvider)
 	{
 		super(viewProvider);
 	}

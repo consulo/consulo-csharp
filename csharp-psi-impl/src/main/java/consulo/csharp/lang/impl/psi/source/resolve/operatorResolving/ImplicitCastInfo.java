@@ -19,7 +19,6 @@ package consulo.csharp.lang.impl.psi.source.resolve.operatorResolving;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.util.dataholder.Key;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,19 +31,17 @@ public class ImplicitCastInfo
 	private final DotNetTypeRef myFromTypeRef;
 	private final DotNetTypeRef myToTypeRef;
 
-	public ImplicitCastInfo(@Nonnull DotNetTypeRef fromTypeRef, @Nonnull DotNetTypeRef toTypeRef)
+	public ImplicitCastInfo(DotNetTypeRef fromTypeRef, DotNetTypeRef toTypeRef)
 	{
 		myFromTypeRef = fromTypeRef;
 		myToTypeRef = toTypeRef;
 	}
 
-	@Nonnull
 	public DotNetTypeRef getFromTypeRef()
 	{
 		return myFromTypeRef;
 	}
 
-	@Nonnull
 	public DotNetTypeRef getToTypeRef()
 	{
 		return myToTypeRef;

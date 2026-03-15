@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.msil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -42,7 +41,6 @@ public class GenericParameterContext
 		myCount = count;
 	}
 
-	@Nonnull
 	public GenericParameterContext gemmate()
 	{
 		return new GenericParameterContext(this);

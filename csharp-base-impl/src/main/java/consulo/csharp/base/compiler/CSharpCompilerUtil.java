@@ -27,7 +27,6 @@ import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.module.extension.ModuleInheritableNamedPointer;
 import consulo.virtualFileSystem.VirtualFile;
 
-import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ public class CSharpCompilerUtil
 {
 	public static final String COMPILER_NAME = "csc.exe";
 
-	public static void setupCompiler(@Nonnull DotNetModuleExtension<?> netExtension,
+	public static void setupCompiler(DotNetModuleExtension<?> netExtension,
 			CSharpModuleExtension<?> csharpExtension,
 			MSBaseDotNetCompilerOptionsBuilder builder) throws DotNetCompileFailedException
 	{

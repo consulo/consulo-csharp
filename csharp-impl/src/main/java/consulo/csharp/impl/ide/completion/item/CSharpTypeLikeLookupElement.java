@@ -34,7 +34,6 @@ import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.editor.completion.lookup.InsertionContext;
 import consulo.language.editor.completion.lookup.ParenthesesInsertHandler;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -42,7 +41,6 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpTypeLikeLookupElement extends LookupElementDecorator<LookupElement>
 {
-	@Nonnull
 	public static CSharpTypeLikeLookupElement create(LookupElement delegate, DotNetGenericExtractor extractor, PsiElement expression)
 	{
 		CSharpNewExpression newExpression = null;
@@ -146,13 +144,11 @@ public class CSharpTypeLikeLookupElement extends LookupElementDecorator<LookupEl
 		return getOriginal().hashCode();
 	}
 
-	@Nonnull
 	public DotNetGenericExtractor getExtractor()
 	{
 		return myExtractor;
 	}
 
-	@Nonnull
 	private DotNetQualifiedElement getOriginal()
 	{
 		LookupElement delegate = getDelegate();

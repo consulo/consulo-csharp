@@ -28,8 +28,7 @@ import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.virtualFileSystem.VirtualFile;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,15 +39,15 @@ public class RoslynCompilerProvider extends CSharpCompilerProvider
 {
 	@Nullable
 	@Override
-	public SdkType getBundleType(@Nonnull DotNetSimpleModuleExtension<?> moduleExtension)
+	public SdkType getBundleType(DotNetSimpleModuleExtension<?> moduleExtension)
 	{
 		return RoslynBundleType.getInstance();
 	}
 
 	@Override
-	public void setupCompiler(@Nonnull DotNetModuleExtension<?> netExtension,
-			@Nonnull CSharpModuleExtension<?> csharpExtension,
-			@Nonnull MSBaseDotNetCompilerOptionsBuilder builder,
+	public void setupCompiler(DotNetModuleExtension<?> netExtension,
+			CSharpModuleExtension<?> csharpExtension,
+			MSBaseDotNetCompilerOptionsBuilder builder,
 			@Nullable VirtualFile compilerSdkHome) throws DotNetCompileFailedException
 	{
 		if(compilerSdkHome == null)

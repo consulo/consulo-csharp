@@ -23,8 +23,7 @@ import consulo.dotnet.debugger.DotNetDebugContext;
 import consulo.dotnet.debugger.proxy.*;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
@@ -57,7 +56,6 @@ public class CSharpEvaluateContext
 		return myDebuggerContext;
 	}
 
-	@Nonnull
 	public DotNetStackFrameProxy getFrame()
 	{
 		return myFrame;
@@ -76,7 +74,7 @@ public class CSharpEvaluateContext
 		return myStack.pollFirst();
 	}
 
-	public void pull(@Nonnull DotNetValueProxy o, @Nullable Object provider)
+	public void pull(DotNetValueProxy o, @Nullable Object provider)
 	{
 		myStack.addFirst(Pair.<DotNetValueProxy, Object>create(o, provider));
 	}

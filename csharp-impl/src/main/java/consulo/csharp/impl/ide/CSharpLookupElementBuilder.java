@@ -43,8 +43,7 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -57,9 +56,8 @@ public class CSharpLookupElementBuilder
 {
 	public static final Key<Boolean> OBSOLETE_FLAG = Key.create("obsolete");
 
-	@Nonnull
 	@RequiredReadAction
-	public static LookupElement[] buildToLookupElements(@Nonnull PsiElement[] arguments)
+	public static LookupElement[] buildToLookupElements(PsiElement[] arguments)
 	{
 		if(arguments.length == 0)
 		{
@@ -78,7 +76,7 @@ public class CSharpLookupElementBuilder
 	@RequiredReadAction
 	public static LookupElement buildLookupElementWithContextType(final PsiElement element,
 			@Nullable final CSharpTypeDeclaration contextType,
-			@Nonnull DotNetGenericExtractor extractor,
+			DotNetGenericExtractor extractor,
 			@Nullable PsiElement expression)
 	{
 		LookupElementBuilder builder = createLookupElementBuilder(element, extractor, expression);
@@ -106,7 +104,7 @@ public class CSharpLookupElementBuilder
 	}
 
 	@RequiredReadAction
-	public static LookupElementBuilder createLookupElementBuilder(@Nonnull final PsiElement element, @Nonnull DotNetGenericExtractor extractor, @Nullable final PsiElement completionParent)
+	public static LookupElementBuilder createLookupElementBuilder(final PsiElement element, DotNetGenericExtractor extractor, @Nullable final PsiElement completionParent)
 	{
 		LookupElementBuilder builder = null;
 		if(element instanceof CSharpMethodDeclaration)
@@ -431,7 +429,7 @@ public class CSharpLookupElementBuilder
 	}
 
 	@RequiredReadAction
-	private static <E extends DotNetGenericParameterListOwner & DotNetQualifiedElement> LookupElementBuilder buildTypeLikeElement(@Nonnull E element, @Nonnull DotNetGenericExtractor extractor)
+	private static <E extends DotNetGenericParameterListOwner & DotNetQualifiedElement> LookupElementBuilder buildTypeLikeElement(E element, DotNetGenericExtractor extractor)
 	{
 		String genericText = CSharpElementPresentationUtil.formatGenericParameters(element, extractor);
 
@@ -472,7 +470,7 @@ public class CSharpLookupElementBuilder
 	}
 
 	@RequiredReadAction
-	private static boolean needAddThisPrefix(@Nonnull DotNetVariable variable, @Nullable PsiElement parentCompletion)
+	private static boolean needAddThisPrefix(DotNetVariable variable, @Nullable PsiElement parentCompletion)
 	{
 		if(parentCompletion == null || variable.hasModifier(CSharpModifier.STATIC))
 		{

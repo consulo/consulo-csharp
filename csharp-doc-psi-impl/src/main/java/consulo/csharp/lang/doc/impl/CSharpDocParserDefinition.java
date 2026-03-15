@@ -34,7 +34,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.version.LanguageVersion;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -43,70 +42,61 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class CSharpDocParserDefinition implements ParserDefinition
 {
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{
 		return CSharpDocLanguage.INSTANCE;
 	}
 
-	@Nonnull
 	@Override
-	public Lexer createLexer(@Nonnull LanguageVersion languageVersion)
+	public Lexer createLexer(LanguageVersion languageVersion)
 	{
 		return new DeprecatedCSharpDocLexer();
 	}
 
-	@Nonnull
 	@Override
-	public PsiParser createParser(@Nonnull LanguageVersion languageVersion)
+	public PsiParser createParser(LanguageVersion languageVersion)
 	{
 		return new CSharpDocParser();
 	}
 
-	@Nonnull
 	@Override
 	public IFileElementType getFileNodeType()
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	@Nonnull
 	@Override
-	public TokenSet getWhitespaceTokens(@Nonnull LanguageVersion languageVersion)
+	public TokenSet getWhitespaceTokens(LanguageVersion languageVersion)
 	{
 		return CSharpDocTokenType.WHITESPACES;
 	}
 
-	@Nonnull
 	@Override
-	public TokenSet getCommentTokens(@Nonnull LanguageVersion languageVersion)
+	public TokenSet getCommentTokens(LanguageVersion languageVersion)
 	{
 		return TokenSet.EMPTY;
 	}
 
-	@Nonnull
 	@Override
-	public TokenSet getStringLiteralElements(@Nonnull LanguageVersion languageVersion)
+	public TokenSet getStringLiteralElements(LanguageVersion languageVersion)
 	{
 		return TokenSet.EMPTY;
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public PsiElement createElement(@Nonnull ASTNode node)
+	public PsiElement createElement(ASTNode node)
 	{
 		return new ASTWrapperPsiElement(node);
 	}
 
 	@Override
-	public PsiFile createFile(@Nonnull FileViewProvider viewProvider)
+	public PsiFile createFile(FileViewProvider viewProvider)
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	@Nonnull
 	@Override
 	public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right)
 	{

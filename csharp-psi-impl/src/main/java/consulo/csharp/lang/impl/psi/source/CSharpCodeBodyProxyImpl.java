@@ -29,7 +29,7 @@ import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL

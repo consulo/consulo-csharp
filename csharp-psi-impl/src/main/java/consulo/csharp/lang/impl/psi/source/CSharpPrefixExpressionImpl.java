@@ -26,9 +26,8 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.ResolveState;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -47,7 +46,6 @@ public class CSharpPrefixExpressionImpl extends CSharpExpressionWithOperatorImpl
 		}
 
 		@RequiredReadAction
-		@Nonnull
 		@Override
 		public String getPrefix()
 		{
@@ -61,12 +59,11 @@ public class CSharpPrefixExpressionImpl extends CSharpExpressionWithOperatorImpl
 		}
 	}
 
-	public CSharpPrefixExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpPrefixExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
@@ -83,7 +80,7 @@ public class CSharpPrefixExpressionImpl extends CSharpExpressionWithOperatorImpl
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitPrefixExpression(this);
 	}
@@ -95,7 +92,7 @@ public class CSharpPrefixExpressionImpl extends CSharpExpressionWithOperatorImpl
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		DotNetExpression expression = getExpression();
 		if(expression != null && !expression.processDeclarations(processor, state, lastParent, place))

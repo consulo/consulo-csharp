@@ -30,7 +30,6 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiRecursiveElementVisitor;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,8 +40,7 @@ import java.util.Map;
  */
 public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 {
-	@Nonnull
-	public static UnusedUsingVisitor accept(@Nonnull PsiFile file)
+	public static UnusedUsingVisitor accept(PsiFile file)
 	{
 		final UnusedUsingVisitor unusedUsingVisitor = new UnusedUsingVisitor();
 		PsiRecursiveElementVisitor visitor = new PsiRecursiveElementVisitor()
@@ -62,7 +60,7 @@ public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 
 	@Override
 	@RequiredReadAction
-	public void visitUsingChild(@Nonnull CSharpUsingListChild child)
+	public void visitUsingChild(CSharpUsingListChild child)
 	{
 		if(myUsingContext.containsKey(child))
 		{
@@ -82,7 +80,6 @@ public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 		myUsingContext.put(child, defaultState);
 	}
 
-	@Nonnull
 	public Map<CSharpUsingListChild, Boolean> getUsingContext()
 	{
 		return myUsingContext;
@@ -131,7 +128,6 @@ public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 		}
 	}
 
-	@Nonnull
 	@Override
 	protected Collection<? extends CSharpUsingListChild> getStatements()
 	{
@@ -139,7 +135,7 @@ public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 	}
 
 	@Override
-	protected boolean isProcessed(@Nonnull CSharpUsingListChild element)
+	protected boolean isProcessed(CSharpUsingListChild element)
 	{
 		return myUsingContext.get(element) == Boolean.TRUE;
 	}

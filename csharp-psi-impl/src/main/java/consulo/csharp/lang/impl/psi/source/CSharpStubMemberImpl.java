@@ -33,8 +33,7 @@ import consulo.language.psi.stub.IStubElementType;
 import consulo.language.util.IncorrectOperationException;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -43,17 +42,16 @@ import jakarta.annotation.Nullable;
 public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSharpStubElementImpl<S> implements PsiNameIdentifierOwner,
 		DotNetModifierListOwner, DotNetQualifiedElement, ContributedReferenceHost, CSharpNamedElement
 {
-	public CSharpStubMemberImpl(@Nonnull ASTNode node)
+	public CSharpStubMemberImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubMemberImpl(@Nonnull S stub, @Nonnull IStubElementType<? extends S, ?> nodeType)
+	public CSharpStubMemberImpl(S stub, IStubElementType<? extends S, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
-	@Nonnull
 	@Override
 	public PsiReference[] getReferences()
 	{
@@ -70,14 +68,14 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 
 	@Override
 	@RequiredReadAction
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		DotNetModifierList modifierList = getModifierList();
 		return modifierList != null && modifierList.hasModifier(modifier);
 	}
 
 	@RequiredReadAction
-	public void addModifier(@Nonnull DotNetModifier modifier)
+	public void addModifier(DotNetModifier modifier)
 	{
 		DotNetModifierList modifierList = getModifierList();
 		if(modifierList != null)
@@ -157,7 +155,7 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 	}
 
 	@Override
-	public PsiElement setName(@Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, s);
 		return this;

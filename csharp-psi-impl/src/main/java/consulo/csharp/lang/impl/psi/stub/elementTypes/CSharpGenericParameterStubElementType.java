@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
 import java.io.IOException;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.source.CSharpGenericParameterImpl;
@@ -40,34 +39,32 @@ public class CSharpGenericParameterStubElementType extends CSharpAbstractStubEle
 		super("GENERIC_PARAMETER");
 	}
 
-	@Nonnull
 	@Override
-	public DotNetGenericParameter createElement(@Nonnull ASTNode astNode)
+	public DotNetGenericParameter createElement(ASTNode astNode)
 	{
 		return new CSharpGenericParameterImpl(astNode);
 	}
 
 	@Override
-	public DotNetGenericParameter createPsi(@Nonnull CSharpGenericParameterStub cSharpGenericParameterStub)
+	public DotNetGenericParameter createPsi(CSharpGenericParameterStub cSharpGenericParameterStub)
 	{
 		return new CSharpGenericParameterImpl(cSharpGenericParameterStub);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpGenericParameterStub createStub(@Nonnull DotNetGenericParameter genericParameter, StubElement stubElement)
+	public CSharpGenericParameterStub createStub(DotNetGenericParameter genericParameter, StubElement stubElement)
 	{
 		return new CSharpGenericParameterStub(stubElement);
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpGenericParameterStub cSharpGenericParameterStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpGenericParameterStub cSharpGenericParameterStub, StubOutputStream stubOutputStream) throws IOException
 	{
 	}
 
-	@Nonnull
 	@Override
-	public CSharpGenericParameterStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpGenericParameterStub deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		return new CSharpGenericParameterStub(stubElement);
 	}

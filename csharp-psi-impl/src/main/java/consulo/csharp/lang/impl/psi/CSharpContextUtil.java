@@ -29,8 +29,7 @@ import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.collection.ContainerUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -59,9 +58,8 @@ public class CSharpContextUtil
 		}
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static CSharpContextUtil.ContextType getContextForResolved(@Nonnull PsiElement element)
+	public static CSharpContextUtil.ContextType getContextForResolved(PsiElement element)
 	{
 		if(element instanceof CSharpElementGroup)
 		{
@@ -114,9 +112,8 @@ public class CSharpContextUtil
 		return CSharpContextUtil.ContextType.INSTANCE;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static ContextType getParentContextTypeForReference(@Nonnull CSharpReferenceExpression referenceExpression)
+	public static ContextType getParentContextTypeForReference(CSharpReferenceExpression referenceExpression)
 	{
 		PsiElement qualifier = referenceExpression.getQualifier();
 		if(qualifier == null)

@@ -27,8 +27,7 @@ import consulo.language.ast.IElementType;
 import consulo.language.parser.PsiBuilder;
 import consulo.util.lang.BitUtil;
 import consulo.util.lang.Pair;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -42,7 +41,7 @@ public class MethodParsing extends MemberWithBodyParsing {
         CONVERSION_METHOD
     }
 
-    public static void parseMethodStartAtType(@Nonnull CSharpBuilderWrapper builder, @Nonnull PsiBuilder.Marker marker, @Nonnull ModifierSet set) {
+    public static void parseMethodStartAtType(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set) {
         TypeInfo typeInfo = parseType(builder, STUB_SUPPORT);
         if (typeInfo != null) {
             parseMethodStartAfterType(builder, marker, typeInfo, Target.METHOD, set);
@@ -53,11 +52,11 @@ public class MethodParsing extends MemberWithBodyParsing {
         }
     }
 
-    public static void parseMethodStartAfterType(@Nonnull CSharpBuilderWrapper builder,
-                                                 @Nonnull PsiBuilder.Marker marker,
+    public static void parseMethodStartAfterType(CSharpBuilderWrapper builder,
+                                                 PsiBuilder.Marker marker,
                                                  @Nullable TypeInfo typeInfo,
-                                                 @Nonnull Target target,
-                                                 @Nonnull ModifierSet set) {
+                                                 Target target,
+                                                 ModifierSet set) {
         if (target == Target.CONSTRUCTOR || target == Target.DECONSTRUCTOR) {
             expectOrReportIdentifier(builder, STUB_SUPPORT);
         }
@@ -95,7 +94,7 @@ public class MethodParsing extends MemberWithBodyParsing {
         parseMethodStartAfterName(builder, marker, target, set);
     }
 
-    public static void parseMethodStartAfterName(@Nonnull CSharpBuilderWrapper builder, @Nonnull PsiBuilder.Marker marker, @Nonnull Target target, @Nonnull ModifierSet set) {
+    public static void parseMethodStartAfterName(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, Target target, ModifierSet set) {
         GenericParameterParsing.parseList(builder);
 
         if (builder.getTokenType() == LPAR) {

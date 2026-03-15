@@ -19,7 +19,6 @@ package consulo.csharp.lang.impl.psi.source;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -27,18 +26,17 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpArrayInitializerImpl extends CSharpElementImpl
 {
-	public CSharpArrayInitializerImpl(@Nonnull IElementType elementType)
+	public CSharpArrayInitializerImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitArrayInitializerExpression(this);
 	}
 
-	@Nonnull
 	public CSharpArrayInitializerValue[] getValues()
 	{
 		return findChildrenByClass(CSharpArrayInitializerValue.class);

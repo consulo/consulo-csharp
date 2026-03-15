@@ -42,7 +42,6 @@ import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.function.PairConsumer;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -53,7 +52,6 @@ import java.util.List;
  */
 public abstract class GenerateImplementOrOverrideMemberHandler implements LanguageCodeInsightActionHandler
 {
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{
@@ -62,7 +60,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 
 	@RequiredUIAccess
 	@Override
-	public void invoke(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file)
+	public void invoke(Project project, Editor editor, PsiFile file)
 	{
 		final CSharpTypeDeclaration typeDeclaration = CSharpGenerateAction.findTypeDeclaration(editor, file);
 		if(typeDeclaration == null)
@@ -116,24 +114,22 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 		});
 	}
 
-	@Nonnull
 	public abstract LocalizeValue getTitle();
 
 	@RequiredReadAction
-	public abstract void appendAdditionalModifiers(@Nonnull StringBuilder builder, @Nonnull PsiElement item);
+	public abstract void appendAdditionalModifiers(StringBuilder builder, PsiElement item);
 
 	@RequiredReadAction
-	public abstract void appendReturnStatement(@Nonnull StringBuilder builder, @Nonnull PsiElement item);
-
-	@Nonnull
-	@RequiredReadAction
-	public abstract Collection<? extends PsiElement> getItems(@Nonnull CSharpTypeDeclaration typeDeclaration);
+	public abstract void appendReturnStatement(StringBuilder builder, PsiElement item);
 
 	@RequiredReadAction
-	private static void generateMember(@Nonnull final CSharpTypeDeclaration typeDeclaration,
-			@Nonnull final Editor editor,
-			@Nonnull final PsiFile file,
-			@Nonnull CSharpMemberChooseObject<?> chooseMember)
+	public abstract Collection<? extends PsiElement> getItems(CSharpTypeDeclaration typeDeclaration);
+
+	@RequiredReadAction
+	private static void generateMember(final CSharpTypeDeclaration typeDeclaration,
+			final Editor editor,
+			final PsiFile file,
+			CSharpMemberChooseObject<?> chooseMember)
 	{
 		String text = chooseMember.getText();
 

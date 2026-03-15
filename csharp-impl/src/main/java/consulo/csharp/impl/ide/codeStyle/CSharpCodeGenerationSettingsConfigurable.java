@@ -26,8 +26,7 @@ import consulo.language.codeStyle.CodeStyleSettings;
 import consulo.localize.LocalizeValue;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.VerticalFlowLayout;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 
@@ -57,7 +56,6 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		mySettings = settings.getCustomSettings(CSharpCodeGenerationSettings.class);
 	}
 
-	@Nonnull
     @Override
 	public LocalizeValue getDisplayName()
 	{

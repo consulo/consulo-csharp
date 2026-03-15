@@ -19,7 +19,6 @@ package consulo.csharp.lang.impl.psi.source;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.ast.IElementType;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -27,13 +26,13 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpBreakStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpBreakStatementImpl(@Nonnull IElementType elementType)
+	public CSharpBreakStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitBreakStatement(this);
 	}

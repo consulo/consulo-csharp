@@ -16,13 +16,12 @@
 
 package consulo.csharp.lang.impl.psi.source.injection;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.document.util.ProperTextRange;
 import consulo.document.util.TextRange;
 import consulo.language.psi.LiteralTextEscaper;
 import consulo.language.psi.PsiLanguageInjectionHost;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -32,7 +31,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpStringLiteralEscaper<T extends PsiLanguageInjectionHost> extends LiteralTextEscaper<T>
 {
-	public static boolean parseStringCharacters(@Nonnull String chars, @Nonnull StringBuilder outChars, @Nullable int[] sourceOffsets)
+	public static boolean parseStringCharacters(String chars, StringBuilder outChars, @Nullable int[] sourceOffsets)
 	{
 		assert sourceOffsets == null || sourceOffsets.length == chars.length() + 1;
 		if(chars.indexOf('\\') < 0)
@@ -189,13 +188,13 @@ public class CSharpStringLiteralEscaper<T extends PsiLanguageInjectionHost> exte
 
 	private int[] myOutSourceOffsets;
 
-	public CSharpStringLiteralEscaper(@Nonnull T host)
+	public CSharpStringLiteralEscaper(T host)
 	{
 		super(host);
 	}
 
 	@Override
-	public boolean decode(@Nonnull final TextRange rangeInsideHost, @Nonnull StringBuilder outChars)
+	public boolean decode(final TextRange rangeInsideHost, StringBuilder outChars)
 	{
 		ProperTextRange.assertProperRange(rangeInsideHost);
 		String subText = rangeInsideHost.substring(myHost.getText());
@@ -204,7 +203,7 @@ public class CSharpStringLiteralEscaper<T extends PsiLanguageInjectionHost> exte
 	}
 
 	@Override
-	public int getOffsetInHost(int offsetInDecoded, @Nonnull final TextRange rangeInsideHost)
+	public int getOffsetInHost(int offsetInDecoded, final TextRange rangeInsideHost)
 	{
 		int result = offsetInDecoded < myOutSourceOffsets.length ? myOutSourceOffsets[offsetInDecoded] : -1;
 		if(result == -1)

@@ -23,7 +23,6 @@ import consulo.language.ast.IElementType;
 import consulo.language.editor.highlight.SyntaxHighlighterBase;
 import consulo.language.lexer.Lexer;
 
-import jakarta.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,14 +51,12 @@ public class CSharpPreprocessorSyntaxHighlighter extends SyntaxHighlighterBase
 		//FIXME [VISTALL] highlight bug safeMap(ourKeys, CSharpPreprocesorTokens.LINE_COMMENT, CSharpHighlightKey.LINE_COMMENT);
 	}
 
-	@Nonnull
 	@Override
 	public Lexer getHighlightingLexer()
 	{
 		return new CSharpPreprocessorHightlightLexer();
 	}
 
-	@Nonnull
 	@Override
 	public TextAttributesKey[] getTokenHighlights(IElementType elementType)
 	{

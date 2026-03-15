@@ -21,8 +21,7 @@ import consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetReferenceExpression;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -34,5 +33,5 @@ public interface CSharpNamespaceDeclaration extends CSharpNamespaceProvider, Dot
 	DotNetReferenceExpression getNamespaceReference();
 
 	@RequiredWriteAction
-	void setNamespace(@Nonnull String namespace);
+	void setNamespace(String namespace);
 }

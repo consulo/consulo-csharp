@@ -26,10 +26,8 @@ import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.language.psi.PsiNameIdentifierOwner;
-import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -37,7 +35,7 @@ import jakarta.annotation.Nullable;
  */
 public abstract class CSharpMemberImpl extends CSharpElementImpl implements PsiNameIdentifierOwner, DotNetModifierListOwner, CSharpNamedElement
 {
-	public CSharpMemberImpl(@Nonnull IElementType elementType)
+	public CSharpMemberImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -60,7 +58,7 @@ public abstract class CSharpMemberImpl extends CSharpElementImpl implements PsiN
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		DotNetModifierList modifierList = getModifierList();
 		return modifierList != null && modifierList.hasModifier(modifier);
@@ -90,7 +88,7 @@ public abstract class CSharpMemberImpl extends CSharpElementImpl implements PsiN
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		return null;
 	}

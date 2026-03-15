@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.debugger.expressionEvaluator;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.csharp.impl.ide.debugger.CSharpEvaluateContext;
 import consulo.dotnet.DotNetTypes;
@@ -39,7 +38,7 @@ public class ConstantEvaluator extends Evaluator
 	}
 
 	@Override
-	public void evaluate(@Nonnull CSharpEvaluateContext context)
+	public void evaluate(CSharpEvaluateContext context)
 	{
 		DotNetVirtualMachineProxy virtualMachine = context.getDebuggerContext().getVirtualMachine();
 		if(DotNetTypes.System.Int32.equals(myVmQName))

@@ -24,7 +24,6 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpUserTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,33 +31,30 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpUserTypeImpl extends CSharpTypeElementImpl implements CSharpUserType
 {
-	public CSharpUserTypeImpl(@Nonnull IElementType elementType)
+	public CSharpUserTypeImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitUserType(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
 		return new CSharpUserTypeRef(getReferenceExpression());
 	}
 
-	@Nonnull
 	@Override
 	public String getReferenceText()
 	{
 		return getReferenceExpression().getText();
 	}
 
-	@Nonnull
 	@Override
 	public CSharpReferenceExpression getReferenceExpression()
 	{

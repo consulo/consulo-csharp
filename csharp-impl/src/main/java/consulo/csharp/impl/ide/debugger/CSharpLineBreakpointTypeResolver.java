@@ -20,7 +20,6 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.dotnet.debugger.impl.breakpoint.DotNetLineBreakpointTypeResolver;
 import consulo.virtualFileSystem.fileType.FileType;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -29,7 +28,6 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class CSharpLineBreakpointTypeResolver extends DotNetLineBreakpointTypeResolver
 {
-	@Nonnull
 	@Override
 	public FileType getFileType()
 	{

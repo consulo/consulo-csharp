@@ -57,7 +57,6 @@ import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Pair;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +68,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 {
 	@RequiredUIAccess
 	@Override
-	public void invoke(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file)
+	public void invoke(Project project, Editor editor, PsiFile file)
 	{
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
 
@@ -143,10 +142,10 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 	}
 
 	@RequiredUIAccess
-	private static void generateConstructor(@Nonnull final CSharpTypeDeclaration typeDeclaration,
-											@Nonnull final Editor editor,
-											@Nonnull final PsiFile file,
-											@Nonnull ConstructorChooseMember chooseMember)
+	private static void generateConstructor(final CSharpTypeDeclaration typeDeclaration,
+											final Editor editor,
+											final PsiFile file,
+											ConstructorChooseMember chooseMember)
 	{
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, typeDeclaration.getResolveScope(), typeDeclaration);
 		final List<DotNetVariable> fieldOrProperties = new ArrayList<>();
@@ -191,11 +190,11 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 	}
 
 	@RequiredReadAction
-	private static void generateConstructorInner(@Nonnull final CSharpTypeDeclaration typeDeclaration,
-										  @Nonnull final Editor editor,
-										  @Nonnull final PsiFile file,
-										  @Nonnull ConstructorChooseMember chooseMember,
-										  @Nonnull List<CSharpVariableChooseObject> additionalParameters)
+	private static void generateConstructorInner(final CSharpTypeDeclaration typeDeclaration,
+										  final Editor editor,
+										  final PsiFile file,
+										  ConstructorChooseMember chooseMember,
+										  List<CSharpVariableChooseObject> additionalParameters)
 	{
 		String text = chooseMember.getText(additionalParameters);
 		text = text.replace("$NAME$", typeDeclaration.getName());
@@ -233,7 +232,6 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	private static PsiElement getTargetForInsert(PsiFile file, Editor editor)
 	{
 		int offset = editor.getCaretModel().getOffset();

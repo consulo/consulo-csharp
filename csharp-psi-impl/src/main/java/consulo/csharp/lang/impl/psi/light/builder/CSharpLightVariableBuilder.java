@@ -24,8 +24,7 @@ import consulo.language.psi.PsiElement;
 import consulo.project.Project;
 import consulo.util.collection.SmartList;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 /**
@@ -72,7 +71,6 @@ public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBu
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
@@ -104,7 +102,7 @@ public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBu
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return myModifiers.contains(CSharpModifier.as(modifier));
 	}

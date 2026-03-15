@@ -19,8 +19,7 @@ package consulo.csharp.lang.impl.psi.light.builder;
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.dotnet.psi.DotNetAttribute;
@@ -46,18 +45,17 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 	}
 
 	@Override
-	public void addModifier(@Nonnull DotNetModifier modifier)
+	public void addModifier(DotNetModifier modifier)
 	{
 		myModifiers.add(CSharpModifier.as(modifier));
 	}
 
 	@Override
-	public void removeModifier(@Nonnull DotNetModifier modifier)
+	public void removeModifier(DotNetModifier modifier)
 	{
 		myModifiers.remove(CSharpModifier.as(modifier));
 	}
 
-	@Nonnull
 	@Override
 	public DotNetModifier[] getModifiers()
 	{
@@ -65,7 +63,6 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
@@ -73,13 +70,13 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 	}
 
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return myModifiers.contains(CSharpModifier.as(modifier));
 	}
 
 	@Override
-	public boolean hasModifierInTree(@Nonnull DotNetModifier modifier)
+	public boolean hasModifierInTree(DotNetModifier modifier)
 	{
 		return myModifiers.contains(CSharpModifier.as(modifier));
 	}
@@ -91,9 +88,8 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 		return null;
 	}
 
-	@Nonnull
 	@Override
-	public List<PsiElement> getModifierElements(@Nonnull DotNetModifier modifier)
+	public List<PsiElement> getModifierElements(DotNetModifier modifier)
 	{
 		return Collections.emptyList();
 	}

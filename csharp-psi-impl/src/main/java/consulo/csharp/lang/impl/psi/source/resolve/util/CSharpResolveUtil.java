@@ -51,8 +51,7 @@ import consulo.util.dataholder.Key;
 import consulo.util.dataholder.KeyWithDefaultValue;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,16 +72,16 @@ public class CSharpResolveUtil
 	public static final Key<CSharpResolveSelector> SELECTOR = Key.create("resolve.selector");
 	public static final Key<Boolean> WALK_DEEP = Key.create("walk.deep");
 
-	public static boolean treeWalkUp(@Nonnull PsiScopeProcessor processor, @Nonnull PsiElement entrance, @Nonnull PsiElement sender, @Nullable PsiElement maxScope)
+	public static boolean treeWalkUp(PsiScopeProcessor processor, PsiElement entrance, PsiElement sender, @Nullable PsiElement maxScope)
 	{
 		return treeWalkUp(processor, entrance, sender, maxScope, ResolveState.initial());
 	}
 
-	public static boolean treeWalkUp(@Nonnull final PsiScopeProcessor processor,
-			@Nonnull final PsiElement entrance,
-			@Nonnull final PsiElement sender,
+	public static boolean treeWalkUp(final PsiScopeProcessor processor,
+			final PsiElement entrance,
+			final PsiElement sender,
 			@Nullable PsiElement maxScope,
-			@Nonnull final ResolveState state)
+			final ResolveState state)
 	{
 		if(!entrance.isValid())
 		{
@@ -133,7 +132,7 @@ public class CSharpResolveUtil
 	}
 
 	@RequiredReadAction
-	public static boolean walkUsing(@Nonnull final PsiScopeProcessor processor, @Nonnull final PsiElement entrance, @Nullable PsiElement maxScope, @Nonnull final ResolveState state)
+	public static boolean walkUsing(final PsiScopeProcessor processor, final PsiElement entrance, @Nullable PsiElement maxScope, final ResolveState state)
 	{
 		if(!entrance.isValid())
 		{
@@ -220,7 +219,7 @@ public class CSharpResolveUtil
 		return true;
 	}
 
-	private static PsiElement validateMaxScope(@Nonnull PsiElement entrance, @Nullable PsiElement maxScope)
+	private static PsiElement validateMaxScope(PsiElement entrance, @Nullable PsiElement maxScope)
 	{
 		if(maxScope == null)
 		{
@@ -237,11 +236,11 @@ public class CSharpResolveUtil
 		return maxScope;
 	}
 
-	public static boolean walkGenericParameterList(@Nonnull final PsiScopeProcessor processor,
-			@Nonnull Processor<ResolveResult> consumer,
-			@Nonnull final PsiElement entrance,
+	public static boolean walkGenericParameterList(final PsiScopeProcessor processor,
+			Processor<ResolveResult> consumer,
+			final PsiElement entrance,
 			@Nullable PsiElement maxScope,
-			@Nonnull final ResolveState state)
+			final ResolveState state)
 	{
 		if(!ExecuteTargetUtil.canProcess(processor, ExecuteTarget.GENERIC_PARAMETER))
 		{
@@ -320,7 +319,7 @@ public class CSharpResolveUtil
 	}
 
 	@RequiredReadAction
-	public static boolean walkChildren(@Nonnull final PsiScopeProcessor processor, @Nonnull final PsiElement entrance, boolean walkParent, boolean walkDeep, @Nonnull ResolveState state)
+	public static boolean walkChildren(final PsiScopeProcessor processor, final PsiElement entrance, boolean walkParent, boolean walkDeep, ResolveState state)
 	{
 		if(walkDeep)
 		{
@@ -419,7 +418,7 @@ public class CSharpResolveUtil
 		return true;
 	}
 
-	public static boolean walkForLabel(@Nonnull final PsiScopeProcessor processor, @Nonnull final PsiElement entrance, @Nonnull ResolveState state)
+	public static boolean walkForLabel(final PsiScopeProcessor processor, final PsiElement entrance, ResolveState state)
 	{
 		PsiElement[] children = entrance.getChildren();
 		for(PsiElement child : children)
@@ -440,9 +439,8 @@ public class CSharpResolveUtil
 		return true;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef resolveIterableType(@Nonnull CSharpForeachStatementImpl foreachStatement)
+	public static DotNetTypeRef resolveIterableType(CSharpForeachStatementImpl foreachStatement)
 	{
 		DotNetExpression iterableExpression = foreachStatement.getIterableExpression();
 		if(iterableExpression == null)
@@ -453,9 +451,8 @@ public class CSharpResolveUtil
 		return resolveIterableType(iterableExpression.toTypeRef(false));
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static DotNetTypeRef resolveIterableType(@Nonnull DotNetTypeRef typeRef)
+	public static DotNetTypeRef resolveIterableType(DotNetTypeRef typeRef)
 	{
 		if(typeRef instanceof DotNetArrayTypeRef)
 		{
@@ -483,9 +480,8 @@ public class CSharpResolveUtil
 		}
 	}
 
-	@Nonnull
 	@SuppressWarnings("unchecked")
-	public static <T extends PsiElement> List<T> mergeGroupsToIterable(@Nonnull PsiElement[] elements)
+	public static <T extends PsiElement> List<T> mergeGroupsToIterable(PsiElement[] elements)
 	{
 		List<T> list = new ArrayList<T>();
 		for(PsiElement element : elements)
@@ -502,9 +498,8 @@ public class CSharpResolveUtil
 		return list;
 	}
 
-	@Nonnull
 	@SuppressWarnings("unchecked")
-	public static <T extends PsiElement> List<T> mergeGroupsToIterable(@Nonnull Iterable<PsiElement> elements)
+	public static <T extends PsiElement> List<T> mergeGroupsToIterable(Iterable<PsiElement> elements)
 	{
 		List<T> list = new ArrayList<T>();
 		for(PsiElement element : elements)
@@ -556,8 +551,7 @@ public class CSharpResolveUtil
 		return ArrayUtil2.safeGet(resolveResults, 0);
 	}
 
-	@Nonnull
-	public static ResolveResult[] filterValidResults(@Nonnull ResolveResult[] resolveResults)
+	public static ResolveResult[] filterValidResults(ResolveResult[] resolveResults)
 	{
 		List<ResolveResult> filter = new SmartList<ResolveResult>();
 		for(ResolveResult resolveResult : resolveResults)

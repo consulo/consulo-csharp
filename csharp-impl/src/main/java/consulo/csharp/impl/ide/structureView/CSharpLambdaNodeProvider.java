@@ -15,7 +15,6 @@ import consulo.language.psi.PsiElement;
 import consulo.csharp.lang.impl.psi.source.CSharpAnonymousMethodExpression;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 
-import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -58,21 +57,18 @@ public class CSharpLambdaNodeProvider implements FileStructureNodeProvider<CShar
 				.toList();
 	}
 
-	@Nonnull
 	@Override
 	public ActionPresentation getPresentation()
 	{
 		return new ActionPresentationData(getCheckBoxText(), null, AllIcons.Nodes.Lambda);
 	}
 
-	@Nonnull
 	@Override
 	public String getName()
 	{
 		return ID;
 	}
 
-	@Nonnull
 	@Override
 	public String getSerializePropertyName()
 	{

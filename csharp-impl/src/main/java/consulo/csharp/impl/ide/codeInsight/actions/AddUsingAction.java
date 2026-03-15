@@ -50,9 +50,8 @@ import consulo.ui.ex.popup.JBPopupFactory;
 import consulo.ui.ex.popup.PopupStep;
 import consulo.ui.image.Image;
 import consulo.util.collection.ContainerUtil;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Set;
 
 /**
@@ -107,7 +106,6 @@ public class AddUsingAction implements QuestionAction
 					return PlatformIconGroup.nodesNamespace();
 				}
 
-				@Nonnull
 				@Override
 				public String getTextFor(NamespaceReference value)
 				{
@@ -130,8 +128,7 @@ public class AddUsingAction implements QuestionAction
 		return true;
 	}
 
-	@Nonnull
-	public static String formatMessage(@Nonnull NamespaceReference couple)
+	public static String formatMessage(NamespaceReference couple)
 	{
 		String libraryName = couple.getLibraryName();
 		String namespace = couple.getNamespace();

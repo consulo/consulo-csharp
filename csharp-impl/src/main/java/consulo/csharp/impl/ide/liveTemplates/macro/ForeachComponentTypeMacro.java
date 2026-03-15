@@ -38,8 +38,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.collection.SmartList;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -62,7 +61,6 @@ public class ForeachComponentTypeMacro extends Macro
 		return "csharpForeachComponentType(VARIABLE)";
 	}
 
-	@Nonnull
 	@Override
 	public String getDefaultValue()
 	{
@@ -72,7 +70,7 @@ public class ForeachComponentTypeMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public Result calculateQuickResult(@Nonnull Expression[] params, ExpressionContext context)
+	public Result calculateQuickResult(Expression[] params, ExpressionContext context)
 	{
 		return calculateResult(params, context);
 	}
@@ -80,7 +78,7 @@ public class ForeachComponentTypeMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public LookupElement[] calculateLookupItems(@Nonnull Expression[] params, ExpressionContext context)
+	public LookupElement[] calculateLookupItems(Expression[] params, ExpressionContext context)
 	{
 		Result result = calculateResult(params, context);
 		if(result == null)
@@ -113,7 +111,7 @@ public class ForeachComponentTypeMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public Result calculateResult(@Nonnull Expression[] params, ExpressionContext context)
+	public Result calculateResult(Expression[] params, ExpressionContext context)
 	{
 		if(params.length != 1)
 		{

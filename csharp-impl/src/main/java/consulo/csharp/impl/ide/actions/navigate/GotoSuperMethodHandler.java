@@ -33,8 +33,7 @@ import consulo.navigation.Navigatable;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -46,7 +45,7 @@ import java.util.Collection;
 public class GotoSuperMethodHandler implements GotoSuperActionHander
 {
 	@Nullable
-	public static DotNetVirtualImplementOwner findVirtualImplementOwner(@Nonnull Editor editor, @Nonnull PsiFile file)
+	public static DotNetVirtualImplementOwner findVirtualImplementOwner(Editor editor, PsiFile file)
 	{
 		if(file.getFileType() != CSharpFileType.INSTANCE)
 		{
@@ -68,7 +67,7 @@ public class GotoSuperMethodHandler implements GotoSuperActionHander
 	}
 
 	@Override
-	public void invoke(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file)
+	public void invoke(Project project, Editor editor, PsiFile file)
 	{
 		DotNetVirtualImplementOwner virtualImplementOwner = findVirtualImplementOwner(editor, file);
 		if(virtualImplementOwner == null)
@@ -99,7 +98,6 @@ public class GotoSuperMethodHandler implements GotoSuperActionHander
 		return false;
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

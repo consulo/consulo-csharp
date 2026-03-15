@@ -22,9 +22,7 @@ import consulo.language.psi.stub.EmptyStub;
 import consulo.language.psi.stub.StubElement;
 import consulo.language.psi.stub.StubInputStream;
 import consulo.language.psi.stub.StubOutputStream;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -33,27 +31,26 @@ import java.io.IOException;
  */
 public abstract class CSharpEmptyStubElementType<T extends PsiElement> extends CSharpAbstractStubElementType<EmptyStub<T>, T>
 {
-	public CSharpEmptyStubElementType(@Nonnull @NonNls String debugName)
+	public CSharpEmptyStubElementType(String debugName)
 	{
 		super(debugName);
 	}
 
 	@RequiredReadAction
 	@Override
-	public EmptyStub<T> createStub(@Nonnull T type, StubElement stubElement)
+	public EmptyStub<T> createStub(T type, StubElement stubElement)
 	{
 		return new EmptyStub<T>(stubElement, this);
 	}
 
 	@Override
-	public void serialize(@Nonnull EmptyStub cSharpEmptyStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(EmptyStub cSharpEmptyStub, StubOutputStream stubOutputStream) throws IOException
 	{
 
 	}
 
-	@Nonnull
 	@Override
-	public EmptyStub<T> deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public EmptyStub<T> deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		return new EmptyStub<T>(stubElement, this);
 	}

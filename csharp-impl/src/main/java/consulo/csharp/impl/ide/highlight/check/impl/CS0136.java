@@ -35,8 +35,7 @@ import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.collection.MultiMap;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -103,7 +102,7 @@ public class CS0136 extends CompilerCheck<DotNetVariable>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetVariable element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetVariable element)
 	{
 		String name = element.getName();
 		if(name == null)

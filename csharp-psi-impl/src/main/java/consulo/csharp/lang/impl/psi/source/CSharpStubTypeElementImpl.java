@@ -24,7 +24,6 @@ import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.psi.stub.StubElement;
 
-import jakarta.annotation.Nonnull;
 import java.util.function.Function;
 
 /**
@@ -37,7 +36,6 @@ public abstract class CSharpStubTypeElementImpl<S extends StubElement> extends C
 	{
 		public static final OurResolver INSTANCE = new OurResolver();
 
-		@Nonnull
 		@Override
 		@RequiredReadAction
 		public DotNetTypeRef apply(CSharpStubTypeElementImpl<?> typeElement)
@@ -46,22 +44,20 @@ public abstract class CSharpStubTypeElementImpl<S extends StubElement> extends C
 		}
 	}
 
-	public CSharpStubTypeElementImpl(@Nonnull ASTNode node)
+	public CSharpStubTypeElementImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubTypeElementImpl(@Nonnull S stub, @Nonnull IStubElementType<? extends S, ?> nodeType)
+	public CSharpStubTypeElementImpl(S stub, IStubElementType<? extends S, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	protected abstract DotNetTypeRef toTypeRefImpl();
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public final DotNetTypeRef toTypeRef()
 	{

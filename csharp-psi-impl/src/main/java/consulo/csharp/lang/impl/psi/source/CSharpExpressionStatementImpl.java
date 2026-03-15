@@ -24,9 +24,8 @@ import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -34,7 +33,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpExpressionStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpExpressionStatementImpl(@Nonnull IElementType elementType)
+	public CSharpExpressionStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -47,14 +46,14 @@ public class CSharpExpressionStatementImpl extends CSharpElementImpl implements 
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitExpressionStatement(this);
 	}
 
 	@Override
 	@RequiredReadAction
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		DotNetExpression expression = getExpression();
 		return expression != null && expression.processDeclarations(processor, state, lastParent, place);

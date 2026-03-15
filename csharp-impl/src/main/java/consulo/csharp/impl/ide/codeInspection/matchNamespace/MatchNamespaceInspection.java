@@ -30,7 +30,6 @@ import consulo.language.psi.PsiFile;
 import consulo.language.util.ModuleUtilCore;
 import consulo.localize.LocalizeValue;
 import consulo.util.dataholder.Key;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -40,10 +39,9 @@ import jakarta.annotation.Nonnull;
 public class MatchNamespaceInspection extends CSharpGeneralLocalInspection {
     private static final Key<MatchNamespaceVisitor> KEY = Key.create("MatchNamespaceVisitor");
 
-    @Nonnull
     @Override
     @RequiredReadAction
-    public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session, @Nonnull Object state) {
+    public PsiElementVisitor buildVisitor(ProblemsHolder holder, boolean isOnTheFly, LocalInspectionToolSession session, Object state) {
         PsiFile file = holder.getFile();
         if (!(file instanceof CSharpFile)) {
             return PsiElementVisitor.EMPTY_VISITOR;
@@ -66,7 +64,7 @@ public class MatchNamespaceInspection extends CSharpGeneralLocalInspection {
     }
 
     @Override
-    public void inspectionFinished(@Nonnull LocalInspectionToolSession session, @Nonnull ProblemsHolder problemsHolder, @Nonnull Object state) {
+    public void inspectionFinished(LocalInspectionToolSession session, ProblemsHolder problemsHolder, Object state) {
         MatchNamespaceVisitor visitor = session.getUserData(KEY);
         if (visitor == null) {
             return;
@@ -74,13 +72,11 @@ public class MatchNamespaceInspection extends CSharpGeneralLocalInspection {
         visitor.report();
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getDisplayName() {
         return LocalizeValue.localizeTODO("Namespace match vfs inspection");
     }
 
-    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WARNING;

@@ -32,7 +32,6 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -42,7 +41,7 @@ public class ReplaceTypeQuickFix extends BaseIntentionAction implements Syntheti
   private final SmartPsiElementPointer<DotNetType> myPointer;
   private final String myTypeText;
 
-  public ReplaceTypeQuickFix(@Nonnull DotNetType type, @Nonnull DotNetTypeRef typeRef) {
+  public ReplaceTypeQuickFix(DotNetType type, DotNetTypeRef typeRef) {
     myPointer = SmartPointerManager.getInstance(type.getProject()).createSmartPsiElementPointer(type);
 
     myTypeText = CSharpTypeRefPresentationUtil.buildShortText(typeRef);
@@ -50,12 +49,12 @@ public class ReplaceTypeQuickFix extends BaseIntentionAction implements Syntheti
   }
 
   @Override
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+  public boolean isAvailable(Project project, Editor editor, PsiFile file) {
     return myPointer.getElement() != null;
   }
 
   @Override
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+  public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
     DotNetType element = myPointer.getElement();
     if (element == null) {
       return;

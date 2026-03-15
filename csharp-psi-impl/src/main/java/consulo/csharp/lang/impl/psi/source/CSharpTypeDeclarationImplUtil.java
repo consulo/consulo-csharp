@@ -34,8 +34,7 @@ import consulo.util.collection.ArrayUtil;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.Pair;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -44,7 +43,7 @@ import jakarta.annotation.Nullable;
 public class CSharpTypeDeclarationImplUtil
 {
 	@RequiredReadAction
-	public static boolean isInheritOrSelf(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope, @Nonnull String... vmQNames)
+	public static boolean isInheritOrSelf(DotNetTypeRef typeRef, PsiElement scope, String... vmQNames)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		PsiElement typeResolveResultElement = typeResolveResult.getElement();
@@ -93,7 +92,7 @@ public class CSharpTypeDeclarationImplUtil
 	}
 
 	@RequiredReadAction
-	public static boolean isEquivalentTo(@Nonnull DotNetTypeDeclaration thisType, @Nullable PsiElement another)
+	public static boolean isEquivalentTo(DotNetTypeDeclaration thisType, @Nullable PsiElement another)
 	{
 		// faster check that string
 		if(thisType == another)
@@ -104,7 +103,7 @@ public class CSharpTypeDeclarationImplUtil
 		return another instanceof DotNetTypeDeclaration && Comparing.equal(thisType.getVmQName(), ((DotNetTypeDeclaration) another).getVmQName());
 	}
 
-	public static boolean hasExtensions(@Nonnull DotNetTypeDeclaration typeDeclaration)
+	public static boolean hasExtensions(DotNetTypeDeclaration typeDeclaration)
 	{
 		for(DotNetNamedElement qualifiedElement : typeDeclaration.getMembers())
 		{
@@ -117,8 +116,7 @@ public class CSharpTypeDeclarationImplUtil
 	}
 
 	@RequiredReadAction
-	@Nonnull
-	public static DotNetTypeRef[] getExtendTypeRefs(@Nonnull DotNetTypeDeclaration typeDeclaration)
+	public static DotNetTypeRef[] getExtendTypeRefs(DotNetTypeDeclaration typeDeclaration)
 	{
 		DotNetTypeRef[] typeRefs = DotNetTypeRef.EMPTY_ARRAY;
 		DotNetTypeList extendList = typeDeclaration.getExtendList();
@@ -141,7 +139,7 @@ public class CSharpTypeDeclarationImplUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> resolveBaseType(@Nonnull DotNetTypeDeclaration typeDeclaration, @Nonnull PsiElement scope)
+	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> resolveBaseType(DotNetTypeDeclaration typeDeclaration, PsiElement scope)
 	{
 		typeDeclaration = CSharpCompositeTypeDeclaration.selectCompositeOrSelfType(typeDeclaration);
 
@@ -173,7 +171,7 @@ public class CSharpTypeDeclarationImplUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static String getDefaultSuperType(@Nonnull DotNetTypeDeclaration typeDeclaration)
+	public static String getDefaultSuperType(DotNetTypeDeclaration typeDeclaration)
 	{
 		String vmQName = typeDeclaration.getVmQName();
 		if(Comparing.equal(vmQName, DotNetTypes.System.Object))

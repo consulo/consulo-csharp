@@ -20,7 +20,6 @@ import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -28,8 +27,7 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpResolveResultWithExtractor extends CSharpResolveResult
 {
-	@Nonnull
-	public static CSharpResolveResultWithExtractor withExtractor(@Nonnull ResolveResult resolveResult, @Nonnull DotNetGenericExtractor extractor)
+	public static CSharpResolveResultWithExtractor withExtractor(ResolveResult resolveResult, DotNetGenericExtractor extractor)
 	{
 		PsiElement providerElement = null;
 		if(resolveResult instanceof CSharpResolveResult)
@@ -41,16 +39,14 @@ public class CSharpResolveResultWithExtractor extends CSharpResolveResult
 		return withExtractor;
 	}
 
-	@Nonnull
 	private final DotNetGenericExtractor myExtractor;
 
-	public CSharpResolveResultWithExtractor(@Nonnull PsiElement element, @Nonnull DotNetGenericExtractor extractor)
+	public CSharpResolveResultWithExtractor(PsiElement element, DotNetGenericExtractor extractor)
 	{
 		super(element);
 		myExtractor = extractor;
 	}
 
-	@Nonnull
 	public DotNetGenericExtractor getExtractor()
 	{
 		return myExtractor;

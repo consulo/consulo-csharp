@@ -36,8 +36,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.IStubElementType;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -45,12 +44,12 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSharpReferenceExpressionStub> implements CSharpReferenceExpressionEx
 {
-	public CSharpStubReferenceExpressionImpl(@Nonnull ASTNode node)
+	public CSharpStubReferenceExpressionImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubReferenceExpressionImpl(@Nonnull CSharpReferenceExpressionStub stub, @Nonnull IStubElementType<? extends CSharpReferenceExpressionStub, ?> nodeType)
+	public CSharpStubReferenceExpressionImpl(CSharpReferenceExpressionStub stub, IStubElementType<? extends CSharpReferenceExpressionStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -70,7 +69,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitReferenceExpression(this);
 	}
@@ -113,7 +112,6 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return this;
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public TextRange getRangeInElement()
@@ -121,7 +119,6 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return CSharpReferenceExpressionImplUtil.getRangeInElement(this);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public ResolveResult[] multiResolve(final boolean incompleteCode)
@@ -131,7 +128,6 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	public ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent)
 	{
 		return CSharpReferenceExpressionImplUtil.multiResolve(this, incompleteCode, resolveFromParent);
@@ -139,16 +135,14 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	public ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent)
 	{
 		return CSharpReferenceExpressionImplUtil.multiResolveImpl(kind, CSharpReferenceExpressionImplUtil.findCallArgumentListOwner(kind, this), this, resolveFromParent);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public ResolveResult[] tryResolveFromQualifier(@Nonnull PsiElement element)
+	public ResolveResult[] tryResolveFromQualifier(PsiElement element)
 	{
 		return CSharpReferenceExpressionImplUtil.tryResolveFromQualifier(this, element);
 	}
@@ -163,7 +157,6 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	public ResolveToKind kind()
 	{
 		CSharpReferenceExpressionStub stub = getGreenStub();
@@ -174,7 +167,6 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return CSharpReferenceExpressionImplUtil.kind(this);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public String getCanonicalText()
@@ -198,7 +190,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
+	public PsiElement bindToElement(PsiElement element) throws IncorrectOperationException
 	{
 		return CSharpReferenceExpressionImplUtil.bindToElement(this, element);
 	}
@@ -226,7 +218,6 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getTypeArgumentListRefs()
 	{
@@ -256,7 +247,6 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public AccessType getMemberAccessType()
 	{
@@ -291,7 +281,6 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return AccessType.DOT;
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
@@ -301,7 +290,6 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	public DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent)
 	{
 		return CSharpReferenceExpressionImplUtil.toTypeRefWithoutCaching(this, kind, resolveFromParent);

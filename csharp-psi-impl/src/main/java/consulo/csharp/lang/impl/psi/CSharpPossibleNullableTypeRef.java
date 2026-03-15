@@ -24,7 +24,6 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.*;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -41,7 +40,6 @@ public class CSharpPossibleNullableTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -71,7 +69,6 @@ public class CSharpPossibleNullableTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getVmQName()
 	{

@@ -22,7 +22,6 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,19 +29,18 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpErrorExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
-	public CSharpErrorExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpErrorExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitElement(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{

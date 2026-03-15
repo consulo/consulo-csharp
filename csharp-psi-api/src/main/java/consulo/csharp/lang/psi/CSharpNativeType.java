@@ -20,7 +20,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetNativeType;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -28,7 +27,6 @@ import jakarta.annotation.Nonnull;
  */
 public interface CSharpNativeType extends DotNetNativeType
 {
-	@Nonnull
 	@RequiredReadAction
 	IElementType getTypeElementType();
 }

@@ -29,8 +29,7 @@ import consulo.language.ast.IElementType;
 import consulo.language.ast.TokenSet;
 import consulo.language.parser.PsiBuilder;
 import consulo.util.lang.Pair;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,7 +39,7 @@ public class DeclarationParsing extends SharedParsingHelpers {
     // { (
     private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR, THIS_KEYWORD, OPERATOR_KEYWORD);
 
-    public static void parseAll(@Nonnull CSharpBuilderWrapper builder, boolean root, boolean isEnum) {
+    public static void parseAll(CSharpBuilderWrapper builder, boolean root, boolean isEnum) {
         if (isEnum) {
             IElementType prevToken;
             while (!builder.eof()) {
@@ -77,7 +76,7 @@ public class DeclarationParsing extends SharedParsingHelpers {
         }
     }
 
-    private static void parse(@Nonnull CSharpBuilderWrapper builder, boolean root) {
+    private static void parse(CSharpBuilderWrapper builder, boolean root) {
         PsiBuilder.Marker marker = builder.mark();
 
         Pair<PsiBuilder.Marker, ModifierSet> modifierListPair = parseWithSoftElements(b -> parseModifierListWithAttributes(b, STUB_SUPPORT), builder, PARTIAL_KEYWORD, ASYNC_KEYWORD);

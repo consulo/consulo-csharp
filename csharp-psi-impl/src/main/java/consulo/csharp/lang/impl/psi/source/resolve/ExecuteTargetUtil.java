@@ -20,7 +20,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.KeyWithDefaultValue;
-import jakarta.annotation.Nonnull;
 
 import java.util.EnumSet;
 
@@ -32,7 +31,7 @@ public class ExecuteTargetUtil
 {
 	public static final Key<EnumSet<ExecuteTarget>> EXECUTE_TARGETS = KeyWithDefaultValue.create("execute.targets", () -> EnumSet.noneOf(ExecuteTarget.class));
 
-	public static boolean isMyElement(@Nonnull PsiScopeProcessor psiScopeProcessor, @Nonnull PsiElement element)
+	public static boolean isMyElement(PsiScopeProcessor psiScopeProcessor, PsiElement element)
 	{
 		EnumSet<ExecuteTarget> hint = psiScopeProcessor.getHint(EXECUTE_TARGETS);
 		if(hint == null)
@@ -67,7 +66,7 @@ public class ExecuteTargetUtil
 		return result;
 	}
 
-	public static boolean canProcess(@Nonnull PsiScopeProcessor psiScopeProcessor, @Nonnull ExecuteTarget... executeTargets)
+	public static boolean canProcess(PsiScopeProcessor psiScopeProcessor, ExecuteTarget... executeTargets)
 	{
 		EnumSet<ExecuteTarget> hint = psiScopeProcessor.getHint(EXECUTE_TARGETS);
 		if(hint == null)

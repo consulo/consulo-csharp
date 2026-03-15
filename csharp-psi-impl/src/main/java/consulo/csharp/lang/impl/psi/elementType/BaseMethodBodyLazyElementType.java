@@ -38,7 +38,6 @@ import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.language.version.LanguageVersion;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 import java.util.Set;
 
 /**
@@ -47,16 +46,16 @@ import java.util.Set;
  */
 public abstract class BaseMethodBodyLazyElementType extends ILazyParseableElementType
 {
-	public BaseMethodBodyLazyElementType(@Nonnull String debugName)
+	public BaseMethodBodyLazyElementType(String debugName)
 	{
 		super(debugName, CSharpLanguage.INSTANCE);
 	}
 
-	protected abstract void parse(@Nonnull CSharpBuilderWrapper wrapper, @Nonnull ModifierSet set);
+	protected abstract void parse(CSharpBuilderWrapper wrapper, ModifierSet set);
 
 	@Override
 	@RequiredReadAction
-	protected ASTNode doParseContents(@Nonnull ASTNode chameleon, @Nonnull PsiElement psi)
+	protected ASTNode doParseContents(ASTNode chameleon, PsiElement psi)
 	{
 		final Project project = psi.getProject();
 		final Language languageForParser = getLanguageForParser(psi);
@@ -92,8 +91,7 @@ public abstract class BaseMethodBodyLazyElementType extends ILazyParseableElemen
 		return wrapper.getTreeBuilt().getFirstChildNode();
 	}
 
-	@Nonnull
-	private static Set<String> collectVariableFor(@Nonnull PsiElement element)
+	private static Set<String> collectVariableFor(PsiElement element)
 	{
 		return LanguageCachedValueUtil.getCachedValue(element, () -> {
 			PsiFile psiFile = element.getContainingFile();

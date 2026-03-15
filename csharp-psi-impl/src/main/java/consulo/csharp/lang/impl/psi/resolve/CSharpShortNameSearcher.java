@@ -30,10 +30,9 @@ import consulo.language.psi.stub.IdFilter;
 import consulo.language.psi.stub.StubIndex;
 import consulo.project.Project;
 import consulo.project.content.scope.ProjectAwareSearchScope;
-import jakarta.annotation.Nonnull;
 import jakarta.inject.Inject;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.function.Predicate;
 
 /**
@@ -50,14 +49,14 @@ public class CSharpShortNameSearcher extends DotNetShortNameSearcher
 	}
 
 	@Override
-	public void collectTypeNames(@Nonnull Predicate<String> processor, @Nonnull SearchScope searchScope, @Nullable IdFilter filter)
+	public void collectTypeNames(Predicate<String> processor, SearchScope searchScope, @Nullable IdFilter filter)
 	{
 		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.TYPE_INDEX, processor, (ProjectAwareSearchScope) searchScope, filter);
 		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.DELEGATE_METHOD_BY_NAME_INDEX, processor, (ProjectAwareSearchScope) searchScope, filter);
 	}
 
 	@Override
-	public void collectTypes(@Nonnull String s, @Nonnull SearchScope searchScope, @Nullable IdFilter filter, @Nonnull final Predicate<DotNetTypeDeclaration> processor)
+	public void collectTypes(String s, SearchScope searchScope, @Nullable IdFilter filter, final Predicate<DotNetTypeDeclaration> processor)
 	{
 		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_INDEX, s, myProject, (ProjectAwareSearchScope) searchScope, filter, CSharpTypeDeclaration.class,
 				processor);

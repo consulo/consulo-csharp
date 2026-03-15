@@ -25,9 +25,8 @@ import consulo.language.psi.PsiFile;
 import consulo.language.util.ModuleUtilCore;
 import consulo.module.Module;
 import consulo.util.dataholder.UserDataHolderBase;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -78,20 +77,18 @@ public class CSharpHighlightContext extends UserDataHolderBase
 
 	private PsiFile myFile;
 
-	public CSharpHighlightContext(@Nonnull PsiFile file)
+	public CSharpHighlightContext(PsiFile file)
 	{
 		myFile = file;
 	}
 
-	@Nonnull
 	public PsiFile getFile()
 	{
 		return myFile;
 	}
 
 	@RequiredReadAction
-	@Nullable
-	public consulo.module.Module getModule()
+	public consulo.module.@Nullable Module getModule()
 	{
 		return myModuleValue.getValue();
 	}
@@ -110,7 +107,6 @@ public class CSharpHighlightContext extends UserDataHolderBase
 		return myCSharpModuleExtensionValue.getValue();
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public CSharpLanguageVersion getLanguageVersion()
 	{

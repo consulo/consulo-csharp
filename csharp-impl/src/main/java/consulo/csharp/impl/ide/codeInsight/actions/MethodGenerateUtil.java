@@ -24,8 +24,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,7 +34,7 @@ public class MethodGenerateUtil
 {
 	@Nullable
 	@RequiredReadAction
-	public static String getDefaultValueForType(@Nonnull DotNetTypeRef typeRef)
+	public static String getDefaultValueForType(DotNetTypeRef typeRef)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 

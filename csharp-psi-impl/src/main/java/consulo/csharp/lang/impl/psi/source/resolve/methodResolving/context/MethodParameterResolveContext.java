@@ -29,9 +29,8 @@ import consulo.project.Project;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.Trinity;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -64,14 +63,12 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 		myParamsParameterTypeRefValue = NotNullLazyValue.createValue(() -> myParamsParameter == null ? DotNetTypeRef.ERROR_TYPE : myParamsParameter.toTypeRef(true));
 	}
 
-	@Nonnull
 	@Override
 	public Project getProject()
 	{
 		return myParameterListOwner.getProject();
 	}
 
-	@Nonnull
 	@Override
 	public GlobalSearchScope getResolveScope()
 	{
@@ -79,14 +76,12 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 	}
 
 	@Override
-	@Nonnull
 	public DotNetTypeRef getInnerParamsParameterTypeRef()
 	{
 		return myInnerParamsParameterTypeRefValue.getValue();
 	}
 
 	@Override
-	@Nonnull
 	public DotNetTypeRef getParamsParameterTypeRef()
 	{
 		return myParamsParameterTypeRefValue.getValue();
@@ -113,7 +108,7 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 	}
 
 	@Override
-	public DotNetParameter getParameterByName(@Nonnull String name)
+	public DotNetParameter getParameterByName(String name)
 	{
 		for(DotNetParameter parameter : myParameters)
 		{
@@ -125,15 +120,13 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 		return null;
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	@Override
-	public Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(@Nonnull DotNetParameter parameter)
+	public Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(DotNetParameter parameter)
 	{
 		return Trinity.create(parameter.getName(), parameter.toTypeRef(true), parameter.hasModifier(CSharpModifier.OPTIONAL));
 	}
 
-	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{

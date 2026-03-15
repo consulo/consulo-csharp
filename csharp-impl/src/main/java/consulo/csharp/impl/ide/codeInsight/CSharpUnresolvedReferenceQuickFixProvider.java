@@ -27,7 +27,6 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.editor.intention.QuickFixActionRegistrar;
 import consulo.language.editor.intention.UnresolvedReferenceQuickFixProvider;
-import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -73,7 +72,6 @@ public class CSharpUnresolvedReferenceQuickFixProvider extends UnresolvedReferen
 		}
 	}
 
-	@Nonnull
 	@Override
 	public Class<CSharpReferenceExpression> getReferenceClass()
 	{

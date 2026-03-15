@@ -30,8 +30,7 @@ import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.util.collection.ArrayUtil;
 import consulo.language.util.IncorrectOperationException;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -39,7 +38,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpTupleElementImpl extends CSharpElementImpl implements PsiNameIdentifierOwner, DotNetNamedElement
 {
-	public CSharpTupleElementImpl(@Nonnull IElementType elementType)
+	public CSharpTupleElementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -71,7 +70,7 @@ public class CSharpTupleElementImpl extends CSharpElementImpl implements PsiName
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitTupleElement(this);
 	}
@@ -94,7 +93,7 @@ public class CSharpTupleElementImpl extends CSharpElementImpl implements PsiName
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, s);
 		return this;

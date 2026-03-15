@@ -26,10 +26,8 @@ import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.msil.lang.psi.MsilMethodEntry;
 import consulo.language.util.IncorrectOperationException;
-import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.NonNls;
+import org.jspecify.annotations.Nullable;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -40,9 +38,9 @@ public class MsilXAccessorAsCSharpXAccessor extends MsilElementWrapper<DotNetXAc
 	private final PsiElement myParent;
 	private final MsilModifierListToCSharpModifierList myModifierList;
 
-	public MsilXAccessorAsCSharpXAccessor(@Nonnull PsiElement parent,
-										  @Nonnull DotNetXAccessor original,
-										  @Nonnull MsilMethodEntry resolvedMethod)
+	public MsilXAccessorAsCSharpXAccessor(PsiElement parent,
+										  DotNetXAccessor original,
+										  MsilMethodEntry resolvedMethod)
 	{
 		super(parent, original);
 		myParent = parent;
@@ -62,7 +60,7 @@ public class MsilXAccessorAsCSharpXAccessor extends MsilElementWrapper<DotNetXAc
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitXAccessor(this);
 	}
@@ -81,7 +79,6 @@ public class MsilXAccessorAsCSharpXAccessor extends MsilElementWrapper<DotNetXAc
 		return myOriginal.getAccessorKind();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetCodeBodyProxy getCodeBlock()
 	{
@@ -90,7 +87,7 @@ public class MsilXAccessorAsCSharpXAccessor extends MsilElementWrapper<DotNetXAc
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return myModifierList.hasModifier(modifier);
 	}
@@ -118,7 +115,7 @@ public class MsilXAccessorAsCSharpXAccessor extends MsilElementWrapper<DotNetXAc
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
+	public PsiElement setName(String name) throws IncorrectOperationException
 	{
 		return null;
 	}

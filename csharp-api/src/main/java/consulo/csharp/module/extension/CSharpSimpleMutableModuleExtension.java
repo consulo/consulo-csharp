@@ -19,7 +19,6 @@ package consulo.csharp.module.extension;
 import consulo.csharp.module.CSharpNullableOption;
 import consulo.module.extension.MutableModuleExtension;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -29,11 +28,11 @@ public interface CSharpSimpleMutableModuleExtension<T extends CSharpSimpleModule
 {
 	MutableModuleInheritableNamedPointer<CSharpLanguageVersion> getLanguageVersionPointer();
 
-	void setLanguageVersion(@Nonnull CSharpLanguageVersion version);
+	void setLanguageVersion(CSharpLanguageVersion version);
 
 	void setAllowUnsafeCode(boolean value);
 
-	default void setNullableOption(@Nonnull CSharpNullableOption option)
+	default void setNullableOption(CSharpNullableOption option)
 	{
 	}
 }

@@ -25,7 +25,6 @@ import consulo.dotnet.psi.resolve.*;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
 
 import java.util.Arrays;
 
@@ -38,9 +37,9 @@ public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult i
     private final DotNetTypeRef[] myArguments;
 
     public CSharpGenericWrapperTypeRef(Project project,
-                                       @Nonnull GlobalSearchScope scope,
-                                       @Nonnull DotNetTypeRef innerTypeRef,
-                                       @Nonnull DotNetTypeRef... rArguments) {
+                                       GlobalSearchScope scope,
+                                       DotNetTypeRef innerTypeRef,
+                                       DotNetTypeRef... rArguments) {
         super(project, scope);
         myArguments = rArguments;
 
@@ -52,7 +51,6 @@ public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult i
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -70,7 +68,6 @@ public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult i
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     protected DotNetTypeResolveResult resolveResult() {
         DotNetTypeResolveResult typeResolveResult = getInnerTypeRef().resolve();
@@ -99,18 +96,15 @@ public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult i
     }
 
     @Override
-    @Nonnull
     public DotNetTypeRef getInnerTypeRef() {
         return myInnerTypeRef;
     }
 
     @Override
-    @Nonnull
     public DotNetTypeRef[] getArgumentTypeRefs() {
         return myArguments;
     }
 
-    @Nonnull
     @Override
     public String getVmQName() {
         return CSharpTypeRefPresentationUtil.buildVmQName(this);

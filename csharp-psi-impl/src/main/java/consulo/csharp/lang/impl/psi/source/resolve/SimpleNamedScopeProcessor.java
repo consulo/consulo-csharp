@@ -24,7 +24,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.ResolveResult;
 import consulo.language.psi.resolve.ResolveState;
-import jakarta.annotation.Nonnull;
 
 import java.util.function.Predicate;
 
@@ -36,7 +35,7 @@ public class SimpleNamedScopeProcessor extends StubScopeProcessor {
     private Predicate<ResolveResult> myCompletionProcessor;
     private boolean myCompletion;
 
-    public SimpleNamedScopeProcessor(@Nonnull final StubScopeProcessor completionProcessor, boolean completion, ExecuteTarget... targets) {
+    public SimpleNamedScopeProcessor(final StubScopeProcessor completionProcessor, boolean completion, ExecuteTarget... targets) {
         this(resolveResult ->
         {
             completionProcessor.pushResultExternally(resolveResult);
@@ -44,7 +43,7 @@ public class SimpleNamedScopeProcessor extends StubScopeProcessor {
         }, completion, targets);
     }
 
-    public SimpleNamedScopeProcessor(@Nonnull Predicate<ResolveResult> completionProcessor, boolean completion, ExecuteTarget... targets) {
+    public SimpleNamedScopeProcessor(Predicate<ResolveResult> completionProcessor, boolean completion, ExecuteTarget... targets) {
         myCompletionProcessor = completionProcessor;
         myCompletion = completion;
         putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
@@ -52,7 +51,7 @@ public class SimpleNamedScopeProcessor extends StubScopeProcessor {
 
     @RequiredReadAction
     @Override
-    public boolean execute(@Nonnull PsiElement element, ResolveState state) {
+    public boolean execute(PsiElement element, ResolveState state) {
         if (!(element instanceof PsiNamedElement) || !ExecuteTargetUtil.isMyElement(this, element)) {
             return true;
         }

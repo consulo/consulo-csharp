@@ -28,7 +28,6 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -36,19 +35,17 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpOutRefVariableExpressionImpl extends CSharpExpressionImpl implements CSharpOutRefExpression
 {
-	public CSharpOutRefVariableExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpOutRefVariableExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	public DotNetVariable getVariable()
 	{
 		return findNotNullChildByClass(CSharpOutRefVariableImpl.class);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -56,13 +53,13 @@ public class CSharpOutRefVariableExpressionImpl extends CSharpExpressionImpl imp
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitOutRefVariableExpression(this);
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		DotNetVariable variable = getVariable();
 		if(!processor.execute(variable, state))
@@ -73,7 +70,6 @@ public class CSharpOutRefVariableExpressionImpl extends CSharpExpressionImpl imp
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpRefTypeRef.Type getExpressionType()
 	{

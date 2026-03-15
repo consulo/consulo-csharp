@@ -34,8 +34,7 @@ import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.DumbService;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.UserDataHolderEx;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Set;
 import java.util.function.Function;
@@ -47,17 +46,15 @@ import java.util.function.Function;
 public class CSharpResolveContextUtil {
     private static final Key<CachedValue<CSharpResolveContext>> RESOLVE_CONTEXT = Key.create("resolve-context");
 
-    @Nonnull
     @RequiredReadAction
-    public static CSharpResolveContext createContext(@Nonnull DotNetGenericExtractor genericExtractor, @Nonnull GlobalSearchScope resolveScope, @Nonnull PsiElement element) {
+    public static CSharpResolveContext createContext(DotNetGenericExtractor genericExtractor, GlobalSearchScope resolveScope, PsiElement element) {
         return createContext(genericExtractor, resolveScope, element, null);
     }
 
-    @Nonnull
     @RequiredReadAction
-    public static CSharpResolveContext createContext(@Nonnull DotNetGenericExtractor genericExtractor,
-                                                     @Nonnull GlobalSearchScope resolveScope,
-                                                     @Nonnull PsiElement element,
+    public static CSharpResolveContext createContext(DotNetGenericExtractor genericExtractor,
+                                                     GlobalSearchScope resolveScope,
+                                                     PsiElement element,
                                                      @Nullable Set<String> recursiveGuardSet) {
         if (element instanceof CSharpTypeDeclaration typeDeclaration) {
             return cacheTypeContext(genericExtractor, resolveScope, typeDeclaration, recursiveGuardSet);
@@ -80,11 +77,10 @@ public class CSharpResolveContextUtil {
         return CSharpResolveContext.EMPTY;
     }
 
-    @Nonnull
     @RequiredReadAction
-    private static CSharpResolveContext cacheTypeContext(@Nonnull DotNetGenericExtractor genericExtractor,
+    private static CSharpResolveContext cacheTypeContext(DotNetGenericExtractor genericExtractor,
                                                          GlobalSearchScope resolveScope,
-                                                         @Nonnull CSharpTypeDeclaration typeDeclaration,
+                                                         CSharpTypeDeclaration typeDeclaration,
                                                          @Nullable Set<String> recursiveGuardSet) {
         if (typeDeclaration.hasModifier(CSharpModifier.PARTIAL)) {
             String vmQName = typeDeclaration.getVmQName();
@@ -103,10 +99,9 @@ public class CSharpResolveContextUtil {
         return cacheTypeContextImpl(genericExtractor, typeDeclaration, recursiveGuardSet);
     }
 
-    @Nonnull
     @RequiredReadAction
-    private static CSharpResolveContext cacheTypeContextImpl(@Nonnull DotNetGenericExtractor genericExtractor,
-                                                             @Nonnull CSharpTypeDeclaration typeDeclaration,
+    private static CSharpResolveContext cacheTypeContextImpl(DotNetGenericExtractor genericExtractor,
+                                                             CSharpTypeDeclaration typeDeclaration,
                                                              @Nullable Set<String> recursiveGuardSet) {
         if (genericExtractor == DotNetGenericExtractor.EMPTY) {
             CachedValue<CSharpResolveContext> provider = typeDeclaration.getUserData(RESOLVE_CONTEXT);
@@ -126,8 +121,7 @@ public class CSharpResolveContextUtil {
         }
     }
 
-    @Nonnull
-    private static <T extends PsiElement> CSharpResolveContext cacheSimple(@Nonnull T element, @RequiredReadAction Function<T, CSharpResolveContext> fun) {
+    private static <T extends PsiElement> CSharpResolveContext cacheSimple(T element, @RequiredReadAction Function<T, CSharpResolveContext> fun) {
         CachedValue<CSharpResolveContext> provider = element.getUserData(RESOLVE_CONTEXT);
         if (provider != null) {
             return provider.getValue();

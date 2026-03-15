@@ -37,10 +37,8 @@ import consulo.msil.lang.psi.MsilPropertyEntry;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 /**
@@ -110,13 +108,12 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitIndexMethodDeclaration(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
@@ -146,7 +143,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		return null;
 	}
@@ -157,7 +154,6 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return getPresentableQName();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetXAccessor[] getAccessors()
 	{
@@ -165,7 +161,6 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetType getReturnType()
 	{
@@ -173,14 +168,12 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
 		return myReturnTypeRefValue.getValue();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -189,7 +182,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return myModifierList.hasModifier(modifier);
 	}
@@ -202,7 +195,6 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return myModifierList;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
@@ -216,7 +208,6 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
@@ -224,7 +215,6 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpCodeBodyProxy getCodeBlock()
 	{
@@ -238,7 +228,6 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
@@ -258,7 +247,6 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return myTypeForImplementValue.getValue();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{

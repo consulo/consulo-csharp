@@ -29,7 +29,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiReference;
 
-import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -41,7 +40,7 @@ public class CSharpReferenceImporter implements ReferenceImporter
 {
 	@Override
 	@RequiredReadAction
-	public boolean autoImportReferenceAtCursor(@Nonnull Editor editor, @Nonnull PsiFile file)
+	public boolean autoImportReferenceAtCursor(Editor editor, PsiFile file)
 	{
 		if(!file.getViewProvider().getLanguages().contains(CSharpLanguage.INSTANCE))
 		{
@@ -71,7 +70,7 @@ public class CSharpReferenceImporter implements ReferenceImporter
 
 	@Override
 	@RequiredReadAction
-	public boolean autoImportReferenceAt(@Nonnull Editor editor, @Nonnull PsiFile file, int offset)
+	public boolean autoImportReferenceAt(Editor editor, PsiFile file, int offset)
 	{
 		if(!file.getViewProvider().getLanguages().contains(CSharpLanguage.INSTANCE))
 		{

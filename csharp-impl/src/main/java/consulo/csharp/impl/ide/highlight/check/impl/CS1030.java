@@ -25,9 +25,8 @@ import consulo.csharp.lang.impl.psi.source.CSharpPreprocessorWarningImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.psi.PsiUtilCore;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -38,7 +37,7 @@ public class CS1030 extends CompilerCheck<CSharpPreprocessorWarningImpl>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpPreprocessorWarningImpl element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpPreprocessorWarningImpl element)
 	{
 		IElementType elementType = PsiUtilCore.getElementType(element.getParent());
 		if(elementType == CSharpPreprocessorElements.DISABLED_PREPROCESSOR_DIRECTIVE)

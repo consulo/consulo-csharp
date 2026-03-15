@@ -38,7 +38,6 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -49,7 +48,7 @@ import jakarta.annotation.Nonnull;
 public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction {
   @Override
   @RequiredReadAction
-  public void invoke(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) throws IncorrectOperationException {
+  public void invoke(Project project, Editor editor, PsiElement element) throws IncorrectOperationException {
     CSharpLambdaExpressionImpl lambdaExpression = PsiTreeUtil.getParentOfType(element, CSharpLambdaExpressionImpl.class);
     assert lambdaExpression != null;
 
@@ -92,7 +91,7 @@ public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
 
   @Override
   @RequiredReadAction
-  public boolean isAvailable(@Nonnull Project project, Editor editor, @Nonnull PsiElement element) {
+  public boolean isAvailable(Project project, Editor editor, PsiElement element) {
     IElementType elementType = PsiUtilCore.getElementType(element);
     if (elementType == CSharpTokens.DARROW) {
       CSharpLambdaExpressionImpl lambdaExpression = PsiTreeUtil.getParentOfType(element, CSharpLambdaExpressionImpl.class);
@@ -101,7 +100,6 @@ public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
     return false;
   }
 
-  @Nonnull
   @Override
   public LocalizeValue getText() {
     return LocalizeValue.localizeTODO("To delegate");

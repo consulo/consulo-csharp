@@ -22,7 +22,6 @@ import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -39,7 +38,7 @@ public class CSharpLightParameterList extends CSharpLightElement<PsiElement> imp
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitParameterList(this);
 	}
@@ -50,14 +49,12 @@ public class CSharpLightParameterList extends CSharpLightElement<PsiElement> imp
 		return myParameters.length;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
 		return myParameters;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{

@@ -28,7 +28,6 @@ import consulo.dotnet.psi.resolve.*;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 import java.util.Objects;
 
 /**
@@ -64,7 +63,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	private final int myDimensions;
 
 	@RequiredReadAction
-	public CSharpArrayTypeRef(@Nonnull Project project, @Nonnull GlobalSearchScope scope, @Nonnull DotNetTypeRef innerTypeRef, int dimensions)
+	public CSharpArrayTypeRef(Project project, GlobalSearchScope scope, DotNetTypeRef innerTypeRef, int dimensions)
 	{
 		super(project, scope);
 		myInnerTypeRef = innerTypeRef;
@@ -72,7 +71,6 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -122,7 +120,6 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String toString()
 	{
@@ -137,7 +134,6 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 		return builder.toString();
 	}
 
-	@Nonnull
 	@Override
 	public String getVmQName()
 	{
@@ -145,13 +141,11 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 	}
 
 	@Override
-	@Nonnull
 	public DotNetTypeRef getInnerTypeRef()
 	{
 		return myInnerTypeRef;
 	}
 
-	@Nonnull
 	public GlobalSearchScope getResolveScope()
 	{
 		return myResolveScope;

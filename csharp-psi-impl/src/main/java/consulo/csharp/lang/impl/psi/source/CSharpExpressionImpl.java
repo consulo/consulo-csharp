@@ -22,7 +22,6 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -33,7 +32,6 @@ public abstract class CSharpExpressionImpl extends CSharpElementImpl implements 
 	private static final CSharpTypeRefCacher<CSharpExpressionImpl> ourCacheSystem = new CSharpTypeRefCacher<CSharpExpressionImpl>(true)
 	{
 		@RequiredReadAction
-		@Nonnull
 		@Override
 		protected DotNetTypeRef toTypeRefImpl(CSharpExpressionImpl element, boolean resolveFromParentOrInitializer)
 		{
@@ -41,16 +39,14 @@ public abstract class CSharpExpressionImpl extends CSharpElementImpl implements 
 		}
 	};
 
-	public CSharpExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public abstract DotNetTypeRef toTypeRefImpl(boolean resolveFromParent);
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public final DotNetTypeRef toTypeRef(boolean resolveFromParent)

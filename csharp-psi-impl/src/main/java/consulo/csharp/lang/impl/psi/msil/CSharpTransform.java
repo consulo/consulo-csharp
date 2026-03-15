@@ -21,7 +21,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.ToNativeElementTransformers;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
 import java.util.function.Function;
 
@@ -36,7 +35,6 @@ public class CSharpTransform implements Function<DotNetTypeDeclaration, DotNetTy
 {
 	public static final CSharpTransform INSTANCE = new CSharpTransform();
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeDeclaration apply(DotNetTypeDeclaration typeDeclaration)

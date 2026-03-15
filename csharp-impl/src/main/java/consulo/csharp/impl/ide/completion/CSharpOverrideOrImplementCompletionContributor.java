@@ -44,8 +44,7 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.ProcessingContext;
 import consulo.ui.image.Image;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,10 +61,10 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 {
 	@RequiredReadAction
 	@Override
-	public void processCompletion(@Nonnull CompletionParameters parameters,
-			@Nonnull ProcessingContext context,
-			@Nonnull final Consumer<LookupElement> result,
-			@Nonnull CSharpTypeDeclaration typeDeclaration)
+	public void processCompletion(CompletionParameters parameters,
+			ProcessingContext context,
+			final Consumer<LookupElement> result,
+			CSharpTypeDeclaration typeDeclaration)
 	{
 		Collection<DotNetModifierListOwner> overrideItems = getItemsImpl(typeDeclaration);
 		for(DotNetModifierListOwner overrideItem : overrideItems)
@@ -259,7 +258,6 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 		return lookupElementBuilder;
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	private static String buildAccessorTail(CSharpTypeDeclaration typeDeclaration, CSharpXAccessorOwner owner, boolean hide, boolean body)
 	{
@@ -305,7 +303,7 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 	}
 
 	@RequiredReadAction
-	public static void formatNameElement(@Nonnull DotNetElement element, @Nonnull StringBuilder builder, boolean hide)
+	public static void formatNameElement(DotNetElement element, StringBuilder builder, boolean hide)
 	{
 		if(element instanceof CSharpPropertyDeclaration)
 		{
@@ -354,9 +352,8 @@ public class CSharpOverrideOrImplementCompletionContributor implements CSharpMem
 		}
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static Collection<DotNetModifierListOwner> getItemsImpl(@Nonnull CSharpTypeDeclaration typeDeclaration)
+	public static Collection<DotNetModifierListOwner> getItemsImpl(CSharpTypeDeclaration typeDeclaration)
 	{
 		Collection<PsiElement> allMembers = OverrideUtil.getAllMembers(typeDeclaration, typeDeclaration.getResolveScope(), DotNetGenericExtractor.EMPTY, false, true);
 

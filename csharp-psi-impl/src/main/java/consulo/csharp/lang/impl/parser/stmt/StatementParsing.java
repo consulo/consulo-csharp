@@ -31,8 +31,7 @@ import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.language.ast.LighterASTNode;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -218,8 +217,7 @@ public class StatementParsing extends SharedParsingHelpers
 		return marker;
 	}
 
-	@Nullable
-	private static PsiBuilder.Marker parseLabelOrVariableOrExpression(IElementType tokenType, CSharpBuilderWrapper builder, @Nonnull PsiBuilder.Marker marker, ModifierSet set)
+	private static PsiBuilder.@Nullable Marker parseLabelOrVariableOrExpression(IElementType tokenType, CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set)
 	{
 		if(tokenType == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == COLON)
 		{
@@ -235,8 +233,7 @@ public class StatementParsing extends SharedParsingHelpers
 		return marker;
 	}
 
-	@Nullable
-	private static PsiBuilder.Marker parseLocalMethodDeclaration(CSharpBuilderWrapper builder, @Nonnull PsiBuilder.Marker statementMarker, boolean rollbackBody)
+	private static PsiBuilder.@Nullable Marker parseLocalMethodDeclaration(CSharpBuilderWrapper builder, PsiBuilder.Marker statementMarker, boolean rollbackBody)
 	{
 		PsiBuilder.Marker methodMarker = builder.mark();
 
@@ -303,7 +300,7 @@ public class StatementParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static ParseVariableOrExpressionResult parseVariableOrExpression(CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker statementMarker, ModifierSet set)
+	private static ParseVariableOrExpressionResult parseVariableOrExpression(CSharpBuilderWrapper builder, PsiBuilder.@Nullable Marker statementMarker, ModifierSet set)
 	{
 		LocalVarType localVarType = canParseAsVariable(builder, set);
 		// need for example remap global keyword to identifier when it try to parse
@@ -402,7 +399,6 @@ public class StatementParsing extends SharedParsingHelpers
 		TYPED_DECONSTRUCTION
 	}
 
-	@Nonnull
 	private static LocalVarType canParseAsVariable(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker newMarker = builder.mark();
@@ -509,7 +505,7 @@ public class StatementParsing extends SharedParsingHelpers
 		return true;
 	}
 
-	private static void parseTryStatement(@Nonnull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, ModifierSet set)
+	private static void parseTryStatement(CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, ModifierSet set)
 	{
 		builder.advanceLexer();
 
@@ -542,7 +538,7 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(TRY_STATEMENT);
 	}
 
-	private static void parseCatchStatement(@Nonnull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker marker, ModifierSet set)
+	private static void parseCatchStatement(CSharpBuilderWrapper builder, PsiBuilder.@Nullable Marker marker, ModifierSet set)
 	{
 		PsiBuilder.Marker mark;
 		if(marker != null)
@@ -604,7 +600,7 @@ public class StatementParsing extends SharedParsingHelpers
 		mark.done(CATCH_STATEMENT);
 	}
 
-	private static void parseFinallyStatement(@Nonnull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker marker, ModifierSet set)
+	private static void parseFinallyStatement(CSharpBuilderWrapper builder, PsiBuilder.@Nullable Marker marker, ModifierSet set)
 	{
 		PsiBuilder.Marker mark;
 		if(marker != null)
@@ -631,7 +627,7 @@ public class StatementParsing extends SharedParsingHelpers
 		mark.done(FINALLY_STATEMENT);
 	}
 
-	private static void parseUnsafeStatement(@Nonnull CSharpBuilderWrapper builder, @Nonnull PsiBuilder.Marker marker, ModifierSet set)
+	private static void parseUnsafeStatement(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set)
 	{
 		builder.advanceLexer();
 
@@ -647,7 +643,7 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(UNSAFE_STATEMENT);
 	}
 
-	private static void parseLabeledStatement(@Nonnull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, ModifierSet set)
+	private static void parseLabeledStatement(CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, ModifierSet set)
 	{
 		builder.advanceLexer();
 		builder.advanceLexer();
@@ -666,7 +662,7 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(LABELED_STATEMENT);
 	}
 
-	private static void parseThrowStatement(@Nonnull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, ModifierSet set)
+	private static void parseThrowStatement(CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, ModifierSet set)
 	{
 		builder.advanceLexer();
 
@@ -676,7 +672,7 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(THROW_STATEMENT);
 	}
 
-	private static void parseForStatement(@Nonnull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, ModifierSet modifierSet)
+	private static void parseForStatement(CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, ModifierSet modifierSet)
 	{
 		builder.advanceLexer();
 		if(expect(builder, LPAR, "'(' expected"))
@@ -724,7 +720,7 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(FOR_STATEMENT);
 	}
 
-	private static void parseSwitchStatement(@Nonnull CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set)
+	private static void parseSwitchStatement(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set)
 	{
 		builder.advanceLexer();
 
@@ -744,7 +740,7 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(SWITCH_STATEMENT);
 	}
 
-	private static void parseSwitchLabel(@Nonnull CSharpBuilderWrapper builder, PsiBuilder.Marker marker, boolean caseLabel, ModifierSet set)
+	private static void parseSwitchLabel(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, boolean caseLabel, ModifierSet set)
 	{
 		builder.advanceLexer();
 
@@ -770,7 +766,7 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(doneElement);
 	}
 
-	private static boolean parseCasePatternStatement(@Nonnull CSharpBuilderWrapper builder, @Nonnull ModifierSet set)
+	private static boolean parseCasePatternStatement(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker patternVarMarker = builder.mark();
 
@@ -816,7 +812,7 @@ public class StatementParsing extends SharedParsingHelpers
 		}
 	}
 
-	private static void parseUsingOrFixed(@Nonnull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, IElementType to, ModifierSet set)
+	private static void parseUsingOrFixed(CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, IElementType to, ModifierSet set)
 	{
 		builder.advanceLexer();
 
@@ -838,7 +834,6 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(to);
 	}
 
-	@Nonnull
 	private static PsiBuilder.Marker parseIfStatement(final CSharpBuilderWrapper builder, final PsiBuilder.Marker mark, ModifierSet set)
 	{
 		builder.advanceLexer();

@@ -33,7 +33,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.language.psi.PsiNamedElement;
 import consulo.util.lang.BitUtil;
-import jakarta.annotation.Nonnull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,56 +74,50 @@ public class CSharpTypeRefPresentationUtil {
 
     public static final int QUALIFIED_NAME_WITH_KEYWORD = QUALIFIED_NAME | TYPE_KEYWORD;
 
-    @Nonnull
     @RequiredReadAction
-    public static String buildShortText(@Nonnull DotNetTypeRef typeRef) {
+    public static String buildShortText(DotNetTypeRef typeRef) {
         StringBuilder builder = new StringBuilder();
         appendTypeRef(builder, typeRef, TYPE_KEYWORD | NULLABLE);
         return builder.toString();
     }
 
-    @Nonnull
     @RequiredReadAction
-    public static String buildVmQName(@Nonnull DotNetTypeRef typeRef) {
+    public static String buildVmQName(DotNetTypeRef typeRef) {
         StringBuilder builder = new StringBuilder();
         appendTypeRef(builder, typeRef, QUALIFIED_NAME | ONLY_VM_QNAME);
         return builder.toString();
     }
 
-    @Nonnull
     @RequiredReadAction
-    public static String buildText(@Nonnull DotNetTypeRef typeRef) {
+    public static String buildText(DotNetTypeRef typeRef) {
         StringBuilder builder = new StringBuilder();
         appendTypeRef(builder, typeRef, QUALIFIED_NAME | NULLABLE);
         return builder.toString();
     }
 
-    @Nonnull
     @RequiredReadAction
-    public static String buildText(@Nonnull DotNetTypeRef typeRef, int flags) {
+    public static String buildText(DotNetTypeRef typeRef, int flags) {
         StringBuilder builder = new StringBuilder();
         appendTypeRef(builder, typeRef, flags);
         return builder.toString();
     }
 
-    @Nonnull
     @RequiredReadAction
-    public static String buildTextWithKeyword(@Nonnull DotNetTypeRef typeRef) {
+    public static String buildTextWithKeyword(DotNetTypeRef typeRef) {
         StringBuilder builder = new StringBuilder();
         appendTypeRef(builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD | NULLABLE);
         return builder.toString();
     }
 
-    @Nonnull
     @RequiredReadAction
-    public static String buildTextWithKeywordAndNull(@Nonnull final DotNetTypeRef typeRef) {
+    public static String buildTextWithKeywordAndNull(final DotNetTypeRef typeRef) {
         StringBuilder builder = new StringBuilder();
         appendTypeRef(builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD | NULL | NULLABLE);
         return builder.toString();
     }
 
     @RequiredReadAction
-    public static void appendTypeRef(@Nonnull StringBuilder builder, @Nonnull DotNetTypeRef typeRef, final int flags) {
+    public static void appendTypeRef(StringBuilder builder, DotNetTypeRef typeRef, final int flags) {
         if (typeRef == DotNetTypeRef.AUTO_TYPE) {
             builder.append("var");
             return;

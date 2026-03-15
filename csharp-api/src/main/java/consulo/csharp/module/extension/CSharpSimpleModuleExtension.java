@@ -19,7 +19,6 @@ package consulo.csharp.module.extension;
 import consulo.csharp.module.CSharpNullableOption;
 import consulo.module.extension.ModuleExtension;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -29,12 +28,10 @@ public interface CSharpSimpleModuleExtension<T extends ModuleExtension<T>> exten
 {
 	boolean isAllowUnsafeCode();
 
-	@Nonnull
 	CSharpLanguageVersion getLanguageVersion();
 
-	boolean isSupportedLanguageVersion(@Nonnull CSharpLanguageVersion languageVersion);
+	boolean isSupportedLanguageVersion(CSharpLanguageVersion languageVersion);
 
-	@Nonnull
 	default CSharpNullableOption getNullableOption()
 	{
 		return CSharpNullableOption.UNSPECIFIED;

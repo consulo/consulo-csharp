@@ -27,8 +27,7 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,19 +39,18 @@ public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl impleme
 
 	private final ThreadLocal<Boolean> myTypeRefProcessing = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
-	public CSharpOutRefWrapExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpOutRefWrapExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitOurRefWrapExpression(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpRefTypeRef.Type getExpressionType()
 	{
@@ -66,7 +64,6 @@ public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl impleme
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -117,7 +114,6 @@ public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl impleme
 		return new CSharpRefTypeRef(getProject(), getResolveScope(), type, typeRef);
 	}
 
-	@Nonnull
 	public PsiElement getStartElement()
 	{
 		return findNotNullChildByFilter(ourStartTypes);

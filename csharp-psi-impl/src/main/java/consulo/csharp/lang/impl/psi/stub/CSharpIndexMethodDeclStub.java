@@ -20,7 +20,7 @@ import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.language.psi.stub.StubElement;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL

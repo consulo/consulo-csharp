@@ -37,8 +37,7 @@ import consulo.language.psi.PsiFile;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.lang.Couple;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -47,11 +46,10 @@ import jakarta.annotation.Nullable;
 @ExtensionImpl
 public class LambdaBlockStatementCanReplacedByExpressionInspection extends CSharpGeneralLocalInspection {
     private static class ReplaceStatementByExpressionFix extends LocalQuickFixOnPsiElement {
-        private ReplaceStatementByExpressionFix(@Nonnull PsiElement element) {
+        private ReplaceStatementByExpressionFix(PsiElement element) {
             super(element);
         }
 
-        @Nonnull
         @Override
         public LocalizeValue getText() {
             return LocalizeValue.localizeTODO("Replace statement by expression");
@@ -59,7 +57,7 @@ public class LambdaBlockStatementCanReplacedByExpressionInspection extends CShar
 
         @Override
         @RequiredReadAction
-        public void invoke(@Nonnull Project project, @Nonnull PsiFile psiFile, @Nonnull PsiElement lambdaTemp, @Nonnull PsiElement unused) {
+        public void invoke(Project project, PsiFile psiFile, PsiElement lambdaTemp, PsiElement unused) {
             CSharpLambdaExpressionImpl expression = (CSharpLambdaExpressionImpl) lambdaTemp;
 
             Couple<PsiElement> removingInfo = getRemovingInfo(expression);
@@ -106,9 +104,8 @@ public class LambdaBlockStatementCanReplacedByExpressionInspection extends CShar
         }
     }
 
-    @Nonnull
     @Override
-    public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly) {
+    public PsiElementVisitor buildVisitor(ProblemsHolder holder, boolean isOnTheFly) {
         return new CSharpElementVisitor() {
             @Override
             @RequiredReadAction
@@ -145,20 +142,18 @@ public class LambdaBlockStatementCanReplacedByExpressionInspection extends CShar
     }
 
     @RequiredReadAction
-    private void report(@Nonnull PsiElement elementToHighlight, @Nonnull CSharpLambdaExpressionImpl lambdaExpression, ProblemsHolder holder) {
+    private void report(PsiElement elementToHighlight, CSharpLambdaExpressionImpl lambdaExpression, ProblemsHolder holder) {
         int textLength = elementToHighlight.getTextLength();
 
         holder.registerProblem(elementToHighlight, "Statement body can be replaced by expression body", ProblemHighlightType.LIKE_UNUSED_SYMBOL, new TextRange(0, textLength), new
             ReplaceStatementByExpressionFix(lambdaExpression));
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getDisplayName() {
         return LocalizeValue.localizeTODO("Lambda statement can replaced by expression");
     }
 
-    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WARNING;

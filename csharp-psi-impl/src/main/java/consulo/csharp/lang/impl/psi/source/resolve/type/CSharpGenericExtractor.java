@@ -23,8 +23,7 @@ import consulo.dotnet.util.ArrayUtil2;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ContainerUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,8 +34,7 @@ import java.util.Objects;
  */
 public class CSharpGenericExtractor implements DotNetGenericExtractor
 {
-	@Nonnull
-	public static DotNetGenericExtractor create(@Nonnull Map<DotNetGenericParameter, DotNetTypeRef> map)
+	public static DotNetGenericExtractor create(Map<DotNetGenericParameter, DotNetTypeRef> map)
 	{
 		if(map.isEmpty())
 		{
@@ -45,8 +43,7 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 		return new CSharpGenericExtractor(map);
 	}
 
-	@Nonnull
-	public static DotNetGenericExtractor create(@Nonnull DotNetGenericParameter[] genericParameters, @Nonnull DotNetTypeRef[] arguments)
+	public static DotNetGenericExtractor create(DotNetGenericParameter[] genericParameters, DotNetTypeRef[] arguments)
 	{
 		if(genericParameters.length == 0 || genericParameters.length != arguments.length)
 		{
@@ -72,7 +69,7 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 
 	@Nullable
 	@Override
-	public DotNetTypeRef extract(@Nonnull DotNetGenericParameter parameter)
+	public DotNetTypeRef extract(DotNetGenericParameter parameter)
 	{
 		int index = -1;
 		for(int i = 0; i < myGenericParameters.size(); i++)

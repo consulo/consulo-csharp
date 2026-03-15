@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.source.CSharpPropertyDeclarationImpl;
@@ -37,22 +36,21 @@ public class CSharpPropertyElementType extends CSharpQVariableStubElementType<CS
 		super("PROPERTY_DECLARATION");
 	}
 
-	@Nonnull
 	@Override
-	public CSharpPropertyDeclarationImpl createElement(@Nonnull ASTNode astNode)
+	public CSharpPropertyDeclarationImpl createElement(ASTNode astNode)
 	{
 		return new CSharpPropertyDeclarationImpl(astNode);
 	}
 
 	@Override
-	public CSharpPropertyDeclarationImpl createPsi(@Nonnull CSharpVariableDeclStub<CSharpPropertyDeclarationImpl> cSharpPropertyStub)
+	public CSharpPropertyDeclarationImpl createPsi(CSharpVariableDeclStub<CSharpPropertyDeclarationImpl> cSharpPropertyStub)
 	{
 		return new CSharpPropertyDeclarationImpl(cSharpPropertyStub);
 	}
 
 	@Override
 	@RequiredReadAction
-	public void indexStub(@Nonnull CSharpVariableDeclStub<CSharpPropertyDeclarationImpl> stub, @Nonnull IndexSink indexSink)
+	public void indexStub(CSharpVariableDeclStub<CSharpPropertyDeclarationImpl> stub, IndexSink indexSink)
 	{
 		String name = getNameWithoutAt(stub);
 		if(!StringUtil.isEmpty(name))

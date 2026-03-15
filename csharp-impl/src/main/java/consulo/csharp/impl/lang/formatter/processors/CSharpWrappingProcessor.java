@@ -28,7 +28,7 @@ import consulo.language.codeStyle.Wrap;
 import consulo.language.codeStyle.WrapType;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL

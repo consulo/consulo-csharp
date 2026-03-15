@@ -26,8 +26,7 @@ import consulo.csharp.lang.impl.psi.CSharpNullableTypeUtil;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,20 +34,19 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpNullableTypeImpl extends CSharpTypeElementImpl implements CSharpNullableType
 {
-	public CSharpNullableTypeImpl(@Nonnull IElementType elementType)
+	public CSharpNullableTypeImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitNullableType(this);
 	}
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	public DotNetTypeRef toTypeRefImpl()
 	{
 		DotNetType innerType = getInnerType();
@@ -69,7 +67,6 @@ public class CSharpNullableTypeImpl extends CSharpTypeElementImpl implements CSh
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	public PsiElement getQuestElement()
 	{
 		return findNotNullChildByType(CSharpTokens.QUEST);

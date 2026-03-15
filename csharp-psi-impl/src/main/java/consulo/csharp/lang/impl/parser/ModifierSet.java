@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.parser;
 
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,14 +30,12 @@ public class ModifierSet
 {
 	public static final ModifierSet EMPTY = new ModifierSet(null);
 
-	@Nonnull
 	public static ModifierSet create(IElementType... set)
 	{
 		return set.length == 0 ? EMPTY : new ModifierSet(new HashSet<>(Arrays.asList(set)));
 	}
 
-	@Nonnull
-	public static ModifierSet create(@Nonnull Set<IElementType> set)
+	public static ModifierSet create(Set<IElementType> set)
 	{
 		return set.isEmpty() ? EMPTY : new ModifierSet(set);
 	}
@@ -52,7 +49,6 @@ public class ModifierSet
 		mySet = set;
 	}
 
-	@Nonnull
 	public ModifierSet setAllowShortObjectInitializer()
 	{
 		ModifierSet set = new ModifierSet(mySet == null ? null : new HashSet<>(mySet));
@@ -65,7 +61,6 @@ public class ModifierSet
 		return myAllowShortObjectInitializer;
 	}
 
-	@Nonnull
 	public ModifierSet add(IElementType e)
 	{
 		Set<IElementType> elementTypes = mySet == null ? new HashSet<>() : new HashSet<>(mySet);
@@ -73,7 +68,6 @@ public class ModifierSet
 		return create(elementTypes);
 	}
 
-	@Nonnull
 	public ModifierSet remove(IElementType e)
 	{
 		if(mySet == null)

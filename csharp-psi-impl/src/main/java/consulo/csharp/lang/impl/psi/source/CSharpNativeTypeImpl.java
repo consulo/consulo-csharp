@@ -24,7 +24,6 @@ import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,26 +31,24 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpNativeTypeImpl extends CSharpTypeElementImpl implements CSharpNativeType
 {
-	public CSharpNativeTypeImpl(@Nonnull IElementType elementType)
+	public CSharpNativeTypeImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitNativeType(this);
 	}
 
 	@RequiredReadAction
 	@Override
-	@Nonnull
 	public IElementType getTypeElementType()
 	{
 		return getTypeElement().getNode().getElementType();
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl()
@@ -60,7 +57,6 @@ public class CSharpNativeTypeImpl extends CSharpTypeElementImpl implements CShar
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public PsiElement getTypeElement()
 	{

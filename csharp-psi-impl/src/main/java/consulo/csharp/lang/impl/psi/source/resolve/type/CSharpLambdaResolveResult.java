@@ -23,8 +23,7 @@ import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,7 +34,6 @@ public interface CSharpLambdaResolveResult extends DotNetTypeResolveResult, CSha
 	@RequiredReadAction
 	boolean isInheritParameters();
 
-	@Nonnull
 	@RequiredReadAction
 	default DotNetTypeRef[] getParameterTypeRefs()
 	{

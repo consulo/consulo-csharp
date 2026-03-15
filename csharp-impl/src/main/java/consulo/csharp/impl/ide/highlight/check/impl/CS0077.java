@@ -32,8 +32,7 @@ import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -47,19 +46,18 @@ public class CS0077 extends CompilerCheck<CSharpAsExpressionImpl> {
       myPointer = SmartPointerManager.getInstance(type.getProject()).createSmartPsiElementPointer(type);
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getText() {
       return LocalizeValue.localizeTODO("Add '?'");
     }
 
     @Override
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       return myPointer.getElement() != null;
     }
 
     @Override
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       DotNetType element = myPointer.getElement();
       if (element == null) {
         return;
@@ -73,9 +71,9 @@ public class CS0077 extends CompilerCheck<CSharpAsExpressionImpl> {
   @RequiredReadAction
   @Nullable
   @Override
-  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull CSharpAsExpressionImpl element) {
+  public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        CSharpAsExpressionImpl element) {
     DotNetTypeRef typeRef = element.toTypeRef(false);
     if (typeRef == DotNetTypeRef.ERROR_TYPE) {
       return null;

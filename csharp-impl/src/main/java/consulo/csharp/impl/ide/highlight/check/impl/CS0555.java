@@ -26,8 +26,7 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.util.ArrayUtil2;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -38,7 +37,7 @@ public class CS0555 extends CompilerCheck<CSharpConversionMethodDeclaration>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpConversionMethodDeclaration element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpConversionMethodDeclaration element)
 	{
 		DotNetTypeRef typeRef1 = element.getReturnTypeRef();
 		DotNetTypeRef typeRef2 = ArrayUtil2.safeGet(element.getParameterTypeRefs(), 0);

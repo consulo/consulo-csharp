@@ -38,8 +38,7 @@ import consulo.language.psi.ResolveResult;
 import consulo.language.psi.resolve.ResolveCache;
 import consulo.language.util.IncorrectOperationException;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -52,9 +51,8 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 		public static final OurResolver INSTANCE = new OurResolver();
 
 		@RequiredReadAction
-		@Nonnull
 		@Override
-		public ResolveResult[] resolve(@Nonnull CSharpIndexAccessExpressionImpl expression, boolean incompleteCode)
+		public ResolveResult[] resolve(CSharpIndexAccessExpressionImpl expression, boolean incompleteCode)
 		{
 			DotNetExpression qualifier = expression.getQualifier();
 			DotNetTypeRef typeRef = qualifier.toTypeRef(true);
@@ -73,18 +71,17 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 		}
 	}
 
-	public CSharpIndexAccessExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpIndexAccessExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitIndexAccessExpression(this);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
@@ -103,7 +100,6 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 	}
 
 	@Override
-	@Nonnull
 	@RequiredReadAction
 	public DotNetExpression getQualifier()
 	{
@@ -126,7 +122,6 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 		throw new UnsupportedOperationException();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -134,7 +129,6 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
@@ -161,7 +155,6 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 		return CSharpResolveUtil.findFirstValidElement(resolveResults);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public ResolveResult[] multiResolve(boolean incompleteCode)
@@ -187,7 +180,6 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public TextRange getRangeInElement()
 	{
@@ -203,7 +195,6 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getCanonicalText()
 	{
@@ -219,7 +210,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement bindToElement(@Nonnull PsiElement psiElement) throws IncorrectOperationException
+	public PsiElement bindToElement(PsiElement psiElement) throws IncorrectOperationException
 	{
 		return null;
 	}

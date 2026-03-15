@@ -29,7 +29,6 @@ import consulo.language.psi.stub.StubInputStream;
 import consulo.language.psi.stub.StubOutputStream;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -43,23 +42,21 @@ public class CSharpUsingNamespaceStatementStubElementType extends CSharpAbstract
 		super("USING_NAMESPACE_STATEMENT");
 	}
 
-	@Nonnull
 	@Override
-	public CSharpUsingNamespaceStatement createElement(@Nonnull ASTNode astNode)
+	public CSharpUsingNamespaceStatement createElement(ASTNode astNode)
 	{
 		return new CSharpUsingNamespaceStatementImpl(astNode);
 	}
 
 	@Override
-	public CSharpUsingNamespaceStatement createPsi(@Nonnull CSharpUsingNamespaceStub stub)
+	public CSharpUsingNamespaceStatement createPsi(CSharpUsingNamespaceStub stub)
 	{
 		return new CSharpUsingNamespaceStatementImpl(stub);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
-	public CSharpUsingNamespaceStub createStub(@Nonnull CSharpUsingNamespaceStatement statement, StubElement stubElement)
+	public CSharpUsingNamespaceStub createStub(CSharpUsingNamespaceStatement statement, StubElement stubElement)
 	{
 		String referenceText = statement.getReferenceText();
 		boolean global = statement.isGlobal();
@@ -67,15 +64,14 @@ public class CSharpUsingNamespaceStatementStubElementType extends CSharpAbstract
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpUsingNamespaceStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpUsingNamespaceStub stub, StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getReferenceText());
 		stubOutputStream.writeBoolean(stub.isGlobal());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpUsingNamespaceStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpUsingNamespaceStub deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef referenceText = stubInputStream.readName();
 		boolean global = stubInputStream.readBoolean();
@@ -83,7 +79,7 @@ public class CSharpUsingNamespaceStatementStubElementType extends CSharpAbstract
 	}
 
 	@Override
-	public void indexStub(@Nonnull CSharpUsingNamespaceStub stub, @Nonnull IndexSink indexSink)
+	public void indexStub(CSharpUsingNamespaceStub stub, IndexSink indexSink)
 	{
 		String referenceText = stub.getReferenceText();
 		if(stub.isGlobal() && !StringUtil.isEmptyOrSpaces(referenceText))

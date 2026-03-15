@@ -25,7 +25,6 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiManager;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 import java.util.Objects;
 
 /**
@@ -56,7 +55,7 @@ public abstract class CSharpLightElementBuilder<T extends CSharpLightElementBuil
 	}
 
 	@Override
-	public void accept(@Nonnull PsiElementVisitor visitor)
+	public void accept(PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{
@@ -68,7 +67,7 @@ public abstract class CSharpLightElementBuilder<T extends CSharpLightElementBuil
 		}
 	}
 
-	public abstract void accept(@Nonnull CSharpElementVisitor visitor);
+	public abstract void accept(CSharpElementVisitor visitor);
 
 	@Override
 	public PsiFile getContainingFile()
@@ -77,7 +76,7 @@ public abstract class CSharpLightElementBuilder<T extends CSharpLightElementBuil
 	}
 
 	@SuppressWarnings("unchecked")
-	public T withHashAndEqualObject(@Nonnull Object hashAndEqualObject)
+	public T withHashAndEqualObject(Object hashAndEqualObject)
 	{
 		myHashAndEqualObject = hashAndEqualObject;
 		return (T) this;

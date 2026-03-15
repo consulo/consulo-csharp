@@ -18,7 +18,6 @@ package consulo.csharp.lang;
 
 import consulo.language.Language;
 import consulo.language.version.LanguageVersion;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -39,7 +38,6 @@ public class CSharpLanguage extends Language
 		return true;
 	}
 
-	@Nonnull
 	@Override
 	protected LanguageVersion[] findVersions()
 	{

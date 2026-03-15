@@ -20,7 +20,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 import java.util.Locale;
 
 /**
@@ -31,7 +30,6 @@ public enum CSharpAccessModifier
 {
 	NONE()
 			{
-				@Nonnull
 				@Override
 				public String getPresentableText()
 				{
@@ -54,9 +52,8 @@ public enum CSharpAccessModifier
 		myModifiers = modifiers;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static CSharpAccessModifier findModifier(@Nonnull DotNetModifierListOwner owner)
+	public static CSharpAccessModifier findModifier(DotNetModifierListOwner owner)
 	{
 		loop: for(CSharpAccessModifier value : VALUES)
 		{
@@ -77,9 +74,8 @@ public enum CSharpAccessModifier
 		return NONE;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static CSharpAccessModifier findModifierOrDefault(@Nonnull DotNetModifierListOwner owner)
+	public static CSharpAccessModifier findModifierOrDefault(DotNetModifierListOwner owner)
 	{
 		final CSharpAccessModifier modifier = findModifier(owner);
 		if(modifier == NONE)
@@ -99,13 +95,11 @@ public enum CSharpAccessModifier
 	}
 
 
-	@Nonnull
 	public CSharpModifier[] getModifiers()
 	{
 		return myModifiers;
 	}
 
-	@Nonnull
 	public String getPresentableText()
 	{
 		return name().toLowerCase(Locale.US).replace("_", " ");

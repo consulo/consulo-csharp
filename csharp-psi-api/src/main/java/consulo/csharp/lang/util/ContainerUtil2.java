@@ -19,7 +19,6 @@ package consulo.csharp.lang.util;
 import consulo.util.collection.ContainerUtil;
 import org.jetbrains.annotations.Contract;
 
-import jakarta.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -28,9 +27,8 @@ import java.util.*;
  */
 public class ContainerUtil2
 {
-	@Nonnull
 	@Contract(pure = true)
-	public static <T> Collection<T> concat(@Nonnull final List<Collection<? extends T>> collections)
+	public static <T> Collection<T> concat(final List<Collection<? extends T>> collections)
 	{
 		int size = 0;
 		for(Collection<? extends T> each : collections)
@@ -48,7 +46,6 @@ public class ContainerUtil2
 		final int finalSize = size;
 		return new AbstractCollection<T>()
 		{
-			@Nonnull
 			@Override
 			public Iterator<T> iterator()
 			{
@@ -63,10 +60,9 @@ public class ContainerUtil2
 		};
 	}
 
-	@Nonnull
 	@Contract(pure = true)
 	@SafeVarargs
-	public static <T> Collection<T> concat(@Nonnull final Collection<? extends T>... collections)
+	public static <T> Collection<T> concat(final Collection<? extends T>... collections)
 	{
 		int size = 0;
 		for(Collection<? extends T> each : collections)
@@ -83,7 +79,6 @@ public class ContainerUtil2
 		final int finalSize = size;
 		return new AbstractCollection<T>()
 		{
-			@Nonnull
 			@Override
 			public Iterator<T> iterator()
 			{

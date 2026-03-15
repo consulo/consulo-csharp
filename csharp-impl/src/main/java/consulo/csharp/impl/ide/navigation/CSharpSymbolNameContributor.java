@@ -32,8 +32,7 @@ import consulo.navigation.NavigationItem;
 import consulo.project.Project;
 import consulo.project.content.scope.ProjectAwareSearchScope;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -43,7 +42,7 @@ import jakarta.annotation.Nullable;
 public class CSharpSymbolNameContributor implements GotoSymbolContributor
 {
 	@Override
-	public void processNames(@Nonnull Processor<String> stringProcessor, @Nonnull SearchScope searchScope, @Nullable IdFilter idFilter)
+	public void processNames(Processor<String> stringProcessor, SearchScope searchScope, @Nullable IdFilter idFilter)
 	{
 		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.METHOD_INDEX, stringProcessor, (ProjectAwareSearchScope) searchScope, idFilter);
 		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.EVENT_INDEX, stringProcessor, (ProjectAwareSearchScope) searchScope, idFilter);
@@ -52,7 +51,7 @@ public class CSharpSymbolNameContributor implements GotoSymbolContributor
 	}
 
 	@Override
-	public void processElementsWithName(@Nonnull String name, @Nonnull Processor<NavigationItem> navigationItemProcessor, @Nonnull FindSymbolParameters findSymbolParameters)
+	public void processElementsWithName(String name, Processor<NavigationItem> navigationItemProcessor, FindSymbolParameters findSymbolParameters)
 	{
 		Project project = findSymbolParameters.getProject();
 		IdFilter idFilter = findSymbolParameters.getIdFilter();

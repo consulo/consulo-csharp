@@ -23,8 +23,7 @@ import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetAttributeTargetType;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,13 +49,13 @@ public class CSharpAttributeListImpl extends CSharpElementImpl implements CSharp
 		ourMap.put(CSharpSoftTokens.TYPE_KEYWORD, DotNetAttributeTargetType.TYPE);
 	}
 
-	public CSharpAttributeListImpl(@Nonnull IElementType elementType)
+	public CSharpAttributeListImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitAttributeList(this);
 	}
@@ -80,7 +79,6 @@ public class CSharpAttributeListImpl extends CSharpElementImpl implements CSharp
 		return ourMap.get(elementType);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpAttribute[] getAttributes()
 	{

@@ -43,9 +43,8 @@ import consulo.language.psi.PsiElement;
 import consulo.language.version.LanguageVersion;
 import consulo.language.version.LanguageVersionUtil;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -62,7 +61,7 @@ public interface CSharpDocElements
 	{
 		@Override
 		@RequiredReadAction
-		protected ASTNode doParseContents(@Nonnull final ASTNode chameleon, @Nonnull final PsiElement psi)
+		protected ASTNode doParseContents(final ASTNode chameleon, final PsiElement psi)
 		{
 			final Project project = psi.getProject();
 			CSharpDocLanguage docLanguage = CSharpDocLanguage.INSTANCE;
@@ -186,7 +185,7 @@ public interface CSharpDocElements
 		}
 
 		@Override
-		protected ASTNode doParseContents(@Nonnull final ASTNode chameleon, @Nonnull final PsiElement psi)
+		protected ASTNode doParseContents(final ASTNode chameleon, final PsiElement psi)
 		{
 			Project project = psi.getProject();
 			Language languageForParser = getLanguageForParser(psi);

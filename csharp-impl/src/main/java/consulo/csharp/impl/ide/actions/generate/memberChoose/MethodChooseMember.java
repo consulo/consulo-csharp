@@ -24,9 +24,8 @@ import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.language.psi.PsiElement;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.function.PairConsumer;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -43,7 +42,6 @@ public class MethodChooseMember extends ImplementMemberChooseObject<CSharpMethod
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	@RequiredUIAccess
 	public String getPresentationText()

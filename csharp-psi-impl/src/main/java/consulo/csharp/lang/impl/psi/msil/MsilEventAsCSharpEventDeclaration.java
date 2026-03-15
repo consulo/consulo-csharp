@@ -31,9 +31,8 @@ import consulo.msil.lang.psi.MsilEventEntry;
 import consulo.msil.lang.psi.MsilMethodEntry;
 import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 /**
@@ -66,7 +65,7 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitEventDeclaration(this);
 	}
@@ -85,14 +84,12 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetXAccessor[] getAccessors()
 	{
 		return myAccessors;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -128,7 +125,6 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 		return myTypeForImplementValue.getValue();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{

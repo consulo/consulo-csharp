@@ -36,7 +36,6 @@ import consulo.project.DumbService;
 import consulo.project.Project;
 import jakarta.inject.Inject;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,8 +48,7 @@ import java.util.List;
 @ExtensionImpl
 public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcherExtension
 {
-	@Nonnull
-	public static CSharpPsiSearcher getInstance(@Nonnull Project project)
+	public static CSharpPsiSearcher getInstance(Project project)
 	{
 		return project.getExtensionPoint(DotNetPsiSearcherExtension.class).findExtensionOrFail(CSharpPsiSearcher.class);
 	}
@@ -61,21 +59,18 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcherExtension
 		super(project);
 	}
 
-	@Nonnull
 	@Override
-	protected DotNetNamespaceAsElement createNamespace(@Nonnull String indexKey, @Nonnull String qName)
+	protected DotNetNamespaceAsElement createNamespace(String indexKey, String qName)
 	{
 		return new CSharpNamespaceAsElementImpl(myProject, indexKey, qName, this);
 	}
 
-	@Nonnull
 	@Override
 	public StubIndexKey<String, DotNetQualifiedElement> getElementByQNameIndexKey()
 	{
 		return CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX;
 	}
 
-	@Nonnull
 	@Override
 	public StubIndexKey<String, DotNetQualifiedElement> getNamespaceIndexKey()
 	{
@@ -83,9 +78,8 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcherExtension
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public Collection<? extends DotNetTypeDeclaration> findTypesImpl(@Nonnull String vmQName, @Nonnull SearchScope scope)
+	public Collection<? extends DotNetTypeDeclaration> findTypesImpl(String vmQName, SearchScope scope)
 	{
 		if(DumbService.isDumb(myProject))
 		{

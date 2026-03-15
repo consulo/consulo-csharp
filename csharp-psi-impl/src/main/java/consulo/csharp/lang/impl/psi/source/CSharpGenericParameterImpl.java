@@ -32,23 +32,22 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiModificationTracker;
 import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.util.collection.ArrayUtil;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
 public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGenericParameterStub> implements CSharpGenericParameter {
-    public CSharpGenericParameterImpl(@Nonnull ASTNode node) {
+    public CSharpGenericParameterImpl(ASTNode node) {
         super(node);
     }
 
-    public CSharpGenericParameterImpl(@Nonnull CSharpGenericParameterStub stub) {
+    public CSharpGenericParameterImpl(CSharpGenericParameterStub stub) {
         super(stub, CSharpStubElements.GENERIC_PARAMETER);
     }
 
     @Override
-    public void accept(@Nonnull CSharpElementVisitor visitor) {
+    public void accept(CSharpElementVisitor visitor) {
         visitor.visitGenericParameter(this);
     }
 
@@ -62,7 +61,6 @@ public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGener
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     public DotNetAttribute[] getAttributes() {
         DotNetModifierList modifierList = getModifierList();
@@ -73,7 +71,6 @@ public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGener
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     public DotNetTypeRef[] getExtendTypeRefs() {
         return LanguageCachedValueUtil.getCachedValue(this, () -> CachedValueProvider.Result.create(CSharpGenericConstraintUtil.getExtendTypes(CSharpGenericParameterImpl.this), PsiModificationTracker

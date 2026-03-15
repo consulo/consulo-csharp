@@ -24,8 +24,7 @@ import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import jakarta.inject.Singleton;
 
 import java.util.function.Function;
@@ -39,8 +38,7 @@ import java.util.function.Function;
 @ServiceImpl
 public class GenericInferenceManager extends SimpleModificationTracker
 {
-	@Nonnull
-	public static GenericInferenceManager getInstance(@Nonnull Project project)
+	public static GenericInferenceManager getInstance(Project project)
 	{
 		return project.getInstance(GenericInferenceManager.class);
 	}
@@ -63,14 +61,13 @@ public class GenericInferenceManager extends SimpleModificationTracker
 	}
 
 	@Nullable
-	public DotNetTypeRef getInferenceSessionTypeRef(@Nonnull CSharpLambdaExpressionImpl expression)
+	public DotNetTypeRef getInferenceSessionTypeRef(CSharpLambdaExpressionImpl expression)
 	{
 		InferenceSessionData inferenceSessionData = myInsideInferenceSession.get();
 		return inferenceSessionData != null ? inferenceSessionData.getTypeRef(expression) : null;
 	}
 
-	@Nonnull
-	public <R> R doWithSession(@Nonnull CSharpLambdaExpressionImpl lambdaExpression, @Nonnull Function<InferenceSessionData, R> dataConsumer)
+	public <R> R doWithSession(CSharpLambdaExpressionImpl lambdaExpression, Function<InferenceSessionData, R> dataConsumer)
 	{
 		try
 		{

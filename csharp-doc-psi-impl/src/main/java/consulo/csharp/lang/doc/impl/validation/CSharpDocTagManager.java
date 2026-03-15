@@ -20,8 +20,7 @@ import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
 import consulo.application.Application;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import jakarta.inject.Singleton;
 
 import java.util.Collection;
@@ -37,7 +36,6 @@ import java.util.Map;
 @ServiceImpl
 public class CSharpDocTagManager
 {
-	@Nonnull
 	public static CSharpDocTagManager getInstance()
 	{
 		return Application.get().getInstance(CSharpDocTagManager.class);
@@ -73,7 +71,6 @@ public class CSharpDocTagManager
 		myTags.put(tagInfo.getName(), tagInfo);
 	}
 
-	@Nonnull
 	public Collection<CSharpDocTagInfo> getTags()
 	{
 		return myTags.values();

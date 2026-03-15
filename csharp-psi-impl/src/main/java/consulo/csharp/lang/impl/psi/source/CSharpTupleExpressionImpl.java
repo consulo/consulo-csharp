@@ -23,7 +23,6 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,12 +30,11 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpTupleExpressionImpl extends CSharpExpressionImpl
 {
-	public CSharpTupleExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpTupleExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public CSharpTupleElementImpl[] getElements()
 	{
@@ -44,7 +42,6 @@ public class CSharpTupleExpressionImpl extends CSharpExpressionImpl
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -60,7 +57,7 @@ public class CSharpTupleExpressionImpl extends CSharpExpressionImpl
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitTupleExpression(this);
 	}

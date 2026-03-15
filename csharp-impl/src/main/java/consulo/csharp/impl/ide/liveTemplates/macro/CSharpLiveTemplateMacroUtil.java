@@ -32,7 +32,6 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.language.psi.PsiElement;
 import consulo.util.lang.Couple;
 import consulo.language.psi.resolve.ResolveState;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -40,7 +39,6 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpLiveTemplateMacroUtil
 {
-	@Nonnull
 	@RequiredReadAction
 	public static List<DotNetVariable> resolveAllVariables(PsiElement scope)
 	{

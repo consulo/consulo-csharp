@@ -27,7 +27,6 @@ import consulo.csharp.lang.impl.psi.stub.CSharpIndexMethodDeclStub;
 import consulo.language.psi.stub.StubOutputStream;
 import consulo.util.lang.BitUtil;
 
-import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -41,23 +40,21 @@ public class CSharpIndexMethodStubElementType extends CSharpAbstractStubElementT
 		super("INDEX_METHOD_DECLARATION");
 	}
 
-	@Nonnull
 	@Override
-	public CSharpIndexMethodDeclaration createElement(@Nonnull ASTNode astNode)
+	public CSharpIndexMethodDeclaration createElement(ASTNode astNode)
 	{
 		return new CSharpIndexMethodDeclarationImpl(astNode);
 	}
 
 	@Override
-	public CSharpIndexMethodDeclaration createPsi(@Nonnull CSharpIndexMethodDeclStub methodStub)
+	public CSharpIndexMethodDeclaration createPsi(CSharpIndexMethodDeclStub methodStub)
 	{
 		return new CSharpIndexMethodDeclarationImpl(methodStub);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	@Override
-	public CSharpIndexMethodDeclStub createStub(@Nonnull CSharpIndexMethodDeclaration declaration, StubElement stubElement)
+	public CSharpIndexMethodDeclStub createStub(CSharpIndexMethodDeclaration declaration, StubElement stubElement)
 	{
 		String parentQName = declaration.getPresentableParentQName();
 		int otherModifiers = 0;
@@ -66,15 +63,14 @@ public class CSharpIndexMethodStubElementType extends CSharpAbstractStubElementT
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpIndexMethodDeclStub methodStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpIndexMethodDeclStub methodStub, StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(methodStub.getParentQName());
 		stubOutputStream.writeVarInt(methodStub.getOtherModifierMask());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpIndexMethodDeclStub deserialize(@Nonnull StubInputStream inputStream, StubElement stubElement) throws IOException
+	public CSharpIndexMethodDeclStub deserialize(StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
 		StringRef qname = inputStream.readName();
 		int otherModifiers = inputStream.readVarInt();

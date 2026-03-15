@@ -21,7 +21,7 @@ import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.navigation.NavigationItem;
 import org.jetbrains.annotations.Contract;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL

@@ -37,7 +37,6 @@ import consulo.navigation.ItemPresentationProvider;
 import consulo.navigation.NavigationItem;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -47,15 +46,14 @@ import jakarta.annotation.Nonnull;
 public class CSharpFindUsagesProvider implements FindUsagesProvider
 {
 	@Override
-	public boolean canFindUsagesFor(@Nonnull PsiElement element)
+	public boolean canFindUsagesFor(PsiElement element)
 	{
 		return element instanceof DotNetNamedElement;
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
-	public String getType(@Nonnull PsiElement element)
+	public String getType(PsiElement element)
 	{
 		if(element instanceof CSharpTypeDeclaration)
 		{
@@ -145,10 +143,9 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		return debugText("getType", element);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
-	public String getDescriptiveName(@Nonnull PsiElement element)
+	public String getDescriptiveName(PsiElement element)
 	{
 		if(element instanceof DotNetNamedElement)
 		{
@@ -162,10 +159,9 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		return debugText("getDescriptiveName", element);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
-	public String getNodeText(@Nonnull PsiElement element, boolean useFullName)
+	public String getNodeText(PsiElement element, boolean useFullName)
 	{
 		if(element instanceof CSharpPreprocessorVariable)
 		{
@@ -236,15 +232,13 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		return debugText("getNodeText", element);
 	}
 
-	@Nonnull
-	private String debugText(String prefix, @Nonnull PsiElement element)
+	private String debugText(String prefix, PsiElement element)
 	{
 		IElementType type = PsiUtilCore.getElementType(element);
 		String suffix = type == null ? element.getClass().getSimpleName() : type.toString();
 		return prefix + " : " + suffix;
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

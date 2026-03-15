@@ -21,8 +21,7 @@ import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.resolve.BaseScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Set;
 
@@ -32,14 +31,14 @@ public class ComponentNameScopeProcessor extends BaseScopeProcessor
 	@Nullable
 	private PsiElement myToSkip;
 
-	public ComponentNameScopeProcessor(@Nonnull Set<PsiNamedElement> result, @Nullable PsiElement toSkip)
+	public ComponentNameScopeProcessor(Set<PsiNamedElement> result, @Nullable PsiElement toSkip)
 	{
 		myResult = result;
 		myToSkip = toSkip;
 	}
 
 	@Override
-	public boolean execute(@Nonnull PsiElement element, ResolveState state)
+	public boolean execute(PsiElement element, ResolveState state)
 	{
 		if(element.isEquivalentTo(myToSkip))
 		{

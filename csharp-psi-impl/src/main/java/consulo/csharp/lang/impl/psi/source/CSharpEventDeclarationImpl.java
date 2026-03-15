@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
 import consulo.csharp.lang.psi.CSharpEventDeclaration;
@@ -41,12 +40,12 @@ import consulo.language.ast.ASTNode;
  */
 public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<DotNetEventDeclaration>> implements CSharpEventDeclaration
 {
-	public CSharpEventDeclarationImpl(@Nonnull ASTNode node)
+	public CSharpEventDeclarationImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpEventDeclarationImpl(@Nonnull CSharpVariableDeclStub<DotNetEventDeclaration> stub)
+	public CSharpEventDeclarationImpl(CSharpVariableDeclStub<DotNetEventDeclaration> stub)
 	{
 		super(stub, CSharpStubElements.EVENT_DECLARATION);
 	}
@@ -68,12 +67,11 @@ public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitEventDeclaration(this);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetXAccessor[] getAccessors()
 	{
@@ -87,7 +85,6 @@ public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 		return findChildByClass(DotNetExpression.class);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -115,7 +112,6 @@ public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 1);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{

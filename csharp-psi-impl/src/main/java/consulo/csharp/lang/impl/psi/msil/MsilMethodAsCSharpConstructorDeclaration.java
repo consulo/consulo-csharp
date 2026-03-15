@@ -16,8 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.msil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
@@ -50,7 +49,6 @@ public class MsilMethodAsCSharpConstructorDeclaration extends MsilMethodAsCSharp
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -58,7 +56,7 @@ public class MsilMethodAsCSharpConstructorDeclaration extends MsilMethodAsCSharp
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitConstructorDeclaration(this);
 	}
@@ -70,7 +68,6 @@ public class MsilMethodAsCSharpConstructorDeclaration extends MsilMethodAsCSharp
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{

@@ -19,9 +19,8 @@ package consulo.csharp.lang.psi;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.util.collection.ArrayFactory;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -33,7 +32,6 @@ public interface CSharpUsingTypeStatement extends CSharpUsingListChild
 
 	public static ArrayFactory<CSharpUsingTypeStatement> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpUsingTypeStatement[count];
 
-	@Nonnull
 	DotNetTypeRef getTypeRef();
 
 	@Nullable

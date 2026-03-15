@@ -25,8 +25,7 @@ import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.editor.refactoring.changeSignature.ParameterInfo;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -71,7 +70,7 @@ public class CSharpParameterInfo implements ParameterInfo
 		myModifier = findModifier(parameter);
 	}
 
-	public CSharpParameterInfo(String name, @Nullable DotNetParameter parameter, @Nonnull DotNetTypeRef parameterTypeRef, int newIndex)
+	public CSharpParameterInfo(String name, @Nullable DotNetParameter parameter, DotNetTypeRef parameterTypeRef, int newIndex)
 	{
 		myParameter = parameter;
 		myName = name;

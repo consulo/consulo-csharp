@@ -45,8 +45,7 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.math.BigInteger;
 
 /**
@@ -57,7 +56,7 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 {
 	private static class FormattableStringTypeRef extends CSharpTypeRefByQName implements CSharpFastImplicitTypeRef
 	{
-		public FormattableStringTypeRef(@Nonnull Project project, @Nonnull GlobalSearchScope searchScope, @Nonnull String qualifiedName)
+		public FormattableStringTypeRef(Project project, GlobalSearchScope searchScope, String qualifiedName)
 		{
 			super(project, searchScope, qualifiedName);
 		}
@@ -65,7 +64,7 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 		@RequiredReadAction
 		@Nullable
 		@Override
-		public DotNetTypeRef doMirror(@Nonnull DotNetTypeRef another)
+		public DotNetTypeRef doMirror(DotNetTypeRef another)
 		{
 			if(DotNetTypeRefUtil.isVmQNameEqual(another, DotNetTypes2.System.FormattableString))
 			{
@@ -81,19 +80,18 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 		}
 	}
 
-	public CSharpConstantExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpConstantExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitConstantExpression(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -198,7 +196,7 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 
 	@Nullable
 	@RequiredReadAction
-	public Object getValue(@Nonnull String prefix)
+	public Object getValue(String prefix)
 	{
 		PsiElement byType = getFirstChild();
 		assert byType != null;
@@ -273,7 +271,6 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 		return getValue("");
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public IElementType getLiteralType()
@@ -291,7 +288,6 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 		return elementType != CSharpTokens.CHARACTER_LITERAL && CSharpTokenSets.STRINGS.contains(elementType);
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public PsiReference[] getReferences()
@@ -301,14 +297,13 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 
 	@Override
 	@RequiredReadAction
-	public PsiLanguageInjectionHost updateText(@Nonnull String s)
+	public PsiLanguageInjectionHost updateText(String s)
 	{
 		LeafPsiElement first = (LeafPsiElement) getFirstChild();
 		first.replaceWithText(s);
 		return this;
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper()
@@ -326,8 +321,7 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 	}
 
 	@RequiredReadAction
-	@Nonnull
-	public static TextRange getStringValueTextRange(@Nonnull CSharpConstantExpressionImpl expression)
+	public static TextRange getStringValueTextRange(CSharpConstantExpressionImpl expression)
 	{
 		IElementType literalType = expression.getLiteralType();
 		if(literalType == CSharpTokens.VERBATIM_STRING_LITERAL || literalType == CSharpTokenSets.INTERPOLATION_STRING_LITERAL)

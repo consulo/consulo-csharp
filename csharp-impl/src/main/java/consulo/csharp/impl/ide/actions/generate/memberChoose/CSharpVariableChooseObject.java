@@ -24,8 +24,7 @@ import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.util.collection.ArrayFactory;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -43,7 +42,6 @@ public class CSharpVariableChooseObject extends CSharpMemberChooseObject<DotNetV
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getPresentationText()
 	{

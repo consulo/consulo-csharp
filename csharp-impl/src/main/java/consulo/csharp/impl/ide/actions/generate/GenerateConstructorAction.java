@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.actions.generate;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.project.Project;
 import consulo.language.psi.PsiFile;
@@ -34,7 +33,7 @@ public class GenerateConstructorAction extends CSharpGenerateAction
 	}
 
 	@Override
-	protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file)
+	protected boolean isValidForFile(Project project, Editor editor, PsiFile file)
 	{
 		return findTypeDeclaration(editor, file) != null;
 	}

@@ -24,7 +24,6 @@ import consulo.csharp.lang.psi.CSharpTupleVariable;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTupleTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,13 +31,12 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpTupleTypeImpl extends CSharpTypeElementImpl implements CSharpTupleType
 {
-	public CSharpTupleTypeImpl(@Nonnull IElementType elementType)
+	public CSharpTupleTypeImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeRef toTypeRefImpl()
 	{
@@ -53,12 +51,11 @@ public class CSharpTupleTypeImpl extends CSharpTypeElementImpl implements CSharp
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitTupleType(this);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpTupleVariable[] getVariables()
 	{

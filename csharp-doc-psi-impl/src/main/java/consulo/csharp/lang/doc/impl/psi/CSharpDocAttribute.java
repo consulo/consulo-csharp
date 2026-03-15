@@ -25,8 +25,7 @@ import consulo.csharp.lang.impl.psi.source.AdvancedCompositePsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.util.IncorrectOperationException;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,7 +39,7 @@ public class CSharpDocAttribute extends AdvancedCompositePsiElement implements P
 	}
 
 	@Override
-	public void accept(@Nonnull PsiElementVisitor visitor)
+	public void accept(PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpDocElementVisitor)
 		{
@@ -87,7 +86,7 @@ public class CSharpDocAttribute extends AdvancedCompositePsiElement implements P
 	}
 
 	@Override
-	public PsiElement setName(@Nonnull String name) throws IncorrectOperationException
+	public PsiElement setName(String name) throws IncorrectOperationException
 	{
 		return null;
 	}

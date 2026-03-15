@@ -23,8 +23,7 @@ import consulo.language.psi.ElementDescriptionLocation;
 import consulo.language.psi.ElementDescriptionProvider;
 import consulo.language.psi.PsiElement;
 import consulo.usage.UsageViewShortNameLocation;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -36,7 +35,7 @@ public class CSharpElementDescriptionProvider implements ElementDescriptionProvi
 	@Nullable
 	@Override
 	@RequiredReadAction
-	public String getElementDescription(@Nonnull PsiElement element, @Nonnull ElementDescriptionLocation location)
+	public String getElementDescription(PsiElement element, ElementDescriptionLocation location)
 	{
 		if(location == UsageViewShortNameLocation.INSTANCE && element instanceof CSharpNamedElement)
 		{

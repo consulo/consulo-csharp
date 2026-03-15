@@ -24,7 +24,6 @@ import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.navigation.ItemPresentation;
 import consulo.navigation.ItemPresentationProvider;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,7 +31,7 @@ import jakarta.annotation.Nonnull;
  */
 public abstract class CSharpElementImpl extends AdvancedCompositePsiElement
 {
-	public CSharpElementImpl(@Nonnull IElementType elementType)
+	public CSharpElementImpl(IElementType elementType)
 	{
 		super(elementType);
 
@@ -46,7 +45,6 @@ public abstract class CSharpElementImpl extends AdvancedCompositePsiElement
 		}
 	}
 
-	@Nonnull
 	@Override
 	public GlobalSearchScope getResolveScope()
 	{
@@ -60,7 +58,7 @@ public abstract class CSharpElementImpl extends AdvancedCompositePsiElement
 	}
 
 	@Override
-	public void accept(@Nonnull PsiElementVisitor visitor)
+	public void accept(PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{
@@ -72,5 +70,5 @@ public abstract class CSharpElementImpl extends AdvancedCompositePsiElement
 		}
 	}
 
-	public abstract void accept(@Nonnull CSharpElementVisitor visitor);
+	public abstract void accept(CSharpElementVisitor visitor);
 }

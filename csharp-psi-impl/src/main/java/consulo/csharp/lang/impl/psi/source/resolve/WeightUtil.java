@@ -23,7 +23,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 import consulo.util.collection.ContainerUtil;
 
-import jakarta.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class WeightUtil
 	public static final Comparator<MethodResolveResult> ourComparator = (o1, o2) -> o2.getCalcResult().getWeight() - o1.getCalcResult().getWeight();
 
 	@RequiredReadAction
-	public static void sortAndProcess(@Nonnull List<MethodResolveResult> list, @Nonnull Processor<ResolveResult> processor, @Nonnull PsiElement place)
+	public static void sortAndProcess(List<MethodResolveResult> list, Processor<ResolveResult> processor, PsiElement place)
 	{
 		if(list.isEmpty())
 		{

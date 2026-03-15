@@ -38,8 +38,7 @@ import consulo.language.psi.ResolveResult;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -47,7 +46,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl implements DotNetExpression, CSharpCallArgumentListOwner
 {
-	public CSharpMethodCallExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpMethodCallExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -60,7 +59,6 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 	}
 
 	@Override
-	@Nonnull
 	@Deprecated
 	@DeprecationInfo("Use #getCallArguments() due we can have named arguments")
 	public DotNetExpression[] getParameterExpressions()
@@ -69,7 +67,6 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
@@ -77,14 +74,13 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 		return parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
 	}
 
-	@Nonnull
 	public DotNetExpression getCallExpression()
 	{
 		return findNotNullChildByClass(DotNetExpression.class);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitMethodCallExpression(this);
 	}
@@ -117,7 +113,6 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public ResolveResult[] multiResolve(boolean incompleteCode)
@@ -148,7 +143,6 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 		}
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
@@ -183,7 +177,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		CSharpCallArgument[] callArguments = getCallArguments();
 		for(CSharpCallArgument callArgument : callArguments)

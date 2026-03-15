@@ -35,9 +35,8 @@ import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ContainerUtil;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -64,7 +63,6 @@ public class SuggestVariableNameMacro extends Macro
 		return "suggestVariableName variable";
 	}
 
-	@Nonnull
 	@Override
 	public String getDefaultValue()
 	{
@@ -74,7 +72,7 @@ public class SuggestVariableNameMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredUIAccess
-	public Result calculateQuickResult(@Nonnull Expression[] params, ExpressionContext context)
+	public Result calculateQuickResult(Expression[] params, ExpressionContext context)
 	{
 		return calculateResult(params, context);
 	}
@@ -82,7 +80,7 @@ public class SuggestVariableNameMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredUIAccess
-	public LookupElement[] calculateLookupItems(@Nonnull Expression[] params, ExpressionContext context)
+	public LookupElement[] calculateLookupItems(Expression[] params, ExpressionContext context)
 	{
 		Collection<String> suggestedVariableNames = getSuggestedVariableNames(context);
 
@@ -97,13 +95,12 @@ public class SuggestVariableNameMacro extends Macro
 	@Nullable
 	@Override
 	@RequiredUIAccess
-	public Result calculateResult(@Nonnull Expression[] params, ExpressionContext context)
+	public Result calculateResult(Expression[] params, ExpressionContext context)
 	{
 		Collection<String> suggestedVariableNames = getSuggestedVariableNames(context);
 		return new TextResult(ContainerUtil.getFirstItem(suggestedVariableNames, "it"));
 	}
 
-	@Nonnull
 	@RequiredUIAccess
 	private Collection<String> getSuggestedVariableNames(ExpressionContext context)
 	{

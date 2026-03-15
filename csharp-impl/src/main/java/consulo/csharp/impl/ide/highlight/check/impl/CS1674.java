@@ -29,8 +29,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -41,7 +40,7 @@ public class CS1674 extends CompilerCheck<CSharpUsingStatementImpl>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpUsingStatementImpl element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpUsingStatementImpl element)
 	{
 		DotNetTypeRef usingTypeRef = DotNetTypeRef.ERROR_TYPE;
 		PsiElement highlightElement = null;

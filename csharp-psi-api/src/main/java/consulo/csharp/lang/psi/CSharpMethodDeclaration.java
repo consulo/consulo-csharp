@@ -20,8 +20,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.DotNetMethodDeclaration;
 import consulo.language.ast.IElementType;
 import consulo.util.collection.ArrayFactory;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -49,7 +48,6 @@ public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharp
     @RequiredReadAction
     IElementType getOperatorElementType();
 
-    @Nonnull
     @Override
     CSharpCodeBodyProxy getCodeBlock();
 

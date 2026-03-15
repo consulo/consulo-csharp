@@ -17,7 +17,6 @@
 package consulo.csharp.lang.psi;
 
 import consulo.dotnet.psi.DotNetElement;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -25,6 +24,5 @@ import jakarta.annotation.Nonnull;
  */
 public interface CSharpGenericConstraintList extends DotNetElement
 {
-	@Nonnull
 	CSharpGenericConstraint[] getGenericConstraints();
 }

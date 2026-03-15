@@ -36,8 +36,7 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
 import consulo.util.lang.Pair;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +51,7 @@ public class CSharpDeclarationMover extends LineMover
 
 	@RequiredReadAction
 	@Override
-	public void beforeMove(@Nonnull final Editor editor, @Nonnull final MoveInfo info, final boolean down)
+	public void beforeMove(final Editor editor, final MoveInfo info, final boolean down)
 	{
 		super.beforeMove(editor, info, down);
 
@@ -81,7 +80,7 @@ public class CSharpDeclarationMover extends LineMover
 
 	@Override
 	@RequiredReadAction
-	public boolean checkAvailable(@Nonnull final Editor editor, @Nonnull final PsiFile file, @Nonnull final MoveInfo info, final boolean down)
+	public boolean checkAvailable(final Editor editor, final PsiFile file, final MoveInfo info, final boolean down)
 	{
 		if(!(file instanceof CSharpFile))
 		{
@@ -179,7 +178,7 @@ public class CSharpDeclarationMover extends LineMover
 	}
 
 	@RequiredReadAction
-	private static LineRange memberRange(@Nonnull PsiElement member, Editor editor, LineRange lineRange)
+	private static LineRange memberRange(PsiElement member, Editor editor, LineRange lineRange)
 	{
 		final TextRange textRange = member.getTextRange();
 		if(editor.getDocument().getTextLength() < textRange.getEndOffset())
@@ -197,7 +196,7 @@ public class CSharpDeclarationMover extends LineMover
 	}
 
 	@RequiredReadAction
-	private static boolean isInsideDeclaration(@Nonnull final PsiElement member, final int startLine, final int endLine, final LineRange lineRange, final Editor editor)
+	private static boolean isInsideDeclaration(final PsiElement member, final int startLine, final int endLine, final LineRange lineRange, final Editor editor)
 	{
 		// if we positioned on member start or end we'll be able to move it
 		if(startLine == lineRange.startLine || startLine == lineRange.endLine || endLine == lineRange.startLine || endLine == lineRange.endLine)

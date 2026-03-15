@@ -29,8 +29,7 @@ import consulo.logging.Logger;
 import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilFile;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -44,7 +43,7 @@ public class MsilToNativeElementTransformer implements ToNativeElementTransforme
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public PsiElement transform(@Nonnull PsiElement element)
+	public PsiElement transform(PsiElement element)
 	{
 		if(element instanceof MsilClassEntry)
 		{
@@ -75,8 +74,7 @@ public class MsilToNativeElementTransformer implements ToNativeElementTransforme
 		return null;
 	}
 
-	@Nonnull
-	public static MsilClassEntry findRootClassEntry(@Nonnull MsilClassEntry element)
+	public static MsilClassEntry findRootClassEntry(MsilClassEntry element)
 	{
 		PsiFile containingFile = element.getContainingFile();
 		if(!(containingFile instanceof MsilFile))
@@ -108,7 +106,7 @@ public class MsilToNativeElementTransformer implements ToNativeElementTransforme
 
 
 	@Nullable
-	public static PsiElement findElementByOriginal(@Nonnull PsiElement wrappedElement, @Nonnull PsiElement originalTarget)
+	public static PsiElement findElementByOriginal(PsiElement wrappedElement, PsiElement originalTarget)
 	{
 		PsiElement originalElement = wrappedElement.getOriginalElement();
 

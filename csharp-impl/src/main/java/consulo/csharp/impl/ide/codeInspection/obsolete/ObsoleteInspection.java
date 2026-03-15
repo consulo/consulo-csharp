@@ -41,8 +41,7 @@ import consulo.msil.impl.lang.stubbing.MsilCustomAttributeArgumentList;
 import consulo.msil.impl.lang.stubbing.MsilCustomAttributeStubber;
 import consulo.msil.impl.lang.stubbing.values.MsiCustomAttributeValue;
 import consulo.msil.lang.psi.MsilCustomAttribute;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -52,21 +51,18 @@ import java.util.List;
  */
 @ExtensionImpl
 public class ObsoleteInspection extends CSharpGeneralLocalInspection {
-    @Nonnull
     @Override
     public LocalizeValue getDisplayName() {
         return LocalizeValue.localizeTODO("Obsolete declarations");
     }
 
-    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WARNING;
     }
 
-    @Nonnull
     @Override
-    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+    public PsiElementVisitor buildVisitor(final ProblemsHolder holder, boolean isOnTheFly) {
         return new CSharpElementVisitor() {
             @Override
             @RequiredReadAction
@@ -92,7 +88,7 @@ public class ObsoleteInspection extends CSharpGeneralLocalInspection {
     }
 
     @RequiredReadAction
-    private static void process(@Nonnull ProblemsHolder holder, @Nullable PsiElement range, @Nonnull PsiElement target) {
+    private static void process(ProblemsHolder holder, @Nullable PsiElement range, PsiElement target) {
         if (range == null) {
             return;
         }

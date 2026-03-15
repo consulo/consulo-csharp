@@ -19,7 +19,6 @@ package consulo.csharp.impl.ide.highlight.check.impl;
 import java.util.Arrays;
 import java.util.List;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -34,9 +33,8 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 public class CC0002 extends CompilerCheck<CSharpOperatorReferenceImpl>
 {
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public List<HighlightInfoFactory> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpOperatorReferenceImpl element)
+	public List<HighlightInfoFactory> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpOperatorReferenceImpl element)
 	{
 		return CC0001.checkReference(element, Arrays.asList(element));
 	}

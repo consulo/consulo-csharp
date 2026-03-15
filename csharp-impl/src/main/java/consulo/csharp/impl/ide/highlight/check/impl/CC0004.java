@@ -25,7 +25,6 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,9 +36,8 @@ import java.util.List;
 public class CC0004 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 {
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public List<HighlightInfoFactory> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpMethodCallExpressionImpl element)
+	public List<HighlightInfoFactory> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpMethodCallExpressionImpl element)
 	{
 		List<PsiElement> list = new ArrayList<>();
 		if(CC0001.isCalleInsideCalle(element))

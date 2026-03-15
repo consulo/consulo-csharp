@@ -16,8 +16,7 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.codeInsight.actions.AddModifierFix;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -50,7 +49,7 @@ public class CS0214 extends CompilerCheck<DotNetElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetElement element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetElement element)
 	{
 		if(element instanceof CSharpFixedStatementImpl)
 		{
@@ -113,7 +112,6 @@ public class CS0214 extends CompilerCheck<DotNetElement>
 		return null;
 	}
 
-	@Nonnull
 	private static Pair<Boolean, DotNetModifierListOwner> isAllowedUnsafeCode(PsiElement element)
 	{
 		CSharpUnsafeStatementImpl unsafeStatement = PsiTreeUtil.getParentOfType(element, CSharpUnsafeStatementImpl.class);

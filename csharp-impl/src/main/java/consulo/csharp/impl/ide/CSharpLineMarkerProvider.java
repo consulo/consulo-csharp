@@ -38,8 +38,7 @@ import consulo.language.psi.PsiElement;
 import consulo.project.DumbService;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.lang.ref.Ref;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import jakarta.inject.Inject;
 
 import java.util.Collection;
@@ -78,7 +77,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public LineMarkerInfo getLineMarkerInfo(@Nonnull PsiElement element)
+	public LineMarkerInfo getLineMarkerInfo(PsiElement element)
 	{
 		if(myDaemonCodeAnalyzerSettings.SHOW_METHOD_SEPARATORS && (element instanceof DotNetQualifiedElement))
 		{
@@ -121,7 +120,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 
 	@RequiredReadAction
 	@Override
-	public void collectSlowLineMarkers(@Nonnull List<PsiElement> elements, @Nonnull final Collection<LineMarkerInfo> lineMarkerInfos)
+	public void collectSlowLineMarkers(List<PsiElement> elements, final Collection<LineMarkerInfo> lineMarkerInfos)
 	{
 		ApplicationManager.getApplication().assertReadAccessAllowed();
 
@@ -146,7 +145,6 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 		}
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

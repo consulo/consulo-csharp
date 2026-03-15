@@ -27,7 +27,6 @@ import consulo.language.parser.PsiParser;
 import consulo.language.version.LanguageVersion;
 import consulo.language.version.LanguageVersionWithParsing;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -43,35 +42,30 @@ public class CSharpLanguageVersionWrapper extends LanguageVersion implements Lan
 		myLanguageVersion = languageVersion;
 	}
 
-	@Nonnull
 	@Override
 	public PsiParser createParser()
 	{
 		return new CSharpParser();
 	}
 
-	@Nonnull
 	@Override
 	public Lexer createLexer()
 	{
 		return new CSharpLexer();
 	}
 
-	@Nonnull
 	@Override
 	public TokenSet getCommentTokens()
 	{
 		return CSharpTokenSets.COMMENTS;
 	}
 
-	@Nonnull
 	@Override
 	public TokenSet getStringLiteralElements()
 	{
 		return CSharpTokenSets.LITERALS;
 	}
 
-	@Nonnull
 	@Override
 	public TokenSet getWhitespaceTokens()
 	{

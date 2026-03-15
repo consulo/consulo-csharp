@@ -40,7 +40,6 @@ import consulo.language.util.ProcessingContext;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
 
-import jakarta.annotation.Nonnull;
 import java.util.Collection;
 
 /**
@@ -56,7 +55,7 @@ public class CSharpMemberNameCompletionContributor extends CompletionContributor
 		{
 			@Override
 			@RequiredReadAction
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				PsiElement position = parameters.getPosition();
 				CSharpIdentifier identifier = PsiTreeUtil.getParentOfType(position, CSharpIdentifier.class);
@@ -119,7 +118,6 @@ public class CSharpMemberNameCompletionContributor extends CompletionContributor
 		});
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

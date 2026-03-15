@@ -19,9 +19,8 @@ package consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.scope.GlobalSearchScope;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -42,7 +41,7 @@ public class NErrorCallArgument extends NCallArgument
 
 	@RequiredReadAction
 	@Override
-	public int calcValid(@Nonnull GlobalSearchScope implicitCastResolveScope)
+	public int calcValid(GlobalSearchScope implicitCastResolveScope)
 	{
 		return FAIL;
 	}

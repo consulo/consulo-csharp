@@ -20,8 +20,7 @@ import consulo.language.ast.IElementType;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetStatement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -29,18 +28,17 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpTryStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpTryStatementImpl(@Nonnull IElementType elementType)
+	public CSharpTryStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitTryStatement(this);
 	}
 
-	@Nonnull
 	public CSharpCatchStatementImpl[] getCatchStatements()
 	{
 		return findChildrenByClass(CSharpCatchStatementImpl.class);

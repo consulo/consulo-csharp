@@ -21,7 +21,6 @@ import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,9 +30,8 @@ public interface CSharpSimpleLikeMethodAsElement extends DotNetElement, CSharpSi
 {
 	@Override
 	@RequiredReadAction
-	boolean hasModifier(@Nonnull DotNetModifier modifier);
+	boolean hasModifier(DotNetModifier modifier);
 
-	@Nonnull
 	default CSharpCodeBodyProxy getCodeBlock()
 	{
 		return CSharpCodeBodyProxy.EMPTY;

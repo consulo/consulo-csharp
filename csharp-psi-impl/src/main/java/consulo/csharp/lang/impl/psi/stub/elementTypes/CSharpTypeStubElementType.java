@@ -30,7 +30,6 @@ import consulo.language.psi.stub.StubInputStream;
 import consulo.language.psi.stub.StubOutputStream;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -44,22 +43,21 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 		super("TYPE_DECLARATION");
 	}
 
-	@Nonnull
 	@Override
-	public CSharpTypeDeclaration createElement(@Nonnull ASTNode astNode)
+	public CSharpTypeDeclaration createElement(ASTNode astNode)
 	{
 		return new CSharpTypeDeclarationImpl(astNode);
 	}
 
 	@Override
-	public CSharpTypeDeclaration createPsi(@Nonnull CSharpTypeDeclStub stub)
+	public CSharpTypeDeclaration createPsi(CSharpTypeDeclStub stub)
 	{
 		return new CSharpTypeDeclarationImpl(stub);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpTypeDeclStub createStub(@Nonnull CSharpTypeDeclaration typeDeclaration, StubElement stubElement)
+	public CSharpTypeDeclStub createStub(CSharpTypeDeclaration typeDeclaration, StubElement stubElement)
 	{
 		String parentQName = typeDeclaration.getPresentableParentQName();
 		String vmQName = typeDeclaration.getVmQName();
@@ -68,16 +66,15 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpTypeDeclStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpTypeDeclStub stub, StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getParentQName());
 		stubOutputStream.writeName(stub.getVmQName());
 		stubOutputStream.writeVarInt(stub.getOtherModifierMask());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpTypeDeclStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpTypeDeclStub deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef parentQName = stubInputStream.readName();
 		StringRef vmQName = stubInputStream.readName();
@@ -87,7 +84,7 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 
 	@Override
 	@RequiredReadAction
-	public void indexStub(@Nonnull CSharpTypeDeclStub stub, @Nonnull IndexSink indexSink)
+	public void indexStub(CSharpTypeDeclStub stub, IndexSink indexSink)
 	{
 		String name = getNameWithoutAt(stub);
 		if(!StringUtil.isEmpty(name))

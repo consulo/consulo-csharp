@@ -38,8 +38,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -95,7 +94,7 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix {
 
     @RequiredReadAction
     @Override
-    public void buildTemplate(@Nonnull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @Nonnull PsiFile file, @Nonnull Template template) {
+    public void buildTemplate(CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, PsiFile file, Template template) {
         boolean forInterface = context.getTargetForGenerate() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) context.getTargetForGenerate()).isInterface();
 
         if (!forInterface) {
@@ -134,8 +133,7 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix {
         }
     }
 
-    @Nonnull
-    static CSharpAccessModifier calcModifier(@Nonnull CreateUnresolvedElementFixContext context) {
+    static CSharpAccessModifier calcModifier(CreateUnresolvedElementFixContext context) {
         final CSharpTypeDeclaration thisType = PsiTreeUtil.getParentOfType(context.getExpression(), CSharpTypeDeclaration.class);
         if (thisType == null) {
             return CSharpAccessModifier.PUBLIC;

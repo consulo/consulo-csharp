@@ -24,7 +24,6 @@ import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.module.content.layer.ModuleRootLayer;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,12 +31,11 @@ import jakarta.annotation.Nonnull;
  */
 public class MicrosoftCSharpModuleExtension extends BaseCSharpModuleExtension<MicrosoftCSharpModuleExtension>
 {
-	public MicrosoftCSharpModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer module)
+	public MicrosoftCSharpModuleExtension(String id, ModuleRootLayer module)
 	{
 		super(id, module);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder() throws DotNetCompileFailedException
 	{

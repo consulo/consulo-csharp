@@ -23,8 +23,7 @@ import consulo.language.ast.IElementType;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -32,7 +31,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpLinqFromClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqFromClauseImpl(@Nonnull IElementType elementType)
+	public CSharpLinqFromClauseImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -50,14 +49,14 @@ public class CSharpLinqFromClauseImpl extends CSharpElementImpl
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqFromClause(this);
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent,
-									   @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent,
+									   PsiElement place)
 	{
 		CSharpLinqVariableImpl variable = getVariable();
 		if(variable != null)

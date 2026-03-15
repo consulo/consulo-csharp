@@ -24,7 +24,6 @@ import consulo.csharp.lang.impl.psi.resolve.CSharpBaseResolveContext;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
 
-import jakarta.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**
@@ -35,14 +34,13 @@ public class SimpleElementGroupCollectors
 {
 	public static class Constructor extends SimpleElementGroupCollector<CSharpConstructorDeclaration>
 	{
-		public Constructor(@Nonnull CSharpBaseResolveContext<?> context)
+		public Constructor(CSharpBaseResolveContext<?> context)
 		{
 			super(MsilHelper.CONSTRUCTOR_NAME, CSharpAdditionalMemberProvider.Target.CONSTRUCTOR, context);
 		}
 
-		@Nonnull
 		@Override
-		protected CSharpElementVisitor createVisitor(@Nonnull final Consumer<CSharpConstructorDeclaration> consumer)
+		protected CSharpElementVisitor createVisitor(final Consumer<CSharpConstructorDeclaration> consumer)
 		{
 			return new CSharpElementVisitor()
 			{
@@ -60,12 +58,11 @@ public class SimpleElementGroupCollectors
 
 	public static class DeConstructor extends SimpleElementGroupCollector<CSharpConstructorDeclaration>
 	{
-		public DeConstructor(@Nonnull CSharpBaseResolveContext<?> context)
+		public DeConstructor(CSharpBaseResolveContext<?> context)
 		{
 			super("~" + MsilHelper.CONSTRUCTOR_NAME, CSharpAdditionalMemberProvider.Target.DE_CONSTRUCTOR, context);
 		}
 
-		@Nonnull
 		@Override
 		public DotNetGenericExtractor getExtractor()
 		{
@@ -73,9 +70,8 @@ public class SimpleElementGroupCollectors
 			return DotNetGenericExtractor.EMPTY;
 		}
 
-		@Nonnull
 		@Override
-		protected CSharpElementVisitor createVisitor(@Nonnull final Consumer<CSharpConstructorDeclaration> consumer)
+		protected CSharpElementVisitor createVisitor(final Consumer<CSharpConstructorDeclaration> consumer)
 		{
 			return new CSharpElementVisitor()
 			{
@@ -93,14 +89,13 @@ public class SimpleElementGroupCollectors
 
 	public static class IndexMethod extends SimpleElementGroupCollector<CSharpIndexMethodDeclaration>
 	{
-		public IndexMethod(@Nonnull CSharpBaseResolveContext<?> context)
+		public IndexMethod(CSharpBaseResolveContext<?> context)
 		{
 			super("[]", CSharpAdditionalMemberProvider.Target.INDEX_METHOD, context);
 		}
 
-		@Nonnull
 		@Override
-		protected CSharpElementVisitor createVisitor(@Nonnull final Consumer<CSharpIndexMethodDeclaration> consumer)
+		protected CSharpElementVisitor createVisitor(final Consumer<CSharpIndexMethodDeclaration> consumer)
 		{
 			return new CSharpElementVisitor()
 			{

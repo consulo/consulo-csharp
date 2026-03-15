@@ -27,7 +27,6 @@ import consulo.language.psi.stub.StubElement;
 import consulo.language.psi.stub.StubInputStream;
 import consulo.language.psi.stub.StubOutputStream;
 
-import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -41,36 +40,34 @@ public class CSharpIdentifierStubElementType extends CSharpAbstractStubElementTy
 		super("IDENTIFIER");
 	}
 
-	@Nonnull
 	@Override
-	public PsiElement createElement(@Nonnull ASTNode astNode)
+	public PsiElement createElement(ASTNode astNode)
 	{
 		return new CSharpStubIdentifierImpl(astNode);
 	}
 
 	@Override
-	public CSharpIdentifier createPsi(@Nonnull CSharpIdentifierStub stub)
+	public CSharpIdentifier createPsi(CSharpIdentifierStub stub)
 	{
 		return new CSharpStubIdentifierImpl(stub, this);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpIdentifierStub createStub(@Nonnull CSharpIdentifier psi, StubElement parentStub)
+	public CSharpIdentifierStub createStub(CSharpIdentifier psi, StubElement parentStub)
 	{
 		String value = psi.getValue();
 		return new CSharpIdentifierStub(parentStub, this, value);
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpIdentifierStub stub, @Nonnull StubOutputStream dataStream) throws IOException
+	public void serialize(CSharpIdentifierStub stub, StubOutputStream dataStream) throws IOException
 	{
 		dataStream.writeName(stub.getValue());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpIdentifierStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException
+	public CSharpIdentifierStub deserialize(StubInputStream dataStream, StubElement parentStub) throws IOException
 	{
 		StringRef nameRef = dataStream.readName();
 		return new CSharpIdentifierStub(parentStub, this, nameRef);

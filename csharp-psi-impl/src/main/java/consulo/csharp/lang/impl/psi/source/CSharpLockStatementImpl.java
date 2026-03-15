@@ -19,7 +19,6 @@ package consulo.csharp.lang.impl.psi.source;
 import consulo.language.ast.IElementType;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetStatement;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -27,13 +26,13 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpLockStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpLockStatementImpl(@Nonnull IElementType elementType)
+	public CSharpLockStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLockStatement(this);
 	}

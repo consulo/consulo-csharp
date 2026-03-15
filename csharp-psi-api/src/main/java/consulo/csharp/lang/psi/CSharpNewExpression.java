@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
 

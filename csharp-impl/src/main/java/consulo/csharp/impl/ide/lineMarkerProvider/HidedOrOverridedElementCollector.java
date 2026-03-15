@@ -33,7 +33,6 @@ import consulo.navigation.Navigatable;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
 import consulo.util.collection.ContainerUtil;
-import jakarta.annotation.Nonnull;
 
 import java.awt.event.MouseEvent;
 import java.util.Collection;
@@ -83,7 +82,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @Nonnull Consumer<LineMarkerInfo> consumer)
+	public void collect(PsiElement psiElement, Consumer<LineMarkerInfo> consumer)
 	{
 		DotNetVirtualImplementOwner virtualImplementOwner = CSharpLineMarkerUtil.findElementForLineMarker(psiElement);
 		if(virtualImplementOwner != null)

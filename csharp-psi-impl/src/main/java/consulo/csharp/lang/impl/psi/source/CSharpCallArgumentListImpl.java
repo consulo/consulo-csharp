@@ -28,8 +28,7 @@ import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.psi.PsiReferenceService;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +42,11 @@ public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSh
 	private static final TokenSet ourOpenSet = TokenSet.create(CSharpTokens.LPAR, CSharpTokens.LBRACKET);
 	private static final TokenSet ourCloseSet = TokenSet.create(CSharpTokens.RPAR, CSharpTokens.RBRACKET);
 
-	public CSharpCallArgumentListImpl(@Nonnull IElementType elementType)
+	public CSharpCallArgumentListImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	@Override
 	public PsiReference[] getReferences()
 	{
@@ -70,7 +68,6 @@ public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSh
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpCallArgument[] getArguments()
 	{
@@ -78,7 +75,6 @@ public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSh
 	}
 
 	@Override
-	@Nonnull
 	public DotNetExpression[] getExpressions()
 	{
 		CSharpCallArgument[] arguments = getArguments();
@@ -99,12 +95,11 @@ public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSh
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitMethodCallParameterList(this);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpFieldOrPropertySet[] getSets()
 	{

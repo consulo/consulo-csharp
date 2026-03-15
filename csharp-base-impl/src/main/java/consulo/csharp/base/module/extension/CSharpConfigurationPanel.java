@@ -39,7 +39,6 @@ import consulo.ui.ex.SimpleTextAttributes;
 import consulo.ui.ex.awt.*;
 import consulo.ui.ex.awt.event.DocumentAdapter;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -82,7 +81,7 @@ public class CSharpConfigurationPanel extends JPanel
 		levelComboBox.setRenderer(new ColoredListCellRenderer<>()
 		{
 			@Override
-			protected void customizeCellRenderer(@Nonnull JList list, Object value, int i, boolean b, boolean b1)
+			protected void customizeCellRenderer(JList list, Object value, int i, boolean b, boolean b1)
 			{
 				if(value instanceof CSharpLanguageVersion)
 				{
@@ -242,7 +241,7 @@ public class CSharpConfigurationPanel extends JPanel
 		platformComboBox.setRenderer(new ColoredListCellRenderer<CSharpPlatform>()
 		{
 			@Override
-			protected void customizeCellRenderer(@Nonnull JList jList, CSharpPlatform platform, int i, boolean b, boolean b1)
+			protected void customizeCellRenderer(JList jList, CSharpPlatform platform, int i, boolean b, boolean b1)
 			{
 				switch(platform)
 				{
@@ -291,7 +290,7 @@ public class CSharpConfigurationPanel extends JPanel
 		nullableBox.setRenderer(new ColoredListCellRenderer<CSharpNullableOption>()
 		{
 			@Override
-			protected void customizeCellRenderer(@Nonnull JList jList, CSharpNullableOption option, int i, boolean b, boolean b1)
+			protected void customizeCellRenderer(JList jList, CSharpNullableOption option, int i, boolean b, boolean b1)
 			{
 				append(option.getDescription().getValue());
 			}

@@ -16,8 +16,7 @@
 
 package consulo.csharp.impl.libraryAnalyzer;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
 * @author VISTALL
@@ -28,7 +27,7 @@ public class NamespaceReference
 	private String myNamespace;
 	private String myLibraryName;
 
-	public NamespaceReference(@Nonnull String namespace, @Nullable String libraryName)
+	public NamespaceReference(String namespace, @Nullable String libraryName)
 	{
 		myNamespace = namespace;
 		myLibraryName = libraryName;

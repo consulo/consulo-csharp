@@ -20,8 +20,7 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.stub.ObjectStubSerializerProvider;
 import consulo.language.psi.stub.StubElementTypeHolder;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -40,7 +39,6 @@ public class CSharpStubElementsHolder extends StubElementTypeHolder<CSharpStubEl
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public List<ObjectStubSerializerProvider> loadSerializers()
 	{

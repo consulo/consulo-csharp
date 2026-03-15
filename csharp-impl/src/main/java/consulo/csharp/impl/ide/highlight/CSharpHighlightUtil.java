@@ -35,9 +35,8 @@ import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpMethodImplUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.*;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -47,7 +46,7 @@ public class CSharpHighlightUtil
 {
 	@Nullable
 	@RequiredReadAction
-	public static HighlightInfo highlightNamed(@Nonnull HighlightInfoHolder holder, @Nullable PsiElement element, @Nullable PsiElement target, @Nullable PsiElement owner)
+	public static HighlightInfo highlightNamed(HighlightInfoHolder holder, @Nullable PsiElement element, @Nullable PsiElement target, @Nullable PsiElement owner)
 	{
 		if(target == null || element == null)
 		{
@@ -83,7 +82,7 @@ public class CSharpHighlightUtil
 	}
 
 	@RequiredReadAction
-	private static TextAttributesKey getDefaultTextAttributeKey(@Nonnull PsiElement element, @Nonnull PsiElement target)
+	private static TextAttributesKey getDefaultTextAttributeKey(PsiElement element, PsiElement target)
 	{
 		TextAttributesKey key = null;
 		if(element instanceof CSharpTypeDeclaration)

@@ -32,7 +32,6 @@ import consulo.language.pattern.StandardPatterns;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.ProcessingContext;
 
-import jakarta.annotation.Nonnull;
 import java.util.Collection;
 
 /**
@@ -48,7 +47,7 @@ public class CSharpDocCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				PsiElement parent = parameters.getPosition().getParent();
 				if(parent instanceof CSharpDocTagImpl)
@@ -75,7 +74,6 @@ public class CSharpDocCompletionContributor extends CompletionContributor
 		});
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

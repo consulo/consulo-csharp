@@ -43,8 +43,7 @@ import consulo.language.psi.PsiNamedElement;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,14 +59,13 @@ public class CSharpNameSuggesterUtil
 	{
 	}
 
-	private static String deleteNonLetterFromString(@Nonnull final String string)
+	private static String deleteNonLetterFromString(final String string)
 	{
 		Pattern pattern = Pattern.compile("[^a-zA-Z_]+");
 		Matcher matcher = pattern.matcher(string);
 		return matcher.replaceAll("_");
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public static Collection<String> getSuggestedVariableNames(final DotNetVariable variable)
 	{
@@ -141,16 +139,14 @@ public class CSharpNameSuggesterUtil
 		});
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static Set<String> getSuggestedNames(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope)
+	public static Set<String> getSuggestedNames(DotNetTypeRef typeRef, PsiElement scope)
 	{
 		return getSuggestedNames(typeRef, scope, Collections.emptySet());
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static Set<String> getSuggestedNames(@Nonnull DotNetTypeRef typeRef, @Nonnull PsiElement scope, @Nonnull Set<String> alreadyUsedNames)
+	public static Set<String> getSuggestedNames(DotNetTypeRef typeRef, PsiElement scope, Set<String> alreadyUsedNames)
 	{
 		Collection<String> candidates = new LinkedHashSet<>();
 
@@ -207,7 +203,6 @@ public class CSharpNameSuggesterUtil
 		return new TreeSet<>(result);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public static Collection<String> getSuggestedNames(final DotNetExpression expression)
 	{
@@ -215,8 +210,7 @@ public class CSharpNameSuggesterUtil
 	}
 
 	@RequiredReadAction
-	@Nonnull
-	private static String getExpressionInnerText(@Nonnull DotNetExpression expression, @Nonnull Set<String> candidates)
+	private static String getExpressionInnerText(DotNetExpression expression, Set<String> candidates)
 	{
 		String text = null;
 		if(expression instanceof CSharpReferenceExpression)
@@ -251,9 +245,8 @@ public class CSharpNameSuggesterUtil
 		return text;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	private static Set<String> getSuggestedNames(@Nonnull DotNetExpression expression, @Nullable Collection<String> additionalUsedNames, boolean unpluralize, @Nullable PsiElement toSkip)
+	private static Set<String> getSuggestedNames(DotNetExpression expression, @Nullable Collection<String> additionalUsedNames, boolean unpluralize, @Nullable PsiElement toSkip)
 	{
 		Set<String> candidates = new LinkedHashSet<>();
 
@@ -338,7 +331,7 @@ public class CSharpNameSuggesterUtil
 		return wantOnlyThisTokens(TokenSet.create(CSharpTokens.IDENTIFIER), text);
 	}
 
-	private static boolean wantOnlyThisTokens(@Nonnull TokenSet tokenSet, @Nonnull CharSequence text)
+	private static boolean wantOnlyThisTokens(TokenSet tokenSet, CharSequence text)
 	{
 		try
 		{
@@ -357,8 +350,7 @@ public class CSharpNameSuggesterUtil
 		}
 	}
 
-	@Nonnull
-	public static Collection<String> generateNames(@Nonnull String name)
+	public static Collection<String> generateNames(String name)
 	{
 		if(name.length() > 2 && name.charAt(0) == 'I' && Character.isUpperCase(name.charAt(1)))
 		{

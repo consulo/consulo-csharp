@@ -22,9 +22,8 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -32,7 +31,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpMethodBodyImpl extends LazyParseablePsiElement
 {
-	public CSharpMethodBodyImpl(@Nonnull IElementType type, @Nullable CharSequence buffer)
+	public CSharpMethodBodyImpl(IElementType type, @Nullable CharSequence buffer)
 	{
 		super(type, buffer);
 	}

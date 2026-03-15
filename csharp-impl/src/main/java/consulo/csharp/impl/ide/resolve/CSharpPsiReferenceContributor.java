@@ -27,7 +27,6 @@ import consulo.language.pattern.StandardPatterns;
 import consulo.language.psi.*;
 import consulo.language.util.ProcessingContext;
 import consulo.util.collection.ContainerUtil;
-import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +43,9 @@ public class CSharpPsiReferenceContributor extends PsiReferenceContributor
 	{
 		psiReferenceRegistrar.registerReferenceProvider(StandardPatterns.psiElement(CSharpCallArgumentList.class).withParent(CSharpIndexAccessExpressionImpl.class), new PsiReferenceProvider()
 		{
-			@Nonnull
 			@Override
 			@RequiredReadAction
-			public PsiReference[] getReferencesByElement(@Nonnull PsiElement element, @Nonnull ProcessingContext processingContext)
+			public PsiReference[] getReferencesByElement(PsiElement element, ProcessingContext processingContext)
 			{
 				CSharpIndexAccessExpressionImpl parent = (CSharpIndexAccessExpressionImpl) element.getParent();
 				PsiElement callable = parent.resolveToCallable();
@@ -81,7 +79,6 @@ public class CSharpPsiReferenceContributor extends PsiReferenceContributor
 		});
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

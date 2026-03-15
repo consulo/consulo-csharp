@@ -27,11 +27,10 @@ import consulo.ui.CheckBox;
 import consulo.ui.Component;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.layout.VerticalLayout;
-import jakarta.annotation.Nonnull;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -49,9 +48,8 @@ public class CSharpAutoImportConfigurable extends SimpleConfigurableByProperties
 	}
 
 	@RequiredUIAccess
-	@Nonnull
 	@Override
-	protected Component createLayout(@Nonnull PropertyBuilder propertyBuilder, @Nonnull Disposable uiDisposable)
+	protected Component createLayout(PropertyBuilder propertyBuilder, Disposable uiDisposable)
 	{
 		VerticalLayout verticalLayout = VerticalLayout.create();
 
@@ -64,7 +62,6 @@ public class CSharpAutoImportConfigurable extends SimpleConfigurableByProperties
 		return verticalLayout;
 	}
 
-	@Nonnull
 	@Override
 	public String getId()
 	{
@@ -78,7 +75,6 @@ public class CSharpAutoImportConfigurable extends SimpleConfigurableByProperties
 		return "editor.preferences.import";
 	}
 
-	@Nonnull
 	@Override
 	public LocalizeValue getDisplayName()
 	{

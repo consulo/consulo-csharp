@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
 import java.io.IOException;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -42,21 +41,20 @@ public class CSharpGenericConstraintStubElementType extends CSharpAbstractStubEl
 		super("GENERIC_CONSTRAINT");
 	}
 
-	@Nonnull
 	@Override
-	public CSharpGenericConstraint createElement(@Nonnull ASTNode astNode)
+	public CSharpGenericConstraint createElement(ASTNode astNode)
 	{
 		return new CSharpGenericConstraintImpl(astNode);
 	}
 
 	@Override
-	public CSharpGenericConstraint createPsi(@Nonnull CSharpWithStringValueStub<CSharpGenericConstraint> stub)
+	public CSharpGenericConstraint createPsi(CSharpWithStringValueStub<CSharpGenericConstraint> stub)
 	{
 		return new CSharpGenericConstraintImpl(stub, this);
 	}
 
 	@Override
-	public CSharpWithStringValueStub<CSharpGenericConstraint> createStub(@Nonnull CSharpGenericConstraint constraint, StubElement stubElement)
+	public CSharpWithStringValueStub<CSharpGenericConstraint> createStub(CSharpGenericConstraint constraint, StubElement stubElement)
 	{
 		CSharpReferenceExpression genericParameterReference = constraint.getGenericParameterReference();
 		String text = genericParameterReference == null ? null : genericParameterReference.getText();
@@ -64,15 +62,14 @@ public class CSharpGenericConstraintStubElementType extends CSharpAbstractStubEl
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpWithStringValueStub<CSharpGenericConstraint> stub,
-			@Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpWithStringValueStub<CSharpGenericConstraint> stub,
+			StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getReferenceText());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpWithStringValueStub<CSharpGenericConstraint> deserialize(@Nonnull StubInputStream inputStream,
+	public CSharpWithStringValueStub<CSharpGenericConstraint> deserialize(StubInputStream inputStream,
 			StubElement stubElement) throws IOException
 	{
 		StringRef text = inputStream.readName();

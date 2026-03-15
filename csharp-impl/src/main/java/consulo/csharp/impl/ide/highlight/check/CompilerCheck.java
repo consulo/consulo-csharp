@@ -35,8 +35,7 @@ import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.localize.LocalizeKey;
 import consulo.localize.LocalizeValue;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,7 +53,6 @@ public abstract class CompilerCheck<T extends PsiElement> {
         @Nullable
         public abstract HighlightInfo create(boolean insideDoc);
 
-        @Nonnull
         default List<IntentionAction> getQuickFixes() {
             return Collections.emptyList();
         }
@@ -113,7 +111,6 @@ public abstract class CompilerCheck<T extends PsiElement> {
         }
 
         @Override
-        @Nonnull
         public List<IntentionAction> getQuickFixes() {
             return myQuickFixes;
         }
@@ -133,9 +130,8 @@ public abstract class CompilerCheck<T extends PsiElement> {
         }
     }
 
-    @Nonnull
     @RequiredReadAction
-    public List<? extends HighlightInfoFactory> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull T element) {
+    public List<? extends HighlightInfoFactory> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, T element) {
         HighlightInfoFactory check = checkImpl(languageVersion, highlightContext, element);
         if (check == null) {
             return Collections.emptyList();
@@ -145,39 +141,34 @@ public abstract class CompilerCheck<T extends PsiElement> {
 
     @Nullable
     @RequiredReadAction
-    public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull T element) {
+    public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, T element) {
         return null;
     }
 
-    @Nonnull
     @RequiredReadAction
-    public CompilerCheckBuilder newBuilder(@Nonnull PsiElement range, Object... args) {
+    public CompilerCheckBuilder newBuilder(PsiElement range, Object... args) {
         return newBuilderImpl(getClass(), range, args);
     }
 
-    @Nonnull
     @RequiredReadAction
-    public CompilerCheckBuilder newBuilder(@Nonnull TextRange range, Object... args) {
+    public CompilerCheckBuilder newBuilder(TextRange range, Object... args) {
         return newBuilderImpl(getClass(), range, args);
     }
 
-    @Nonnull
     @RequiredReadAction
-    public static CompilerCheckBuilder newBuilderImpl(@Nonnull Class<?> clazz, @Nonnull PsiElement range, Object... args) {
+    public static CompilerCheckBuilder newBuilderImpl(Class<?> clazz, PsiElement range, Object... args) {
         return newBuilderImpl(clazz, range.getTextRange(), args);
     }
 
-    @Nonnull
     @RequiredReadAction
-    public static CompilerCheckBuilder newBuilderImpl(@Nonnull Class<?> clazz, @Nonnull TextRange range, Object... args) {
+    public static CompilerCheckBuilder newBuilderImpl(Class<?> clazz, TextRange range, Object... args) {
         CompilerCheckBuilder result = new CompilerCheckBuilder();
         result.withText(message(clazz, args));
         result.withTextRange(range);
         return result;
     }
 
-    @Nonnull
-    public static LocalizeValue message(@Nonnull Class<?> aClass, Object... args) {
+    public static LocalizeValue message(Class<?> aClass, Object... args) {
         String id = aClass.getSimpleName();
 
         LocalizeValue value = getValue(LocalizeKey.of(LOCALIZE_ID, id), args);
@@ -185,12 +176,10 @@ public abstract class CompilerCheck<T extends PsiElement> {
         return ApplicationProperties.isInSandbox() ? value.map(s -> id + ": " + s) : value;
     }
 
-    @Nonnull
     private static LocalizeValue getValue(LocalizeKey key, Object... args) {
         return args.length == 0 ? key.getValue() : key.getValue(args);
     }
 
-    @Nonnull
     @RequiredReadAction
     public static PsiElement getNameIdentifier(PsiElement element) {
         if (element instanceof PsiNameIdentifierOwner) {
@@ -248,7 +237,7 @@ public abstract class CompilerCheck<T extends PsiElement> {
     }
 
     @RequiredReadAction
-    public static String formatTypeRef(@Nonnull DotNetTypeRef typeRef) {
+    public static String formatTypeRef(DotNetTypeRef typeRef) {
         return CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(typeRef);
     }
 }

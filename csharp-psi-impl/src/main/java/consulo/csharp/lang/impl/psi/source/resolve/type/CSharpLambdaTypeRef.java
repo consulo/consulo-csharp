@@ -27,8 +27,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -59,7 +58,6 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 			return CSharpLambdaResolveResultUtil.createTypeFromDelegate(myTarget, myExtractor);
 		}
 
-		@Nonnull
 		@Override
 		public DotNetGenericExtractor getGenericExtractor()
 		{
@@ -73,7 +71,6 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 		}
 
 		@RequiredReadAction
-		@Nonnull
 		@Override
 		public CSharpSimpleParameterInfo[] getParameterInfos()
 		{
@@ -100,7 +97,6 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 		}
 
 		@RequiredReadAction
-		@Nonnull
 		@Override
 		public DotNetTypeRef getReturnTypeRef()
 		{
@@ -122,34 +118,34 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 	private DotNetGenericExtractor myExtractor = DotNetGenericExtractor.EMPTY;
 
 	@RequiredReadAction
-	public CSharpLambdaTypeRef(@Nonnull CSharpMethodDeclaration method)
+	public CSharpLambdaTypeRef(CSharpMethodDeclaration method)
 	{
 		this(method.getProject(), method.getResolveScope(), method, method.getParameterInfos(), method.getReturnTypeRef());
 	}
 
 	@RequiredReadAction
-	public CSharpLambdaTypeRef(@Nonnull Project project, @Nonnull GlobalSearchScope scope, @Nonnull CSharpMethodDeclaration method, @Nonnull DotNetGenericExtractor extractor)
+	public CSharpLambdaTypeRef(Project project, GlobalSearchScope scope, CSharpMethodDeclaration method, DotNetGenericExtractor extractor)
 	{
 		this(project, scope, method, method.getParameterInfos(), method.getReturnTypeRef());
 		myExtractor = extractor;
 	}
 
 	@RequiredReadAction
-	public CSharpLambdaTypeRef(@Nonnull Project project,
-							   @Nonnull GlobalSearchScope scope,
+	public CSharpLambdaTypeRef(Project project,
+							   GlobalSearchScope scope,
 							   @Nullable CSharpMethodDeclaration target,
-							   @Nonnull CSharpSimpleParameterInfo[] parameterInfos,
-							   @Nonnull DotNetTypeRef returnType)
+							   CSharpSimpleParameterInfo[] parameterInfos,
+							   DotNetTypeRef returnType)
 	{
 		this(project, scope, target, parameterInfos, returnType, false);
 	}
 
 	@RequiredReadAction
-	public CSharpLambdaTypeRef(@Nonnull Project project,
-							   @Nonnull GlobalSearchScope scope,
+	public CSharpLambdaTypeRef(Project project,
+							   GlobalSearchScope scope,
 							   @Nullable CSharpMethodDeclaration target,
-							   @Nonnull CSharpSimpleParameterInfo[] parameterInfos,
-							   @Nonnull DotNetTypeRef returnType,
+							   CSharpSimpleParameterInfo[] parameterInfos,
+							   DotNetTypeRef returnType,
 							   boolean inheritParameters)
 	{
 		super(project, scope);
@@ -160,7 +156,6 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getVmQName()
 	{
@@ -206,7 +201,6 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{

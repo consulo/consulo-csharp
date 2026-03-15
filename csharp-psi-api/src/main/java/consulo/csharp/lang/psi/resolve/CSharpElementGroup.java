@@ -20,7 +20,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.function.Processor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNamedElement;
-import jakarta.annotation.Nonnull;
 
 import java.util.Collection;
 
@@ -30,15 +29,12 @@ import java.util.Collection;
  */
 public interface CSharpElementGroup<T extends PsiElement> extends PsiNamedElement
 {
-	@Nonnull
 	Collection<T> getElements();
 
-	boolean process(@RequiredReadAction @Nonnull Processor<? super T> processor);
+	boolean process(@RequiredReadAction Processor<? super T> processor);
 
 	@Override
-	@Nonnull
 	String getName();
 
-	@Nonnull
 	Object getKey();
 }

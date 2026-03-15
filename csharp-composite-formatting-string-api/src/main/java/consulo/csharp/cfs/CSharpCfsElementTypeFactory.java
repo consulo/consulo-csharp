@@ -21,7 +21,6 @@ import consulo.annotation.component.ServiceAPI;
 import consulo.application.Application;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,13 +29,11 @@ import jakarta.annotation.Nonnull;
 @ServiceAPI(ComponentScope.APPLICATION)
 public interface CSharpCfsElementTypeFactory
 {
-	@Nonnull
 	static IElementType create()
 	{
 		CSharpCfsElementTypeFactory factory = Application.get().getInstance(CSharpCfsElementTypeFactory.class);
 		return factory.getInterpolationStringElementType();
 	}
 
-	@Nonnull
 	IElementType getInterpolationStringElementType();
 }

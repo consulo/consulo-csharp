@@ -39,8 +39,7 @@ import consulo.language.psi.PsiElement;
 import consulo.msil.impl.lang.psi.MsilTokens;
 import consulo.util.collection.ArrayUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -67,13 +66,13 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	private final Map<CSharpModifier, Boolean> myModifiersState = new ConcurrentHashMap<>();
 
 	@RequiredReadAction
-	public MsilModifierListToCSharpModifierList(@Nonnull PsiElement parent, @Nonnull DotNetModifierList modifierList)
+	public MsilModifierListToCSharpModifierList(PsiElement parent, DotNetModifierList modifierList)
 	{
 		this(CSharpModifier.EMPTY_ARRAY, parent, modifierList);
 	}
 
 	@RequiredReadAction
-	public MsilModifierListToCSharpModifierList(@Nonnull CSharpModifier[] additional, @Nonnull PsiElement parent, @Nonnull DotNetModifierList modifierList)
+	public MsilModifierListToCSharpModifierList(CSharpModifier[] additional, PsiElement parent, DotNetModifierList modifierList)
 	{
 		super(parent, modifierList);
 		myAdditional = additional;
@@ -97,7 +96,7 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		myAttributeHolderValue = NullableLazyValue.of(() -> ExternalAttributesUtil.findHolder(myModifierList));
 	}
 
-	public void addAdditionalAttribute(@Nonnull DotNetAttribute attribute)
+	public void addAdditionalAttribute(DotNetAttribute attribute)
 	{
 		if(myAdditionalAttributes.isEmpty())
 		{
@@ -107,24 +106,23 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	}
 
 	@Override
-	public void addModifier(@Nonnull DotNetModifier modifier)
+	public void addModifier(DotNetModifier modifier)
 	{
 
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitModifierList(this);
 	}
 
 	@Override
-	public void removeModifier(@Nonnull DotNetModifier modifier)
+	public void removeModifier(DotNetModifier modifier)
 	{
 
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public DotNetModifier[] getModifiers()
@@ -142,7 +140,6 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
@@ -178,7 +175,6 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		return attributes.toArray(new DotNetAttribute[attributes.size()]);
 	}
 
-	@Nonnull
 	public List<ExternalAttributeNode> findAttributes(ExternalAttributeHolder holder)
 	{
 		return Collections.emptyList();
@@ -186,13 +182,13 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 
 	@Override
 	@RequiredReadAction
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return myModifiersState.computeIfAbsent(CSharpModifier.as(modifier), it -> CSharpModifierListImplUtil.hasModifier(this, it));
 	}
 
 	@Override
-	public boolean hasModifierInTree(@Nonnull DotNetModifier modifier)
+	public boolean hasModifierInTree(DotNetModifier modifier)
 	{
 		CSharpModifier cSharpModifier = CSharpModifier.as(modifier);
 		if(ArrayUtil.contains(cSharpModifier, myAdditional))
@@ -209,9 +205,8 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		return null;
 	}
 
-	@Nonnull
 	@Override
-	public List<PsiElement> getModifierElements(@Nonnull DotNetModifier modifier)
+	public List<PsiElement> getModifierElements(DotNetModifier modifier)
 	{
 		return Collections.emptyList();
 	}
@@ -222,7 +217,6 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		return myModifierList.toString();
 	}
 
-	@Nonnull
 	@Override
 	public CSharpAttributeList[] getAttributeLists()
 	{

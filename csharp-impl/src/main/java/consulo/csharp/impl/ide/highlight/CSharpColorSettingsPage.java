@@ -29,8 +29,7 @@ import consulo.localize.LocalizeValue;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.lazy.LazyValue;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -139,14 +138,12 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 		}
 	});
 
-	@Nonnull
 	@Override
 	public SyntaxHighlighter getHighlighter()
 	{
 		return new CSharpSyntaxHighlighter();
 	}
 
-	@Nonnull
 	@Override
 	public String getDemoText()
 	{
@@ -160,21 +157,18 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 		return ourAdditionalTags;
 	}
 
-	@Nonnull
 	@Override
 	public AttributesDescriptor[] getAttributeDescriptors()
 	{
 		return ourDescriptors;
 	}
 
-	@Nonnull
 	@Override
 	public ColorDescriptor[] getColorDescriptors()
 	{
 		return ColorDescriptor.EMPTY_ARRAY;
 	}
 
-	@Nonnull
 	@Override
 	public LocalizeValue getDisplayName()
 	{

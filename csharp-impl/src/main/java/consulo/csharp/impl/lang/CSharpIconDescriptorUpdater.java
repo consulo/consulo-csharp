@@ -49,7 +49,6 @@ import consulo.util.lang.BitUtil;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -60,7 +59,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 {
 	@Override
 	@RequiredReadAction
-	public void updateIcon(@Nonnull IconDescriptor iconDescriptor, @Nonnull PsiElement element, int flags)
+	public void updateIcon(IconDescriptor iconDescriptor, PsiElement element, int flags)
 	{
 		if(element instanceof DotNetNamespaceAsElement)
 		{
@@ -242,7 +241,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		}
 	}
 
-	public static boolean isUnderSourceRoot(@Nonnull Module module, @Nonnull VirtualFile file)
+	public static boolean isUnderSourceRoot(Module module, VirtualFile file)
 	{
 		ModuleFileIndex fileIndex = ModuleRootManager.getInstance(module).getFileIndex();
 		return fileIndex.isInSourceContent(file) || fileIndex.isInTestSourceContent(file);

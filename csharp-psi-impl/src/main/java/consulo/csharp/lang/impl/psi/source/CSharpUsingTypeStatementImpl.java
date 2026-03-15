@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import jakarta.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpStubElementSets;
@@ -28,7 +27,7 @@ import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.EmptyStub;
 import consulo.language.psi.stub.IStubElementType;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -36,19 +35,18 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpUsingTypeStatementImpl extends CSharpStubElementImpl<EmptyStub<CSharpUsingTypeStatement>> implements CSharpUsingTypeStatement
 {
-	public CSharpUsingTypeStatementImpl(@Nonnull ASTNode node)
+	public CSharpUsingTypeStatementImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpUsingTypeStatementImpl(@Nonnull EmptyStub<CSharpUsingTypeStatement> stub,
-			@Nonnull IStubElementType<? extends EmptyStub<CSharpUsingTypeStatement>, ?> nodeType)
+	public CSharpUsingTypeStatementImpl(EmptyStub<CSharpUsingTypeStatement> stub,
+			IStubElementType<? extends EmptyStub<CSharpUsingTypeStatement>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public PsiElement getUsingKeywordElement()
 	{
@@ -56,7 +54,7 @@ public class CSharpUsingTypeStatementImpl extends CSharpStubElementImpl<EmptyStu
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitUsingTypeStatement(this);
 	}
@@ -69,7 +67,6 @@ public class CSharpUsingTypeStatementImpl extends CSharpStubElementImpl<EmptyStu
 		return getType();
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getTypeRef()
 	{

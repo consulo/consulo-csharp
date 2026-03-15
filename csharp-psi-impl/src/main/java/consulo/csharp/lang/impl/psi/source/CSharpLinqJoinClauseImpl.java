@@ -24,8 +24,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -33,7 +32,7 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpLinqJoinClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqJoinClauseImpl(@Nonnull IElementType elementType)
+	public CSharpLinqJoinClauseImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -72,16 +71,16 @@ public class CSharpLinqJoinClauseImpl extends CSharpElementImpl
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLinqJoinClause(this);
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
-			@Nonnull ResolveState state,
+	public boolean processDeclarations(PsiScopeProcessor processor,
+			ResolveState state,
 			PsiElement lastParent,
-			@Nonnull PsiElement place)
+			PsiElement place)
 	{
 		CSharpLinqVariableImpl variable = getVariable();
 		if(variable != null)

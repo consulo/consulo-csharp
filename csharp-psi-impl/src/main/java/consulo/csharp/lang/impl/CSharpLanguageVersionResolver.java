@@ -29,8 +29,7 @@ import consulo.language.version.LanguageVersionResolver;
 import consulo.module.Module;
 import consulo.project.Project;
 import consulo.virtualFileSystem.VirtualFile;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,9 +39,8 @@ import jakarta.annotation.Nullable;
 public class CSharpLanguageVersionResolver implements LanguageVersionResolver
 {
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public LanguageVersion getLanguageVersion(@Nonnull Language language, @Nullable PsiElement element)
+	public LanguageVersion getLanguageVersion(Language language, @Nullable PsiElement element)
 	{
 		if(element == null)
 		{
@@ -61,10 +59,9 @@ public class CSharpLanguageVersionResolver implements LanguageVersionResolver
 		return CSharpLanguageVersionHelper.getInstance().getWrapper(extension.getLanguageVersion());
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	@Override
-	public LanguageVersion getLanguageVersion(@Nonnull Language language, @Nullable Project project, @Nullable VirtualFile virtualFile)
+	public LanguageVersion getLanguageVersion(Language language, @Nullable Project project, @Nullable VirtualFile virtualFile)
 	{
 		if(project == null || virtualFile == null)
 		{
@@ -83,7 +80,6 @@ public class CSharpLanguageVersionResolver implements LanguageVersionResolver
 		return CSharpLanguageVersionHelper.getInstance().getWrapper(extension.getLanguageVersion());
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

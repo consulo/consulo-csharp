@@ -19,7 +19,6 @@ package consulo.csharp.lang.doc;
 import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -27,7 +26,7 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpDocUtil
 {
-	public static boolean isInsideDoc(@Nonnull PsiElement e)
+	public static boolean isInsideDoc(PsiElement e)
 	{
 		return PsiTreeUtil.getParentOfType(e, CSharpDocRoot.class) != null;
 	}

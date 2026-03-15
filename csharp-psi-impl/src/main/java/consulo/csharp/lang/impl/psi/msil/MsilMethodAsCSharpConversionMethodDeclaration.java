@@ -27,8 +27,7 @@ import consulo.language.psi.PsiElement;
 import consulo.msil.lang.psi.MsilMethodEntry;
 import consulo.util.lang.Comparing;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -51,13 +50,12 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitConversionMethodDeclaration(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -81,7 +79,6 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 		}
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef getConversionTypeRef()
 	{

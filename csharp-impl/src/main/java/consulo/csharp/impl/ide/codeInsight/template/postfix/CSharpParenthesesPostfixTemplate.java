@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.codeInsight.template.postfix;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
@@ -43,7 +42,7 @@ public class CSharpParenthesesPostfixTemplate extends PostfixTemplate
 
 	@Override
 	@RequiredReadAction
-	public boolean isApplicable(@Nonnull PsiElement context, @Nonnull Document copyDocument, int newOffset)
+	public boolean isApplicable(PsiElement context, Document copyDocument, int newOffset)
 	{
 		DotNetExpression expression = PsiTreeUtil.getParentOfType(context, DotNetExpression.class);
 		if(expression == null)
@@ -63,7 +62,7 @@ public class CSharpParenthesesPostfixTemplate extends PostfixTemplate
 	}
 
 	@Override
-	public void expand(@Nonnull PsiElement context, @Nonnull Editor editor)
+	public void expand(PsiElement context, Editor editor)
 	{
 		DotNetExpression newExpression = CSharpFileFactory.createExpression(context.getProject(), "(" + context.getText() + ")");
 

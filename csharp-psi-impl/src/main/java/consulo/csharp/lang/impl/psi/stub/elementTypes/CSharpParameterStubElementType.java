@@ -21,7 +21,6 @@ import consulo.csharp.lang.impl.psi.stub.CSharpVariableDeclStub;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.language.ast.ASTNode;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -34,15 +33,14 @@ public class CSharpParameterStubElementType extends CSharpBaseVariableStubElemen
 		super("PARAMETER");
 	}
 
-	@Nonnull
 	@Override
-	public DotNetParameter createElement(@Nonnull ASTNode astNode)
+	public DotNetParameter createElement(ASTNode astNode)
 	{
 		return new CSharpStubParameterImpl(astNode);
 	}
 
 	@Override
-	public DotNetParameter createPsi(@Nonnull CSharpVariableDeclStub<DotNetParameter> stub)
+	public DotNetParameter createPsi(CSharpVariableDeclStub<DotNetParameter> stub)
 	{
 		return new CSharpStubParameterImpl(stub);
 	}

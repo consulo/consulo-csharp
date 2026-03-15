@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.PsiElement;
 import consulo.annotation.access.RequiredReadAction;
@@ -27,7 +26,7 @@ import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.impl.psi.source.CSharpAssignmentExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -38,7 +37,7 @@ public class CS0200 extends CompilerCheck<CSharpAssignmentExpressionImpl>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpAssignmentExpressionImpl element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpAssignmentExpressionImpl element)
 	{
 		DotNetExpression leftExpression = element.getLeftExpression();
 		if(leftExpression instanceof CSharpReferenceExpression)

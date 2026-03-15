@@ -40,7 +40,6 @@ import consulo.util.collection.SmartList;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.Couple;
 
-import jakarta.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +57,7 @@ public class GenericInferenceUtil
 		private boolean mySuccess;
 		private DotNetGenericExtractor myExtractor;
 
-		public GenericInferenceResult(boolean success, @Nonnull DotNetGenericExtractor extractor)
+		public GenericInferenceResult(boolean success, DotNetGenericExtractor extractor)
 		{
 			mySuccess = success;
 			myExtractor = extractor;
@@ -69,18 +68,16 @@ public class GenericInferenceUtil
 			return mySuccess;
 		}
 
-		@Nonnull
 		public DotNetGenericExtractor getExtractor()
 		{
 			return myExtractor;
 		}
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static GenericInferenceResult inferenceGenericExtractor(@Nonnull PsiElement referenceElement,
-																   @Nonnull CSharpCallArgumentListOwner callArgumentListOwner,
-																   @Nonnull DotNetLikeMethodDeclaration methodDeclaration)
+	public static GenericInferenceResult inferenceGenericExtractor(PsiElement referenceElement,
+																   CSharpCallArgumentListOwner callArgumentListOwner,
+																   DotNetLikeMethodDeclaration methodDeclaration)
 	{
 		CSharpCallArgument[] arguments = callArgumentListOwner.getCallArguments();
 
@@ -92,12 +89,11 @@ public class GenericInferenceUtil
 		return inferenceGenericExtractor(arguments, typeArgumentListRef, callArgumentListOwner, methodDeclaration);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static GenericInferenceResult inferenceGenericExtractor(@Nonnull CSharpCallArgument[] callArguments,
-																   @Nonnull DotNetTypeRef[] typeArgumentListRefs,
-																   @Nonnull PsiElement scopeElement,
-																   @Nonnull DotNetLikeMethodDeclaration methodDeclaration)
+	public static GenericInferenceResult inferenceGenericExtractor(CSharpCallArgument[] callArguments,
+																   DotNetTypeRef[] typeArgumentListRefs,
+																   PsiElement scopeElement,
+																   DotNetLikeMethodDeclaration methodDeclaration)
 	{
 		DotNetGenericParameter[] genericParameters = methodDeclaration.getGenericParameters();
 		if(genericParameters.length == 0 || typeArgumentListRefs.length > 0)
@@ -279,10 +275,10 @@ public class GenericInferenceUtil
 	}
 
 	@RequiredReadAction
-	private static void pushTypeArgumentsDeep(@Nonnull List<Couple<DotNetTypeResolveResult>> levels,
-											  @Nonnull DotNetGenericParameter[] expressionGenericParameters,
-											  @Nonnull DotNetGenericExtractor expressionExtractor,
-											  @Nonnull DotNetGenericExtractor parameterExtractor)
+	private static void pushTypeArgumentsDeep(List<Couple<DotNetTypeResolveResult>> levels,
+											  DotNetGenericParameter[] expressionGenericParameters,
+											  DotNetGenericExtractor expressionExtractor,
+											  DotNetGenericExtractor parameterExtractor)
 	{
 		for(DotNetGenericParameter expressionGenericParameter : expressionGenericParameters)
 		{
@@ -342,11 +338,10 @@ public class GenericInferenceUtil
 		return -1;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	private static DotNetTypeRef unwrapPossibleGenericTypeRefs(@Nonnull NCallArgument nCallArgument,
-															   @Nonnull DotNetTypeRef parameterTypeRef,
-															   @Nonnull Map<DotNetGenericParameter, DotNetTypeRef> map)
+	private static DotNetTypeRef unwrapPossibleGenericTypeRefs(NCallArgument nCallArgument,
+															   DotNetTypeRef parameterTypeRef,
+															   Map<DotNetGenericParameter, DotNetTypeRef> map)
 	{
 		DotNetTypeRef expressionTypeRef = nCallArgument.getTypeRef();
 

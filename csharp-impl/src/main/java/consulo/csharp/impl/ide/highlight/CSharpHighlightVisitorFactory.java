@@ -24,7 +24,6 @@ import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiFile;
 import jakarta.inject.Inject;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -42,12 +41,11 @@ public class CSharpHighlightVisitorFactory implements HighlightVisitorFactory
 	}
 
 	@Override
-	public boolean suitableForFile(@Nonnull PsiFile psiFile)
+	public boolean suitableForFile(PsiFile psiFile)
 	{
 		return psiFile instanceof CSharpFile;
 	}
 
-	@Nonnull
 	@Override
 	public HighlightVisitor createVisitor()
 	{

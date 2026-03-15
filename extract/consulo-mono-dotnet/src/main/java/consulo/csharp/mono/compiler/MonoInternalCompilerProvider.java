@@ -27,9 +27,8 @@ import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.mono.dotnet.sdk.MonoSdkType;
 import consulo.ui.image.Image;
 import consulo.virtualFileSystem.VirtualFile;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -44,7 +43,6 @@ public class MonoInternalCompilerProvider extends BaseInternalCompilerProvider
 		return "mono-dotnet";
 	}
 
-	@Nonnull
 	@Override
 	public Image getIcon()
 	{
@@ -52,9 +50,9 @@ public class MonoInternalCompilerProvider extends BaseInternalCompilerProvider
 	}
 
 	@Override
-	public void setupCompiler(@Nonnull DotNetModuleExtension<?> netExtension,
-			@Nonnull CSharpModuleExtension<?> csharpExtension,
-			@Nonnull MSBaseDotNetCompilerOptionsBuilder builder,
+	public void setupCompiler(DotNetModuleExtension<?> netExtension,
+			CSharpModuleExtension<?> csharpExtension,
+			MSBaseDotNetCompilerOptionsBuilder builder,
 			@Nullable VirtualFile compilerSdkHome) throws DotNetCompileFailedException
 	{
 		Sdk sdk = netExtension.getSdk();

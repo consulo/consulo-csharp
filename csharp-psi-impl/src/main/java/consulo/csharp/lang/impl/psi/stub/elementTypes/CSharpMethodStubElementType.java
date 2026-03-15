@@ -32,7 +32,6 @@ import consulo.language.psi.stub.StubInputStream;
 import consulo.language.psi.stub.StubOutputStream;
 import consulo.util.lang.BitUtil;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 
 import java.io.IOException;
 
@@ -45,21 +44,19 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
         super("METHOD_DECLARATION");
     }
 
-    @Nonnull
     @Override
-    public CSharpMethodDeclaration createElement(@Nonnull ASTNode astNode) {
+    public CSharpMethodDeclaration createElement(ASTNode astNode) {
         return new CSharpMethodDeclarationImpl(astNode);
     }
 
     @Override
-    public CSharpMethodDeclaration createPsi(@Nonnull CSharpMethodDeclStub cSharpTypeStub) {
+    public CSharpMethodDeclaration createPsi(CSharpMethodDeclStub cSharpTypeStub) {
         return new CSharpMethodDeclarationImpl(cSharpTypeStub, this);
     }
 
-    @Nonnull
     @RequiredReadAction
     @Override
-    public CSharpMethodDeclStub createStub(@Nonnull CSharpMethodDeclaration methodDeclaration, StubElement stubElement) {
+    public CSharpMethodDeclStub createStub(CSharpMethodDeclaration methodDeclaration, StubElement stubElement) {
         String parentQName = methodDeclaration.getPresentableParentQName();
         int otherModifierMask = CSharpMethodDeclStub.getOtherModifierMask(methodDeclaration);
         int operatorIndex = CSharpMethodDeclStub.getOperatorIndex(methodDeclaration);
@@ -67,15 +64,14 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
     }
 
     @Override
-    public void serialize(@Nonnull CSharpMethodDeclStub stub, @Nonnull StubOutputStream stubOutputStream) throws IOException {
+    public void serialize(CSharpMethodDeclStub stub, StubOutputStream stubOutputStream) throws IOException {
         stubOutputStream.writeName(stub.getParentQName());
         stubOutputStream.writeVarInt(stub.getOtherModifierMask());
         stubOutputStream.writeVarInt(stub.getOperatorIndex());
     }
 
-    @Nonnull
     @Override
-    public CSharpMethodDeclStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException {
+    public CSharpMethodDeclStub deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException {
         StringRef qname = stubInputStream.readName();
         int otherModifierMask = stubInputStream.readVarInt();
         int operatorIndex = stubInputStream.readVarInt();
@@ -84,7 +80,7 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 
     @Override
     @RequiredReadAction
-    public void indexStub(@Nonnull CSharpMethodDeclStub stub, @Nonnull IndexSink indexSink) {
+    public void indexStub(CSharpMethodDeclStub stub, IndexSink indexSink) {
         String name = getNameWithoutAt(stub);
         if (!StringUtil.isEmpty(name)) {
             indexSink.occurrence(CSharpIndexKeys.METHOD_INDEX, name);

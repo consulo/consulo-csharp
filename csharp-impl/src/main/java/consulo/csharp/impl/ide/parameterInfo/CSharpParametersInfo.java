@@ -32,8 +32,7 @@ import consulo.language.editor.CodeInsightSettings;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNamedElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -51,7 +50,6 @@ public class CSharpParametersInfo
 	};
 
 
-	@Nonnull
 	public static char[] getOpenAndCloseTokens(@Nullable Object callable)
 	{
 		if(callable instanceof CSharpIndexAccessExpressionImpl || callable instanceof CSharpIndexMethodDeclaration)
@@ -61,9 +59,8 @@ public class CSharpParametersInfo
 		return ourParentheses;
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static ParameterPresentationBuilder<CSharpSimpleParameterInfo> build(@Nonnull CSharpSimpleLikeMethod callable, @Nonnull PsiElement scope)
+	public static ParameterPresentationBuilder<CSharpSimpleParameterInfo> build(CSharpSimpleLikeMethod callable, PsiElement scope)
 	{
 		CSharpSimpleParameterInfo[] parameters = callable.getParameterInfos();
 		DotNetTypeRef returnType = callable.getReturnTypeRef();
@@ -123,7 +120,7 @@ public class CSharpParametersInfo
 	}
 
 	@RequiredReadAction
-	private static void buildParameter(@Nonnull ParameterPresentationBuilder<CSharpSimpleParameterInfo> builder, @Nonnull CSharpSimpleParameterInfo o, @Nonnull PsiElement scope)
+	private static void buildParameter(ParameterPresentationBuilder<CSharpSimpleParameterInfo> builder, CSharpSimpleParameterInfo o, PsiElement scope)
 	{
 		String text = CSharpTypeRefPresentationUtil.buildShortText(o.getTypeRef());
 		builder.add(text);

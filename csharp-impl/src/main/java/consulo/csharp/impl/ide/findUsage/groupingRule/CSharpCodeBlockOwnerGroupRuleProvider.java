@@ -26,8 +26,7 @@ import consulo.usage.UsageGroup;
 import consulo.usage.rule.FileStructureGroupRuleProvider;
 import consulo.usage.rule.PsiElementUsage;
 import consulo.usage.rule.UsageGroupingRule;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -44,7 +43,7 @@ public class CSharpCodeBlockOwnerGroupRuleProvider implements FileStructureGroup
 		{
 			@Nullable
 			@Override
-			public UsageGroup groupUsage(@Nonnull Usage usage)
+			public UsageGroup groupUsage(Usage usage)
 			{
 				if(!(usage instanceof PsiElementUsage))
 				{

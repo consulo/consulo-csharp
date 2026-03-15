@@ -29,7 +29,7 @@ import consulo.language.psi.PsiElement;
 import consulo.project.Project;
 import consulo.ui.ex.SimpleTextAttributes;
 import consulo.ui.ex.awt.ColoredTableCellRenderer;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

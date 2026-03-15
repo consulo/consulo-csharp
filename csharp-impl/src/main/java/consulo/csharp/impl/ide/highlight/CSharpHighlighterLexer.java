@@ -20,7 +20,6 @@ import consulo.csharp.lang.impl.lexer.CSharpLexer;
 import consulo.csharp.lang.impl.lexer._CSharpLexer;
 import consulo.language.lexer.RestartableLexer;
 import consulo.language.lexer.TokenIterator;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -46,7 +45,7 @@ public class CSharpHighlighterLexer extends CSharpLexer implements RestartableLe
 	}
 
 	@Override
-	public void start(@Nonnull CharSequence buffer, int startOffset, int endOffset, int initialState, TokenIterator tokenIterator)
+	public void start(CharSequence buffer, int startOffset, int endOffset, int initialState, TokenIterator tokenIterator)
 	{
 		start(buffer, startOffset, endOffset, initialState);
 	}

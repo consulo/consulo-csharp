@@ -21,8 +21,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetType;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -30,13 +29,13 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpCaseVariableImpl extends CSharpVariableImpl
 {
-	public CSharpCaseVariableImpl(@Nonnull IElementType elementType)
+	public CSharpCaseVariableImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitCaseVariable(this);
 	}

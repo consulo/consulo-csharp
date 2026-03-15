@@ -37,8 +37,7 @@ import consulo.language.util.ModuleUtilCore;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.ref.Ref;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,7 +60,7 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
+	public void accept(CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitReferenceExpression(this);
 	}
@@ -73,7 +72,6 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 		return findNotNullChildByType(CSharpPreprocesorTokens.IDENTIFIER);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	@Override
 	public TextRange getRangeInElement()
@@ -104,7 +102,6 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getCanonicalText()
 	{
@@ -120,7 +117,7 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
+	public PsiElement bindToElement(PsiElement element) throws IncorrectOperationException
 	{
 		return null;
 	}
@@ -133,7 +130,6 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public Object[] getVariants()
 	{
@@ -143,7 +139,7 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 	}
 
 	@RequiredReadAction
-	protected void collect(@Nonnull Processor<CSharpPreprocessorVariable> processor)
+	protected void collect(Processor<CSharpPreprocessorVariable> processor)
 	{
 		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(this, DotNetSimpleModuleExtension.class);
 		if(extension == null)

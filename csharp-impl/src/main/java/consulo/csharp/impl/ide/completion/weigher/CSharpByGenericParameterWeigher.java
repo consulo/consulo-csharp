@@ -22,7 +22,6 @@ import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.proximity.ProximityLocation;
 import consulo.language.util.proximity.ProximityWeigher;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,7 +30,7 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl(id = "csharpByGenericParameterWeigher")
 public class CSharpByGenericParameterWeigher extends ProximityWeigher {
     @Override
-    public Comparable weigh(@Nonnull PsiElement psiElement, @Nonnull ProximityLocation proximityLocation) {
+    public Comparable weigh(PsiElement psiElement, ProximityLocation proximityLocation) {
         if (psiElement instanceof DotNetGenericParameterListOwner && psiElement.getLanguage() == CSharpLanguage.INSTANCE) {
             return -((DotNetGenericParameterListOwner) psiElement).getGenericParametersCount();
         }

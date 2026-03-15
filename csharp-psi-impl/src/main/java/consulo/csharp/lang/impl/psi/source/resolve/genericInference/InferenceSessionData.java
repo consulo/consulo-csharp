@@ -19,11 +19,10 @@ package consulo.csharp.lang.impl.psi.source.resolve.genericInference;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
 * @author VISTALL
@@ -33,20 +32,20 @@ public class InferenceSessionData
 {
 	final Map<PsiElement, DotNetTypeRef> myData = new HashMap<>();
 
-	public InferenceSessionData append(@Nonnull PsiElement element, @Nonnull DotNetTypeRef typeRef)
+	public InferenceSessionData append(PsiElement element, DotNetTypeRef typeRef)
 	{
 		myData.put(element, typeRef);
 		return this;
 	}
 
-	public boolean finish(@Nonnull PsiElement element)
+	public boolean finish(PsiElement element)
 	{
 		myData.remove(element);
 		return myData.isEmpty();
 	}
 
 	@Nullable
-	public DotNetTypeRef getTypeRef(@Nonnull PsiElement element)
+	public DotNetTypeRef getTypeRef(PsiElement element)
 	{
 		return myData.get(element);
 	}

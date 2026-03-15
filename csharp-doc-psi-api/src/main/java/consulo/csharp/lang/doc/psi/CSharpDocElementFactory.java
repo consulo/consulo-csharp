@@ -21,7 +21,6 @@ import consulo.annotation.component.ServiceAPI;
 import consulo.application.Application;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -36,6 +35,5 @@ public interface CSharpDocElementFactory
 		return factory.getDocRootElementType();
 	}
 
-	@Nonnull
 	IElementType getDocRootElementType();
 }

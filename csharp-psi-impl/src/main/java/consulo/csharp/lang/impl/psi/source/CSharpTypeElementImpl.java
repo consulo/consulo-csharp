@@ -22,7 +22,6 @@ import consulo.dotnet.psi.impl.DotNetTypeRefCacheUtil;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 import java.util.function.Function;
 
 /**
@@ -41,17 +40,15 @@ public abstract class CSharpTypeElementImpl extends CSharpElementImpl implements
 		}
 	}
 
-	public CSharpTypeElementImpl(@Nonnull IElementType elementType)
+	public CSharpTypeElementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	protected abstract DotNetTypeRef toTypeRefImpl();
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public final DotNetTypeRef toTypeRef()
 	{

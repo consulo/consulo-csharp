@@ -19,7 +19,6 @@ package consulo.csharp.lang.impl.psi.source;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -35,7 +34,6 @@ public class CSharpOutRefAutoTypeRef extends DotNetTypeRef.AdapterInternal
 		myType = type;
 	}
 
-	@Nonnull
 	public CSharpRefTypeRef.Type getType()
 	{
 		return myType;

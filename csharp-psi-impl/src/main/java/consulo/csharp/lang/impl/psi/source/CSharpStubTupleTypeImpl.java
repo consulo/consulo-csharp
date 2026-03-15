@@ -26,7 +26,6 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTupleTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.IStubElementType;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -34,19 +33,18 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpStubTupleTypeImpl extends CSharpStubTypeElementImpl<EmptyStub<CSharpTupleType>> implements CSharpTupleType
 {
-	public CSharpStubTupleTypeImpl(@Nonnull ASTNode node)
+	public CSharpStubTupleTypeImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubTupleTypeImpl(@Nonnull EmptyStub<CSharpTupleType> stub,
-			@Nonnull IStubElementType<? extends EmptyStub<CSharpTupleType>, ?> nodeType)
+	public CSharpStubTupleTypeImpl(EmptyStub<CSharpTupleType> stub,
+			IStubElementType<? extends EmptyStub<CSharpTupleType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeRef toTypeRefImpl()
 	{
@@ -60,7 +58,6 @@ public class CSharpStubTupleTypeImpl extends CSharpStubTypeElementImpl<EmptyStub
 		return new CSharpTupleTypeRef(getProject(), getResolveScope(), typeRefs, variables);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpTupleVariable[] getVariables()
 	{
@@ -68,7 +65,7 @@ public class CSharpStubTupleTypeImpl extends CSharpStubTypeElementImpl<EmptyStub
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitTupleType(this);
 	}

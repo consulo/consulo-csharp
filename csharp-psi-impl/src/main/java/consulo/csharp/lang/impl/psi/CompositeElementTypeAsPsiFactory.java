@@ -23,8 +23,7 @@ import consulo.language.ast.ICompositeElementType;
 import consulo.language.ast.IElementType;
 import consulo.language.impl.psi.CompositePsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -36,22 +35,21 @@ public class CompositeElementTypeAsPsiFactory extends IElementType implements IC
 {
 	private final Function<IElementType, ? extends CompositePsiElement> myFactory;
 
-	public CompositeElementTypeAsPsiFactory(@Nonnull String debugName, @Nullable Language language, @Nonnull Function<IElementType, ? extends CompositePsiElement> factory)
+	public CompositeElementTypeAsPsiFactory(String debugName, @Nullable Language language, Function<IElementType, ? extends CompositePsiElement> factory)
 	{
 		this(debugName, language, true, factory);
 	}
 
-	public CompositeElementTypeAsPsiFactory(@Nonnull String debugName,
+	public CompositeElementTypeAsPsiFactory(String debugName,
 											@Nullable Language language,
 											boolean register,
-											@Nonnull Function<IElementType, ? extends CompositePsiElement> factory)
+											Function<IElementType, ? extends CompositePsiElement> factory)
 	{
 		super(debugName, language, register);
 
 		myFactory = factory;
 	}
 
-	@Nonnull
 	@Override
 	public ASTNode createCompositeNode()
 	{

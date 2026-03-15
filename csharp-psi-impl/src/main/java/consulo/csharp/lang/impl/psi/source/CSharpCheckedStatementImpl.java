@@ -22,7 +22,6 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,7 +29,7 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpCheckedStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpCheckedStatementImpl(@Nonnull IElementType elementType)
+	public CSharpCheckedStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -41,7 +40,6 @@ public class CSharpCheckedStatementImpl extends CSharpElementImpl implements Dot
 		return findChildByType(CSharpTokens.UNCHECKED_KEYWORD) != null;
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public DotNetStatement[] getStatements()
 	{
@@ -49,7 +47,7 @@ public class CSharpCheckedStatementImpl extends CSharpElementImpl implements Dot
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitCheckedStatement(this);
 	}

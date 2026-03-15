@@ -25,7 +25,6 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.spellcheker.tokenizer.TokenConsumer;
 import consulo.language.spellcheker.tokenizer.Tokenizer;
 import consulo.language.spellcheker.tokenizer.splitter.IdentifierTokenSplitter;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -37,7 +36,7 @@ public class CSharpNameIdentifierOwnerTokenizer extends Tokenizer<PsiNameIdentif
 
 	@Override
 	@RequiredReadAction
-	public void tokenize(@Nonnull PsiNameIdentifierOwner owner, TokenConsumer tokenConsumer)
+	public void tokenize(PsiNameIdentifierOwner owner, TokenConsumer tokenConsumer)
 	{
 		PsiElement identifier = owner.getNameIdentifier();
 		if(identifier == null)

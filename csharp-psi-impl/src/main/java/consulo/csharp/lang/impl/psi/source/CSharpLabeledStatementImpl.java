@@ -26,9 +26,7 @@ import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.util.IncorrectOperationException;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -36,24 +34,22 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpLabeledStatementImpl extends CSharpElementImpl implements DotNetStatement, PsiNameIdentifierOwner, DotNetNamedElement
 {
-	public CSharpLabeledStatementImpl(@Nonnull IElementType elementType)
+	public CSharpLabeledStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	public DotNetStatement[] getStatements()
 	{
 		return findChildrenByClass(DotNetStatement.class);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitLabeledStatement(this);
 	}
 
-	@Nonnull
 	@Override
 	public PsiElement getNameIdentifier()
 	{
@@ -68,13 +64,13 @@ public class CSharpLabeledStatementImpl extends CSharpElementImpl implements Dot
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String s) throws IncorrectOperationException
+	public PsiElement setName(String s) throws IncorrectOperationException
 	{
 		return null;
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement
 			place)
 	{
 		for(DotNetStatement statement : getStatements())

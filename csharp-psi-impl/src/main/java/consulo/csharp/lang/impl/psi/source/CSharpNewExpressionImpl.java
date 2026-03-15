@@ -36,8 +36,7 @@ import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.util.collection.ContainerUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -48,7 +47,7 @@ import java.util.Set;
  */
 public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSharpNewExpression, CSharpArrayInitializerOwner
 {
-	public CSharpNewExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpNewExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -60,13 +59,12 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitNewExpression(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -131,7 +129,6 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 		}
 	}
 
-	@Nonnull
 	private static DotNetTypeRef calcType(CSharpNewExpressionImpl newExpression, CSharpArrayInitializerValue[] values)
 	{
 		if(values.length == 0)
@@ -223,7 +220,6 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 		return expressionForResolving != null ? expressionForResolving.resolve() : null;
 	}
 
-	@Nonnull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
@@ -246,7 +242,6 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
@@ -254,7 +249,6 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
@@ -263,7 +257,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		CSharpCallArgument[] callArguments = getCallArguments();
 		for(CSharpCallArgument callArgument : callArguments)

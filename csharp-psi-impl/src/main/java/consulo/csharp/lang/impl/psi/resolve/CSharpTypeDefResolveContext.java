@@ -23,7 +23,6 @@ import consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.util.dataholder.UserDataHolder;
 
-import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -44,20 +43,18 @@ public class CSharpTypeDefResolveContext implements CSharpResolveContext
 
 	@RequiredReadAction
 	@Override
-	public boolean processElements(@Nonnull Processor<PsiElement> processor, boolean deep)
+	public boolean processElements(Processor<PsiElement> processor, boolean deep)
 	{
 		return processor.process(myStatement);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public Collection<PsiElement> findByName(@Nonnull String name, boolean deep, @Nonnull UserDataHolder holder)
+	public Collection<PsiElement> findByName(String name, boolean deep, UserDataHolder holder)
 	{
 		return name.equals(myName) ? Collections.singletonList(myStatement) : Collections.emptyList();
 	}
 
-	@Nonnull
 	@Override
 	public PsiElement getElement()
 	{

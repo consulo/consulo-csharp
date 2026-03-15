@@ -41,8 +41,7 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.ProcessingContext;
 import consulo.ui.ex.action.IdeActions;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static consulo.language.pattern.StandardPatterns.psiElement;
 
@@ -58,7 +57,7 @@ class CSharpAccessorCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters completionParameters, ProcessingContext processingContext, @Nonnull CompletionResultSet resultSet)
+			public void addCompletions(CompletionParameters completionParameters, ProcessingContext processingContext, CompletionResultSet resultSet)
 			{
 				PsiElement position = completionParameters.getPosition();
 				final CSharpXAccessorOwner accessorOwner = PsiTreeUtil.getParentOfType(position, CSharpXAccessorOwner.class);

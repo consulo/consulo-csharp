@@ -25,7 +25,6 @@ import consulo.language.psi.stub.StubElement;
 import consulo.language.psi.stub.StubInputStream;
 import consulo.language.psi.stub.StubOutputStream;
 
-import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -40,36 +39,33 @@ public class CSharpNamespaceDeclarationStubElementType extends CSharpAbstractStu
 	}
 
 	@Override
-	public CSharpNamespaceDeclarationImpl createPsi(@Nonnull CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> stub)
+	public CSharpNamespaceDeclarationImpl createPsi(CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> stub)
 	{
 		return new CSharpNamespaceDeclarationImpl(stub);
 	}
 
-	@Nonnull
 	@Override
-	public CSharpNamespaceDeclarationImpl createElement(@Nonnull ASTNode astNode)
+	public CSharpNamespaceDeclarationImpl createElement(ASTNode astNode)
 	{
 		return new CSharpNamespaceDeclarationImpl(astNode);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	@Override
-	public CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> createStub(@Nonnull CSharpNamespaceDeclarationImpl declaration, StubElement stubElement)
+	public CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> createStub(CSharpNamespaceDeclarationImpl declaration, StubElement stubElement)
 	{
 		String referenceText = declaration.getReferenceText();
 		return new CSharpNamespaceProviderStub<>(stubElement, this, referenceText);
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> namespaceStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> namespaceStub, StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(namespaceStub.getReferenceTextRef());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpNamespaceProviderStub<CSharpNamespaceDeclarationImpl> deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef referenceTextRef = stubInputStream.readName();
 		return new CSharpNamespaceProviderStub<>(stubElement, this, referenceTextRef);

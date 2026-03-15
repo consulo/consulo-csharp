@@ -23,8 +23,7 @@ import consulo.project.Project;
 import consulo.project.ui.view.tree.AbstractTreeNode;
 import consulo.project.ui.view.tree.ViewSettings;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,5 +34,5 @@ public interface CSharpProjectTreeNodeExpander
 {
 	@Nullable
 	@RequiredReadAction
-	AbstractTreeNode<?> expandFile(@Nonnull Project project, @Nonnull ViewSettings viewSettings, @Nonnull AbstractTreeNode<?> originalNode);
+	AbstractTreeNode<?> expandFile(Project project, ViewSettings viewSettings, AbstractTreeNode<?> originalNode);
 }

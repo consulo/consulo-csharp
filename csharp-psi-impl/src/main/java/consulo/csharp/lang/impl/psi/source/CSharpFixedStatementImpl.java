@@ -27,8 +27,7 @@ import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -36,32 +35,30 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpFixedStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpStatementAsStatementOwner
 {
-	public CSharpFixedStatementImpl(@Nonnull IElementType elementType)
+	public CSharpFixedStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitFixedStatement(this);
 	}
 
-	@Nonnull
 	public DotNetVariable[] getVariables()
 	{
 		return findChildrenByClass(DotNetVariable.class);
 	}
 
-	@Nonnull
 	public PsiElement getFixedElement()
 	{
 		return findNotNullChildByType(CSharpTokens.FIXED_KEYWORD);
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent,
-									   @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent,
+									   PsiElement place)
 	{
 		if(lastParent == null || !PsiTreeUtil.isAncestor(this, lastParent, false))
 		{

@@ -19,8 +19,7 @@ package consulo.csharp.impl.lang.formatter;
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import consulo.document.util.TextRange;
 import consulo.language.ast.ASTNode;
@@ -43,7 +42,6 @@ public class CSharpDisabledFormattingBlock implements Block, BlockWithParent
 		myNode = node;
 	}
 
-	@Nonnull
 	@Override
 	@RequiredReadAction
 	public TextRange getTextRange()
@@ -51,7 +49,6 @@ public class CSharpDisabledFormattingBlock implements Block, BlockWithParent
 		return myNode.getTextRange();
 	}
 
-	@Nonnull
 	@Override
 	public List<Block> getSubBlocks()
 	{
@@ -81,12 +78,11 @@ public class CSharpDisabledFormattingBlock implements Block, BlockWithParent
 
 	@Nullable
 	@Override
-	public Spacing getSpacing(@Nullable Block child1, @Nonnull Block child2)
+	public Spacing getSpacing(@Nullable Block child1, Block child2)
 	{
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public ChildAttributes getChildAttributes(int newChildIndex)
 	{

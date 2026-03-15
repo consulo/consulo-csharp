@@ -22,23 +22,20 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.localize.LocalizeValue;
 import consulo.ui.annotation.RequiredUIAccess;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 30.12.14
  */
 public class CastNArgumentToTypeRefFix extends CastExpressionToTypeRef {
-    @Nonnull
     private final String myParameterName;
 
-    public CastNArgumentToTypeRefFix(@Nonnull DotNetExpression expression, @Nonnull DotNetTypeRef expectedTypeRef, @Nonnull String parameterName) {
+    public CastNArgumentToTypeRefFix(DotNetExpression expression, DotNetTypeRef expectedTypeRef, String parameterName) {
         super(expression, expectedTypeRef);
         myParameterName = parameterName;
     }
 
     @RequiredUIAccess
-    @Nonnull
     @Override
     public LocalizeValue getText() {
         DotNetExpression element = myExpressionPointer.getElement();

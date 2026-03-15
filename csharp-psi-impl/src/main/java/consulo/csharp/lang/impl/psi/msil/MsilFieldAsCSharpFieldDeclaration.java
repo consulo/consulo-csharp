@@ -24,8 +24,7 @@ import consulo.language.psi.PsiElement;
 import consulo.msil.impl.lang.psi.MsilTokens;
 import consulo.msil.lang.psi.MsilFieldEntry;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -39,7 +38,7 @@ public class MsilFieldAsCSharpFieldDeclaration extends MsilVariableAsCSharpVaria
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitFieldDeclaration(this);
 	}

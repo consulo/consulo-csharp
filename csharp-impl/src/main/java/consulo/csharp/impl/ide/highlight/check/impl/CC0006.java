@@ -12,8 +12,7 @@ import consulo.language.psi.PsiReference;
 import consulo.language.psi.ReferenceRange;
 import consulo.localize.LocalizeValue;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class CC0006 extends CompilerCheck<CSharpConstantExpressionImpl>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpConstantExpressionImpl element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpConstantExpressionImpl element)
 	{
 		PsiReference[] references = element.getReferences();
 		for(PsiReference reference : references)

@@ -25,7 +25,6 @@ import consulo.dotnet.psi.DotNetCodeBodyProxy;
 import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -34,7 +33,7 @@ import jakarta.annotation.Nonnull;
 public class CSharpPropertyUtil
 {
 	@RequiredReadAction
-	public static boolean isAutoProperty(@Nonnull PsiElement element)
+	public static boolean isAutoProperty(PsiElement element)
 	{
 		if(element instanceof CSharpPropertyDeclaration)
 		{

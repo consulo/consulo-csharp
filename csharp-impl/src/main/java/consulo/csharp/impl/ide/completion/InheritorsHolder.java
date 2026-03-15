@@ -25,8 +25,7 @@ import consulo.language.editor.completion.lookup.LookupElement;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ContainerUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -71,13 +70,13 @@ class InheritorsHolder implements Consumer<LookupElement>
 		throw new UnsupportedOperationException(psiClass.getClass().toString());
 	}
 
-	public boolean alreadyProcessed(@Nonnull LookupElement element)
+	public boolean alreadyProcessed(LookupElement element)
 	{
 		final Object object = element.getObject();
 		return object instanceof DotNetQualifiedElement && alreadyProcessed((DotNetQualifiedElement) object);
 	}
 
-	public boolean alreadyProcessed(@Nonnull DotNetQualifiedElement object)
+	public boolean alreadyProcessed(DotNetQualifiedElement object)
 	{
 		final String name = getVmQName(object);
 		return name == null || myAddedTypeLikes.contains(name);

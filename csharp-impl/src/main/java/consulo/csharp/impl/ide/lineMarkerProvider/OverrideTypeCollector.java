@@ -34,7 +34,6 @@ import consulo.ui.image.Image;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.function.Functions;
 
-import jakarta.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
@@ -48,7 +47,7 @@ public class OverrideTypeCollector implements LineMarkerCollector
 {
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @Nonnull Consumer<LineMarkerInfo> consumer)
+	public void collect(PsiElement psiElement, Consumer<LineMarkerInfo> consumer)
 	{
 		CSharpTypeDeclaration parent = CSharpLineMarkerUtil.getNameIdentifierAs(psiElement, CSharpTypeDeclaration.class);
 		if(parent != null)

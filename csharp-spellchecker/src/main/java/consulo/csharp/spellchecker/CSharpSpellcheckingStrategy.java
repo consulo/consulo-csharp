@@ -24,7 +24,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.language.spellcheker.SpellcheckingStrategy;
 import consulo.language.spellcheker.tokenizer.Tokenizer;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -33,7 +32,6 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class CSharpSpellcheckingStrategy extends SpellcheckingStrategy
 {
-	@Nonnull
 	@Override
 	public Tokenizer getTokenizer(PsiElement element)
 	{
@@ -49,7 +47,6 @@ public class CSharpSpellcheckingStrategy extends SpellcheckingStrategy
 		return super.getTokenizer(element);
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

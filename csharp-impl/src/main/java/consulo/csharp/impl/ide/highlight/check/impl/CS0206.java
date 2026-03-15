@@ -16,7 +16,7 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
@@ -26,7 +26,6 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -37,7 +36,7 @@ public class CS0206 extends CompilerCheck<CSharpOutRefWrapExpressionImpl>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpOutRefWrapExpressionImpl element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpOutRefWrapExpressionImpl element)
 	{
 		DotNetExpression innerExpression = element.getInnerExpression();
 		if(innerExpression instanceof CSharpIndexAccessExpressionImpl)

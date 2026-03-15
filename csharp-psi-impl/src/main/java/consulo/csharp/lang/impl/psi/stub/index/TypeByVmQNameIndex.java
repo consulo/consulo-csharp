@@ -21,7 +21,6 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.language.psi.stub.IntStubIndexExtension;
 import consulo.language.psi.stub.StubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -30,13 +29,11 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class TypeByVmQNameIndex extends IntStubIndexExtension<DotNetTypeDeclaration>
 {
-	@Nonnull
 	public static TypeByVmQNameIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtensionOrFail(TypeByVmQNameIndex.class);
 	}
 
-	@Nonnull
 	@Override
 	public StubIndexKey<Integer, DotNetTypeDeclaration> getKey()
 	{

@@ -34,7 +34,6 @@ import consulo.language.psi.PsiFile;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.dataholder.Key;
-import jakarta.annotation.Nonnull;
 
 import java.util.Map;
 
@@ -45,18 +44,17 @@ import java.util.Map;
 @ExtensionImpl
 public class UnusedUsingInspection extends CSharpGeneralLocalInspection {
     public static final class DeleteStatement extends LocalQuickFixOnPsiElement {
-        protected DeleteStatement(@Nonnull PsiElement element) {
+        protected DeleteStatement(PsiElement element) {
             super(element);
         }
 
-        @Nonnull
         @Override
         public LocalizeValue getText() {
             return LocalizeValue.localizeTODO("Delete statement");
         }
 
         @Override
-        public void invoke(@Nonnull Project project, @Nonnull PsiFile psiFile, @Nonnull final PsiElement element, @Nonnull PsiElement element2) {
+        public void invoke(Project project, PsiFile psiFile, final PsiElement element, PsiElement element2) {
             new WriteCommandAction.Simple<Object>(project, psiFile) {
                 @Override
                 protected void run() throws Throwable {
@@ -68,9 +66,8 @@ public class UnusedUsingInspection extends CSharpGeneralLocalInspection {
 
     private static final Key<UnusedUsingVisitor> KEY = Key.create("UnusedUsingVisitor");
 
-    @Nonnull
     @Override
-    public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session, @Nonnull Object state) {
+    public PsiElementVisitor buildVisitor(ProblemsHolder holder, boolean isOnTheFly, LocalInspectionToolSession session, Object state) {
         UnusedUsingVisitor visitor = session.getUserData(KEY);
         if (visitor == null) {
             session.putUserData(KEY, visitor = new UnusedUsingVisitor());
@@ -80,7 +77,7 @@ public class UnusedUsingInspection extends CSharpGeneralLocalInspection {
 
     @Override
     @RequiredReadAction
-    public void inspectionFinished(@Nonnull LocalInspectionToolSession session, @Nonnull ProblemsHolder problemsHolder, @Nonnull Object state) {
+    public void inspectionFinished(LocalInspectionToolSession session, ProblemsHolder problemsHolder, Object state) {
         UnusedUsingVisitor visitor = session.getUserData(KEY);
         if (visitor == null) {
             return;
@@ -101,13 +98,11 @@ public class UnusedUsingInspection extends CSharpGeneralLocalInspection {
         }
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getDisplayName() {
         return LocalizeValue.localizeTODO("Unused using");
     }
 
-    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WARNING;

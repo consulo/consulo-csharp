@@ -25,8 +25,7 @@ import consulo.csharp.lang.psi.CSharpPreprocessorDefine;
 import consulo.csharp.lang.psi.CSharpPreprocessorVariable;
 import consulo.csharp.lang.impl.psi.light.CSharpPreprocessorLightVariable;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,7 +39,7 @@ public class CSharpPreprocessorDefineImpl extends CSharpPreprocessorElementImpl 
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpMacroElementVisitor visitor)
+	public void accept(CSharpMacroElementVisitor visitor)
 	{
 		visitor.visitMacroDefine(this);
 	}

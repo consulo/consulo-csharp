@@ -37,7 +37,6 @@ import consulo.csharp.lang.impl.psi.source.CSharpIfStatementImpl;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.util.CommentUtilCore;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -188,7 +187,6 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	public Indent getChildIndent()
 	{
 		IElementType elementType = myBlock.getNode().getElementType();

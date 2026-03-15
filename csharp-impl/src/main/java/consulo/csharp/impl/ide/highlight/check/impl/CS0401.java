@@ -16,7 +16,6 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -26,7 +25,7 @@ import consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
 import consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -37,7 +36,7 @@ public class CS0401 extends CompilerCheck<CSharpGenericConstraintKeywordValue>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpGenericConstraintKeywordValue element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpGenericConstraintKeywordValue element)
 	{
 		if(element.getKeywordElementType() != CSharpTokens.NEW_KEYWORD)
 		{

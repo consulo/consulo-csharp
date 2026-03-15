@@ -31,8 +31,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -58,7 +57,7 @@ public class CS0151 extends CompilerCheck<DotNetExpression>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetExpression element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetExpression element)
 	{
 		if(languageVersion.isAtLeast(CSharpLanguageVersion._7_0))
 		{

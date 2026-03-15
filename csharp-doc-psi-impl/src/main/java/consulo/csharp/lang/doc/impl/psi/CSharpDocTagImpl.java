@@ -26,8 +26,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.util.collection.ContainerUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 /**
@@ -73,14 +72,13 @@ public class CSharpDocTagImpl extends AdvancedCompositePsiElement implements CSh
 		return CSharpDocTagManager.getInstance().getTag(tagName.getText());
 	}
 
-	@Nonnull
 	public List<PsiElement> getNameElements()
 	{
 		return findChildrenByType(CSharpDocTokenType.XML_NAME);
 	}
 
 	@Override
-	public void accept(@Nonnull PsiElementVisitor visitor)
+	public void accept(PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpDocElementVisitor)
 		{

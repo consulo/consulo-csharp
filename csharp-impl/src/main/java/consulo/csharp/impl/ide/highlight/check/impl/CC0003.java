@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
@@ -40,9 +39,8 @@ import consulo.language.psi.PsiElement;
 public class CC0003 extends CompilerCheck<CSharpIndexAccessExpressionImpl>
 {
 	@RequiredReadAction
-	@Nonnull
 	@Override
-	public List<HighlightInfoFactory> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpIndexAccessExpressionImpl expression)
+	public List<HighlightInfoFactory> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpIndexAccessExpressionImpl expression)
 	{
 		DotNetExpression qualifier = expression.getQualifier();
 		if(qualifier.toTypeRef(false) instanceof CSharpDynamicTypeRef)

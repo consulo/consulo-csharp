@@ -25,8 +25,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -34,12 +33,11 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpAssignmentExpressionImpl extends CSharpExpressionWithOperatorImpl implements DotNetExpression
 {
-	public CSharpAssignmentExpressionImpl(@Nonnull IElementType elementType)
+	public CSharpAssignmentExpressionImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public DotNetExpression getLeftExpression()
 	{
@@ -64,13 +62,12 @@ public class CSharpAssignmentExpressionImpl extends CSharpExpressionWithOperator
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitAssignmentExpression(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
@@ -79,7 +76,7 @@ public class CSharpAssignmentExpressionImpl extends CSharpExpressionWithOperator
 
 	@Override
 	@RequiredReadAction
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place)
+	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
 		DotNetExpression rightExpression = getRightExpression();
 		if(rightExpression != null && !rightExpression.processDeclarations(processor, state, lastParent, place))

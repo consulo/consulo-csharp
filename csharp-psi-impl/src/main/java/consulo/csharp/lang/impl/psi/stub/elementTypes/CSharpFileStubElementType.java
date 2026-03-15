@@ -42,8 +42,7 @@ import consulo.module.content.layer.orderEntry.OrderEntry;
 import consulo.project.Project;
 import consulo.util.dataholder.Key;
 import consulo.virtualFileSystem.VirtualFile;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -65,9 +64,8 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
     @Override
     public StubBuilder getBuilder() {
         return new DefaultStubBuilder() {
-            @Nonnull
             @Override
-            protected StubElement createStubForFile(@Nonnull PsiFile file) {
+            protected StubElement createStubForFile(PsiFile file) {
                 if (file instanceof CSharpFileImpl) {
                     return new CSharpFileStub((CSharpFileImpl) file);
                 }
@@ -75,7 +73,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
             }
 
             @Override
-            public boolean skipChildProcessingWhenBuildingStubs(@Nonnull ASTNode parent, @Nonnull ASTNode node) {
+            public boolean skipChildProcessingWhenBuildingStubs(ASTNode parent, ASTNode node) {
                 // skip any lazy parseable elements, like preprocessors or code blocks etc
                 if (node.getElementType() instanceof ILazyParseableElementType) {
                     return true;
@@ -87,7 +85,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 
     @RequiredReadAction
     @Override
-    protected ASTNode doParseContents(@Nonnull ASTNode chameleon, @Nonnull PsiElement psi) {
+    protected ASTNode doParseContents(ASTNode chameleon, PsiElement psi) {
         final Project project = psi.getProject();
         final Language languageForParser = getLanguageForParser(psi);
         final LanguageVersion tempLanguageVersion = chameleon.getUserData(LanguageVersion.KEY);
@@ -102,9 +100,8 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
         return parser.parse(this, builder, languageVersion).getFirstChildNode();
     }
 
-    @Nonnull
     @RequiredReadAction
-    public static Set<String> getStableDefines(@Nonnull PsiFile psi) {
+    public static Set<String> getStableDefines(PsiFile psi) {
         FileViewProvider viewProvider = psi.getViewProvider();
         VirtualFile virtualFile = viewProvider.getVirtualFile();
         if (virtualFile instanceof LightVirtualFile) {
@@ -131,7 +128,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 
     @Nullable
     @RequiredReadAction
-    private static Collection<String> findVariables(@Nonnull VirtualFile virtualFile, @Nonnull Project project) {
+    private static Collection<String> findVariables(VirtualFile virtualFile, Project project) {
         Module module = ModuleUtilCore.findModuleForFile(virtualFile, project);
         if (module == null) {
             List<OrderEntry> orderEntriesForFile = ProjectFileIndex.getInstance(project).getOrderEntriesForFile(virtualFile);
@@ -157,9 +154,8 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
         return null;
     }
 
-    @Nonnull
     @Override
-    public CSharpFileStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
+    public CSharpFileStub deserialize(StubInputStream dataStream, StubElement parentStub) throws IOException {
         return new CSharpFileStub(null);
     }
 
@@ -168,7 +164,6 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
         return 126;
     }
 
-    @Nonnull
     @Override
     public String getExternalId() {
         return "csharp.file";

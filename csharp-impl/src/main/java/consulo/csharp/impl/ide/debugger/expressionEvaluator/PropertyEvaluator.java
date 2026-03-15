@@ -16,8 +16,7 @@
 
 package consulo.csharp.impl.ide.debugger.expressionEvaluator;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.csharp.impl.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -40,14 +39,14 @@ public class PropertyEvaluator extends FieldOrPropertyEvaluator<CSharpPropertyDe
 	}
 
 	@Override
-	protected boolean isMyMirror(@Nonnull DotNetFieldOrPropertyProxy mirror)
+	protected boolean isMyMirror(DotNetFieldOrPropertyProxy mirror)
 	{
 		return mirror instanceof DotNetPropertyProxy && !((DotNetPropertyProxy) mirror).isArrayProperty();
 	}
 
 	@Override
-	protected boolean invoke(@Nonnull DotNetPropertyProxy mirror,
-			@Nonnull CSharpEvaluateContext context,
+	protected boolean invoke(DotNetPropertyProxy mirror,
+			CSharpEvaluateContext context,
 			@Nullable DotNetValueProxy popValue) throws DotNetThrowValueException, DotNetNotSuspendedException
 	{
 		DotNetMethodProxy methodMirror = mirror.getGetMethod();

@@ -21,7 +21,6 @@ import consulo.csharp.lang.psi.CSharpFile;
 import consulo.language.editor.ProblemHighlightFilter;
 import consulo.language.psi.PsiCodeFragment;
 import consulo.language.psi.PsiFile;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -31,7 +30,7 @@ import jakarta.annotation.Nonnull;
 public class CSharpProblemHighlightFilter extends ProblemHighlightFilter
 {
 	@Override
-	public boolean shouldHighlight(@Nonnull PsiFile psiFile)
+	public boolean shouldHighlight(PsiFile psiFile)
 	{
 		if(psiFile instanceof CSharpFile)
 		{

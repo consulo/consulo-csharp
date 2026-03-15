@@ -26,7 +26,6 @@ import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleUtil;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -40,7 +39,7 @@ class CSharpLinqCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				PsiElement position = parameters.getPosition();
 				if(!CSharpModuleUtil.findLanguageVersion(position).isAtLeast(CSharpLanguageVersion._3_0))

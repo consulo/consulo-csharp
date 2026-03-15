@@ -37,8 +37,7 @@ import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.SmartList;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,14 +48,13 @@ import java.util.List;
  */
 public class CS0534 extends CompilerCheck<CSharpTypeDeclaration> {
   public static class ImplementMembersQuickFix implements SyntheticIntentionAction {
-    @Nonnull
     @Override
     public LocalizeValue getText() {
       return LocalizeValue.localizeTODO("Implement members");
     }
 
     @Override
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       return true;
     }
 
@@ -67,7 +65,7 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration> {
 
     @Override
     @RequiredUIAccess
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       new GenerateImplementMemberHandler().invoke(project, editor, file);
     }
   }
@@ -75,9 +73,9 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration> {
   @RequiredReadAction
   @Nullable
   @Override
-  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull CSharpTypeDeclaration element) {
+  public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        CSharpTypeDeclaration element) {
     if (element.isInterface()) {
       return null;
     }

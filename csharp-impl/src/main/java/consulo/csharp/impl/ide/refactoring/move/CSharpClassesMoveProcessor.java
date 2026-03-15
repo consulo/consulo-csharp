@@ -55,8 +55,7 @@ import consulo.usage.NonCodeUsageInfo;
 import consulo.usage.UsageInfo;
 import consulo.usage.UsageViewDescriptor;
 import consulo.util.lang.Couple;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.*;
@@ -89,7 +88,7 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor {
     private NonCodeUsageInfo[] myNonCodeUsages;
 
     public CSharpClassesMoveProcessor(
-        @Nonnull Project project,
+        Project project,
         PsiElement[] elements,
         PsiDirectory newParent,
         boolean searchInComments,
@@ -101,7 +100,7 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor {
     }
 
     public CSharpClassesMoveProcessor(
-        @Nonnull Project project,
+        Project project,
         PsiElement[] elements,
         PsiDirectory newParent,
         boolean searchForReferences,
@@ -120,13 +119,11 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor {
     }
 
     @Override
-    @Nonnull
-    protected UsageViewDescriptor createUsageViewDescriptor(@Nonnull UsageInfo[] usages) {
+    protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages) {
         return new CSharpClassesViewDescriptor(myElementsToMove, myNewParent);
     }
 
     @Override
-    @Nonnull
     @RequiredReadAction
     protected UsageInfo[] findUsages() {
         List<UsageInfo> result = new ArrayList<>();
@@ -149,7 +146,6 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor {
     }
 
 
-    @Nonnull
     @RequiredReadAction
     public static GlobalSearchScope mapScope(DotNetNamedElement element) {
         if (element instanceof DotNetNamespaceAsElement) {
@@ -159,7 +155,7 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor {
     }
 
     @Override
-    protected void refreshElements(@Nonnull PsiElement[] elements) {
+    protected void refreshElements(PsiElement[] elements) {
         LOG.assertTrue(elements.length == myElementsToMove.length);
         System.arraycopy(elements, 0, myElementsToMove, 0, elements.length);
     }
@@ -174,7 +170,7 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor {
 
     @Override
     @RequiredWriteAction
-    protected void performRefactoring(@Nonnull UsageInfo[] usages) {
+    protected void performRefactoring(UsageInfo[] usages) {
         try {
             List<PsiFile> movedFiles = new ArrayList<>();
             Map<PsiElement, PsiElement> oldToNewMap = new HashMap<>();
@@ -304,7 +300,7 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor {
 
     @Nullable
     @Override
-    protected RefactoringEventData getAfterData(@Nonnull UsageInfo[] usages) {
+    protected RefactoringEventData getAfterData(UsageInfo[] usages) {
         RefactoringEventData data = new RefactoringEventData();
         data.addElement(myNewParent);
         return data;
@@ -368,7 +364,6 @@ public class CSharpClassesMoveProcessor extends BaseRefactoringProcessor {
         return nonCodeUsages.toArray(new NonCodeUsageInfo[nonCodeUsages.size()]);
     }
 
-    @Nonnull
     @Override
     protected LocalizeValue getCommandName() {
         return RefactoringLocalize.moveTitle();

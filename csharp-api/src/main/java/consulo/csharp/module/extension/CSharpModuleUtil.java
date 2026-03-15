@@ -20,8 +20,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.ModuleUtilCore;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -29,7 +28,6 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpModuleUtil
 {
-	@Nonnull
 	@RequiredReadAction
 	public static CSharpLanguageVersion findLanguageVersion(@Nullable PsiElement element)
 	{

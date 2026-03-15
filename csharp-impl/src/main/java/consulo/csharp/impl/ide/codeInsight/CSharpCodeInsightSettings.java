@@ -24,7 +24,6 @@ import consulo.component.persist.PersistentStateComponent;
 import consulo.component.persist.State;
 import consulo.component.persist.Storage;
 import consulo.util.xml.serializer.XmlSerializerUtil;
-import jakarta.annotation.Nonnull;
 import jakarta.inject.Singleton;
 
 /**
@@ -37,7 +36,6 @@ import jakarta.inject.Singleton;
 @ServiceImpl
 public class CSharpCodeInsightSettings implements PersistentStateComponent<CSharpCodeInsightSettings>
 {
-	@Nonnull
 	public static CSharpCodeInsightSettings getInstance()
 	{
 		return Application.get().getInstance(CSharpCodeInsightSettings.class);

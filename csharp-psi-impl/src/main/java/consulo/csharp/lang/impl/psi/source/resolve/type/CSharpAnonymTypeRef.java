@@ -33,7 +33,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -78,7 +77,6 @@ public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
@@ -86,7 +84,6 @@ public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public String getVmQName()
 	{
@@ -105,7 +102,6 @@ public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 		return builder.toString();
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	private DotNetTypeDeclaration createTypeDeclaration()
 	{

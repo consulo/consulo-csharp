@@ -35,9 +35,8 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.lang.ObjectUtil;
-import jakarta.annotation.Nonnull;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 /**
@@ -46,7 +45,6 @@ import java.util.List;
  */
 public class CSharpLambdaExpressionImplUtil
 {
-	@Nonnull
 	@RequiredReadAction
 	public static DotNetTypeRef resolveTypeForParameter(CSharpLambdaExpressionImpl target, int parameterIndex)
 	{

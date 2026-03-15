@@ -39,7 +39,6 @@ import consulo.language.psi.ResolveResult;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.localize.LocalizeValue;
 import consulo.util.collection.ContainerUtil;
-import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -49,9 +48,8 @@ import java.util.List;
  */
 @ExtensionImpl
 public class UnnecessaryNamedArgumentInspection extends CSharpGeneralLocalInspection {
-    @Nonnull
     @Override
-    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+    public PsiElementVisitor buildVisitor(final ProblemsHolder holder, boolean isOnTheFly) {
         return new CSharpElementVisitor() {
             @Override
             public void visitNamedCallArgument(final CSharpNamedCallArgument argument) {
@@ -97,13 +95,11 @@ public class UnnecessaryNamedArgumentInspection extends CSharpGeneralLocalInspec
         };
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getDisplayName() {
         return LocalizeValue.localizeTODO("Unnecessary named argument");
     }
 
-    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WEAK_WARNING;

@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.light.builder;
 
-import jakarta.annotation.Nonnull;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
@@ -24,7 +23,7 @@ import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -43,7 +42,6 @@ public class CSharpLightConstructorDeclarationBuilder extends CSharpLightLikeMet
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -51,7 +49,7 @@ public class CSharpLightConstructorDeclarationBuilder extends CSharpLightLikeMet
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitConstructorDeclaration(this);
 	}

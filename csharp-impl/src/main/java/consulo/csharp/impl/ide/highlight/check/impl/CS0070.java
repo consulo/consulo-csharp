@@ -28,8 +28,7 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.impl.psi.source.CSharpAssignmentExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -40,7 +39,7 @@ public class CS0070 extends CompilerCheck<CSharpReferenceExpression>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull CSharpReferenceExpression element)
+	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpReferenceExpression element)
 	{
 		PsiElement resolvedTarget = element.resolve();
 		if(resolvedTarget instanceof CSharpEventDeclaration)

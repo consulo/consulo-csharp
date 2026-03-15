@@ -38,10 +38,9 @@ import consulo.fileEditor.FileEditor;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.dataholder.UserDataHolderBase;
-import jakarta.annotation.Nonnull;
 import kava.beans.PropertyChangeListener;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -80,7 +79,6 @@ public class CSharpAssemblyFileEditor extends UserDataHolderBase implements File
 		myBlocks.add(new CSharpSimpleStringAssemblyBlock("File Version", DotNetTypes.System.Reflection.AssemblyFileVersionAttribute));
 	}
 
-	@Nonnull
 	@Override
 	public JComponent getComponent()
 	{
@@ -145,22 +143,20 @@ public class CSharpAssemblyFileEditor extends UserDataHolderBase implements File
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public String getName()
 	{
 		return "Assembly Info Editor";
 	}
 
-	@Nonnull
 	@Override
-	public FileEditorState getState(@Nonnull FileEditorStateLevel fileEditorStateLevel)
+	public FileEditorState getState(FileEditorStateLevel fileEditorStateLevel)
 	{
 		return FileEditorState.INSTANCE;
 	}
 
 	@Override
-	public void setState(@Nonnull FileEditorState fileEditorState)
+	public void setState(FileEditorState fileEditorState)
 	{
 
 	}
@@ -190,13 +186,13 @@ public class CSharpAssemblyFileEditor extends UserDataHolderBase implements File
 	}
 
 	@Override
-	public void addPropertyChangeListener(@Nonnull PropertyChangeListener propertyChangeListener)
+	public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener)
 	{
 
 	}
 
 	@Override
-	public void removePropertyChangeListener(@Nonnull PropertyChangeListener propertyChangeListener)
+	public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener)
 	{
 
 	}

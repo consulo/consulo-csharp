@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
 import java.io.IOException;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.csharp.lang.impl.psi.source.CSharpDummyDeclarationImpl;
 import consulo.csharp.lang.impl.psi.stub.CSharpDummyDeclStub;
@@ -38,34 +37,32 @@ public class CSharpDummyDefElementType extends CSharpAbstractStubElementType<CSh
 		super("DUMMY_DECLARATION");
 	}
 
-	@Nonnull
 	@Override
-	public CSharpDummyDeclarationImpl createElement(@Nonnull ASTNode astNode)
+	public CSharpDummyDeclarationImpl createElement(ASTNode astNode)
 	{
 		return new CSharpDummyDeclarationImpl(astNode);
 	}
 
 	@Override
-	public CSharpDummyDeclarationImpl createPsi(@Nonnull CSharpDummyDeclStub cSharpDummyDeclStub)
+	public CSharpDummyDeclarationImpl createPsi(CSharpDummyDeclStub cSharpDummyDeclStub)
 	{
 		return new CSharpDummyDeclarationImpl(cSharpDummyDeclStub, this);
 	}
 
 	@Override
-	public CSharpDummyDeclStub createStub(@Nonnull CSharpDummyDeclarationImpl cSharpDummyDeclaration, StubElement stubElement)
+	public CSharpDummyDeclStub createStub(CSharpDummyDeclarationImpl cSharpDummyDeclaration, StubElement stubElement)
 	{
 		return new CSharpDummyDeclStub(stubElement, this);
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpDummyDeclStub cSharpDummyDeclStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpDummyDeclStub cSharpDummyDeclStub, StubOutputStream stubOutputStream) throws IOException
 	{
 
 	}
 
-	@Nonnull
 	@Override
-	public CSharpDummyDeclStub deserialize(@Nonnull StubInputStream inputStream, StubElement stubElement) throws IOException
+	public CSharpDummyDeclStub deserialize(StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
 		return new CSharpDummyDeclStub(stubElement, this);
 	}

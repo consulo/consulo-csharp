@@ -24,7 +24,6 @@ import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,19 +31,18 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpEmptyTypeListImpl extends CSharpElementImpl implements DotNetTypeList
 {
-	public CSharpEmptyTypeListImpl(@Nonnull IElementType elementType)
+	public CSharpEmptyTypeListImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitTypeList(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetType[] getTypes()
 	{
@@ -52,7 +50,6 @@ public class CSharpEmptyTypeListImpl extends CSharpElementImpl implements DotNet
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getTypeRefs()
 	{

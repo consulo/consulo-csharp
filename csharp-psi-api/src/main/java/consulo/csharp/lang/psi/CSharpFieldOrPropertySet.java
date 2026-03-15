@@ -20,8 +20,7 @@ import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayFactory;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -33,7 +32,6 @@ public interface CSharpFieldOrPropertySet extends DotNetElement
 
 	public static ArrayFactory<CSharpFieldOrPropertySet> ARRAY_FACTORY = new ArrayFactory<CSharpFieldOrPropertySet>()
 	{
-		@Nonnull
 		@Override
 		public CSharpFieldOrPropertySet[] create(int count)
 		{
@@ -44,7 +42,6 @@ public interface CSharpFieldOrPropertySet extends DotNetElement
 	@Nullable
 	String getName();
 
-	@Nonnull
 	PsiElement getNameElement();
 
 	@Nullable

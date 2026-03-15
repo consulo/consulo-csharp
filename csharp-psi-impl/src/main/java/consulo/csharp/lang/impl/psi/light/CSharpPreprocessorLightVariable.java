@@ -29,10 +29,8 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.module.Module;
 import consulo.navigation.Navigatable;
 import consulo.util.lang.Comparing;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -45,7 +43,7 @@ public class CSharpPreprocessorLightVariable extends LightElement implements CSh
 	private final PsiElement myTarget;
 	private final String myName;
 
-	public CSharpPreprocessorLightVariable(@Nullable Module module, @Nonnull PsiElement target, @Nonnull String name)
+	public CSharpPreprocessorLightVariable(@Nullable Module module, PsiElement target, String name)
 	{
 		super(PsiManager.getInstance(target.getProject()), CSharpPreprocessorLanguage.INSTANCE);
 		myModule = module;
@@ -126,7 +124,7 @@ public class CSharpPreprocessorLightVariable extends LightElement implements CSh
 
 	@RequiredWriteAction
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
+	public PsiElement setName(String name) throws IncorrectOperationException
 	{
 		return null;
 	}

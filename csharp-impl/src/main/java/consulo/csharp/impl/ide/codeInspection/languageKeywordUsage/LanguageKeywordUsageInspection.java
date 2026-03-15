@@ -41,7 +41,6 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiUtilCore;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import jakarta.annotation.Nonnull;
 
 import java.util.Map;
 
@@ -54,19 +53,18 @@ public class LanguageKeywordUsageInspection extends CSharpGeneralLocalInspection
     public static class ReplaceByKeywordFix extends LocalQuickFixOnPsiElement {
         private IElementType myKeywordElementType;
 
-        public ReplaceByKeywordFix(@Nonnull PsiElement element, IElementType keywordElementType) {
+        public ReplaceByKeywordFix(PsiElement element, IElementType keywordElementType) {
             super(element);
             myKeywordElementType = keywordElementType;
         }
 
-        @Nonnull
         @Override
         public LocalizeValue getText() {
             return LocalizeValue.localizeTODO("Replace by '" + CSharpCompletionUtil.textOfKeyword(myKeywordElementType) + "' keyword");
         }
 
         @Override
-        public void invoke(@Nonnull final Project project, @Nonnull PsiFile file, @Nonnull final PsiElement startElement, @Nonnull PsiElement endElement) {
+        public void invoke(final Project project, PsiFile file, final PsiElement startElement, PsiElement endElement) {
             new WriteCommandAction.Simple<Object>(project, file) {
                 @Override
                 @RequiredWriteAction
@@ -131,21 +129,18 @@ public class LanguageKeywordUsageInspection extends CSharpGeneralLocalInspection
         }
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getDisplayName() {
         return LocalizeValue.localizeTODO("Language Keyword Usage");
     }
 
-    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WEAK_WARNING;
     }
 
-    @Nonnull
     @Override
-    public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly) {
+    public PsiElementVisitor buildVisitor(ProblemsHolder holder, boolean isOnTheFly) {
         CSharpCodeGenerationSettings settings = CSharpCodeGenerationSettings.getInstance(holder.getProject());
         if (!settings.USE_LANGUAGE_DATA_TYPES) {
             return new PsiElementVisitor() {

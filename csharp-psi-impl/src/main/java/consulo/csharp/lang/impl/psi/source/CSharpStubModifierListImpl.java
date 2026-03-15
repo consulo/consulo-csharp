@@ -29,8 +29,7 @@ import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetAttributeList;
 import consulo.dotnet.psi.DotNetModifier;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,24 +41,23 @@ import java.util.List;
  */
 public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModifierListStub> implements CSharpModifierList
 {
-	public CSharpStubModifierListImpl(@Nonnull ASTNode node)
+	public CSharpStubModifierListImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubModifierListImpl(@Nonnull CSharpModifierListStub stub, @Nonnull IStubElementType<? extends CSharpModifierListStub, ?> nodeType)
+	public CSharpStubModifierListImpl(CSharpModifierListStub stub, IStubElementType<? extends CSharpModifierListStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitModifierList(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
@@ -77,18 +75,17 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	}
 
 	@Override
-	public void addModifier(@Nonnull DotNetModifier modifier)
+	public void addModifier(DotNetModifier modifier)
 	{
 		CSharpModifierListImplUtil.addModifier(this, modifier);
 	}
 
 	@Override
-	public void removeModifier(@Nonnull DotNetModifier modifier)
+	public void removeModifier(DotNetModifier modifier)
 	{
 		CSharpModifierListImplUtil.removeModifier(this, modifier);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpModifier[] getModifiers()
 	{
@@ -96,13 +93,13 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	}
 
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return CSharpModifierListImplUtil.getModifiersCached(this).contains(CSharpModifier.as(modifier));
 	}
 
 	@Override
-	public boolean hasModifierInTree(@Nonnull DotNetModifier modifier)
+	public boolean hasModifierInTree(DotNetModifier modifier)
 	{
 		CSharpModifierListStub stub = getGreenStub();
 		if(stub != null)
@@ -122,15 +119,13 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 		return findChildByType(iElementType);
 	}
 
-	@Nonnull
 	@Override
-	public List<PsiElement> getModifierElements(@Nonnull DotNetModifier modifier)
+	public List<PsiElement> getModifierElements(DotNetModifier modifier)
 	{
 		IElementType iElementType = CSharpModifierListImplUtil.asElementType(modifier);
 		return findChildrenByType(iElementType);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpAttributeList[] getAttributeLists()
 	{

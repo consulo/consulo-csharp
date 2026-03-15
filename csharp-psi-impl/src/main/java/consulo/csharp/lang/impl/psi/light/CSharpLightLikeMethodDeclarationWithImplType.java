@@ -22,8 +22,7 @@ import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.function.Supplier;
 
 /**
@@ -39,7 +38,7 @@ public abstract class CSharpLightLikeMethodDeclarationWithImplType<S extends Dot
 	private Supplier<DotNetTypeRef> myTypeRefForImplement;
 
 	@RequiredReadAction
-	public CSharpLightLikeMethodDeclarationWithImplType(@Nonnull S declaration)
+	public CSharpLightLikeMethodDeclarationWithImplType(S declaration)
 	{
 		this(declaration, declaration.getParameterList());
 	}
@@ -50,8 +49,7 @@ public abstract class CSharpLightLikeMethodDeclarationWithImplType<S extends Dot
 		super(original, parameterList);
 	}
 
-	@Nonnull
-	public CSharpLightLikeMethodDeclarationWithImplType<S> withTypeRefForImplement(@Nonnull Supplier<DotNetTypeRef> typeRef)
+	public CSharpLightLikeMethodDeclarationWithImplType<S> withTypeRefForImplement(Supplier<DotNetTypeRef> typeRef)
 	{
 		if(myTypeRefForImplement != null)
 		{
@@ -62,8 +60,7 @@ public abstract class CSharpLightLikeMethodDeclarationWithImplType<S extends Dot
 		return this;
 	}
 
-	@Nonnull
-	public CSharpLightLikeMethodDeclarationWithImplType<S> withReturnTypeRef(@Nonnull Supplier<DotNetTypeRef> typeRef)
+	public CSharpLightLikeMethodDeclarationWithImplType<S> withReturnTypeRef(Supplier<DotNetTypeRef> typeRef)
 	{
 		if (myReturnTypeRef != null)
 		{
@@ -74,19 +71,16 @@ public abstract class CSharpLightLikeMethodDeclarationWithImplType<S extends Dot
 		return this;
 	}
 
-	@Nonnull
-	public CSharpLightLikeMethodDeclarationWithImplType<S> withTypeRefForImplement(@Nonnull DotNetTypeRef type)
+	public CSharpLightLikeMethodDeclarationWithImplType<S> withTypeRefForImplement(DotNetTypeRef type)
 	{
 		return withTypeRefForImplement(() -> type);
 	}
 
-	@Nonnull
-	public CSharpLightLikeMethodDeclarationWithImplType<S> withReturnTypeRef(@Nonnull DotNetTypeRef type)
+	public CSharpLightLikeMethodDeclarationWithImplType<S> withReturnTypeRef(DotNetTypeRef type)
 	{
 		return withReturnTypeRef(() -> type);
 	}
 
-	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")
 	public DotNetTypeRef getTypeRefForImplement()
@@ -100,7 +94,6 @@ public abstract class CSharpLightLikeMethodDeclarationWithImplType<S extends Dot
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")
 	public DotNetTypeRef getReturnTypeRef()

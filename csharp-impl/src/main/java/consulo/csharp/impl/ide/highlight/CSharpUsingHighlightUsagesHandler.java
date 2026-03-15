@@ -26,7 +26,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiRecursiveElementVisitor;
 
-import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -49,7 +48,6 @@ public class CSharpUsingHighlightUsagesHandler extends HighlightUsagesHandlerBas
 			myListChild = listChild;
 		}
 
-		@Nonnull
 		@Override
 		protected Collection<? extends CSharpUsingListChild> getStatements()
 		{

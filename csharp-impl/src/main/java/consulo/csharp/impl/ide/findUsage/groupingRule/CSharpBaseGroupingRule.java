@@ -36,8 +36,7 @@ import consulo.usage.UsageView;
 import consulo.util.dataholder.Key;
 import consulo.virtualFileSystem.status.FileStatus;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -64,7 +63,6 @@ public class CSharpBaseGroupingRule<T extends PsiElement> implements UsageGroup,
 		return IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY | Iconable.ICON_FLAG_READ_STATUS);
 	}
 
-	@Nonnull
 	@Override
 	public String getText(@Nullable UsageView usageView)
 	{

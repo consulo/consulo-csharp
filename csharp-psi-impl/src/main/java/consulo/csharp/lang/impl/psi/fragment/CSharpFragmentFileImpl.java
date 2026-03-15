@@ -37,8 +37,7 @@ import consulo.util.collection.SmartList;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.fileType.FileType;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,14 +55,13 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 
 	private Set<String> myUsingNamespaceChildren = new LinkedHashSet<>();
 
-	public CSharpFragmentFileImpl(@Nonnull IElementType elementType, IElementType contentElementType, @Nonnull FileViewProvider provider, @Nullable PsiElement context)
+	public CSharpFragmentFileImpl(IElementType elementType, IElementType contentElementType, FileViewProvider provider, @Nullable PsiElement context)
 	{
 		super(elementType, contentElementType, provider);
 		myContext = context;
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{
@@ -80,7 +78,6 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 		return super.getContext();
 	}
 
-	@Nonnull
 	@Override
 	public FileType getFileType()
 	{
@@ -88,7 +85,7 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 	}
 
 	@Override
-	public void accept(@Nonnull PsiElementVisitor psiElementVisitor)
+	public void accept(PsiElementVisitor psiElementVisitor)
 	{
 		psiElementVisitor.visitFile(this);
 	}
@@ -112,7 +109,6 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 		return mySearchScope;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetQualifiedElement[] getMembers()
 	{
@@ -121,7 +117,7 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 
 	@RequiredReadAction
 	@Override
-	public void addUsingChild(@Nonnull CSharpUsingListChild child)
+	public void addUsingChild(CSharpUsingListChild child)
 	{
 		if(myContext == null)
 		{
@@ -140,7 +136,6 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpUsingListChild[] getUsingStatements()
 	{

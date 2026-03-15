@@ -41,8 +41,7 @@ import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.ASTNode;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Locale;
 
 /**
@@ -51,19 +50,18 @@ import java.util.Locale;
  */
 public class CSharpXAccessorImpl extends CSharpStubMemberImpl<CSharpXAccessorStub> implements DotNetXAccessor, CSharpSimpleLikeMethodAsElement
 {
-	public CSharpXAccessorImpl(@Nonnull ASTNode node)
+	public CSharpXAccessorImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpXAccessorImpl(@Nonnull CSharpXAccessorStub stub)
+	public CSharpXAccessorImpl(CSharpXAccessorStub stub)
 	{
 		super(stub, CSharpStubElements.XACCESSOR);
 	}
 
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
@@ -71,7 +69,6 @@ public class CSharpXAccessorImpl extends CSharpStubMemberImpl<CSharpXAccessorStu
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
@@ -93,14 +90,13 @@ public class CSharpXAccessorImpl extends CSharpStubMemberImpl<CSharpXAccessorStu
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		DotNetModifierList modifierList = getModifierList();
 		return modifierList != null && modifierList.hasModifier(modifier);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public PsiElement getNameIdentifier()
 	{
@@ -127,7 +123,6 @@ public class CSharpXAccessorImpl extends CSharpStubMemberImpl<CSharpXAccessorStu
 		return getName();
 	}
 
-	@Nonnull
 	private Pair<DotNetTypeRef, DotNetQualifiedElement> getTypeRefOfParent()
 	{
 		CSharpXAccessorOwner element = PsiTreeUtil.getParentOfType(this, CSharpXAccessorOwner.class);
@@ -153,10 +148,10 @@ public class CSharpXAccessorImpl extends CSharpStubMemberImpl<CSharpXAccessorStu
 	}
 
 	@Override
-	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
-			@Nonnull ResolveState state,
+	public boolean processDeclarations(PsiScopeProcessor processor,
+			ResolveState state,
 			PsiElement lastParent,
-			@Nonnull PsiElement place)
+			PsiElement place)
 	{
 		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER_OR_LOCAL_METHOD))
 		{
@@ -190,12 +185,11 @@ public class CSharpXAccessorImpl extends CSharpStubMemberImpl<CSharpXAccessorStu
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitXAccessor(this);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCodeBodyProxy getCodeBlock()
 	{

@@ -46,8 +46,7 @@ import consulo.language.version.LanguageVersion;
 import consulo.project.Project;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.function.BiConsumer;
 
 /**
@@ -56,31 +55,27 @@ import java.util.function.BiConsumer;
  */
 public class CSharpFileFactory
 {
-	@Nonnull
 	@RequiredReadAction
-	public static CSharpFile createFile(@Nonnull Project project, @Nonnull CharSequence text)
+	public static CSharpFile createFile(Project project, CharSequence text)
 	{
 		return (CSharpFile) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE, text);
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static CSharpUsingListChild createUsingStatementFromText(@Nonnull Project project, @Nonnull String text)
+	public static CSharpUsingListChild createUsingStatementFromText(Project project, String text)
 	{
 		CSharpFileImpl fileFromText = (CSharpFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE, text);
 
 		return fileFromText.getUsingStatements()[0];
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static CSharpUsingNamespaceStatement createUsingNamespaceStatement(@Nonnull Project project, @Nonnull String qName)
+	public static CSharpUsingNamespaceStatement createUsingNamespaceStatement(Project project, String qName)
 	{
 		return (CSharpUsingNamespaceStatement) createUsingStatementFromText(project, "using " + qName + ";");
 	}
 
-	@Nonnull
-	public static DotNetType createMaybeStubType(@Nonnull Project project, @Nonnull String typeText, @Nullable DotNetType oldType)
+	public static DotNetType createMaybeStubType(Project project, String typeText, @Nullable DotNetType oldType)
 	{
 		if(oldType instanceof StubBasedPsiElement)
 		{
@@ -95,8 +90,7 @@ public class CSharpFileFactory
 		}
 	}
 
-	@Nonnull
-	public static CSharpFieldDeclaration createField(@Nonnull Project project, @Nonnull String text)
+	public static CSharpFieldDeclaration createField(Project project, String text)
 	{
 		String clazz = "class _Dummy { " + text + "; }";
 
@@ -107,7 +101,7 @@ public class CSharpFileFactory
 	}
 
 	@Nullable
-	public static CSharpPropertyDeclaration createProperty(@Nonnull Project project, @Nonnull String text)
+	public static CSharpPropertyDeclaration createProperty(Project project, String text)
 	{
 		String clazz = "class _Dummy { " + text + "; }";
 
@@ -122,8 +116,7 @@ public class CSharpFileFactory
 		return null;
 	}
 
-	@Nonnull
-	public static DotNetLikeMethodDeclaration createMethod(@Nonnull Project project, @Nonnull CharSequence text)
+	public static DotNetLikeMethodDeclaration createMethod(Project project, CharSequence text)
 	{
 		DotNetNamedElement member = createMember(project, text);
 		if(!(member instanceof DotNetLikeMethodDeclaration))
@@ -133,8 +126,7 @@ public class CSharpFileFactory
 		return (DotNetLikeMethodDeclaration) member;
 	}
 
-	@Nonnull
-	public static DotNetNamedElement createMember(@Nonnull Project project, @Nonnull CharSequence text)
+	public static DotNetNamedElement createMember(Project project, CharSequence text)
 	{
 		String clazz = "class _Dummy { " + text + "; }";
 
@@ -144,17 +136,15 @@ public class CSharpFileFactory
 		return typeDeclaration.getMembers()[0];
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static CSharpIdentifier createIdentifier(@Nonnull Project project, @Nonnull String name)
+	public static CSharpIdentifier createIdentifier(Project project, String name)
 	{
 		CSharpFieldDeclaration field = createField(project, "int " + name);
 		return (CSharpIdentifier) field.getNameIdentifier();
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static PsiElement createReferenceToken(@Nonnull Project project, @Nonnull String name)
+	public static PsiElement createReferenceToken(Project project, String name)
 	{
 		CSharpFieldDeclaration field = createField(project, "int dummy = " + name + ";");
 		CSharpReferenceExpression initializer = (CSharpReferenceExpression) field.getInitializer();
@@ -174,23 +164,20 @@ public class CSharpFileFactory
 			languageVersion), ModifierSet.EMPTY));
 
 	@RequiredReadAction
-	@Nonnull
-	public static DotNetExpression createExpression(@Nonnull Project project, @Nonnull String text)
+	public static DotNetExpression createExpression(Project project, String text)
 	{
 		return parseFile(text, project, DotNetExpression.class, ourExpressionElementType);
 	}
 
 	@RequiredReadAction
-	@Nonnull
-	public static DotNetExpression createExpression(@Nonnull Project project, @Nonnull PsiElement stubMarker, @Nonnull String text)
+	public static DotNetExpression createExpression(Project project, PsiElement stubMarker, String text)
 	{
 		IElementType refExpression = stubMarker instanceof StubBasedPsiElement ? ourStubExpressionElementType : ourExpressionElementType;
 		return parseFile(text, project, DotNetExpression.class, refExpression);
 	}
 
 	@RequiredReadAction
-	@Nonnull
-	public static DotNetStatement createStatement(@Nonnull Project project, @Nonnull CharSequence text)
+	public static DotNetStatement createStatement(Project project, CharSequence text)
 	{
 		return parseFile(text, project, DotNetStatement.class, ourStatementElementType);
 	}
@@ -211,13 +198,12 @@ public class CSharpFileFactory
 		return PsiTreeUtil.findChildOfType(file, clazz);
 	}
 
-	@Nonnull
 	private static IElementType createElementType(String id, BiConsumer<PsiBuilder, LanguageVersion> consumer)
 	{
 		return new IFileElementType(id, CSharpLanguage.INSTANCE)
 		{
 			@Override
-			protected ASTNode doParseContents(@Nonnull ASTNode chameleon, @Nonnull PsiElement psi)
+			protected ASTNode doParseContents(ASTNode chameleon, PsiElement psi)
 			{
 				final Project project = psi.getProject();
 				final Language languageForParser = getLanguageForParser(psi);
@@ -234,23 +220,21 @@ public class CSharpFileFactory
 		};
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static CSharpLocalVariable createLocalVariable(@Nonnull Project project, @Nonnull CharSequence text)
+	public static CSharpLocalVariable createLocalVariable(Project project, CharSequence text)
 	{
 		CSharpLocalVariableDeclarationStatement statement = (CSharpLocalVariableDeclarationStatement) createStatement(project, text);
 		return statement.getVariables()[0];
 	}
 
-	@Nonnull
 	@RequiredReadAction
-	public static DotNetType createType(@Nonnull Project project, @Nonnull CharSequence type)
+	public static DotNetType createType(Project project, CharSequence type)
 	{
 		CSharpLocalVariableDeclarationStatement statement = (CSharpLocalVariableDeclarationStatement) createStatement(project, type + " temp;");
 		return statement.getVariables()[0].getType();
 	}
 
-	public static DotNetTypeDeclaration createTypeDeclaration(@Nonnull Project project, @Nonnull String text)
+	public static DotNetTypeDeclaration createTypeDeclaration(Project project, String text)
 	{
 		CSharpFileImpl psiFile = createTypeDeclarationWithScope(project, text);
 

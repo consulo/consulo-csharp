@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.language.ast.ASTNode;
 import consulo.annotation.access.RequiredReadAction;
@@ -36,31 +35,29 @@ import consulo.language.psi.stub.IStubElementType;
  */
 public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStringValueStub<CSharpUserType>> implements CSharpUserType
 {
-	public CSharpStubUserTypeImpl(@Nonnull ASTNode node)
+	public CSharpStubUserTypeImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubUserTypeImpl(@Nonnull CSharpWithStringValueStub<CSharpUserType> stub, @Nonnull IStubElementType<? extends CSharpWithStringValueStub<CSharpUserType>, ?> nodeType)
+	public CSharpStubUserTypeImpl(CSharpWithStringValueStub<CSharpUserType> stub, IStubElementType<? extends CSharpWithStringValueStub<CSharpUserType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitUserType(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
 		return new CSharpUserTypeRef(getReferenceExpression());
 	}
 
-	@Nonnull
 	@Override
 	public String getReferenceText()
 	{
@@ -74,7 +71,6 @@ public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWith
 		return referenceExpression.getText();
 	}
 
-	@Nonnull
 	@Override
 	public CSharpReferenceExpression getReferenceExpression()
 	{

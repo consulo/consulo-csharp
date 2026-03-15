@@ -29,8 +29,7 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.util.LanguageCachedValueUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -38,13 +37,13 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttribute
 {
-	public CSharpAttributeImpl(@Nonnull IElementType elementType)
+	public CSharpAttributeImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitAttribute(this);
 	}
@@ -73,7 +72,6 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttr
 		return null;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{
@@ -93,14 +91,12 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttr
 	}
 
 	@Override
-	@Nonnull
 	public DotNetExpression[] getParameterExpressions()
 	{
 		CSharpCallArgumentList parameterList = getParameterList();
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
-	@Nonnull
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
@@ -121,7 +117,6 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttr
 		return ref.resolve();
 	}
 
-	@Nonnull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{

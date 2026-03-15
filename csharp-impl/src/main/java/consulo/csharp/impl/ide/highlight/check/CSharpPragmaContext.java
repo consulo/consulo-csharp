@@ -32,7 +32,6 @@ import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.collection.Lists;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,14 +49,12 @@ public class CSharpPragmaContext
 		private int endOffset = -1;
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	public static CSharpPragmaContext get(PsiFile file)
 	{
 		return LanguageCachedValueUtil.getCachedValue(file, () -> CachedValueProvider.Result.create(build(file), PsiModificationTracker.MODIFICATION_COUNT));
 	}
 
-	@Nonnull
 	@RequiredReadAction
 	private static CSharpPragmaContext build(PsiFile file)
 	{

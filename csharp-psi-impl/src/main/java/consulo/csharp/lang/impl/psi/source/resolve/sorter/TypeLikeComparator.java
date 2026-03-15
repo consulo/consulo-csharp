@@ -25,7 +25,6 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
-import jakarta.annotation.Nonnull;
 
 import java.util.Comparator;
 
@@ -35,9 +34,8 @@ import java.util.Comparator;
  */
 public class TypeLikeComparator implements Comparator<ResolveResult>
 {
-	@Nonnull
 	@RequiredReadAction
-	public static TypeLikeComparator create(@Nonnull PsiElement element)
+	public static TypeLikeComparator create(PsiElement element)
 	{
 		return new TypeLikeComparator(CSharpReferenceExpressionImplUtil.getTypeArgumentListSize(element));
 	}

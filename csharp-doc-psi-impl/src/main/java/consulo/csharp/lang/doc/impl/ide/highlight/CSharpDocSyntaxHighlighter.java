@@ -19,7 +19,6 @@ package consulo.csharp.lang.doc.impl.ide.highlight;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.annotation.Nonnull;
 import consulo.csharp.lang.doc.impl.lexer.CSharpDocLexer;
 import consulo.csharp.lang.doc.impl.psi.CSharpDocTokenType;
 import consulo.language.editor.highlight.SyntaxHighlighterBase;
@@ -66,14 +65,12 @@ public class CSharpDocSyntaxHighlighter extends SyntaxHighlighterBase
 	}
 
 	@Override
-	@Nonnull
 	public Lexer getHighlightingLexer()
 	{
 		return new CSharpDocLexer();
 	}
 
 	@Override
-	@Nonnull
 	public TextAttributesKey[] getTokenHighlights(IElementType tokenType)
 	{
 		return pack(keys1.get(tokenType), keys2.get(tokenType));

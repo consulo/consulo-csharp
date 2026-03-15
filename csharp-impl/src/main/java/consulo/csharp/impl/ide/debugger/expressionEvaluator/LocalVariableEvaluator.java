@@ -24,7 +24,6 @@ import consulo.dotnet.debugger.proxy.*;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -39,7 +38,7 @@ public class LocalVariableEvaluator extends LocalVariableOrParameterEvaluator<CS
 	}
 
 	@Override
-	protected boolean tryEvaluateFromStackFrame(@Nonnull CSharpEvaluateContext context, DotNetStackFrameProxy frame, DotNetMethodProxy method)
+	protected boolean tryEvaluateFromStackFrame(CSharpEvaluateContext context, DotNetStackFrameProxy frame, DotNetMethodProxy method)
 	{
 		DotNetLocalVariableProxy[] locals = method.getLocalVariables(frame);
 

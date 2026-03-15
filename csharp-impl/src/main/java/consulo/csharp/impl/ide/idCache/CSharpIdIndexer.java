@@ -24,7 +24,6 @@ import consulo.language.psi.stub.OccurrenceConsumer;
 import consulo.csharp.lang.impl.lexer.CSharpLexer;
 import consulo.virtualFileSystem.fileType.FileType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -44,7 +43,6 @@ public class CSharpIdIndexer extends LexerBasedIdIndexer
 		return new CSharpIdFilterLexer(new CSharpLexer(), consumer);
 	}
 
-	@Nonnull
 	@Override
 	public FileType getFileType()
 	{

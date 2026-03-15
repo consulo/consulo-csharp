@@ -29,7 +29,6 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
-import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
@@ -309,7 +308,6 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 		throw new UnsupportedOperationException("expression is not supported");
 	}
 
-	@Nonnull
 	private static String getMethodName(IElementType elementType, String originalName)
 	{
 		if(elementType == CSharpTokens.EQEQ || elementType == CSharpTokens.NTEQ)
@@ -320,7 +318,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 	}
 
 	@RequiredReadAction
-	private void pushMethodEvaluator(PsiElement scope, CSharpMethodDeclaration methodDeclaration, CSharpTypeDeclaration typeDeclaration, @Nonnull String referenceName)
+	private void pushMethodEvaluator(PsiElement scope, CSharpMethodDeclaration methodDeclaration, CSharpTypeDeclaration typeDeclaration, String referenceName)
 	{
 		DotNetTypeRef[] parameterTypeRefs = methodDeclaration.getParameterTypeRefs();
 		List<DotNetTypeDeclaration> parameterTypes = new ArrayList<DotNetTypeDeclaration>();
@@ -372,7 +370,6 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 		}
 	}
 
-	@Nonnull
 	public List<Evaluator> getEvaluators()
 	{
 		return myEvaluators;

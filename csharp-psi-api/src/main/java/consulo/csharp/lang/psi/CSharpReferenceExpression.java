@@ -25,8 +25,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiPolyVariantReference;
 import consulo.util.lang.CharFilter;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -60,7 +59,6 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		EXPRESSION_OR_TYPE_LIKE,
 		TUPLE_PROPERTY; // tuple property (name: exp)
 
-		@Nonnull
 		public static final ResolveToKind[] VALUES = values();
 	}
 
@@ -73,7 +71,6 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		NULLABLE_CALL,
 		NESTED_TYPE;
 
-		@Nonnull
 		public static final AccessType[] VALUES = values();
 	}
 
@@ -101,7 +98,6 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 	@RequiredReadAction
 	PsiElement getReferenceElement();
 
-	@Nonnull
 	@RequiredReadAction
 	ResolveToKind kind();
 
@@ -109,7 +105,6 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 	@RequiredReadAction
 	DotNetTypeList getTypeArgumentList();
 
-	@Nonnull
 	@RequiredReadAction
 	DotNetTypeRef[] getTypeArgumentListRefs();
 
@@ -120,7 +115,6 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 	@RequiredReadAction
 	PsiElement getMemberAccessElement();
 
-	@Nonnull
 	@RequiredReadAction
 	AccessType getMemberAccessType();
 }

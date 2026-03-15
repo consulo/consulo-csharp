@@ -20,7 +20,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -34,9 +33,8 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 	NONE
 			{
 				@RequiredReadAction
-				@Nonnull
 				@Override
-				public Collection<PsiElement> doSelectElement(@Nonnull CSharpResolveContext context, boolean deep)
+				public Collection<PsiElement> doSelectElement(CSharpResolveContext context, boolean deep)
 				{
 					throw new UnsupportedOperationException();
 				}
@@ -44,9 +42,8 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 	INDEX_METHOD_GROUP
 			{
 				@RequiredReadAction
-				@Nonnull
 				@Override
-				public Collection<PsiElement> doSelectElement(@Nonnull CSharpResolveContext context, boolean deep)
+				public Collection<PsiElement> doSelectElement(CSharpResolveContext context, boolean deep)
 				{
 					CSharpElementGroup<CSharpIndexMethodDeclaration> group = context.indexMethodGroup(deep);
 					if(group == null)
@@ -60,9 +57,8 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 	CONSTRUCTOR_GROUP
 			{
 				@RequiredReadAction
-				@Nonnull
 				@Override
-				public Collection<PsiElement> doSelectElement(@Nonnull CSharpResolveContext context, boolean deep)
+				public Collection<PsiElement> doSelectElement(CSharpResolveContext context, boolean deep)
 				{
 					CSharpElementGroup<CSharpConstructorDeclaration> group = context.constructorGroup();
 					if(group == null)
@@ -76,9 +72,8 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 	DE_CONSTRUCTOR_GROUP
 			{
 				@RequiredReadAction
-				@Nonnull
 				@Override
-				public Collection<PsiElement> doSelectElement(@Nonnull CSharpResolveContext context, boolean deep)
+				public Collection<PsiElement> doSelectElement(CSharpResolveContext context, boolean deep)
 				{
 					CSharpElementGroup<CSharpConstructorDeclaration> group = context.deConstructorGroup();
 					if(group == null)

@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.impl.parser.macro;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import consulo.csharp.lang.impl.parser.SharedParsingHelpers;
 import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
@@ -36,14 +36,12 @@ public class PreprocessorExpressionParsing implements CSharpPreprocesorTokens, C
 	private static final TokenSet PREFIX_OPS = TokenSet.create(EXCL);
 
 
-	@Nullable
-	public static PsiBuilder.Marker parse(final PsiBuilder builder)
+	public static PsiBuilder.@Nullable Marker parse(final PsiBuilder builder)
 	{
 		return parseExpression(builder, ExprType.CONDITIONAL_OR);
 	}
 
-	@Nullable
-	private static PsiBuilder.Marker parseExpression(final PsiBuilder builder, final ExprType type)
+	private static PsiBuilder.@Nullable Marker parseExpression(final PsiBuilder builder, final ExprType type)
 	{
 		switch(type)
 		{
@@ -62,8 +60,7 @@ public class PreprocessorExpressionParsing implements CSharpPreprocesorTokens, C
 		}
 	}
 
-	@Nullable
-	private static PsiBuilder.Marker parseUnary(final PsiBuilder builder)
+	private static PsiBuilder.@Nullable Marker parseUnary(final PsiBuilder builder)
 	{
 		final IElementType tokenType = builder.getTokenType();
 
@@ -87,8 +84,7 @@ public class PreprocessorExpressionParsing implements CSharpPreprocesorTokens, C
 		}
 	}
 
-	@Nullable
-	private static PsiBuilder.Marker parseBinary(final PsiBuilder builder, final ExprType type, final TokenSet ops)
+	private static PsiBuilder.@Nullable Marker parseBinary(final PsiBuilder builder, final ExprType type, final TokenSet ops)
 	{
 		PsiBuilder.Marker result = parseExpression(builder, type);
 		if(result == null)
@@ -132,8 +128,7 @@ public class PreprocessorExpressionParsing implements CSharpPreprocesorTokens, C
 		return result;
 	}
 
-	@Nullable
-	private static PsiBuilder.Marker parsePrimary(final PsiBuilder builder)
+	private static PsiBuilder.@Nullable Marker parsePrimary(final PsiBuilder builder)
 	{
 		PsiBuilder.Marker startMarker = builder.mark();
 
@@ -147,8 +142,7 @@ public class PreprocessorExpressionParsing implements CSharpPreprocesorTokens, C
 		return expr;
 	}
 
-	@Nullable
-	private static PsiBuilder.Marker parsePrimaryExpressionStart(final PsiBuilder builder)
+	private static PsiBuilder.@Nullable Marker parsePrimaryExpressionStart(final PsiBuilder builder)
 	{
 		IElementType tokenType = builder.getTokenType();
 

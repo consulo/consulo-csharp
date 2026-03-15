@@ -24,7 +24,6 @@ import consulo.dotnet.psi.impl.DotNetPsiCountUtil;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.EmptyStub;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -32,23 +31,22 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpGenericParameterListImpl extends CSharpStubElementImpl<EmptyStub<DotNetGenericParameterList>> implements DotNetGenericParameterList
 {
-	public CSharpGenericParameterListImpl(@Nonnull ASTNode node)
+	public CSharpGenericParameterListImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpGenericParameterListImpl(@Nonnull EmptyStub<DotNetGenericParameterList> stub)
+	public CSharpGenericParameterListImpl(EmptyStub<DotNetGenericParameterList> stub)
 	{
 		super(stub, CSharpStubElements.GENERIC_PARAMETER_LIST);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericParameterList(this);
 	}
 
-	@Nonnull
 	@Override
 	public DotNetGenericParameter[] getParameters()
 	{

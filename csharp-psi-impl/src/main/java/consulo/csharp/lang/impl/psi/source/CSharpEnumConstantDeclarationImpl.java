@@ -28,8 +28,7 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.util.PsiTreeUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -38,12 +37,12 @@ import jakarta.annotation.Nullable;
 public class CSharpEnumConstantDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl>> implements
 		CSharpEnumConstantDeclaration
 {
-	public CSharpEnumConstantDeclarationImpl(@Nonnull ASTNode node)
+	public CSharpEnumConstantDeclarationImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpEnumConstantDeclarationImpl(@Nonnull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> stub)
+	public CSharpEnumConstantDeclarationImpl(CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> stub)
 	{
 		super(stub, CSharpStubElements.ENUM_CONSTANT_DECLARATION);
 	}
@@ -56,7 +55,7 @@ public class CSharpEnumConstantDeclarationImpl extends CSharpStubVariableImpl<CS
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitEnumConstantDeclaration(this);
 	}
@@ -70,7 +69,6 @@ public class CSharpEnumConstantDeclarationImpl extends CSharpStubVariableImpl<CS
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{

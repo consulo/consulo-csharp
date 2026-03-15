@@ -31,7 +31,6 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -46,12 +45,12 @@ public class ConvertNamedToSimpleArgumentFix extends BaseIntentionAction impleme
   }
 
   @Override
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile) {
+  public boolean isAvailable(Project project, Editor editor, PsiFile psiFile) {
     return myPointer.getElement() != null;
   }
 
   @Override
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
+  public void invoke(Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
     CSharpNamedCallArgument element = myPointer.getElement();
     if (element == null) {
       return;

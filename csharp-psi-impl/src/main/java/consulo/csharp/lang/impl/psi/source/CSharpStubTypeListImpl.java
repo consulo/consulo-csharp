@@ -27,7 +27,6 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.IStubElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -35,12 +34,12 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpStubTypeListImpl extends CSharpStubElementImpl<CSharpTypeListStub> implements DotNetTypeList
 {
-	public CSharpStubTypeListImpl(@Nonnull ASTNode node)
+	public CSharpStubTypeListImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubTypeListImpl(@Nonnull CSharpTypeListStub stub, @Nonnull IStubElementType<? extends CSharpTypeListStub, ?> nodeType)
+	public CSharpStubTypeListImpl(CSharpTypeListStub stub, IStubElementType<? extends CSharpTypeListStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -53,7 +52,6 @@ public class CSharpStubTypeListImpl extends CSharpStubElementImpl<CSharpTypeList
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetType[] getTypes()
 	{
@@ -61,7 +59,6 @@ public class CSharpStubTypeListImpl extends CSharpStubElementImpl<CSharpTypeList
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getTypeRefs()
 	{
@@ -80,7 +77,7 @@ public class CSharpStubTypeListImpl extends CSharpStubElementImpl<CSharpTypeList
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitTypeList(this);
 	}

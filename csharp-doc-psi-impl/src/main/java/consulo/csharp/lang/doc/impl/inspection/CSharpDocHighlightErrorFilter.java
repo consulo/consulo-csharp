@@ -22,7 +22,6 @@ import consulo.csharp.lang.doc.CSharpDocUtil;
 import consulo.language.editor.HighlightErrorFilter;
 import consulo.language.psi.PsiErrorElement;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -33,7 +32,7 @@ public class CSharpDocHighlightErrorFilter extends HighlightErrorFilter
 {
 	@Override
 	@RequiredReadAction
-	public boolean shouldHighlightErrorElement(@Nonnull PsiErrorElement element)
+	public boolean shouldHighlightErrorElement(PsiErrorElement element)
 	{
 		return !CSharpDocUtil.isInsideDoc(element);
 	}

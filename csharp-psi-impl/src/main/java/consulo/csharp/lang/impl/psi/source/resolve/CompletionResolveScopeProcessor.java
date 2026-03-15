@@ -32,7 +32,6 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.scope.GlobalSearchScope;
-import jakarta.annotation.Nonnull;
 
 import java.util.function.Predicate;
 
@@ -41,19 +40,15 @@ import java.util.function.Predicate;
  * @since 23.10.14
  */
 public class CompletionResolveScopeProcessor extends StubScopeProcessor {
-    @Nonnull
     private final GlobalSearchScope myScope;
-    @Nonnull
     private final PsiElement myPlace;
-    @Nonnull
     private CSharpContextUtil.ContextType myContextType;
-    @Nonnull
     private Predicate<ResolveResult> myProcessor;
 
     @RequiredReadAction
-    public CompletionResolveScopeProcessor(@Nonnull CSharpResolveOptions options,
-                                           @Nonnull Predicate<ResolveResult> processor,
-                                           @Nonnull ExecuteTarget[] targets) {
+    public CompletionResolveScopeProcessor(CSharpResolveOptions options,
+                                           Predicate<ResolveResult> processor,
+                                           ExecuteTarget[] targets) {
         myProcessor = processor;
         myPlace = options.getElement();
 
@@ -69,13 +64,13 @@ public class CompletionResolveScopeProcessor extends StubScopeProcessor {
     }
 
     @Override
-    public void pushResultExternally(@Nonnull ResolveResult resolveResult) {
+    public void pushResultExternally(ResolveResult resolveResult) {
         myProcessor.test(resolveResult);
     }
 
     @Override
     @RequiredReadAction
-    public boolean execute(@Nonnull PsiElement element, ResolveState state) {
+    public boolean execute(PsiElement element, ResolveState state) {
         DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
         assert extractor != null;
 
@@ -100,7 +95,7 @@ public class CompletionResolveScopeProcessor extends StubScopeProcessor {
     }
 
     @RequiredReadAction
-    private void processElement(@Nonnull PsiElement element) {
+    private void processElement(PsiElement element) {
         if (!ExecuteTargetUtil.isMyElement(this, element)) {
             return;
         }

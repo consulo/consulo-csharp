@@ -21,7 +21,6 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpFieldOrPropertySetBlock;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -29,18 +28,17 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpFieldOrPropertySetBlockImpl extends CSharpElementImpl implements CSharpFieldOrPropertySetBlock
 {
-	public CSharpFieldOrPropertySetBlockImpl(@Nonnull IElementType elementType)
+	public CSharpFieldOrPropertySetBlockImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitFieldOrPropertySetBlock(this);
 	}
 
-	@Nonnull
 	@Override
 	public CSharpFieldOrPropertySet[] getSets()
 	{

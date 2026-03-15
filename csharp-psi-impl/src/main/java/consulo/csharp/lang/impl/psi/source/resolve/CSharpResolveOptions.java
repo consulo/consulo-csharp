@@ -23,8 +23,7 @@ import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -32,17 +31,14 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpResolveOptions
 {
-	@Nonnull
 	public static CSharpResolveOptions build()
 	{
 		return new CSharpResolveOptions();
 	}
 
-	@Nonnull
 	private CSharpReferenceExpression.ResolveToKind myKind;
 	@Nullable
 	private CSharpResolveSelector mySelector;
-	@Nonnull
 	private PsiElement myElement;
 	@Nullable
 	private CSharpCallArgumentListOwner myCallArgumentListOwner;
@@ -57,9 +53,9 @@ public class CSharpResolveOptions
 	{
 	}
 
-	public CSharpResolveOptions(@Nonnull CSharpReferenceExpression.ResolveToKind kind,
+	public CSharpResolveOptions(CSharpReferenceExpression.ResolveToKind kind,
 			@Nullable CSharpResolveSelector selector,
-			@Nonnull PsiElement element,
+			PsiElement element,
 			@Nullable CSharpCallArgumentListOwner callArgumentListOwner,
 			final boolean completion,
 			boolean resolveFromParent)
@@ -73,43 +69,37 @@ public class CSharpResolveOptions
 		myResolveFromParent = resolveFromParent;
 	}
 
-	@Nonnull
 	public CSharpResolveOptions completion()
 	{
 		myCompletion = true;
 		return this;
 	}
 
-	@Nonnull
-	public CSharpResolveOptions completion(@Nonnull CSharpContextUtil.ContextType contextType)
+	public CSharpResolveOptions completion(CSharpContextUtil.ContextType contextType)
 	{
 		myCompletion = true;
 		myCompletionContextType = contextType;
 		return this;
 	}
 
-	@Nonnull
 	public CSharpResolveOptions resolveFromParent()
 	{
 		myResolveFromParent = true;
 		return this;
 	}
 
-	@Nonnull
-	public CSharpResolveOptions element(@Nonnull PsiElement element)
+	public CSharpResolveOptions element(PsiElement element)
 	{
 		myElement = element;
 		return this;
 	}
 
-	@Nonnull
 	public CSharpResolveOptions kind(CSharpReferenceExpression.ResolveToKind kind)
 	{
 		myKind = kind;
 		return this;
 	}
 
-	@Nonnull
 	public CSharpReferenceExpression.ResolveToKind getKind()
 	{
 		return myKind;
@@ -121,14 +111,12 @@ public class CSharpResolveOptions
 		return mySelector;
 	}
 
-	@Nonnull
 	public PsiElement getElement()
 	{
 		return myElement;
 	}
 
-	@Nullable
-	public CSharpContextUtil.ContextType getCompletionContextType()
+	public CSharpContextUtil.@Nullable ContextType getCompletionContextType()
 	{
 		return myCompletionContextType;
 	}

@@ -26,8 +26,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;
 import consulo.csharp.lang.psi.CSharpGenericParameter;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -44,7 +43,7 @@ public class CSharpLightGenericParameterBuilder extends CSharpLightNamedElementW
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericParameter(this);
 	}
@@ -68,7 +67,6 @@ public class CSharpLightGenericParameterBuilder extends CSharpLightNamedElementW
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
@@ -81,7 +79,6 @@ public class CSharpLightGenericParameterBuilder extends CSharpLightNamedElementW
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{

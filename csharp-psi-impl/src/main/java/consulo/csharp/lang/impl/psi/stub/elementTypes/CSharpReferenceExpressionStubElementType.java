@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
 import java.io.IOException;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -42,22 +41,21 @@ public class CSharpReferenceExpressionStubElementType extends CSharpAbstractStub
 		super("REFERENCE_NAME");
 	}
 
-	@Nonnull
 	@Override
-	public PsiElement createElement(@Nonnull ASTNode astNode)
+	public PsiElement createElement(ASTNode astNode)
 	{
 		return new CSharpStubReferenceExpressionImpl(astNode);
 	}
 
 	@Override
-	public CSharpReferenceExpression createPsi(@Nonnull CSharpReferenceExpressionStub stub)
+	public CSharpReferenceExpression createPsi(CSharpReferenceExpressionStub stub)
 	{
 		return new CSharpStubReferenceExpressionImpl(stub, this);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpReferenceExpressionStub createStub(@Nonnull CSharpReferenceExpression psi, StubElement parentStub)
+	public CSharpReferenceExpressionStub createStub(CSharpReferenceExpression psi, StubElement parentStub)
 	{
 		String referenceName = psi.getReferenceNameWithAt();
 		CSharpReferenceExpression.ResolveToKind kind = psi.kind();
@@ -67,7 +65,7 @@ public class CSharpReferenceExpressionStubElementType extends CSharpAbstractStub
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpReferenceExpressionStub stub, @Nonnull StubOutputStream dataStream) throws IOException
+	public void serialize(CSharpReferenceExpressionStub stub, StubOutputStream dataStream) throws IOException
 	{
 		dataStream.writeName(stub.getReferenceText());
 		dataStream.writeVarInt(stub.getKindIndex());
@@ -75,9 +73,8 @@ public class CSharpReferenceExpressionStubElementType extends CSharpAbstractStub
 		dataStream.writeBoolean(stub.isGlobal());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpReferenceExpressionStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException
+	public CSharpReferenceExpressionStub deserialize(StubInputStream dataStream, StubElement parentStub) throws IOException
 	{
 		StringRef referenceText = dataStream.readName();
 		int kind = dataStream.readVarInt();

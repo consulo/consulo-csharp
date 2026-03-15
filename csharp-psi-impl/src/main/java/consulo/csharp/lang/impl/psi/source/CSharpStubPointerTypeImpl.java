@@ -29,8 +29,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.EmptyStub;
 import consulo.language.psi.stub.IStubElementType;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -38,24 +37,23 @@ import jakarta.annotation.Nullable;
  */
 public class CSharpStubPointerTypeImpl extends CSharpStubTypeElementImpl<EmptyStub<DotNetPointerType>> implements DotNetPointerType
 {
-	public CSharpStubPointerTypeImpl(@Nonnull ASTNode node)
+	public CSharpStubPointerTypeImpl(ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubPointerTypeImpl(@Nonnull EmptyStub<DotNetPointerType> stub, @Nonnull IStubElementType<? extends EmptyStub<DotNetPointerType>, ?> nodeType)
+	public CSharpStubPointerTypeImpl(EmptyStub<DotNetPointerType> stub, IStubElementType<? extends EmptyStub<DotNetPointerType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitPointerType(this);
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
@@ -74,7 +72,6 @@ public class CSharpStubPointerTypeImpl extends CSharpStubTypeElementImpl<EmptySt
 		return getStubOrPsiChildByIndex(CSharpStubElementSets.TYPE_SET, 0);
 	}
 
-	@Nonnull
 	@Override
 	public PsiElement getAsterisk()
 	{

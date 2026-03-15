@@ -26,7 +26,6 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.psi.PsiElement;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -34,21 +33,19 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResult implements CSharpLikeTypeRef {
     private DotNetTypeDeclaration myElement;
-    @Nonnull
     private final DotNetGenericExtractor myExtractor;
 
-    public CSharpTypeRefByTypeDeclaration(@Nonnull DotNetTypeDeclaration element) {
+    public CSharpTypeRefByTypeDeclaration(DotNetTypeDeclaration element) {
         this(element, DotNetGenericExtractor.EMPTY);
     }
 
-    public CSharpTypeRefByTypeDeclaration(@Nonnull DotNetTypeDeclaration element, @Nonnull DotNetGenericExtractor extractor) {
+    public CSharpTypeRefByTypeDeclaration(DotNetTypeDeclaration element, DotNetGenericExtractor extractor) {
         super(element.getProject(), element.getResolveScope());
         myElement = element;
         myExtractor = extractor;
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     protected DotNetTypeResolveResult resolveResult() {
         CSharpMethodDeclaration methodDeclaration = myElement.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE);
@@ -63,7 +60,6 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResul
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
     public String getVmQName() {
         return CSharpTypeRefPresentationUtil.buildVmQName(this);
@@ -79,13 +75,11 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResul
         return CSharpLikeTypeRef.hashCode(this);
     }
 
-    @Nonnull
     @Override
     public DotNetTypeRef getInnerTypeRef() {
         return new CSharpTypeRefByQName(myProject, myResolveScope, myElement.getVmQName());
     }
 
-    @Nonnull
     @Override
     public DotNetGenericExtractor getExtractor() {
         return myExtractor;

@@ -22,7 +22,6 @@ import consulo.util.lang.StringUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.editor.refactoring.RefactoringBundle;
 import consulo.usage.UsageViewBundle;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -45,7 +44,6 @@ public class ChangeSignatureViewDescriptor implements UsageViewDescriptor
 	}
 
 	@Override
-	@Nonnull
 	public PsiElement[] getElements()
 	{
 		return new PsiElement[]{myMethod};

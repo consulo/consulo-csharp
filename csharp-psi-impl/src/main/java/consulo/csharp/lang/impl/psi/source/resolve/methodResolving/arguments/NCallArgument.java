@@ -29,8 +29,7 @@ import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.util.dataholder.UserDataHolderBase;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -58,7 +57,7 @@ public class NCallArgument extends UserDataHolderBase
 
 	protected int myValid = NOT_CALCULATED;
 
-	public NCallArgument(@Nonnull DotNetTypeRef typeRef, @Nullable CSharpCallArgument callArgument, @Nullable Object parameterObject)
+	public NCallArgument(DotNetTypeRef typeRef, @Nullable CSharpCallArgument callArgument, @Nullable Object parameterObject)
 	{
 		myTypeRef = typeRef;
 		myCallArgument = callArgument;
@@ -75,7 +74,6 @@ public class NCallArgument extends UserDataHolderBase
 		}
 	}
 
-	@Nonnull
 	public Collection<CSharpCallArgument> getCallArguments()
 	{
 		if(myCallArgument == null)
@@ -85,7 +83,6 @@ public class NCallArgument extends UserDataHolderBase
 		return Collections.singletonList(myCallArgument);
 	}
 
-	@Nonnull
 	public DotNetTypeRef getTypeRef()
 	{
 		return myTypeRef;
@@ -119,7 +116,7 @@ public class NCallArgument extends UserDataHolderBase
 	}
 
 	@RequiredReadAction
-	public int calcValid(@Nonnull GlobalSearchScope implicitCastResolveScope)
+	public int calcValid(GlobalSearchScope implicitCastResolveScope)
 	{
 		DotNetTypeRef parameterTypeRef = getParameterTypeRef();
 		int newVal = FAIL;

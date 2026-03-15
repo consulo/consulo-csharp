@@ -22,7 +22,7 @@ import consulo.csharp.lang.impl.psi.CSharpAttributeUtil;
 import consulo.csharp.lang.impl.psi.source.CSharpDummyDeclarationImpl;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.psi.PsiFile;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL

@@ -31,7 +31,6 @@ import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayFactory;
 import consulo.util.collection.ContainerUtil;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -43,7 +42,7 @@ public enum ExecuteTarget
 			{
 				@RequiredReadAction
 				@Override
-				public boolean isMyElement(@Nonnull PsiElement element)
+				public boolean isMyElement(PsiElement element)
 				{
 					return element instanceof CSharpLabeledStatementImpl;
 				}
@@ -52,7 +51,7 @@ public enum ExecuteTarget
 			{
 				@RequiredReadAction
 				@Override
-				public boolean isMyElement(@Nonnull PsiElement element)
+				public boolean isMyElement(PsiElement element)
 				{
 					return element instanceof CSharpTypeDeclaration;
 				}
@@ -61,7 +60,7 @@ public enum ExecuteTarget
 			{
 				@RequiredReadAction
 				@Override
-				public boolean isMyElement(@Nonnull PsiElement element)
+				public boolean isMyElement(PsiElement element)
 				{
 					return element instanceof DotNetQualifiedElement;
 				}
@@ -70,7 +69,7 @@ public enum ExecuteTarget
 			{
 				@RequiredReadAction
 				@Override
-				public boolean isMyElement(@Nonnull PsiElement element)
+				public boolean isMyElement(PsiElement element)
 				{
 					return element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isDelegate();
 				}
@@ -79,7 +78,7 @@ public enum ExecuteTarget
 			{
 				@RequiredReadAction
 				@Override
-				public boolean isMyElement(@Nonnull PsiElement element)
+				public boolean isMyElement(PsiElement element)
 				{
 					return element instanceof CSharpTypeDefStatement;
 				}
@@ -88,7 +87,7 @@ public enum ExecuteTarget
 			{
 				@RequiredReadAction
 				@Override
-				public boolean isMyElement(@Nonnull PsiElement element)
+				public boolean isMyElement(PsiElement element)
 				{
 					return element instanceof DotNetNamespaceAsElement;
 				}
@@ -97,7 +96,7 @@ public enum ExecuteTarget
 			{
 				@RequiredReadAction
 				@Override
-				public boolean isMyElement(@Nonnull PsiElement element)
+				public boolean isMyElement(PsiElement element)
 				{
 					return element instanceof DotNetGenericParameter;
 				}
@@ -106,7 +105,7 @@ public enum ExecuteTarget
 			{
 				@RequiredReadAction
 				@Override
-				public boolean isMyElement(@Nonnull PsiElement element)
+				public boolean isMyElement(PsiElement element)
 				{
 					return element instanceof CSharpFieldDeclaration;
 				}
@@ -115,7 +114,7 @@ public enum ExecuteTarget
 			{
 				@RequiredReadAction
 				@Override
-				public boolean isMyElement(@Nonnull PsiElement element)
+				public boolean isMyElement(PsiElement element)
 				{
 					return element instanceof CSharpPropertyDeclaration;
 				}
@@ -124,7 +123,7 @@ public enum ExecuteTarget
 			{
 				@RequiredReadAction
 				@Override
-				public boolean isMyElement(@Nonnull PsiElement element)
+				public boolean isMyElement(PsiElement element)
 				{
 					return element instanceof CSharpConstructorDeclaration;
 				}
@@ -133,7 +132,7 @@ public enum ExecuteTarget
 			{
 				@RequiredReadAction
 				@Override
-				public boolean isMyElement(@Nonnull PsiElement element)
+				public boolean isMyElement(PsiElement element)
 				{
 					return element instanceof CSharpEventDeclaration;
 				}
@@ -142,7 +141,7 @@ public enum ExecuteTarget
 			{
 				@RequiredReadAction
 				@Override
-				public boolean isMyElement(@Nonnull PsiElement element)
+				public boolean isMyElement(PsiElement element)
 				{
 					return element instanceof CSharpElementGroup;
 				}
@@ -151,7 +150,7 @@ public enum ExecuteTarget
 			{
 				@RequiredReadAction
 				@Override
-				public boolean isMyElement(@Nonnull PsiElement element)
+				public boolean isMyElement(PsiElement element)
 				{
 					return element instanceof CSharpLocalVariable ||
 							element instanceof DotNetParameter ||
@@ -176,7 +175,6 @@ public enum ExecuteTarget
 
 	public static ArrayFactory<ExecuteTarget> ARRAY_FACTORY = new ArrayFactory<ExecuteTarget>()
 	{
-		@Nonnull
 		@Override
 		public ExecuteTarget[] create(int count)
 		{
@@ -185,5 +183,5 @@ public enum ExecuteTarget
 	};
 
 	@RequiredReadAction
-	public abstract boolean isMyElement(@Nonnull PsiElement element);
+	public abstract boolean isMyElement(PsiElement element);
 }

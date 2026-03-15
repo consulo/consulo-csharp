@@ -32,8 +32,7 @@ import consulo.usage.UsageInfo;
 import consulo.usage.UsageViewDescriptor;
 import consulo.util.lang.Couple;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +44,6 @@ import java.util.Set;
  */
 public class ChangeNamespaceProcessor extends BaseRefactoringProcessor {
     class UsageViewDescriptorImpl implements UsageViewDescriptor {
-        @Nonnull
         @Override
         public PsiElement[] getElements() {
             return new PsiElement[]{myNamespaceProvider};
@@ -68,28 +66,24 @@ public class ChangeNamespaceProcessor extends BaseRefactoringProcessor {
         }
     }
 
-    @Nonnull
     private final CSharpNamespaceProvider myNamespaceProvider;
-    @Nonnull
     private final String myExpectedNamespace;
 
     protected ChangeNamespaceProcessor(
-        @Nonnull Project project,
-        @Nonnull CSharpNamespaceProvider namespaceProvider,
-        @Nonnull String expectedNamespace
+        Project project,
+        CSharpNamespaceProvider namespaceProvider,
+        String expectedNamespace
     ) {
         super(project);
         myNamespaceProvider = namespaceProvider;
         myExpectedNamespace = expectedNamespace;
     }
 
-    @Nonnull
     @Override
-    protected UsageViewDescriptor createUsageViewDescriptor(@Nonnull UsageInfo[] usages) {
+    protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages) {
         return new UsageViewDescriptorImpl();
     }
 
-    @Nonnull
     @Override
     @RequiredReadAction
     protected UsageInfo[] findUsages() {
@@ -109,13 +103,12 @@ public class ChangeNamespaceProcessor extends BaseRefactoringProcessor {
 
     @Override
     @RequiredWriteAction
-    protected void performRefactoring(@Nonnull UsageInfo[] usages) {
+    protected void performRefactoring(UsageInfo[] usages) {
         myNamespaceProvider.setNamespace(myExpectedNamespace);
 
         CSharpClassesMoveProcessor.retargetUsages(usages);
     }
 
-    @Nonnull
     @Override
     protected LocalizeValue getCommandName() {
         return LocalizeValue.localizeTODO("Change namespace to '" + myExpectedNamespace + "'");

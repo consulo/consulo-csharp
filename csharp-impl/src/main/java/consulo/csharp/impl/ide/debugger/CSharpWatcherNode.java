@@ -25,8 +25,7 @@ import consulo.execution.debug.frame.XValueModifier;
 import consulo.execution.debug.icon.ExecutionDebugIconGroup;
 import consulo.ui.image.Image;
 import consulo.util.lang.ref.SimpleReference;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,12 +34,11 @@ import jakarta.annotation.Nullable;
 public class CSharpWatcherNode extends DotNetAbstractVariableValueNode {
     private DotNetValueProxy myValue;
 
-    public CSharpWatcherNode(@Nonnull DotNetDebugContext debuggerContext, @Nonnull String name, @Nonnull DotNetStackFrameProxy frameProxy, @Nonnull DotNetValueProxy value) {
+    public CSharpWatcherNode(DotNetDebugContext debuggerContext, String name, DotNetStackFrameProxy frameProxy, DotNetValueProxy value) {
         super(debuggerContext, name, frameProxy);
         myValue = value;
     }
 
-    @Nonnull
     @Override
     public Image getIconForVariable(@Nullable SimpleReference<DotNetValueProxy> alreadyCalledValue) {
         return ExecutionDebugIconGroup.nodeWatch();
@@ -59,7 +57,7 @@ public class CSharpWatcherNode extends DotNetAbstractVariableValueNode {
     }
 
     @Override
-    public void setValueForVariableImpl(@Nonnull DotNetValueProxy value) {
+    public void setValueForVariableImpl(DotNetValueProxy value) {
 
     }
 

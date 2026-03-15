@@ -20,7 +20,6 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -28,13 +27,13 @@ import jakarta.annotation.Nonnull;
  */
 public class CSharpEmptyStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
-	public CSharpEmptyStatementImpl(@Nonnull IElementType elementType)
+	public CSharpEmptyStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitEmptyStatement(this);
 	}

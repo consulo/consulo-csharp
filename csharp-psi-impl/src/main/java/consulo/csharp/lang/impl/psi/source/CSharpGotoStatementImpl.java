@@ -24,8 +24,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.ast.IElementType;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,7 +34,7 @@ public class CSharpGotoStatementImpl extends CSharpElementImpl implements DotNet
 {
 	private static final TokenSet ourCaseOrDefaultSet = TokenSet.create(CSharpTokens.DEFAULT_KEYWORD, CSharpTokens.CASE_KEYWORD);
 
-	public CSharpGotoStatementImpl(@Nonnull IElementType elementType)
+	public CSharpGotoStatementImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -54,7 +53,7 @@ public class CSharpGotoStatementImpl extends CSharpElementImpl implements DotNet
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitGotoStatement(this);
 	}

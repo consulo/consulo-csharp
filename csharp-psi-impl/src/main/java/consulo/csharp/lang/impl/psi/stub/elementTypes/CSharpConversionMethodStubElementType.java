@@ -18,7 +18,6 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
 import java.io.IOException;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.index.io.StringRef;
 import consulo.language.psi.stub.StubElement;
@@ -40,36 +39,34 @@ public class CSharpConversionMethodStubElementType extends CSharpAbstractStubEle
 		super("CONVERSION_METHOD_DECLARATION");
 	}
 
-	@Nonnull
 	@Override
-	public CSharpConversionMethodDeclarationImpl createElement(@Nonnull ASTNode astNode)
+	public CSharpConversionMethodDeclarationImpl createElement(ASTNode astNode)
 	{
 		return new CSharpConversionMethodDeclarationImpl(astNode);
 	}
 
 	@Override
-	public CSharpConversionMethodDeclarationImpl createPsi(@Nonnull CSharpMethodDeclStub cSharpTypeStub)
+	public CSharpConversionMethodDeclarationImpl createPsi(CSharpMethodDeclStub cSharpTypeStub)
 	{
 		return new CSharpConversionMethodDeclarationImpl(cSharpTypeStub);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpMethodDeclStub createStub(@Nonnull CSharpConversionMethodDeclarationImpl methodDeclaration, StubElement stubElement)
+	public CSharpMethodDeclStub createStub(CSharpConversionMethodDeclarationImpl methodDeclaration, StubElement stubElement)
 	{
 		String qname = methodDeclaration.getPresentableParentQName();
 		return new CSharpMethodDeclStub(stubElement, this, qname, 0, -1);
 	}
 
 	@Override
-	public void serialize(@Nonnull CSharpMethodDeclStub cSharpTypeStub, @Nonnull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(CSharpMethodDeclStub cSharpTypeStub, StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(cSharpTypeStub.getParentQName());
 	}
 
-	@Nonnull
 	@Override
-	public CSharpMethodDeclStub deserialize(@Nonnull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpMethodDeclStub deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef qname = stubInputStream.readName();
 		return new CSharpMethodDeclStub(stubElement, this, StringRef.toString(qname), 0, -1);

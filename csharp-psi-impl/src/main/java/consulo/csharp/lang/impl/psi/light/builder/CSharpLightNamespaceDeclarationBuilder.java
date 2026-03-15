@@ -29,10 +29,8 @@ import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetReferenceExpression;
-import org.jetbrains.annotations.NonNls;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -50,7 +48,7 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitNamespaceDeclaration(this);
 	}
@@ -64,7 +62,7 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 
 	@RequiredWriteAction
 	@Override
-	public void setNamespace(@Nonnull String namespace)
+	public void setNamespace(String namespace)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -84,14 +82,12 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 	}
 
 	@RequiredReadAction
-	@Nonnull
 	@Override
 	public CSharpUsingListChild[] getUsingStatements()
 	{
 		return CSharpUsingListChild.EMPTY_ARRAY;
 	}
 
-	@Nonnull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
@@ -100,7 +96,7 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 
 	@RequiredReadAction
 	@Override
-	public boolean hasModifier(@Nonnull DotNetModifier modifier)
+	public boolean hasModifier(DotNetModifier modifier)
 	{
 		return false;
 	}
@@ -136,7 +132,7 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
+	public PsiElement setName(String name) throws IncorrectOperationException
 	{
 		return null;
 	}

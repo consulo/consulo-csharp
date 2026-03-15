@@ -38,7 +38,6 @@ import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.editor.action.SmartEnterProcessor;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -47,7 +46,6 @@ import jakarta.annotation.Nonnull;
 @ExtensionImpl
 public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 {
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{
@@ -57,14 +55,14 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 	public interface Fixer
 	{
 		@RequiredReadAction
-		boolean process(@Nonnull Editor editor, @Nonnull PsiFile psiFile);
+		boolean process(Editor editor, PsiFile psiFile);
 	}
 
 	public class FieldSemicolonFixer implements Fixer
 	{
 		@RequiredReadAction
 		@Override
-		public boolean process(@Nonnull Editor editor, @Nonnull PsiFile psiFile)
+		public boolean process(Editor editor, PsiFile psiFile)
 		{
 			PsiElement statementAtCaret = getStatementAtCaret(editor, psiFile);
 			DotNetFieldDeclaration variable = PsiTreeUtil.getParentOfType(statementAtCaret, DotNetFieldDeclaration.class);
@@ -95,7 +93,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 	{
 		@RequiredReadAction
 		@Override
-		public boolean process(@Nonnull Editor editor, @Nonnull PsiFile psiFile)
+		public boolean process(Editor editor, PsiFile psiFile)
 		{
 			PsiElement statementAtCaret = getStatementAtCaret(editor, psiFile);
 
@@ -142,7 +140,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 
 	@Override
 	@RequiredReadAction
-	public boolean process(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile psiFile)
+	public boolean process(Project project, Editor editor, PsiFile psiFile)
 	{
 		for(Fixer fixer : myFixers)
 		{
@@ -155,7 +153,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 	}
 
 	@RequiredReadAction
-	private void insertStringAtEndWithReformat(@Nonnull String text, @Nonnull PsiElement anchor, @Nonnull Editor editor, int moveOffset, boolean commit)
+	private void insertStringAtEndWithReformat(String text, PsiElement anchor, Editor editor, int moveOffset, boolean commit)
 	{
 		PsiFile containingFile = anchor.getContainingFile();
 

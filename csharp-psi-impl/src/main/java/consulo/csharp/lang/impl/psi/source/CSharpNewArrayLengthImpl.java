@@ -22,7 +22,6 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 
-import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -31,7 +30,7 @@ import java.util.List;
  */
 public class CSharpNewArrayLengthImpl extends CSharpElementImpl
 {
-	public CSharpNewArrayLengthImpl(@Nonnull IElementType elementType)
+	public CSharpNewArrayLengthImpl(IElementType elementType)
 	{
 		super(elementType);
 	}
@@ -42,14 +41,13 @@ public class CSharpNewArrayLengthImpl extends CSharpElementImpl
 		return elements.size();
 	}
 
-	@Nonnull
 	public DotNetExpression[] getDimensionValues()
 	{
 		return findChildrenByClass(DotNetExpression.class);
 	}
 
 	@Override
-	public void accept(@Nonnull CSharpElementVisitor visitor)
+	public void accept(CSharpElementVisitor visitor)
 	{
 		visitor.visitNewArrayLength(this);
 	}

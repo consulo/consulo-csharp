@@ -20,7 +20,6 @@ import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -36,18 +35,17 @@ public class AddModifierFix extends BaseModifierFix {
     }
 
     @Override
-    public boolean isValidCondition(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier) {
+    public boolean isValidCondition(DotNetModifierList modifierList, DotNetModifier modifier) {
         return !modifierList.hasModifier(modifier);
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getActionName() {
         return LocalizeValue.localizeTODO("Add");
     }
 
     @Override
-    public void doAction(@Nonnull DotNetModifierList modifierList, @Nonnull DotNetModifier modifier) {
+    public void doAction(DotNetModifierList modifierList, DotNetModifier modifier) {
         modifierList.addModifier(modifier);
     }
 }

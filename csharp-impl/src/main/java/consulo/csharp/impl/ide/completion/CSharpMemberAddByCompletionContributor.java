@@ -33,7 +33,6 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.ProcessingContext;
 import consulo.util.lang.StringUtil;
 
-import jakarta.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**
@@ -51,7 +50,7 @@ public interface CSharpMemberAddByCompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
+			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
 				CSharpFieldDeclaration currentElement = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpFieldDeclaration.class);
 				assert currentElement != null;
@@ -98,5 +97,5 @@ public interface CSharpMemberAddByCompletionContributor
 	}
 
 	@RequiredReadAction
-	void processCompletion(@Nonnull CompletionParameters parameters, @Nonnull ProcessingContext context, @Nonnull Consumer<LookupElement> result, @Nonnull CSharpTypeDeclaration typeDeclaration);
+	void processCompletion(CompletionParameters parameters, ProcessingContext context, Consumer<LookupElement> result, CSharpTypeDeclaration typeDeclaration);
 }

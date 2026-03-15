@@ -23,7 +23,6 @@ import consulo.language.Language;
 import consulo.language.editor.refactoring.NamesValidator;
 import consulo.project.Project;
 
-import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL
@@ -44,7 +43,6 @@ public class CSharpNamesValidator implements NamesValidator
 		return CSharpNameSuggesterUtil.isIdentifier(name);
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

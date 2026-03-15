@@ -41,8 +41,7 @@ import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.util.collection.ContainerUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Collection;
@@ -70,7 +69,6 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl> {
       myValueExpression = manager.createSmartPsiElementPointer(rightExpression);
     }
 
-    @Nonnull
     @Override
     public LocalizeValue getText() {
       return LocalizeValue.localizeTODO("Introduce temp variable");
@@ -78,7 +76,7 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl> {
 
     @Override
     @RequiredUIAccess
-    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(Project project, Editor editor, PsiFile file) {
       CSharpFieldDeclaration element = myFieldPointer.getElement();
 
       DotNetExpression value = myValueExpression.getElement();
@@ -121,7 +119,7 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl> {
 
     @Override
     @RequiredUIAccess
-    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
       CSharpFieldDeclaration element = myFieldPointer.getElement();
 
       DotNetExpression value = myValueExpression.getElement();
@@ -210,9 +208,9 @@ public class CS1612 extends CompilerCheck<CSharpAssignmentExpressionImpl> {
   @RequiredReadAction
   @Nullable
   @Override
-  public HighlightInfoFactory checkImpl(@Nonnull CSharpLanguageVersion languageVersion,
-                                        @Nonnull CSharpHighlightContext highlightContext,
-                                        @Nonnull CSharpAssignmentExpressionImpl element) {
+  public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion,
+                                        CSharpHighlightContext highlightContext,
+                                        CSharpAssignmentExpressionImpl element) {
     DotNetExpression leftExpression = element.getLeftExpression();
 
     DotNetExpression rightExpression = element.getRightExpression();

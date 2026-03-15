@@ -42,8 +42,7 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.fileType.FileType;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 @ExtensionImpl(id = "csharpdoc")
@@ -55,7 +54,7 @@ public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 	{
 		@Override
 		@Nullable
-		public ASTNode findChild(@Nonnull ASTNode parent)
+		public ASTNode findChild(ASTNode parent)
 		{
 			final PsiElement element = getEndTagNameElement((CSharpDocTagImpl) parent.getPsi());
 			return element == null ? null : element.getNode();
@@ -333,7 +332,7 @@ public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 	}
 
 	@Nullable
-	public static PsiElement getEndTagNameElement(@Nonnull CSharpDocTagImpl tag)
+	public static PsiElement getEndTagNameElement(CSharpDocTagImpl tag)
 	{
 		final ASTNode node = tag.getNode();
 		if(node == null)

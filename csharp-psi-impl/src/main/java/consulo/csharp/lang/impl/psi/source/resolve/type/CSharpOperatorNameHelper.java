@@ -18,8 +18,7 @@ package consulo.csharp.lang.impl.psi.source.resolve.type;
 
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.language.ast.IElementType;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +66,7 @@ public class CSharpOperatorNameHelper
 	}
 
 	@Nullable
-	public static String getOperatorName(@Nonnull IElementType elementType)
+	public static String getOperatorName(IElementType elementType)
 	{
 		return ourOperatorNames.get(elementType);
 	}

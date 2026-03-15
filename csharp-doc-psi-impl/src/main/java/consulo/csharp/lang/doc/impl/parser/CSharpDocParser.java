@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.doc.impl.parser;
 
-import jakarta.annotation.Nonnull;
 
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.TokenSet;
@@ -31,9 +30,8 @@ import consulo.language.parser.PsiParser;
  */
 public class CSharpDocParser implements PsiParser
 {
-	@Nonnull
 	@Override
-	public ASTNode parse(@Nonnull IElementType root, @Nonnull PsiBuilder builder, @Nonnull LanguageVersion languageVersion)
+	public ASTNode parse(IElementType root, PsiBuilder builder, LanguageVersion languageVersion)
 	{
 		builder.enforceCommentTokens(TokenSet.EMPTY);
 

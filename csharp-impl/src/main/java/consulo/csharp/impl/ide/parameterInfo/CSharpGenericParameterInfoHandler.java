@@ -32,8 +32,7 @@ import consulo.language.psi.ResolveResult;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.collection.ArrayUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -112,7 +111,7 @@ public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<P
 	}
 
 	@Override
-	public void showParameterInfo(@Nonnull PsiElement place, CreateParameterInfoContext context)
+	public void showParameterInfo(PsiElement place, CreateParameterInfoContext context)
 	{
 		DotNetGenericParameterListOwner genericParameterOwner = findGenericParameterOwner(context);
 		if(genericParameterOwner == null)
@@ -124,7 +123,7 @@ public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<P
 	}
 
 	@Override
-	public void updateParameterInfo(@Nonnull PsiElement place, UpdateParameterInfoContext context)
+	public void updateParameterInfo(PsiElement place, UpdateParameterInfoContext context)
 	{
 		int parameterIndex = -1;
 		DotNetTypeList typeList = PsiTreeUtil.getParentOfType(place, DotNetTypeList.class, false);
@@ -197,7 +196,6 @@ public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<P
 				false, false, context.getDefaultParameterColor());
 	}
 
-	@Nonnull
 	@Override
 	public Language getLanguage()
 	{

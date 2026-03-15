@@ -25,7 +25,6 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.*;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayUtil;
-import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,9 +67,8 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner> {
     }
 
     @RequiredReadAction
-    @Nonnull
     @Override
-    public List<CompilerCheckBuilder> check(@Nonnull CSharpLanguageVersion languageVersion, @Nonnull CSharpHighlightContext highlightContext, @Nonnull DotNetModifierListOwner element) {
+    public List<CompilerCheckBuilder> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetModifierListOwner element) {
         DotNetModifierList modifierList = element.getModifierList();
         if (modifierList == null) {
             return Collections.emptyList();
