@@ -20,14 +20,17 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.gutter.LineMarkerInfo;
 import consulo.language.psi.PsiElement;
 
+import java.awt.event.MouseEvent;
 import java.util.function.Consumer;
 
 /**
  * @author VISTALL
  * @since 25.03.14
  */
-public interface LineMarkerCollector
-{
-	@RequiredReadAction
-	void collect(PsiElement psiElement, Consumer<LineMarkerInfo> lineMarkerInfos);
+public interface LineMarkerCollector {
+    @RequiredReadAction
+    void collect(PsiElement psiElement, Consumer<LineMarkerInfo> lineMarkerInfos);
+
+    default void navigate(MouseEvent mouseEvent, PsiElement element) {
+    }
 }

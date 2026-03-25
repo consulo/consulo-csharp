@@ -1,62 +1,74 @@
 action.CSharp.File.text:
-  text: C# File
+    text: C# File
 action.CSharp.GenerateConstructor.text:
-  text: Constructor
-action.CSharp.GenerateProperty.text:
-  text: Property
-action.CSharp.GenerateReadOnlyProperty.text:
-  text: Readonly Property
+    text: Constructor
 action.CSharp.GenerateImplementMember.text:
-  text: Implement Member
+    text: Implement Member
+action.CSharp.GenerateProperty.text:
+    text: Property
+action.CSharp.GenerateReadOnlyProperty.text:
+    text: Readonly Property
 action.CSharp.Internal.OpenTypeFromVariable.text:
-  text: Open type from variable (C#)
-csharp.version._1_0:
-  text: ''
-csharp.version._2_0:
-  text: generics, iterators, etc
-csharp.version._3_0:
-  text: '''var'', lambda, etc'
-csharp.version._4_0:
-  text: named / optional arguments, etc
-csharp.version._5_0:
-  text: '''async'', etc'
-csharp.version._6_0:
-  text: property initializer, etc
-csharp.version._7_0:
-  text: tuples, local methods, ref return, etc
-csharp.version._7_1:
-  text: default, etc
-csharp.version._7_2:
-  text: ''
-csharp.version._7_3:
-  text: ''
-csharp.version._8_0:
-  text: ''
-csharp.version._9_0:
-  text: ''
-csharp.version._10_0:
-  text: ''
-livetemplates.cwl:
-  text: Print object to console
-livetemplates.psvm:
-  text: Main() method
-livetemplates.psvms:
-  text: Main(string[]) method
-livetemplates.prop:
-  text: Auto-property
-livetemplates.forv:
-  text: iter with foreach(var in ...)
-livetemplates.fort:
-  text: iter with foreach(... in ...)
-nullable.option.unspecified:
-  text: unspecified
-nullable.option.disable:
-  text: disable
-nullable.option.enable:
-  text: enable
-nullable.option.annotations:
-  text: annotations
-nullable.option.warnings:
-  text: warnings
+    text: Open type from variable (C#)
+code.vision.implementations.hint:
+    text: '{0, choice, 1#1 Implementation|2#{0,number} Implementations}'
+code.vision.inheritors.hint:
+    text: '{0, choice, 1#1 Inheritor|2#{0,number} Inheritors}'
+code.vision.overrides.hint:
+    text: '{0, choice, 1#1 Override|2#{0,number} Overrides}'
 csharp.preprocessor.language.display.name:
     text: C# Preprocessor
+csharp.version._10_0:
+    text: ''
+csharp.version._1_0:
+    text: ''
+csharp.version._2_0:
+    text: generics, iterators, etc
+csharp.version._3_0:
+    text: '''var'', lambda, etc'
+csharp.version._4_0:
+    text: named / optional arguments, etc
+csharp.version._5_0:
+    text: '''async'', etc'
+csharp.version._6_0:
+    text: property initializer, etc
+csharp.version._7_0:
+    text: tuples, local methods, ref return, etc
+csharp.version._7_1:
+    text: default, etc
+csharp.version._7_2:
+    text: ''
+csharp.version._7_3:
+    text: ''
+csharp.version._8_0:
+    text: ''
+csharp.version._9_0:
+    text: ''
+livetemplates.cwl:
+    text: Print object to console
+livetemplates.fort:
+    text: iter with foreach(... in ...)
+livetemplates.forv:
+    text: iter with foreach(var in ...)
+livetemplates.prop:
+    text: Auto-property
+livetemplates.psvm:
+    text: Main() method
+livetemplates.psvms:
+    text: Main(string[]) method
+nullable.option.annotations:
+    text: annotations
+nullable.option.disable:
+    text: disable
+nullable.option.enable:
+    text: enable
+nullable.option.unspecified:
+    text: unspecified
+nullable.option.warnings:
+    text: warnings
+settings.inlay.inheritors:
+    text: Inheritors
+settings.inlay.usages:
+    text: Usages
+usages.telescope:
+    text: '{0, choice, 1#1 Usage|2#{0,number} Usages}'

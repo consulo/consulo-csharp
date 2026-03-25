@@ -26,10 +26,8 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
 import consulo.language.editor.Pass;
-import consulo.language.editor.gutter.GutterIconNavigationHandler;
 import consulo.language.editor.gutter.LineMarkerInfo;
 import consulo.language.psi.PsiElement;
-import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.function.Functions;
@@ -43,46 +41,49 @@ import java.util.function.Consumer;
  * @author VISTALL
  * @since 25.03.14
  */
-public class OverrideTypeCollector implements LineMarkerCollector
-{
-	@RequiredReadAction
-	@Override
-	public void collect(PsiElement psiElement, Consumer<LineMarkerInfo> consumer)
-	{
-		CSharpTypeDeclaration parent = CSharpLineMarkerUtil.getNameIdentifierAs(psiElement, CSharpTypeDeclaration.class);
-		if(parent != null)
-		{
-			if(hasChild(parent))
-			{
-				Image icon = parent.isInterface() ? AllIcons.Gutter.ImplementedMethod : AllIcons.Gutter.OverridenMethod;
-				LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, e -> "Searching for overriding",
-						new GutterIconNavigationHandler<PsiElement>()
-				{
-					@Override
-					@RequiredUIAccess
-					public void navigate(MouseEvent mouseEvent, PsiElement element)
-					{
-						final DotNetTypeDeclaration typeDeclaration = CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);
-						assert typeDeclaration != null;
-						final CommonProcessors.CollectProcessor<DotNetTypeDeclaration> collectProcessor = new CommonProcessors.CollectProcessor<>();
-						if(!ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> TypeInheritorsSearch.search(typeDeclaration, true).forEach(collectProcessor), "Searching for " +
-								"overriding", true, typeDeclaration.getProject(), (JComponent) mouseEvent.getComponent()))
-						{
-							return;
-						}
+public class OverrideTypeCollector implements LineMarkerCollector {
+    public static final OverrideTypeCollector INSTANCE = new OverrideTypeCollector();
 
-						Collection<DotNetTypeDeclaration> results = collectProcessor.getResults();
+    @RequiredReadAction
+    @Override
+    public void collect(PsiElement psiElement, Consumer<LineMarkerInfo> consumer) {
+        CSharpTypeDeclaration parent = CSharpLineMarkerUtil.getNameIdentifierAs(psiElement, CSharpTypeDeclaration.class);
+        if (parent != null) {
+            if (hasChild(parent)) {
+                Image icon = parent.isInterface() ? AllIcons.Gutter.ImplementedMethod : AllIcons.Gutter.OverridenMethod;
+                LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement,
+                    psiElement.getTextRange(),
+                    icon,
+                    Pass.LINE_MARKERS,
+                    e -> "Searching for overriding",
+                    this::navigate,
+                    GutterIconRenderer.Alignment.RIGHT
+                );
+                consumer.accept(lineMarkerInfo);
+            }
+        }
+    }
 
-						CSharpLineMarkerUtil.openTargets(ContainerUtil.map(results, CSharpTransformer.INSTANCE), mouseEvent, "Navigate to inheritors", Functions.<PsiElement, PsiElement>identity());
-					}
-				}, GutterIconRenderer.Alignment.RIGHT);
-				consumer.accept(lineMarkerInfo);
-			}
-		}
-	}
+    @Override
+    public void navigate(MouseEvent mouseEvent, PsiElement element) {
+        final DotNetTypeDeclaration typeDeclaration = element instanceof DotNetTypeDeclaration t
+            ? t
+            : CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);
 
-	private static boolean hasChild(final CSharpTypeDeclaration type)
-	{
-		return TypeInheritorsSearch.search(type, false).findFirst() != null;
-	}
+        assert typeDeclaration != null;
+
+        final CommonProcessors.CollectProcessor<DotNetTypeDeclaration> collectProcessor = new CommonProcessors.CollectProcessor<>();
+        if (!ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> TypeInheritorsSearch.search(typeDeclaration, true).forEach(collectProcessor), "Searching for " +
+            "overriding", true, typeDeclaration.getProject(), (JComponent) mouseEvent.getComponent())) {
+            return;
+        }
+
+        Collection<DotNetTypeDeclaration> results = collectProcessor.getResults();
+
+        CSharpLineMarkerUtil.openTargets(ContainerUtil.map(results, CSharpTransformer.INSTANCE), mouseEvent, "Navigate to inheritors", Functions.<PsiElement, PsiElement>identity());
+    }
+
+    private static boolean hasChild(final CSharpTypeDeclaration type) {
+        return TypeInheritorsSearch.search(type, false).findFirst() != null;
+    }
 }

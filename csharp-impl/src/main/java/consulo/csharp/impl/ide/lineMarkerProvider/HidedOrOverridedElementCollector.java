@@ -42,105 +42,95 @@ import java.util.function.Consumer;
  * @author VISTALL
  * @since 15.12.14
  */
-public class HidedOrOverridedElementCollector implements LineMarkerCollector
-{
-	private static class OurHandler implements GutterIconNavigationHandler<PsiElement>
-	{
-		public static final OurHandler INSTANCE = new OurHandler();
+public class HidedOrOverridedElementCollector implements LineMarkerCollector {
+    private static class OurHandler implements GutterIconNavigationHandler<PsiElement> {
+        public static final OurHandler INSTANCE = new OurHandler();
 
-		@Override
-		@RequiredUIAccess
-		public void navigate(MouseEvent mouseEvent, PsiElement element)
-		{
-			DotNetVirtualImplementOwner virtualImplementOwner = CSharpLineMarkerUtil.findElementForLineMarker(element);
-			if(virtualImplementOwner == null)
-			{
-				return;
-			}
+        @Override
+        @RequiredUIAccess
+        public void navigate(MouseEvent mouseEvent, PsiElement element) {
+            DotNetVirtualImplementOwner virtualImplementOwner = element instanceof DotNetVirtualImplementOwner v
+                ? v
+                : CSharpLineMarkerUtil.findElementForLineMarker(element);
 
-			Collection<DotNetVirtualImplementOwner> members = OverrideUtil.collectOverridenMembers(virtualImplementOwner);
+            if (virtualImplementOwner == null) {
+                return;
+            }
 
-			if(members.isEmpty())
-			{
-				return;
-			}
+            Collection<DotNetVirtualImplementOwner> members = OverrideUtil.collectOverridenMembers(virtualImplementOwner);
 
-			if(members.size() == 1)
-			{
-				DotNetVirtualImplementOwner firstItem = ContainerUtil.getFirstItem(members);
-				if(firstItem instanceof Navigatable)
-				{
-					((Navigatable) firstItem).navigate(true);
-				}
-			}
-			else
-			{
-				CSharpLineMarkerUtil.openTargets(members, mouseEvent, "Searching for overrided", CSharpLineMarkerUtil.BY_PARENT);
-			}
-		}
-	}
+            if (members.isEmpty()) {
+                return;
+            }
 
-	@RequiredReadAction
-	@Override
-	public void collect(PsiElement psiElement, Consumer<LineMarkerInfo> consumer)
-	{
-		DotNetVirtualImplementOwner virtualImplementOwner = CSharpLineMarkerUtil.findElementForLineMarker(psiElement);
-		if(virtualImplementOwner != null)
-		{
-			PsiElement parentParent = virtualImplementOwner.getParent();
-			if(!(parentParent instanceof DotNetTypeDeclaration))
-			{
-				return;
-			}
+            if (members.size() == 1) {
+                DotNetVirtualImplementOwner firstItem = ContainerUtil.getFirstItem(members);
+                if (firstItem instanceof Navigatable) {
+                    ((Navigatable) firstItem).navigate(true);
+                }
+            }
+            else {
+                CSharpLineMarkerUtil.openTargets(members, mouseEvent, "Searching for overrided", CSharpLineMarkerUtil.BY_PARENT);
+            }
+        }
+    }
 
-			Collection<DotNetVirtualImplementOwner> overrideElements = OverrideUtil.collectOverridenMembers(virtualImplementOwner);
+    public static final HidedOrOverridedElementCollector INSTANCE = new HidedOrOverridedElementCollector();
 
-			if(overrideElements.isEmpty())
-			{
-				return;
-			}
+    @Override
+    public void navigate(MouseEvent mouseEvent, PsiElement element) {
+        OurHandler.INSTANCE.navigate(mouseEvent, element);
+    }
 
-			Image icon = CSharpPsiIconGroup.gutterHidedmethod();
-			for(DotNetVirtualImplementOwner overrideElement : overrideElements)
-			{
-				if(overrideElement.getTypeForImplement() == null)
-				{
-					icon = null;
-					break;
-				}
-			}
+    @RequiredReadAction
+    @Override
+    public void collect(PsiElement psiElement, Consumer<LineMarkerInfo> consumer) {
+        DotNetVirtualImplementOwner virtualImplementOwner = CSharpLineMarkerUtil.findElementForLineMarker(psiElement);
+        if (virtualImplementOwner != null) {
+            PsiElement parentParent = virtualImplementOwner.getParent();
+            if (!(parentParent instanceof DotNetTypeDeclaration)) {
+                return;
+            }
 
-			if(icon == null)
-			{
-				boolean allAbstract = true;
-				for(DotNetVirtualImplementOwner overrideElement : overrideElements)
-				{
-					if(!(overrideElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) overrideElement).hasModifier(DotNetModifier.ABSTRACT)))
-					{
-						allAbstract = false;
-						break;
-					}
-				}
+            Collection<DotNetVirtualImplementOwner> overrideElements = OverrideUtil.collectOverridenMembers(virtualImplementOwner);
 
-				boolean abstractMe = virtualImplementOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) virtualImplementOwner).hasModifier(DotNetModifier.ABSTRACT);
+            if (overrideElements.isEmpty()) {
+                return;
+            }
 
-				if(allAbstract && abstractMe)
-				{
-					icon = AllIcons.Gutter.OverridenMethod;
-				}
-				else if(abstractMe)
-				{
-					icon = AllIcons.Gutter.ImplementedMethod;
-				}
-				else
-				{
-					icon = AllIcons.Gutter.OverridenMethod;
-				}
-			}
-			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, it -> "Searching for " + "overrided",
-					OurHandler.INSTANCE, GutterIconRenderer.Alignment.RIGHT);
+            Image icon = CSharpPsiIconGroup.gutterHidedmethod();
+            for (DotNetVirtualImplementOwner overrideElement : overrideElements) {
+                if (overrideElement.getTypeForImplement() == null) {
+                    icon = null;
+                    break;
+                }
+            }
 
-			consumer.accept(lineMarkerInfo);
-		}
-	}
+            if (icon == null) {
+                boolean allAbstract = true;
+                for (DotNetVirtualImplementOwner overrideElement : overrideElements) {
+                    if (!(overrideElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) overrideElement).hasModifier(DotNetModifier.ABSTRACT))) {
+                        allAbstract = false;
+                        break;
+                    }
+                }
+
+                boolean abstractMe = virtualImplementOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) virtualImplementOwner).hasModifier(DotNetModifier.ABSTRACT);
+
+                if (allAbstract && abstractMe) {
+                    icon = AllIcons.Gutter.OverridenMethod;
+                }
+                else if (abstractMe) {
+                    icon = AllIcons.Gutter.ImplementedMethod;
+                }
+                else {
+                    icon = AllIcons.Gutter.OverridenMethod;
+                }
+            }
+            LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, it -> "Searching for " + "overrided",
+                OurHandler.INSTANCE, GutterIconRenderer.Alignment.RIGHT);
+
+            consumer.accept(lineMarkerInfo);
+        }
+    }
 }

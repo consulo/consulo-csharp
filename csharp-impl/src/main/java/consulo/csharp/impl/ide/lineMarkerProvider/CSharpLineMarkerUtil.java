@@ -29,8 +29,8 @@ import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.PsiUtilCore;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Comparing;
-
 import org.jspecify.annotations.Nullable;
+
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.function.Function;
@@ -39,74 +39,62 @@ import java.util.function.Function;
  * @author VISTALL
  * @since 26.07.2015
  */
-public class CSharpLineMarkerUtil
-{
-	public static final Function<PsiElement, PsiElement> BY_PARENT = element -> element.getParent();
+public class CSharpLineMarkerUtil {
+    public static final Function<PsiElement, PsiElement> BY_PARENT = element -> element.getParent();
 
-	@RequiredReadAction
-	public static void openTargets(Collection<? extends PsiElement> members, MouseEvent mouseEvent, String text, final Function<PsiElement, PsiElement> map)
-	{
-		NavigatablePsiElement[] navigatablePsiElements = members.toArray(new NavigatablePsiElement[members.size()]);
-		ContainerUtil.sort(navigatablePsiElements, (o1, o2) ->
-		{
-			PsiElement map1 = map.apply(o1);
-			PsiElement map2 = map.apply(o2);
-			if(map1 instanceof PsiNamedElement && map2 instanceof PsiNamedElement)
-			{
-				return Comparing.compare(((PsiNamedElement) map1).getName(), ((PsiNamedElement) map2).getName());
-			}
-			return 0;
-		});
+    @RequiredReadAction
+    public static void openTargets(Collection<? extends PsiElement> members, MouseEvent mouseEvent, String text, final Function<PsiElement, PsiElement> map) {
+        NavigatablePsiElement[] navigatablePsiElements = members.toArray(new NavigatablePsiElement[members.size()]);
+        ContainerUtil.sort(navigatablePsiElements, (o1, o2) ->
+        {
+            PsiElement map1 = map.apply(o1);
+            PsiElement map2 = map.apply(o2);
+            if (map1 instanceof PsiNamedElement && map2 instanceof PsiNamedElement) {
+                return Comparing.compare(((PsiNamedElement) map1).getName(), ((PsiNamedElement) map2).getName());
+            }
+            return 0;
+        });
 
-		PsiElementListNavigator.openTargets(mouseEvent, navigatablePsiElements, text, text, new PsiMappedElementListCellRender(map));
-	}
+        PsiElementListNavigator.openTargets(mouseEvent, navigatablePsiElements, text, text, new PsiMappedElementListCellRender(map));
+    }
 
-	@Nullable
-	public static DotNetVirtualImplementOwner findElementForLineMarker(PsiElement element)
-	{
-		PsiElement superParent = null;
-		IElementType elementType = PsiUtilCore.getElementType(element);
-		if(elementType == CSharpTokens.THIS_KEYWORD)
-		{
-			superParent = element.getParent();
-		}
-		else if(elementType == CSharpTokens.IDENTIFIER)
-		{
-			superParent = getParentIfIsIdentifier(element);
-		}
-		if(superParent == null)
-		{
-			return null;
-		}
+    @Nullable
+    public static DotNetVirtualImplementOwner findElementForLineMarker(PsiElement element) {
+        PsiElement superParent = null;
+        IElementType elementType = PsiUtilCore.getElementType(element);
+        if (elementType == CSharpTokens.THIS_KEYWORD) {
+            superParent = element.getParent();
+        }
+        else if (elementType == CSharpTokens.IDENTIFIER) {
+            superParent = getParentIfIsIdentifier(element);
+        }
+        if (superParent == null) {
+            return null;
+        }
 
-		return OverrideUtil.isAllowForOverride(superParent) ? (DotNetVirtualImplementOwner) superParent : null;
-	}
+        return OverrideUtil.isAllowForOverride(superParent) ? (DotNetVirtualImplementOwner) superParent : null;
+    }
 
-	@Nullable
-	@SuppressWarnings("unchecked")
-	public static <T> T getNameIdentifierAs(@Nullable PsiElement element, Class<T> clazz)
-	{
-		if(element == null)
-		{
-			return null;
-		}
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public static <T> T getNameIdentifierAs(@Nullable PsiElement element, Class<T> clazz) {
+        if (element == null) {
+            return null;
+        }
 
-		PsiElement parentIfIsIdentifier = getParentIfIsIdentifier(element);
-		if(parentIfIsIdentifier != null)
-		{
-			return clazz.isAssignableFrom(parentIfIsIdentifier.getClass()) ? (T) parentIfIsIdentifier : null;
-		}
-		return null;
-	}
+        PsiElement parentIfIsIdentifier = getParentIfIsIdentifier(element);
+        if (parentIfIsIdentifier != null) {
+            return clazz.isAssignableFrom(parentIfIsIdentifier.getClass()) ? (T) parentIfIsIdentifier : null;
+        }
+        return null;
+    }
 
-	@Nullable
-	public static PsiElement getParentIfIsIdentifier(PsiElement element)
-	{
-		IElementType elementType = PsiUtilCore.getElementType(element);
-		if(elementType == CSharpTokens.IDENTIFIER && element.getParent() instanceof CSharpIdentifier)
-		{
-			return element.getParent().getParent();
-		}
-		return null;
-	}
+    @Nullable
+    public static PsiElement getParentIfIsIdentifier(PsiElement element) {
+        IElementType elementType = PsiUtilCore.getElementType(element);
+        if (elementType == CSharpTokens.IDENTIFIER && element.getParent() instanceof CSharpIdentifier) {
+            return element.getParent().getParent();
+        }
+        return null;
+    }
 }

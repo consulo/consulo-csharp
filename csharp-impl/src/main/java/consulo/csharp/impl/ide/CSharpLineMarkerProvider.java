@@ -38,8 +38,8 @@ import consulo.language.psi.PsiElement;
 import consulo.project.DumbService;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.lang.ref.Ref;
-import org.jspecify.annotations.Nullable;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -50,104 +50,91 @@ import java.util.function.Consumer;
  * @since 29.12.13.
  */
 @ExtensionImpl
-public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
-{
-	private static final LineMarkerCollector[] ourSingleCollector = {
-			new LambdaLineMarkerCollector()
-	};
+public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware {
+    private static final LineMarkerCollector[] ourSingleCollector = {
+        new LambdaLineMarkerCollector()
+    };
 
-	private static final LineMarkerCollector[] ourCollectors = {
-			new OverrideTypeCollector(),
-			new PartialTypeCollector(),
-			new HidingOrOverridingElementCollector(),
-			new HidedOrOverridedElementCollector(),
-			new RecursiveCallCollector()
-	};
+    private static final LineMarkerCollector[] ourCollectors = {
+        OverrideTypeCollector.INSTANCE,
+        new PartialTypeCollector(),
+        HidingOrOverridingElementCollector.INSTANCE,
+        HidedOrOverridedElementCollector.INSTANCE,
+        new RecursiveCallCollector()
+    };
 
-	protected final DaemonCodeAnalyzerSettings myDaemonCodeAnalyzerSettings;
-	protected final EditorColorsManager myEditorColorsManager;
+    protected final DaemonCodeAnalyzerSettings myDaemonCodeAnalyzerSettings;
+    protected final EditorColorsManager myEditorColorsManager;
 
-	@Inject
-	public CSharpLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager)
-	{
-		myDaemonCodeAnalyzerSettings = daemonSettings;
-		myEditorColorsManager = colorsManager;
-	}
+    @Inject
+    public CSharpLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+        myDaemonCodeAnalyzerSettings = daemonSettings;
+        myEditorColorsManager = colorsManager;
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public LineMarkerInfo getLineMarkerInfo(PsiElement element)
-	{
-		if(myDaemonCodeAnalyzerSettings.SHOW_METHOD_SEPARATORS && (element instanceof DotNetQualifiedElement))
-		{
-			if(element.getNode().getTreeParent() == null)
-			{
-				return null;
-			}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public LineMarkerInfo getLineMarkerInfo(PsiElement element) {
+        if (myDaemonCodeAnalyzerSettings.SHOW_METHOD_SEPARATORS && (element instanceof DotNetQualifiedElement)) {
+            if (element.getNode().getTreeParent() == null) {
+                return null;
+            }
 
-			final PsiElement parent = element.getParent();
-			if(!(parent instanceof DotNetMemberOwner))
-			{
-				return null;
-			}
+            final PsiElement parent = element.getParent();
+            if (!(parent instanceof DotNetMemberOwner)) {
+                return null;
+            }
 
-			if(ArrayUtil.getFirstElement(((DotNetMemberOwner) parent).getMembers()) == element)
-			{
-				return null;
-			}
+            if (ArrayUtil.getFirstElement(((DotNetMemberOwner) parent).getMembers()) == element) {
+                return null;
+            }
 
-			LineMarkerInfo info = new LineMarkerInfo<PsiElement>(element, element.getTextRange(), null, Pass.UPDATE_ALL, element1 -> null, null,
-					GutterIconRenderer.Alignment.RIGHT);
-			EditorColorsScheme scheme = myEditorColorsManager.getGlobalScheme();
-			info.separatorColor = scheme.getColor(CodeInsightColors.METHOD_SEPARATORS_COLOR);
-			info.separatorPlacement = SeparatorPlacement.TOP;
-			return info;
-		}
+            LineMarkerInfo info = new LineMarkerInfo<PsiElement>(element, element.getTextRange(), null, Pass.UPDATE_ALL, element1 -> null, null,
+                GutterIconRenderer.Alignment.RIGHT);
+            EditorColorsScheme scheme = myEditorColorsManager.getGlobalScheme();
+            info.separatorColor = scheme.getColor(CodeInsightColors.METHOD_SEPARATORS_COLOR);
+            info.separatorPlacement = SeparatorPlacement.TOP;
+            return info;
+        }
 
-		final Ref<LineMarkerInfo> ref = Ref.create();
-		Consumer<LineMarkerInfo> consumer = markerInfo -> ref.set(markerInfo);
+        final Ref<LineMarkerInfo> ref = Ref.create();
+        Consumer<LineMarkerInfo> consumer = markerInfo -> ref.set(markerInfo);
 
-		//noinspection ForLoopReplaceableByForEach
-		for(int j = 0; j < ourSingleCollector.length; j++)
-		{
-			LineMarkerCollector ourCollector = ourSingleCollector[j];
-			ourCollector.collect(element, consumer);
-		}
+        //noinspection ForLoopReplaceableByForEach
+        for (int j = 0; j < ourSingleCollector.length; j++) {
+            LineMarkerCollector ourCollector = ourSingleCollector[j];
+            ourCollector.collect(element, consumer);
+        }
 
-		return ref.get();
-	}
+        return ref.get();
+    }
 
-	@RequiredReadAction
-	@Override
-	public void collectSlowLineMarkers(List<PsiElement> elements, final Collection<LineMarkerInfo> lineMarkerInfos)
-	{
-		ApplicationManager.getApplication().assertReadAccessAllowed();
+    @RequiredReadAction
+    @Override
+    public void collectSlowLineMarkers(List<PsiElement> elements, final Collection<LineMarkerInfo> lineMarkerInfos) {
+        ApplicationManager.getApplication().assertReadAccessAllowed();
 
-		if(elements.isEmpty() || DumbService.getInstance(elements.get(0).getProject()).isDumb())
-		{
-			return;
-		}
+        if (elements.isEmpty() || DumbService.getInstance(elements.get(0).getProject()).isDumb()) {
+            return;
+        }
 
-		Consumer<LineMarkerInfo> consumer = lineMarkerInfos::add;
+        Consumer<LineMarkerInfo> consumer = lineMarkerInfos::add;
 
-		//noinspection ForLoopReplaceableByForEach
-		for(int i = 0; i < elements.size(); i++)
-		{
-			PsiElement psiElement = elements.get(i);
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < elements.size(); i++) {
+            PsiElement psiElement = elements.get(i);
 
-			//noinspection ForLoopReplaceableByForEach
-			for(int j = 0; j < ourCollectors.length; j++)
-			{
-				LineMarkerCollector ourCollector = ourCollectors[j];
-				ourCollector.collect(psiElement, consumer);
-			}
-		}
-	}
+            //noinspection ForLoopReplaceableByForEach
+            for (int j = 0; j < ourCollectors.length; j++) {
+                LineMarkerCollector ourCollector = ourCollectors[j];
+                ourCollector.collect(psiElement, consumer);
+            }
+        }
+    }
 
-	@Override
-	public Language getLanguage()
-	{
-		return CSharpLanguage.INSTANCE;
-	}
+    @Override
+    public Language getLanguage() {
+        return CSharpLanguage.INSTANCE;
+    }
 }
