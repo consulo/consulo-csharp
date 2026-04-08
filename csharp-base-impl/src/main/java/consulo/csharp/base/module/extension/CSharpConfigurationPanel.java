@@ -82,7 +82,7 @@ public class CSharpConfigurationPanel extends JPanel {
                 if (value instanceof CSharpLanguageVersion languageLevel) {
                     append(languageLevel.getPresentableName(), SimpleTextAttributes.REGULAR_ATTRIBUTES);
                     append(" ");
-                    append(languageLevel.getDescriptionValue().getValue(), SimpleTextAttributes.GRAY_ATTRIBUTES);
+                    append(languageLevel.getDescription(), SimpleTextAttributes.GRAY_ATTRIBUTES);
                 }
                 else if (value instanceof Module module) {
                     setIcon(PlatformIconGroup.nodesModule());
