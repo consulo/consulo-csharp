@@ -17,6 +17,7 @@ package consulo.csharp.base.module.extension;
 
 import consulo.content.bundle.Sdk;
 import consulo.content.bundle.SdkModel;
+import consulo.content.bundle.SdkModelFactory;
 import consulo.content.bundle.SdkType;
 import consulo.csharp.compiler.CSharpCompilerProvider;
 import consulo.csharp.compiler.CSharpPlatform;
@@ -25,8 +26,6 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import consulo.ide.setting.ProjectStructureSettingsUtil;
-import consulo.ide.setting.ShowSettingsUtil;
 import consulo.language.util.ModuleUtilCore;
 import consulo.localize.LocalizeValue;
 import consulo.module.Module;
@@ -179,8 +178,8 @@ public class CSharpConfigurationPanel extends JPanel {
             }
         }
 
-        ProjectStructureSettingsUtil settingsUtil = ShowSettingsUtil.getInstance();
-        SdkModel model = settingsUtil.getSdksModel();
+        SdkModelFactory settingsUtil = SdkModelFactory.getInstance();
+        SdkModel model = settingsUtil.getOrCreateModel();
         SdkComboBox compilerComboBox = new SdkComboBox(
             model,
             compilerBundleTypes::contains,
