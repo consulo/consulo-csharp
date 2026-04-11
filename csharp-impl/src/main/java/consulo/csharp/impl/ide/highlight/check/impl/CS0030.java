@@ -19,7 +19,7 @@ package consulo.csharp.impl.ide.highlight.check.impl;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.eap.EarlyAccessProgramManager;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
-import consulo.csharp.impl.ide.highlight.CSharpHighlightKey;
+import consulo.csharp.editor.highlight.CSharpHighlightKey;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.impl.ide.highlight.quickFix.ReplaceTypeQuickFix;
 import consulo.csharp.impl.localize.CSharpErrorLocalize;

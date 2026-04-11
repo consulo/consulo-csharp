@@ -13,6 +13,7 @@ open module consulo.csharp
 
 	requires transitive consulo.csharp.base.impl;
 	requires transitive consulo.csharp.psi.impl;
+	requires transitive consulo.csharp.editor.api;
 	requires transitive consulo.dotnet.impl;
 	requires transitive consulo.dotnet.debugger.api;
 	requires transitive consulo.dotnet.debugger.impl;

@@ -21,6 +21,7 @@ import consulo.colorScheme.AttributesFlyweightBuilder;
 import consulo.colorScheme.EditorColorSchemeExtender;
 import consulo.colorScheme.EditorColorsScheme;
 import consulo.colorScheme.EffectType;
+import consulo.csharp.editor.highlight.CSharpHighlightKey;
 import consulo.ui.color.RGBColor;
 
 /**

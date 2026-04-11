@@ -17,6 +17,7 @@
 package consulo.csharp.impl.ide.highlight;
 
 import consulo.colorScheme.TextAttributesKey;
+import consulo.csharp.editor.highlight.CSharpHighlightKey;
 import consulo.csharp.lang.impl.lexer.CSharpPreprocessorHightlightLexer;
 import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
 import consulo.language.ast.IElementType;

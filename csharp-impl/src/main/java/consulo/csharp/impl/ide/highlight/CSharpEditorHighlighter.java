@@ -19,6 +19,7 @@ package consulo.csharp.impl.ide.highlight;
 import consulo.colorScheme.EditorColorsScheme;
 import consulo.colorScheme.TextAttributesKey;
 import consulo.csharp.cfs.impl.CSharpCfsLanguageVersion;
+import consulo.csharp.editor.highlight.CSharpHighlightKey;
 import consulo.csharp.lang.doc.impl.ide.highlight.CSharpDocSyntaxHighlighter;
 import consulo.csharp.lang.impl.psi.CSharpTemplateTokens;
 import consulo.csharp.lang.impl.psi.CSharpTokensImpl;

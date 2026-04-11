@@ -22,7 +22,7 @@ import consulo.csharp.impl.ide.codeInsight.actions.CastExpressionToTypeRef;
 import consulo.csharp.impl.ide.codeInsight.actions.ChangeReturnToTypeRefFix;
 import consulo.csharp.impl.ide.codeInsight.actions.ChangeVariableToTypeRefFix;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
-import consulo.csharp.impl.ide.highlight.CSharpHighlightKey;
+import consulo.csharp.editor.highlight.CSharpHighlightKey;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.CSharpCastType;

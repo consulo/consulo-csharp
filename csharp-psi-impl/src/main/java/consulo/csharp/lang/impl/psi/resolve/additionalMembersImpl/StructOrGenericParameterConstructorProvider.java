@@ -20,7 +20,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightConstructorDeclarationBuilder;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightParameterBuilder;
-import consulo.csharp.lang.impl.psi.resolve.CSharpAdditionalMemberProvider;
+import consulo.csharp.lang.CSharpAdditionalMemberProvider;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;

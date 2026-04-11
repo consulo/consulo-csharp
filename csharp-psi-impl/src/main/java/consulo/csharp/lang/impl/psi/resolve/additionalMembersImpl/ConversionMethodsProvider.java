@@ -21,7 +21,7 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightConversionMethodDeclarationBuilder;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightLikeMethodDeclarationBuilder;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightParameterBuilder;
-import consulo.csharp.lang.impl.psi.resolve.CSharpAdditionalMemberProvider;
+import consulo.csharp.lang.CSharpAdditionalMemberProvider;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpStaticTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;

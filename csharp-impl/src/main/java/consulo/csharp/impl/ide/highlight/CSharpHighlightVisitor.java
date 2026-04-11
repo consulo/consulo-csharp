@@ -20,6 +20,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.progress.ProgressIndicatorProvider;
 import consulo.codeEditor.DefaultLanguageHighlighterColors;
 import consulo.codeEditor.EditorColors;
+import consulo.csharp.editor.highlight.CSharpHighlightKey;
 import consulo.csharp.impl.ide.codeInsight.actions.ConvertToNormalCallFix;
 import consulo.csharp.impl.ide.highlight.util.ConstructorHighlightUtil;
 import consulo.csharp.impl.ide.highlight.util.GenericParameterHighlightUtil;

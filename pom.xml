@@ -43,6 +43,7 @@
 
 	<modules>
 		<module>csharp-api</module>
+		<module>csharp-editor-api</module>
 		<module>csharp-psi-api</module>
 		<module>csharp-psi-impl</module>
 		<module>csharp-doc-psi-api</module>

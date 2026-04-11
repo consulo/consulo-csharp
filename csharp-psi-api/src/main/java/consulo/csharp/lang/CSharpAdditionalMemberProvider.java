@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package consulo.csharp.lang.impl.psi.resolve;
+package consulo.csharp.lang;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ComponentScope;

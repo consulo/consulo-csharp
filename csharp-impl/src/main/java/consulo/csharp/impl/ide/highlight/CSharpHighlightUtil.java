@@ -16,6 +16,7 @@
 
 package consulo.csharp.impl.ide.highlight;
 
+import consulo.csharp.editor.highlight.CSharpHighlightKey;
 import consulo.language.ast.IElementType;
 import consulo.language.editor.rawHighlight.HighlightInfo;
 import consulo.language.editor.rawHighlight.HighlightInfoHolder;

@@ -17,7 +17,7 @@
 package consulo.csharp.lang.impl.psi.resolve.baseResolveContext;
 
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
-import consulo.csharp.lang.impl.psi.resolve.CSharpAdditionalMemberProvider;
+import consulo.csharp.lang.CSharpAdditionalMemberProvider;
 import consulo.csharp.lang.impl.psi.resolve.CSharpBaseResolveContext;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.psi.PsiElement;
