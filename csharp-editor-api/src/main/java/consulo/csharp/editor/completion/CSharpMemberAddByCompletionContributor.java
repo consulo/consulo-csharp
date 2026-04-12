@@ -14,39 +14,27 @@
  * limitations under the License.
  */
 
-package consulo.csharp.lang;
+package consulo.csharp.editor.completion;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ExtensionAPI;
 import consulo.component.extension.ExtensionPointName;
-import consulo.dotnet.psi.DotNetElement;
-import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
-import consulo.language.psi.PsiElement;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.language.editor.completion.CompletionParameters;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.util.ProcessingContext;
 
 import java.util.function.Consumer;
 
 /**
  * @author VISTALL
- * @since 26.10.14
+ * @since 24.12.14
  */
 @ExtensionAPI(ComponentScope.APPLICATION)
-public interface CSharpAdditionalMemberProvider
-{
-	ExtensionPointName<CSharpAdditionalMemberProvider> EP_NAME = ExtensionPointName.create(CSharpAdditionalMemberProvider.class);
+public interface CSharpMemberAddByCompletionContributor {
+    ExtensionPointName<CSharpMemberAddByCompletionContributor> EP_NAME = ExtensionPointName.create(CSharpMemberAddByCompletionContributor.class);
 
-	enum Target
-	{
-		CONSTRUCTOR,
-		DE_CONSTRUCTOR,
-		INDEX_METHOD,
-		CONVERSION_METHOD,
-		OPERATOR_METHOD,
-		OTHER
-	}
-
-	@RequiredReadAction
-	void processAdditionalMembers(DotNetElement element, DotNetGenericExtractor extractor, Consumer<PsiElement> consumer);
-
-	Target getTarget();
+    @RequiredReadAction
+    void processCompletion(CompletionParameters parameters, ProcessingContext context, Consumer<LookupElement> result, CSharpTypeDeclaration typeDeclaration);
 }

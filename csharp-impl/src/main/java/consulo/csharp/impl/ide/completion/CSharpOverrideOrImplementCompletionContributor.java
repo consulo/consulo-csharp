@@ -20,6 +20,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.AllIcons;
 import consulo.codeEditor.CaretModel;
+import consulo.csharp.editor.completion.CSharpMemberAddByCompletionContributor;
 import consulo.csharp.impl.ide.CSharpElementPresentationUtil;
 import consulo.csharp.impl.ide.actions.generate.GenerateImplementMemberHandler;
 import consulo.csharp.impl.ide.actions.generate.GenerateOverrideMemberHandler;

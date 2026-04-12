@@ -19,7 +19,6 @@ package consulo.csharp.lang.impl.psi.resolve.baseResolveContext;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
-import consulo.csharp.lang.CSharpAdditionalMemberProvider;
 import consulo.csharp.lang.impl.psi.resolve.CSharpBaseResolveContext;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpStaticTypeRef;
 import consulo.csharp.lang.psi.*;

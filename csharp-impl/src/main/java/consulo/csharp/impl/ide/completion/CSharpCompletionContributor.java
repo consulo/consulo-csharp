@@ -18,6 +18,7 @@ package consulo.csharp.impl.ide.completion;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
+import consulo.csharp.editor.completion.CSharpMemberAddByCompletionContributor;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.language.Language;
 import consulo.language.editor.completion.*;
@@ -42,7 +43,7 @@ public class CSharpCompletionContributor extends CompletionContributor
 
 		CSharpExpressionCompletionContributor.extend(this);
 
-		CSharpMemberAddByCompletionContributor.extend(this);
+		CSharpMemberAddByCompletionContributorImpl.extend(this);
 	}
 
 	@Override

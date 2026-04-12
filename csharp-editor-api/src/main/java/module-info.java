@@ -7,6 +7,8 @@ module consulo.csharp.editor.api {
     requires consulo.csharp.csharp.psi.api;
     requires consulo.color.scheme.api;
     requires consulo.code.editor.api;
+    requires consulo.language.editor.api;
     
+    exports consulo.csharp.editor.completion;
     exports consulo.csharp.editor.highlight;
 }
