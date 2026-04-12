@@ -21,6 +21,7 @@ open module consulo.csharp
 	requires transitive consulo.csharp.doc.psi.impl;
 	requires transitive consulo.internal.dotnet.asm;
 	requires transitive consulo.internal.dotnet.msil.decompiler;
+	requires transitive consulo.csharp.project.view.api;
 
 	exports consulo.csharp.impl.compiler;
 	exports consulo.csharp.impl.ide;

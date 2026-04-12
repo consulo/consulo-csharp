@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package consulo.csharp.impl.ide.projectView;
+package consulo.csharp.projectView;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ComponentScope;
@@ -22,7 +22,6 @@ import consulo.annotation.component.ExtensionAPI;
 import consulo.project.Project;
 import consulo.project.ui.view.tree.AbstractTreeNode;
 import consulo.project.ui.view.tree.ViewSettings;
-
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -30,9 +29,8 @@ import org.jspecify.annotations.Nullable;
  * @since 2020-10-28
  */
 @ExtensionAPI(ComponentScope.APPLICATION)
-public interface CSharpProjectTreeNodeExpander
-{
-	@Nullable
-	@RequiredReadAction
-	AbstractTreeNode<?> expandFile(Project project, ViewSettings viewSettings, AbstractTreeNode<?> originalNode);
+public interface CSharpProjectTreeNodeExpander {
+    @Nullable
+    @RequiredReadAction
+    AbstractTreeNode<?> expandFile(Project project, ViewSettings viewSettings, AbstractTreeNode<?> originalNode);
 }
