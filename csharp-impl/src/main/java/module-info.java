@@ -10,6 +10,20 @@ open module consulo.csharp
 	requires forms.rt;
 	// TODO remove this dependency in future
 	requires consulo.ide.impl;
+	requires consulo.ide.api;
+	requires consulo.language.editor.refactoring.api;
+	requires consulo.language.code.style.ui.api;
+	requires consulo.file.editor.api;
+	requires consulo.file.template.api;
+	requires consulo.ui.ex.api;
+	requires consulo.ui.ex.awt.api;
+	requires consulo.execution.debug.api;
+	requires consulo.language.copyright.api;
+	requires consulo.language.impl;
+	requires consulo.language.editor.impl;
+	requires consulo.module.ui.api;
+	requires consulo.project.ui.view.api;
+	requires consulo.version.control.system.api;
 
 	requires transitive consulo.csharp.base.impl;
 	requires transitive consulo.csharp.psi.impl;

@@ -7,6 +7,7 @@ module consulo.csharp.microsoft
 	// TODO remove in future
 	requires java.desktop;
 
+	requires consulo.ui.api;
 	requires consulo.csharp.base.impl;
 	requires consulo.dotnet.impl;
 	requires consulo.dotnet.microsoft;
