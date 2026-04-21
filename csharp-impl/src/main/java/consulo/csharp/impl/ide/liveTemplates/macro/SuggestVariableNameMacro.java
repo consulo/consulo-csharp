@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.liveTemplates.macro;
 
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.ApplicationManager;
+import consulo.application.Application;
 import consulo.csharp.impl.ide.lineMarkerProvider.CSharpLineMarkerUtil;
 import consulo.csharp.impl.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -31,12 +30,14 @@ import consulo.language.editor.template.TextResult;
 import consulo.language.editor.template.macro.Macro;
 import consulo.language.psi.*;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ContainerUtil;
 
 import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,109 +45,89 @@ import java.util.List;
 
 /**
  * @author VISTALL
- * @since 11.06.14
+ * @since 2014-06-11
  */
 @ExtensionImpl
-public class SuggestVariableNameMacro extends Macro
-{
-	private static final Logger LOGGER = Logger.getInstance(SuggestVariableNameMacro.class);
+public class SuggestVariableNameMacro extends Macro {
+    private static final Logger LOGGER = Logger.getInstance(SuggestVariableNameMacro.class);
 
-	@Override
-	public String getName()
-	{
-		return "csharpSuggestVariableName";
-	}
+    @Override
+    public String getName() {
+        return "csharpSuggestVariableName";
+    }
 
-	@Override
-	public String getPresentableName()
-	{
-		return "suggestVariableName variable";
-	}
+    @Override
+    public LocalizeValue getPresentableName() {
+        return LocalizeValue.localizeTODO("suggestVariableName variable");
+    }
 
-	@Override
-	public String getDefaultValue()
-	{
-		return "it";
-	}
+    @Override
+    public String getDefaultValue() {
+        return "it";
+    }
 
-	@Nullable
-	@Override
-	@RequiredUIAccess
-	public Result calculateQuickResult(Expression[] params, ExpressionContext context)
-	{
-		return calculateResult(params, context);
-	}
+    @Nullable
+    @Override
+    @RequiredUIAccess
+    public Result calculateQuickResult(Expression[] params, ExpressionContext context) {
+        return calculateResult(params, context);
+    }
 
-	@Nullable
-	@Override
-	@RequiredUIAccess
-	public LookupElement[] calculateLookupItems(Expression[] params, ExpressionContext context)
-	{
-		Collection<String> suggestedVariableNames = getSuggestedVariableNames(context);
+    @Nullable
+    @Override
+    @RequiredUIAccess
+    public LookupElement[] calculateLookupItems(Expression[] params, ExpressionContext context) {
+        Collection<String> suggestedVariableNames = getSuggestedVariableNames(context);
 
-		List<LookupElement> list = new ArrayList<LookupElement>(suggestedVariableNames.size());
-		for(String temp : suggestedVariableNames)
-		{
-			list.add(LookupElementBuilder.create(temp));
-		}
-		return list.toArray(new LookupElement[list.size()]);
-	}
+        List<LookupElement> list = new ArrayList<>(suggestedVariableNames.size());
+        for (String temp : suggestedVariableNames) {
+            list.add(LookupElementBuilder.create(temp));
+        }
+        return list.toArray(new LookupElement[list.size()]);
+    }
 
-	@Nullable
-	@Override
-	@RequiredUIAccess
-	public Result calculateResult(Expression[] params, ExpressionContext context)
-	{
-		Collection<String> suggestedVariableNames = getSuggestedVariableNames(context);
-		return new TextResult(ContainerUtil.getFirstItem(suggestedVariableNames, "it"));
-	}
+    @Nullable
+    @Override
+    @RequiredUIAccess
+    public Result calculateResult(Expression[] params, ExpressionContext context) {
+        Collection<String> suggestedVariableNames = getSuggestedVariableNames(context);
+        return new TextResult(ContainerUtil.getFirstItem(suggestedVariableNames, "it"));
+    }
 
-	@RequiredUIAccess
-	private Collection<String> getSuggestedVariableNames(ExpressionContext context)
-	{
-		final Project project = context.getProject();
-		final int offset = context.getStartOffset();
+    @RequiredUIAccess
+    private Collection<String> getSuggestedVariableNames(ExpressionContext context) {
+        Project project = context.getProject();
+        int offset = context.getStartOffset();
 
-		PsiDocumentManager.getInstance(project).commitAllDocuments();
+        PsiDocumentManager.getInstance(project).commitAllDocuments();
 
-		PsiFile file = PsiDocumentManager.getInstance(project).getPsiFile(context.getEditor().getDocument());
-		assert file != null;
-		PsiElement element = file.findElementAt(offset);
+        PsiFile file = PsiDocumentManager.getInstance(project).getPsiFile(context.getEditor().getDocument());
+        assert file != null;
+        PsiElement element = file.findElementAt(offset);
 
-		assert element != null;
-		if(PsiUtilCore.getElementType(element) == CSharpTokens.IDENTIFIER)
-		{
-			DotNetVariable variable = CSharpLineMarkerUtil.getNameIdentifierAs(element, DotNetVariable.class);
-			if(variable != null)
-			{
-				return CSharpNameSuggesterUtil.getSuggestedVariableNames(variable);
-			}
-		}
-		else
-		{
-			final PsiFile fileCopy = (PsiFile) file.copy();
-			ApplicationManager.getApplication().runWriteAction(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					try
-					{
-						ReparseRangeUtil.reparseRange(fileCopy, offset, offset, "xxx");
-					}
-					catch(IncorrectOperationException e)
-					{
-						LOGGER.error(e);
-					}
+        assert element != null;
+        if (PsiUtilCore.getElementType(element) == CSharpTokens.IDENTIFIER) {
+            DotNetVariable variable = CSharpLineMarkerUtil.getNameIdentifierAs(element, DotNetVariable.class);
+            if (variable != null) {
+                return CSharpNameSuggesterUtil.getSuggestedVariableNames(variable);
+            }
+        }
+        else {
+            PsiFile fileCopy = (PsiFile) file.copy();
+            Application.get().runWriteAction(() -> {
+				try {
+					ReparseRangeUtil.reparseRange(fileCopy, offset, offset, "xxx");
+				}
+				catch (IncorrectOperationException e) {
+					LOGGER.error(e);
 				}
 			});
-			PsiElement identifierCopy = fileCopy.findElementAt(offset);
-			DotNetVariable variable = CSharpLineMarkerUtil.getNameIdentifierAs(identifierCopy, DotNetVariable.class);
-			if(variable != null)
-			{
-				return CSharpNameSuggesterUtil.getSuggestedVariableNames(variable);
-			}
-		}
-		return Collections.emptyList();
-	}
+            PsiElement identifierCopy = fileCopy.findElementAt(offset);
+            DotNetVariable variable = CSharpLineMarkerUtil.getNameIdentifierAs(identifierCopy, DotNetVariable.class);
+            if (variable != null) {
+                return CSharpNameSuggesterUtil.getSuggestedVariableNames(variable);
+            }
+        }
+        return Collections.emptyList();
+    }
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.liveTemplates.macro;
 
 import java.util.LinkedList;
@@ -35,38 +34,39 @@ import consulo.language.psi.resolve.ResolveState;
 
 /**
  * @author VISTALL
- * @since 29.12.14
+ * @since 2014-12-29
  */
-public class CSharpLiveTemplateMacroUtil
-{
-	@RequiredReadAction
-	public static List<DotNetVariable> resolveAllVariables(PsiElement scope)
-	{
-		Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImplUtil.getResolveLayers(scope, false);
+public class CSharpLiveTemplateMacroUtil {
+    @RequiredReadAction
+    public static List<DotNetVariable> resolveAllVariables(PsiElement scope) {
+        Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImplUtil.getResolveLayers(scope, false);
 
-		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
-		StubScopeProcessor processor = new SimpleNamedScopeProcessor(psiElementProcessor, true, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER_OR_LOCAL_METHOD);
-		CSharpResolveUtil.treeWalkUp(processor, scope, scope, resolveLayers.getFirst());
+        AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
+        StubScopeProcessor processor =
+            new SimpleNamedScopeProcessor(psiElementProcessor, true, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER_OR_LOCAL_METHOD);
+        CSharpResolveUtil.treeWalkUp(processor, scope, scope, resolveLayers.getFirst());
 
-		CSharpResolveOptions options = CSharpResolveOptions.build();
-		options.element(scope);
+        CSharpResolveOptions options = CSharpResolveOptions.build();
+        options.element(scope);
 
-		processor = new CompletionResolveScopeProcessor(options, psiElementProcessor, new ExecuteTarget[]{
-				ExecuteTarget.FIELD,
-				ExecuteTarget.PROPERTY,
-				ExecuteTarget.EVENT
-		});
+        processor = new CompletionResolveScopeProcessor(
+            options,
+            psiElementProcessor,
+            new ExecuteTarget[]{
+                ExecuteTarget.FIELD,
+                ExecuteTarget.PROPERTY,
+                ExecuteTarget.EVENT
+            }
+        );
 
-		CSharpResolveUtil.walkChildren(processor, resolveLayers.getSecond(), true, false, ResolveState.initial());
+        CSharpResolveUtil.walkChildren(processor, resolveLayers.getSecond(), true, false, ResolveState.initial());
 
-		List<DotNetVariable> list = new LinkedList<DotNetVariable>();
-		for(PsiElement element : psiElementProcessor.getElements())
-		{
-			if(element instanceof DotNetVariable)
-			{
-				list.add((DotNetVariable) element);
-			}
-		}
-		return list;
-	}
+        List<DotNetVariable> list = new LinkedList<>();
+        for (PsiElement element : psiElementProcessor.getElements()) {
+            if (element instanceof DotNetVariable variable) {
+                list.add(variable);
+            }
+        }
+        return list;
+    }
 }

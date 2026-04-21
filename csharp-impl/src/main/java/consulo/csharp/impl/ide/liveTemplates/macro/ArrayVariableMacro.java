@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.liveTemplates.macro;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpArrayTypeRef;
 import consulo.dotnet.psi.DotNetVariable;
@@ -23,52 +23,47 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.editor.template.Expression;
 import consulo.language.editor.template.ExpressionContext;
 import consulo.language.psi.PsiElement;
-
+import consulo.localize.LocalizeValue;
 import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author VISTALL
- * @since 30.12.14
+ * @since 2014-12-30
  */
 @ExtensionImpl
-public class ArrayVariableMacro extends VariableTypeMacroBase
-{
-	@Nullable
-	@Override
-	protected PsiElement[] getVariables(Expression[] params, ExpressionContext context)
-	{
-		final PsiElement psiElementAtStartOffset = context.getPsiElementAtStartOffset();
-		if(psiElementAtStartOffset == null)
-		{
-			return PsiElement.EMPTY_ARRAY;
-		}
+public class ArrayVariableMacro extends VariableTypeMacroBase {
+    @Nullable
+    @Override
+	@RequiredReadAction
+    protected PsiElement[] getVariables(Expression[] params, ExpressionContext context) {
+        PsiElement psiElementAtStartOffset = context.getPsiElementAtStartOffset();
+        if (psiElementAtStartOffset == null) {
+            return PsiElement.EMPTY_ARRAY;
+        }
 
-		List<DotNetVariable> variables = CSharpLiveTemplateMacroUtil.resolveAllVariables(context.getPsiElementAtStartOffset());
+        List<DotNetVariable> variables = CSharpLiveTemplateMacroUtil.resolveAllVariables(context.getPsiElementAtStartOffset());
 
-		List<DotNetVariable> list = new ArrayList<>();
-		for(DotNetVariable variable : variables)
-		{
-			DotNetTypeRef typeRefOfVariable = variable.toTypeRef(true);
+        List<DotNetVariable> list = new ArrayList<>();
+        for (DotNetVariable variable : variables) {
+            DotNetTypeRef typeRefOfVariable = variable.toTypeRef(true);
 
-			if(typeRefOfVariable instanceof CSharpArrayTypeRef && ((CSharpArrayTypeRef) typeRefOfVariable).getDimensions() == 0)
-			{
-				list.add(variable);
-			}
-		}
-		return list.toArray(new PsiElement[list.size()]);
-	}
+            if (typeRefOfVariable instanceof CSharpArrayTypeRef arrayTypeRef && arrayTypeRef.getDimensions() == 0) {
+                list.add(variable);
+            }
+        }
+        return list.toArray(new PsiElement[list.size()]);
+    }
 
-	@Override
-	public String getName()
-	{
-		return "csharpArrayVariable";
-	}
+    @Override
+    public String getName() {
+        return "csharpArrayVariable";
+    }
 
-	@Override
-	public String getPresentableName()
-	{
-		return "array variable";
-	}
+    @Override
+    public LocalizeValue getPresentableName() {
+        return LocalizeValue.localizeTODO("array variable");
+    }
 }

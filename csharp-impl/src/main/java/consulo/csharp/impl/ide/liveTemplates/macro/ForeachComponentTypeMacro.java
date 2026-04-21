@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.liveTemplates.macro;
 
 import consulo.annotation.access.RequiredReadAction;
@@ -36,6 +35,7 @@ import consulo.language.editor.template.TextResult;
 import consulo.language.editor.template.macro.Macro;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
 import consulo.util.collection.SmartList;
 
 import org.jspecify.annotations.Nullable;
@@ -44,101 +44,88 @@ import java.util.List;
 
 /**
  * @author VISTALL
- * @since 11.06.14
+ * @since 2014-06-11
  */
 @ExtensionImpl
-public class ForeachComponentTypeMacro extends Macro
-{
-	@Override
-	public String getName()
-	{
-		return "csharpForeachComponentType";
-	}
+public class ForeachComponentTypeMacro extends Macro {
+    @Override
+    public String getName() {
+        return "csharpForeachComponentType";
+    }
 
-	@Override
-	public String getPresentableName()
-	{
-		return "csharpForeachComponentType(VARIABLE)";
-	}
+    @Override
+    public LocalizeValue getPresentableName() {
+        return LocalizeValue.of("csharpForeachComponentType(VARIABLE)");
+    }
 
-	@Override
-	public String getDefaultValue()
-	{
-		return "var";
-	}
+    @Override
+    public String getDefaultValue() {
+        return "var";
+    }
 
-	@Nullable
-	@Override
-	@RequiredReadAction
-	public Result calculateQuickResult(Expression[] params, ExpressionContext context)
-	{
-		return calculateResult(params, context);
-	}
+    @Nullable
+    @Override
+    @RequiredReadAction
+    public Result calculateQuickResult(Expression[] params, ExpressionContext context) {
+        return calculateResult(params, context);
+    }
 
-	@Nullable
-	@Override
-	@RequiredReadAction
-	public LookupElement[] calculateLookupItems(Expression[] params, ExpressionContext context)
-	{
-		Result result = calculateResult(params, context);
-		if(result == null)
-		{
-			return LookupElement.EMPTY_ARRAY;
-		}
-		List<LookupElement> list = new SmartList<>();
+    @Nullable
+    @Override
+    @RequiredReadAction
+    public LookupElement[] calculateLookupItems(Expression[] params, ExpressionContext context) {
+        Result result = calculateResult(params, context);
+        if (result == null) {
+            return LookupElement.EMPTY_ARRAY;
+        }
+        List<LookupElement> list = new SmartList<>();
 
-		boolean useVarForExtractLocalVariable = CSharpCodeGenerationSettings.getInstance(context.getProject()).USE_VAR_FOR_EXTRACT_LOCAL_VARIABLE;
-		boolean varSupported = CSharpModuleUtil.findLanguageVersion(context.getPsiElementAtStartOffset()).isAtLeast(CSharpLanguageVersion._2_0);
+        boolean useVarForExtractLocalVariable =
+            CSharpCodeGenerationSettings.getInstance(context.getProject()).USE_VAR_FOR_EXTRACT_LOCAL_VARIABLE;
+        boolean varSupported =
+            CSharpModuleUtil.findLanguageVersion(context.getPsiElementAtStartOffset()).isAtLeast(CSharpLanguageVersion._2_0);
 
-		boolean canUseVar = varSupported && useVarForExtractLocalVariable;
+        boolean canUseVar = varSupported && useVarForExtractLocalVariable;
 
-		if(canUseVar)
-		{
-			list.add(LookupElementBuilder.create("var").bold());
-		}
-		else
-		{
-			list.add(LookupElementBuilder.create(result.toString()));
+        if (canUseVar) {
+            list.add(LookupElementBuilder.create("var").bold());
+        }
+        else {
+            list.add(LookupElementBuilder.create(result.toString()));
 
-			if(varSupported)
-			{
-				list.add(LookupElementBuilder.create("var").bold());
-			}
-		}
-		return list.toArray(new LookupElement[list.size()]);
-	}
+            if (varSupported) {
+                list.add(LookupElementBuilder.create("var").bold());
+            }
+        }
+        return list.toArray(new LookupElement[list.size()]);
+    }
 
-	@Nullable
-	@Override
-	@RequiredReadAction
-	public Result calculateResult(Expression[] params, ExpressionContext context)
-	{
-		if(params.length != 1)
-		{
-			return null;
-		}
-		Result result = params[0].calculateResult(context);
-		if(result == null)
-		{
-			return null;
-		}
-		String text = result.toString();
+    @Nullable
+    @Override
+    @RequiredReadAction
+    public Result calculateResult(Expression[] params, ExpressionContext context) {
+        if (params.length != 1) {
+            return null;
+        }
+        Result result = params[0].calculateResult(context);
+        if (result == null) {
+            return null;
+        }
+        String text = result.toString();
 
-		PsiElement place = context.getPsiElementAtStartOffset();
-		CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(context.getProject(), text, place);
+        PsiElement place = context.getPsiElementAtStartOffset();
+        CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(context.getProject(), text, place);
 
-		DotNetExpression expression = PsiTreeUtil.getChildOfType(expressionFragment, DotNetExpression.class);
+        DotNetExpression expression = PsiTreeUtil.getChildOfType(expressionFragment, DotNetExpression.class);
 
-		if(expression == null)
-		{
-			return null;
-		}
+        if (expression == null) {
+            return null;
+        }
 
-		DotNetTypeRef typeRef = CSharpResolveUtil.resolveIterableType(expression.toTypeRef(false));
-		if(typeRef == DotNetTypeRef.ERROR_TYPE)
-		{
-			return null;
-		}
-		return new TextResult(CSharpTypeRefPresentationUtil.buildShortText(typeRef));
-	}
+        DotNetTypeRef typeRef = CSharpResolveUtil.resolveIterableType(expression.toTypeRef(false));
+        if (typeRef == DotNetTypeRef.ERROR_TYPE) {
+            return null;
+        }
+        return new TextResult(CSharpTypeRefPresentationUtil.buildShortText(typeRef));
+    }
 }

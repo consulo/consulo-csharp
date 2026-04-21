@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.liveTemplates.macro;
 
 import consulo.annotation.component.ExtensionImpl;
@@ -27,6 +26,7 @@ import consulo.language.editor.template.macro.Macro;
 import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import org.jspecify.annotations.Nullable;
@@ -35,63 +35,54 @@ import java.util.List;
 
 /**
  * @author VISTALL
- * @since 29.12.14
+ * @since 2014-12-29
  */
 @ExtensionImpl
-public class SuggestIndexVariableNameMacro extends Macro
-{
-	@Override
-	public String getDefaultValue()
-	{
-		return "i";
-	}
+public class SuggestIndexVariableNameMacro extends Macro {
+    @Override
+    public String getDefaultValue() {
+        return "i";
+    }
 
-	@Override
-	public String getName()
-	{
-		return "csharpSuggestIndexName";
-	}
+    @Override
+    public String getName() {
+        return "csharpSuggestIndexName";
+    }
 
-	@Override
-	public String getPresentableName()
-	{
-		return "csharpSuggestIndexName()";
-	}
+    @Override
+    public LocalizeValue getPresentableName() {
+        return LocalizeValue.of("csharpSuggestIndexName()");
+    }
 
-	@Nullable
-	@Override
-	@RequiredUIAccess
-	public Result calculateResult(Expression[] params, ExpressionContext context)
-	{
-		final Project project = context.getProject();
-		final int offset = context.getStartOffset();
+    @Nullable
+    @Override
+    @RequiredUIAccess
+    public Result calculateResult(Expression[] params, ExpressionContext context) {
+        Project project = context.getProject();
+        int offset = context.getStartOffset();
 
-		PsiFile file = PsiDocumentManager.getInstance(project).getPsiFile(context.getEditor().getDocument());
-		PsiElement place = file.findElementAt(offset);
+        PsiFile file = PsiDocumentManager.getInstance(project).getPsiFile(context.getEditor().getDocument());
+        PsiElement place = file.findElementAt(offset);
 
-		List<DotNetVariable> dotNetVariables = CSharpLiveTemplateMacroUtil.resolveAllVariables(place);
+        List<DotNetVariable> dotNetVariables = CSharpLiveTemplateMacroUtil.resolveAllVariables(place);
 
-		DotNetVariable variable = CSharpLineMarkerUtil.getNameIdentifierAs(place, DotNetVariable.class);
+        DotNetVariable variable = CSharpLineMarkerUtil.getNameIdentifierAs(place, DotNetVariable.class);
 
-		ChooseLetterLoop:
-		for(char letter = 'i'; letter <= 'z'; letter++)
-		{
-			for(DotNetVariable dotNetVariable : dotNetVariables)
-			{
-				// skip self
-				if(dotNetVariable == variable)
-				{
-					continue;
-				}
+        ChooseLetterLoop:
+        for (char letter = 'i'; letter <= 'z'; letter++) {
+            for (DotNetVariable dotNetVariable : dotNetVariables) {
+                // skip self
+                if (dotNetVariable == variable) {
+                    continue;
+                }
 
-				String name = dotNetVariable.getName();
-				if(name != null && name.length() == 1 && name.charAt(0) == letter)
-				{
-					continue ChooseLetterLoop;
-				}
-			}
-			return new TextResult(String.valueOf(letter));
-		}
-		return null;
-	}
+                String name = dotNetVariable.getName();
+                if (name != null && name.length() == 1 && name.charAt(0) == letter) {
+                    continue ChooseLetterLoop;
+                }
+            }
+            return new TextResult(String.valueOf(letter));
+        }
+        return null;
+    }
 }
