@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.liveTemplates.macro;
 
 import consulo.annotation.component.ExtensionImpl;
@@ -22,31 +21,28 @@ import consulo.language.editor.template.ExpressionContext;
 import consulo.language.editor.template.Result;
 import consulo.language.editor.template.TextResult;
 import consulo.language.editor.template.macro.Macro;
+import consulo.localize.LocalizeValue;
 import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
- * @since 07.03.2016
+ * @since 2016-03.07
  */
 @ExtensionImpl
-public class TypeMacro extends Macro
-{
-	@Override
-	public String getName()
-	{
-		return "csharpType";
-	}
+public class TypeMacro extends Macro {
+    @Override
+    public String getName() {
+        return "csharpType";
+    }
 
-	@Override
-	public String getPresentableName()
-	{
-		return "type";
-	}
+    @Override
+    public LocalizeValue getPresentableName() {
+        return LocalizeValue.localizeTODO("type");
+    }
 
-	@Nullable
-	@Override
-	public Result calculateResult(Expression[] params, ExpressionContext context)
-	{
-		return new TextResult("TYPE");
-	}
+    @Nullable
+    @Override
+    public Result calculateResult(Expression[] params, ExpressionContext context) {
+        return new TextResult("TYPE");
+    }
 }

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.liveTemplates.macro;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.impl.psi.DotNetTypes2;
 import consulo.csharp.lang.impl.psi.source.CSharpTypeDeclarationImplUtil;
@@ -24,6 +24,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.editor.template.Expression;
 import consulo.language.editor.template.ExpressionContext;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import consulo.util.collection.SmartList;
 import org.jspecify.annotations.Nullable;
 
@@ -31,50 +32,44 @@ import java.util.List;
 
 /**
  * @author VISTALL
- * @since 11.06.14
+ * @since 2014-06-11
  */
 @ExtensionImpl
-public class ForeachVariableMacro extends VariableTypeMacroBase
-{
-	private static final String[] ourAcceptableTypes = {
-			DotNetTypes2.System.Collections.IEnumerable,
-			DotNetTypes2.System.Collections.Generic.IEnumerable$1
-	};
+public class ForeachVariableMacro extends VariableTypeMacroBase {
+    private static final String[] ourAcceptableTypes = {
+        DotNetTypes2.System.Collections.IEnumerable,
+        DotNetTypes2.System.Collections.Generic.IEnumerable$1
+    };
 
-	@Nullable
-	@Override
-	protected PsiElement[] getVariables(Expression[] params, ExpressionContext context)
-	{
-		final PsiElement psiElementAtStartOffset = context.getPsiElementAtStartOffset();
-		if(psiElementAtStartOffset == null)
-		{
-			return PsiElement.EMPTY_ARRAY;
-		}
+    @Nullable
+    @Override
+	@RequiredReadAction
+    protected PsiElement[] getVariables(Expression[] params, ExpressionContext context) {
+        PsiElement psiElementAtStartOffset = context.getPsiElementAtStartOffset();
+        if (psiElementAtStartOffset == null) {
+            return PsiElement.EMPTY_ARRAY;
+        }
 
-		List<DotNetVariable> variables = CSharpLiveTemplateMacroUtil.resolveAllVariables(context.getPsiElementAtStartOffset());
+        List<DotNetVariable> variables = CSharpLiveTemplateMacroUtil.resolveAllVariables(context.getPsiElementAtStartOffset());
 
-		List<DotNetVariable> list = new SmartList<DotNetVariable>();
-		for(DotNetVariable variable : variables)
-		{
-			DotNetTypeRef typeRefOfVariable = variable.toTypeRef(true);
+        List<DotNetVariable> list = new SmartList<>();
+        for (DotNetVariable variable : variables) {
+            DotNetTypeRef typeRefOfVariable = variable.toTypeRef(true);
 
-			if(CSharpTypeDeclarationImplUtil.isInheritOrSelf(typeRefOfVariable, psiElementAtStartOffset, ourAcceptableTypes))
-			{
-				list.add(variable);
-			}
-		}
-		return list.toArray(new PsiElement[list.size()]);
-	}
+            if (CSharpTypeDeclarationImplUtil.isInheritOrSelf(typeRefOfVariable, psiElementAtStartOffset, ourAcceptableTypes)) {
+                list.add(variable);
+            }
+        }
+        return list.toArray(new PsiElement[list.size()]);
+    }
 
-	@Override
-	public String getName()
-	{
-		return "csharpForeachVariable";
-	}
+    @Override
+    public String getName() {
+        return "csharpForeachVariable";
+    }
 
-	@Override
-	public String getPresentableName()
-	{
-		return "foreach variable";
-	}
+    @Override
+    public LocalizeValue getPresentableName() {
+        return LocalizeValue.localizeTODO("foreach variable");
+    }
 }

@@ -30,57 +30,46 @@ import consulo.language.psi.PsiElement;
 import org.jspecify.annotations.Nullable;
 
 /**
+ * from java plugin
+ *
  * @author VISTALL
  * @author ven
- *         <p/>
- *         from java plugin
  * @since 11.06.14
- *        <p/>
- *        base code by
  */
-public abstract class VariableTypeMacroBase extends Macro
-{
-	@Nullable
-	protected abstract PsiElement[] getVariables(Expression[] params, final ExpressionContext context);
+public abstract class VariableTypeMacroBase extends Macro {
+    @Nullable
+    protected abstract PsiElement[] getVariables(Expression[] params, ExpressionContext context);
 
-	@Override
-	@RequiredReadAction
-	public LookupElement[] calculateLookupItems(Expression[] params, final ExpressionContext context)
-	{
-		final PsiElement[] vars = getVariables(params, context);
-		if(vars == null || vars.length < 2)
-		{
-			return null;
-		}
-		return CSharpLookupElementBuilder.buildToLookupElements(vars);
-	}
+    @Override
+    @RequiredReadAction
+    public LookupElement[] calculateLookupItems(Expression[] params, ExpressionContext context) {
+        PsiElement[] vars = getVariables(params, context);
+        if (vars == null || vars.length < 2) {
+            return null;
+        }
+        return CSharpLookupElementBuilder.buildToLookupElements(vars);
+    }
 
-	@Override
-	public Result calculateResult(Expression[] params, ExpressionContext context)
-	{
-		final PsiElement[] vars = getVariables(params, context);
-		if(vars == null || vars.length == 0)
-		{
-			return null;
-		}
-		return new PsiElementResult(vars[0])
-		{
-			@Override
-			public String toString()
-			{
-				PsiElement element = getElement();
-				if(element instanceof DotNetVariable)
-				{
-					return ((DotNetVariable) element).getName();
-				}
-				return super.toString();
-			}
-		};
-	}
+    @Override
+    public Result calculateResult(Expression[] params, ExpressionContext context) {
+        final PsiElement[] vars = getVariables(params, context);
+        if (vars == null || vars.length == 0) {
+            return null;
+        }
+        return new PsiElementResult(vars[0]) {
+            @Override
+			@RequiredReadAction
+            public String toString() {
+				if (getElement() instanceof DotNetVariable variable) {
+                    return variable.getName();
+                }
+                return super.toString();
+            }
+        };
+    }
 
-	@Override
-	public String getDefaultValue()
-	{
-		return "a";
-	}
+    @Override
+    public String getDefaultValue() {
+        return "a";
+    }
 }
