@@ -1,0 +1,51 @@
+{
+  "lockVersion" : 1,
+  "server" : "https://i.verbaria.org/",
+  "project" : "consulo-csharp",
+  "projectVersion" : "master",
+  "generatedAt" : "2026-06-03T18:21:58.633097370Z",
+  "documents" : {
+    "consulo.csharp.api.CSharpLocalize" : {
+      "source" : {
+        "revision" : 1,
+        "sig" : "ba93e7adc971c679f23d0624397a9fb5"
+      },
+      "translations" : {
+        "en-US" : {
+          "sig" : "194d807d069515d54e97f4e23487624d",
+          "state" : "Approved",
+          "total" : 31,
+          "translators" : [ "Valery Semenchuk <vistall.valeriy@gmail.com>" ]
+        }
+      }
+    },
+    "consulo.csharp.impl.CSharpErrorLocalize" : {
+      "source" : {
+        "revision" : 1,
+        "sig" : "cb70e93cabd0d558005944dffb1bb07a"
+      },
+      "translations" : {
+        "en-US" : {
+          "sig" : "3f7c7af78c5ce79f3714b1f92cf5e82a",
+          "state" : "Approved",
+          "total" : 126,
+          "translators" : [ "Valery Semenchuk <vistall.valeriy@gmail.com>" ]
+        }
+      }
+    },
+    "consulo.csharp.impl.CSharpInspectionLocalize" : {
+      "source" : {
+        "revision" : 1,
+        "sig" : "0fff5436ef7cab1410b58ce3da2f9957"
+      },
+      "translations" : {
+        "en-US" : {
+          "sig" : "54e78580a60fad7899648f3db08487bc",
+          "state" : "Approved",
+          "total" : 2,
+          "translators" : [ "Valery Semenchuk <vistall.valeriy@gmail.com>" ]
+        }
+      }
+    }
+  }
+}
