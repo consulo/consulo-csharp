@@ -1,0 +1,14 @@
+name: source-sync
+
+on:
+    push:
+        branches: [master]
+    workflow_dispatch: {}
+
+jobs:
+    sync:
+        permissions:
+            contents: write
+            pull-requests: write
+        uses: consulo/shared-workflows/.github/workflows/source-sync.yml@master
+        secrets: inherit
