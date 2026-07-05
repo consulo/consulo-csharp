@@ -23,12 +23,10 @@ import consulo.csharp.lang.impl.psi.light.builder.CSharpLightConstructorDeclarat
 import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.dataContext.DataContext;
 import consulo.language.ast.ASTNode;
 import consulo.language.editor.ui.PsiElementListCellRenderer;
 import consulo.language.editor.ui.navigation.GotoDeclarationHandlerEx;
 import consulo.language.psi.PsiElement;
-
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -36,46 +34,31 @@ import org.jspecify.annotations.Nullable;
  * @since 02.05.2015
  */
 @ExtensionImpl
-public class CSharpPartialGotoDeclarationHandler implements GotoDeclarationHandlerEx
-{
-	@Nullable
-	@Override
-	public PsiElement[] getGotoDeclarationTargets(PsiElement sourceElement, int offset, Editor editor)
-	{
-		ASTNode node = sourceElement == null ? null : sourceElement.getNode();
-		if(node != null && node.getElementType() == CSharpTokens.IDENTIFIER)
-		{
-			PsiElement parent = sourceElement.getParent();
-			if(parent instanceof CSharpReferenceExpression)
-			{
-				PsiElement resolvedElement = ((CSharpReferenceExpression) parent).resolve();
-				if(resolvedElement instanceof CSharpCompositeTypeDeclaration)
-				{
-					return ((CSharpCompositeTypeDeclaration) resolvedElement).getTypeDeclarations();
-				}
-				else if(resolvedElement instanceof CSharpLightConstructorDeclarationBuilder)
-				{
-					PsiElement nextParent = resolvedElement.getParent();
-					if(nextParent instanceof CSharpCompositeTypeDeclaration)
-					{
-						return ((CSharpCompositeTypeDeclaration) nextParent).getTypeDeclarations();
-					}
-				}
-			}
-		}
-		return null;
-	}
+public class CSharpPartialGotoDeclarationHandler implements GotoDeclarationHandlerEx {
+    @Nullable
+    @Override
+    public PsiElement[] getGotoDeclarationTargets(PsiElement sourceElement, int offset, Editor editor) {
+        ASTNode node = sourceElement == null ? null : sourceElement.getNode();
+        if (node != null && node.getElementType() == CSharpTokens.IDENTIFIER) {
+            PsiElement parent = sourceElement.getParent();
+            if (parent instanceof CSharpReferenceExpression) {
+                PsiElement resolvedElement = ((CSharpReferenceExpression) parent).resolve();
+                if (resolvedElement instanceof CSharpCompositeTypeDeclaration) {
+                    return ((CSharpCompositeTypeDeclaration) resolvedElement).getTypeDeclarations();
+                }
+                else if (resolvedElement instanceof CSharpLightConstructorDeclarationBuilder) {
+                    PsiElement nextParent = resolvedElement.getParent();
+                    if (nextParent instanceof CSharpCompositeTypeDeclaration) {
+                        return ((CSharpCompositeTypeDeclaration) nextParent).getTypeDeclarations();
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
-	@Nullable
-	@Override
-	public String getActionText(DataContext context)
-	{
-		return null;
-	}
-
-	@Override
-	public PsiElementListCellRenderer<PsiElement> createRender(PsiElement[] elements)
-	{
-		return new PartialTypeCollector.OurRender();
-	}
+    @Override
+    public PsiElementListCellRenderer<PsiElement> createRender(PsiElement[] elements) {
+        return new PartialTypeCollector.OurRender();
+    }
 }
