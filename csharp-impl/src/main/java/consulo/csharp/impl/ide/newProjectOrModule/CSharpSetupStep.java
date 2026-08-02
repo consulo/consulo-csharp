@@ -25,7 +25,7 @@ import consulo.module.ui.BundleBox;
 import consulo.module.ui.BundleBoxBuilder;
 import consulo.ui.ComboBox;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.ui.model.ListModel;
+import consulo.ui.model.FlatDataModel;
 import consulo.ui.util.FormBuilder;
 
 
@@ -74,7 +74,7 @@ public class CSharpSetupStep extends UnifiedProjectOrModuleNameStep<CSharpNewMod
         boxBuilder.withSdkTypeFilter(sdkTypeId -> validSdkTypes.contains(sdkTypeId.getId()));
 
         myBundleBox = boxBuilder.build();
-        ListModel<BundleBox.BundleBoxItem> listModel = myBundleBox.getComponent().getListModel();
+        FlatDataModel<BundleBox.BundleBoxItem> listModel = myBundleBox.getComponent().getDataModel();
         // select first
         if (listModel.getSize() > 0) {
             myBundleBox.getComponent().setValue(listModel.get(0));
