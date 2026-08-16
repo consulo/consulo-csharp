@@ -57,6 +57,7 @@ import consulo.ui.ex.awt.table.JBTableRow;
 import consulo.ui.ex.awt.table.JBTableRowEditor;
 import consulo.ui.ex.awt.table.TableView;
 import consulo.ui.ex.awt.tree.Tree;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
 import consulo.usage.UsageInfo;
 import consulo.usage.UsageViewDescriptor;
 import consulo.util.lang.Comparing;
@@ -84,528 +85,442 @@ import java.util.function.Consumer;
  * @since 20.05.14
  */
 public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CSharpParameterInfo, DotNetLikeMethodDeclaration, CSharpAccessModifier, CSharpMethodDescriptor,
-		CSharpParameterTableModelItem, CSharpParameterTableModel>
-{
-	public CSharpChangeSignatureDialog(Project project, CSharpMethodDescriptor method, boolean allowDelegation, PsiElement defaultValueContext)
-	{
-		super(project, method, allowDelegation, defaultValueContext);
-	}
+    CSharpParameterTableModelItem, CSharpParameterTableModel> {
+    public CSharpChangeSignatureDialog(Project project, CSharpMethodDescriptor method, boolean allowDelegation, PsiElement defaultValueContext) {
+        super(project, method, allowDelegation, defaultValueContext);
+    }
 
-	@Override
-	protected LanguageFileType getFileType()
-	{
-		return CSharpFileType.INSTANCE;
-	}
+    @Override
+    protected LanguageFileType getFileType() {
+        return CSharpFileType.INSTANCE;
+    }
 
-	@Override
-	protected CSharpParameterTableModel createParametersInfoModel(CSharpMethodDescriptor method)
-	{
-		return new CSharpParameterTableModel(method, myDefaultValueContext, myDefaultValueContext);
-	}
+    @Override
+    protected CSharpParameterTableModel createParametersInfoModel(CSharpMethodDescriptor method) {
+        return new CSharpParameterTableModel(method, myDefaultValueContext, myDefaultValueContext);
+    }
 
-	@Override
-	@RequiredUIAccess
-	protected BaseRefactoringProcessor createRefactoringProcessor()
-	{
-		CSharpChangeInfo changeInfo = generateChangeInfo();
+    @Override
+    @RequiredUIAccess
+    protected BaseRefactoringProcessor createRefactoringProcessor() {
+        CSharpChangeInfo changeInfo = generateChangeInfo();
 
-		return new ChangeSignatureProcessorBase(getProject(), changeInfo)
-		{
-			@Override
-			protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages)
-			{
-				return new ChangeSignatureViewDescriptor(myMethod.getMethod());
-			}
-		};
-	}
+        return new ChangeSignatureProcessorBase(getProject(), changeInfo) {
+            @Override
+            protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages) {
+                return new ChangeSignatureViewDescriptor(myMethod.getMethod());
+            }
+        };
+    }
 
-	@Override
-	protected boolean isListTableViewSupported()
-	{
-		return true;
-	}
+    @Override
+    protected boolean isListTableViewSupported() {
+        return true;
+    }
 
-	@Nullable
-	@Override
-	protected JBTableRowEditor getTableEditor(final JTable t, final ParameterTableModelItemBase<CSharpParameterInfo> item)
-	{
-		return new JBTableRowEditor()
-		{
-			private EditorTextField myTypeEditor;
-			private EditorTextField myNameEditor;
-			private EditorTextField myDefaultValueEditor;
-			private ComboBox myModifierComboBox;
+    @Nullable
+    @Override
+    protected JBTableRowEditor getTableEditor(final JTable t, final ParameterTableModelItemBase<CSharpParameterInfo> item) {
+        return new JBTableRowEditor() {
+            private EditorTextField myTypeEditor;
+            private EditorTextField myNameEditor;
+            private EditorTextField myDefaultValueEditor;
+            private ComboBox myModifierComboBox;
 
-			@Override
-			public void prepareEditor(JTable table, int row)
-			{
-				setLayout(new BorderLayout());
+            @Override
+            public void prepareEditor(JTable table, int row) {
+                setLayout(new BorderLayout());
 
-				JPanel topPanel = new JPanel(new GridLayout(1, 3));
-				add(topPanel, BorderLayout.NORTH);
+                JPanel topPanel = new JPanel(new GridLayout(1, 3));
+                add(topPanel, BorderLayout.NORTH);
 
-				myModifierComboBox = new ComboBox();
-				myModifierComboBox.addItem(null);
-				for(CSharpModifier modifier : CSharpParameterInfo.ourParameterModifiers)
-				{
-					myModifierComboBox.addItem(modifier);
-				}
-				myModifierComboBox.addItemListener(new ItemListener()
-				{
-					@Override
-					public void itemStateChanged(ItemEvent e)
-					{
-						if(e.getStateChange() == ItemEvent.SELECTED)
-						{
-							item.parameter.setModifier((CSharpModifier) myModifierComboBox.getSelectedItem());
-							updateSignature();
-						}
-					}
-				});
-				myModifierComboBox.setRenderer(new ListCellRendererWrapper<CSharpModifier>()
-				{
-					@Override
-					public void customize(JList list, CSharpModifier value, int index, boolean selected, boolean hasFocus)
-					{
-						setText(value == null ? "" : value.getPresentableText());
-					}
-				});
+                myModifierComboBox = new ComboBox();
+                myModifierComboBox.addItem(null);
+                for (CSharpModifier modifier : CSharpParameterInfo.ourParameterModifiers) {
+                    myModifierComboBox.addItem(modifier);
+                }
+                myModifierComboBox.addItemListener(new ItemListener() {
+                    @Override
+                    public void itemStateChanged(ItemEvent e) {
+                        if (e.getStateChange() == ItemEvent.SELECTED) {
+                            item.parameter.setModifier((CSharpModifier) myModifierComboBox.getSelectedItem());
+                            updateSignature();
+                        }
+                    }
+                });
+                myModifierComboBox.setRenderer(new ListCellRendererWrapper<CSharpModifier>() {
+                    @Override
+                    public void customize(JList list, CSharpModifier value, int index, boolean selected, boolean hasFocus) {
+                        setText(value == null ? "" : value.getPresentableText());
+                    }
+                });
 
-				myModifierComboBox.setSelectedItem(item.parameter.getModifier());
+                myModifierComboBox.setSelectedItem(item.parameter.getModifier());
 
-				topPanel.add(createLabeledPanel("Modifier:", myModifierComboBox));
+                topPanel.add(createLabeledPanel("Modifier:", myModifierComboBox));
 
-				final Document document = PsiDocumentManager.getInstance(getProject()).getDocument(item.typeCodeFragment);
-				myTypeEditor = new EditorTextField(document, getProject(), getFileType());
-				myTypeEditor.addDocumentListener(getSignatureUpdater());
-				myTypeEditor.setPreferredWidth(t.getWidth() / 2);
-				myTypeEditor.addDocumentListener(new RowEditorChangeListener(0));
-				topPanel.add(createLabeledPanel("Type:", myTypeEditor));
+                final Document document = PsiDocumentManager.getInstance(getProject()).getDocument(item.typeCodeFragment);
+                myTypeEditor = new EditorTextField(document, getProject(), getFileType());
+                myTypeEditor.addDocumentListener(getSignatureUpdater());
+                myTypeEditor.setPreferredWidth(t.getWidth() / 2);
+                myTypeEditor.addDocumentListener(new RowEditorChangeListener(0));
+                topPanel.add(createLabeledPanel("Type:", myTypeEditor));
 
-				myNameEditor = new EditorTextField(item.parameter.getName(), getProject(), getFileType());
-				myNameEditor.addDocumentListener(getSignatureUpdater());
-				myNameEditor.addDocumentListener(new RowEditorChangeListener(1));
-				topPanel.add(createLabeledPanel("Name:", myNameEditor));
+                myNameEditor = new EditorTextField(item.parameter.getName(), getProject(), getFileType());
+                myNameEditor.addDocumentListener(getSignatureUpdater());
+                myNameEditor.addDocumentListener(new RowEditorChangeListener(1));
+                topPanel.add(createLabeledPanel("Name:", myNameEditor));
 
-				if(item.parameter.getOldIndex() == -1)
-				{
-					final JPanel additionalPanel = new JPanel(new BorderLayout());
-					final Document doc = PsiDocumentManager.getInstance(getProject()).getDocument(item.defaultValueCodeFragment);
-					myDefaultValueEditor = new EditorTextField(doc, getProject(), getFileType());
-					myDefaultValueEditor.setPreferredWidth(t.getWidth() / 3);
-					myDefaultValueEditor.addDocumentListener(new RowEditorChangeListener(2));
-					additionalPanel.add(createLabeledPanel("Argument value:", myDefaultValueEditor), BorderLayout.EAST);
+                if (item.parameter.getOldIndex() == -1) {
+                    final JPanel additionalPanel = new JPanel(new BorderLayout());
+                    final Document doc = PsiDocumentManager.getInstance(getProject()).getDocument(item.defaultValueCodeFragment);
+                    myDefaultValueEditor = new EditorTextField(doc, getProject(), getFileType());
+                    myDefaultValueEditor.setPreferredWidth(t.getWidth() / 3);
+                    myDefaultValueEditor.addDocumentListener(new RowEditorChangeListener(2));
+                    additionalPanel.add(createLabeledPanel("Argument value:", myDefaultValueEditor), BorderLayout.EAST);
 
-					add(additionalPanel, BorderLayout.SOUTH);
-				}
-			}
+                    add(additionalPanel, BorderLayout.SOUTH);
+                }
+            }
 
-			@Override
-			public JBTableRow getValue()
-			{
-				return new JBTableRow()
-				{
-					@Override
-					public Object getValueAt(int column)
-					{
-						switch(column)
-						{
-							case 0:
-								return item.typeCodeFragment;
-							case 1:
-								return myNameEditor.getText().trim();
-							case 2:
-								return item.defaultValueCodeFragment;
-							case 3:
-								return myModifierComboBox.getSelectedItem();
-						}
-						return null;
-					}
-				};
-			}
+            @Override
+            public JBTableRow getValue() {
+                return new JBTableRow() {
+                    @Override
+                    public Object getValueAt(int column) {
+                        switch (column) {
+                            case 0:
+                                return item.typeCodeFragment;
+                            case 1:
+                                return myNameEditor.getText().trim();
+                            case 2:
+                                return item.defaultValueCodeFragment;
+                            case 3:
+                                return myModifierComboBox.getSelectedItem();
+                        }
+                        return null;
+                    }
+                };
+            }
 
-			@Override
-			public JComponent getPreferredFocusedComponent()
-			{
-				final MouseEvent me = getMouseEvent();
-				if(me == null)
-				{
-					return myTypeEditor.getFocusTarget();
-				}
-				final double x = me.getPoint().getX();
-				return x <= getTypesColumnWidth() ? myTypeEditor.getFocusTarget() : myDefaultValueEditor == null || x <= getNamesColumnWidth() ? myNameEditor.getFocusTarget() : myDefaultValueEditor
-						.getFocusTarget();
-			}
+            @Override
+            public JComponent getPreferredFocusedComponent() {
+                final MouseEvent me = getMouseEvent();
+                if (me == null) {
+                    return myTypeEditor.getFocusTarget();
+                }
+                final double x = me.getPoint().getX();
+                return x <= getTypesColumnWidth() ? myTypeEditor.getFocusTarget() : myDefaultValueEditor == null || x <= getNamesColumnWidth() ? myNameEditor.getFocusTarget() : myDefaultValueEditor
+                    .getFocusTarget();
+            }
 
-			@Override
-			public JComponent[] getFocusableComponents()
-			{
-				final List<JComponent> focusable = new ArrayList<>();
-				focusable.add(myTypeEditor.getFocusTarget());
-				focusable.add(myNameEditor.getFocusTarget());
-				if(myDefaultValueEditor != null)
-				{
-					focusable.add(myDefaultValueEditor.getFocusTarget());
-				}
-				focusable.add(myModifierComboBox);
-				return focusable.toArray(new JComponent[focusable.size()]);
-			}
-		};
-	}
+            @Override
+            public JComponent[] getFocusableComponents() {
+                final List<JComponent> focusable = new ArrayList<>();
+                focusable.add(myTypeEditor.getFocusTarget());
+                focusable.add(myNameEditor.getFocusTarget());
+                if (myDefaultValueEditor != null) {
+                    focusable.add(myDefaultValueEditor.getFocusTarget());
+                }
+                focusable.add(myModifierComboBox);
+                return focusable.toArray(new JComponent[focusable.size()]);
+            }
+        };
+    }
 
-	@Override
-	protected boolean postponeValidation()
-	{
-		return false;
-	}
+    @Override
+    protected boolean postponeValidation() {
+        return false;
+    }
 
-	@Override
-	protected boolean mayPropagateParameters()
-	{
-		return false;
-	}
+    @Override
+    protected boolean mayPropagateParameters() {
+        return false;
+    }
 
-	@Override
-	protected boolean isEmptyRow(ParameterTableModelItemBase<CSharpParameterInfo> row)
-	{
-		if(!StringUtil.isEmpty(row.parameter.getName()))
-		{
-			return false;
-		}
-		if(!StringUtil.isEmpty(row.parameter.getTypeText()))
-		{
-			return false;
-		}
-		return true;
-	}
+    @Override
+    protected boolean isEmptyRow(ParameterTableModelItemBase<CSharpParameterInfo> row) {
+        if (!StringUtil.isEmpty(row.parameter.getName())) {
+            return false;
+        }
+        if (!StringUtil.isEmpty(row.parameter.getTypeText())) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	@RequiredUIAccess
-	protected JComponent getRowPresentation(ParameterTableModelItemBase<CSharpParameterInfo> item, boolean selected, final boolean focused)
-	{
-		final String typeText = item.typeCodeFragment.getText();
-		CSharpModifier modifier = item.parameter.getModifier();
-		String text = "";
-		if(modifier != null)
-		{
-			text = modifier.getPresentableText() + " ";
-		}
-		final String separator = StringUtil.repeatSymbol(' ', getTypesMaxLength() - typeText.length() + 1);
+    @Override
+    @RequiredUIAccess
+    protected JComponent getRowPresentation(ParameterTableModelItemBase<CSharpParameterInfo> item, boolean selected, final boolean focused) {
+        final String typeText = item.typeCodeFragment.getText();
+        CSharpModifier modifier = item.parameter.getModifier();
+        String text = "";
+        if (modifier != null) {
+            text = modifier.getPresentableText() + " ";
+        }
+        final String separator = StringUtil.repeatSymbol(' ', getTypesMaxLength() - typeText.length() + 1);
 
-		text += typeText + separator + item.parameter.getName();
-		final String defaultValue = item.defaultValueCodeFragment.getText();
-		String tail = "";
-		if(StringUtil.isNotEmpty(defaultValue))
-		{
-			tail += " argument value = " + defaultValue;
-		}
-		if(!StringUtil.isEmpty(tail))
-		{
-			text += " //" + tail;
-		}
-		return JBListTableWitEditors.createEditorTextFieldPresentation(getProject(), getFileType(), " " + text, selected, focused);
-	}
+        text += typeText + separator + item.parameter.getName();
+        final String defaultValue = item.defaultValueCodeFragment.getText();
+        String tail = "";
+        if (StringUtil.isNotEmpty(defaultValue)) {
+            tail += " argument value = " + defaultValue;
+        }
+        if (!StringUtil.isEmpty(tail)) {
+            text += " //" + tail;
+        }
+        return JBListTableWitEditors.createEditorTextFieldPresentation(getProject(), getFileType(), " " + text, selected, focused);
+    }
 
-	@Override
-	protected void customizeParametersTable(TableView<CSharpParameterTableModelItem> table)
-	{
-		final JTable t = table.getComponent();
-		final TableColumn defaultValue = t.getColumnModel().getColumn(2);
-		final TableColumn varArg = t.getColumnModel().getColumn(3);
-		t.removeColumn(defaultValue);
-		t.removeColumn(varArg);
-		t.getModel().addTableModelListener(new TableModelListener()
-		{
-			@Override
-			public void tableChanged(TableModelEvent e)
-			{
-				if(e.getType() == TableModelEvent.INSERT)
-				{
-					t.getModel().removeTableModelListener(this);
-					final TableColumnAnimator animator = new TableColumnAnimator(t);
-					animator.setStep(48);
-					animator.addColumn(defaultValue, (t.getWidth() - 48) / 3);
-					animator.addColumn(varArg, 48);
-					animator.startAndDoWhenDone(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							t.editCellAt(t.getRowCount() - 1, 0);
-						}
-					});
-					animator.start();
-				}
-			}
-		});
-	}
+    @Override
+    protected void customizeParametersTable(TableView<CSharpParameterTableModelItem> table) {
+        final JTable t = table.getComponent();
+        final TableColumn defaultValue = t.getColumnModel().getColumn(2);
+        final TableColumn varArg = t.getColumnModel().getColumn(3);
+        t.removeColumn(defaultValue);
+        t.removeColumn(varArg);
+        t.getModel().addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                if (e.getType() == TableModelEvent.INSERT) {
+                    t.getModel().removeTableModelListener(this);
+                    final TableColumnAnimator animator = new TableColumnAnimator(t);
+                    animator.setStep(48);
+                    animator.addColumn(defaultValue, (t.getWidth() - 48) / 3);
+                    animator.addColumn(varArg, 48);
+                    animator.startAndDoWhenDone(new Runnable() {
+                        @Override
+                        public void run() {
+                            t.editCellAt(t.getRowCount() - 1, 0);
+                        }
+                    });
+                    animator.start();
+                }
+            }
+        });
+    }
 
-	private int getTypesColumnWidth()
-	{
-		return getColumnWidth(0);
-	}
+    private int getTypesColumnWidth() {
+        return getColumnWidth(0);
+    }
 
-	private int getNamesColumnWidth()
-	{
-		return getColumnWidth(1);
-	}
+    private int getNamesColumnWidth() {
+        return getColumnWidth(1);
+    }
 
-	private int getTypesMaxLength()
-	{
-		int len = 0;
-		for(ParameterTableModelItemBase<CSharpParameterInfo> item : myParametersTableModel.getItems())
-		{
-			final String text = item.typeCodeFragment == null ? null : item.typeCodeFragment.getText();
-			len = Math.max(len, text == null ? 0 : text.length());
-		}
-		return len;
-	}
+    private int getTypesMaxLength() {
+        int len = 0;
+        for (ParameterTableModelItemBase<CSharpParameterInfo> item : myParametersTableModel.getItems()) {
+            final String text = item.typeCodeFragment == null ? null : item.typeCodeFragment.getText();
+            len = Math.max(len, text == null ? 0 : text.length());
+        }
+        return len;
+    }
 
-	private int getNamesMaxLength()
-	{
-		int len = 0;
-		for(ParameterTableModelItemBase<CSharpParameterInfo> item : myParametersTableModel.getItems())
-		{
-			final String text = item.parameter.getName();
-			len = Math.max(len, text == null ? 0 : text.length());
-		}
-		return len;
-	}
+    private int getNamesMaxLength() {
+        int len = 0;
+        for (ParameterTableModelItemBase<CSharpParameterInfo> item : myParametersTableModel.getItems()) {
+            final String text = item.parameter.getName();
+            len = Math.max(len, text == null ? 0 : text.length());
+        }
+        return len;
+    }
 
-	private int getColumnWidth(int index)
-	{
-		int letters = getTypesMaxLength() + (index == 0 ? 1 : getNamesMaxLength() + 2);
-		Font font = EditorColorsManager.getInstance().getGlobalScheme().getFont(EditorFontType.PLAIN);
-		font = new Font(font.getFontName(), font.getStyle(), 12);
-		return letters * Toolkit.getDefaultToolkit().getFontMetrics(font).stringWidth("W");
-	}
+    private int getColumnWidth(int index) {
+        int letters = getTypesMaxLength() + (index == 0 ? 1 : getNamesMaxLength() + 2);
+        consulo.ui.font.Font font = EditorColorsManager.getInstance().getGlobalScheme().getFont(EditorFontType.PLAIN);
 
-	public DotNetLikeMethodDeclaration getMethodDeclaration()
-	{
-		return myMethod.getMethod();
-	}
+        Font awtFont = TargetAWT.to(font);
+        awtFont = new Font(awtFont.getFontName(), awtFont.getStyle(), 12);
+        return letters * Toolkit.getDefaultToolkit().getFontMetrics(awtFont).stringWidth("W");
+    }
 
-	@RequiredUIAccess
-	private CSharpChangeInfo generateChangeInfo()
-	{
-		DotNetLikeMethodDeclaration methodDeclaration = getMethodDeclaration();
-		String newName = null;
-		if(myMethod.canChangeName())
-		{
-			String methodName = getMethodName();
-			if(!Comparing.equal(methodName, methodDeclaration.getName()))
-			{
-				newName = methodName;
-			}
-		}
+    public DotNetLikeMethodDeclaration getMethodDeclaration() {
+        return myMethod.getMethod();
+    }
 
-		String newReturnType = null;
-		if(myMethod.canChangeReturnType() == MethodDescriptor.ReadWriteOption.ReadWrite)
-		{
-			String returnType = myReturnTypeField.getText();
-			if(!Comparing.equal(typeText(methodDeclaration.getReturnTypeRef()), returnType))
-			{
-				newReturnType = returnType;
-			}
-		}
+    @RequiredUIAccess
+    private CSharpChangeInfo generateChangeInfo() {
+        DotNetLikeMethodDeclaration methodDeclaration = getMethodDeclaration();
+        String newName = null;
+        if (myMethod.canChangeName()) {
+            String methodName = getMethodName();
+            if (!Comparing.equal(methodName, methodDeclaration.getName())) {
+                newName = methodName;
+            }
+        }
 
-		CSharpAccessModifier newVisibility = null;
-		if(myMethod.canChangeVisibility())
-		{
-			CSharpAccessModifier visibility = getVisibility();
-			if(myMethod.getVisibility() != visibility)
-			{
-				newVisibility = visibility;
-			}
-		}
+        String newReturnType = null;
+        if (myMethod.canChangeReturnType() == MethodDescriptor.ReadWriteOption.ReadWrite) {
+            String returnType = myReturnTypeField.getText();
+            if (!Comparing.equal(typeText(methodDeclaration.getReturnTypeRef()), returnType)) {
+                newReturnType = returnType;
+            }
+        }
 
-		boolean parametersChanged = false;
-		List<CSharpParameterInfo> parameters = getParameters();
-		DotNetParameter[] psiParameters = methodDeclaration.getParameters();
-		if(parameters.size() != psiParameters.length)
-		{
-			parametersChanged = true;
-		}
-		else
-		{
-			for(int i = 0; i < parameters.size(); i++)
-			{
-				DotNetParameter psiParameter = psiParameters[i];
-				CSharpParameterInfo newParameter = parameters.get(i);
-				if(!Comparing.equal(newParameter.getName(), psiParameter.getName()))
-				{
-					parametersChanged = true;
-					break;
-				}
-				if(!Comparing.equal(newParameter.getTypeText(), typeText(psiParameter.toTypeRef(false))))
-				{
-					parametersChanged = true;
-					break;
-				}
-				if(!Comparing.equal(newParameter.getModifier(), CSharpParameterInfo.findModifier(psiParameter)))
-				{
-					parametersChanged = true;
-					break;
-				}
-			}
-		}
-		return new CSharpChangeInfo(methodDeclaration, parameters, parametersChanged, newName, newReturnType, newVisibility);
-	}
+        CSharpAccessModifier newVisibility = null;
+        if (myMethod.canChangeVisibility()) {
+            CSharpAccessModifier visibility = getVisibility();
+            if (myMethod.getVisibility() != visibility) {
+                newVisibility = visibility;
+            }
+        }
 
-	@RequiredReadAction
-	private String typeText(DotNetTypeRef typeRef)
-	{
-		return CSharpTypeRefPresentationUtil.buildShortText(typeRef);
-	}
+        boolean parametersChanged = false;
+        List<CSharpParameterInfo> parameters = getParameters();
+        DotNetParameter[] psiParameters = methodDeclaration.getParameters();
+        if (parameters.size() != psiParameters.length) {
+            parametersChanged = true;
+        }
+        else {
+            for (int i = 0; i < parameters.size(); i++) {
+                DotNetParameter psiParameter = psiParameters[i];
+                CSharpParameterInfo newParameter = parameters.get(i);
+                if (!Comparing.equal(newParameter.getName(), psiParameter.getName())) {
+                    parametersChanged = true;
+                    break;
+                }
+                if (!Comparing.equal(newParameter.getTypeText(), typeText(psiParameter.toTypeRef(false)))) {
+                    parametersChanged = true;
+                    break;
+                }
+                if (!Comparing.equal(newParameter.getModifier(), CSharpParameterInfo.findModifier(psiParameter))) {
+                    parametersChanged = true;
+                    break;
+                }
+            }
+        }
+        return new CSharpChangeInfo(methodDeclaration, parameters, parametersChanged, newName, newReturnType, newVisibility);
+    }
 
-	@Override
-	@RequiredUIAccess
-	public List<CSharpParameterInfo> getParameters()
-	{
-		List<CSharpParameterInfo> result = new ArrayList<>(myParametersTableModel.getRowCount());
-		int i = 0;
-		for(ParameterTableModelItemBase<CSharpParameterInfo> item : myParametersTableModel.getItems())
-		{
-			DotNetParameter parameter = item.parameter.getParameter();
-			DotNetTypeRef typeRef = parameter == null ? new CSharpTypeRefByQName(myDefaultValueContext, DotNetTypes.System.Object) : parameter.toTypeRef(true);
+    @RequiredReadAction
+    private String typeText(DotNetTypeRef typeRef) {
+        return CSharpTypeRefPresentationUtil.buildShortText(typeRef);
+    }
 
-			CSharpParameterInfo e = new CSharpParameterInfo(item.parameter.getName(), item.parameter.getParameter(), typeRef, i++);
+    @Override
+    @RequiredUIAccess
+    public List<CSharpParameterInfo> getParameters() {
+        List<CSharpParameterInfo> result = new ArrayList<>(myParametersTableModel.getRowCount());
+        int i = 0;
+        for (ParameterTableModelItemBase<CSharpParameterInfo> item : myParametersTableModel.getItems()) {
+            DotNetParameter parameter = item.parameter.getParameter();
+            DotNetTypeRef typeRef = parameter == null ? new CSharpTypeRefByQName(myDefaultValueContext, DotNetTypes.System.Object) : parameter.toTypeRef(true);
 
-			DotNetType type = PsiTreeUtil.getChildOfType(item.typeCodeFragment, DotNetType.class);
-			e.setTypeText(type == null ? "" : type.getText());
-			e.setModifier(item.parameter.getModifier());
-			e.setTypeRef(type == null ? null : type.toTypeRef());
+            CSharpParameterInfo e = new CSharpParameterInfo(item.parameter.getName(), item.parameter.getParameter(), typeRef, i++);
 
-			DotNetExpression expression = PsiTreeUtil.getChildOfType(item.defaultValueCodeFragment, DotNetExpression.class);
-			e.setDefaultValue(expression == null ? "" : expression.getText());
+            DotNetType type = PsiTreeUtil.getChildOfType(item.typeCodeFragment, DotNetType.class);
+            e.setTypeText(type == null ? "" : type.getText());
+            e.setModifier(item.parameter.getModifier());
+            e.setTypeRef(type == null ? null : type.toTypeRef());
 
-			result.add(e);
-		}
-		return result;
-	}
+            DotNetExpression expression = PsiTreeUtil.getChildOfType(item.defaultValueCodeFragment, DotNetExpression.class);
+            e.setDefaultValue(expression == null ? "" : expression.getText());
 
-	@Override
-	@RequiredUIAccess
-	protected PsiCodeFragment createReturnTypeCodeFragment()
-	{
-		String text = CSharpTypeRefPresentationUtil.buildShortText(myMethod.getMethod().getReturnTypeRef());
-		CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(getProject(), text, myDefaultValueContext);
-		typeFragment.putUserData(CS1547.ourReturnTypeFlag, Boolean.TRUE);
-		return typeFragment;
-	}
+            result.add(e);
+        }
+        return result;
+    }
 
-	@Nullable
-	@Override
-	protected CallerChooserBase<DotNetLikeMethodDeclaration> createCallerChooser(String title, Tree treeToReuse, Consumer<Set<DotNetLikeMethodDeclaration>> callback)
-	{
-		return null;
-	}
+    @Override
+    @RequiredUIAccess
+    protected PsiCodeFragment createReturnTypeCodeFragment() {
+        String text = CSharpTypeRefPresentationUtil.buildShortText(myMethod.getMethod().getReturnTypeRef());
+        CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(getProject(), text, myDefaultValueContext);
+        typeFragment.putUserData(CS1547.ourReturnTypeFlag, Boolean.TRUE);
+        return typeFragment;
+    }
 
-	@Nullable
-	@Override
-	@RequiredUIAccess
-	protected String validateAndCommitData()
-	{
-		String methodName = getMethodName();
-		if(StringUtil.isEmpty(methodName) || CSharpNameSuggesterUtil.isKeyword(methodName))
-		{
-			return "Bad method name";
-		}
+    @Nullable
+    @Override
+    protected CallerChooserBase<DotNetLikeMethodDeclaration> createCallerChooser(String title, Tree treeToReuse, Consumer<Set<DotNetLikeMethodDeclaration>> callback) {
+        return null;
+    }
 
-		for(CSharpParameterInfo parameterInfo : getParameters())
-		{
-			String name = parameterInfo.getName();
-			if(StringUtil.isEmpty(name) || CSharpNameSuggesterUtil.isKeyword(name))
-			{
-				return "Bad parameter name";
-			}
+    @Nullable
+    @Override
+    @RequiredUIAccess
+    protected String validateAndCommitData() {
+        String methodName = getMethodName();
+        if (StringUtil.isEmpty(methodName) || CSharpNameSuggesterUtil.isKeyword(methodName)) {
+            return "Bad method name";
+        }
 
-			if(parameterInfo.getTypeRef() == null)
-			{
-				return "Parameter '" + name + "' have bad type";
-			}
-		}
-		return null;
-	}
+        for (CSharpParameterInfo parameterInfo : getParameters()) {
+            String name = parameterInfo.getName();
+            if (StringUtil.isEmpty(name) || CSharpNameSuggesterUtil.isKeyword(name)) {
+                return "Bad parameter name";
+            }
 
-	@Override
-	@RequiredUIAccess
-	protected String calculateSignature()
-	{
-		DotNetLikeMethodDeclaration methodDeclaration = getMethodDeclaration();
-		CSharpChangeInfo sharpChangeInfo = generateChangeInfo();
-		CSharpAccessModifier newVisibility = sharpChangeInfo.getNewVisibility();
-		StringBuilder builder = new StringBuilder();
-		if(newVisibility != null)
-		{
-			builder.append(newVisibility.getPresentableText()).append(" ");
-		}
-		else
-		{
-			builder.append(myMethod.getVisibility().getPresentableText()).append(" ");
-		}
+            if (parameterInfo.getTypeRef() == null) {
+                return "Parameter '" + name + "' have bad type";
+            }
+        }
+        return null;
+    }
 
-		if(methodDeclaration instanceof CSharpMethodDeclaration)
-		{
-			if(sharpChangeInfo.isReturnTypeChanged())
-			{
-				builder.append(sharpChangeInfo.getNewReturnType()).append(" ");
-			}
-			else
-			{
-				builder.append(typeText(methodDeclaration.getReturnTypeRef())).append(" ");
-			}
-		}
+    @Override
+    @RequiredUIAccess
+    protected String calculateSignature() {
+        DotNetLikeMethodDeclaration methodDeclaration = getMethodDeclaration();
+        CSharpChangeInfo sharpChangeInfo = generateChangeInfo();
+        CSharpAccessModifier newVisibility = sharpChangeInfo.getNewVisibility();
+        StringBuilder builder = new StringBuilder();
+        if (newVisibility != null) {
+            builder.append(newVisibility.getPresentableText()).append(" ");
+        }
+        else {
+            builder.append(myMethod.getVisibility().getPresentableText()).append(" ");
+        }
 
-		if(sharpChangeInfo.isNameChanged())
-		{
-			builder.append(sharpChangeInfo.getNewName());
-		}
-		else
-		{
-			builder.append(methodDeclaration.getName());
-		}
-		builder.append("(");
-		StubBlockUtil.join(builder, sharpChangeInfo.getNewParameters(), new PairFunction<StringBuilder, CSharpParameterInfo, Void>()
-		{
-			@Nullable
-			@Override
-			public Void fun(StringBuilder b, CSharpParameterInfo parameterInfo)
-			{
-				CSharpModifier modifier = parameterInfo.getModifier();
-				if(modifier != null)
-				{
-					b.append(modifier.getPresentableText()).append(" ");
-				}
-				b.append(parameterInfo.getTypeText());
-				b.append(" ");
-				b.append(parameterInfo.getName());
-				return null;
-			}
-		}, ", ");
+        if (methodDeclaration instanceof CSharpMethodDeclaration) {
+            if (sharpChangeInfo.isReturnTypeChanged()) {
+                builder.append(sharpChangeInfo.getNewReturnType()).append(" ");
+            }
+            else {
+                builder.append(typeText(methodDeclaration.getReturnTypeRef())).append(" ");
+            }
+        }
 
-		builder.append(");");
+        if (sharpChangeInfo.isNameChanged()) {
+            builder.append(sharpChangeInfo.getNewName());
+        }
+        else {
+            builder.append(methodDeclaration.getName());
+        }
+        builder.append("(");
+        StubBlockUtil.join(builder, sharpChangeInfo.getNewParameters(), new PairFunction<StringBuilder, CSharpParameterInfo, Void>() {
+            @Nullable
+            @Override
+            public Void fun(StringBuilder b, CSharpParameterInfo parameterInfo) {
+                CSharpModifier modifier = parameterInfo.getModifier();
+                if (modifier != null) {
+                    b.append(modifier.getPresentableText()).append(" ");
+                }
+                b.append(parameterInfo.getTypeText());
+                b.append(" ");
+                b.append(parameterInfo.getName());
+                return null;
+            }
+        }, ", ");
 
-		return builder.toString();
-	}
+        builder.append(");");
 
-	@Override
-	protected VisibilityPanelBase<CSharpAccessModifier> createVisibilityControl()
-	{
-		return new ComboBoxVisibilityPanel<CSharpAccessModifier>(CSharpAccessModifier.VALUES)
-		{
-			@Override
-			protected ListCellRendererWrapper<CSharpAccessModifier> getRenderer()
-			{
-				return new ListCellRendererWrapper<CSharpAccessModifier>()
-				{
-					@Override
-					public void customize(JList list, CSharpAccessModifier value, int index, boolean selected, boolean hasFocus)
-					{
-						setText(value.getPresentableText());
-					}
-				};
-			}
-		};
-	}
+        return builder.toString();
+    }
+
+    @Override
+    protected VisibilityPanelBase<CSharpAccessModifier> createVisibilityControl() {
+        return new ComboBoxVisibilityPanel<CSharpAccessModifier>(CSharpAccessModifier.VALUES) {
+            @Override
+            protected ListCellRendererWrapper<CSharpAccessModifier> getRenderer() {
+                return new ListCellRendererWrapper<CSharpAccessModifier>() {
+                    @Override
+                    public void customize(JList list, CSharpAccessModifier value, int index, boolean selected, boolean hasFocus) {
+                        setText(value.getPresentableText());
+                    }
+                };
+            }
+        };
+    }
 }
