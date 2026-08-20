@@ -77,10 +77,10 @@ public class CSharpInheritorsCodeVisionProvider extends InheritorsCodeVisionProv
                 );
             }
         }
-        else if (element instanceof DotNetVirtualImplementOwner method) {
-            int overrides = computeMethodInheritors((CSharpSimpleLikeMethodAsElement) method);
+        else if (element instanceof CSharpSimpleLikeMethodAsElement method) {
+            int overrides = computeMethodInheritors(method);
             if (overrides > 0) {
-                boolean isAbstract = ((DotNetModifierListOwner) method).hasModifier(DotNetModifier.ABSTRACT);
+                boolean isAbstract = method.hasModifier(DotNetModifier.ABSTRACT);
                 return new CodeVisionProviderBase.CodeVisionInfo(
                     (isAbstract
                         ? CSharpLocalize.codeVisionImplementationsHint(overrides)
