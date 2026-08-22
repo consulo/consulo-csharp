@@ -26,6 +26,7 @@ import consulo.csharp.impl.ide.lineMarkerProvider.HidedOrOverridedElementCollect
 import consulo.csharp.impl.ide.lineMarkerProvider.LineMarkerCollector;
 import consulo.csharp.impl.ide.lineMarkerProvider.OverrideTypeCollector;
 import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetModifier;
@@ -53,13 +54,15 @@ public class CSharpInheritorsCodeVisionProvider extends InheritorsCodeVisionProv
     public static final String ID = "csharp.inheritors";
 
     @Override
+    @RequiredReadAction
     public boolean acceptsFile(PsiFile file) {
         return file.getLanguage() == CSharpLanguage.INSTANCE;
     }
 
     @Override
     public boolean acceptsElement(PsiElement element) {
-        return element instanceof DotNetModifierListOwner;
+        return element instanceof CSharpTypeDeclaration
+            || element instanceof CSharpSimpleLikeMethodAsElement && element instanceof DotNetVirtualImplementOwner;
     }
 
     @Override
