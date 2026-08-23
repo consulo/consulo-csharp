@@ -44,8 +44,6 @@ open module consulo.csharp
     exports consulo.csharp.impl.ide.actions.generate;
     exports consulo.csharp.impl.ide.actions.generate.memberChoose;
     exports consulo.csharp.impl.ide.actions.navigate;
-    exports consulo.csharp.impl.ide.assemblyInfo;
-    exports consulo.csharp.impl.ide.assemblyInfo.blocks;
     exports consulo.csharp.impl.ide.codeInsight;
     exports consulo.csharp.impl.ide.codeInsight.actions;
     exports consulo.csharp.impl.ide.codeInsight.actions.expressionActions.lambda;
