@@ -39,9 +39,9 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiModificationTracker;
 import consulo.localize.LocalizeValue;
+import consulo.ui.event.ComponentEvent;
 import org.jspecify.annotations.Nullable;
 
-import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.List;
 
@@ -120,7 +120,7 @@ public class CSharpInheritorsCodeVisionProvider extends InheritorsCodeVisionProv
     }
 
     @Override
-    public void handleClick(Editor editor, PsiElement element, @Nullable MouseEvent event) {
+    public void handleClick(Editor editor, PsiElement element, ComponentEvent<?> event) {
         LineMarkerCollector collector;
         if (element instanceof CSharpTypeDeclaration typeDeclaration) {
             collector = OverrideTypeCollector.INSTANCE;

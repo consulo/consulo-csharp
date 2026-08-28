@@ -17,112 +17,128 @@
 package consulo.csharp.impl.ide.lineMarkerProvider;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.Application;
 import consulo.codeEditor.markup.GutterIconRenderer;
 import consulo.component.util.Iconable;
 import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.language.editor.Pass;
 import consulo.language.editor.gutter.GutterIconNavigationHandler;
 import consulo.language.editor.gutter.LineMarkerInfo;
 import consulo.language.editor.ui.PsiElementListCellRenderer;
-import consulo.language.editor.ui.PsiElementListNavigator;
-import consulo.language.psi.NavigatablePsiElement;
+import consulo.language.editor.ui.navigation.PsiTargetNavigationService;
+import consulo.language.editor.ui.navigation.PsiTargetPresentationFactory;
+import consulo.language.editor.ui.navigation.TargetPresentationProvider;
+import consulo.language.icon.IconDescriptorUpdaters;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiUtilCore;
 import consulo.language.psi.util.SymbolPresentationUtil;
+import consulo.localize.LocalizeValue;
+import consulo.navigation.TargetPresentation;
+import consulo.navigation.TargetPresentationBuilder;
 import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.event.ComponentEvent;
 import consulo.virtualFileSystem.VirtualFile;
-
 import org.jspecify.annotations.Nullable;
-import java.awt.event.MouseEvent;
+
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
  * @author VISTALL
  * @since 25.03.14
  */
-public class PartialTypeCollector implements LineMarkerCollector
-{
-	public static class OurRender extends PsiElementListCellRenderer<PsiElement>
-	{
-		@Override
-		public String getElementText(PsiElement element)
-		{
-			VirtualFile virtualFile = PsiUtilCore.getVirtualFile(element);
-			return virtualFile == null ? SymbolPresentationUtil.getSymbolPresentableText(element) : virtualFile.getName();
-		}
+public class PartialTypeCollector implements LineMarkerCollector {
+    public static class OurRender extends PsiElementListCellRenderer<PsiElement> {
+        @Override
+        public String getElementText(PsiElement element) {
+            VirtualFile virtualFile = PsiUtilCore.getVirtualFile(element);
+            return virtualFile == null ? SymbolPresentationUtil.getSymbolPresentableText(element) : virtualFile.getName();
+        }
 
-		@Nullable
-		@Override
-		protected String getContainerText(PsiElement element, String name)
-		{
-			VirtualFile virtualFile = PsiUtilCore.getVirtualFile(element);
-			if(virtualFile == null)
-			{
-				return SymbolPresentationUtil.getSymbolContainerText(element);
-			}
-			else
-			{
-				return "(" + virtualFile.getPath() + ")";
-			}
-		}
+        @Nullable
+        @Override
+        protected String getContainerText(PsiElement element, String name) {
+            VirtualFile virtualFile = PsiUtilCore.getVirtualFile(element);
+            if (virtualFile == null) {
+                return SymbolPresentationUtil.getSymbolContainerText(element);
+            }
+            else {
+                return "(" + virtualFile.getPath() + ")";
+            }
+        }
 
-		@Override
-		protected int getIconFlags()
-		{
-			return Iconable.ICON_FLAG_VISIBILITY;
-		}
-	}
+        @Override
+        protected int getIconFlags() {
+            return Iconable.ICON_FLAG_VISIBILITY;
+        }
+    }
 
-	@RequiredReadAction
-	@Override
-	public void collect(PsiElement psiElement, Consumer<LineMarkerInfo> consumer)
-	{
-		CSharpTypeDeclaration parent = CSharpLineMarkerUtil.getNameIdentifierAs(psiElement, CSharpTypeDeclaration.class);
-		if(parent != null)
-		{
-			if(!parent.hasModifier(CSharpModifier.PARTIAL))
-			{
-				return;
-			}
+    /**
+     * What {@link OurRender} draws, as data built once under a read lock - a partial part named by the file
+     * it lives in. The render itself stays only for {@code GotoDeclarationHandlerEx}, which still speaks in
+     * renderers.
+     */
+    public static class OurPresentationProvider implements TargetPresentationProvider<PsiElement> {
+        @Override
+        @RequiredReadAction
+        public TargetPresentation getPresentation(PsiElement element) {
+            TargetPresentationBuilder builder = Application.get().getInstance(PsiTargetPresentationFactory.class).presentationBuilder(element);
+            builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 
-			CSharpCompositeTypeDeclaration compositeType = CSharpCompositeTypeDeclaration.findCompositeType(parent);
-			if(compositeType == null)
-			{
-				return;
-			}
+            VirtualFile virtualFile = PsiUtilCore.getVirtualFile(element);
+            if (virtualFile != null) {
+                builder = builder.withPresentableText(LocalizeValue.of(virtualFile.getName()));
+                builder = builder.withContainerText(LocalizeValue.of("(" + virtualFile.getPath() + ")"));
+            }
+            return builder.build();
+        }
+    }
 
-			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), PlatformIconGroup.gutterFold(), Pass.LINE_MARKERS,
-					element -> "Navigate to partial types", new GutterIconNavigationHandler<PsiElement>()
-			{
-				@Override
-				@RequiredUIAccess
-				public void navigate(MouseEvent mouseEvent, PsiElement element)
-				{
-					final CSharpTypeDeclaration typeDeclaration = CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);
+    @RequiredReadAction
+    @Override
+    public void collect(PsiElement psiElement, Consumer<LineMarkerInfo> consumer) {
+        CSharpTypeDeclaration parent = CSharpLineMarkerUtil.getNameIdentifierAs(psiElement, CSharpTypeDeclaration.class);
+        if (parent != null) {
+            if (!parent.hasModifier(CSharpModifier.PARTIAL)) {
+                return;
+            }
 
-					assert typeDeclaration != null;
+            CSharpCompositeTypeDeclaration compositeType = CSharpCompositeTypeDeclaration.findCompositeType(parent);
+            if (compositeType == null) {
+                return;
+            }
 
-					CSharpCompositeTypeDeclaration compositeType = CSharpCompositeTypeDeclaration.findCompositeType(typeDeclaration);
-					if(compositeType == null)
-					{
-						return;
-					}
+            LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), PlatformIconGroup.gutterFold(), Pass.LINE_MARKERS,
+                element -> "Navigate to partial types", new GutterIconNavigationHandler<PsiElement>() {
+                @Override
+                @RequiredUIAccess
+                public void navigate(ComponentEvent<?> event, PsiElement element) {
+                    Application.get().getInstance(PsiTargetNavigationService.class)
+                        .<PsiElement>newNavigator(() ->
+                        {
+                            CSharpTypeDeclaration typeDeclaration = CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);
+                            if (typeDeclaration == null) {
+                                return List.of();
+                            }
 
-					DotNetTypeDeclaration[] newArray = compositeType.getTypeDeclarations();
-					NavigatablePsiElement[] navigatablePsiElements = new NavigatablePsiElement[newArray.length];
-					for(int i = 0; i < newArray.length; i++)
-					{
-						navigatablePsiElements[i] = (NavigatablePsiElement) newArray[i];
-					}
-					PsiElementListNavigator.openTargets(mouseEvent, navigatablePsiElements, "Navigate to partial types", "Navigate to partial types", new OurRender());
-				}
-			}, GutterIconRenderer.Alignment.CENTER
-			);
-			consumer.accept(lineMarkerInfo);
-		}
-	}
+                            CSharpCompositeTypeDeclaration compositeType = CSharpCompositeTypeDeclaration.findCompositeType(typeDeclaration);
+                            if (compositeType == null) {
+                                return List.of();
+                            }
+
+                            return List.<PsiElement>of(compositeType.getTypeDeclarations());
+                        })
+                        .presentationProvider(new OurPresentationProvider())
+                        .title(LocalizeValue.localizeTODO("Navigate to partial types"))
+                        .findUsagesTitle(LocalizeValue.localizeTODO("Navigate to partial types"))
+                        .navigate(event, element.getProject());
+                }
+            }, GutterIconRenderer.Alignment.CENTER
+            );
+            consumer.accept(lineMarkerInfo);
+        }
+    }
 }

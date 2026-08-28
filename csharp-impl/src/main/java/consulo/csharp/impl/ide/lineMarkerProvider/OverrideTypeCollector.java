@@ -18,7 +18,8 @@ package consulo.csharp.impl.ide.lineMarkerProvider;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.AllIcons;
-import consulo.application.progress.ProgressManager;
+import consulo.application.Application;
+import consulo.application.ReadAction;
 import consulo.application.util.function.CommonProcessors;
 import consulo.codeEditor.markup.GutterIconRenderer;
 import consulo.csharp.lang.impl.psi.msil.CSharpTransformer;
@@ -27,14 +28,20 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
 import consulo.language.editor.Pass;
 import consulo.language.editor.gutter.LineMarkerInfo;
+import consulo.language.editor.ui.navigation.PsiTargetNavigationService;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.event.ComponentEvent;
 import consulo.ui.image.Image;
 import consulo.util.collection.ContainerUtil;
+import consulo.util.concurrent.coroutine.CoroutineStep;
+import consulo.util.concurrent.coroutine.step.CodeExecution;
 import consulo.util.lang.function.Functions;
 
-import javax.swing.*;
-import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -65,22 +72,34 @@ public class OverrideTypeCollector implements LineMarkerCollector {
     }
 
     @Override
-    public void navigate(MouseEvent mouseEvent, PsiElement element) {
-        final DotNetTypeDeclaration typeDeclaration = element instanceof DotNetTypeDeclaration t
+    @RequiredUIAccess
+    public void navigate(ComponentEvent<?> event, PsiElement element) {
+        DotNetTypeDeclaration typeDeclaration = element instanceof DotNetTypeDeclaration t
             ? t
             : CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);
-
-        assert typeDeclaration != null;
-
-        final CommonProcessors.CollectProcessor<DotNetTypeDeclaration> collectProcessor = new CommonProcessors.CollectProcessor<>();
-        if (!ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> TypeInheritorsSearch.search(typeDeclaration, true).forEach(collectProcessor), "Searching for " +
-            "overriding", true, typeDeclaration.getProject(), (JComponent) mouseEvent.getComponent())) {
+        if (typeDeclaration == null) {
             return;
         }
 
-        Collection<DotNetTypeDeclaration> results = collectProcessor.getResults();
+        PsiMappedPresentationProvider provider = new PsiMappedPresentationProvider(Functions.identity());
 
-        CSharpLineMarkerUtil.openTargets(ContainerUtil.map(results, CSharpTransformer.INSTANCE), mouseEvent, "Navigate to inheritors", Functions.<PsiElement, PsiElement>identity());
+        CoroutineStep<Void, Collection<PsiElement>> search = CodeExecution.supply(() -> {
+            CommonProcessors.CollectProcessor<DotNetTypeDeclaration> collectProcessor = new CommonProcessors.CollectProcessor<>();
+            TypeInheritorsSearch.search(typeDeclaration, true).forEach(collectProcessor);
+
+            return ReadAction.compute(() -> {
+                List<PsiElement> results = new ArrayList<>(ContainerUtil.map(collectProcessor.getResults(), CSharpTransformer.INSTANCE));
+                results.sort(provider.comparator());
+                return results;
+            });
+        });
+
+        Application.get().getInstance(PsiTargetNavigationService.class)
+            .newNavigator(search)
+            .presentationProvider(provider)
+            .title(LocalizeValue.localizeTODO("Navigate to inheritors"))
+            .findUsagesTitle(LocalizeValue.localizeTODO("Navigate to inheritors"))
+            .navigate(event, typeDeclaration.getProject());
     }
 
     private static boolean hasChild(final CSharpTypeDeclaration type) {

@@ -17,23 +17,26 @@
 package consulo.csharp.impl.ide.lineMarkerProvider;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.Application;
 import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.language.ast.IElementType;
-import consulo.language.editor.ui.PsiElementListNavigator;
-import consulo.language.psi.NavigatablePsiElement;
+import consulo.language.editor.ui.navigation.PsiTargetNavigationService;
 import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.PsiUtilCore;
-import consulo.util.collection.ContainerUtil;
-import consulo.util.lang.Comparing;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.event.ComponentEvent;
 import org.jspecify.annotations.Nullable;
 
-import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author VISTALL
@@ -42,20 +45,29 @@ import java.util.function.Function;
 public class CSharpLineMarkerUtil {
     public static final Function<PsiElement, PsiElement> BY_PARENT = element -> element.getParent();
 
-    @RequiredReadAction
-    public static void openTargets(Collection<? extends PsiElement> members, MouseEvent mouseEvent, String text, final Function<PsiElement, PsiElement> map) {
-        NavigatablePsiElement[] navigatablePsiElements = members.toArray(new NavigatablePsiElement[members.size()]);
-        ContainerUtil.sort(navigatablePsiElements, (o1, o2) ->
-        {
-            PsiElement map1 = map.apply(o1);
-            PsiElement map2 = map.apply(o2);
-            if (map1 instanceof PsiNamedElement && map2 instanceof PsiNamedElement) {
-                return Comparing.compare(((PsiNamedElement) map1).getName(), ((PsiNamedElement) map2).getName());
-            }
-            return 0;
-        });
+    /**
+     * The targets are collected by the supplier inside a single read action off the ui thread, so a handler
+     * hands over the search itself rather than a list it resolved on the event dispatch thread. A single
+     * target is opened directly, an empty collection shows nothing.
+     */
+    @RequiredUIAccess
+    public static void openTargets(ComponentEvent<?> event,
+                                   Project project,
+                                   String title,
+                                   Function<PsiElement, PsiElement> map,
+                                   Supplier<Collection<? extends PsiElement>> targets) {
+        PsiMappedPresentationProvider provider = new PsiMappedPresentationProvider(map);
 
-        PsiElementListNavigator.openTargets(mouseEvent, navigatablePsiElements, text, text, new PsiMappedElementListCellRender(map));
+        Application.get().getInstance(PsiTargetNavigationService.class)
+            .<PsiElement>newNavigator(() -> {
+                List<PsiElement> elements = new ArrayList<>(targets.get());
+                elements.sort(provider.comparator());
+                return elements;
+            })
+            .presentationProvider(provider)
+            .title(LocalizeValue.localizeTODO(title))
+            .findUsagesTitle(LocalizeValue.localizeTODO(title))
+            .navigate(event, project);
     }
 
     @Nullable

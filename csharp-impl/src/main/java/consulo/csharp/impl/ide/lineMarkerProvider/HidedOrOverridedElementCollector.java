@@ -29,13 +29,12 @@ import consulo.language.editor.Pass;
 import consulo.language.editor.gutter.GutterIconNavigationHandler;
 import consulo.language.editor.gutter.LineMarkerInfo;
 import consulo.language.psi.PsiElement;
-import consulo.navigation.Navigatable;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.event.ComponentEvent;
 import consulo.ui.image.Image;
-import consulo.util.collection.ContainerUtil;
 
-import java.awt.event.MouseEvent;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -48,38 +47,22 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector {
 
         @Override
         @RequiredUIAccess
-        public void navigate(MouseEvent mouseEvent, PsiElement element) {
-            DotNetVirtualImplementOwner virtualImplementOwner = element instanceof DotNetVirtualImplementOwner v
-                ? v
-                : CSharpLineMarkerUtil.findElementForLineMarker(element);
-
-            if (virtualImplementOwner == null) {
-                return;
-            }
-
-            Collection<DotNetVirtualImplementOwner> members = OverrideUtil.collectOverridenMembers(virtualImplementOwner);
-
-            if (members.isEmpty()) {
-                return;
-            }
-
-            if (members.size() == 1) {
-                DotNetVirtualImplementOwner firstItem = ContainerUtil.getFirstItem(members);
-                if (firstItem instanceof Navigatable) {
-                    ((Navigatable) firstItem).navigate(true);
-                }
-            }
-            else {
-                CSharpLineMarkerUtil.openTargets(members, mouseEvent, "Searching for overrided", CSharpLineMarkerUtil.BY_PARENT);
-            }
+        public void navigate(ComponentEvent<?> event, PsiElement element) {
+            CSharpLineMarkerUtil.openTargets(event, element.getProject(), "Searching for overrided", CSharpLineMarkerUtil.BY_PARENT, () -> {
+                DotNetVirtualImplementOwner virtualImplementOwner = element instanceof DotNetVirtualImplementOwner v
+                    ? v
+                    : CSharpLineMarkerUtil.findElementForLineMarker(element);
+                return virtualImplementOwner == null ? List.of() : OverrideUtil.collectOverridenMembers(virtualImplementOwner);
+            });
         }
     }
 
     public static final HidedOrOverridedElementCollector INSTANCE = new HidedOrOverridedElementCollector();
 
     @Override
-    public void navigate(MouseEvent mouseEvent, PsiElement element) {
-        OurHandler.INSTANCE.navigate(mouseEvent, element);
+    @RequiredUIAccess
+    public void navigate(ComponentEvent<?> event, PsiElement element) {
+        OurHandler.INSTANCE.navigate(event, element);
     }
 
     @RequiredReadAction

@@ -34,12 +34,12 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiUtilCore;
 import consulo.navigation.Navigatable;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.event.ComponentEvent;
 import consulo.ui.ex.action.IdeActions;
 import consulo.ui.image.Image;
 
 import org.jspecify.annotations.Nullable;
 
-import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -100,7 +100,7 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 			{
 				@Override
 				@RequiredUIAccess
-				public void navigate(MouseEvent e, PsiElement elt)
+				public void navigate(ComponentEvent<?> e, PsiElement elt)
 				{
 					if(!(elt instanceof CSharpLambdaExpressionImpl))
 					{

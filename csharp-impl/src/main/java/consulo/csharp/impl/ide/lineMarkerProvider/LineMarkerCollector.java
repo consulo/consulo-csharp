@@ -19,8 +19,9 @@ package consulo.csharp.impl.ide.lineMarkerProvider;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.gutter.LineMarkerInfo;
 import consulo.language.psi.PsiElement;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.event.ComponentEvent;
 
-import java.awt.event.MouseEvent;
 import java.util.function.Consumer;
 
 /**
@@ -31,6 +32,7 @@ public interface LineMarkerCollector {
     @RequiredReadAction
     void collect(PsiElement psiElement, Consumer<LineMarkerInfo> lineMarkerInfos);
 
-    default void navigate(MouseEvent mouseEvent, PsiElement element) {
+    @RequiredUIAccess
+    default void navigate(ComponentEvent<?> event, PsiElement element) {
     }
 }
