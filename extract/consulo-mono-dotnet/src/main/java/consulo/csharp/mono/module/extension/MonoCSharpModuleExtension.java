@@ -26,59 +26,52 @@ import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.module.content.layer.ModuleRootLayer;
 import consulo.mono.dotnet.sdk.MonoSdkType;
-import consulo.virtualFileSystem.VirtualFile;
 
+import java.nio.file.Path;
 
 /**
  * @author VISTALL
  * @since 26.11.13.
  */
-public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSharpModuleExtension>
-{
-	public MonoCSharpModuleExtension(String id, ModuleRootLayer module)
-	{
-		super(id, module);
-	}
+public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSharpModuleExtension> {
+    public MonoCSharpModuleExtension(String id, ModuleRootLayer module) {
+        super(id, module);
+    }
 
-	@Override
-	public void setCompilerExecutable(DotNetCompilerOptionsBuilder builder, VirtualFile executable)
-	{
-		DotNetSimpleModuleExtension extension = getModuleRootLayer().getExtension(DotNetSimpleModuleExtension.class);
-		if(extension == null)
-		{
-			super.setCompilerExecutable(builder, executable);
-			return;
-		}
+    @Override
+    public void setCompilerExecutable(DotNetCompilerOptionsBuilder builder, Path executable) {
+        DotNetSimpleModuleExtension extension = getModuleRootLayer().getExtension(DotNetSimpleModuleExtension.class);
+        if (extension == null) {
+            super.setCompilerExecutable(builder, executable);
+            return;
+        }
 
-		Sdk sdk = extension.getSdk();
-		if(sdk == null)
-		{
-			super.setCompilerExecutable(builder, executable);
-			return;
-		}
+        Sdk sdk = extension.getSdk();
+        if (sdk == null) {
+            super.setCompilerExecutable(builder, executable);
+            return;
+        }
 
-		MSBaseDotNetCompilerOptionsBuilder msBuilder = (MSBaseDotNetCompilerOptionsBuilder) builder;
+        MSBaseDotNetCompilerOptionsBuilder msBuilder = (MSBaseDotNetCompilerOptionsBuilder) builder;
 
-		msBuilder.setExecutable(MonoSdkType.getInstance().getExecutable(sdk));
-		msBuilder.addProgramArgument(executable.getPath());
-	}
+        msBuilder.setExecutable(MonoSdkType.getInstance().getExecutable(sdk));
+        msBuilder.addProgramArgument(executable.toString());
+    }
 
-	@Override
-	public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder() throws DotNetCompileFailedException
-	{
-		MSBaseDotNetCompilerOptionsBuilder optionsBuilder = new MSBaseDotNetCompilerOptionsBuilder();
+    @Override
+    public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder() throws DotNetCompileFailedException {
+        MSBaseDotNetCompilerOptionsBuilder optionsBuilder = new MSBaseDotNetCompilerOptionsBuilder();
 
-		String compilerTarget = getCompilerTarget();
-		if(compilerTarget != null)
-		{
-			optionsBuilder.addArgument("/langversion:" + compilerTarget);
-		}
+        String compilerTarget = getCompilerTarget();
+        if (compilerTarget != null) {
+            optionsBuilder.addArgument("/langversion:" + compilerTarget);
+        }
 
-		DotNetModuleExtension extension = getModuleRootLayer().getExtension(DotNetModuleExtension.class);
-		assert extension != null;
-		Sdk sdk = extension.getSdk();
-		assert sdk != null;
-		CSharpCompilerUtil.setupCompiler(extension, this, optionsBuilder);
-		return optionsBuilder;
-	}
+        DotNetModuleExtension extension = getModuleRootLayer().getExtension(DotNetModuleExtension.class);
+        assert extension != null;
+        Sdk sdk = extension.getSdk();
+        assert sdk != null;
+        CSharpCompilerUtil.setupCompiler(extension, this, optionsBuilder);
+        return optionsBuilder;
+    }
 }

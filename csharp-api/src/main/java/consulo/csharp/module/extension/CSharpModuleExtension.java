@@ -21,26 +21,25 @@ import consulo.csharp.compiler.CSharpPlatform;
 import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import consulo.module.extension.ModuleExtension;
 import consulo.module.extension.ModuleInheritableNamedPointer;
-import consulo.virtualFileSystem.VirtualFile;
-
 import org.jspecify.annotations.Nullable;
+
+import java.nio.file.Path;
 
 /**
  * @author VISTALL
  * @since 15.05.14
  */
-public interface CSharpModuleExtension<T extends ModuleExtension<T>> extends CSharpSimpleModuleExtension<T>
-{
-	String INTERNAL_SDK_KEY = "<internal>";
+public interface CSharpModuleExtension<T extends ModuleExtension<T>> extends CSharpSimpleModuleExtension<T> {
+    String INTERNAL_SDK_KEY = "<internal>";
 
-	boolean isOptimizeCode();
+    boolean isOptimizeCode();
 
-	CSharpPlatform getPlatform();
+    CSharpPlatform getPlatform();
 
-	@Nullable
-	String getCompilerTarget();
+    @Nullable
+    String getCompilerTarget();
 
-	ModuleInheritableNamedPointer<Sdk> getCustomCompilerSdkPointer();
+    ModuleInheritableNamedPointer<Sdk> getCustomCompilerSdkPointer();
 
-	void setCompilerExecutable(DotNetCompilerOptionsBuilder builder, VirtualFile executable);
+    void setCompilerExecutable(DotNetCompilerOptionsBuilder builder, Path executable);
 }

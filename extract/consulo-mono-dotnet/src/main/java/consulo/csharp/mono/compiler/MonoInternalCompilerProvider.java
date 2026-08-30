@@ -26,56 +26,47 @@ import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.mono.dotnet.sdk.MonoSdkType;
 import consulo.ui.image.Image;
-import consulo.virtualFileSystem.VirtualFile;
-
 import org.jspecify.annotations.Nullable;
+
+import java.nio.file.Path;
 
 /**
  * @author VISTALL
  * @since 01.01.2016
  */
 @ExtensionImpl(id = "mono-internal", order = "first")
-public class MonoInternalCompilerProvider extends BaseInternalCompilerProvider
-{
-	@Override
-	public String getExtensionId()
-	{
-		return "mono-dotnet";
-	}
+public class MonoInternalCompilerProvider extends BaseInternalCompilerProvider {
+    @Override
+    public String getExtensionId() {
+        return "mono-dotnet";
+    }
 
-	@Override
-	public Image getIcon()
-	{
-		return MonoSdkType.getInstance().getIcon();
-	}
+    @Override
+    public Image getIcon() {
+        return MonoSdkType.getInstance().getIcon();
+    }
 
-	@Override
-	public void setupCompiler(DotNetModuleExtension<?> netExtension,
-			CSharpModuleExtension<?> csharpExtension,
-			MSBaseDotNetCompilerOptionsBuilder builder,
-			@Nullable VirtualFile compilerSdkHome) throws DotNetCompileFailedException
-	{
-		Sdk sdk = netExtension.getSdk();
-		if(sdk == null)
-		{
-			throw new DotNetCompileFailedException("Mono SDK is not resolved");
-		}
+    @Override
+    public void setupCompiler(DotNetModuleExtension<?> netExtension,
+                              CSharpModuleExtension<?> csharpExtension,
+                              MSBaseDotNetCompilerOptionsBuilder builder,
+                              @Nullable Path compilerSdkHome) throws DotNetCompileFailedException {
+        Sdk sdk = netExtension.getSdk();
+        if (sdk == null) {
+            throw new DotNetCompileFailedException("Mono SDK is not resolved");
+        }
 
-		if(SystemInfo.isWindows)
-		{
-			builder.setExecutableFromSdk(sdk, "/../../../bin/mcs.bat");
-		}
-		else if(SystemInfo.isMac)
-		{
-			builder.setExecutableFromSdk(sdk, "/../../../bin/mcs");
-		}
-		else if(SystemInfo.isFreeBSD)
-		{
-			builder.setExecutable(MonoSdkType.ourDefaultFreeBSDCompilerPath);
-		}
-		else if(SystemInfo.isLinux)
-		{
-			builder.setExecutable(MonoSdkType.ourDefaultLinuxCompilerPath);
-		}
-	}
+        if (SystemInfo.isWindows) {
+            builder.setExecutableFromSdk(sdk, "/../../../bin/mcs.bat");
+        }
+        else if (SystemInfo.isMac) {
+            builder.setExecutableFromSdk(sdk, "/../../../bin/mcs");
+        }
+        else if (SystemInfo.isFreeBSD) {
+            builder.setExecutable(MonoSdkType.ourDefaultFreeBSDCompilerPath);
+        }
+        else if (SystemInfo.isLinux) {
+            builder.setExecutable(MonoSdkType.ourDefaultLinuxCompilerPath);
+        }
+    }
 }

@@ -26,35 +26,31 @@ import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.impl.sdk.RoslynBundleType;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import consulo.virtualFileSystem.VirtualFile;
-
 import org.jspecify.annotations.Nullable;
+
+import java.nio.file.Path;
 
 /**
  * @author VISTALL
  * @since 08.06.2015
  */
 @ExtensionImpl(order = "last")
-public class RoslynCompilerProvider extends CSharpCompilerProvider
-{
-	@Nullable
-	@Override
-	public SdkType getBundleType(DotNetSimpleModuleExtension<?> moduleExtension)
-	{
-		return RoslynBundleType.getInstance();
-	}
+public class RoslynCompilerProvider extends CSharpCompilerProvider {
+    @Nullable
+    @Override
+    public SdkType getBundleType(DotNetSimpleModuleExtension<?> moduleExtension) {
+        return RoslynBundleType.getInstance();
+    }
 
-	@Override
-	public void setupCompiler(DotNetModuleExtension<?> netExtension,
-			CSharpModuleExtension<?> csharpExtension,
-			MSBaseDotNetCompilerOptionsBuilder builder,
-			@Nullable VirtualFile compilerSdkHome) throws DotNetCompileFailedException
-	{
-		if(compilerSdkHome == null)
-		{
-			throw new DotNetCompileFailedException("Compiler path is not resolved");
-		}
+    @Override
+    public void setupCompiler(DotNetModuleExtension<?> netExtension,
+                              CSharpModuleExtension<?> csharpExtension,
+                              MSBaseDotNetCompilerOptionsBuilder builder,
+                              @Nullable Path compilerSdkHome) throws DotNetCompileFailedException {
+        if (compilerSdkHome == null) {
+            throw new DotNetCompileFailedException("Compiler path is not resolved");
+        }
 
-		setExecutable(csharpExtension, builder, compilerSdkHome.findFileByRelativePath(CSharpCompilerUtil.COMPILER_NAME));
-	}
+        setExecutable(csharpExtension, builder, compilerSdkHome.resolve(CSharpCompilerUtil.COMPILER_NAME));
+    }
 }

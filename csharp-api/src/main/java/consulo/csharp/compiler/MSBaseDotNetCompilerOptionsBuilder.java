@@ -25,19 +25,19 @@ import consulo.dotnet.DotNetTarget;
 import consulo.dotnet.compiler.*;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.language.util.ModuleUtilCore;
-import consulo.logging.Logger;
 import consulo.module.Module;
 import consulo.process.cmd.GeneralCommandLine;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.StandardFileSystems;
-import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.VirtualFileManager;
-
 import org.jspecify.annotations.Nullable;
+
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -48,217 +48,181 @@ import java.util.regex.Pattern;
  * @author VISTALL
  * @since 26.11.13.
  */
-public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptionsBuilder
-{
-	private static final Logger LOGGER = Logger.getInstance(MSBaseDotNetCompilerOptionsBuilder.class);
+public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptionsBuilder {
+    // impl from monolipse
+    // monolipse.core/src/monolipse/core/runtime/CSharpCompilerLauncher.java
+    // added support for column parsing by VISTALL
+    private static Pattern LINE_ERROR_PATTERN = Pattern.compile("(.+)\\((\\d+),(\\d+)\\):\\s(error|warning) (\\w+\\d+):\\s(.+)");
 
-	// impl from monolipse
-	// monolipse.core/src/monolipse/core/runtime/CSharpCompilerLauncher.java
-	// added support for column parsing by VISTALL
-	private static Pattern LINE_ERROR_PATTERN = Pattern.compile("(.+)\\((\\d+),(\\d+)\\):\\s(error|warning) (\\w+\\d+):\\s(.+)");
+    private @Nullable String myExecutable;
 
-	@Nullable
-	private String myExecutable;
+    private final List<String> myArguments = new ArrayList<>();
+    private final List<String> myProgramArguments = new ArrayList<>();
 
-	private final List<String> myArguments = new ArrayList<>();
-	private final List<String> myProgramArguments = new ArrayList<>();
+    public MSBaseDotNetCompilerOptionsBuilder addArgument(String arg) {
+        myArguments.add(arg + "\n");
+        return this;
+    }
 
-	public MSBaseDotNetCompilerOptionsBuilder addArgument(String arg)
-	{
-		myArguments.add(arg + "\n");
-		return this;
-	}
+    public MSBaseDotNetCompilerOptionsBuilder addProgramArgument(String arg) {
+        myProgramArguments.add(arg);
+        return this;
+    }
 
-	public MSBaseDotNetCompilerOptionsBuilder addProgramArgument(String arg)
-	{
-		myProgramArguments.add(arg);
-		return this;
-	}
+    @Override
+    public @Nullable DotNetCompilerMessage convertToMessage(Module module, String line) {
+        if (line.startsWith("error")) {
+            return new DotNetCompilerMessage(CompilerMessageCategory.ERROR, line, null, -1, 1);
+        }
+        else {
+            Matcher matcher = LINE_ERROR_PATTERN.matcher(line);
+            if (matcher.matches()) {
+                CompilerMessageCategory category = CompilerMessageCategory.INFORMATION;
+                if (matcher.group(4).equals("error")) {
+                    category = CompilerMessageCategory.ERROR;
+                }
+                else if (matcher.group(4).equals("warning")) {
+                    category = CompilerMessageCategory.WARNING;
+                }
 
-	@Override
-	public DotNetCompilerMessage convertToMessage(Module module, String line)
-	{
-		if(line.startsWith("error"))
-		{
-			return new DotNetCompilerMessage(CompilerMessageCategory.ERROR, line, null, -1, 1);
-		}
-		else
-		{
-			Matcher matcher = LINE_ERROR_PATTERN.matcher(line);
-			if(matcher.matches())
-			{
-				CompilerMessageCategory category = CompilerMessageCategory.INFORMATION;
-				if(matcher.group(4).equals("error"))
-				{
-					category = CompilerMessageCategory.ERROR;
-				}
-				else if(matcher.group(4).equals("warning"))
-				{
-					category = CompilerMessageCategory.WARNING;
-				}
+                String fileUrl = FileUtil.toSystemIndependentName(matcher.group(1));
+                if (!FileUtil.isAbsolute(fileUrl)) {
+                    fileUrl = module.getModuleDirUrl() + "/" + fileUrl;
+                }
+                else {
+                    fileUrl = VirtualFileManager.constructUrl(StandardFileSystems.FILE_PROTOCOL, fileUrl);
+                }
 
-				String fileUrl = FileUtil.toSystemIndependentName(matcher.group(1));
-				if(!FileUtil.isAbsolute(fileUrl))
-				{
-					fileUrl = module.getModuleDirUrl() + "/" + fileUrl;
-				}
-				else
-				{
-					fileUrl = VirtualFileManager.constructUrl(StandardFileSystems.FILE_PROTOCOL, fileUrl);
-				}
+                int codeLine = Integer.parseInt(matcher.group(2));
+                int codeColumn = Integer.parseInt(matcher.group(3));
+                String message = matcher.group(6);
+                if (ApplicationProperties.isInSandbox()) {
+                    message += "(" + matcher.group(5) + ")";
+                }
+                return new DotNetCompilerMessage(category, message, fileUrl, codeLine, codeColumn - 1);
+            }
+        }
+        return null;
+    }
 
-				int codeLine = Integer.parseInt(matcher.group(2));
-				int codeColumn = Integer.parseInt(matcher.group(3));
-				String message = matcher.group(6);
-				if(ApplicationProperties.isInSandbox())
-				{
-					message += "(" + matcher.group(5) + ")";
-				}
-				return new DotNetCompilerMessage(category, message, fileUrl, codeLine, codeColumn - 1);
-			}
-		}
-		return null;
-	}
+    @Override
+    public GeneralCommandLine createCommandLine(Module module, Collection<Path> results, DotNetModuleExtension<?> extension) throws Exception {
+        if (myExecutable == null) {
+            throw new DotNetCompileFailedException("C# compiler is not found");
+        }
+        CSharpModuleExtension csharpExtension = ModuleUtilCore.getExtension(module, CSharpModuleExtension.class);
 
-	@Override
-	public GeneralCommandLine createCommandLine(Module module,
-												VirtualFile[] results,
-												DotNetModuleExtension<?> extension) throws Exception
-	{
-		if(myExecutable == null)
-		{
-			throw new DotNetCompileFailedException("C# compiler is not found");
-		}
-		CSharpModuleExtension csharpExtension = ModuleUtilCore.getExtension(module, CSharpModuleExtension.class);
+        assert csharpExtension != null;
 
-		assert csharpExtension != null;
+        String target = null;
+        switch (extension.getTarget()) {
+            case EXECUTABLE:
+                target = "exe";
+                break;
+            case WIN_EXECUTABLE:
+                target = "winexe";
+                break;
+            case LIBRARY:
+                target = "library";
+                break;
+            case NET_MODULE:
+                target = "module";
+                break;
+        }
 
-		String target = null;
-		switch(extension.getTarget())
-		{
-			case EXECUTABLE:
-				target = "exe";
-				break;
-			case WIN_EXECUTABLE:
-				target = "winexe";
-				break;
-			case LIBRARY:
-				target = "library";
-				break;
-			case NET_MODULE:
-				target = "module";
-				break;
-		}
+        GeneralCommandLine commandLine = new GeneralCommandLine();
+        commandLine.setExePath(myExecutable);
+        commandLine.setWorkDirectory(module.getModuleDirPath());
+        commandLine.addParameters(myProgramArguments);
 
-		GeneralCommandLine commandLine = new GeneralCommandLine();
-		commandLine.setExePath(myExecutable);
-		commandLine.setWorkDirectory(module.getModuleDirPath());
-		commandLine.addParameters(myProgramArguments);
+        addArgument("/target:" + target);
+        String outputFile = DotNetMacroUtil.expandOutputFile(extension);
+        addArgument("/out:" + StringUtil.QUOTER.apply(outputFile));
 
-		addArgument("/target:" + target);
-		String outputFile = DotNetMacroUtil.expandOutputFile(extension);
-		addArgument("/out:" + StringUtil.QUOTER.apply(outputFile));
+        Set<File> libraryFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.LIBRARY, false, DotNetCompilerUtil.ACCEPT_ALL);
+        if (!libraryFiles.isEmpty()) {
+            addArgument("/reference:" + StringUtil.join(libraryFiles, file -> StringUtil.QUOTER.apply(file.getAbsolutePath()), ","));
+        }
 
-		Set<File> libraryFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.LIBRARY, false, DotNetCompilerUtil.ACCEPT_ALL);
-		if(!libraryFiles.isEmpty())
-		{
-			addArgument("/reference:" + StringUtil.join(libraryFiles, file -> StringUtil.QUOTER.apply(file.getAbsolutePath()), ","));
-		}
+        Set<File> moduleFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.NET_MODULE, false, DotNetCompilerUtil.ACCEPT_ALL);
+        if (!moduleFiles.isEmpty()) {
+            addArgument("/addmodule:" + StringUtil.join(moduleFiles, file -> StringUtil.QUOTER.apply(file.getAbsolutePath()), ","));
+        }
 
-		Set<File> moduleFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.NET_MODULE, false, DotNetCompilerUtil.ACCEPT_ALL);
-		if(!moduleFiles.isEmpty())
-		{
-			addArgument("/addmodule:" + StringUtil.join(moduleFiles, file -> StringUtil.QUOTER.apply(file.getAbsolutePath()), ","));
-		}
+        if (extension.isAllowDebugInfo()) {
+            addArgument("/debug");
+        }
 
-		if(extension.isAllowDebugInfo())
-		{
-			addArgument("/debug");
-		}
+        if (csharpExtension.isAllowUnsafeCode()) {
+            addArgument("/unsafe");
+        }
 
-		if(csharpExtension.isAllowUnsafeCode())
-		{
-			addArgument("/unsafe");
-		}
+        if (csharpExtension.isOptimizeCode()) {
+            addArgument("/optimize+");
+        }
 
-		if(csharpExtension.isOptimizeCode())
-		{
-			addArgument("/optimize+");
-		}
+        if (csharpExtension.getNullableOption() != CSharpNullableOption.UNSPECIFIED) {
+            addArgument("/nullable:" + csharpExtension.getNullableOption().name().toLowerCase(Locale.ROOT));
+        }
 
-		if(csharpExtension.getNullableOption() != CSharpNullableOption.UNSPECIFIED)
-		{
-			addArgument("/nullable:" + csharpExtension.getNullableOption().name().toLowerCase(Locale.ROOT));
-		}
+        switch (csharpExtension.getPlatform()) {
+            case ANY_CPU:
+                addArgument("/platform:anycpu");
+                break;
+            case ANY_CPU_32BIT_PREFERRED:
+                addArgument("/platform:anycpu32bitpreferred");
+                break;
+            case ARM:
+                addArgument("/platform:ARM");
+                break;
+            case X86:
+                addArgument("/platform:x86");
+                break;
+            case X64:
+                addArgument("/platform:x64");
+                break;
+            case ITANIUM:
+                addArgument("/platform:Itanium");
+                break;
+        }
+        addArgument("/nologo");
+        addArgument("/nostdlib+");
 
-		switch(csharpExtension.getPlatform())
-		{
-			case ANY_CPU:
-				addArgument("/platform:anycpu");
-				break;
-			case ANY_CPU_32BIT_PREFERRED:
-				addArgument("/platform:anycpu32bitpreferred");
-				break;
-			case ARM:
-				addArgument("/platform:ARM");
-				break;
-			case X86:
-				addArgument("/platform:x86");
-				break;
-			case X64:
-				addArgument("/platform:x64");
-				break;
-			case ITANIUM:
-				addArgument("/platform:Itanium");
-				break;
-		}
-		addArgument("/nologo");
-		addArgument("/nostdlib+");
+        String defineVariables = StringUtil.join(extension.getVariables(), ";");
+        if (!StringUtil.isEmpty(defineVariables)) {
+            addArgument("/define:" + defineVariables);
+        }
 
-		String defineVariables = StringUtil.join(extension.getVariables(), ";");
-		if(!StringUtil.isEmpty(defineVariables))
-		{
-			addArgument("/define:" + defineVariables);
-		}
+        String mainType = extension.getMainType();
+        if (!StringUtil.isEmpty(mainType)) {
+            addArgument("/main:" + mainType);
+        }
 
-		String mainType = extension.getMainType();
-		if(!StringUtil.isEmpty(mainType))
-		{
-			addArgument("/main:" + mainType);
-		}
+        for (Path result : results) {
+            addArgument(StringUtil.QUOTER.apply(result.toString()));
+        }
 
-		for(VirtualFile result : results)
-		{
-			addArgument(StringUtil.QUOTER.apply(FileUtil.toSystemDependentName(result.getPath())));
-		}
+        File tempFile = FileUtil.createTempFile("consulo-dotnet-rsp", ".rsp");
 
-		File tempFile = FileUtil.createTempFile("consulo-dotnet-rsp", ".rsp");
+        Files.write(tempFile.toPath(), myArguments);
 
-		Files.write(tempFile.toPath(), myArguments);
+        FileUtil.createParentDirs(new File(outputFile));
 
-		//LOGGER.warn("Compiler def file: " + tempFile);
-		//LOGGER.warn(FileUtil.loadFile(tempFile));
+        commandLine.addParameter("@" + tempFile.getAbsolutePath());
+        commandLine.setRedirectErrorStream(true);
+        return commandLine;
+    }
 
-		FileUtil.createParentDirs(new File(outputFile));
+    @Nullable
+    public String getExecutable() {
+        return myExecutable;
+    }
 
-		commandLine.addParameter("@" + tempFile.getAbsolutePath());
-		commandLine.setRedirectErrorStream(true);
-		return commandLine;
-	}
+    public void setExecutable(String executable) {
+        myExecutable = executable;
+    }
 
-	@Nullable
-	public String getExecutable()
-	{
-		return myExecutable;
-	}
-
-	public void setExecutable(String executable)
-	{
-		myExecutable = executable;
-	}
-
-	public void setExecutableFromSdk(Sdk sdk, String executableFromSdk)
-	{
-		myExecutable = sdk.getHomePath() + File.separatorChar + executableFromSdk;
-	}
+    public void setExecutableFromSdk(Sdk sdk, String executableFromSdk) {
+        myExecutable = sdk.getHomePath() + File.separatorChar + executableFromSdk;
+    }
 }

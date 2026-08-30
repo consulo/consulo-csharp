@@ -27,43 +27,41 @@ import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.module.ui.awt.SdkComboBox;
-import consulo.virtualFileSystem.VirtualFile;
-
 import org.jspecify.annotations.Nullable;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * @author VISTALL
  * @since 08.06.2015
  */
 @ExtensionAPI(ComponentScope.APPLICATION)
-public abstract class CSharpCompilerProvider
-{
-	public static final ExtensionPointName<CSharpCompilerProvider> EP_NAME = ExtensionPointName.create(CSharpCompilerProvider.class);
+public abstract class CSharpCompilerProvider {
+    public static final ExtensionPointName<CSharpCompilerProvider> EP_NAME = ExtensionPointName.create(CSharpCompilerProvider.class);
 
-	@Nullable
-	public abstract SdkType getBundleType(DotNetSimpleModuleExtension<?> moduleExtension);
+    @Nullable
+    public abstract SdkType getBundleType(DotNetSimpleModuleExtension<?> moduleExtension);
 
-	public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, SdkComboBox comboBox)
-	{
-	}
+    public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, SdkComboBox comboBox) {
+    }
 
-	public abstract void setupCompiler(DotNetModuleExtension<?> netExtension,
-			CSharpModuleExtension<?> csharpExtension,
-			MSBaseDotNetCompilerOptionsBuilder builder,
-			@Nullable VirtualFile compilerSdkHome) throws DotNetCompileFailedException;
+    public abstract void setupCompiler(DotNetModuleExtension<?> netExtension,
+                                       CSharpModuleExtension<?> csharpExtension,
+                                       MSBaseDotNetCompilerOptionsBuilder builder,
+                                       @Nullable Path compilerSdkHome) throws DotNetCompileFailedException;
 
-	protected final void setExecutable(CSharpModuleExtension cSharpModuleExtension, DotNetCompilerOptionsBuilder builder, @Nullable VirtualFile executable) throws DotNetCompileFailedException
-	{
-		if(executable == null)
-		{
-			throw new DotNetCompileFailedException("Compiler is not resolved");
-		}
+    protected final void setExecutable(CSharpModuleExtension cSharpModuleExtension,
+                                       DotNetCompilerOptionsBuilder builder,
+                                       @Nullable Path executable) throws DotNetCompileFailedException {
+        if (executable == null || !Files.exists(executable)) {
+            throw new DotNetCompileFailedException("Compiler is not resolved");
+        }
 
-		cSharpModuleExtension.setCompilerExecutable(builder, executable);
-	}
+        cSharpModuleExtension.setCompilerExecutable(builder, executable);
+    }
 
-	public boolean isSelected(DotNetSimpleModuleExtension<?> moduleExtension, String name, @Nullable Sdk sdk)
-	{
-		return sdk != null && getBundleType(moduleExtension) == sdk.getSdkType();
-	}
+    public boolean isSelected(DotNetSimpleModuleExtension<?> moduleExtension, String name, @Nullable Sdk sdk) {
+        return sdk != null && getBundleType(moduleExtension) == sdk.getSdkType();
+    }
 }

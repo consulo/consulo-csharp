@@ -17,6 +17,7 @@
 package consulo.csharp.microsoft.compiler;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.content.bundle.Sdk;
 import consulo.csharp.base.compiler.BaseInternalCompilerProvider;
 import consulo.csharp.base.compiler.CSharpCompilerUtil;
 import consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
@@ -25,41 +26,37 @@ import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.microsoft.dotnet.sdk.MicrosoftDotNetSdkType;
 import consulo.ui.image.Image;
-import consulo.virtualFileSystem.VirtualFile;
-
 import org.jspecify.annotations.Nullable;
+
+import java.nio.file.Path;
 
 /**
  * @author VISTALL
  * @since 01.01.2016
  */
 @ExtensionImpl(id = "ms-internal", order = "first")
-public class MicrosoftInternalCompilerProvider extends BaseInternalCompilerProvider
-{
-	@Override
-	public String getExtensionId()
-	{
-		return "microsoft-dotnet";
-	}
+public class MicrosoftInternalCompilerProvider extends BaseInternalCompilerProvider {
+    @Override
+    public String getExtensionId() {
+        return "microsoft-dotnet";
+    }
 
-	@Override
-	public Image getIcon()
-	{
-		return MicrosoftDotNetSdkType.getInstance().getIcon();
-	}
+    @Override
+    public Image getIcon() {
+        return MicrosoftDotNetSdkType.getInstance().getIcon();
+    }
 
-	@Override
-	public void setupCompiler(DotNetModuleExtension<?> netExtension,
-			CSharpModuleExtension<?> csharpExtension,
-			MSBaseDotNetCompilerOptionsBuilder builder,
-			@Nullable VirtualFile compilerSdkHome) throws DotNetCompileFailedException
-	{
-		VirtualFile sdkHome = netExtension.getSdk() == null ? null : netExtension.getSdk().getHomeDirectory();
-		if(sdkHome == null)
-		{
-			throw new DotNetCompileFailedException(".NET sdk path is not resolved");
-		}
+    @Override
+    public void setupCompiler(DotNetModuleExtension<?> netExtension,
+                              CSharpModuleExtension<?> csharpExtension,
+                              MSBaseDotNetCompilerOptionsBuilder builder,
+                              @Nullable Path compilerSdkHome) throws DotNetCompileFailedException {
+        Sdk sdk = netExtension.getSdk();
+        String sdkHomePath = sdk == null ? null : sdk.getHomePath();
+        if (sdkHomePath == null) {
+            throw new DotNetCompileFailedException(".NET sdk path is not resolved");
+        }
 
-		setExecutable(csharpExtension, builder, sdkHome.findFileByRelativePath(CSharpCompilerUtil.COMPILER_NAME));
-	}
+        setExecutable(csharpExtension, builder, Path.of(sdkHomePath).resolve(CSharpCompilerUtil.COMPILER_NAME));
+    }
 }

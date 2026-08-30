@@ -25,81 +25,67 @@ import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.module.extension.ModuleInheritableNamedPointer;
-import consulo.virtualFileSystem.VirtualFile;
 
+import java.nio.file.Path;
 import java.util.List;
 
 /**
  * @author VISTALL
  * @since 11.03.2015
  */
-public class CSharpCompilerUtil
-{
-	public static final String COMPILER_NAME = "csc.exe";
+public class CSharpCompilerUtil {
+    public static final String COMPILER_NAME = "csc.exe";
 
-	public static void setupCompiler(DotNetModuleExtension<?> netExtension,
-			CSharpModuleExtension<?> csharpExtension,
-			MSBaseDotNetCompilerOptionsBuilder builder) throws DotNetCompileFailedException
-	{
-		ModuleInheritableNamedPointer<Sdk> customCompilerSdkPointer = csharpExtension.getCustomCompilerSdkPointer();
-		if(customCompilerSdkPointer.isNull())
-		{
-			for(CSharpCompilerProvider provider : CSharpCompilerProvider.EP_NAME.getExtensions())
-			{
-				SdkType bundleType = provider.getBundleType(netExtension);
-				if(bundleType != null)
-				{
-					List<Sdk> sdksOfType = SdkTable.getInstance().getSdksOfType(bundleType);
-					if(!sdksOfType.isEmpty())
-					{
-						for(Sdk sdk : sdksOfType)
-						{
-							try
-							{
-								provider.setupCompiler(netExtension, csharpExtension, builder, sdk.getHomeDirectory());
-								return;
-							}
-							catch(DotNetCompileFailedException ignored) // if we failed to resolved try another sdk
-							{
-							}
-						}
-					}
-				}
-				else if(provider.isSelected(netExtension, CSharpModuleExtension.INTERNAL_SDK_KEY, null))
-				{
-					try
-					{
-						provider.setupCompiler(netExtension, csharpExtension, builder, null);
-						return;
-					}
-					catch(DotNetCompileFailedException ignored)  // if we failed to resolved try another provider
-					{
-					}
-				}
-			}
-		}
-		else
-		{
-			String name = customCompilerSdkPointer.getName();
-			Sdk sdk = customCompilerSdkPointer.get();
+    public static void setupCompiler(DotNetModuleExtension<?> netExtension,
+                                     CSharpModuleExtension<?> csharpExtension,
+                                     MSBaseDotNetCompilerOptionsBuilder builder) throws DotNetCompileFailedException {
+        ModuleInheritableNamedPointer<Sdk> customCompilerSdkPointer = csharpExtension.getCustomCompilerSdkPointer();
+        if (customCompilerSdkPointer.isNull()) {
+            for (CSharpCompilerProvider provider : CSharpCompilerProvider.EP_NAME.getExtensions()) {
+                SdkType bundleType = provider.getBundleType(netExtension);
+                if (bundleType != null) {
+                    List<Sdk> sdksOfType = SdkTable.getInstance().getSdksOfType(bundleType);
+                    if (!sdksOfType.isEmpty()) {
+                        for (Sdk sdk : sdksOfType) {
+                            try {
+                                provider.setupCompiler(netExtension, csharpExtension, builder, sdk.getHomeNioPath());
+                                return;
+                            }
+                            catch (DotNetCompileFailedException ignored) // if we failed to resolved try another sdk
+                            {
+                            }
+                        }
+                    }
+                }
+                else if (provider.isSelected(netExtension, CSharpModuleExtension.INTERNAL_SDK_KEY, null)) {
+                    try {
+                        provider.setupCompiler(netExtension, csharpExtension, builder, null);
+                        return;
+                    }
+                    catch (DotNetCompileFailedException ignored)  // if we failed to resolved try another provider
+                    {
+                    }
+                }
+            }
+        }
+        else {
+            String name = customCompilerSdkPointer.getName();
+            Sdk sdk = customCompilerSdkPointer.get();
 
-			CSharpCompilerProvider provider = null;
-			for(CSharpCompilerProvider it : CSharpCompilerProvider.EP_NAME.getExtensions())
-			{
-				if(it.isSelected(netExtension, name, sdk))
-				{
-					provider = it;
-					break;
-				}
-			}
+            CSharpCompilerProvider provider = null;
+            for (CSharpCompilerProvider it : CSharpCompilerProvider.EP_NAME.getExtensions()) {
+                if (it.isSelected(netExtension, name, sdk)) {
+                    provider = it;
+                    break;
+                }
+            }
 
-			if(provider == null)
-			{
-				throw new IllegalArgumentException("No available compiler");
-			}
+            if (provider == null) {
+                throw new IllegalArgumentException("No available compiler");
+            }
 
-			VirtualFile homeDirectory = sdk == null ? null : sdk.getHomeDirectory();
-			provider.setupCompiler(netExtension, csharpExtension, builder, homeDirectory);
-		}
-	}
+            Path homeDirectory = sdk == null ? null : sdk.getHomeNioPath();
+            provider.setupCompiler(netExtension, csharpExtension, builder, homeDirectory);
+        }
+    }
 }

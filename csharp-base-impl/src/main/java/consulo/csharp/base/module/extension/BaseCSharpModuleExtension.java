@@ -42,10 +42,10 @@ import consulo.module.extension.MutableModuleInheritableNamedPointer;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.ObjectUtil;
-import consulo.virtualFileSystem.VirtualFile;
-import org.jspecify.annotations.Nullable;
 import org.jdom.Element;
+import org.jspecify.annotations.Nullable;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -54,193 +54,163 @@ import java.util.List;
  * @author VISTALL
  * @since 15.12.13.
  */
-public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtension<T>> extends BaseCSharpSimpleModuleExtension<T> implements DotNetModuleLangExtension<T>, CSharpModuleExtension<T>
-{
-	protected boolean myOptimizeCode;
-	protected CSharpPlatform myPlatform = CSharpPlatform.ANY_CPU;
-	protected String myCompilerTarget;
-	protected CSharpCustomCompilerSdkPointer myCustomCompilerSdkPointer;
-	protected CSharpNullableOption myNullableOption = CSharpNullableOption.UNSPECIFIED;
+public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtension<T>> extends BaseCSharpSimpleModuleExtension<T> implements DotNetModuleLangExtension<T>, CSharpModuleExtension<T> {
+    protected boolean myOptimizeCode;
+    protected CSharpPlatform myPlatform = CSharpPlatform.ANY_CPU;
+    protected String myCompilerTarget;
+    protected CSharpCustomCompilerSdkPointer myCustomCompilerSdkPointer;
+    protected CSharpNullableOption myNullableOption = CSharpNullableOption.UNSPECIFIED;
 
-	public BaseCSharpModuleExtension(String id, ModuleRootLayer layer)
-	{
-		super(id, layer);
-		myCustomCompilerSdkPointer = new CSharpCustomCompilerSdkPointer(layer, id);
-	}
+    public BaseCSharpModuleExtension(String id, ModuleRootLayer layer) {
+        super(id, layer);
+        myCustomCompilerSdkPointer = new CSharpCustomCompilerSdkPointer(layer, id);
+    }
 
-	@Override
-	public void setCompilerExecutable(DotNetCompilerOptionsBuilder builder, VirtualFile executable)
-	{
-		((MSBaseDotNetCompilerOptionsBuilder) builder).setExecutable(executable.getPath());
-	}
+    @Override
+    public void setCompilerExecutable(DotNetCompilerOptionsBuilder builder, Path executable) {
+        ((MSBaseDotNetCompilerOptionsBuilder) builder).setExecutable(executable.toString());
+    }
 
-	@Override
-	public MutableModuleInheritableNamedPointer<Sdk> getCustomCompilerSdkPointer()
-	{
-		return myCustomCompilerSdkPointer;
-	}
+    @Override
+    public MutableModuleInheritableNamedPointer<Sdk> getCustomCompilerSdkPointer() {
+        return myCustomCompilerSdkPointer;
+    }
 
-	@Override
-	@RequiredReadAction
-	public PsiElement[] getEntryPointElements()
-	{
-		final List<DotNetTypeDeclaration> typeDeclarations = new ArrayList<>();
-		Collection<DotNetLikeMethodDeclaration> methods = MethodIndex.getInstance().get("Main", getProject(), GlobalSearchScope.moduleScope(getModule()));
-		for(DotNetLikeMethodDeclaration method : methods)
-		{
-			if(method instanceof CSharpMethodDeclaration && DotNetRunUtil.isEntryPoint((DotNetMethodDeclaration) method))
-			{
-				Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(method);
-				// scope is broken?
-				if(!getModule().equals(moduleForPsiElement))
-				{
-					continue;
-				}
-				ContainerUtil.addIfNotNull(typeDeclarations, ObjectUtil.tryCast(method.getParent(), DotNetTypeDeclaration.class));
-			}
-		}
-		return ContainerUtil.toArray(typeDeclarations, DotNetTypeDeclaration.ARRAY_FACTORY);
-	}
+    @Override
+    @RequiredReadAction
+    public PsiElement[] getEntryPointElements() {
+        List<DotNetTypeDeclaration> typeDeclarations = new ArrayList<>();
+        Collection<DotNetLikeMethodDeclaration> methods = MethodIndex.getInstance().get("Main", getProject(), GlobalSearchScope.moduleScope(getModule()));
+        for (DotNetLikeMethodDeclaration method : methods) {
+            if (method instanceof CSharpMethodDeclaration && DotNetRunUtil.isEntryPoint((DotNetMethodDeclaration) method)) {
+                Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(method);
+                // scope is broken?
+                if (!getModule().equals(moduleForPsiElement)) {
+                    continue;
+                }
+                ContainerUtil.addIfNotNull(typeDeclarations, ObjectUtil.tryCast(method.getParent(), DotNetTypeDeclaration.class));
+            }
+        }
+        return ContainerUtil.toArray(typeDeclarations, DotNetTypeDeclaration.ARRAY_FACTORY);
+    }
 
-	@Nullable
-	@Override
-	@RequiredReadAction
-	public String getAssemblyTitle()
-	{
-		GlobalSearchScope moduleScope = GlobalSearchScope.moduleScope(getModule());
-		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, getProject(), moduleScope);
+    @Nullable
+    @Override
+    @RequiredReadAction
+    public String getAssemblyTitle() {
+        GlobalSearchScope moduleScope = GlobalSearchScope.moduleScope(getModule());
+        Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, getProject(), moduleScope);
 
-		loop:
-		for(CSharpAttributeList attributeList : attributeLists)
-		{
-			for(CSharpAttribute attribute : attributeList.getAttributes())
-			{
-				DotNetTypeDeclaration typeDeclaration = attribute.resolveToType();
-				if(typeDeclaration == null)
-				{
-					continue;
-				}
+        loop:
+        for (CSharpAttributeList attributeList : attributeLists) {
+            for (CSharpAttribute attribute : attributeList.getAttributes()) {
+                DotNetTypeDeclaration typeDeclaration = attribute.resolveToType();
+                if (typeDeclaration == null) {
+                    continue;
+                }
 
-				if(DotNetTypes.System.Reflection.AssemblyTitleAttribute.equals(typeDeclaration.getVmQName()))
-				{
-					Module attributeModule = attribute.getModule();
-					if(attributeModule == null || !attributeModule.equals(getModule()))
-					{
-						continue;
-					}
-					DotNetExpression[] parameterExpressions = attribute.getParameterExpressions();
-					if(parameterExpressions.length == 0)
-					{
-						break loop;
-					}
-					String valueAs = new ConstantExpressionEvaluator(parameterExpressions[0]).getValueAs(String.class);
-					if(valueAs != null)
-					{
-						return valueAs;
-					}
-				}
-			}
-		}
-		return null;
-	}
+                if (DotNetTypes.System.Reflection.AssemblyTitleAttribute.equals(typeDeclaration.getVmQName())) {
+                    Module attributeModule = attribute.getModule();
+                    if (attributeModule == null || !attributeModule.equals(getModule())) {
+                        continue;
+                    }
+                    DotNetExpression[] parameterExpressions = attribute.getParameterExpressions();
+                    if (parameterExpressions.length == 0) {
+                        break loop;
+                    }
+                    String valueAs = new ConstantExpressionEvaluator(parameterExpressions[0]).getValueAs(String.class);
+                    if (valueAs != null) {
+                        return valueAs;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public CSharpPlatform getPlatform()
-	{
-		return myPlatform;
-	}
+    @Override
+    public CSharpPlatform getPlatform() {
+        return myPlatform;
+    }
 
-	@Override
-	public boolean isOptimizeCode()
-	{
-		return myOptimizeCode;
-	}
+    @Override
+    public boolean isOptimizeCode() {
+        return myOptimizeCode;
+    }
 
-	public void setPlatform(CSharpPlatform platform)
-	{
-		myPlatform = platform;
-	}
+    public void setPlatform(CSharpPlatform platform) {
+        myPlatform = platform;
+    }
 
-	public void setOptimizeCode(boolean optimizeCode)
-	{
-		myOptimizeCode = optimizeCode;
-	}
+    public void setOptimizeCode(boolean optimizeCode) {
+        myOptimizeCode = optimizeCode;
+    }
 
-	@Override
-	public boolean isModifiedImpl(T mutableModuleExtension)
-	{
-		return super.isModifiedImpl(mutableModuleExtension) ||
-				myOptimizeCode != mutableModuleExtension.myOptimizeCode ||
-				myPlatform != mutableModuleExtension.myPlatform ||
-				myNullableOption != mutableModuleExtension.myNullableOption ||
-				!myCustomCompilerSdkPointer.equals(mutableModuleExtension.myCustomCompilerSdkPointer) ||
-				!Comparing.equal(myCompilerTarget, mutableModuleExtension.myCompilerTarget);
-	}
+    @Override
+    public boolean isModifiedImpl(T mutableModuleExtension) {
+        return super.isModifiedImpl(mutableModuleExtension) ||
+            myOptimizeCode != mutableModuleExtension.myOptimizeCode ||
+            myPlatform != mutableModuleExtension.myPlatform ||
+            myNullableOption != mutableModuleExtension.myNullableOption ||
+            !myCustomCompilerSdkPointer.equals(mutableModuleExtension.myCustomCompilerSdkPointer) ||
+            !Comparing.equal(myCompilerTarget, mutableModuleExtension.myCompilerTarget);
+    }
 
-	@RequiredReadAction
-	@Override
-	protected void loadStateImpl(Element element)
-	{
-		super.loadStateImpl(element);
+    @RequiredReadAction
+    @Override
+    protected void loadStateImpl(Element element) {
+        super.loadStateImpl(element);
 
-		myOptimizeCode = Boolean.valueOf(element.getAttributeValue("optimize-code", "false"));
-		myPlatform = CSharpPlatform.valueOf(element.getAttributeValue("platform", CSharpPlatform.ANY_CPU.name()));
-		myNullableOption = CSharpNullableOption.valueOf(element.getAttributeValue("nullable-option", CSharpNullableOption.UNSPECIFIED.name()));
-		myCompilerTarget = element.getAttributeValue("compiler-target");
-		myCustomCompilerSdkPointer.fromXml(element);
-	}
+        myOptimizeCode = Boolean.valueOf(element.getAttributeValue("optimize-code", "false"));
+        myPlatform = CSharpPlatform.valueOf(element.getAttributeValue("platform", CSharpPlatform.ANY_CPU.name()));
+        myNullableOption = CSharpNullableOption.valueOf(element.getAttributeValue("nullable-option", CSharpNullableOption.UNSPECIFIED.name()));
+        myCompilerTarget = element.getAttributeValue("compiler-target");
+        myCustomCompilerSdkPointer.fromXml(element);
+    }
 
-	@Override
-	protected void getStateImpl(Element element)
-	{
-		super.getStateImpl(element);
+    @Override
+    protected void getStateImpl(Element element) {
+        super.getStateImpl(element);
 
-		element.setAttribute("optimize-code", Boolean.toString(myOptimizeCode));
-		element.setAttribute("platform", myPlatform.name());
-		if(myCompilerTarget != null)
-		{
-			element.setAttribute("compiler-target", myCompilerTarget);
-		}
-		if(myNullableOption != CSharpNullableOption.UNSPECIFIED)
-		{
-			element.setAttribute("nullable-option", myNullableOption.name());
-		}
-		myCustomCompilerSdkPointer.toXml(element);
-	}
+        element.setAttribute("optimize-code", Boolean.toString(myOptimizeCode));
+        element.setAttribute("platform", myPlatform.name());
+        if (myCompilerTarget != null) {
+            element.setAttribute("compiler-target", myCompilerTarget);
+        }
+        if (myNullableOption != CSharpNullableOption.UNSPECIFIED) {
+            element.setAttribute("nullable-option", myNullableOption.name());
+        }
+        myCustomCompilerSdkPointer.toXml(element);
+    }
 
-	@Override
-	public CSharpNullableOption getNullableOption()
-	{
-		return myNullableOption;
-	}
+    @Override
+    public CSharpNullableOption getNullableOption() {
+        return myNullableOption;
+    }
 
-	public void setNullableOption(CSharpNullableOption nullableOption)
-	{
-		myNullableOption = nullableOption;
-	}
+    public void setNullableOption(CSharpNullableOption nullableOption) {
+        myNullableOption = nullableOption;
+    }
 
-	@RequiredReadAction
-	@Override
-	public void commit(T mutableModuleExtension)
-	{
-		super.commit(mutableModuleExtension);
+    @RequiredReadAction
+    @Override
+    public void commit(T mutableModuleExtension) {
+        super.commit(mutableModuleExtension);
 
-		myNullableOption = mutableModuleExtension.myNullableOption;
-		myOptimizeCode = mutableModuleExtension.myOptimizeCode;
-		myPlatform = mutableModuleExtension.myPlatform;
-		myCompilerTarget = mutableModuleExtension.myCompilerTarget;
-		myCustomCompilerSdkPointer.set(mutableModuleExtension.myCustomCompilerSdkPointer);
-	}
+        myNullableOption = mutableModuleExtension.myNullableOption;
+        myOptimizeCode = mutableModuleExtension.myOptimizeCode;
+        myPlatform = mutableModuleExtension.myPlatform;
+        myCompilerTarget = mutableModuleExtension.myCompilerTarget;
+        myCustomCompilerSdkPointer.set(mutableModuleExtension.myCustomCompilerSdkPointer);
+    }
 
-	@Nullable
-	@Override
-	public String getCompilerTarget()
-	{
-		return myCompilerTarget;
-	}
+    @Nullable
+    @Override
+    public String getCompilerTarget() {
+        return myCompilerTarget;
+    }
 
-	public void setCompilerTarget(@Nullable String target)
-	{
-		myCompilerTarget = target;
-	}
+    public void setCompilerTarget(@Nullable String target) {
+        myCompilerTarget = target;
+    }
 }
