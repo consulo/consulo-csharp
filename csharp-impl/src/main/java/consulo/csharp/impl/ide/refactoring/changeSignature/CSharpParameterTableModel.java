@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.refactoring.changeSignature;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpFileType;
 import consulo.csharp.lang.impl.psi.fragment.CSharpFragmentFactory;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
@@ -26,6 +26,7 @@ import consulo.language.editor.refactoring.ui.StringTableCellEditor;
 import consulo.language.editor.ui.awt.EditorTextField;
 import consulo.language.psi.PsiCodeFragment;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.ex.SimpleTextAttributes;
 import consulo.ui.ex.awt.ColoredTableCellRenderer;
@@ -39,23 +40,19 @@ import java.awt.*;
 
 /**
  * @author VISTALL
- * @since 20.05.14
+ * @since 2014-05-20
  */
-public class CSharpParameterTableModel extends ParameterTableModelBase<CSharpParameterInfo, CSharpParameterTableModelItem>
-{
-	private static class VariableCompletionTableCellEditor extends StringTableCellEditor
-	{
-		public VariableCompletionTableCellEditor(Project project)
-		{
-			super(project);
-		}
+public class CSharpParameterTableModel extends ParameterTableModelBase<CSharpParameterInfo, CSharpParameterTableModelItem> {
+    private static class VariableCompletionTableCellEditor extends StringTableCellEditor {
+        public VariableCompletionTableCellEditor(Project project) {
+            super(project);
+        }
 
-		@Override
-		public Component getTableCellEditorComponent(final JTable table, Object value, boolean isSelected, final int row, int column)
-		{
-			final EditorTextField textField = (EditorTextField) super.getTableCellEditorComponent(table, value, isSelected, row, column);
-			/*textField.registerKeyboardAction(new ActionListener()
-			{
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            EditorTextField textField = (EditorTextField) super.getTableCellEditorComponent(table, value, isSelected, row, column);
+            /*textField.registerKeyboardAction(new ActionListener()
+            {
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
@@ -66,9 +63,9 @@ public class CSharpParameterTableModel extends ParameterTableModelBase<CSharpPar
 					}
 				}
 			}, KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);*/
-			textField.setBorder(new LineBorder(table.getSelectionBackground()));
-			return textField;
-		}
+            textField.setBorder(new LineBorder(table.getSelectionBackground()));
+            return textField;
+        }
 
 		/*private static void completeVariable(EditorTextField editorTextField, PsiType type)
 		{
@@ -86,110 +83,110 @@ public class CSharpParameterTableModel extends ParameterTableModelBase<CSharpPar
 			editor.getSelectionModel().removeSelection();
 			LookupManager.getInstance(editorTextField.getProject()).showLookup(editor, lookupItems, prefix);
 		} */
-	}
+    }
 
-	private static class MyNameColumn extends NameColumn<CSharpParameterInfo, CSharpParameterTableModelItem>
-	{
-		private Project myProject;
+    private static class MyNameColumn extends NameColumn<CSharpParameterInfo, CSharpParameterTableModelItem> {
+        private Project myProject;
 
-		public MyNameColumn(Project project)
-		{
-			super(project);
-			myProject = project;
-		}
+        public MyNameColumn(Project project) {
+            super(project);
+            myProject = project;
+        }
 
-		@Override
-		public TableCellEditor doCreateEditor(CSharpParameterTableModelItem o)
-		{
-			return new VariableCompletionTableCellEditor(myProject);
-		}
+        @Override
+        public TableCellEditor doCreateEditor(CSharpParameterTableModelItem o) {
+            return new VariableCompletionTableCellEditor(myProject);
+        }
 
-		@Override
-		public TableCellRenderer doCreateRenderer(CSharpParameterTableModelItem cSharpParameterTableModelItem)
-		{
-			return new ColoredTableCellRenderer()
-			{
-				@Override
-				public void customizeCellRenderer(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
-				{
-					if(value == null)
-					{
-						return;
-					}
-					if(isSelected || hasFocus)
-					{
-						acquireState(table, true, false, row, column);
-						getCellState().updateRenderer(this);
-						setPaintFocusBorder(false);
-					}
-					append((String) value, new SimpleTextAttributes(Font.PLAIN, null));
-				}
-			};
-		}
-	}
+        @Override
+        public TableCellRenderer doCreateRenderer(CSharpParameterTableModelItem cSharpParameterTableModelItem) {
+            return new ColoredTableCellRenderer() {
+                @Override
+                public void customizeCellRenderer(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                    if (value == null) {
+                        return;
+                    }
+                    if (isSelected || hasFocus) {
+                        acquireState(table, true, false, row, column);
+                        getCellState().updateRenderer(this);
+                        setPaintFocusBorder(false);
+                    }
+                    append((String) value, new SimpleTextAttributes(Font.PLAIN, null));
+                }
+            };
+        }
+    }
 
-	private static class ModifierColumn extends ColumnInfoBase<CSharpParameterInfo, CSharpParameterTableModelItem, CSharpModifier>
-	{
-		public ModifierColumn()
-		{
-			super("Modifier");
-		}
+    private static class ModifierColumn extends ColumnInfoBase<CSharpParameterInfo, CSharpParameterTableModelItem, CSharpModifier> {
+        public ModifierColumn() {
+            super(LocalizeValue.localizeTODO("Modifier"));
+        }
 
-		@Nullable
-		@Override
-		public CSharpModifier valueOf(CSharpParameterTableModelItem item)
-		{
-			return item.parameter.getModifier();
-		}
+        @Nullable
+        @Override
+        public CSharpModifier valueOf(CSharpParameterTableModelItem item) {
+            return item.parameter.getModifier();
+        }
 
-		@Override
-		public void setValue(CSharpParameterTableModelItem tableModelItem, CSharpModifier value)
-		{
-			tableModelItem.parameter.setModifier(value);
-		}
+        @Override
+        public void setValue(CSharpParameterTableModelItem tableModelItem, CSharpModifier value) {
+            tableModelItem.parameter.setModifier(value);
+        }
 
-		@Override
-		protected TableCellRenderer doCreateRenderer(CSharpParameterTableModelItem tableModelItem)
-		{
-			return new ColoredTableCellRenderer()
-			{
-				@Override
-				protected void customizeCellRenderer(JTable table, Object value, boolean selected, boolean hasFocus, int row, int column)
-				{
-					append(value == null ? "" : value.toString());
-				}
-			};
-		}
+        @Override
+        protected TableCellRenderer doCreateRenderer(CSharpParameterTableModelItem tableModelItem) {
+            return new ColoredTableCellRenderer() {
+                @Override
+                protected void customizeCellRenderer(JTable table, Object value, boolean selected, boolean hasFocus, int row, int column) {
+                    append(value == null ? "" : value.toString());
+                }
+            };
+        }
 
-		@Override
-		protected TableCellEditor doCreateEditor(CSharpParameterTableModelItem item)
-		{
-			throw new UnsupportedOperationException();
-		}
-	}
+        @Override
+        protected TableCellEditor doCreateEditor(CSharpParameterTableModelItem item) {
+            throw new UnsupportedOperationException();
+        }
+    }
 
-	private final CSharpMethodDescriptor myMethodDescriptor;
+    private final CSharpMethodDescriptor myMethodDescriptor;
 
-	public CSharpParameterTableModel(CSharpMethodDescriptor methodDescriptor, PsiElement typeContext, PsiElement defaultValueContext)
-	{
-		super(typeContext, defaultValueContext, new TypeColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(methodDescriptor.getMethod().getProject(), CSharpFileType.INSTANCE), new
-						MyNameColumn(methodDescriptor.getMethod().getProject()),
-				new DefaultValueColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(methodDescriptor.getMethod().getProject(), CSharpFileType.INSTANCE, "Place value:"), new ModifierColumn());
-		myMethodDescriptor = methodDescriptor;
-	}
+    public CSharpParameterTableModel(CSharpMethodDescriptor methodDescriptor, PsiElement typeContext, PsiElement defaultValueContext) {
+        super(
+            typeContext,
+            defaultValueContext,
+            new TypeColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(
+                methodDescriptor.getMethod().getProject(),
+                CSharpFileType.INSTANCE
+            ),
+            new
+                MyNameColumn(methodDescriptor.getMethod().getProject()),
+            new DefaultValueColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(
+                methodDescriptor.getMethod().getProject(),
+                CSharpFileType.INSTANCE,
+                LocalizeValue.localizeTODO("Place value:")
+            ),
+            new ModifierColumn()
+        );
+        myMethodDescriptor = methodDescriptor;
+    }
 
-	@Override
-	protected CSharpParameterTableModelItem createRowItem(@Nullable CSharpParameterInfo parameterInfo)
-	{
-		Project project = myMethodDescriptor.getMethod().getProject();
+    @Override
+    @RequiredReadAction
+    protected CSharpParameterTableModelItem createRowItem(@Nullable CSharpParameterInfo parameterInfo) {
+        Project project = myMethodDescriptor.getMethod().getProject();
 
-		if(parameterInfo == null)
-		{
-			parameterInfo = new CSharpParameterInfo("", null, new CSharpTypeRefByQName(myDefaultValueContext, DotNetTypes.System.Object), getRowCount());
-		}
-		PsiCodeFragment fragment = CSharpFragmentFactory.createTypeFragment(project, parameterInfo.getTypeText(), myDefaultValueContext);
+        if (parameterInfo == null) {
+            parameterInfo = new CSharpParameterInfo(
+                "",
+                null,
+                new CSharpTypeRefByQName(myDefaultValueContext, DotNetTypes.System.Object),
+                getRowCount()
+            );
+        }
+        PsiCodeFragment fragment = CSharpFragmentFactory.createTypeFragment(project, parameterInfo.getTypeText(), myDefaultValueContext);
 
-		PsiCodeFragment defaultValue = CSharpFragmentFactory.createExpressionFragment(project, "", myDefaultValueContext);
-		return new CSharpParameterTableModelItem(parameterInfo, fragment, defaultValue);
-	}
+        PsiCodeFragment defaultValue = CSharpFragmentFactory.createExpressionFragment(project, "", myDefaultValueContext);
+        return new CSharpParameterTableModelItem(parameterInfo, fragment, defaultValue);
+    }
 }
