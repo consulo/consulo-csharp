@@ -13,76 +13,70 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.structureView;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.CSharpElementPresentationUtil;
 import consulo.dotnet.psi.*;
 import consulo.fileEditor.structureView.StructureViewTreeElement;
 import consulo.language.editor.structureView.PsiTreeElementBase;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNamedElement;
+import consulo.localize.LocalizeValue;
 import consulo.ui.annotation.RequiredUIAccess;
 
-import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * @author VISTALL
- * @since 31.12.13.
+ * @since 2013-12-31
  */
-public class CSharpNamedTreeElement extends PsiTreeElementBase<PsiNamedElement>
-{
-	public CSharpNamedTreeElement(PsiNamedElement psiElement)
-	{
-		super(psiElement);
-	}
+public class CSharpNamedTreeElement extends PsiTreeElementBase<PsiNamedElement> {
+    public CSharpNamedTreeElement(PsiNamedElement psiElement) {
+        super(psiElement);
+    }
 
-	@Override
-	public Collection<StructureViewTreeElement> getChildrenBase()
-	{
-		List<StructureViewTreeElement> list = new ArrayList<>();
-		for(PsiElement psiElement : getValue().getChildren())
-		{
-			if(psiElement instanceof DotNetQualifiedElement)
-			{
-				list.add(new CSharpNamedTreeElement((DotNetQualifiedElement) psiElement));
-			}
-		}
-		return list;
-	}
+    @Override
+    @RequiredReadAction
+    public Collection<StructureViewTreeElement> getChildrenBase() {
+        List<StructureViewTreeElement> list = new ArrayList<>();
+        for (PsiElement psiElement : getValue().getChildren()) {
+            if (psiElement instanceof DotNetQualifiedElement qElem) {
+                list.add(new CSharpNamedTreeElement(qElem));
+            }
+        }
+        return list;
+    }
 
-	@Nullable
-	@Override
-	@RequiredUIAccess
-	public String getPresentableText()
-	{
-		PsiNamedElement value = getValue();
-		if(value instanceof DotNetLikeMethodDeclaration)
-		{
-			return CSharpElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) value, CSharpElementPresentationUtil.METHOD_SCALA_LIKE_FULL);
-		}
-		else if(value instanceof DotNetTypeDeclaration)
-		{
-			return DotNetElementPresentationUtil.formatTypeWithGenericParameters((DotNetTypeDeclaration)value);
-		}
-		else if(value instanceof DotNetFieldDeclaration)
-		{
-			return CSharpElementPresentationUtil.formatField((DotNetFieldDeclaration) value);
-		}
-		else if(value instanceof DotNetPropertyDeclaration)
-		{
-			return CSharpElementPresentationUtil.formatProperty((DotNetPropertyDeclaration) value, CSharpElementPresentationUtil.PROPERTY_SCALA_LIKE_FULL);
-		}
-		else if(value instanceof DotNetNamespaceDeclaration)
-		{
-			return ((DotNetNamespaceDeclaration) value).getPresentableQName();
-		}
-		else
-		{
-			return value.getName();
-		}
-	}
+    @Override
+    @RequiredReadAction
+    public LocalizeValue getPresentableText() {
+        PsiNamedElement value = getValue();
+        if (value instanceof DotNetLikeMethodDeclaration methodDecl) {
+            return LocalizeValue.of(CSharpElementPresentationUtil.formatMethod(
+                methodDecl,
+                CSharpElementPresentationUtil.METHOD_SCALA_LIKE_FULL
+            ));
+        }
+        else if (value instanceof DotNetTypeDeclaration typeDecl) {
+            return LocalizeValue.of(DotNetElementPresentationUtil.formatTypeWithGenericParameters(typeDecl));
+        }
+        else if (value instanceof DotNetFieldDeclaration fieldDecl) {
+            return LocalizeValue.of(CSharpElementPresentationUtil.formatField(fieldDecl));
+        }
+        else if (value instanceof DotNetPropertyDeclaration propDecl) {
+            return LocalizeValue.of(CSharpElementPresentationUtil.formatProperty(
+                propDecl,
+                CSharpElementPresentationUtil.PROPERTY_SCALA_LIKE_FULL
+            ));
+        }
+        else if (value instanceof DotNetNamespaceDeclaration nsDecl) {
+            return LocalizeValue.ofNullable(nsDecl.getPresentableQName());
+        }
+        else {
+            return LocalizeValue.ofNullable(value.getName());
+        }
+    }
 }

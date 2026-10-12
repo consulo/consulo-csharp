@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.presentation;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.component.util.Iconable;
 import consulo.csharp.impl.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
@@ -23,6 +23,7 @@ import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.dotnet.psi.*;
 import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.localize.LocalizeValue;
 import consulo.navigation.ItemPresentation;
 import consulo.navigation.ItemPresentationProvider;
 import consulo.navigation.NavigationItem;
@@ -34,71 +35,58 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
- * @since 21.12.13.
+ * @since 2013-12-21
  */
-public abstract class CSharpElementPresentationProviderBase<T extends DotNetQualifiedElement & NavigationItem> implements ItemPresentationProvider<T>
-{
-	public static class ItemPresentationImpl implements ItemPresentation
-	{
-		private final DotNetQualifiedElement myDeclaration;
+public abstract class CSharpElementPresentationProviderBase<T extends DotNetQualifiedElement & NavigationItem> implements ItemPresentationProvider<T> {
+    public static class ItemPresentationImpl implements ItemPresentation {
+        private final DotNetQualifiedElement myDeclaration;
 
-		public ItemPresentationImpl(DotNetQualifiedElement declaration)
-		{
-			myDeclaration = declaration;
-		}
+        public ItemPresentationImpl(DotNetQualifiedElement declaration) {
+            myDeclaration = declaration;
+        }
 
-		@Nullable
-		@Override
-		@RequiredUIAccess
-		public String getPresentableText()
-		{
-			if(myDeclaration instanceof DotNetTypeDeclaration)
-			{
-				return DotNetElementPresentationUtil.formatTypeWithGenericParameters((DotNetTypeDeclaration) myDeclaration);
-			}
-			else if(myDeclaration instanceof DotNetMethodDeclaration)
-			{
-				if(myDeclaration instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) myDeclaration).isDelegate())
-				{
-					return DotNetElementPresentationUtil.formatTypeWithGenericParameters((CSharpMethodDeclaration) myDeclaration);
-				}
-				return CSharpElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) myDeclaration, 0);
-			}
-			else if(myDeclaration instanceof CSharpConstructorDeclaration)
-			{
-				return CSharpElementPresentationUtil.formatMethod((CSharpConstructorDeclaration) myDeclaration, 0);
-			}
-			else if(myDeclaration instanceof CSharpIndexMethodDeclaration)
-			{
-				return CSharpElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) myDeclaration, 0);
-			}
-			return myDeclaration.getName();
-		}
+        @Override
+        @RequiredReadAction
+        public LocalizeValue getPresentableText() {
+            if (myDeclaration instanceof DotNetTypeDeclaration typeDecl) {
+                return LocalizeValue.of(DotNetElementPresentationUtil.formatTypeWithGenericParameters(typeDecl));
+            }
+            else if (myDeclaration instanceof DotNetMethodDeclaration dotNetMethodDecl) {
+                if (myDeclaration instanceof CSharpMethodDeclaration methodDecl && methodDecl.isDelegate()) {
+                    return LocalizeValue.of(DotNetElementPresentationUtil.formatTypeWithGenericParameters(methodDecl));
+                }
+                return LocalizeValue.of(CSharpElementPresentationUtil.formatMethod(dotNetMethodDecl, 0));
+            }
+            else if (myDeclaration instanceof CSharpConstructorDeclaration constructorDecl) {
+                return LocalizeValue.of(CSharpElementPresentationUtil.formatMethod(constructorDecl, 0));
+            }
+            else if (myDeclaration instanceof CSharpIndexMethodDeclaration indexMethodDecl) {
+                return LocalizeValue.of(CSharpElementPresentationUtil.formatMethod(indexMethodDecl, 0));
+            }
+            return LocalizeValue.ofNullable(myDeclaration.getName());
+        }
 
-		@Nullable
-		@Override
-		@RequiredUIAccess
-		public String getLocationString()
-		{
-			String presentableParentQName = myDeclaration.getPresentableParentQName();
-			if(StringUtil.isEmpty(presentableParentQName))
-			{
-				return null;
-			}
-			return "(" + presentableParentQName + ")";
-		}
+        @Nullable
+        @Override
+        @RequiredUIAccess
+        public String getLocationString() {
+            String presentableParentQName = myDeclaration.getPresentableParentQName();
+            if (StringUtil.isEmpty(presentableParentQName)) {
+                return null;
+            }
+            return "(" + presentableParentQName + ")";
+        }
 
-		@Nullable
-		@Override
-		public Image getIcon()
-		{
-			return IconDescriptorUpdaters.getIcon(myDeclaration, Iconable.ICON_FLAG_VISIBILITY);
-		}
-	}
+        @Nullable
+        @Override
+        @RequiredReadAction
+        public Image getIcon() {
+            return IconDescriptorUpdaters.getIcon(myDeclaration, Iconable.ICON_FLAG_VISIBILITY);
+        }
+    }
 
-	@Override
-	public ItemPresentation getPresentation(T qualifiedElement)
-	{
-		return new ItemPresentationImpl(qualifiedElement);
-	}
+    @Override
+    public ItemPresentation getPresentation(T qualifiedElement) {
+        return new ItemPresentationImpl(qualifiedElement);
+    }
 }
