@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.structureView;
 
-import consulo.application.AllIcons;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.structureView.PsiTreeElementBase;
 import consulo.csharp.lang.impl.psi.source.CSharpAnonymousMethodExpression;
 import consulo.csharp.lang.impl.psi.source.CSharpDelegateExpressionImpl;
 import consulo.fileEditor.structureView.StructureViewTreeElement;
+import consulo.localize.LocalizeValue;
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.ui.image.Image;
 
-import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -31,34 +31,28 @@ import java.util.Collections;
  * @author VISTALL
  * @since 2020-06-28
  */
-public class CSharpLambdaTreeElement extends PsiTreeElementBase<CSharpAnonymousMethodExpression>
-{
-	public CSharpLambdaTreeElement(CSharpAnonymousMethodExpression psiElement)
-	{
-		super(psiElement);
-	}
+public class CSharpLambdaTreeElement extends PsiTreeElementBase<CSharpAnonymousMethodExpression> {
+    public CSharpLambdaTreeElement(CSharpAnonymousMethodExpression psiElement) {
+        super(psiElement);
+    }
 
-	@Override
-	public Collection<StructureViewTreeElement> getChildrenBase()
-	{
-		return Collections.emptyList();
-	}
+    @Override
+    public Collection<StructureViewTreeElement> getChildrenBase() {
+        return Collections.emptyList();
+    }
 
-	@Override
-	public Image getIcon()
-	{
-		return AllIcons.Nodes.Lambda;
-	}
+    @Override
+    public Image getIcon() {
+        return PlatformIconGroup.nodesLambda();
+    }
 
-	@Nullable
-	@Override
-	public String getPresentableText()
-	{
-		CSharpAnonymousMethodExpression value = getValue();
-		if(value instanceof CSharpDelegateExpressionImpl)
-		{
-			return "Delegate";
-		}
-		return "Lambda";
-	}
+    @Override
+    @RequiredReadAction
+    public LocalizeValue getPresentableText() {
+        CSharpAnonymousMethodExpression value = getValue();
+        if (value instanceof CSharpDelegateExpressionImpl) {
+            return LocalizeValue.localizeTODO("Delegate");
+        }
+        return LocalizeValue.localizeTODO("Lambda");
+    }
 }

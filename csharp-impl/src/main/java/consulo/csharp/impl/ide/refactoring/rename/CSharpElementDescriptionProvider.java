@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.refactoring.rename;
 
 import consulo.annotation.access.RequiredReadAction;
@@ -22,25 +21,21 @@ import consulo.csharp.lang.psi.CSharpNamedElement;
 import consulo.language.psi.ElementDescriptionLocation;
 import consulo.language.psi.ElementDescriptionProvider;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import consulo.usage.UsageViewShortNameLocation;
-import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
- * @since 14-Nov-17
+ * @since 2017-11-14
  */
 @ExtensionImpl
-public class CSharpElementDescriptionProvider implements ElementDescriptionProvider
-{
-	@Nullable
-	@Override
-	@RequiredReadAction
-	public String getElementDescription(PsiElement element, ElementDescriptionLocation location)
-	{
-		if(location == UsageViewShortNameLocation.INSTANCE && element instanceof CSharpNamedElement)
-		{
-			return ((CSharpNamedElement) element).getNameWithAt();
-		}
-		return null;
-	}
+public class CSharpElementDescriptionProvider implements ElementDescriptionProvider {
+    @Override
+    @RequiredReadAction
+    public LocalizeValue getElementDescription(PsiElement element, ElementDescriptionLocation location) {
+        if (location == UsageViewShortNameLocation.INSTANCE && element instanceof CSharpNamedElement named) {
+            return LocalizeValue.ofNullable(named.getNameWithAt());
+        }
+        return LocalizeValue.empty();
+    }
 }
