@@ -26,7 +26,8 @@ import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import consulo.module.ui.awt.SdkComboBox;
+import consulo.module.ui.BundleBox;
+import consulo.ui.annotation.RequiredUIAccess;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Files;
@@ -43,7 +44,8 @@ public abstract class CSharpCompilerProvider {
     @Nullable
     public abstract SdkType getBundleType(DotNetSimpleModuleExtension<?> moduleExtension);
 
-    public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, SdkComboBox comboBox) {
+    @RequiredUIAccess
+    public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, BundleBox bundleBox) {
     }
 
     public abstract void setupCompiler(DotNetModuleExtension<?> netExtension,

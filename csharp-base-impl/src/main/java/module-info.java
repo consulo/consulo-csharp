@@ -3,10 +3,6 @@
  * @since 10-Sep-22
  */
 module consulo.csharp.base.impl {
-    // TODO remove in future
-    requires java.desktop;
-    requires consulo.ui.ex.awt.api;
-
     requires transitive consulo.csharp.api;
     requires transitive consulo.csharp.psi.impl;
     requires transitive consulo.dotnet.api;

@@ -21,11 +21,14 @@ import consulo.configurable.Configurable;
 import consulo.configurable.ConfigurationException;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
+import consulo.disposer.Disposable;
 import consulo.ide.impl.idea.application.options.codeStyle.CommenterForm;
 import consulo.language.codeStyle.CodeStyleSettings;
 import consulo.localize.LocalizeValue;
+import consulo.ui.Component;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.VerticalFlowLayout;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
@@ -65,9 +68,9 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 	@RequiredUIAccess
 	@Nullable
 	@Override
-	public JComponent createComponent()
+	public Component createUIComponent(Disposable parentDisposable)
 	{
-		return myRoot;
+		return TargetAWT.wrap(myRoot);
 	}
 
 	@RequiredUIAccess

@@ -20,51 +20,34 @@ import consulo.csharp.base.module.extension.CSharpConfigurationPanel;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.disposer.Disposable;
 import consulo.module.content.layer.ModuleRootLayer;
-import consulo.module.extension.swing.SwingMutableModuleExtension;
 import consulo.ui.Component;
-import consulo.ui.Label;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.ui.layout.VerticalLayout;
 
 import org.jspecify.annotations.Nullable;
-import javax.swing.*;
 
 /**
  * @author VISTALL
  * @since 26.11.13.
  */
-public class MonoCSharpMutableModuleExtension extends MonoCSharpModuleExtension implements CSharpMutableModuleExtension<MonoCSharpModuleExtension>, SwingMutableModuleExtension
-{
-	public MonoCSharpMutableModuleExtension(String id, ModuleRootLayer module)
-	{
-		super(id, module);
-	}
+public class MonoCSharpMutableModuleExtension extends MonoCSharpModuleExtension implements CSharpMutableModuleExtension<MonoCSharpModuleExtension> {
+    public MonoCSharpMutableModuleExtension(String id, ModuleRootLayer module) {
+        super(id, module);
+    }
 
-	@RequiredUIAccess
-	@Nullable
-	@Override
-	public JComponent createConfigurablePanel(Disposable disposable, Runnable runnable)
-	{
-		return new CSharpConfigurationPanel(this);
-	}
+    @RequiredUIAccess
+    @Nullable
+    @Override
+    public Component createConfigurationComponent(Disposable disposable, Runnable runnable) {
+        return CSharpConfigurationPanel.create(this, disposable);
+    }
 
-	@RequiredUIAccess
-	@Nullable
-	@Override
-	public Component createConfigurationComponent(Disposable disposable, Runnable runnable)
-	{
-		return VerticalLayout.create().add(Label.create("Unsupported UI"));
-	}
+    @Override
+    public void setEnabled(boolean val) {
+        myIsEnabled = val;
+    }
 
-	@Override
-	public void setEnabled(boolean val)
-	{
-		myIsEnabled = val;
-	}
-
-	@Override
-	public boolean isModified(MonoCSharpModuleExtension extension)
-	{
-		return isModifiedImpl(extension);
-	}
+    @Override
+    public boolean isModified(MonoCSharpModuleExtension extension) {
+        return isModifiedImpl(extension);
+    }
 }

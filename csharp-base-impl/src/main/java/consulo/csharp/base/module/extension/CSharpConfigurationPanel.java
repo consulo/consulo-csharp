@@ -16,44 +16,48 @@
 package consulo.csharp.base.module.extension;
 
 import consulo.content.bundle.Sdk;
-import consulo.content.bundle.SdkModel;
-import consulo.content.bundle.SdkModelFactory;
 import consulo.content.bundle.SdkType;
+import consulo.csharp.api.localize.CSharpLocalize;
 import consulo.csharp.compiler.CSharpCompilerProvider;
 import consulo.csharp.compiler.CSharpPlatform;
 import consulo.csharp.module.CSharpNullableOption;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
+import consulo.disposer.Disposable;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.language.util.ModuleUtilCore;
 import consulo.localize.LocalizeValue;
 import consulo.module.Module;
 import consulo.module.ModuleManager;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;
-import consulo.module.ui.awt.SdkComboBox;
+import consulo.module.ui.BundleBox;
+import consulo.module.ui.BundleBoxBuilder;
 import consulo.platform.base.icon.PlatformIconGroup;
+import consulo.ui.CheckBox;
+import consulo.ui.ComboBox;
+import consulo.ui.Component;
+import consulo.ui.TextAttribute;
+import consulo.ui.TextBoxWithHistory;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.ui.ex.SimpleTextAttributes;
-import consulo.ui.ex.awt.*;
-import consulo.ui.ex.awt.event.DocumentAdapter;
+import consulo.ui.layout.LabeledLayout;
+import consulo.ui.layout.VerticalLayout;
+import consulo.ui.util.FormBuilder;
 import consulo.util.lang.StringUtil;
 
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * @author VISTALL
  * @since 2014-07-31
  */
-public class CSharpConfigurationPanel extends JPanel {
-    private static final String[] COMPILE_LEVELS = new String[]{
+public final class CSharpConfigurationPanel {
+    private static final List<String> COMPILE_LEVELS = List.of(
         "ISO-1",
         "ISO-2",
         "3",
@@ -69,205 +73,200 @@ public class CSharpConfigurationPanel extends JPanel {
         "latest",
         "latestmajor",
         "default"
-    };
+    );
+
+    private CSharpConfigurationPanel() {
+    }
 
     @RequiredUIAccess
-    public CSharpConfigurationPanel(final CSharpMutableModuleExtension<?> ext) {
-        super(new VerticalFlowLayout());
-        final ComboBox<Object> levelComboBox = new ComboBox<>();
-        levelComboBox.setRenderer(new ColoredListCellRenderer<>() {
-            @Override
-            protected void customizeCellRenderer(JList list, Object value, int i, boolean b, boolean b1) {
-                if (value instanceof CSharpLanguageVersion languageLevel) {
-                    append(languageLevel.getPresentableName(), SimpleTextAttributes.REGULAR_ATTRIBUTES);
-                    append(" ");
-                    append(languageLevel.getDescription(), SimpleTextAttributes.GRAY_ATTRIBUTES);
-                }
-                else if (value instanceof Module module) {
-                    setIcon(PlatformIconGroup.nodesModule());
-                    append(module.getName(), SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES);
+    public static Component create(CSharpMutableModuleExtension<?> ext, Disposable uiDisposable) {
+        FormBuilder languageForm = FormBuilder.create();
+        languageForm.addLabeled(CSharpLocalize.configurationLanguageVersionLabel(), createLanguageVersionBox(ext));
 
-                    CSharpModuleExtension extension = ModuleUtilCore.getExtension(module, CSharpModuleExtension.class);
-                    if (extension != null) {
-                        CSharpLanguageVersion languageLevel = extension.getLanguageVersion();
-                        append("(" + languageLevel.getPresentableName() + ")", SimpleTextAttributes.GRAY_ATTRIBUTES);
-                    }
-                }
-                else if (value instanceof String stringValue) {
-                    setIcon(PlatformIconGroup.nodesModule());
-                    append(stringValue, SimpleTextAttributes.ERROR_BOLD_ATTRIBUTES);
-                }
+        BundleBox compilerBox = createCompilerBox(ext, uiDisposable);
+
+        TextBoxWithHistory compileLevelBox = TextBoxWithHistory.create(StringUtil.notNullize(ext.getCompilerTarget()));
+        compileLevelBox.setHistory(COMPILE_LEVELS);
+        compileLevelBox.addValueListener(event -> ext.setCompilerTarget(StringUtil.nullize(event.getValue(), true)));
+
+        ComboBox<CSharpPlatform> platformBox = ComboBox.create(CSharpPlatform.values());
+        platformBox.setRender((presentation, item) -> {
+            CSharpPlatform platform = item.getValue();
+            if (platform == null) {
+                return;
+            }
+
+            switch (platform) {
+                case ANY_CPU:
+                    presentation.append(CSharpLocalize.configurationPlatformAnyCpu());
+                    break;
+                case ANY_CPU_32BIT_PREFERRED:
+                    presentation.append(CSharpLocalize.configurationPlatformAnyCpu());
+                    presentation.append(" ");
+                    presentation.append(CSharpLocalize.configurationPlatformAnyCpuPreferred(), TextAttribute.GRAYED);
+                    break;
+                case ARM:
+                    presentation.append("ARM");
+                    break;
+                case X86:
+                    presentation.append("x86");
+                    break;
+                case X64:
+                    presentation.append("x64");
+                    break;
+                case ITANIUM:
+                    presentation.append("Itanium");
+                    break;
+            }
+        });
+        platformBox.setValue(ext.getPlatform());
+        platformBox.addValueListener(event -> {
+            CSharpPlatform platform = event.getValue();
+            if (platform != null) {
+                ext.setPlatform(platform);
             }
         });
 
-        for (CSharpLanguageVersion languageLevel : CSharpLanguageVersion.values()) {
-            levelComboBox.addItem(languageLevel);
-        }
+        ComboBox<CSharpNullableOption> nullableBox = ComboBox.create(CSharpNullableOption.values());
+        nullableBox.setTextRenderer(option -> option == null ? LocalizeValue.empty() : option.getDescription());
+        nullableBox.setValue(ext.getNullableOption());
+        nullableBox.addValueListener(event -> {
+            CSharpNullableOption option = event.getValue();
+            if (option != null) {
+                ext.setNullableOption(option);
+            }
+        });
+
+        CheckBox allowUnsafeCodeBox = CheckBox.create(CSharpLocalize.configurationAllowUnsafeCode(), ext.isAllowUnsafeCode());
+        allowUnsafeCodeBox.addValueListener(event -> ext.setAllowUnsafeCode(Boolean.TRUE.equals(event.getValue())));
+
+        CheckBox optimizeCodeBox = CheckBox.create(CSharpLocalize.configurationOptimizeCode(), ext.isOptimizeCode());
+        optimizeCodeBox.addValueListener(event -> ext.setOptimizeCode(Boolean.TRUE.equals(event.getValue())));
+
+        FormBuilder compilerForm = FormBuilder.create();
+        compilerForm.addLabeled(CSharpLocalize.configurationCompilerLabel(), compilerBox.getComponent());
+        compilerForm.addLabeled(CSharpLocalize.configurationCompilerTargetLabel(), compileLevelBox);
+        compilerForm.addLabeled(CSharpLocalize.configurationPlatformLabel(), platformBox);
+        compilerForm.addLabeled(CSharpLocalize.configurationNullableLabel(), nullableBox);
+
+        VerticalLayout compilerLayout = VerticalLayout.create();
+        compilerLayout.add(allowUnsafeCodeBox);
+        compilerLayout.add(optimizeCodeBox);
+        compilerLayout.add(compilerForm.build());
+
+        VerticalLayout layout = VerticalLayout.create();
+        layout.add(languageForm.build());
+        layout.add(LabeledLayout.create(CSharpLocalize.configurationCompilerOptionsGroup(), compilerLayout));
+        return layout;
+    }
+
+    @RequiredUIAccess
+    private static ComboBox<Object> createLanguageVersionBox(CSharpMutableModuleExtension<?> ext) {
+        List<Object> items = new ArrayList<>(List.of(CSharpLanguageVersion.values()));
+        Map<Module, String> inheritedVersions = new HashMap<>();
 
         for (Module module : ModuleManager.getInstance(ext.getProject()).getModules()) {
-            // don't add self module
             if (module == ext.getModule()) {
                 continue;
             }
 
-            CSharpModuleExtension extension = (CSharpModuleExtension) ModuleUtilCore.getExtension(module, ext.getId());
+            CSharpModuleExtension<?> extension = (CSharpModuleExtension<?>) ModuleUtilCore.getExtension(module, ext.getId());
             if (extension != null) {
-                levelComboBox.addItem(module);
+                items.add(module);
+
+                CSharpModuleExtension<?> csharpExtension = ModuleUtilCore.getExtension(module, CSharpModuleExtension.class);
+                if (csharpExtension != null) {
+                    inheritedVersions.put(module, csharpExtension.getLanguageVersion().getPresentableName());
+                }
             }
         }
 
-        final MutableModuleInheritableNamedPointer<CSharpLanguageVersion> languageVersionPointer = ext.getLanguageVersionPointer();
+        MutableModuleInheritableNamedPointer<CSharpLanguageVersion> languageVersionPointer = ext.getLanguageVersionPointer();
+
+        Object selected = languageVersionPointer.get();
         String moduleName = languageVersionPointer.getModuleName();
         if (moduleName != null) {
             Module module = languageVersionPointer.getModule();
             if (module != null) {
-                levelComboBox.setSelectedItem(module);
+                selected = module;
             }
             else {
-                levelComboBox.addItem(moduleName);
+                items.add(moduleName);
+                selected = moduleName;
             }
         }
-        else {
-            levelComboBox.setSelectedItem(languageVersionPointer.get());
-        }
 
-        levelComboBox.addItemListener(new ItemListener() {
-            @Override
-            @RequiredUIAccess
-            public void itemStateChanged(ItemEvent e) {
-                Object selectedItem = levelComboBox.getSelectedItem();
-                if (selectedItem instanceof Module module) {
-                    languageVersionPointer.set(module.getName(), null);
-                }
-                else if (selectedItem instanceof CSharpLanguageVersion languageLevel) {
-                    languageVersionPointer.set(null, languageLevel.getName());
-                }
-                else {
-                    languageVersionPointer.set(selectedItem.toString(), null);
+        ComboBox<Object> versionBox = ComboBox.create(items);
+        versionBox.setRender((presentation, item) -> {
+            Object value = item.getValue();
+            if (value instanceof CSharpLanguageVersion languageVersion) {
+                presentation.append(languageVersion.getPresentableName());
+                presentation.append(" ");
+                presentation.append(languageVersion.getDescription(), TextAttribute.GRAYED);
+            }
+            else if (value instanceof Module module) {
+                presentation.withIcon(PlatformIconGroup.nodesModule());
+                presentation.append(module.getName(), TextAttribute.REGULAR_BOLD);
+
+                String inheritedVersion = inheritedVersions.get(module);
+                if (inheritedVersion != null) {
+                    presentation.append("(" + inheritedVersion + ")", TextAttribute.GRAYED);
                 }
             }
-        });
-
-        add(LabeledComponent.create(levelComboBox, "Language Version: "));
-
-        final TextFieldWithHistory compileLevelField = new TextFieldWithHistory();
-        compileLevelField.setHistory(Arrays.asList(COMPILE_LEVELS));
-        compileLevelField.setHistorySize(-1);
-        String compilerTarget = ext.getCompilerTarget();
-        if (compilerTarget != null) {
-            compileLevelField.setText(compilerTarget);
-        }
-        compileLevelField.addDocumentListener(new DocumentAdapter() {
-            @Override
-            protected void textChanged(DocumentEvent e) {
-                ext.setCompilerTarget(StringUtil.nullize(compileLevelField.getText(), true));
+            else if (value instanceof String name) {
+                presentation.withIcon(PlatformIconGroup.nodesModule());
+                presentation.append(name, TextAttribute.ERROR_BOLD);
             }
         });
+        versionBox.setValue(selected);
+        versionBox.addValueListener(event -> {
+            Object value = event.getValue();
+            if (value instanceof Module module) {
+                languageVersionPointer.set(module.getName(), null);
+            }
+            else if (value instanceof CSharpLanguageVersion languageVersion) {
+                languageVersionPointer.set(null, languageVersion.getName());
+            }
+            else if (value != null) {
+                languageVersionPointer.set(value.toString(), null);
+            }
+        });
+        return versionBox;
+    }
 
-        add(new TitledSeparator("Compiler Options"));
-
-        List<CSharpCompilerProvider> extensions = CSharpCompilerProvider.EP_NAME.getExtensionList();
+    @RequiredUIAccess
+    private static BundleBox createCompilerBox(CSharpMutableModuleExtension<?> ext, Disposable uiDisposable) {
+        List<CSharpCompilerProvider> providers = CSharpCompilerProvider.EP_NAME.getExtensionList();
         DotNetSimpleModuleExtension netExtension = ext.getModuleRootLayer().getExtension(DotNetSimpleModuleExtension.class);
         Set<SdkType> compilerBundleTypes = new LinkedHashSet<>();
         if (netExtension != null) {
-            for (CSharpCompilerProvider typeProvider : extensions) {
-                SdkType bundleType = typeProvider.getBundleType(netExtension);
+            for (CSharpCompilerProvider provider : providers) {
+                SdkType bundleType = provider.getBundleType(netExtension);
                 if (bundleType != null) {
                     compilerBundleTypes.add(bundleType);
                 }
             }
         }
 
-        SdkModelFactory settingsUtil = SdkModelFactory.getInstance();
-        SdkModel model = settingsUtil.getOrCreateModel();
-        SdkComboBox compilerComboBox = new SdkComboBox(
-            model,
-            compilerBundleTypes::contains,
-            null,
-            LocalizeValue.localizeTODO("Auto Select"),
-            PlatformIconGroup.actionsFind()
-        );
+        BundleBox compilerBox = BundleBoxBuilder.create(uiDisposable)
+            .withSdkTypeFilter(compilerBundleTypes::contains)
+            .withNoneItem(CSharpLocalize.configurationCompilerAutoSelect(), PlatformIconGroup.actionsFind())
+            .build();
 
-        for (CSharpCompilerProvider provider : extensions) {
-            provider.insertCustomSdkItems(netExtension, compilerComboBox);
+        for (CSharpCompilerProvider provider : providers) {
+            provider.insertCustomSdkItems(netExtension, compilerBox);
         }
 
         MutableModuleInheritableNamedPointer<Sdk> customCompilerSdkPointer = ext.getCustomCompilerSdkPointer();
         if (customCompilerSdkPointer.isNull()) {
-            compilerComboBox.setSelectedNoneSdk();
+            compilerBox.setSelectedNoneBundle();
         }
         else {
-            compilerComboBox.setSelectedSdk(customCompilerSdkPointer.getName());
+            compilerBox.setSelectedBundle(customCompilerSdkPointer.getName());
         }
 
-        compilerComboBox.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                customCompilerSdkPointer.set(compilerComboBox.getSelectedModuleName(), compilerComboBox.getSelectedSdkName());
-            }
-        });
-
-        add(LabeledComponent.create(compilerComboBox, "Compiler"));
-        add(LabeledComponent.create(compileLevelField, "Compiler Target (/langversion):"));
-
-        ComboBox<CSharpPlatform> platformComboBox = new ComboBox<>(CSharpPlatform.values());
-        platformComboBox.setSelectedItem(ext.getPlatform());
-        platformComboBox.setRenderer(new ColoredListCellRenderer<>() {
-            @Override
-            protected void customizeCellRenderer(JList jList, CSharpPlatform platform, int i, boolean b, boolean b1) {
-                switch (platform) {
-                    case ANY_CPU:
-                        append("Any CPU");
-                        break;
-                    case ANY_CPU_32BIT_PREFERRED:
-                        append("Any CPU");
-                        append(" (32 bit preferred)", SimpleTextAttributes.GRAY_ATTRIBUTES);
-                        break;
-                    case ARM:
-                        append("ARM");
-                        break;
-                    case X86:
-                        append("x86");
-                        break;
-                    case X64:
-                        append("x64");
-                        break;
-                    case ITANIUM:
-                        append("Itanium");
-                        break;
-                }
-            }
-        });
-
-        platformComboBox.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                ext.setPlatform((CSharpPlatform) platformComboBox.getSelectedItem());
-            }
-        });
-
-        add(LabeledComponent.create(platformComboBox, "Platform (/platform): "));
-
-        JBCheckBox allowUnsafeCode = new JBCheckBox("Allow unsafe code (/unsafe)", ext.isAllowUnsafeCode());
-        allowUnsafeCode.addActionListener(e -> ext.setAllowUnsafeCode(allowUnsafeCode.isSelected()));
-
-        add(allowUnsafeCode);
-
-        JBCheckBox optimizeCode = new JBCheckBox("Optimize Code (/optimize+)", ext.isOptimizeCode());
-        optimizeCode.addActionListener(e -> ext.setOptimizeCode(optimizeCode.isSelected()));
-        add(optimizeCode);
-
-        ComboBox<CSharpNullableOption> nullableBox = new ComboBox<>(CSharpNullableOption.values());
-        nullableBox.setRenderer(new ColoredListCellRenderer<>() {
-            @Override
-            protected void customizeCellRenderer(JList jList, CSharpNullableOption option, int i, boolean b, boolean b1) {
-                append(option.getDescription().getValue());
-            }
-        });
-        nullableBox.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                ext.setNullableOption((CSharpNullableOption) nullableBox.getSelectedItem());
-            }
-        });
-        nullableBox.setSelectedItem(ext.getNullableOption());
-        add(LabeledComponent.create(nullableBox, "Nullable C# 8+ (/nullable)"));
+        compilerBox.getComponent().addValueListener(event ->
+            customCompilerSdkPointer.set(compilerBox.getSelectedModuleName(), compilerBox.getSelectedBundleName()));
+        return compilerBox;
     }
 }

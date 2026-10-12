@@ -21,7 +21,8 @@ import consulo.content.bundle.SdkType;
 import consulo.csharp.compiler.CSharpCompilerProvider;
 import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import consulo.module.ui.awt.SdkComboBox;
+import consulo.module.ui.BundleBox;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
 import consulo.virtualFileSystem.VirtualFile;
 
@@ -51,7 +52,8 @@ public abstract class BaseInternalCompilerProvider extends CSharpCompilerProvide
 	}
 
 	@Override
-	public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, SdkComboBox comboBox)
+	@RequiredUIAccess
+	public void insertCustomSdkItems(@Nullable DotNetSimpleModuleExtension extension, BundleBox bundleBox)
 	{
 		if(extension == null)
 		{
@@ -75,7 +77,7 @@ public abstract class BaseInternalCompilerProvider extends CSharpCompilerProvide
 			VirtualFile child = homeDirectory.findChild(CSharpCompilerUtil.COMPILER_NAME);
 			if(child != null)
 			{
-				comboBox.insertCustomSdkItem(CSharpModuleExtension.INTERNAL_SDK_KEY, "<internal>", getIcon());
+				bundleBox.addCustomBundleItem(CSharpModuleExtension.INTERNAL_SDK_KEY, "<internal>", getIcon());
 			}
 		}
 	}

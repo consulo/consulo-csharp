@@ -16,6 +16,28 @@ code.vision.inheritors.hint:
     text: '{0, choice, 1#1 Inheritor|2#{0,number} Inheritors}'
 code.vision.overrides.hint:
     text: '{0, choice, 1#1 Override|2#{0,number} Overrides}'
+configuration.allow.unsafe.code:
+    text: Allow unsafe code (/unsafe)
+configuration.compiler.auto.select:
+    text: Auto Select
+configuration.compiler.label:
+    text: 'Compiler:'
+configuration.compiler.options.group:
+    text: Compiler Options
+configuration.compiler.target.label:
+    text: 'Compiler Target (/langversion):'
+configuration.language.version.label:
+    text: 'Language Version:'
+configuration.nullable.label:
+    text: 'Nullable C# 8+ (/nullable):'
+configuration.optimize.code:
+    text: Optimize Code (/optimize+)
+configuration.platform.any.cpu:
+    text: Any CPU
+configuration.platform.any.cpu.preferred:
+    text: (32 bit preferred)
+configuration.platform.label:
+    text: 'Platform (/platform):'
 csharp.preprocessor.language.display.name:
     text: C# Preprocessor
 csharp.version._10_0:
