@@ -84,7 +84,7 @@ public class CSharpParametersInfo
 				builder.add(((PsiNamedElement) callable).getName());
 			}
 
-			builder.addEscaped(String.valueOf(bounds[0]));
+			builder.add(String.valueOf(bounds[0]));
 		}
 
 		if(parameters.length > 0)
@@ -113,7 +113,7 @@ public class CSharpParametersInfo
 
 		if(CodeInsightSettings.getInstance().SHOW_FULL_SIGNATURES_IN_PARAMETER_INFO)
 		{
-			builder.addEscaped(String.valueOf(bounds[1]));
+			builder.add(String.valueOf(bounds[1]));
 		}
 
 		return builder;
@@ -140,7 +140,7 @@ public class CSharpParametersInfo
 			{
 				String initializerText = initializer.getText();
 				builder.add(" = ");
-				builder.addEscaped(initializerText);
+				builder.add(initializerText);
 			}
 		}
 	}

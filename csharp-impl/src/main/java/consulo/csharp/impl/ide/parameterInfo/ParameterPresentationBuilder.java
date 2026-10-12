@@ -19,7 +19,6 @@ import consulo.application.AccessToken;
 import consulo.document.util.TextRange;
 import consulo.document.util.UnfairTextRange;
 import consulo.util.lang.ObjectUtil;
-import consulo.util.lang.xml.XmlStringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,10 +49,6 @@ public class ParameterPresentationBuilder<P> {
 
     public void add(String text) {
         myBuilder.append(text);
-    }
-
-    public void addEscaped(String text) {
-        XmlStringUtil.escapeText(text, myBuilder);
     }
 
     public void addSpace() {
