@@ -40,7 +40,7 @@ public class CC0004 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 	public List<HighlightInfoFactory> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpMethodCallExpressionImpl element)
 	{
 		List<PsiElement> list = new ArrayList<>();
-		if(CC0001.isCalleInsideCalle(element))
+		if(CC0001.isNestedCall(element))
 		{
 			DotNetExpression callExpression = element.getCallExpression();
 			list.add(callExpression);

@@ -39,6 +39,7 @@ public class CSharpCodeStyleConfigurable extends CodeStyleAbstractConfigurable
 	}
 
 	@Override
+	@SuppressWarnings("SpellCheckingInspection")
 	public String getHelpTopic()
 	{
 		return "reference.settingsdialog.codestyle.csharp";

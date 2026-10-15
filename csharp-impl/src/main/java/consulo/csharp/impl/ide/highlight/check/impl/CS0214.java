@@ -123,7 +123,7 @@ public class CS0214 extends CompilerCheck<DotNetElement>
 		DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
 		if(!(qualifiedElement instanceof DotNetModifierListOwner))
 		{
-			// dont interest if we dont have parent - how it can be?
+			// Not interested if there is no parent - how can that happen?
 			return Pair.create(Boolean.TRUE, null);
 		}
 

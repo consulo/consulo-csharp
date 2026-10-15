@@ -33,7 +33,7 @@ import java.util.*;
 public class CSharpCastSession implements Closeable {
     private static final ThreadLocal<CSharpCastSession> ourSession = ThreadLocal.withInitial(CSharpCastSession::new);
 
-    public static CSharpCastSession start(Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> implicitCast) {
+    public static CSharpCastSession start(Map<CSharpImplicitCastKey, CSharpTypeUtil.InheritResult> implicitCast) {
         CSharpCastSession session = get();
         session.myServiceImplicitMap = Collections.unmodifiableMap(implicitCast);
         return session;
@@ -45,21 +45,21 @@ public class CSharpCastSession implements Closeable {
 
     private Set<CSharpInheritKey> myVisited = new LinkedHashSet<>();
 
-    private Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> myServiceImplicitMap = Map.of();
+    private Map<CSharpImplicitCastKey, CSharpTypeUtil.InheritResult> myServiceImplicitMap = Map.of();
 
-    private Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> myNewImplicitMap = new HashMap<>();
+    private Map<CSharpImplicitCastKey, CSharpTypeUtil.InheritResult> myNewImplicitMap = new HashMap<>();
 
     public boolean mark(DotNetTypeRef top, DotNetTypeRef target, @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo) {
         CSharpInheritKey key = new CSharpInheritKey(top, target, castResolvingInfo);
         return myVisited.add(key);
     }
 
-    public CSharpTypeUtil.InheritResult recordImpicit(CSharpImpicitCastKey key, CSharpTypeUtil.InheritResult result) {
+    public CSharpTypeUtil.InheritResult recordImplicit(CSharpImplicitCastKey key, CSharpTypeUtil.InheritResult result) {
         myNewImplicitMap.put(key, result);
         return result;
     }
 
-    public CSharpTypeUtil.InheritResult getImplicitResult(CSharpImpicitCastKey key) {
+    public CSharpTypeUtil.InheritResult getImplicitResult(CSharpImplicitCastKey key) {
         CSharpTypeUtil.InheritResult result = myServiceImplicitMap.get(key);
         if (result != null) {
             return result;
@@ -68,7 +68,7 @@ public class CSharpCastSession implements Closeable {
         return myNewImplicitMap.get(key);
     }
 
-    public void storeImplicit(Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> serviceImplicitMap) {
+    public void storeImplicit(Map<CSharpImplicitCastKey, CSharpTypeUtil.InheritResult> serviceImplicitMap) {
         serviceImplicitMap.putAll(myNewImplicitMap);
     }
 

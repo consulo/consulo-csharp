@@ -31,7 +31,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.completion.CompletionProvider;
 import consulo.csharp.impl.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.impl.ide.completion.util.SpaceInsertHandler;
-import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorTokens;
 import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.*;
@@ -86,7 +86,7 @@ class CSharpKeywordCompletionContributor
 			CSharpCompletionUtil.tokenSetToLookup(result, THIS_OR_BASE, (b, elementType) -> b.withInsertHandler(ParenthesesInsertHandler.getInstance(true)), null);
 		});
 
-		contributor.extend(CompletionType.BASIC, psiElement(CSharpPreprocesorTokens.ILLEGAL_KEYWORD), new CompletionProvider()
+		contributor.extend(CompletionType.BASIC, psiElement(CSharpPreprocessorTokens.ILLEGAL_KEYWORD), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -238,7 +238,7 @@ class CSharpKeywordCompletionContributor
 
 					PsiElement parent1 = position.getParent().getParent();
 
-					// dont allow inside statements
+					// Don't allow inside statements
 					DotNetStatement statementParent = PsiTreeUtil.getParentOfType(parent1, DotNetStatement.class);
 					if(statementParent != null)
 					{

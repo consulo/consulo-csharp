@@ -1,6 +1,6 @@
 package consulo.csharp.lang.impl.lexer;
 
-import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorTokens;
 import consulo.language.ast.IElementType;
 import consulo.language.lexer.LexerBase;
 %%
@@ -40,45 +40,45 @@ MACRO_ERROR={MACRO_START}"error"
 
 <YYINITIAL>
 {
-	{SINGLE_LINE_COMMENT} { return CSharpPreprocesorTokens.LINE_COMMENT; }
+	{SINGLE_LINE_COMMENT} { return CSharpPreprocessorTokens.LINE_COMMENT; }
 
-	{MACRO_IF}           { return CSharpPreprocesorTokens.MACRO_IF_KEYWORD; }
+	{MACRO_IF}           { return CSharpPreprocessorTokens.MACRO_IF_KEYWORD; }
 
-	{MACRO_ELIF}         { return CSharpPreprocesorTokens.MACRO_ELIF_KEYWORD; }
+	{MACRO_ELIF}         { return CSharpPreprocessorTokens.MACRO_ELIF_KEYWORD; }
 
-	{MACRO_ELSE}         { return CSharpPreprocesorTokens.MACRO_ELSE_KEYWORD; }
+	{MACRO_ELSE}         { return CSharpPreprocessorTokens.MACRO_ELSE_KEYWORD; }
 
-	{MACRO_ENDIF}        { return CSharpPreprocesorTokens.MACRO_ENDIF_KEYWORD; }
+	{MACRO_ENDIF}        { return CSharpPreprocessorTokens.MACRO_ENDIF_KEYWORD; }
 
-	{MACRO_DEFINE}       { return CSharpPreprocesorTokens.MACRO_DEFINE_KEYWORD; }
+	{MACRO_DEFINE}       { return CSharpPreprocessorTokens.MACRO_DEFINE_KEYWORD; }
 
-	{MACRO_UNDEF}        { return CSharpPreprocesorTokens.MACRO_UNDEF_KEYWORD; }
+	{MACRO_UNDEF}        { return CSharpPreprocessorTokens.MACRO_UNDEF_KEYWORD; }
 
-	{MACRO_REGION}       { return CSharpPreprocesorTokens.MACRO_REGION_KEYWORD; }
+	{MACRO_REGION}       { return CSharpPreprocessorTokens.MACRO_REGION_KEYWORD; }
 
-	{MACRO_ENDREGION}    { return CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD; }
+	{MACRO_ENDREGION}    { return CSharpPreprocessorTokens.MACRO_ENDREGION_KEYWORD; }
 
-	{MACRO_PRAGMA}       { return CSharpPreprocesorTokens.PRAGMA_KEYWORD; }
+	{MACRO_PRAGMA}       { return CSharpPreprocessorTokens.PRAGMA_KEYWORD; }
 
-	{MACRO_NULLABLE}     { return CSharpPreprocesorTokens.NULLABLE_KEYWORD; }
+	{MACRO_NULLABLE}     { return CSharpPreprocessorTokens.NULLABLE_KEYWORD; }
 
-	{MACRO_WARNING}      { return CSharpPreprocesorTokens.WARNING_KEYWORD; }
+	{MACRO_WARNING}      { return CSharpPreprocessorTokens.WARNING_KEYWORD; }
 
-	{MACRO_ERROR}        { return CSharpPreprocesorTokens.ERROR_KEYWORD; }
+	{MACRO_ERROR}        { return CSharpPreprocessorTokens.ERROR_KEYWORD; }
 
-	"("                  { return CSharpPreprocesorTokens.LPAR; }
+	"("                  { return CSharpPreprocessorTokens.LPAR; }
 
-	")"                  { return CSharpPreprocesorTokens.RPAR; }
+	")"                  { return CSharpPreprocessorTokens.RPAR; }
 
-	"!"                  { return CSharpPreprocesorTokens.EXCL; }
+	"!"                  { return CSharpPreprocessorTokens.EXCL; }
 
-	"&&"                 { return CSharpPreprocesorTokens.ANDAND; }
+	"&&"                 { return CSharpPreprocessorTokens.ANDAND; }
 
-	"||"                 { return CSharpPreprocesorTokens.OROR; }
+	"||"                 { return CSharpPreprocessorTokens.OROR; }
 
-	{IDENTIFIER}         { return CSharpPreprocesorTokens.IDENTIFIER; }
+	{IDENTIFIER}         { return CSharpPreprocessorTokens.IDENTIFIER; }
 
-	{WHITE_SPACE}        {  return CSharpPreprocesorTokens.WHITE_SPACE; }
+	{WHITE_SPACE}        {  return CSharpPreprocessorTokens.WHITE_SPACE; }
 
-	[^]                  { return CSharpPreprocesorTokens.BAD_CHARACTER; }
+	[^]                  { return CSharpPreprocessorTokens.BAD_CHARACTER; }
 }

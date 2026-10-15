@@ -284,7 +284,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			iconDescriptor.addLayerIcon(AllIcons.Nodes.FinalMark);
 		}
 
-		// dont check it for msil wrappers
+		// Don't check it for MSIL wrappers
 		if(!(element instanceof MsilElementWrapper))
 		{
 			if(element instanceof DotNetTypeDeclaration && DotNetRunUtil.hasEntryPoint((DotNetTypeDeclaration) element) || element instanceof DotNetMethodDeclaration && DotNetRunUtil.isEntryPoint(

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.highlight.check.impl;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ import consulo.language.psi.PsiElement;
 
 /**
  * @author VISTALL
- * @since 10.06.14
+ * @since 2014-06-10
  */
 public class CS0107 extends CompilerCheck<DotNetModifierListOwner>
 {
@@ -95,7 +94,7 @@ public class CS0107 extends CompilerCheck<DotNetModifierListOwner>
 				map.put(modifier, modifierElement);
 			}
 		}
-		// dont return array if size of elements if not equal tokens
+		// Don't return array if size of elements is not equal to tokens
 		if(modifiers.length != map.size())
 		{
 			return;

@@ -59,7 +59,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware {
         OverrideTypeCollector.INSTANCE,
         new PartialTypeCollector(),
         HidingOrOverridingElementCollector.INSTANCE,
-        HidedOrOverridedElementCollector.INSTANCE,
+        HidedOrOverriddenElementCollector.INSTANCE,
         new RecursiveCallCollector()
     };
 

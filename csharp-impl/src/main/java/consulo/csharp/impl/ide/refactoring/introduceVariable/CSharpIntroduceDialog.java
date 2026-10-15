@@ -38,7 +38,7 @@ import consulo.language.editor.ui.awt.EditorComboBoxEditor;
 import consulo.language.editor.ui.awt.StringComboboxEditor;
 
 /**
- * User: Fedor.Korotkov
+ * @author Fedor.Korotkov
  */
 public class CSharpIntroduceDialog extends DialogWrapper {
   private JPanel myContentPane;

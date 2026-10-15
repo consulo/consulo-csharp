@@ -141,7 +141,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
                     result.withHighlightInfoType(insideDoc ? HighlightInfoType.WEAK_WARNING : HighlightInfoType.WRONG_REF);
 
                     String unresolvedText = getUnresolvedText(callElement, range);
-                    if (isCalleInsideCalle(callElement)) {
+                    if (isNestedCall(callElement)) {
                         result.withText(LocalizeValue.localizeTODO("Expression cant be invoked"));
                         // remap to error, due we want make all exp red
                         result.withHighlightInfoType(insideDoc ? HighlightInfoType.WEAK_WARNING : HighlightInfoType.ERROR);
@@ -168,7 +168,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
 
     @Contract("null -> false")
     @RequiredReadAction
-    public static boolean isCalleInsideCalle(@Nullable PsiElement callElement) {
+    public static boolean isNestedCall(@Nullable PsiElement callElement) {
 		return callElement instanceof CSharpMethodCallExpressionImpl call
 			&& !(call.getCallExpression() instanceof CSharpReferenceExpression);
     }

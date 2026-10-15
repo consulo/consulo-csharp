@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.lang.impl.psi.source.resolve.type;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightFieldDeclarationBuilder;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightTypeDeclarationBuilder;
-import consulo.csharp.lang.psi.CSharpAnonymFieldOrPropertySet;
+import consulo.csharp.lang.psi.CSharpAnonymousFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
@@ -33,12 +32,11 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
 
-
 /**
  * @author VISTALL
- * @since 08.05.14
+ * @since 2014-05-08
  */
-public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
+public class CSharpAnonymousTypeRef extends DotNetTypeRefWithCachedResult
 {
 	public static class SetField extends CSharpLightFieldDeclarationBuilder
 	{
@@ -69,7 +67,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 	private final PsiFile myContainingFile;
 	private final CSharpFieldOrPropertySet[] mySets;
 
-	public CSharpAnonymTypeRef(PsiFile containingFile, CSharpFieldOrPropertySet[] sets)
+	public CSharpAnonymousTypeRef(PsiFile containingFile, CSharpFieldOrPropertySet[] sets)
 	{
 		super(containingFile.getProject(), containingFile.getResolveScope());
 		myContainingFile = containingFile;
@@ -140,7 +138,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 				fieldBuilder.withNameIdentifier(nameReferenceExpression);
 				fieldBuilder.setNavigationElement(nameReferenceExpression);
 			}
-			else if(set instanceof CSharpAnonymFieldOrPropertySet)
+			else if(set instanceof CSharpAnonymousFieldOrPropertySet)
 			{
 				fieldBuilder.setNavigationElement(set.getValueExpression());
 			}

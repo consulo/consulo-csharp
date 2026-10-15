@@ -55,8 +55,8 @@ public class CSharpConversionMethodStubElementType extends CSharpAbstractStubEle
 	@Override
 	public CSharpMethodDeclStub createStub(CSharpConversionMethodDeclarationImpl methodDeclaration, StubElement stubElement)
 	{
-		String qname = methodDeclaration.getPresentableParentQName();
-		return new CSharpMethodDeclStub(stubElement, this, qname, 0, -1);
+		String qName = methodDeclaration.getPresentableParentQName();
+		return new CSharpMethodDeclStub(stubElement, this, qName, 0, -1);
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class CSharpConversionMethodStubElementType extends CSharpAbstractStubEle
 	@Override
 	public CSharpMethodDeclStub deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
-		StringRef qname = stubInputStream.readName();
-		return new CSharpMethodDeclStub(stubElement, this, StringRef.toString(qname), 0, -1);
+		StringRef qName = stubInputStream.readName();
+		return new CSharpMethodDeclStub(stubElement, this, StringRef.toString(qName), 0, -1);
 	}
 }

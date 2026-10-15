@@ -112,8 +112,8 @@ public class DelegateToLambdaExpressionFix extends PsiElementBaseIntentionAction
       return false;
     }
     if (node.getElementType() == CSharpTokens.DELEGATE_KEYWORD) {
-      CSharpDelegateExpressionImpl anonymMethodExpression = PsiTreeUtil.getParentOfType(element, CSharpDelegateExpressionImpl.class);
-      return anonymMethodExpression != null && anonymMethodExpression.toTypeRef(true) != DotNetTypeRef.ERROR_TYPE;
+      CSharpDelegateExpressionImpl anonymousMethodExpression = PsiTreeUtil.getParentOfType(element, CSharpDelegateExpressionImpl.class);
+      return anonymousMethodExpression != null && anonymousMethodExpression.toTypeRef(true) != DotNetTypeRef.ERROR_TYPE;
     }
     return false;
   }

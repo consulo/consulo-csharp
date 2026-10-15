@@ -72,8 +72,8 @@ public class CSharpIndexMethodStubElementType extends CSharpAbstractStubElementT
 	@Override
 	public CSharpIndexMethodDeclStub deserialize(StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
-		StringRef qname = inputStream.readName();
+		StringRef qName = inputStream.readName();
 		int otherModifiers = inputStream.readVarInt();
-		return new CSharpIndexMethodDeclStub(stubElement, StringRef.toString(qname), otherModifiers);
+		return new CSharpIndexMethodDeclStub(stubElement, StringRef.toString(qName), otherModifiers);
 	}
 }

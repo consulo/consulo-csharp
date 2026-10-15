@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.lang.impl.parser.macro;
 
-import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorTokens;
 import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
 import consulo.language.ast.IElementType;
 import consulo.language.parser.PsiBuilder;
 
 /**
  * @author VISTALL
- * @since 18.12.13.
+ * @since 2013-12-18
  */
-public class PreprocessorParsing implements CSharpPreprocesorTokens, CSharpPreprocessorElements
+public class PreprocessorParsing implements CSharpPreprocessorTokens, CSharpPreprocessorElements
 {
 	public static boolean parse(PsiBuilder builder)
 	{

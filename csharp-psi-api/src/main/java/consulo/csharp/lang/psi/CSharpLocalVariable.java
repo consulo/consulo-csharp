@@ -23,13 +23,12 @@ import consulo.dotnet.psi.DotNetType;
 
 /**
  * @author VISTALL
- * @since 16.12.13.
+ * @since 2013-12-16
  */
 public interface CSharpLocalVariable extends DotNetLocalVariable, CSharpNamedElement
 {
 	/**
-	 *
-	 * @return variable type, but dont inherit it from prev child if we use declaration like 'int b, c'
+	 * @return variable type, but do not inherit it from prev child if we use declaration like 'int b, c'
 	 */
 	@Nullable
 	DotNetType getSelfType();

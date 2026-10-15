@@ -90,7 +90,7 @@ public class CSharpReferenceExpressionImplUtil
 		}
 	}
 
-	private static class ParamatizeValue
+	private static class ParametrizedValue
 	{
 		private final Map<PsiElement, ResolveResult[]> myResults = new ConcurrentHashMap<>();
 
@@ -265,7 +265,7 @@ public class CSharpReferenceExpressionImplUtil
 		}
 
 		ResolveResult[] resolveResults;
-		CSharpReferenceExpressionImplUtil.OurResolver resolver = CSharpReferenceExpressionImplUtil.OurResolver.INSTANCE;
+		OurResolver resolver = OurResolver.INSTANCE;
 		if(isCacheDisabled(expression))
 		{
 			resolveResults = resolver.resolve(expression, resolveFromParent);
@@ -757,9 +757,9 @@ public class CSharpReferenceExpressionImplUtil
 			return ResolveResult.EMPTY_ARRAY;
 		}
 
-		ParamatizeValue paramatizeValue = LanguageCachedValueUtil.getCachedValue(expression, () -> CachedValueProvider.Result.create(new ParamatizeValue(), PsiModificationTracker.MODIFICATION_COUNT));
+		ParametrizedValue parametrizedValue = LanguageCachedValueUtil.getCachedValue(expression, () -> CachedValueProvider.Result.create(new ParametrizedValue(), PsiModificationTracker.MODIFICATION_COUNT));
 
-		return paramatizeValue.get(qualifierElement, element -> tryResolveFromQualifierImpl(expression, element));
+		return parametrizedValue.get(qualifierElement, element -> tryResolveFromQualifierImpl(expression, element));
 	}
 
 	@RequiredReadAction
@@ -1114,7 +1114,7 @@ public class CSharpReferenceExpressionImplUtil
 				sorter = StaticVsInstanceComparator.create(element);
 				if(completion)
 				{
-					// append generic when completion due at ANY_MEMBER it dont resolved
+					// Append generic parameters on completion, because they are not resolved at ANY_MEMBER
 					targets = ArrayUtil.append(targets, ExecuteTarget.GENERIC_PARAMETER);
 				}
 				break;
@@ -1138,7 +1138,7 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	/**
-	 * @return couple of psieelement, first is the last element for walk, second is the stub member for walk
+	 * @return a couple of PsiElements, the first is the last element for walk, the second is the stub member for walk
 	 */
 	@RequiredReadAction
 	public static Couple<PsiElement> getResolveLayers(final PsiElement element, boolean strict)

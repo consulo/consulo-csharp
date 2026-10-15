@@ -55,9 +55,9 @@ public class CSharpConstructorStubElementType extends CSharpAbstractStubElementT
 	@Override
 	public CSharpMethodDeclStub createStub(CSharpConstructorDeclarationImpl methodDeclaration, StubElement stubElement)
 	{
-		String qname = methodDeclaration.getPresentableParentQName();
+		String qName = methodDeclaration.getPresentableParentQName();
 		int otherModifierMask = CSharpMethodDeclStub.getOtherModifierMask(methodDeclaration);
-		return new CSharpMethodDeclStub(stubElement, this, qname, otherModifierMask, -1);
+		return new CSharpMethodDeclStub(stubElement, this, qName, otherModifierMask, -1);
 	}
 
 	@Override
@@ -70,8 +70,8 @@ public class CSharpConstructorStubElementType extends CSharpAbstractStubElementT
 	@Override
 	public CSharpMethodDeclStub deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
-		StringRef qname = stubInputStream.readName();
+		StringRef qName = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readVarInt();
-		return new CSharpMethodDeclStub(stubElement, this, StringRef.toString(qname), otherModifierMask, -1);
+		return new CSharpMethodDeclStub(stubElement, this, StringRef.toString(qName), otherModifierMask, -1);
 	}
 }

@@ -40,13 +40,13 @@ public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration> {
 
     private final int myOperatorIndex;
 
-    public CSharpMethodDeclStub(StubElement parent, @Nullable String qname, int otherModifierMask, int operatorIndex) {
-        super(parent, CSharpStubElements.METHOD_DECLARATION, qname, otherModifierMask);
+    public CSharpMethodDeclStub(StubElement parent, @Nullable String qName, int otherModifierMask, int operatorIndex) {
+        super(parent, CSharpStubElements.METHOD_DECLARATION, qName, otherModifierMask);
         myOperatorIndex = operatorIndex;
     }
 
-    public CSharpMethodDeclStub(StubElement parent, IStubElementType elementType, String qname, int otherModifierMask, int operatorIndex) {
-        super(parent, elementType, qname, otherModifierMask);
+    public CSharpMethodDeclStub(StubElement parent, IStubElementType elementType, String qName, int otherModifierMask, int operatorIndex) {
+        super(parent, elementType, qName, otherModifierMask);
         myOperatorIndex = operatorIndex;
     }
 

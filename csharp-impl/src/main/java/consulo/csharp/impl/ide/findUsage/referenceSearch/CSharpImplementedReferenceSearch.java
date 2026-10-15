@@ -45,7 +45,7 @@ public class CSharpImplementedReferenceSearch extends QueryExecutorBase<PsiRefer
         if (elementToSearch instanceof CSharpMethodDeclaration) {
             Collection<DotNetVirtualImplementOwner> targets = ApplicationManager.getApplication().runReadAction((Supplier<Collection<DotNetVirtualImplementOwner>>) () -> {
                 if (((CSharpMethodDeclaration) elementToSearch).hasModifier(DotNetModifier.ABSTRACT)) {
-                    return OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) elementToSearch);
+                    return OverrideUtil.collectOverriddenMembers((DotNetVirtualImplementOwner) elementToSearch);
                 }
                 return Collections.emptyList();
             });

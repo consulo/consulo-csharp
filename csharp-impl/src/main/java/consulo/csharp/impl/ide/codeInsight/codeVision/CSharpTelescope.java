@@ -79,6 +79,6 @@ public class CSharpTelescope {
     }
 
     static int collectOverridingMethods(CSharpSimpleLikeMethodAsElement method) {
-        return OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) method).size();
+        return OverrideUtil.collectOverriddenMembers((DotNetVirtualImplementOwner) method).size();
     }
 }

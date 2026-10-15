@@ -51,7 +51,7 @@ public class CSharpInheritableCheckerCacher implements Disposable {
     }
 
     private final Map<CSharpInheritKey, CSharpTypeUtil.InheritResult> myCache = new ConcurrentHashMap<>();
-    private final Map<CSharpImpicitCastKey, CSharpTypeUtil.InheritResult> myImplicitCasts = new ConcurrentSkipListMap<>(Comparator.comparing(Object::toString));
+    private final Map<CSharpImplicitCastKey, CSharpTypeUtil.InheritResult> myImplicitCasts = new ConcurrentSkipListMap<>(Comparator.comparing(Object::toString));
 
     @Inject
     public CSharpInheritableCheckerCacher(Project project) {

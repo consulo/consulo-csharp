@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.lang.impl.psi;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.impl.psi.cast.CSharpCastSession;
-import consulo.csharp.lang.impl.psi.cast.CSharpImpicitCastKey;
+import consulo.csharp.lang.impl.psi.cast.CSharpImplicitCastKey;
 import consulo.csharp.lang.impl.psi.resolve.CSharpResolveContextUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
@@ -269,7 +268,7 @@ public class CSharpTypeUtil {
                                                                     DotNetTypeDeclaration typeDeclaration,
                                                                     DotNetGenericExtractor extractor,
                                                                     Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo) {
-        CSharpImpicitCastKey key = new CSharpImpicitCastKey(
+        CSharpImplicitCastKey key = new CSharpImplicitCastKey(
             to,
             from,
             castResolvingInfo.getFirst(),
@@ -290,7 +289,7 @@ public class CSharpTypeUtil {
 
         CSharpElementGroup<CSharpConversionMethodDeclaration> conversionMethodGroup = resolveContext.findConversionMethodGroup(castType, true);
         if (conversionMethodGroup == null) {
-            return session.recordImpicit(key, fail());
+            return session.recordImplicit(key, fail());
         }
 
         // we need swap to vs from for explicit
@@ -315,11 +314,11 @@ public class CSharpTypeUtil {
             }
 
             if (CSharpInheritableChecker.create(parameterTypeRef, from).withCastType(CSharpCastType.IMPLICIT, resolveScope).check().isSuccess()) {
-                return session.recordImpicit(key, new InheritResult(true, declaration));
+                return session.recordImplicit(key, new InheritResult(true, declaration));
             }
         }
 
-        return session.recordImpicit(key, fail());
+        return session.recordImplicit(key, fail());
     }
 
     @RequiredReadAction

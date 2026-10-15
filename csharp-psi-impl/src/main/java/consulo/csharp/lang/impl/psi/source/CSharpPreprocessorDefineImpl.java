@@ -20,7 +20,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.ast.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpMacroElementVisitor;
-import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorTokens;
 import consulo.csharp.lang.psi.CSharpPreprocessorDefine;
 import consulo.csharp.lang.psi.CSharpPreprocessorVariable;
 import consulo.csharp.lang.impl.psi.light.CSharpPreprocessorLightVariable;
@@ -58,7 +58,7 @@ public class CSharpPreprocessorDefineImpl extends CSharpPreprocessorElementImpl 
 	@Override
 	public PsiElement getVarElement()
 	{
-		return findPsiChildByType(CSharpPreprocesorTokens.IDENTIFIER);
+		return findPsiChildByType(CSharpPreprocessorTokens.IDENTIFIER);
 	}
 
 	@RequiredReadAction
@@ -83,6 +83,6 @@ public class CSharpPreprocessorDefineImpl extends CSharpPreprocessorElementImpl 
 	@Override
 	public boolean isUnDef()
 	{
-		return findChildByType(CSharpPreprocesorTokens.MACRO_UNDEF_KEYWORD) != null;
+		return findChildByType(CSharpPreprocessorTokens.MACRO_UNDEF_KEYWORD) != null;
 	}
 }

@@ -26,7 +26,7 @@ import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpAnonymTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpAnonymousTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpGenericWrapperTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpNullTypeRef;
@@ -88,7 +88,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 			{
 				return DotNetTypeRef.ERROR_TYPE;
 			}
-			return new CSharpAnonymTypeRef(getContainingFile(), fieldOrPropertySetBlock.getSets());
+			return new CSharpAnonymousTypeRef(getContainingFile(), fieldOrPropertySetBlock.getSets());
 		}
 		else
 		{

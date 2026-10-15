@@ -106,6 +106,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
     }
 
     @Override
+    @SuppressWarnings("SpellCheckingInspection")
     public GeneralCommandLine createCommandLine(Module module, Collection<Path> results, DotNetModuleExtension<?> extension) throws Exception {
         if (myExecutable == null) {
             throw new DotNetCompileFailedException("C# compiler is not found");

@@ -76,18 +76,18 @@ public class CSharpParenthesesInsertHandler implements InsertHandler<LookupEleme
 
 		if(isToken(element, "("))
 		{
-			int lparenthOffset = element.getTextRange().getStartOffset();
+			int lParenthOffset = element.getTextRange().getStartOffset();
 
 			if(completionChar == '(' || completionChar == '\t')
 			{
-				editor.getCaretModel().moveToOffset(lparenthOffset + 1);
+				editor.getCaretModel().moveToOffset(lParenthOffset + 1);
 			}
 			else
 			{
 				editor.getCaretModel().moveToOffset(context.getTailOffset());
 			}
 
-			context.setTailOffset(lparenthOffset + 1);
+			context.setTailOffset(lParenthOffset + 1);
 
 			PsiElement list = element.getParent();
 			PsiElement last = list.getLastChild();
@@ -97,7 +97,7 @@ public class CSharpParenthesesInsertHandler implements InsertHandler<LookupEleme
 				context.setTailOffset(rparenthOffset + 1);
 				if(!putCaretInside)
 				{
-					for(int i = lparenthOffset + 1; i < rparenthOffset; i++)
+					for(int i = lParenthOffset + 1; i < rparenthOffset; i++)
 					{
 						if(!Character.isWhitespace(document.getCharsSequence().charAt(i)))
 						{
@@ -110,7 +110,7 @@ public class CSharpParenthesesInsertHandler implements InsertHandler<LookupEleme
 				{
 					AutoPopupController.getInstance(context.getProject()).autoPopupParameterInfo(editor, CSharpParameterInfoHandler.item(myLikeMethodDeclaration));
 
-					editor.getCaretModel().moveToOffset(lparenthOffset + 1);
+					editor.getCaretModel().moveToOffset(lParenthOffset + 1);
 				}
 				return;
 			}

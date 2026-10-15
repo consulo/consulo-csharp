@@ -59,6 +59,7 @@ public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSh
     }
 
     @Override
+    @SuppressWarnings("SpellCheckingInspection")
     public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder() throws DotNetCompileFailedException {
         MSBaseDotNetCompilerOptionsBuilder optionsBuilder = new MSBaseDotNetCompilerOptionsBuilder();
 

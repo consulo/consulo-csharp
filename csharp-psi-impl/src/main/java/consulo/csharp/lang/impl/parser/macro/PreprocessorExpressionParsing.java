@@ -19,12 +19,12 @@ package consulo.csharp.lang.impl.parser.macro;
 import org.jspecify.annotations.Nullable;
 import consulo.csharp.lang.impl.parser.SharedParsingHelpers;
 import consulo.csharp.lang.impl.psi.CSharpPreprocessorElements;
-import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorTokens;
 import consulo.language.ast.TokenSet;
 import consulo.language.parser.PsiBuilder;
 import consulo.language.ast.IElementType;
 
-public class PreprocessorExpressionParsing implements CSharpPreprocesorTokens, CSharpPreprocessorElements
+public class PreprocessorExpressionParsing implements CSharpPreprocessorTokens, CSharpPreprocessorElements
 {
 	private enum ExprType
 	{

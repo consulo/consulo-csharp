@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.completion;
 
 import consulo.annotation.access.RequiredReadAction;
@@ -28,7 +27,7 @@ import consulo.csharp.impl.ide.completion.insertHandler.CSharpTailInsertHandler;
 import consulo.csharp.impl.ide.completion.item.CSharpTypeLikeLookupElement;
 import consulo.csharp.impl.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.impl.ide.completion.util.SpaceInsertHandler;
-import consulo.csharp.impl.ide.completion.weigher.CSharpInheritCompletionWeighter;
+import consulo.csharp.impl.ide.completion.weigher.CSharpInheritCompletionWeigher;
 import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.lang.impl.psi.CSharpContextUtil;
 import consulo.csharp.lang.impl.psi.CSharpTokenSets;
@@ -75,7 +74,7 @@ import static consulo.language.pattern.StandardPatterns.psiElement;
 
 /**
  * @author VISTALL
- * @since 23.11.14
+ * @since 2014-11-23
  */
 class CSharpExpressionCompletionContributor
 {
@@ -180,7 +179,7 @@ class CSharpExpressionCompletionContributor
 			@RequiredReadAction
 			public void addCompletions(CompletionParameters parameters, ProcessingContext context, CompletionResultSet result)
 			{
-				List<ExpectedTypeInfo> expectedTypeInfos = CSharpInheritCompletionWeighter.getExpectedTypeInfosForExpression(parameters, context);
+				List<ExpectedTypeInfo> expectedTypeInfos = CSharpInheritCompletionWeigher.getExpectedTypeInfosForExpression(parameters, context);
 
 				for(ExpectedTypeInfo expectedTypeInfo : expectedTypeInfos)
 				{
@@ -319,7 +318,7 @@ class CSharpExpressionCompletionContributor
 
 				final CSharpTypeDeclaration contextType = getContextType(expression);
 
-				final List<ExpectedTypeInfo> expectedTypeRefs = CSharpInheritCompletionWeighter.getExpectedTypeInfosForExpression(parameters, context);
+				final List<ExpectedTypeInfo> expectedTypeRefs = CSharpInheritCompletionWeigher.getExpectedTypeInfosForExpression(parameters, context);
 				for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
 				{
 					PsiElement element = expectedTypeRef.getTypeRef().resolve().getElement();
@@ -608,7 +607,7 @@ class CSharpExpressionCompletionContributor
 					DotNetType type = PsiTreeUtil.getParentOfType(parent, DotNetType.class);
 					if(type != null)
 					{
-						// disable native type completion, due they dont extends System.Exception
+						// disable native type completion, because they don't extend System.Exception
 						if(type.getParent() instanceof CSharpLocalVariable && type.getParent().getParent() instanceof CSharpCatchStatementImpl)
 						{
 							return;

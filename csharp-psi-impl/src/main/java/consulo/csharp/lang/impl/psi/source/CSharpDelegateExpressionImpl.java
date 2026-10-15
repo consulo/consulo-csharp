@@ -76,7 +76,7 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 	@Override
 	public void accept(CSharpElementVisitor visitor)
 	{
-		visitor.visitAnonymMethodExpression(this);
+		visitor.visitAnonymousMethodExpression(this);
 	}
 
 	@Override

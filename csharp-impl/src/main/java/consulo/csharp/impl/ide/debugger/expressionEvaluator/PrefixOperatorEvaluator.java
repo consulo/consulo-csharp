@@ -56,7 +56,7 @@ public class PrefixOperatorEvaluator extends Evaluator
 			}
 			else
 			{
-				throw new IllegalArgumentException("dont supported '!' with not bool value");
+				throw new IllegalArgumentException("'!' with no bool value is not supported");
 			}
 		}
 		else

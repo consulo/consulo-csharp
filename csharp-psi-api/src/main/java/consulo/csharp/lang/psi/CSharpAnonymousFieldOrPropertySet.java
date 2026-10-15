@@ -20,9 +20,9 @@ import consulo.dotnet.psi.DotNetExpression;
 
 /**
  * @author VISTALL
- * @since 07.04.2015
+ * @since 2015-04-07
  */
-public interface CSharpAnonymFieldOrPropertySet extends CSharpFieldOrPropertySet
+public interface CSharpAnonymousFieldOrPropertySet extends CSharpFieldOrPropertySet
 {
 	@Override
 	DotNetExpression getValueExpression();

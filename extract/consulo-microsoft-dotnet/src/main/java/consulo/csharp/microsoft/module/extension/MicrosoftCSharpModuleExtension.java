@@ -37,6 +37,7 @@ public class MicrosoftCSharpModuleExtension extends BaseCSharpModuleExtension<Mi
 	}
 
 	@Override
+	@SuppressWarnings("SpellCheckingInspection")
 	public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder() throws DotNetCompileFailedException
 	{
 		MSBaseDotNetCompilerOptionsBuilder optionsBuilder = new MSBaseDotNetCompilerOptionsBuilder();

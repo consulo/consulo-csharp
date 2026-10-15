@@ -240,7 +240,7 @@ public class OverrideUtil {
     }
 
     @RequiredReadAction
-    public static Collection<DotNetVirtualImplementOwner> collectOverridenMembers(final DotNetVirtualImplementOwner target) {
+    public static Collection<DotNetVirtualImplementOwner> collectOverriddenMembers(final DotNetVirtualImplementOwner target) {
         PsiElement parent = target.getParent();
         if (!(parent instanceof DotNetTypeDeclaration)) {
             return Collections.emptyList();

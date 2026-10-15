@@ -1,6 +1,6 @@
 package consulo.csharp.lang.impl.lexer;
 
-import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorTokens;
 import consulo.language.ast.IElementType;
 import consulo.language.lexer.LexerBase;
 
@@ -41,67 +41,67 @@ MACRO_ERROR={MACRO_START}"error"
 
 <MACRO_ENTERED>
 {
-	{SINGLE_LINE_COMMENT} { return CSharpPreprocesorTokens.LINE_COMMENT; }
+	{SINGLE_LINE_COMMENT} { return CSharpPreprocessorTokens.LINE_COMMENT; }
 
-	{IDENTIFIER}         { return CSharpPreprocesorTokens.IDENTIFIER; }
+	{IDENTIFIER}         { return CSharpPreprocessorTokens.IDENTIFIER; }
 
-	{WHITE_SPACE}        { return CSharpPreprocesorTokens.WHITE_SPACE; }
+	{WHITE_SPACE}        { return CSharpPreprocessorTokens.WHITE_SPACE; }
 
-	.                    { return CSharpPreprocesorTokens.BAD_CHARACTER; }
+	.                    { return CSharpPreprocessorTokens.BAD_CHARACTER; }
 }
 
 <MACRO_EXPRESSION>
 {
-	{SINGLE_LINE_COMMENT} { return CSharpPreprocesorTokens.LINE_COMMENT; }
+	{SINGLE_LINE_COMMENT} { return CSharpPreprocessorTokens.LINE_COMMENT; }
 
-	"("                  { return CSharpPreprocesorTokens.LPAR; }
+	"("                  { return CSharpPreprocessorTokens.LPAR; }
 
-	")"                  { return CSharpPreprocesorTokens.RPAR; }
+	")"                  { return CSharpPreprocessorTokens.RPAR; }
 
-	"!"                  { return CSharpPreprocesorTokens.EXCL; }
+	"!"                  { return CSharpPreprocessorTokens.EXCL; }
 
-	"&&"                 { return CSharpPreprocesorTokens.ANDAND; }
+	"&&"                 { return CSharpPreprocessorTokens.ANDAND; }
 
-	"||"                 { return CSharpPreprocesorTokens.OROR; }
+	"||"                 { return CSharpPreprocessorTokens.OROR; }
 
-	{IDENTIFIER}         { return CSharpPreprocesorTokens.IDENTIFIER; }
+	{IDENTIFIER}         { return CSharpPreprocessorTokens.IDENTIFIER; }
 
-	{WHITE_SPACE}        { return CSharpPreprocesorTokens.WHITE_SPACE; }
+	{WHITE_SPACE}        { return CSharpPreprocessorTokens.WHITE_SPACE; }
 
-	.                    { return CSharpPreprocesorTokens.BAD_CHARACTER; }
+	.                    { return CSharpPreprocessorTokens.BAD_CHARACTER; }
 }
 
 <YYINITIAL>
 {
-	{SINGLE_LINE_COMMENT} { return CSharpPreprocesorTokens.LINE_COMMENT; }
+	{SINGLE_LINE_COMMENT} { return CSharpPreprocessorTokens.LINE_COMMENT; }
 
-	{MACRO_IF}           { yybegin(MACRO_EXPRESSION); return CSharpPreprocesorTokens.MACRO_IF_KEYWORD; }
+	{MACRO_IF}           { yybegin(MACRO_EXPRESSION); return CSharpPreprocessorTokens.MACRO_IF_KEYWORD; }
 
-	{MACRO_ELIF}         { yybegin(MACRO_EXPRESSION); return CSharpPreprocesorTokens.MACRO_ELIF_KEYWORD; }
+	{MACRO_ELIF}         { yybegin(MACRO_EXPRESSION); return CSharpPreprocessorTokens.MACRO_ELIF_KEYWORD; }
 
-	{MACRO_ELSE}         { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_ELSE_KEYWORD; }
+	{MACRO_ELSE}         { yybegin(MACRO_ENTERED); return CSharpPreprocessorTokens.MACRO_ELSE_KEYWORD; }
 
-	{MACRO_ENDIF}        { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_ENDIF_KEYWORD; }
+	{MACRO_ENDIF}        { yybegin(MACRO_ENTERED); return CSharpPreprocessorTokens.MACRO_ENDIF_KEYWORD; }
 
-	{MACRO_DEFINE}       { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_DEFINE_KEYWORD; }
+	{MACRO_DEFINE}       { yybegin(MACRO_ENTERED); return CSharpPreprocessorTokens.MACRO_DEFINE_KEYWORD; }
 
-	{MACRO_UNDEF}        { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_UNDEF_KEYWORD; }
+	{MACRO_UNDEF}        { yybegin(MACRO_ENTERED); return CSharpPreprocessorTokens.MACRO_UNDEF_KEYWORD; }
 
-	{MACRO_REGION}       { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_REGION_KEYWORD; }
+	{MACRO_REGION}       { yybegin(MACRO_ENTERED); return CSharpPreprocessorTokens.MACRO_REGION_KEYWORD; }
 
-	{MACRO_ENDREGION}    { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD; }
+	{MACRO_ENDREGION}    { yybegin(MACRO_ENTERED); return CSharpPreprocessorTokens.MACRO_ENDREGION_KEYWORD; }
 
-	{MACRO_PRAGMA}       { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.PRAGMA_KEYWORD; }
+	{MACRO_PRAGMA}       { yybegin(MACRO_ENTERED); return CSharpPreprocessorTokens.PRAGMA_KEYWORD; }
 
-	{MACRO_NULLABLE}     { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.NULLABLE_KEYWORD; }
+	{MACRO_NULLABLE}     { yybegin(MACRO_ENTERED); return CSharpPreprocessorTokens.NULLABLE_KEYWORD; }
 
-	{MACRO_WARNING}      { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.WARNING_KEYWORD; }
+	{MACRO_WARNING}      { yybegin(MACRO_ENTERED); return CSharpPreprocessorTokens.WARNING_KEYWORD; }
 
-	{MACRO_ERROR}        { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.ERROR_KEYWORD; }
+	{MACRO_ERROR}        { yybegin(MACRO_ENTERED); return CSharpPreprocessorTokens.ERROR_KEYWORD; }
 
-	{ILLEGAL_DIRECTIVE}  { yybegin(MACRO_EXPRESSION); return CSharpPreprocesorTokens.ILLEGAL_KEYWORD; }
+	{ILLEGAL_DIRECTIVE}  { yybegin(MACRO_EXPRESSION); return CSharpPreprocessorTokens.ILLEGAL_KEYWORD; }
 
-	{WHITE_SPACE}        {  return CSharpPreprocesorTokens.WHITE_SPACE; }
+	{WHITE_SPACE}        {  return CSharpPreprocessorTokens.WHITE_SPACE; }
 
-	[^]                  { return CSharpPreprocesorTokens.BAD_CHARACTER; }
+	[^]                  { return CSharpPreprocessorTokens.BAD_CHARACTER; }
 }

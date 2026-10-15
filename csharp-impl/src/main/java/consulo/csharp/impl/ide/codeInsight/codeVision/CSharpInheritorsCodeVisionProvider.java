@@ -22,15 +22,13 @@ import consulo.application.util.CachedValueProvider;
 import consulo.application.util.CachedValuesManager;
 import consulo.codeEditor.Editor;
 import consulo.csharp.api.localize.CSharpLocalize;
-import consulo.csharp.impl.ide.lineMarkerProvider.HidedOrOverridedElementCollector;
+import consulo.csharp.impl.ide.lineMarkerProvider.HidedOrOverriddenElementCollector;
 import consulo.csharp.impl.ide.lineMarkerProvider.LineMarkerCollector;
 import consulo.csharp.impl.ide.lineMarkerProvider.OverrideTypeCollector;
 import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.language.editor.codeVision.CodeVisionRelativeOrdering;
 import consulo.language.editor.impl.codeVision.CodeVisionProviderBase;
@@ -126,7 +124,7 @@ public class CSharpInheritorsCodeVisionProvider extends InheritorsCodeVisionProv
             collector = OverrideTypeCollector.INSTANCE;
         }
         else {
-            collector = HidedOrOverridedElementCollector.INSTANCE;
+            collector = HidedOrOverriddenElementCollector.INSTANCE;
         }
 
         collector.navigate(event, element);

@@ -164,15 +164,15 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 		codeBlock.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override
-			public void visitAnonymMethodExpression(CSharpDelegateExpressionImpl method)
+			public void visitAnonymousMethodExpression(CSharpDelegateExpressionImpl method)
 			{
-				// dont need check return inside anonym
+				// We don't need to check return inside anonymous method
 			}
 
 			@Override
 			public void visitLambdaExpression(CSharpLambdaExpressionImpl expression)
 			{
-				// dont need check return inside lambda
+				// We don't need to check return inside lambda
 			}
 
 			@Override

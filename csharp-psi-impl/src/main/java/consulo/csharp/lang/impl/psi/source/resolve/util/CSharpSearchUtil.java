@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.lang.impl.psi.source.resolve.util;
 
 import consulo.annotation.access.RequiredReadAction;
@@ -40,7 +39,7 @@ import java.util.Collection;
 
 /**
  * @author VISTALL
- * @since 18.05.14
+ * @since 2014-05-18
  */
 public class CSharpSearchUtil
 {
@@ -102,7 +101,7 @@ public class CSharpSearchUtil
 			DotNetGenericExtractor extractor,
 			final int parameterSize)
 	{
-		//TODO [VISTALL] some hack until we dont make override more powerfull
+		//TODO [VISTALL] some hack until we make override more powerful
 		if(parentQName != null)
 		{
 			if(owner instanceof DotNetMemberOwner)

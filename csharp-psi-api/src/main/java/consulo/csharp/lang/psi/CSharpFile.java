@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.lang.psi;
 
 import consulo.annotation.access.RequiredReadAction;
@@ -26,7 +25,7 @@ import java.util.List;
 
 /**
  * @author VISTALL
- * @since 18.10.14
+ * @since 2014-10-18
  */
 public interface CSharpFile extends DotNetFile, CSharpUsingListOwner
 {
