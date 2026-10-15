@@ -58,7 +58,7 @@ public class CS0201 extends CompilerCheck<CSharpExpressionStatementImpl>
 
 		if(expression instanceof CSharpNewExpression)
 		{
-			// anonym object dont reported as illegal
+			// Anonymous object isn't reported as illegal
 			if(((CSharpNewExpression) expression).getFieldOrPropertySetBlock() != null)
 			{
 				return null;

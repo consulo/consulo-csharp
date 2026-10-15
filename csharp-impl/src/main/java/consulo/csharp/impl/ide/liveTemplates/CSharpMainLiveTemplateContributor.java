@@ -11,6 +11,7 @@ import java.lang.String;
 @ExtensionImpl
 public class CSharpMainLiveTemplateContributor implements LiveTemplateContributor {
   @Override
+  @SuppressWarnings("SpellCheckingInspection")
   public String groupId() {
     return "csharpmain";
   }
@@ -21,6 +22,7 @@ public class CSharpMainLiveTemplateContributor implements LiveTemplateContributo
   }
 
   @Override
+  @SuppressWarnings("SpellCheckingInspection")
   public void contribute(LiveTemplateContributor.Factory factory) {
     try(Builder builder = factory.newBuilder("csharpmainPsvm", "psvm", "public static void Main(){\r\n"
         + "  $END$\r\n"

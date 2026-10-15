@@ -19,7 +19,7 @@ package consulo.csharp.impl.ide.highlight;
 import consulo.colorScheme.TextAttributesKey;
 import consulo.csharp.editor.highlight.CSharpHighlightKey;
 import consulo.csharp.lang.impl.lexer.CSharpPreprocessorHightlightLexer;
-import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorTokens;
 import consulo.language.ast.IElementType;
 import consulo.language.editor.highlight.SyntaxHighlighterBase;
 import consulo.language.lexer.Lexer;
@@ -37,19 +37,19 @@ public class CSharpPreprocessorSyntaxHighlighter extends SyntaxHighlighterBase
 
 	static
 	{
-		safeMap(ourKeys, CSharpPreprocesorTokens.MACRO_DEFINE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocesorTokens.MACRO_UNDEF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocesorTokens.MACRO_IF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocesorTokens.MACRO_ELSE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocesorTokens.MACRO_ELIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocesorTokens.MACRO_REGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocesorTokens.MACRO_ENDIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocesorTokens.PRAGMA_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocesorTokens.WARNING_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocesorTokens.NULLABLE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocesorTokens.ERROR_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		//FIXME [VISTALL] highlight bug safeMap(ourKeys, CSharpPreprocesorTokens.LINE_COMMENT, CSharpHighlightKey.LINE_COMMENT);
+		safeMap(ourKeys, CSharpPreprocessorTokens.MACRO_DEFINE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.MACRO_UNDEF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.MACRO_IF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.MACRO_ELSE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.MACRO_ELIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.MACRO_REGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.MACRO_ENDIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.MACRO_ENDREGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.PRAGMA_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.WARNING_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.NULLABLE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.ERROR_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		//FIXME [VISTALL] highlight bug safeMap(ourKeys, CSharpPreprocessorTokens.LINE_COMMENT, CSharpHighlightKey.LINE_COMMENT);
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		QUALIFIED_NAMESPACE,  // namespace by fully qualified like 'System.Reflection' system is not searching from context
 		SOFT_QUALIFIED_NAMESPACE, // same as QUALIFIED_NAMESPACE but - soft ref
 		METHOD,
-		ATTRIBUTE,  // return type declaration but ref can find without Attribute sufix
+		ATTRIBUTE,  // return type declaration but ref can find without Attribute suffix
 		NATIVE_TYPE_WRAPPER, // return type declaration of native type
 		ARRAY_METHOD,
 		TYPE_LIKE, // return generic parameter or delegated method or type declaration

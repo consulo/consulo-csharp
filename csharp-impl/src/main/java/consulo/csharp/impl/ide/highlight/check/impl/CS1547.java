@@ -71,7 +71,7 @@ public class CS1547 extends CompilerCheck<CSharpNativeType>
 					}
 
 					PsiElement lastChild = parent.getLastChild();
-					// dont show error while typing
+					// Don't show error while typing
 					if(lastChild instanceof PsiErrorElement)
 					{
 						return null;

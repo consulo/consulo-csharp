@@ -20,7 +20,7 @@ import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 import consulo.language.ast.TokenSet;
 import consulo.csharp.lang.impl.psi.CSharpMacroElementVisitor;
-import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorTokens;
 
 import org.jspecify.annotations.Nullable;
 
@@ -37,14 +37,14 @@ public class CSharpPreprocessorBlockStopImpl extends CSharpPreprocessorElementIm
 
 	public PsiElement getKeywordElement()
 	{
-		TokenSet tokenSet = TokenSet.create(CSharpPreprocesorTokens.MACRO_ENDIF_KEYWORD, CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD);
+		TokenSet tokenSet = TokenSet.create(CSharpPreprocessorTokens.MACRO_ENDIF_KEYWORD, CSharpPreprocessorTokens.MACRO_ENDREGION_KEYWORD);
 		return findNotNullChildByType(tokenSet);
 	}
 
 	@Nullable
 	public PsiElement getStopElement()
 	{
-		return findPsiChildByType(CSharpPreprocesorTokens.MACRO_STOP);
+		return findPsiChildByType(CSharpPreprocessorTokens.MACRO_STOP);
 	}
 
 	@Override

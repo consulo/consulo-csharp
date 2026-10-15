@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * @author: Fedor.Korotkov
+ * @author Fedor.Korotkov
  */
 public class UsefulPsiTreeUtil
 {

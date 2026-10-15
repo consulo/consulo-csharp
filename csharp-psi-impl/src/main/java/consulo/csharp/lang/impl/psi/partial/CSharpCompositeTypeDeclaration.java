@@ -386,7 +386,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	@Override
 	public boolean hasModifier(DotNetModifier modifier)
 	{
-		// composite type dont hold partial modifier
+		// Composite type doesn't hold partial modifier
 		if(modifier == CSharpModifier.PARTIAL)
 		{
 			return false;

@@ -77,7 +77,7 @@ public class NParamsCallArgument extends NCallArgument
 	}
 
 	@RequiredReadAction
-	protected static int validate(@Nullable DotNetTypeRef parameterTypeRef, DotNetTypeRef typeRef, UserDataHolderBase holder, GlobalSearchScope impilictCastResolveScope)
+	protected static int validate(@Nullable DotNetTypeRef parameterTypeRef, DotNetTypeRef typeRef, UserDataHolderBase holder, GlobalSearchScope implicitCastResolveScope)
 	{
 		int newVal = FAIL;
 		if(parameterTypeRef != null)
@@ -88,7 +88,7 @@ public class NParamsCallArgument extends NCallArgument
 			}
 			else
 			{
-				CSharpTypeUtil.InheritResult inheritable = CSharpInheritableChecker.create(parameterTypeRef, typeRef).withCastType(CSharpCastType.IMPLICIT, impilictCastResolveScope).check();
+				CSharpTypeUtil.InheritResult inheritable = CSharpInheritableChecker.create(parameterTypeRef, typeRef).withCastType(CSharpCastType.IMPLICIT, implicitCastResolveScope).check();
 				if(inheritable.isSuccess())
 				{
 					if(inheritable.isConversion())

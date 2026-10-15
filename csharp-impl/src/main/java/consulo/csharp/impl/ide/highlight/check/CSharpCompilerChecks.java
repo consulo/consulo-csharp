@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.highlight.check;
 
 import consulo.annotation.access.RequiredReadAction;
@@ -30,13 +29,13 @@ import java.util.function.Supplier;
 
 /**
  * @author VISTALL
- * @since 15.05.14
+ * @since 2014-05-15
  */
 public enum CSharpCompilerChecks {
     CS0017(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // Main() duplicate check
     CS0019(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // operator checks
     CS0023(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  null cant be reference qualifier(dot operator)
-    CS0026(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), //  'this' dont exists in static context
+    CS0026(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), //  'this' doesn't exist in static context
     CS0027(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), //  this can't used inside field declaration
     CS0029(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  cant convert A to B with implicit
     CS0030(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // cant convert A to B
@@ -83,7 +82,7 @@ public enum CSharpCompilerChecks {
     CS0409(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // generic constraint already defined for generic
     CS0413(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // 'S' operator  cant use to generic without class constraint, or reference
     CS0418(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // abstract type cant be static or sealed
-    CS0441(CSharpLanguageVersion._2_0, HighlightInfoType.WRONG_REF), // static and sealed cant be combinded
+    CS0441(CSharpLanguageVersion._2_0, HighlightInfoType.WRONG_REF), // static and sealed cant be combined
     CS0449(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // struct or class constraint must be first
     CS0453(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // nullable type required notnull type
     CS0500(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // code block with abstract modifier
@@ -95,8 +94,8 @@ public enum CSharpCompilerChecks {
     //CS0535(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for missed impl of abstract members
     CS0539(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // checks for private impl of abstract methods
     CS0542(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members cant be named as parent
-    CS0555(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implict and explicit cant convert to itself
-    CS0556(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implict and explicit cant be hold type without owner
+    CS0555(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implicit and explicit cant convert to itself
+    CS0556(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implicit and explicit cant be hold type without owner
     CS0568(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // structs cant have parameterless constructor
     CS0673(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // Void cant be used in C#
     CS0692(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // duplicate parameter name
@@ -140,7 +139,7 @@ public enum CSharpCompilerChecks {
     CS1980(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // dynamic checks
     CS1984(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside finally statements
     CS1985(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside catch statements
-    CS1998(CSharpLanguageVersion._4_0, CSharpHighlightInfoType::getUnusedDeclaration), // async modifer - then no await
+    CS1998(CSharpLanguageVersion._4_0, CSharpHighlightInfoType::getUnusedDeclaration), // async modifier - then no await
     CS4009(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // async modifier cant be at entry point
     CS8632(CSharpLanguageVersion._8_0, HighlightInfoType.WARNING), // nullable type check
 

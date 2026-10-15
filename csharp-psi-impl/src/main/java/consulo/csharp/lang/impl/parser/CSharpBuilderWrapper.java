@@ -239,7 +239,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 
 		if(directive instanceof DefinePreprocessorDirective)
 		{
-			// if code is disabled - dont handle define
+			// If code is disabled - don't handle define
 			if(!disabledToken)
 			{
 				Set<String> newVariables = new HashSet<>(variables);

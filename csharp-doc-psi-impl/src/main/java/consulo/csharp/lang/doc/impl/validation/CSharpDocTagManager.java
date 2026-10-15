@@ -43,6 +43,7 @@ public class CSharpDocTagManager
 
 	private Map<String, CSharpDocTagInfo> myTags = new HashMap<String, CSharpDocTagInfo>();
 
+	@SuppressWarnings("SpellCheckingInspection")
 	public CSharpDocTagManager()
 	{
 		addTag(new CSharpDocTagInfo("c"));

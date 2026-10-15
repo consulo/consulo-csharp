@@ -57,6 +57,7 @@ import java.util.Set;
  * @since 2014-07-31
  */
 public final class CSharpConfigurationPanel {
+    @SuppressWarnings("SpellCheckingInspection")
     private static final List<String> COMPILE_LEVELS = List.of(
         "ISO-1",
         "ISO-2",

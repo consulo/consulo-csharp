@@ -39,25 +39,25 @@ import java.util.function.Consumer;
 
 /**
  * @author VISTALL
- * @since 15.12.14
+ * @since 2014-12-15
  */
-public class HidedOrOverridedElementCollector implements LineMarkerCollector {
+public class HidedOrOverriddenElementCollector implements LineMarkerCollector {
     private static class OurHandler implements GutterIconNavigationHandler<PsiElement> {
         public static final OurHandler INSTANCE = new OurHandler();
 
         @Override
         @RequiredUIAccess
         public void navigate(ComponentEvent<?> event, PsiElement element) {
-            CSharpLineMarkerUtil.openTargets(event, element.getProject(), "Searching for overrided", CSharpLineMarkerUtil.BY_PARENT, () -> {
+            CSharpLineMarkerUtil.openTargets(event, element.getProject(), "Searching for overrides", CSharpLineMarkerUtil.BY_PARENT, () -> {
                 DotNetVirtualImplementOwner virtualImplementOwner = element instanceof DotNetVirtualImplementOwner v
                     ? v
                     : CSharpLineMarkerUtil.findElementForLineMarker(element);
-                return virtualImplementOwner == null ? List.of() : OverrideUtil.collectOverridenMembers(virtualImplementOwner);
+                return virtualImplementOwner == null ? List.of() : OverrideUtil.collectOverriddenMembers(virtualImplementOwner);
             });
         }
     }
 
-    public static final HidedOrOverridedElementCollector INSTANCE = new HidedOrOverridedElementCollector();
+    public static final HidedOrOverriddenElementCollector INSTANCE = new HidedOrOverriddenElementCollector();
 
     @Override
     @RequiredUIAccess
@@ -75,7 +75,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector {
                 return;
             }
 
-            Collection<DotNetVirtualImplementOwner> overrideElements = OverrideUtil.collectOverridenMembers(virtualImplementOwner);
+            Collection<DotNetVirtualImplementOwner> overrideElements = OverrideUtil.collectOverriddenMembers(virtualImplementOwner);
 
             if (overrideElements.isEmpty()) {
                 return;
@@ -110,7 +110,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector {
                     icon = AllIcons.Gutter.OverridenMethod;
                 }
             }
-            LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, it -> "Searching for " + "overrided",
+            LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, it -> "Searching for " + "overridden",
                 OurHandler.INSTANCE, GutterIconRenderer.Alignment.RIGHT);
 
             consumer.accept(lineMarkerInfo);

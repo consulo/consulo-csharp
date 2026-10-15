@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.lang.impl;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.CSharpPreprocessorLanguage;
 import consulo.csharp.lang.impl.lexer._CSharpMacroLexer;
 import consulo.csharp.lang.impl.parser.CSharpPreprocessorParser;
-import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.language.Language;
 import consulo.language.ast.ASTNode;
@@ -35,7 +34,7 @@ import consulo.language.version.LanguageVersion;
 
 /**
  * @author VISTALL
- * @since 18-May-17
+ * @since 2017-05-18
  */
 @ExtensionImpl
 public class CSharpPreprocessorParserDefinition implements ParserDefinition
@@ -75,7 +74,7 @@ public class CSharpPreprocessorParserDefinition implements ParserDefinition
 	@Override
 	public TokenSet getCommentTokens(LanguageVersion languageVersion)
 	{
-		return TokenSet.create(CSharpPreprocesorTokens.LINE_COMMENT);
+		return TokenSet.create(CSharpPreprocessorTokens.LINE_COMMENT);
 	}
 
 	@Override

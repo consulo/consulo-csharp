@@ -125,7 +125,7 @@ public class CSharpDocBraceMatcher implements XmlAwareBraceMatcher, LanguageBrac
 		switch(braceGroupId)
 		{
 			case XML_TAG_TOKEN_GROUP:
-				// Other xml languages may have nonbalanced tag names
+				// Other xml languages may have non-balanced tag names
 				return isStrictTagMatchingForFileType(fileType);
 
 			default:

@@ -44,7 +44,7 @@ public class CSharpDebuggerSourceLineResolver implements DotNetDebuggerSourceLin
 		root.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override
-			public void visitAnonymMethodExpression(CSharpDelegateExpressionImpl method)
+			public void visitAnonymousMethodExpression(CSharpDelegateExpressionImpl method)
 			{
 				lambdas.add(method);
 			}

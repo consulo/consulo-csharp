@@ -90,7 +90,7 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_PROPERTY_LBRACE", "Property left brace", CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE,
 					CodeStyleSettingsCustomizable.OptionAnchor.AFTER, "SPACE_BEFORE_METHOD_LBRACE");
 
-			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_INDEX_METHOD_LBRACE", "Index methd left brace", CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE,
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_INDEX_METHOD_LBRACE", "Index method left brace", CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE,
 					CodeStyleSettingsCustomizable.OptionAnchor.AFTER, "SPACE_BEFORE_METHOD_LBRACE");
 
 			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_FOREACH_LBRACE", "'foreach' left brace", CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE,

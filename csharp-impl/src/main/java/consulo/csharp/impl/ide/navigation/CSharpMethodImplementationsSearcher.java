@@ -38,7 +38,7 @@ public class CSharpMethodImplementationsSearcher implements DefinitionsScopedSea
     public boolean execute(DefinitionsScopedSearch.SearchParameters queryParameters, Predicate<? super PsiElement> consumer) {
         PsiElement element = queryParameters.getElement();
         if (element instanceof DotNetVirtualImplementOwner) {
-            Collection<DotNetVirtualImplementOwner> members = ReadAction.compute(() -> OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) element));
+            Collection<DotNetVirtualImplementOwner> members = ReadAction.compute(() -> OverrideUtil.collectOverriddenMembers((DotNetVirtualImplementOwner) element));
             return ContainerUtil.process(members, consumer);
         }
         return true;

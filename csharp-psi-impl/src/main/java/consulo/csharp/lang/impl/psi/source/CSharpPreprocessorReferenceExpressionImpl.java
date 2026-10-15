@@ -21,7 +21,7 @@ import consulo.annotation.access.RequiredWriteAction;
 import consulo.application.util.function.CommonProcessors;
 import consulo.application.util.function.Processor;
 import consulo.csharp.lang.impl.psi.CSharpMacroElementVisitor;
-import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorTokens;
 import consulo.csharp.lang.impl.psi.light.CSharpPreprocessorLightVariable;
 import consulo.csharp.lang.psi.CSharpPreprocessorDefine;
 import consulo.csharp.lang.psi.CSharpPreprocessorVariable;
@@ -69,7 +69,7 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 	@Override
 	public PsiElement getElement()
 	{
-		return findNotNullChildByType(CSharpPreprocesorTokens.IDENTIFIER);
+		return findNotNullChildByType(CSharpPreprocessorTokens.IDENTIFIER);
 	}
 
 	@RequiredReadAction

@@ -186,7 +186,7 @@ public class DeclarationParsing extends SharedParsingHelpers {
                         if (implementType == null) {
                             builder.error("Name is expected");
 
-                            // if we dont have name but we have lbracket - parse as index method
+                            // if we don't have name but we have lbracket - parse as index method
                             parseAfterName(builder, marker, builder.getTokenType() == LBRACKET ? THIS_KEYWORD : null, modifierSet);
                             return;
                         }

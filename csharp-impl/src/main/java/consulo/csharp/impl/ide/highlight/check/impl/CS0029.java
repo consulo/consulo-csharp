@@ -98,9 +98,9 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		}
 	}
 
-	private static final String[] ourNewArrayLenghtTypes = new String[]{
+	private static final String[] ourNewArrayLengthTypes = new String[]{
 			DotNetTypes.System.Int32,
-			// set int32 as default type for new array lenght
+			// set int32 as default type for new array length
 			DotNetTypes.System.Byte,
 			DotNetTypes.System.SByte,
 			DotNetTypes.System.Int16,
@@ -425,9 +425,9 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			CheckTarget target = new CheckTarget();
 			target.target(element);
 			target.actual(((DotNetExpression) element).toTypeRef(true));
-			for(String newArrayLenghtType : ourNewArrayLenghtTypes)
+			for(String newArrayLengthType : ourNewArrayLengthTypes)
 			{
-				target.expect(new CSharpTypeRefByQName(element, newArrayLenghtType));
+				target.expect(new CSharpTypeRefByQName(element, newArrayLengthType));
 			}
 			return target;
 		}

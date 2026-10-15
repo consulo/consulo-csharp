@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.lang.impl.parser.preprocessor;
 
 import consulo.csharp.lang.impl.lexer._CSharpMacroLexer;
-import consulo.csharp.lang.impl.psi.CSharpPreprocesorTokens;
+import consulo.csharp.lang.impl.psi.CSharpPreprocessorTokens;
 import consulo.language.ast.IElementType;
 import consulo.util.lang.StringUtil;
 
@@ -28,7 +27,7 @@ import java.util.Set;
 
 /**
  * @author VISTALL
- * @since 02.03.2016
+ * @since 2016-03-02
  */
 public class PreprocessorLightParser
 {
@@ -72,57 +71,57 @@ public class PreprocessorLightParser
 			switch(state)
 			{
 				case NONE:
-					if(elementType == CSharpPreprocesorTokens.MACRO_DEFINE_KEYWORD || elementType == CSharpPreprocesorTokens.MACRO_UNDEF_KEYWORD)
+					if(elementType == CSharpPreprocessorTokens.MACRO_DEFINE_KEYWORD || elementType == CSharpPreprocessorTokens.MACRO_UNDEF_KEYWORD)
 					{
 						state = State.DIRECTIVE;
-						directive = elementType == CSharpPreprocesorTokens.MACRO_DEFINE_KEYWORD ? Directive.DEFINE : Directive.UNDEF;
+						directive = elementType == CSharpPreprocessorTokens.MACRO_DEFINE_KEYWORD ? Directive.DEFINE : Directive.UNDEF;
 					}
-					else if(elementType == CSharpPreprocesorTokens.MACRO_IF_KEYWORD || elementType == CSharpPreprocesorTokens.MACRO_ELIF_KEYWORD)
+					else if(elementType == CSharpPreprocessorTokens.MACRO_IF_KEYWORD || elementType == CSharpPreprocessorTokens.MACRO_ELIF_KEYWORD)
 					{
 						state = State.DIRECTIVE;
-						directive = elementType == CSharpPreprocesorTokens.MACRO_IF_KEYWORD ? Directive.IF : Directive.ELIF;
+						directive = elementType == CSharpPreprocessorTokens.MACRO_IF_KEYWORD ? Directive.IF : Directive.ELIF;
 					}
-					else if(elementType == CSharpPreprocesorTokens.PRAGMA_KEYWORD)
+					else if(elementType == CSharpPreprocessorTokens.PRAGMA_KEYWORD)
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.PRAGMA;
 					}
-					else if(elementType == CSharpPreprocesorTokens.NULLABLE_KEYWORD)
+					else if(elementType == CSharpPreprocessorTokens.NULLABLE_KEYWORD)
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.NULLABLE;
 					}
-					else if(elementType == CSharpPreprocesorTokens.WARNING_KEYWORD)
+					else if(elementType == CSharpPreprocessorTokens.WARNING_KEYWORD)
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.WARNING;
 					}
-					else if(elementType == CSharpPreprocesorTokens.ERROR_KEYWORD)
+					else if(elementType == CSharpPreprocessorTokens.ERROR_KEYWORD)
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.ERROR;
 					}
-					else if(elementType == CSharpPreprocesorTokens.MACRO_ENDIF_KEYWORD)
+					else if(elementType == CSharpPreprocessorTokens.MACRO_ENDIF_KEYWORD)
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.ENDIF;
 					}
-					else if(elementType == CSharpPreprocesorTokens.MACRO_REGION_KEYWORD)
+					else if(elementType == CSharpPreprocessorTokens.MACRO_REGION_KEYWORD)
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.REGION;
 					}
-					else if(elementType == CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD)
+					else if(elementType == CSharpPreprocessorTokens.MACRO_ENDREGION_KEYWORD)
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.ENDREGION;
 					}
-					else if(elementType == CSharpPreprocesorTokens.MACRO_ELSE_KEYWORD)
+					else if(elementType == CSharpPreprocessorTokens.MACRO_ELSE_KEYWORD)
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.ELSE;
 					}
-					else if(elementType != CSharpPreprocesorTokens.WHITE_SPACE && elementType != CSharpPreprocesorTokens.LINE_COMMENT)
+					else if(elementType != CSharpPreprocessorTokens.WHITE_SPACE && elementType != CSharpPreprocessorTokens.LINE_COMMENT)
 					{
 						break loop;
 					}
@@ -132,12 +131,12 @@ public class PreprocessorLightParser
 					{
 						case DEFINE:
 						case UNDEF:
-							if(elementType == CSharpPreprocesorTokens.IDENTIFIER)
+							if(elementType == CSharpPreprocessorTokens.IDENTIFIER)
 							{
 								value = lexer.getTokenText();
 								state = State.VALUE;
 							}
-							else if(elementType != CSharpPreprocesorTokens.WHITE_SPACE)
+							else if(elementType != CSharpPreprocessorTokens.WHITE_SPACE)
 							{
 								break loop;
 							}
@@ -156,7 +155,7 @@ public class PreprocessorLightParser
 					}
 					break;
 				default:
-					if(elementType != CSharpPreprocesorTokens.WHITE_SPACE && elementType != CSharpPreprocesorTokens.LINE_COMMENT)
+					if(elementType != CSharpPreprocessorTokens.WHITE_SPACE && elementType != CSharpPreprocessorTokens.LINE_COMMENT)
 					{
 						break loop;
 					}

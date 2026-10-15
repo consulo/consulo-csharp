@@ -26,7 +26,7 @@ import consulo.csharp.impl.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.impl.ide.completion.insertHandler.CSharpParenthesesWithSemicolonInsertHandler;
 import consulo.csharp.impl.ide.completion.patterns.CSharpPatterns;
 import consulo.csharp.impl.ide.completion.util.SpaceInsertHandler;
-import consulo.csharp.impl.ide.completion.weigher.CSharpInheritCompletionWeighter;
+import consulo.csharp.impl.ide.completion.weigher.CSharpInheritCompletionWeigher;
 import consulo.csharp.impl.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.impl.ide.codeStyle.CSharpCodeGenerationSettings;
@@ -97,7 +97,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 				}
 
 				boolean allowAsync = CSharpModuleUtil.findLanguageVersion(parent).isAtLeast(CSharpLanguageVersion._4_0);
-				List<ExpectedTypeInfo> expectedTypeRefs = CSharpInheritCompletionWeighter.getExpectedTypeInfosForExpression(parameters, context);
+				List<ExpectedTypeInfo> expectedTypeRefs = CSharpInheritCompletionWeigher.getExpectedTypeInfosForExpression(parameters, context);
 				for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
 				{
 					DotNetTypeRef typeRef = expectedTypeRef.getTypeRef();
@@ -120,12 +120,17 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 							addDelegateExpressionLookup((CSharpLambdaResolveResult) typeResolveResult, result, parent, true);
 						}
 
-						addPrivatMethodImpl((CSharpLambdaResolveResult) typeResolveResult, parameters, result, parent);
+						addPrivateMethodImpl((CSharpLambdaResolveResult) typeResolveResult, parameters, result, parent);
 					}
 				}
 			}
 
-			private void addPrivatMethodImpl(CSharpLambdaResolveResult typeResolveResult, CompletionParameters parameters, CompletionResultSet result, CSharpReferenceExpressionEx parent)
+			private void addPrivateMethodImpl(
+				CSharpLambdaResolveResult typeResolveResult,
+				CompletionParameters parameters,
+				CompletionResultSet result,
+				CSharpReferenceExpressionEx parent
+			)
 			{
 				PsiElement maybeAssign = parent.getParent();
 				if(!(maybeAssign instanceof CSharpAssignmentExpressionImpl))

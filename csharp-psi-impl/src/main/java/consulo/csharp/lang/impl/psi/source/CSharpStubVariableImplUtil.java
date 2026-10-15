@@ -99,7 +99,7 @@ public class CSharpStubVariableImplUtil
 				int i = ArrayUtil.find(stubVariables, variable);
 				if(i <= 0)
 				{
-					LOGGER.error("Variable dont have type but dont second");
+					LOGGER.error("Variable has no type but is not a subsequent declaration");
 					return null;
 				}
 
@@ -110,7 +110,7 @@ public class CSharpStubVariableImplUtil
 				CSharpStubVariableImpl<?> prevVariable = PsiTreeUtil.getPrevSiblingOfType(variable, variable.getClass());
 				if(prevVariable == null)
 				{
-					LOGGER.error("Variable dont have type but dont second");
+					LOGGER.error("Variable has no type but is not a subsequent declaration");
 					return null;
 				}
 				return prevVariable;

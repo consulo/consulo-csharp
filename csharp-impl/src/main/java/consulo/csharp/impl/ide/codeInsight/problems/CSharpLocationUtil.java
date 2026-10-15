@@ -43,7 +43,7 @@ public class CSharpLocationUtil
 	{
 		if(virtualFile == null || virtualFile.getFileType() != CSharpFileType.INSTANCE)
 		{
-			// if not virtual file - we dont need break highlight
+			// if not virtual file - we don't need to break highlight
 			return true;
 		}
 

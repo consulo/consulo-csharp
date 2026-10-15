@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.lang.impl.psi.cast;
 
 import consulo.csharp.lang.CSharpCastType;
@@ -24,10 +23,10 @@ import consulo.language.psi.scope.GlobalSearchScope;
  * @author VISTALL
  * @since 2023-12-31
  */
-public record CSharpImpicitCastKey(DotNetTypeRef to,
-                                   DotNetTypeRef from,
-                                   CSharpCastType castType,
-                                   GlobalSearchScope searchScope) {
-
-    
+public record CSharpImplicitCastKey(
+    DotNetTypeRef to,
+    DotNetTypeRef from,
+    CSharpCastType castType,
+    GlobalSearchScope searchScope
+) {
 }

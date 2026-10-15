@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
-import consulo.csharp.lang.psi.CSharpAnonymFieldOrPropertySet;
+import consulo.csharp.lang.psi.CSharpAnonymousFieldOrPropertySet;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.dotnet.psi.DotNetExpression;
@@ -27,11 +27,11 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
- * @since 07.04.2015
+ * @since 2015-04-07
  */
-public class CSharpAnonymFieldOrPropertySetImpl extends CSharpElementImpl implements CSharpAnonymFieldOrPropertySet
+public class CSharpAnonymousFieldOrPropertySetImpl extends CSharpElementImpl implements CSharpAnonymousFieldOrPropertySet
 {
-	public CSharpAnonymFieldOrPropertySetImpl(IElementType elementType)
+	public CSharpAnonymousFieldOrPropertySetImpl(IElementType elementType)
 	{
 		super(elementType);
 	}

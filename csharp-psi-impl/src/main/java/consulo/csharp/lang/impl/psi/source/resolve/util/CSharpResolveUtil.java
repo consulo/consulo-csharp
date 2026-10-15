@@ -383,7 +383,7 @@ public class CSharpResolveUtil
 			}
 
 			String parentQName = ((DotNetNamespaceAsElement) entrance).getPresentableParentQName();
-			// dont go to root namespace
+			// Don't go to root namespace
 			if(StringUtil.isEmpty(parentQName))
 			{
 				return true;

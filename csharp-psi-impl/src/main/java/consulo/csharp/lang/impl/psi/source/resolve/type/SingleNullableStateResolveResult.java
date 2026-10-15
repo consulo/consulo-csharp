@@ -26,7 +26,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
  */
 public abstract class SingleNullableStateResolveResult implements DotNetTypeResolveResult
 {
-	private NotNullLazyValue<Boolean> myNullalbeCacheValue = NotNullLazyValue.createValue(this::isNullableImpl);
+	private NotNullLazyValue<Boolean> myNullableCacheValue = NotNullLazyValue.createValue(this::isNullableImpl);
 
 	@RequiredReadAction
 	public abstract boolean isNullableImpl();
@@ -34,6 +34,6 @@ public abstract class SingleNullableStateResolveResult implements DotNetTypeReso
 	@Override
 	public final boolean isNullable()
 	{
-		return myNullalbeCacheValue.getValue();
+		return myNullableCacheValue.getValue();
 	}
 }

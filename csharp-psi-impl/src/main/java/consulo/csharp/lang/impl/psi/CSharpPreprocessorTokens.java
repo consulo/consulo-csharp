@@ -22,9 +22,9 @@ import consulo.language.ast.StandardTokenTypes;
 
 /**
  * @author VISTALL
- * @since 23.01.14
+ * @since 2014-01-23
  */
-public interface CSharpPreprocesorTokens extends StandardTokenTypes {
+public interface CSharpPreprocessorTokens extends StandardTokenTypes {
     IElementType MACRO_IF_KEYWORD = new IElementType("MACRO_IF_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
     IElementType PRAGMA_KEYWORD = new IElementType("PRAGMA_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);

@@ -52,10 +52,10 @@ import java.util.List;
 
 /**
  * @author VISTALL
- * @since 27.07.2015
+ * @since 2015-07-27
  */
 @ExtensionImpl(order = "before stats, before csharpKindSorter")
-public class CSharpInheritCompletionWeighter extends CompletionWeigher
+public class CSharpInheritCompletionWeigher extends CompletionWeigher
 {
 	public enum Position
 	{
@@ -65,8 +65,10 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 		HIGH
 	}
 
-	private static final NotNullLazyKey<List<ExpectedTypeInfo>, CompletionLocation> ourExpectedInfoTypes = NotNullLazyKey.create("ourExpectedInfoTypes", it -> getExpectedTypeInfosForExpression(it
-			.getCompletionParameters().getPosition(), null));
+	private static final NotNullLazyKey<List<ExpectedTypeInfo>, CompletionLocation> ourExpectedInfoTypes = NotNullLazyKey.create(
+		"ourExpectedInfoTypes",
+		it -> getExpectedTypeInfosForExpression(it.getCompletionParameters().getPosition(), null)
+	);
 
 
 	@RequiredReadAction
@@ -165,7 +167,7 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 			List<ExpectedTypeInfo> expectedTypeRefs,
 			Position upPosition)
 	{
-		// if we have not type declaration, make types lower, dont allow int i = Int32 completion more high
+		// If we have no type declaration, make types lower, don't allow int i = Int32 completion more high
 		if(referenceExpressionEx.kind() != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && CSharpCompletionUtil.isTypeLikeElementWithNamespace(psiElement) && upPosition == Position.UP_REF)
 		{
 			return Position.DOWN;

@@ -72,10 +72,10 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 
     @Override
     public CSharpMethodDeclStub deserialize(StubInputStream stubInputStream, StubElement stubElement) throws IOException {
-        StringRef qname = stubInputStream.readName();
+        StringRef qName = stubInputStream.readName();
         int otherModifierMask = stubInputStream.readVarInt();
         int operatorIndex = stubInputStream.readVarInt();
-        return new CSharpMethodDeclStub(stubElement, StringRef.toString(qname), otherModifierMask, operatorIndex);
+        return new CSharpMethodDeclStub(stubElement, StringRef.toString(qName), otherModifierMask, operatorIndex);
     }
 
     @Override

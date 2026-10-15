@@ -225,7 +225,7 @@ public interface CSharpElements {
 
     IElementType LAMBDA_PARAMETER_LIST = new CompositeElementTypeAsPsiFactory("LAMBDA_PARAMETER_LIST", CSharpLanguage.INSTANCE, CSharpLambdaParameterListImpl::new);
 
-    IElementType ANONYM_FIELD_OR_PROPERTY_SET = new CompositeElementTypeAsPsiFactory("ANONYM_FIELD_OR_PROPERTY_SET", CSharpLanguage.INSTANCE, CSharpAnonymFieldOrPropertySetImpl::new);
+    IElementType ANONYMOUS_FIELD_OR_PROPERTY_SET = new CompositeElementTypeAsPsiFactory("ANONYMOUS_FIELD_OR_PROPERTY_SET", CSharpLanguage.INSTANCE, CSharpAnonymousFieldOrPropertySetImpl::new);
 
     IElementType NAMED_FIELD_OR_PROPERTY_SET = new CompositeElementTypeAsPsiFactory("NAMED_FIELD_OR_PROPERTY_SET", CSharpLanguage.INSTANCE, CSharpNamedFieldOrPropertySetImpl::new);
 

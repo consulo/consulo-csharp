@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.lang.impl.parser.decl;
 
 import consulo.csharp.lang.impl.parser.CSharpBuilderWrapper;
@@ -31,7 +30,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
- * @since 28.11.13.
+ * @since 2013-11-28
  */
 public class MethodParsing extends MemberWithBodyParsing {
     public static enum Target {
@@ -98,7 +97,7 @@ public class MethodParsing extends MemberWithBodyParsing {
         GenericParameterParsing.parseList(builder);
 
         if (builder.getTokenType() == LPAR) {
-            // deconstructors dont process any parameters
+            // deconstructors don't process any parameters
             if (target == Target.DECONSTRUCTOR) {
                 PsiBuilder.Marker parameterMarker = builder.mark();
                 builder.advanceLexer();
@@ -263,8 +262,8 @@ public class MethodParsing extends MemberWithBodyParsing {
         TypeInfo typeInfo = parseType(builder, flags);
         if (typeInfo == null) {
             if (modifierPair.getSecond().isEmpty()) {
-                // if no modifiers but we failed parse type - need go advance, due ill infinity loop inside parseParameterList,
-                // but dont eat close brace
+                // If there are no modifiers but we failed to parse type - we need to advance,
+                // otherwise there will be an infinite loop inside parseParameterList, but don't eat closing brace
                 if (builder.getTokenType() != end) {
                     builder.advanceLexer();
                 }

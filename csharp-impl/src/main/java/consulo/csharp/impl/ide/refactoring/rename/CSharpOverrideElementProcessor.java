@@ -83,7 +83,7 @@ public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 	public static Set<DotNetVirtualImplementOwner> getAllElements(PsiElement element)
 	{
 		Collection<DotNetVirtualImplementOwner> temp1 = OverrideUtil.collectOverridingMembers((DotNetVirtualImplementOwner) element);
-		Collection<DotNetVirtualImplementOwner> temp2 = OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) element);
+		Collection<DotNetVirtualImplementOwner> temp2 = OverrideUtil.collectOverriddenMembers((DotNetVirtualImplementOwner) element);
 		Set<DotNetVirtualImplementOwner> set = new HashSet<DotNetVirtualImplementOwner>(temp1.size() + temp1.size());
 		set.addAll(temp1);
 		set.addAll(temp2);

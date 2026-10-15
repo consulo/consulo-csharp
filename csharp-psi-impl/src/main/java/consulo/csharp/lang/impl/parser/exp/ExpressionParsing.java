@@ -1065,9 +1065,9 @@ public class ExpressionParsing extends SharedParsingHelpers {
     private static void parseLambdaParameterList(final CSharpBuilderWrapper builder) {
         PsiBuilder.Marker mark = builder.mark();
 
-        boolean lpar = expect(builder, LPAR, null);
+        boolean lPar = expect(builder, LPAR, null);
 
-        if (!lpar) {
+        if (!lPar) {
             parseLambdaParameter(builder, true);
         }
         else {
@@ -1175,10 +1175,10 @@ public class ExpressionParsing extends SharedParsingHelpers {
 
     private static enum AfterNewParsingTarget {
         NONE,
-        ANONYM_PROPERTY_SET_LIST,
+        ANONYMOUS_PROPERTY_SET_LIST,
         PROPERTY_SET_LIST,
-        ARRAY_INITIALZER,
-        DICTIONARY_INITIALZER
+        ARRAY_INITIALIZER,
+        DICTIONARY_INITIALIZER
     }
 
     private static PsiBuilder.Marker parseNewExpression(CSharpBuilderWrapper builder, PsiBuilder.Marker mark, ModifierSet set, int flags) {
@@ -1215,13 +1215,13 @@ public class ExpressionParsing extends SharedParsingHelpers {
             case PROPERTY_SET_LIST:
                 parseNamedFieldOrPropertySetBlock(builder, set, flags);
                 break;
-            case ANONYM_PROPERTY_SET_LIST:
-                parseAnonymFieldOrPropertySetBlock(builder, set, flags);
+            case ANONYMOUS_PROPERTY_SET_LIST:
+                parseAnonymousFieldOrPropertySetBlock(builder, set, flags);
                 break;
-            case DICTIONARY_INITIALZER:
+            case DICTIONARY_INITIALIZER:
                 parseDictionaryInitializerList(builder, set);
                 break;
-            case ARRAY_INITIALZER:
+            case ARRAY_INITIALIZER:
                 parseArrayInitializer(builder, ARRAY_INITIALIZER, set, flags);
                 break;
         }
@@ -1286,7 +1286,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
 
     private static AfterNewParsingTarget getTarget(CSharpBuilderWrapper builderWrapper, boolean forceArray, TypeInfo typeInfo) {
         if (typeInfo != null && typeInfo.isArray) {
-            return AfterNewParsingTarget.ARRAY_INITIALZER;
+            return AfterNewParsingTarget.ARRAY_INITIALIZER;
         }
 
         if (builderWrapper.getTokenType() != LBRACE) {
@@ -1294,23 +1294,23 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
 
         if (forceArray) {
-            return AfterNewParsingTarget.ARRAY_INITIALZER;
+            return AfterNewParsingTarget.ARRAY_INITIALIZER;
         }
 
-        // force property list, anonym object
+        // force property list, anonymous object
         if (typeInfo == null) {
-            return AfterNewParsingTarget.ANONYM_PROPERTY_SET_LIST;
+            return AfterNewParsingTarget.ANONYMOUS_PROPERTY_SET_LIST;
         }
 
         if (builderWrapper.lookAhead(1) == LBRACKET) {
-            return AfterNewParsingTarget.DICTIONARY_INITIALZER;
+            return AfterNewParsingTarget.DICTIONARY_INITIALIZER;
         }
 
         if (builderWrapper.lookAhead(1) == CSharpTokens.IDENTIFIER && builderWrapper.lookAhead(2) == EQ) {
             return AfterNewParsingTarget.PROPERTY_SET_LIST;
         }
         else {
-            return AfterNewParsingTarget.ARRAY_INITIALZER;
+            return AfterNewParsingTarget.ARRAY_INITIALIZER;
         }
     }
 
@@ -1391,7 +1391,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return headerMarker;
     }
 
-    private static void parseAnonymFieldOrPropertySetBlock(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+    private static void parseAnonymousFieldOrPropertySetBlock(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         PsiBuilder.Marker mark = builder.mark();
 
         builder.advanceLexer();
@@ -1415,7 +1415,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
                             tempMarker.error("Can use assign or reference expression");
                         }
                         else {
-                            tempMarker.done(CSharpElements.ANONYM_FIELD_OR_PROPERTY_SET);
+                            tempMarker.done(CSharpElements.ANONYMOUS_FIELD_OR_PROPERTY_SET);
                         }
                     }
                 }
