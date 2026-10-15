@@ -90,7 +90,7 @@ public final class CSharpConfigurationPanel {
         compileLevelBox.addValueListener(event -> ext.setCompilerTarget(StringUtil.nullize(event.getValue(), true)));
 
         ComboBox<CSharpPlatform> platformBox = ComboBox.create(CSharpPlatform.values());
-        platformBox.setRender((presentation, item) -> {
+        platformBox.setRenderer((presentation, item) -> {
             CSharpPlatform platform = item.getValue();
             if (platform == null) {
                 return;
@@ -197,7 +197,7 @@ public final class CSharpConfigurationPanel {
         }
 
         ComboBox<Object> versionBox = ComboBox.create(items);
-        versionBox.setRender((presentation, item) -> {
+        versionBox.setRenderer((presentation, item) -> {
             Object value = item.getValue();
             if (value instanceof CSharpLanguageVersion languageVersion) {
                 presentation.append(languageVersion.getPresentableName());
@@ -265,8 +265,9 @@ public final class CSharpConfigurationPanel {
             compilerBox.setSelectedBundle(customCompilerSdkPointer.getName());
         }
 
-        compilerBox.getComponent().addValueListener(event ->
-            customCompilerSdkPointer.set(compilerBox.getSelectedModuleName(), compilerBox.getSelectedBundleName()));
+        compilerBox.getComponent().addValueListener(
+            event -> customCompilerSdkPointer.set(compilerBox.getSelectedModuleName(), compilerBox.getSelectedBundleName())
+        );
         return compilerBox;
     }
 }

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.navigation;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.codeEditor.Editor;
 import consulo.csharp.impl.ide.lineMarkerProvider.PartialTypeCollector;
@@ -31,25 +31,23 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * @author VISTALL
- * @since 02.05.2015
+ * @since 2015-05-02
  */
 @ExtensionImpl
 public class CSharpPartialGotoDeclarationHandler implements GotoDeclarationHandlerEx {
-    @Nullable
     @Override
-    public PsiElement[] getGotoDeclarationTargets(PsiElement sourceElement, int offset, Editor editor) {
+    @RequiredReadAction
+    public PsiElement @Nullable [] getGotoDeclarationTargets(PsiElement sourceElement, int offset, Editor editor) {
         ASTNode node = sourceElement == null ? null : sourceElement.getNode();
         if (node != null && node.getElementType() == CSharpTokens.IDENTIFIER) {
-            PsiElement parent = sourceElement.getParent();
-            if (parent instanceof CSharpReferenceExpression) {
-                PsiElement resolvedElement = ((CSharpReferenceExpression) parent).resolve();
-                if (resolvedElement instanceof CSharpCompositeTypeDeclaration) {
-                    return ((CSharpCompositeTypeDeclaration) resolvedElement).getTypeDeclarations();
+            if (sourceElement.getParent() instanceof CSharpReferenceExpression ref) {
+                PsiElement resolvedElement = ref.resolve();
+                if (resolvedElement instanceof CSharpCompositeTypeDeclaration compositeTypeDecl) {
+                    return compositeTypeDecl.getTypeDeclarations();
                 }
-                else if (resolvedElement instanceof CSharpLightConstructorDeclarationBuilder) {
-                    PsiElement nextParent = resolvedElement.getParent();
-                    if (nextParent instanceof CSharpCompositeTypeDeclaration) {
-                        return ((CSharpCompositeTypeDeclaration) nextParent).getTypeDeclarations();
+                else if (resolvedElement instanceof CSharpLightConstructorDeclarationBuilder lightConstructorDeclBuilder) {
+                    if (lightConstructorDeclBuilder.getParent() instanceof CSharpCompositeTypeDeclaration compositeTypeDecl) {
+                        return compositeTypeDecl.getTypeDeclarations();
                     }
                 }
             }
@@ -58,7 +56,7 @@ public class CSharpPartialGotoDeclarationHandler implements GotoDeclarationHandl
     }
 
     @Override
-    public PsiElementListCellRenderer<PsiElement> createRender(PsiElement[] elements) {
+    public PsiElementListCellRenderer<PsiElement> createRenderer(PsiElement[] elements) {
         return new PartialTypeCollector.OurRender();
     }
 }
