@@ -21,6 +21,7 @@ import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpNullableTypeUtil;
+import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.lang.impl.psi.light.CSharpLightCallArgument;
@@ -31,6 +32,7 @@ import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.MethodResolve
 import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.NCallArgumentBuilder;
 import consulo.csharp.lang.impl.psi.source.resolve.operatorResolving.ImplicitCastInfo;
 import consulo.csharp.lang.impl.psi.source.resolve.operatorResolving.ImplicitOperatorArgumentAsCallArgumentWrapper;
+import consulo.csharp.lang.impl.psi.source.resolve.operatorResolving.NumericPromotion;
 import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideProcessor;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpOperatorNameHelper;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpPointerTypeRef;
@@ -42,8 +44,9 @@ import consulo.document.util.TextRange;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.dotnet.psi.resolve.DotNetPointerTypeRef;
-import consulo.dotnet.psi.resolve.DotNetPsiSearcher;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.util.ArrayUtil2;
@@ -241,6 +244,11 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
                 return new CSharpTypeRefByQName(this, DotNetTypes.System.Void);
             }
 
+            MethodResolveResult[] predefined = resolvePredefinedNumericOperator(elementType, parameterExpressions);
+            if (predefined != null) {
+                return predefined;
+            }
+
             final Set<MethodResolveResult> resolveResults = new LinkedHashSet<>();
 
             for (final DotNetExpression dotNetExpression : parameterExpressions) {
@@ -275,10 +283,111 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
             MethodResolveResult[] results = ContainerUtil.toArray(resolveResults, MethodResolveResult.ARRAY_FACTORY);
             Arrays.sort(results, WeightUtil.ourComparator);
-            return results;
+            return dropSameOperators(results);
         }
 
         return null;
+    }
+
+    /**
+     * Operands of primitive numeric types are converted to the type numeric promotion gives, and the operator of that
+     * type is the one - no search over every implicit conversion, which ties when more than one type has the operator.
+     * A nullable operand makes it the lifted operator of that type.
+     *
+     * @return null if the operands are not numeric, empty if C# has no operator for them, else the operator
+     */
+    @RequiredReadAction
+    private MethodResolveResult @Nullable [] resolvePredefinedNumericOperator(IElementType elementType, DotNetExpression[] parameterExpressions) {
+        DotNetTypeRef[] operandTypeRefs = new DotNetTypeRef[parameterExpressions.length];
+        DotNetTypeRef[] underlyingTypeRefs = new DotNetTypeRef[parameterExpressions.length];
+        boolean lifted = false;
+        for (int i = 0; i < parameterExpressions.length; i++) {
+            operandTypeRefs[i] = parameterExpressions[i].toTypeRef(true);
+            underlyingTypeRefs[i] = CSharpNullableTypeUtil.unbox(operandTypeRefs[i]);
+            lifted |= underlyingTypeRefs[i] != operandTypeRefs[i];
+        }
+
+        String[] parameterTypes = NumericPromotion.promote(elementType, underlyingTypeRefs);
+        if (parameterTypes == null) {
+            return null;
+        }
+        if (parameterTypes.length == 0) {
+            return MethodResolveResult.EMPTY_ARRAY;
+        }
+
+        DotNetTypeRef ownerTypeRef = parameterTypeRef(parameterTypes[0], lifted);
+        Set<PsiElement> psiElements = resolveElements(elementType, ownerTypeRef);
+        if (psiElements == null) {
+            return null;
+        }
+
+        CSharpCallArgument[] arguments = new CSharpCallArgument[parameterExpressions.length];
+        for (int i = 0; i < parameterExpressions.length; i++) {
+            DotNetTypeRef parameterTypeRef = parameterTypeRef(parameterTypes[i], lifted);
+            ImplicitOperatorArgumentAsCallArgumentWrapper wrapper = new ImplicitOperatorArgumentAsCallArgumentWrapper(parameterExpressions[i], parameterTypeRef);
+            wrapper.putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(operandTypeRefs[i], parameterTypeRef));
+            arguments[i] = wrapper;
+        }
+
+        List<DotNetLikeMethodDeclaration> methods = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
+        List<MethodResolveResult> results = new ArrayList<>();
+        for (DotNetLikeMethodDeclaration method : methods) {
+            if (method instanceof DotNetVirtualImplementOwner implementOwner && implementOwner.getTypeForImplement() != null) {
+                continue;
+            }
+
+            // the predefined operator is the promoted type's own - not object == from its base types; lifted ones live in Nullable<T>
+            String ownerVmQName = lifted ? DotNetTypes.System.Nullable$1 : parameterTypes[0];
+            if (!(method.getParent() instanceof DotNetTypeDeclaration owner) || !ownerVmQName.equals(owner.getVmQName())) {
+                continue;
+            }
+
+            MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(arguments, method, getResolveScope(), true);
+            if (calc.isValidResult()) {
+                results.add(MethodResolveResult.createResult(calc, method, null));
+            }
+        }
+
+        if (results.isEmpty()) {
+            return null;
+        }
+
+        MethodResolveResult[] array = results.toArray(MethodResolveResult.ARRAY_FACTORY);
+        Arrays.sort(array, WeightUtil.ourComparator);
+        return array;
+    }
+
+    /**
+     * The same operator is found through more than one operand - a lifted one through the nullable operand and through the
+     * implicit conversion of the other to nullable - as different light elements; the best weighted valid one stays.
+     */
+    @RequiredReadAction
+    private static MethodResolveResult[] dropSameOperators(MethodResolveResult[] sortedResults) {
+        Map<String, MethodResolveResult> unique = new LinkedHashMap<>();
+        for (MethodResolveResult result : sortedResults) {
+            PsiElement element = result.getElement();
+            if (!(element instanceof DotNetLikeMethodDeclaration method)) {
+                unique.put(String.valueOf(System.identityHashCode(result)), result);
+                continue;
+            }
+
+            StringBuilder key = new StringBuilder();
+            PsiElement parent = method.getParent();
+            key.append(parent instanceof DotNetTypeDeclaration owner ? owner.getVmQName() : String.valueOf(System.identityHashCode(parent)));
+            key.append(' ').append(method.getName());
+            for (DotNetTypeRef parameterTypeRef : method.getParameterTypeRefs()) {
+                key.append(' ').append(CSharpTypeRefPresentationUtil.buildText(parameterTypeRef, CSharpTypeRefPresentationUtil.QUALIFIED_NAME));
+            }
+            // a valid result wins over an invalid one of the same operator
+            unique.merge(key.toString(), result, (old, it) -> !old.isValidResult() && it.isValidResult() ? it : old);
+        }
+        return unique.size() == sortedResults.length ? sortedResults : unique.values().toArray(MethodResolveResult.ARRAY_FACTORY);
+    }
+
+    @RequiredReadAction
+    private DotNetTypeRef parameterTypeRef(String vmQName, boolean lifted) {
+        DotNetTypeRef typeRef = new CSharpTypeRefByQName(this, vmQName);
+        return lifted ? CSharpNullableTypeUtil.boxIfNeed(typeRef) : typeRef;
     }
 
     @RequiredReadAction
@@ -332,6 +441,11 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
         List<DotNetLikeMethodDeclaration> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
         for (DotNetLikeMethodDeclaration psiElement : elements) {
+            // an explicit interface implementation (static int IAdditionOperators<int, int, int>.operator +) is not reachable by the operator
+            if (psiElement instanceof DotNetVirtualImplementOwner implementOwner && implementOwner.getTypeForImplement() != null) {
+                continue;
+            }
+
             MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(arguments, psiElement, getResolveScope(), true);
             if (implicitExpression != null) {
                 calc = calc.dupWithResult(-3000000);
@@ -363,22 +477,14 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
             }
 
             AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
-            OverrideProcessor overrideProcessor = OverrideProcessor.ALWAYS_TRUE;
 
-            DotNetPsiSearcher searcher = DotNetPsiSearcher.getInstance(element.getProject());
-            // net7 + supports own operators
-            if (searcher.findType("System.Numerics.IBitwiseOperators`3", element.getResolveScope()) != null) {
-                overrideProcessor = (target, hidedMember) -> {
-                    psiElementProcessor.test(new CSharpResolveResult(hidedMember));
-                    return true;
-                };
-            }
-
+            // operators of primitive types are the language ones (see operatorStubs.xml) on every SDK - the generic math
+            // interfaces of net7+ declare them as static abstract members, which are no candidates for a concrete type
             MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(
                 this,
                 psiElementProcessor,
                 new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP},
-                overrideProcessor
+                OverrideProcessor.ALWAYS_TRUE
             );
 
             ResolveState state = ResolveState.initial();

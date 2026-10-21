@@ -250,7 +250,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		else if(element instanceof DotNetExpression && element.getParent() instanceof CSharpMethodDeclaration)
 		{
 			CSharpMethodDeclaration parent = (CSharpMethodDeclaration) element.getParent();
-			assert parent.getCodeBlock() == element;
+			assert parent.getCodeBlock().getElement() == element;
 
 			CSharpImplicitReturnModel model = CSharpImplicitReturnModel.None;
 			if(parent.hasModifier(CSharpModifier.ASYNC))

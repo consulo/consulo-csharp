@@ -19,10 +19,12 @@ package consulo.csharp.lang.impl.psi.source.resolve.genericInference;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.progress.ProgressManager;
 import consulo.application.util.RecursionManager;
+import consulo.csharp.lang.impl.psi.CSharpExpressionTreeUtil;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.NCallArgumentBuilder;
 import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NCallArgument;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NParamsCallArgument;
 import consulo.csharp.lang.impl.psi.source.resolve.type.*;
 import consulo.csharp.lang.impl.psi.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.csharp.lang.psi.CSharpCallArgument;
@@ -33,14 +35,11 @@ import consulo.dotnet.psi.*;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
-import consulo.dotnet.util.ArrayUtil2;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ContainerUtil;
-import consulo.util.collection.SmartList;
 import consulo.util.dataholder.Key;
-import consulo.util.lang.Couple;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -111,231 +110,182 @@ public class GenericInferenceUtil
 			return new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
 		}
 
-		final Map<DotNetGenericParameter, DotNetTypeRef> map = new HashMap<>();
+		InferenceBounds bounds = new InferenceBounds(genericParameters, scopeElement.getResolveScope());
 
-		for(NCallArgument nCallArgument : methodCallArguments)
+		// lambdas need the types fixed from the other arguments first (the two phases of C# spec 12.6.3)
+		List<NCallArgument> lambdaArguments = new ArrayList<>();
+		for(NCallArgument nCallArgument : expandParams(methodCallArguments))
 		{
-			ProgressManager.checkCanceled();
-
-			DotNetTypeRef parameterTypeRef = nCallArgument.getParameterTypeRef();
-			if(parameterTypeRef == null)
+			if(isLambdaArgument(nCallArgument))
 			{
-				continue;
+				lambdaArguments.add(nCallArgument);
 			}
-
-			DotNetTypeRef expressionTypeRef = unwrapPossibleGenericTypeRefs(nCallArgument, parameterTypeRef, map);
-			if(expressionTypeRef instanceof CSharpFastImplicitTypeRef)
+			else
 			{
-				DotNetTypeRef mirror = ((CSharpFastImplicitTypeRef) expressionTypeRef).doMirror(parameterTypeRef);
-				if(mirror != null)
-				{
-					expressionTypeRef = mirror;
-				}
+				inferFromArgument(bounds, nCallArgument, Map.of());
 			}
-
-			DotNetTypeResolveResult parameterTypeResolveResult = parameterTypeRef.resolve();
-			DotNetTypeResolveResult expressionTypeResolveResult = expressionTypeRef.resolve();
-
-			if(parameterTypeResolveResult instanceof CSharpLambdaResolveResult && expressionTypeResolveResult instanceof CSharpLambdaResolveResult)
-			{
-				CSharpLambdaResolveResult pLambdaResolveResult = (CSharpLambdaResolveResult) parameterTypeResolveResult;
-				CSharpLambdaResolveResult eLambdaResolveResult = (CSharpLambdaResolveResult) expressionTypeResolveResult;
-
-				DotNetTypeRef[] pParameterTypeRefs = pLambdaResolveResult.getParameterTypeRefs();
-				DotNetTypeRef[] eParameterTypeRefs = eLambdaResolveResult.getParameterTypeRefs();
-
-				if(pParameterTypeRefs.length == eParameterTypeRefs.length)
-				{
-					for(int i = 0; i < eParameterTypeRefs.length; i++)
-					{
-						DotNetTypeRef pParameterTypeRef = pParameterTypeRefs[i];
-						DotNetTypeRef eParameterTypeRef = eParameterTypeRefs[i];
-
-						inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, pParameterTypeRef, eParameterTypeRef, scopeElement);
-					}
-				}
-
-				inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, pLambdaResolveResult.getReturnTypeRef(), eLambdaResolveResult.getReturnTypeRef(), scopeElement);
-			}
-
-			if(parameterTypeResolveResult instanceof CSharpArrayTypeRef.ArrayResolveResult && expressionTypeResolveResult instanceof CSharpArrayTypeRef.ArrayResolveResult)
-			{
-				DotNetTypeRef pTypeRef = ((CSharpArrayTypeRef.ArrayResolveResult) parameterTypeResolveResult).getInnerTypeRef();
-				DotNetTypeRef eTypeRef = ((CSharpArrayTypeRef.ArrayResolveResult) expressionTypeResolveResult).getInnerTypeRef();
-				inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, pTypeRef, eTypeRef, scopeElement);
-			}
-
-			inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, parameterTypeRef, expressionTypeRef, scopeElement);
 		}
 
+		for(NCallArgument lambdaArgument : lambdaArguments)
+		{
+			inferFromArgument(bounds, lambdaArgument, bounds.fix());
+		}
+
+		Map<DotNetGenericParameter, DotNetTypeRef> map = bounds.fix();
 		return new GenericInferenceResult(genericParameters.length == map.size(), CSharpGenericExtractor.create(map));
 	}
 
+	/**
+	 * The return type of the method of a method group called with the parameter types of the delegate - a generic method
+	 * infers its own type arguments from them: M71 for Func1&lt;int, R&gt; returns Class&lt;int&gt;.
+	 */
 	@RequiredReadAction
-	private static void inferenceGenericFromExpressionTypeRefAndParameterTypeRef(DotNetGenericParameter[] methodGenericParameters,
-																				 Map<DotNetGenericParameter, DotNetTypeRef> map,
-																				 DotNetTypeRef parameterTypeRef,
-																				 DotNetTypeRef expressionTypeRef,
-																				 PsiElement scope)
+	private static DotNetTypeRef methodGroupReturnType(NCallArgument nCallArgument,
+													   CSharpLambdaResolveResult mirrored,
+													   DotNetTypeRef[] delegateParameterTypeRefs,
+													   Map<DotNetGenericParameter, DotNetTypeRef> fixedSoFar)
 	{
-		if(expressionTypeRef == DotNetTypeRef.AUTO_TYPE || expressionTypeRef == DotNetTypeRef.UNKNOWN_TYPE || expressionTypeRef == DotNetTypeRef.ERROR_TYPE)
+		if(!(nCallArgument.getTypeRef() instanceof CSharpElementGroupTypeRef groupTypeRef))
 		{
-			return;
+			return mirrored.getReturnTypeRef();
 		}
 
-		ProgressManager.checkCanceled();
-
-		DotNetTypeResolveResult parameterTypeResolveResult = parameterTypeRef.resolve();
-
-		PsiElement parameterElement = parameterTypeResolveResult.getElement();
-		for(DotNetGenericParameter genericParameter : methodGenericParameters)
+		DotNetGenericExtractor fixedExtractor = CSharpGenericExtractor.create(fixedSoFar);
+		for(PsiElement element : groupTypeRef.getElementGroup().getElements())
 		{
-			if(map.containsKey(genericParameter))
+			if(!(element instanceof DotNetLikeMethodDeclaration method) || method.getParameterTypeRefs().length != delegateParameterTypeRefs.length)
 			{
 				continue;
 			}
 
-			if(genericParameter.isEquivalentTo(parameterElement))
-			{
-				map.put(genericParameter, expressionTypeRef);
-				return;
-			}
-		}
-
-		DotNetTypeResolveResult expressionResultResult = CSharpTypeUtil.findTypeRefFromExtends(expressionTypeRef, parameterTypeRef);
-		if(expressionResultResult == null)
-		{
-			return;
-		}
-
-		PsiElement expressionElement = expressionResultResult.getElement();
-		DotNetGenericExtractor expressionExtractor = expressionResultResult.getGenericExtractor();
-
-		if(expressionElement instanceof DotNetGenericParameterListOwner)
-		{
-			DotNetGenericParameter[] expressionGenericParameters = ((DotNetGenericParameterListOwner) expressionElement).getGenericParameters();
-
-			tryToFindTypeArgumentsForParameters(methodGenericParameters, map, parameterTypeResolveResult, expressionExtractor, expressionGenericParameters);
-
-			// inference ended
-			if(map.size() == methodGenericParameters.length)
-			{
-				return;
-			}
-
-			// list of deep type arguments <expression, parameter>
-			List<Couple<DotNetTypeResolveResult>> levels = new SmartList<>();
-
-			pushTypeArgumentsDeep(levels, expressionGenericParameters, expressionExtractor, parameterTypeResolveResult.getGenericExtractor());
-
-			for(Couple<DotNetTypeResolveResult> level : levels)
-			{
-				DotNetTypeResolveResult expressionTypeResult = level.getFirst();
-				DotNetTypeResolveResult parameterTypeResult = level.getSecond();
-
-				DotNetGenericParameter[] otherExpressionGenericParameters = ((DotNetTypeDeclaration) expressionTypeResult.getElement()).getGenericParameters();
-
-				tryToFindTypeArgumentsForParameters(methodGenericParameters, map, parameterTypeResult, expressionTypeResult.getGenericExtractor(), otherExpressionGenericParameters);
-			}
-		}
-	}
-
-	@RequiredReadAction
-	private static void tryToFindTypeArgumentsForParameters(DotNetGenericParameter[] methodGenericParameters,
-															Map<DotNetGenericParameter, DotNetTypeRef> map,
-															DotNetTypeResolveResult parameterTypeResolveResult,
-															DotNetGenericExtractor expressionExtractor,
-															DotNetGenericParameter[] expressionGenericParameters)
-	{
-		for(DotNetGenericParameter methodGenericParameter : methodGenericParameters)
-		{
-			if(map.containsKey(methodGenericParameter))
-			{
-				continue;
-			}
-
-			ProgressManager.checkCanceled();
-
-			int indexOfGeneric = findIndexOfGeneric(parameterTypeResolveResult, methodGenericParameter);
-			if(indexOfGeneric != -1)
-			{
-				DotNetGenericParameter genericParameterOfResolved = ArrayUtil2.safeGet(expressionGenericParameters, indexOfGeneric);
-				if(genericParameterOfResolved == null)
-				{
-					continue;
-				}
-
-				DotNetTypeRef extract = expressionExtractor.extract(genericParameterOfResolved);
-				if(extract != null)
-				{
-					map.put(methodGenericParameter, extract);
-				}
-			}
-		}
-	}
-
-	@RequiredReadAction
-	private static void pushTypeArgumentsDeep(List<Couple<DotNetTypeResolveResult>> levels,
-											  DotNetGenericParameter[] expressionGenericParameters,
-											  DotNetGenericExtractor expressionExtractor,
-											  DotNetGenericExtractor parameterExtractor)
-	{
-		for(DotNetGenericParameter expressionGenericParameter : expressionGenericParameters)
-		{
-			ProgressManager.checkCanceled();
-
-			DotNetTypeRef expressionTypeRefFromGenericParameter = expressionExtractor.extract(expressionGenericParameter);
-
-			DotNetTypeRef parameterTypeRefFromGenericParameter = parameterExtractor.extract(expressionGenericParameter);
-
-			if(expressionTypeRefFromGenericParameter == null || parameterTypeRefFromGenericParameter == null)
-			{
-				continue;
-			}
-
-			DotNetTypeResolveResult exprTypeResult = expressionTypeRefFromGenericParameter.resolve();
-			DotNetTypeResolveResult paramTypeResult = parameterTypeRefFromGenericParameter.resolve();
-
-			// check is type equal 'Genre<System.String>' to 'Genre<T>'
-			if(exprTypeResult.getElement() instanceof DotNetTypeDeclaration && exprTypeResult.getElement().isEquivalentTo(paramTypeResult.getElement()))
-			{
-				levels.add(Couple.of(exprTypeResult, paramTypeResult));
-
-				DotNetGenericParameter[] genericParameters = ((DotNetTypeDeclaration) exprTypeResult.getElement()).getGenericParameters();
-				pushTypeArgumentsDeep(levels, genericParameters, exprTypeResult.getGenericExtractor(), paramTypeResult.getGenericExtractor());
-			}
-		}
-	}
-
-	@RequiredReadAction
-	private static int findIndexOfGeneric(DotNetTypeResolveResult parameterTypeResolveResult, DotNetGenericParameter methodGenericParameter)
-	{
-		PsiElement parameterElement = parameterTypeResolveResult.getElement();
-		if(parameterElement instanceof DotNetGenericParameterListOwner)
-		{
-			DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) parameterElement).getGenericParameters();
+			DotNetGenericParameter[] genericParameters = method.getGenericParameters();
 			if(genericParameters.length == 0)
 			{
-				return -1;
+				return method.getReturnTypeRef();
 			}
 
-			DotNetGenericExtractor genericExtractor = parameterTypeResolveResult.getGenericExtractor();
-
-			for(int i = 0; i < genericParameters.length; i++)
+			DotNetTypeRef[] methodParameterTypeRefs = method.getParameterTypeRefs();
+			InferenceBounds methodBounds = new InferenceBounds(genericParameters, method.getResolveScope());
+			for(int i = 0; i < methodParameterTypeRefs.length; i++)
 			{
-				DotNetTypeRef extractedTypeRef = genericExtractor.extract(genericParameters[i]);
-				if(extractedTypeRef == null)
+				methodBounds.inferFromArgument(GenericUnwrapTool.exchangeTypeRef(delegateParameterTypeRefs[i], fixedExtractor), methodParameterTypeRefs[i]);
+			}
+			return GenericUnwrapTool.exchangeTypeRef(method.getReturnTypeRef(), CSharpGenericExtractor.create(methodBounds.fix()));
+		}
+		return mirrored.getReturnTypeRef();
+	}
+
+	/**
+	 * Every argument of a params group against the element type of the params array, so that lambdas in it infer like
+	 * any other lambda.
+	 */
+	@RequiredReadAction
+	private static List<NCallArgument> expandParams(List<NCallArgument> arguments)
+	{
+		List<NCallArgument> result = new ArrayList<>(arguments.size());
+		for(NCallArgument argument : arguments)
+		{
+			DotNetTypeRef parameterTypeRef = argument.getParameterTypeRef();
+			if(!(argument instanceof NParamsCallArgument) || parameterTypeRef == null
+					|| !(parameterTypeRef.resolve() instanceof CSharpArrayTypeRef.ArrayResolveResult arrayResolveResult))
+			{
+				result.add(argument);
+				continue;
+			}
+
+			DotNetTypeRef elementTypeRef = arrayResolveResult.getInnerTypeRef();
+			for(CSharpCallArgument callArgument : argument.getCallArguments())
+			{
+				DotNetExpression expression = callArgument.getArgumentExpression();
+				if(expression != null)
 				{
-					continue;
-				}
-				DotNetTypeResolveResult extractedTypeResolveResult = extractedTypeRef.resolve();
-				if(methodGenericParameter.isEquivalentTo(extractedTypeResolveResult.getElement()))
-				{
-					return i;
+					result.add(new NCallArgument(expression.toTypeRef(false), callArgument, elementTypeRef));
 				}
 			}
 		}
-		return -1;
+		return result;
+	}
+
+	/**
+	 * A lambda, or a method group passed as a delegate - inferred by the parameters and the return type of the delegate.
+	 * A value of the delegate type itself is not one: it infers by its type arguments, like any other generic type.
+	 */
+	@RequiredReadAction
+	private static boolean isLambdaArgument(NCallArgument nCallArgument)
+	{
+		CSharpCallArgument callArgument = nCallArgument.getCallArgument();
+		if(callArgument == null)
+		{
+			return false;
+		}
+		// a lambda, or a method group - which becomes a delegate only against the parameter (see CSharpFastImplicitTypeRef)
+		if(callArgument.getArgumentExpression() instanceof CSharpLambdaExpressionImpl || nCallArgument.getTypeRef() instanceof CSharpElementGroupTypeRef)
+		{
+			return true;
+		}
+
+		DotNetTypeRef parameterTypeRef = nCallArgument.getParameterTypeRef();
+		if(parameterTypeRef == null
+				|| !(parameterTypeRef.resolve() instanceof CSharpLambdaResolveResult parameterLambda)
+				|| !(nCallArgument.getTypeRef().resolve() instanceof CSharpLambdaResolveResult argumentLambda))
+		{
+			return false;
+		}
+		CSharpMethodDeclaration parameterDelegate = parameterLambda.getTarget();
+		CSharpMethodDeclaration argumentTarget = argumentLambda.getTarget();
+		return parameterDelegate == null || argumentTarget == null || !parameterDelegate.isEquivalentTo(argumentTarget);
+	}
+
+	@RequiredReadAction
+	private static void inferFromArgument(InferenceBounds bounds, NCallArgument nCallArgument, Map<DotNetGenericParameter, DotNetTypeRef> fixedSoFar)
+	{
+		ProgressManager.checkCanceled();
+
+		DotNetTypeRef parameterTypeRef = nCallArgument.getParameterTypeRef();
+		if(parameterTypeRef == null)
+		{
+			return;
+		}
+
+		DotNetTypeRef expressionTypeRef = unwrapPossibleGenericTypeRefs(nCallArgument, parameterTypeRef, fixedSoFar);
+		if(expressionTypeRef instanceof CSharpFastImplicitTypeRef)
+		{
+			DotNetTypeRef mirror = ((CSharpFastImplicitTypeRef) expressionTypeRef).doMirror(parameterTypeRef);
+			if(mirror != null)
+			{
+				expressionTypeRef = mirror;
+			}
+		}
+
+		// a lambda or a method group against a delegate type: by the parameters and the return type
+		if(isLambdaArgument(nCallArgument)
+				&& CSharpExpressionTreeUtil.unwrap(parameterTypeRef).resolve() instanceof CSharpLambdaResolveResult pLambdaResolveResult
+				&& expressionTypeRef.resolve() instanceof CSharpLambdaResolveResult eLambdaResolveResult)
+		{
+			DotNetTypeRef[] pParameterTypeRefs = pLambdaResolveResult.getParameterTypeRefs();
+			DotNetTypeRef[] eParameterTypeRefs = eLambdaResolveResult.getParameterTypeRefs();
+
+			// a method group gives its return type only, for the parameter types of the delegate fixed so far
+			if(!(nCallArgument.getCallArgument().getArgumentExpression() instanceof CSharpLambdaExpressionImpl))
+			{
+				DotNetTypeRef returnTypeRef = methodGroupReturnType(nCallArgument, eLambdaResolveResult, pParameterTypeRefs, fixedSoFar);
+				bounds.inferLower(returnTypeRef, pLambdaResolveResult.getReturnTypeRef());
+				return;
+			}
+
+			if(pParameterTypeRefs.length == eParameterTypeRefs.length)
+			{
+				for(int i = 0; i < eParameterTypeRefs.length; i++)
+				{
+					bounds.inferExact(eParameterTypeRefs[i], pParameterTypeRefs[i]);
+				}
+			}
+
+			bounds.inferLower(eLambdaResolveResult.getReturnTypeRef(), pLambdaResolveResult.getReturnTypeRef());
+			return;
+		}
+
+		bounds.inferFromArgument(expressionTypeRef, parameterTypeRef);
 	}
 
 	@RequiredReadAction

@@ -20,6 +20,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.ApplicationProperties;
 import consulo.application.progress.ProgressManager;
 import consulo.csharp.lang.CSharpCastType;
+import consulo.csharp.lang.impl.psi.cast.PredefinedConversions;
 import consulo.csharp.lang.impl.psi.cast.CSharpCastSession;
 import consulo.csharp.lang.impl.psi.cast.CSharpInheritableCheckerCacher;
 import consulo.csharp.lang.impl.psi.source.CSharpOutRefAutoTypeRef;
@@ -160,6 +161,15 @@ public class CSharpInheritableChecker {
             return CSharpTypeUtil.isTypeEqual(topInnerTypeRef, ((DotNetPointerTypeRef) target).getInnerTypeRef()) ? CSharpTypeUtil.SIMPLE_SUCCESS : fail();
         }
 
+        // conversions between the predefined types are the language ones, whatever operators the base class library declares
+        if (castResolvingInfo != null) {
+            PredefinedConversions.Kind kind = PredefinedConversions.classify(target, top);
+            if (kind != null) {
+                boolean success = castResolvingInfo.getFirst() == CSharpCastType.IMPLICIT ? kind.isImplicit() : kind.isExplicit();
+                return success ? new CSharpTypeUtil.InheritResult(true, kind.isConversion()) : fail();
+            }
+        }
+
         if (target instanceof CSharpTupleTypeRef && top instanceof CSharpTupleTypeRef) {
             DotNetTypeRef[] targetTypeRefs = ((CSharpTupleTypeRef) target).getTypeRefs();
             DotNetTypeRef[] topTypeRefs = ((CSharpTupleTypeRef) top).getTypeRefs();
@@ -186,6 +196,14 @@ public class CSharpInheritableChecker {
                 return fail();
             }
             return isInheritable(((CSharpArrayTypeRef) top).getInnerTypeRef(), ((CSharpArrayTypeRef) target).getInnerTypeRef(), castResolvingInfo);
+        }
+
+        // a lambda converts to the expression tree of a delegate it converts to - not a value of a delegate type
+        if (target instanceof CSharpLambdaTypeRef lambdaTypeRef && lambdaTypeRef.getTarget() == null) {
+            DotNetTypeRef delegateTypeRef = CSharpExpressionTreeUtil.unwrap(top);
+            if (delegateTypeRef != top) {
+                return isInheritable(delegateTypeRef, target, castResolvingInfo);
+            }
         }
 
         DotNetTypeResolveResult topTypeResolveResult = top.resolve();

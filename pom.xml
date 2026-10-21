@@ -60,5 +60,6 @@
 		<module>csharp-impl</module>
         
 		<module>tests</module>
+		<module>csharp-it</module>
 	</modules>
 </project>

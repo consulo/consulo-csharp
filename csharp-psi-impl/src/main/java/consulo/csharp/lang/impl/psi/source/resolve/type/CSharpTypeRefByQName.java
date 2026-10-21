@@ -17,7 +17,10 @@
 package consulo.csharp.lang.impl.psi.source.resolve.type;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.psi.ToNativeElementTransformers;
 import consulo.csharp.lang.impl.psi.msil.CSharpTransform;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.*;
 import consulo.language.psi.PsiElement;
@@ -59,6 +62,14 @@ public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult implemen
 
         if (type == null) {
             return DotNetTypeResolveResult.EMPTY;
+        }
+
+        // the C# view of a delegate class of a library (System.Func`2) is its delegate method, which CSharpTransform -
+        // a type to a type - leaves as the class
+        if (!(type instanceof CSharpTypeDeclaration)
+            && ToNativeElementTransformers.transform(type) instanceof CSharpMethodDeclaration method
+            && method.isDelegate()) {
+            return new CSharpUserTypeRef.LambdaResult(getProject(), myResolveScope, method, DotNetGenericExtractor.EMPTY);
         }
 
         return new CSharpUserTypeRef.Result<>(type, DotNetGenericExtractor.EMPTY);

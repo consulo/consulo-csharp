@@ -74,6 +74,14 @@
 		<operator name="EXPLICIT_KEYWORD" type="System.Decimal">
 			<parameter/>
 		</operator>
+		<operator name="EQEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="NTEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
 	</enum>
 
 	<type name="System.Object">
@@ -88,6 +96,10 @@
 	</type>
 
 	<type name="System.String">
+		<operator name="PLUS" type="System.String">
+			<parameter/>
+			<parameter/>
+		</operator>
 		<operator name="PLUS" type="System.String">
 			<parameter/>
 			<parameter type="System.Object"/>
@@ -105,89 +117,12 @@
 	</type>
 
 	<type name="System.Byte">
-		<operator name="PLUS">
-			<parameter/>
-		</operator>
-
+		<!-- arithmetic, bitwise and comparison operators of System.Byte are the int ones, by numeric promotion -->
 		<operator name="PLUSPLUS">
 			<parameter/>
 		</operator>
 
-		<operator name="MINUS">
-			<parameter/>
-		</operator>
-
 		<operator name="MINUSMINUS">
-			<parameter/>
-		</operator>
-
-		<operator name="GT" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="LT" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="LTEQ" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="GTEQ" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="PLUS">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="MINUS">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="MUL">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="DIV">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="PERC">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="XOR">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="AND">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="OR">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="TILDE">
-			<parameter/>
-		</operator>
-		
-		<operator name="GTGT">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="LTLT">
-			<parameter/>
 			<parameter/>
 		</operator>
 
@@ -233,89 +168,12 @@
 	</type>
 
 	<type name="System.SByte">
-		<operator name="PLUS">
-			<parameter/>
-		</operator>
-
+		<!-- arithmetic, bitwise and comparison operators of System.SByte are the int ones, by numeric promotion -->
 		<operator name="PLUSPLUS">
 			<parameter/>
 		</operator>
 
-		<operator name="MINUS">
-			<parameter/>
-		</operator>
-
 		<operator name="MINUSMINUS">
-			<parameter/>
-		</operator>
-
-		<operator name="GT" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="LT" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="LTEQ" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="GTEQ" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="PLUS">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="MINUS">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="MUL">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="DIV">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="PERC">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="XOR">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="AND">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="OR">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="TILDE">
-			<parameter/>
-		</operator>
-		
-		<operator name="GTGT">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="LTLT">
-			<parameter/>
 			<parameter/>
 		</operator>
 
@@ -346,89 +204,12 @@
 	</type>
 
 	<type name="System.Int16">
-		<operator name="PLUS">
-			<parameter/>
-		</operator>
-
+		<!-- arithmetic, bitwise and comparison operators of System.Int16 are the int ones, by numeric promotion -->
 		<operator name="PLUSPLUS">
 			<parameter/>
 		</operator>
 
-		<operator name="MINUS">
-			<parameter/>
-		</operator>
-
 		<operator name="MINUSMINUS">
-			<parameter/>
-		</operator>
-
-		<operator name="GT" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="LT" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="LTEQ" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="GTEQ" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="PLUS">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="MINUS">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="MUL">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="DIV">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="PERC">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="XOR">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="AND">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="OR">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="TILDE">
-			<parameter/>
-		</operator>
-		
-		<operator name="GTGT">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="LTLT">
-			<parameter/>
 			<parameter/>
 		</operator>
 
@@ -454,89 +235,12 @@
 	</type>
 
 	<type name="System.UInt16">
-		<operator name="PLUS">
-			<parameter/>
-		</operator>
-
+		<!-- arithmetic, bitwise and comparison operators of System.UInt16 are the int ones, by numeric promotion -->
 		<operator name="PLUSPLUS">
 			<parameter/>
 		</operator>
 
-		<operator name="MINUS">
-			<parameter/>
-		</operator>
-
 		<operator name="MINUSMINUS">
-			<parameter/>
-		</operator>
-
-		<operator name="GT" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="LT" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="LTEQ" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="GTEQ" type="System.Boolean">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="PLUS">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="MINUS">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="MUL">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="DIV">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="PERC">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="XOR">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="AND">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="OR">
-			<parameter/>
-			<parameter/>
-		</operator>
-
-		<operator name="TILDE">
-			<parameter/>
-		</operator>
-		
-		<operator name="GTGT">
-			<parameter/>
-			<parameter/>
-		</operator>
-		<operator name="LTLT">
-			<parameter/>
 			<parameter/>
 		</operator>
 
@@ -572,7 +276,7 @@
 	</type>
 
 	<type name="System.Int32">
-		<operator name="PLUS" blocker="System.Numerics.IUnaryPlusOperators`2">
+		<operator name="PLUS">
 			<parameter/>
 		</operator>
 
@@ -580,7 +284,7 @@
 			<parameter/>
 		</operator>
 
-		<operator name="MINUS" blocker="System.Numerics.IUnaryNegationOperators`2">
+		<operator name="MINUS">
 			<parameter/>
 		</operator>
 
@@ -605,7 +309,7 @@
 			<parameter/>
 		</operator>
 
-		<operator name="PLUS" blocker="System.Numerics.IAdditionOperators`3">
+		<operator name="PLUS">
 			<parameter/>
 			<parameter/>
 		</operator>
@@ -651,11 +355,11 @@
 		
 		<operator name="GTGT">
 			<parameter/>
-			<parameter/>
+			<parameter type="System.Int32"/>
 		</operator>
 		<operator name="LTLT">
 			<parameter/>
-			<parameter/>
+			<parameter type="System.Int32"/>
 		</operator>
 
 		<!-- 'int' can be converted to 'long' (implicit) -->
@@ -670,6 +374,14 @@
 
 		<!-- 'int' can be converted to 'double' (implicit) -->
 		<operator name="IMPLICIT_KEYWORD" type="System.Double">
+			<parameter/>
+		</operator>
+		<operator name="EQEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="NTEQ" type="System.Boolean">
+			<parameter/>
 			<parameter/>
 		</operator>
 	</type>
@@ -754,11 +466,11 @@
 		
 		<operator name="GTGT">
 			<parameter/>
-			<parameter/>
+			<parameter type="System.Int32"/>
 		</operator>
 		<operator name="LTLT">
 			<parameter/>
-			<parameter/>
+			<parameter type="System.Int32"/>
 		</operator>
 
 		<!-- 'uint' can be converted to 'long' (implicit) -->
@@ -793,6 +505,14 @@
 
 		<!-- 'uint' can be converted to 'int' (explicit) -->
 		<operator name="EXPLICIT_KEYWORD" type="System.Int32">
+			<parameter/>
+		</operator>
+		<operator name="EQEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="NTEQ" type="System.Boolean">
+			<parameter/>
 			<parameter/>
 		</operator>
 	</type>
@@ -877,11 +597,11 @@
 		
 		<operator name="GTGT">
 			<parameter/>
-			<parameter/>
+			<parameter type="System.Int32"/>
 		</operator>
 		<operator name="LTLT">
 			<parameter/>
-			<parameter/>
+			<parameter type="System.Int32"/>
 		</operator>
 
 		<!-- 'long' can be converted to 'float' (implicit) -->
@@ -891,6 +611,14 @@
 
 		<!-- 'long' can be converted to 'double' (implicit) -->
 		<operator name="IMPLICIT_KEYWORD" type="System.Double">
+			<parameter/>
+		</operator>
+		<operator name="EQEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="NTEQ" type="System.Boolean">
+			<parameter/>
 			<parameter/>
 		</operator>
 	</type>
@@ -975,7 +703,7 @@
 		
 		<operator name="GTGT">
 			<parameter/>
-			<parameter/>
+			<parameter type="System.Int32"/>
 		</operator>
 
 		<operator name="GTGT">
@@ -1005,7 +733,7 @@
 
 		<operator name="LTLT">
 			<parameter/>
-			<parameter/>
+			<parameter type="System.Int32"/>
 		</operator>
 
 		<operator name="LTLT">
@@ -1040,6 +768,14 @@
 
 		<!-- 'ulong' can be converted to 'double' (implicit) -->
 		<operator name="IMPLICIT_KEYWORD" type="System.Double">
+			<parameter/>
+		</operator>
+		<operator name="EQEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="NTEQ" type="System.Boolean">
+			<parameter/>
 			<parameter/>
 		</operator>
 	</type>
@@ -1126,6 +862,14 @@
 		<operator name="IMPLICIT_KEYWORD" type="System.Double">
 			<parameter/>
 		</operator>
+		<operator name="EQEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="NTEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.Double">
@@ -1205,6 +949,14 @@
 		<operator name="TILDE">
 			<parameter/>
 		</operator>
+		<operator name="EQEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="NTEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.Boolean">
@@ -1223,6 +975,14 @@
 		</operator>
 
 		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="EQEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="NTEQ" type="System.Boolean">
 			<parameter/>
 			<parameter/>
 		</operator>

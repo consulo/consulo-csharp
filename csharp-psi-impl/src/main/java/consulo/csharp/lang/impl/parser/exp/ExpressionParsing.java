@@ -1103,13 +1103,27 @@ public class ExpressionParsing extends SharedParsingHelpers {
 
             mark.done(CSharpElements.LAMBDA_PARAMETER);
         }
-        else if (builder.getTokenType() == CSharpTokens.OUT_KEYWORD || builder.getTokenType() == CSharpTokens.REF_KEYWORD) {
+        else if (builder.getTokenType() == CSharpTokens.OUT_KEYWORD || builder.getTokenType() == CSharpTokens.REF_KEYWORD || builder.getTokenType() == CSharpTokens.IN_KEYWORD) {
             PsiBuilder.Marker modifierList = builder.mark();
             builder.advanceLexer();
             modifierList.done(CSharpElements.MODIFIER_LIST);
 
-            if (parseType(builder) != null) {
-                expectOrReportIdentifier(builder, 0);
+            boolean wasIdentifier = builder.getTokenType() == CSharpTokens.IDENTIFIER;
+
+            TypeInfo typeInfo = parseType(builder);
+            if (typeInfo != null) {
+                if (builder.getTokenType() == CSharpTokens.IDENTIFIER) {
+                    expectOrReportIdentifier(builder, 0);
+                }
+                else if (wasIdentifier) {
+                    // (ref a) => ... - an implicitly typed parameter with a modifier (C# 13): the identifier is the name
+                    typeInfo.marker.rollbackTo();
+
+                    expectOrReportIdentifier(builder, 0);
+                }
+                else {
+                    expectOrReportIdentifier(builder, 0);
+                }
 
                 mark.done(LAMBDA_PARAMETER);
             }

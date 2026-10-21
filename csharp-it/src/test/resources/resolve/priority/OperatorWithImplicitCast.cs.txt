@@ -1,0 +1,2 @@
+b(62,63): local-variable[b]=true|true
+==(64,66): method[==(p0:int, p1:int):bool]=true|true

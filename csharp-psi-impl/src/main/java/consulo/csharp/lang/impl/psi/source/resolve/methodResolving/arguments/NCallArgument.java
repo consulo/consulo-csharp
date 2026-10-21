@@ -24,6 +24,7 @@ import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.csharp.lang.impl.psi.CSharpInheritableChecker;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpNullTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.operatorResolving.ImplicitCastInfo;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
@@ -123,7 +124,8 @@ public class NCallArgument extends UserDataHolderBase
 		if(parameterTypeRef != null)
 		{
 			DotNetTypeRef typeRef = getTypeRef();
-			if(CSharpTypeUtil.isTypeEqual(parameterTypeRef, typeRef))
+			// null to object is a reference conversion, not identity - F(C) and F(object) are equal candidates for F(null)
+			if(!(typeRef instanceof CSharpNullTypeRef) && CSharpTypeUtil.isTypeEqual(parameterTypeRef, typeRef))
 			{
 				newVal = EQUAL;
 			}

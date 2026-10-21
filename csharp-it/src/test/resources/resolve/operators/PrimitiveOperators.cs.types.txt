@@ -1,0 +1,28 @@
+i + i => int | +(int, int): int
+i + l => long | +(long, long): long
+b + b => int | +(int, int): int
+s * b => int | *(int, int): int
+c + i => int | +(int, int): int
+i + f => float | +(float, float): float
+l + d => double | +(double, double): double
+i + m => decimal | +(decimal, decimal): decimal
+i + u => long | +(long, long): long
+u + ul => ulong | +(ulong, ulong): ulong
+i == l => bool | ==(long, long): bool
+i == 2 => bool | ==(int, int): bool
+b == c => bool | ==(int, int): bool
+str + i => string | +(string, object): string
+i << 2 => int | <<(int, int): int
+l >> i => long | >>(long, int): long
+i & b => int | &(int, int): int
+bo & bo => bool | &(bool, bool): bool
+ni + i => System.Nullable<int> | +(System.Nullable<int>, System.Nullable<int>): System.Nullable<int>
+col == Color.Green => bool | ==(Test.Color, Test.Color): bool
+-b => int | -(int): int
+~u => uint | ~(uint): uint
+i % 3 => int | %(int, int): int
+d / i => double | /(double, double): double
+i < d => bool | <(double, double): bool
+!bo => bool | !(bool): bool
+i += b => int | +(int, int): int
+l -= i => long | -(long, long): long

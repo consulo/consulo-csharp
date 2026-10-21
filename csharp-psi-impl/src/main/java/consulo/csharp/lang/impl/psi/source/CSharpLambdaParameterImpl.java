@@ -74,6 +74,11 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{
 		DotNetTypeRef typeRef = toTypeRefImpl0(resolveFromInitializer);
+		// the type taken from the delegate carries its ref or out - the parameter is ref or out by its own modifier only
+		if(getType() == null && typeRef instanceof CSharpRefTypeRef refTypeRef)
+		{
+			typeRef = refTypeRef.getInnerTypeRef();
+		}
 		if(hasModifier(CSharpModifier.REF))
 		{
 			return new CSharpRefTypeRef(getProject(), getResolveScope(), CSharpRefTypeRef.Type.ref, typeRef);

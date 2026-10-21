@@ -343,14 +343,15 @@ public class NCallArgumentBuilder
 				case NCallArgument.EQUAL:
 					weight -= 50000;
 					break;
+				// a params group counts by the arguments it takes - N3(int, int, params int[]) is better for N3(1, 2, 3) than N3(int, params int[])
 				case NCallArgument.PARAMS:
-					weight -= 100000;
+					weight -= 100000 * Math.max(1, argument.getCallArguments().size());
 					break;
 				case NCallArgument.INSTANCE_OF:
 					weight -= 1000000;
 					break;
 				case NCallArgument.PARAMS_INSTANCE_OF:
-					weight -= 2000000;
+					weight -= 2000000 * Math.max(1, argument.getCallArguments().size());
 					break;
 				default:
 					valid = false;

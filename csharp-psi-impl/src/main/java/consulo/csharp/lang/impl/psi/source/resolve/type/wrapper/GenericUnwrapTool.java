@@ -335,23 +335,38 @@ public class GenericUnwrapTool
 				}
 
 				DotNetGenericParameter[] genericParameters = ((CSharpTypeDeclaration) element).getGenericParameters();
-				if(genericParameters.length > 0)
+				DotNetGenericExtractor genericExtractor = result.getGenericExtractor();
+
+				Map<DotNetGenericParameter, DotNetTypeRef> newExtractorMap = new HashMap<>();
+				for(DotNetGenericParameter genericParameter : genericParameters)
 				{
-					DotNetGenericExtractor genericExtractor = result.getGenericExtractor();
-
-					Map<DotNetGenericParameter, DotNetTypeRef> newExtractorMap = new HashMap<>();
-					for(DotNetGenericParameter genericParameter : genericParameters)
+					DotNetTypeRef extractTypeRef = genericExtractor.extract(genericParameter);
+					if(extractTypeRef == null)
 					{
-						DotNetTypeRef extractTypeRef = genericExtractor.extract(genericParameter);
-						if(extractTypeRef == null)
-						{
-							extractTypeRef = new CSharpTypeRefFromGenericParameter(genericParameter);
-						}
-
-						DotNetTypeRef unwrapTypeRef = exchangeTypeRef(extractTypeRef, func);
-						newExtractorMap.put(genericParameter, unwrapTypeRef);
+						extractTypeRef = new CSharpTypeRefFromGenericParameter(genericParameter);
 					}
 
+					DotNetTypeRef unwrapTypeRef = exchangeTypeRef(extractTypeRef, func);
+					newExtractorMap.put(genericParameter, unwrapTypeRef);
+				}
+
+				// Class<T>.Enum - the arguments of the outer generic types are exchanged too
+				PsiElement outer = element.getParent();
+				while(outer instanceof DotNetTypeDeclaration outerType)
+				{
+					for(DotNetGenericParameter outerParameter : outerType.getGenericParameters())
+					{
+						DotNetTypeRef extractTypeRef = genericExtractor.extract(outerParameter);
+						if(extractTypeRef != null)
+						{
+							newExtractorMap.put(outerParameter, exchangeTypeRef(extractTypeRef, func));
+						}
+					}
+					outer = outer.getParent();
+				}
+
+				if(!newExtractorMap.isEmpty())
+				{
 					return new CSharpTypeRefByTypeDeclaration(resultType, CSharpGenericExtractor.create(newExtractorMap));
 				}
 

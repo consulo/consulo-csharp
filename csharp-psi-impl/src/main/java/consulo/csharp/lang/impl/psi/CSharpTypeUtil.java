@@ -379,6 +379,11 @@ public class CSharpTypeUtil {
             return false;
         }
 
+        // ref int and out int are different - Out1.M(out int) does not hide Ref1.M(ref int)
+        if (t1 instanceof CSharpRefTypeRef ref1 && t2 instanceof CSharpRefTypeRef ref2 && ref1.getType() != ref2.getType()) {
+            return false;
+        }
+
         if (t1 instanceof CSharpArrayTypeRef && t2 instanceof CSharpArrayTypeRef) {
             return ((CSharpArrayTypeRef) t1).getDimensions() == ((CSharpArrayTypeRef) t2).getDimensions() && isTypeEqual(((CSharpArrayTypeRef) t1).getInnerTypeRef(),
                 ((CSharpArrayTypeRef) t2).getInnerTypeRef());

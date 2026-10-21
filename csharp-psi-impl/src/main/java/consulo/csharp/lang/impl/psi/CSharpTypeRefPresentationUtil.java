@@ -117,6 +117,49 @@ public class CSharpTypeRefPresentationUtil {
     }
 
     @RequiredReadAction
+    private static boolean hasOuterTypeArguments(DotNetTypeDeclaration nested, DotNetGenericExtractor extractor) {
+        PsiElement parent = nested.getParent();
+        while (parent instanceof DotNetTypeDeclaration outer) {
+            for (DotNetGenericParameter parameter : outer.getGenericParameters()) {
+                if (extractor.extract(parameter) != null) {
+                    return true;
+                }
+            }
+            parent = parent.getParent();
+        }
+        return false;
+    }
+
+    /**
+     * The qualified name of the types {@code nested} is nested in, each with its type arguments, and a dot after them.
+     */
+    @RequiredReadAction
+    private static void appendOuterTypes(StringBuilder builder, DotNetTypeDeclaration nested, DotNetGenericExtractor extractor, int flags) {
+        if (!(nested.getParent() instanceof DotNetTypeDeclaration outer)) {
+            String parentQName = nested.getPresentableParentQName();
+            if (parentQName != null && !parentQName.isEmpty()) {
+                builder.append(parentQName).append(".");
+            }
+            return;
+        }
+
+        appendOuterTypes(builder, outer, extractor, flags);
+        builder.append(outer.getName());
+
+        DotNetGenericParameter[] genericParameters = outer.getGenericParameters();
+        if (genericParameters.length > 0) {
+            builder.append("<");
+            StubBlockUtil.join(builder, genericParameters, (t, v) -> {
+                DotNetTypeRef extractedTypeRef = extractor.extract(v);
+                appendTypeRef(t, extractedTypeRef == null ? new CSharpTypeRefFromGenericParameter(v) : extractedTypeRef, flags);
+                return null;
+            }, ", ");
+            builder.append(">");
+        }
+        builder.append(".");
+    }
+
+    @RequiredReadAction
     public static void appendTypeRef(StringBuilder builder, DotNetTypeRef typeRef, final int flags) {
         if (typeRef == DotNetTypeRef.AUTO_TYPE) {
             builder.append("var");
@@ -220,6 +263,11 @@ public class CSharpTypeRefPresentationUtil {
                     if (BitUtil.isSet(flags, QUALIFIED_NAME)) {
                         if ((BitUtil.isSet(flags, TYPE_KEYWORD) || BitUtil.isSet(flags, FORCE_TYPE_KEYWORD)) && typeAsKeyword != null) {
                             builder.append(typeAsKeyword);
+                        }
+                        else if (element instanceof DotNetTypeDeclaration typeDeclaration && hasOuterTypeArguments(typeDeclaration, genericExtractor)) {
+                            // Class<Mammal>.Enum - the arguments of the outer generic type
+                            appendOuterTypes(builder, typeDeclaration, genericExtractor, flags);
+                            builder.append(name);
                         }
                         else {
                             builder.append(qName);

@@ -17,6 +17,17 @@
 package consulo.csharp.lang.impl.psi.source.resolve;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpDynamicTypeRef;
+import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
+import consulo.dotnet.DotNetTypes;
+import java.util.ArrayList;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NCallArgument;
+import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
+import consulo.csharp.lang.CSharpCastType;
 import consulo.application.progress.ProgressManager;
 import consulo.application.util.function.Processor;
 import consulo.language.psi.PsiElement;
@@ -46,6 +57,8 @@ public class WeightUtil
 
 		ContainerUtil.sort(list, ourComparator);
 
+		moveBetterToFront(list, place);
+
 		for(MethodResolveResult methodResolveResult : list)
 		{
 			ProgressManager.checkCanceled();
@@ -57,5 +70,117 @@ public class WeightUtil
 				return;
 			}
 		}
+	}
+
+	/**
+	 * Among the valid candidates of the best weight, the better function member goes first (C# spec 12.6.4.3): its
+	 * parameter types are better conversion targets for some arguments and worse for none.
+	 */
+	@RequiredReadAction
+	private static void moveBetterToFront(List<MethodResolveResult> sortedList, PsiElement place)
+	{
+		if(sortedList.size() < 2 || !sortedList.get(0).isValidResult())
+		{
+			return;
+		}
+
+		int bestWeight = sortedList.get(0).getCalcResult().getWeight();
+		List<MethodResolveResult> tied = new ArrayList<>();
+		for(MethodResolveResult result : sortedList)
+		{
+			if(!result.isValidResult() || result.getCalcResult().getWeight() != bestWeight)
+			{
+				break;
+			}
+			tied.add(result);
+		}
+		if(tied.size() < 2)
+		{
+			return;
+		}
+
+		GlobalSearchScope scope = place.getResolveScope();
+		for(MethodResolveResult candidate : tied)
+		{
+			boolean betterThanAll = true;
+			for(MethodResolveResult other : tied)
+			{
+				if(other != candidate && !isBetter(candidate, other, scope))
+				{
+					betterThanAll = false;
+					break;
+				}
+			}
+			if(betterThanAll)
+			{
+				sortedList.remove(candidate);
+				sortedList.add(0, candidate);
+				return;
+			}
+		}
+	}
+
+	@RequiredReadAction
+	private static boolean isBetter(MethodResolveResult first, MethodResolveResult second, GlobalSearchScope scope)
+	{
+		List<NCallArgument> firstArguments = first.getCalcResult().getArguments();
+		List<NCallArgument> secondArguments = second.getCalcResult().getArguments();
+		if(firstArguments.size() != secondArguments.size())
+		{
+			return false;
+		}
+
+		boolean better = false;
+		for(int i = 0; i < firstArguments.size(); i++)
+		{
+			DotNetTypeRef firstType = firstArguments.get(i).getParameterTypeRef();
+			DotNetTypeRef secondType = secondArguments.get(i).getParameterTypeRef();
+			if(firstType == null || secondType == null)
+			{
+				continue;
+			}
+			if(isBetterConversionTarget(secondType, firstType, scope))
+			{
+				return false;
+			}
+			better |= isBetterConversionTarget(firstType, secondType, scope);
+		}
+		return better;
+	}
+
+	/**
+	 * T1 is better than T2 if T1 converts to T2 implicitly and not the other way; delegates compare by their return types
+	 * (a lambda converts to both).
+	 */
+	@RequiredReadAction
+	private static boolean isBetterConversionTarget(DotNetTypeRef first, DotNetTypeRef second, GlobalSearchScope scope)
+	{
+		// dynamic is object here - F(C) is better than F(dynamic) for F(null)
+		first = dynamicAsObject(first, scope);
+		second = dynamicAsObject(second, scope);
+		if(CSharpTypeUtil.isTypeEqual(first, second))
+		{
+			return false;
+		}
+		if(first.resolve() instanceof CSharpLambdaResolveResult firstLambda && second.resolve() instanceof CSharpLambdaResolveResult secondLambda)
+		{
+			DotNetTypeRef firstReturn = firstLambda.getReturnTypeRef();
+			DotNetTypeRef secondReturn = secondLambda.getReturnTypeRef();
+			boolean firstVoid = DotNetTypeRefUtil.isVmQNameEqual(firstReturn, DotNetTypes.System.Void);
+			boolean secondVoid = DotNetTypeRefUtil.isVmQNameEqual(secondReturn, DotNetTypes.System.Void);
+			// a delegate returning a value is better than a void one
+			if(firstVoid || secondVoid)
+			{
+				return !firstVoid;
+			}
+			return isBetterConversionTarget(firstReturn, secondReturn, scope);
+		}
+		return CSharpTypeUtil.isInheritable(second, first, CSharpCastType.IMPLICIT, scope).isSuccess()
+				&& !CSharpTypeUtil.isInheritable(first, second, CSharpCastType.IMPLICIT, scope).isSuccess();
+	}
+
+	private static DotNetTypeRef dynamicAsObject(DotNetTypeRef typeRef, GlobalSearchScope scope)
+	{
+		return typeRef instanceof CSharpDynamicTypeRef ? new CSharpTypeRefByQName(typeRef.getProject(), scope, DotNetTypes.System.Object) : typeRef;
 	}
 }

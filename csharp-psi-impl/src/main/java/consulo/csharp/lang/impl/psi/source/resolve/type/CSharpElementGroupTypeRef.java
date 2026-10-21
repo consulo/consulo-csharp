@@ -45,6 +45,11 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRefWithCachedResult imp
 		myElementGroup = elementGroup;
 	}
 
+	public CSharpElementGroup<?> getElementGroup()
+	{
+		return myElementGroup;
+	}
+
 	@RequiredReadAction
 	@Override
 	protected DotNetTypeResolveResult resolveResult()

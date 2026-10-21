@@ -16,6 +16,12 @@
 
 package consulo.csharp.lang.impl.psi.source;
 
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpNullTypeRef;
+
+import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
+
+import consulo.csharp.lang.CSharpCastType;
+
 import consulo.application.util.CachedValuesManager;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
@@ -45,6 +51,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -112,8 +119,15 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	@Override
 	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
-		for(CSharpLambdaParameter parameter : getParameters())
+		CSharpLambdaParameter[] parameters = getParameters();
+		// (_, _) => ... - more than one parameter named _ makes them all discards, which are not in scope (C# 9)
+		long underscores = Arrays.stream(parameters).filter(parameter -> "_".equals(parameter.getName())).count();
+		for(CSharpLambdaParameter parameter : parameters)
 		{
+			if(underscores > 1 && "_".equals(parameter.getName()))
+			{
+				continue;
+			}
 			if(!processor.execute(parameter, state))
 			{
 				return false;
@@ -220,6 +234,43 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 		if(typeRefs.isEmpty())
 		{
 			return new CSharpTypeRefByQName(getProject(), getResolveScope(), DotNetTypes.System.Void);
+		}
+		return bestCommonType(typeRefs);
+	}
+
+	/**
+	 * The type every returned type converts to - {@code return null; return c.Name;} returns string (C# spec 12.6.3.15).
+	 */
+	@RequiredReadAction
+	private DotNetTypeRef bestCommonType(List<DotNetTypeRef> typeRefs)
+	{
+		for(DotNetTypeRef candidate : typeRefs)
+		{
+			// the null literal has no type of its own to be the common one
+			if(candidate instanceof CSharpNullTypeRef)
+			{
+				continue;
+			}
+
+			boolean allConvert = true;
+			for(DotNetTypeRef other : typeRefs)
+			{
+				// null converts to any reference or nullable type
+				if(other instanceof CSharpNullTypeRef)
+				{
+					continue;
+				}
+				if(other != candidate && !CSharpTypeUtil.isTypeEqual(other, candidate)
+						&& !CSharpTypeUtil.isInheritable(candidate, other, CSharpCastType.IMPLICIT, getResolveScope()).isSuccess())
+				{
+					allConvert = false;
+					break;
+				}
+			}
+			if(allConvert)
+			{
+				return candidate;
+			}
 		}
 		return typeRefs.get(0);
 	}

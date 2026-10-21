@@ -16,10 +16,13 @@
 
 package consulo.csharp.lang.impl.psi.resolve.additionalMembersImpl;
 
+import consulo.csharp.lang.impl.psi.CSharpNullableTypeUtil;
+
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightMethodDeclarationBuilder;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightParameterBuilder;
+import consulo.csharp.lang.impl.psi.msil.MsilToCSharpUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByTypeDeclaration;
@@ -31,11 +34,13 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetGenericParameter;
+import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
@@ -52,6 +57,9 @@ import java.util.function.Consumer;
  */
 @ExtensionImpl
 public class OperatorsProvider implements CSharpAdditionalMemberProvider {
+    private static final TokenSet ourComparisonOperators = TokenSet.create(CSharpTokens.EQEQ, CSharpTokens.NTEQ, CSharpTokens.LT, CSharpTokens.GT,
+        CSharpTokens.LTEQ, CSharpTokens.GTEQ);
+
     @RequiredReadAction
     @Override
     public void processAdditionalMembers(DotNetElement element,
@@ -70,10 +78,10 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider {
                 selfTypeRef = new CSharpTypeRefByTypeDeclaration(typeDeclaration, extractor);
             }
 
-            buildOperators(project, resolveScope, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myTypeOperators.get(typeDeclaration.getVmQName()), consumer);
+            buildOperators(project, resolveScope, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myTypeOperators.get(typeDeclaration.getVmQName()), false, consumer);
 
             if (typeDeclaration.isEnum()) {
-                buildOperators(project, resolveScope, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myEnumOperators, consumer);
+                buildOperators(project, resolveScope, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myEnumOperators, false, consumer);
             }
 
             if (DotNetTypes.System.Nullable$1.equals(typeDeclaration.getVmQName())) {
@@ -142,12 +150,52 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider {
 
         DotNetTypeDeclaration forAddOperatorsElement = (DotNetTypeDeclaration) typeResolveResultElement;
 
-        buildOperators(project, resolveScope, selfTypeRef, forAddOperatorsElement, OperatorStubsLoader.INSTANCE.myTypeOperators.get(forAddOperatorsElement.getVmQName()), consumer);
+        buildOperators(project, resolveScope, selfTypeRef, forAddOperatorsElement, OperatorStubsLoader.INSTANCE.myTypeOperators.get(forAddOperatorsElement.getVmQName()), true, consumer);
 
         if (forAddOperatorsElement.isEnum()) {
-            buildOperators(project, resolveScope, selfTypeRef, forAddOperatorsElement, OperatorStubsLoader.INSTANCE.myEnumOperators, consumer);
+            buildOperators(project, resolveScope, selfTypeRef, forAddOperatorsElement, OperatorStubsLoader.INSTANCE.myEnumOperators, true, consumer);
+        }
+        else if (OperatorStubsLoader.INSTANCE.myTypeOperators.get(forAddOperatorsElement.getVmQName()).isEmpty()) {
+            liftDeclaredOperators(project, selfTypeRef, forAddOperatorsElement, consumer);
         }
         return ContainerUtil.toArray(elements, DotNetElement.ARRAY_FACTORY);
+    }
+
+    /**
+     * C# lifts the operators a struct declares itself - decimal ones, user ones - like the predefined ones of the
+     * stubs: {@code decimal? + decimal?} for {@code decimal + decimal}. Comparisons stay bool.
+     */
+    @RequiredReadAction
+    private static void liftDeclaredOperators(Project project, DotNetTypeRef selfTypeRef, DotNetTypeDeclaration underlying, Consumer<PsiElement> consumer) {
+        if (!(MsilToCSharpUtil.wrap(underlying, null) instanceof DotNetTypeDeclaration declaration)) {
+            return;
+        }
+
+        for (DotNetNamedElement member : declaration.getMembers()) {
+            if (!(member instanceof CSharpMethodDeclaration method) || !method.isOperator() || method.getTypeForImplement() != null) {
+                continue;
+            }
+
+            IElementType operatorToken = method.getOperatorElementType();
+            if (operatorToken == null || operatorToken == CSharpTokens.IMPLICIT_KEYWORD || operatorToken == CSharpTokens.EXPLICIT_KEYWORD) {
+                continue;
+            }
+
+            CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(project);
+            builder.setOperator(operatorToken);
+            builder.withParent(underlying);
+            builder.withReturnType(ourComparisonOperators.contains(operatorToken) ? method.getReturnTypeRef() : selfTypeRef);
+
+            int i = 0;
+            for (DotNetTypeRef parameterTypeRef : method.getParameterTypeRefs()) {
+                CSharpLightParameterBuilder parameterBuilder = new CSharpLightParameterBuilder(project);
+                parameterBuilder.withName("p" + i++);
+                parameterBuilder.withTypeRef(CSharpNullableTypeUtil.boxIfNeed(parameterTypeRef));
+                builder.addParameter(parameterBuilder);
+            }
+
+            consumer.accept(builder);
+        }
     }
 
     @RequiredReadAction
@@ -156,6 +204,7 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider {
                                        DotNetTypeRef selfTypeRef,
                                        DotNetElement parent,
                                        Collection<OperatorStubsLoader.Operator> operators,
+                                       boolean lifted,
                                        Consumer<PsiElement> consumer) {
         if (operators.isEmpty()) {
             return;
@@ -183,7 +232,15 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider {
                 for (OperatorStubsLoader.Operator.Parameter parameter : operator.myParameterTypes) {
                     CSharpLightParameterBuilder parameterBuilder = new CSharpLightParameterBuilder(project);
                     parameterBuilder.withName("p" + i);
-                    parameterBuilder.withTypeRef(parameter.myTypeRef == null ? selfTypeRef : new CSharpTypeRefByQName(project, resolveScope, parameter.myTypeRef));
+                    DotNetTypeRef parameterTypeRef = selfTypeRef;
+                    if (parameter.myTypeRef != null) {
+                        parameterTypeRef = new CSharpTypeRefByQName(project, resolveScope, parameter.myTypeRef);
+                        // the lifted operator lifts every operand - int? << int? for int << int
+                        if (lifted) {
+                            parameterTypeRef = CSharpNullableTypeUtil.boxIfNeed(parameterTypeRef);
+                        }
+                    }
+                    parameterBuilder.withTypeRef(parameterTypeRef);
 
                     temp.addParameter(parameterBuilder);
                     i++;

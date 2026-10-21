@@ -17,11 +17,11 @@
 package consulo.csharp.lang.impl.psi.source;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.psi.CSharpExpressionTreeUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpUndefinedLambdaResolveResult;
-import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetGenericParameter;
@@ -35,262 +35,231 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.lang.ObjectUtil;
-
 import org.jspecify.annotations.Nullable;
-import java.util.List;
 
 /**
  * @author VISTALL
  * @since 12.06.14
  */
-public class CSharpLambdaExpressionImplUtil
-{
-	@RequiredReadAction
-	public static DotNetTypeRef resolveTypeForParameter(CSharpLambdaExpressionImpl target, int parameterIndex)
-	{
-		CSharpLambdaResolveResult leftTypeRef = resolveLeftLambdaTypeRef(target);
-		if(leftTypeRef == null)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
+public class CSharpLambdaExpressionImplUtil {
+    @RequiredReadAction
+    public static DotNetTypeRef resolveTypeForParameter(CSharpLambdaExpressionImpl target, int parameterIndex) {
+        CSharpLambdaResolveResult leftTypeRef = resolveLeftLambdaTypeRef(target);
+        if (leftTypeRef == null) {
+            return DotNetTypeRef.ERROR_TYPE;
+        }
 
-		if(leftTypeRef == CSharpUndefinedLambdaResolveResult.INSTANCE)
-		{
-			return DotNetTypeRef.UNKNOWN_TYPE;
-		}
-		DotNetTypeRef[] leftTypeParameters = leftTypeRef.getParameterTypeRefs();
-		DotNetTypeRef typeRef = ArrayUtil2.safeGet(leftTypeParameters, parameterIndex);
-		return ObjectUtil.notNull(typeRef, DotNetTypeRef.ERROR_TYPE);
-	}
+        if (leftTypeRef == CSharpUndefinedLambdaResolveResult.INSTANCE) {
+            return DotNetTypeRef.UNKNOWN_TYPE;
+        }
+        DotNetTypeRef[] leftTypeParameters = leftTypeRef.getParameterTypeRefs();
+        DotNetTypeRef typeRef = ArrayUtil2.safeGet(leftTypeParameters, parameterIndex);
+        return ObjectUtil.notNull(typeRef, DotNetTypeRef.ERROR_TYPE);
+    }
 
-	@Nullable
-	@RequiredReadAction
-	public static CSharpLambdaResolveResult resolveLeftLambdaTypeRef(PsiElement target)
-	{
-		if(target instanceof CSharpLambdaExpressionImpl)
-		{
-			DotNetTypeRef typeRefOfLambda = ((CSharpLambdaExpressionImpl) target).getInferenceSessionTypeRef();
-			if(typeRefOfLambda != null)
-			{
-				DotNetTypeResolveResult typeResolveResult = typeRefOfLambda.resolve();
-				if(typeResolveResult instanceof CSharpLambdaResolveResult)
-				{
-					return (CSharpLambdaResolveResult) typeResolveResult;
-				}
-				return null;
-			}
-		}
+    @Nullable
+    @RequiredReadAction
+    public static CSharpLambdaResolveResult resolveLeftLambdaTypeRef(PsiElement target) {
+        if (target instanceof CSharpLambdaExpressionImpl) {
+            DotNetTypeRef typeRefOfLambda = ((CSharpLambdaExpressionImpl) target).getInferenceSessionTypeRef();
+            if (typeRefOfLambda != null) {
+                DotNetTypeResolveResult typeResolveResult = typeRefOfLambda.resolve();
+                if (typeResolveResult instanceof CSharpLambdaResolveResult) {
+                    return (CSharpLambdaResolveResult) typeResolveResult;
+                }
+                return null;
+            }
+        }
 
-		return resolveLambdaTypeRefFromParent(target);
-	}
+        return resolveLambdaTypeRefFromParent(target);
+    }
 
-	@Nullable
-	@RequiredReadAction
-	private static CSharpLambdaResolveResult resolveLambdaTypeRefFromParent(PsiElement target)
-	{
-		PsiElement parent = target.getParent();
-		if(parent instanceof DotNetVariable)
-		{
-			DotNetVariable variable = (DotNetVariable) parent;
-			if(variable.getInitializer() != target)
-			{
-				return null;
-			}
-			return resolveLeftLambdaTypeRefForVariable(variable);
-		}
-		else if(parent instanceof CSharpNamedFieldOrPropertySet)
-		{
-			CSharpNamedFieldOrPropertySet fieldOrPropertySet = (CSharpNamedFieldOrPropertySet) parent;
-			if(fieldOrPropertySet.getValueExpression() != target)
-			{
-				return null;
-			}
+    @Nullable
+    @RequiredReadAction
+    private static CSharpLambdaResolveResult resolveLambdaTypeRefFromParent(PsiElement target) {
+        PsiElement parent = target.getParent();
+        if (parent instanceof DotNetVariable) {
+            DotNetVariable variable = (DotNetVariable) parent;
+            if (variable.getInitializer() != target) {
+                return null;
+            }
+            return resolveLeftLambdaTypeRefForVariable(variable);
+        }
+        else if (parent instanceof CSharpNamedFieldOrPropertySet) {
+            CSharpNamedFieldOrPropertySet fieldOrPropertySet = (CSharpNamedFieldOrPropertySet) parent;
+            if (fieldOrPropertySet.getValueExpression() != target) {
+                return null;
+            }
 
-			CSharpReferenceExpression nameReferenceExpression = fieldOrPropertySet.getNameElement();
-			PsiElement resolvedElement = nameReferenceExpression.resolve();
-			if(resolvedElement instanceof DotNetVariable)
-			{
-				return resolveLeftLambdaTypeRefForVariable((DotNetVariable) resolvedElement);
-			}
-			return null;
-		}
-		else if(parent instanceof CSharpCallArgument)
-		{
-			CSharpCallArgumentListOwner argumentListOwner = PsiTreeUtil.getParentOfType(parent, CSharpCallArgumentListOwner.class, false);
-			if(argumentListOwner == null)
-			{
-				return null;
-			}
+            CSharpReferenceExpression nameReferenceExpression = fieldOrPropertySet.getNameElement();
+            PsiElement resolvedElement = nameReferenceExpression.resolve();
+            if (resolvedElement instanceof DotNetVariable) {
+                return resolveLeftLambdaTypeRefForVariable((DotNetVariable) resolvedElement);
+            }
+            return null;
+        }
+        else if (parent instanceof CSharpCallArgument) {
+            CSharpCallArgumentListOwner argumentListOwner = PsiTreeUtil.getParentOfType(parent, CSharpCallArgumentListOwner.class, false);
+            if (argumentListOwner == null) {
+                return null;
+            }
 
-			ResolveResult validOrFirstMaybeResult = CSharpResolveUtil.findValidOrFirstMaybeResult(argumentListOwner.multiResolve(false));
-			if(validOrFirstMaybeResult == null)
-			{
-				return CSharpUndefinedLambdaResolveResult.INSTANCE;
-			}
+            // every candidate, the valid ones are taken first below
+            ResolveResult[] resolveResults = argumentListOwner.multiResolve(true);
+            if (resolveResults.length == 0) {
+                return CSharpUndefinedLambdaResolveResult.INSTANCE;
+            }
 
-			if(validOrFirstMaybeResult instanceof MethodResolveResult)
-			{
-				List<NCallArgument> arguments = ((MethodResolveResult) validOrFirstMaybeResult).getCalcResult().getArguments();
-				for(NCallArgument argument : arguments)
-				{
-					if(argument.getCallArgument() == null)
-					{
-						continue;
-					}
-					CSharpCallArgument callArgument = argument.getCallArgument();
-					if(callArgument.getArgumentExpression() == target)
-					{
-						DotNetTypeRef parameterTypeRef = argument.getParameterTypeRef();
-						if(parameterTypeRef == null)
-						{
-							return null;
-						}
+            // the valid candidates first; in code which does not compile (yet) the best candidate whose parameter at the
+            // position of the lambda is a delegate it fits - x in FirstOrDefault(x => x.) is typed while it is written -
+            // and at last any delegate there, (x, y) => x for Action<T, T, int> still types x
+            for (int pass = 0; pass < 3; pass++) {
+                for (ResolveResult resolveResult : resolveResults) {
+                    if (pass == 0 && !resolveResult.isValidResult() || !(resolveResult instanceof MethodResolveResult methodResolveResult)) {
+                        continue;
+                    }
 
-						DotNetTypeResolveResult typeResolveResult = parameterTypeRef.resolve();
-						if(typeResolveResult instanceof CSharpLambdaResolveResult)
-						{
-							return (CSharpLambdaResolveResult) typeResolveResult;
-						}
-						return null;
-					}
-				}
-			}
-		}
-		else if(parent instanceof CSharpAssignmentExpressionImpl)
-		{
-			IElementType operatorElementType = ((CSharpAssignmentExpressionImpl) parent).getOperatorElement().getOperatorElementType();
+                    CSharpLambdaResolveResult delegate = delegateForArgument(methodResolveResult, target, pass < 2);
+                    if (delegate != null) {
+                        return delegate;
+                    }
+                }
+            }
+            return null;
+        }
+        else if (parent instanceof CSharpAssignmentExpressionImpl) {
+            IElementType operatorElementType = ((CSharpAssignmentExpressionImpl) parent).getOperatorElement().getOperatorElementType();
 
-			if(operatorElementType == CSharpTokens.PLUSEQ || operatorElementType == CSharpTokens.MINUSEQ || operatorElementType == CSharpTokens.EQ)
-			{
-				DotNetExpression expression = ((CSharpAssignmentExpressionImpl) parent).getParameterExpressions()[0];
-				if(expression == target)
-				{
-					return null;
-				}
-				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(true).resolve();
-				if(typeResolveResult instanceof CSharpLambdaResolveResult)
-				{
-					return (CSharpLambdaResolveResult) typeResolveResult;
-				}
-			}
-		}
-		else if(parent instanceof CSharpTypeCastExpressionImpl)
-		{
-			DotNetTypeResolveResult typeResolveResult = ((CSharpTypeCastExpressionImpl) parent).toTypeRef(false).resolve();
-			if(typeResolveResult instanceof CSharpLambdaResolveResult)
-			{
-				return (CSharpLambdaResolveResult) typeResolveResult;
-			}
-		}
-		else if(parent instanceof CSharpReturnStatementImpl)
-		{
-			CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(parent, CSharpSimpleLikeMethodAsElement.class);
-			if(methodAsElement == null)
-			{
-				return null;
-			}
-			DotNetTypeResolveResult typeResolveResult = methodAsElement.getReturnTypeRef().resolve();
-			if(typeResolveResult instanceof CSharpLambdaResolveResult)
-			{
-				return (CSharpLambdaResolveResult) typeResolveResult;
-			}
-		}
-		else if(parent instanceof CSharpTupleElementImpl tupleElement)
-		{
-			if(parent.getParent() instanceof CSharpTupleExpressionImpl && parent.getParent().getParent() instanceof CSharpReturnStatementImpl returnStatement)
-			{
-				int position = tupleElement.getPosition();
-				if(position == -1)
-				{
-					return null;
-				}
+            if (operatorElementType == CSharpTokens.PLUSEQ || operatorElementType == CSharpTokens.MINUSEQ || operatorElementType == CSharpTokens.EQ) {
+                DotNetExpression expression = ((CSharpAssignmentExpressionImpl) parent).getParameterExpressions()[0];
+                if (expression == target) {
+                    return null;
+                }
+                DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(true).resolve();
+                if (typeResolveResult instanceof CSharpLambdaResolveResult) {
+                    return (CSharpLambdaResolveResult) typeResolveResult;
+                }
+            }
+        }
+        else if (parent instanceof CSharpTypeCastExpressionImpl) {
+            DotNetTypeResolveResult typeResolveResult = ((CSharpTypeCastExpressionImpl) parent).toTypeRef(false).resolve();
+            if (typeResolveResult instanceof CSharpLambdaResolveResult) {
+                return (CSharpLambdaResolveResult) typeResolveResult;
+            }
+        }
+        else if (parent instanceof CSharpReturnStatementImpl) {
+            CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(parent, CSharpSimpleLikeMethodAsElement.class);
+            if (methodAsElement == null) {
+                return null;
+            }
+            DotNetTypeResolveResult typeResolveResult = methodAsElement.getReturnTypeRef().resolve();
+            if (typeResolveResult instanceof CSharpLambdaResolveResult) {
+                return (CSharpLambdaResolveResult) typeResolveResult;
+            }
+        }
+        else if (parent instanceof CSharpTupleElementImpl tupleElement) {
+            if (parent.getParent() instanceof CSharpTupleExpressionImpl && parent.getParent().getParent() instanceof CSharpReturnStatementImpl returnStatement) {
+                int position = tupleElement.getPosition();
+                if (position == -1) {
+                    return null;
+                }
 
-				CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(returnStatement, CSharpSimpleLikeMethodAsElement.class);
-				if(methodAsElement == null)
-				{
-					return null;
-				}
+                CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(returnStatement, CSharpSimpleLikeMethodAsElement.class);
+                if (methodAsElement == null) {
+                    return null;
+                }
 
-				DotNetTypeResolveResult typeResolveResult = methodAsElement.getReturnTypeRef().resolve();
+                DotNetTypeResolveResult typeResolveResult = methodAsElement.getReturnTypeRef().resolve();
 
-				if(typeResolveResult.getElement() instanceof DotNetTypeDeclaration typeDeclaration)
-				{
-					DotNetGenericParameter parameter = ArrayUtil2.safeGet(typeDeclaration.getGenericParameters(), position);
+                if (typeResolveResult.getElement() instanceof DotNetTypeDeclaration typeDeclaration) {
+                    DotNetGenericParameter parameter = ArrayUtil2.safeGet(typeDeclaration.getGenericParameters(), position);
 
-					if(parameter == null)
-					{
-						return null;
-					}
+                    if (parameter == null) {
+                        return null;
+                    }
 
-					DotNetTypeRef targetType = typeResolveResult.getGenericExtractor().extract(parameter);
+                    DotNetTypeRef targetType = typeResolveResult.getGenericExtractor().extract(parameter);
 
-					if(targetType != null)
-					{
-						DotNetTypeResolveResult targetResolveType = targetType.resolve();
-						if(targetResolveType instanceof CSharpLambdaResolveResult)
-						{
-							return (CSharpLambdaResolveResult) targetResolveType;
-						}
-					}
-				}
-			}
-		}
-		else if(parent instanceof CSharpParenthesesExpressionImpl)
-		{
-			return resolveLambdaTypeRefFromParent(parent);
-		}
-		else if(parent instanceof CSharpConditionalExpressionImpl)
-		{
-			DotNetExpression expression = ((CSharpConditionalExpressionImpl) parent).getTrueExpression();
-			if(expression != null && expression != target)
-			{
-				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(false).resolve();
-				if(typeResolveResult instanceof CSharpLambdaResolveResult)
-				{
-					return (CSharpLambdaResolveResult) typeResolveResult;
-				}
-			}
-			expression = ((CSharpConditionalExpressionImpl) parent).getFalseExpression();
-			if(expression != null && expression != target)
-			{
-				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(false).resolve();
-				if(typeResolveResult instanceof CSharpLambdaResolveResult)
-				{
-					return (CSharpLambdaResolveResult) typeResolveResult;
-				}
-			}
-		}
-		else if(parent instanceof CSharpLambdaExpressionImpl)
-		{
-			if(((CSharpLambdaExpressionImpl) parent).getCodeBlock() != target)
-			{
-				return null;
-			}
+                    if (targetType != null) {
+                        DotNetTypeResolveResult targetResolveType = targetType.resolve();
+                        if (targetResolveType instanceof CSharpLambdaResolveResult) {
+                            return (CSharpLambdaResolveResult) targetResolveType;
+                        }
+                    }
+                }
+            }
+        }
+        else if (parent instanceof CSharpParenthesesExpressionImpl) {
+            return resolveLambdaTypeRefFromParent(parent);
+        }
+        else if (parent instanceof CSharpConditionalExpressionImpl) {
+            DotNetExpression expression = ((CSharpConditionalExpressionImpl) parent).getTrueExpression();
+            if (expression != null && expression != target) {
+                DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(false).resolve();
+                if (typeResolveResult instanceof CSharpLambdaResolveResult) {
+                    return (CSharpLambdaResolveResult) typeResolveResult;
+                }
+            }
+            expression = ((CSharpConditionalExpressionImpl) parent).getFalseExpression();
+            if (expression != null && expression != target) {
+                DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(false).resolve();
+                if (typeResolveResult instanceof CSharpLambdaResolveResult) {
+                    return (CSharpLambdaResolveResult) typeResolveResult;
+                }
+            }
+        }
+        else if (parent instanceof CSharpLambdaExpressionImpl) {
+            // the code block is a proxy - its element is the body expression
+            if (((CSharpLambdaExpressionImpl) parent).getCodeBlock().getElement() != target) {
+                return null;
+            }
 
-			DotNetTypeRef typeRef = ((CSharpLambdaExpressionImpl) parent).toTypeRef(true);
+            DotNetTypeRef typeRef = ((CSharpLambdaExpressionImpl) parent).toTypeRef(true);
 
-			DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
-			if(typeResolveResult instanceof CSharpLambdaResolveResult)
-			{
-				DotNetTypeRef returnTypeRef = ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
+            DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
+            if (typeResolveResult instanceof CSharpLambdaResolveResult) {
+                DotNetTypeRef returnTypeRef = ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
 
-				DotNetTypeResolveResult returnTypeResult = returnTypeRef.resolve();
-				if(returnTypeResult instanceof CSharpLambdaResolveResult)
-				{
-					return (CSharpLambdaResolveResult) returnTypeResult;
-				}
-			}
-		}
+                DotNetTypeResolveResult returnTypeResult = returnTypeRef.resolve();
+                if (returnTypeResult instanceof CSharpLambdaResolveResult) {
+                    return (CSharpLambdaResolveResult) returnTypeResult;
+                }
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Nullable
-	@RequiredReadAction
-	public static CSharpLambdaResolveResult resolveLeftLambdaTypeRefForVariable(DotNetVariable variable)
-	{
-		DotNetTypeRef leftTypeRef = variable.toTypeRef(false);
-		DotNetTypeResolveResult typeResolveResult = leftTypeRef.resolve();
-		return typeResolveResult instanceof CSharpLambdaResolveResult ? (CSharpLambdaResolveResult) typeResolveResult : null;
-	}
+    /**
+     * The delegate type (or the delegate of the expression tree type) of the parameter the {@code target} argument goes
+     * to in the candidate - with {@code checkArity}, only if a lambda {@code target} fits it by its number of parameters.
+     */
+    @Nullable
+    @RequiredReadAction
+    private static CSharpLambdaResolveResult delegateForArgument(MethodResolveResult methodResolveResult, PsiElement target, boolean checkArity) {
+        for (NCallArgument argument : methodResolveResult.getCalcResult().getArguments()) {
+            CSharpCallArgument callArgument = argument.getCallArgument();
+            if (callArgument == null || callArgument.getArgumentExpression() != target) {
+                continue;
+            }
+
+            DotNetTypeRef parameterTypeRef = argument.getParameterTypeRef();
+            if (parameterTypeRef == null || !(CSharpExpressionTreeUtil.unwrap(parameterTypeRef).resolve() instanceof CSharpLambdaResolveResult delegate)) {
+                return null;
+            }
+            if (checkArity && target instanceof CSharpLambdaExpressionImpl lambda && delegate.getParameterTypeRefs().length != lambda.getParameters().length) {
+                return null;
+            }
+            return delegate;
+        }
+        return null;
+    }
+
+    @Nullable
+    @RequiredReadAction
+    public static CSharpLambdaResolveResult resolveLeftLambdaTypeRefForVariable(DotNetVariable variable) {
+        DotNetTypeRef leftTypeRef = CSharpExpressionTreeUtil.unwrap(variable.toTypeRef(false));
+        DotNetTypeResolveResult typeResolveResult = leftTypeRef.resolve();
+        return typeResolveResult instanceof CSharpLambdaResolveResult ? (CSharpLambdaResolveResult) typeResolveResult : null;
+    }
 }

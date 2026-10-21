@@ -117,6 +117,12 @@ public class OverrideUtil {
 
                     ProgressManager.checkCanceled();
 
+                    // an explicit implementation hides the member it implements only - not a member of the same signature
+                    // from elsewhere, like the operator stubs of int next to its IAdditionOperators<int, int, int>.operator +
+                    if (typeForImplement != null && !isDeclaredIn(tempIterateElement, typeForImplement)) {
+                        continue;
+                    }
+
                     if (CSharpElementCompareUtil.isEqual(tempIterateElement, element, CSharpElementCompareUtil.CHECK_RETURN_TYPE)) {
                         if (!overrideProcessor.elementOverride(virtualImplementOwner, (DotNetVirtualImplementOwner) tempIterateElement)) {
                             return Collections.emptyList();
@@ -159,6 +165,17 @@ public class OverrideUtil {
             elseElements.add(new CSharpElementGroupImpl<>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements));
             return elseElements;
         }
+    }
+
+    @RequiredReadAction
+    private static boolean isDeclaredIn(PsiElement member, DotNetType type) {
+        PsiElement typeElement = type.toTypeRef().resolve().getElement();
+        PsiElement parent = member.getParent();
+        if (typeElement instanceof DotNetTypeDeclaration typeDeclaration && parent instanceof DotNetTypeDeclaration memberOwner) {
+            return Objects.equals(typeDeclaration.getVmQName(), memberOwner.getVmQName());
+        }
+        // can not tell - hide it, as before
+        return true;
     }
 
     private static String getNameForGroup(List<PsiElement> elements) {
