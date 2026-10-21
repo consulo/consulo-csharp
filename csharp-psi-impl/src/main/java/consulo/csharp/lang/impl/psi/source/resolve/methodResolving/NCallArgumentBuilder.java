@@ -359,6 +359,16 @@ public class NCallArgumentBuilder
 			}
 		}
 
+		// a candidate which omits ref of a COM method is worse than any which does not
+		for(NCallArgument argument : arguments)
+		{
+			if(argument.isRefOmitted())
+			{
+				weight -= 100000000;
+				break;
+			}
+		}
+
 		return new MethodResolvePriorityInfo(valid, weight, arguments);
 	}
 }

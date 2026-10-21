@@ -27,7 +27,9 @@ import consulo.csharp.lang.impl.psi.stub.CSharpMethodDeclStub;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.ASTNode;
@@ -92,6 +94,24 @@ public class CSharpMethodDeclarationImpl extends CSharpStubLikeMethodDeclaration
             return BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.DELEGATE_MASK);
         }
         return findChildByType(CSharpTokens.DELEGATE_KEYWORD) != null;
+    }
+
+    /**
+     * {@code delegate ref int D();} - the ref of the return follows the delegate keyword, out of the modifier list
+     */
+    @RequiredReadAction
+    public boolean isRefDelegate() {
+        CSharpMethodDeclStub stub = getGreenStub();
+        if (stub != null) {
+            return BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.REF_DELEGATE);
+        }
+        return findChildByType(CSharpTokens.DELEGATE_KEYWORD) != null && findChildByType(CSharpTokens.REF_KEYWORD) != null;
+    }
+
+    @RequiredReadAction
+    @Override
+    public boolean hasModifier(DotNetModifier modifier) {
+        return modifier == CSharpModifier.REF && isRefDelegate() || super.hasModifier(modifier);
     }
 
     @RequiredReadAction

@@ -19,8 +19,8 @@ package consulo.csharp.lang.impl.psi.source.resolve.sorter;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.RecursionManager;
 import consulo.csharp.lang.impl.psi.CSharpContextUtil;
-import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.impl.psi.source.CSharpReferenceExpressionImplUtil;
+import consulo.csharp.lang.psi.*;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
@@ -29,187 +29,190 @@ import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.ResolveResult;
+import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.lang.Comparing;
-
 import org.jspecify.annotations.Nullable;
+
 import java.util.Comparator;
 
 /**
  * @author VISTALL
  * @since 28.02.2015
  */
-public class StaticVsInstanceComparator implements Comparator<ResolveResult>
-{
-	@RequiredReadAction
-	public static StaticVsInstanceComparator create(PsiElement element)
-	{
-		CSharpReferenceExpressionEx parent = null;
-		if(element instanceof CSharpReferenceExpression)
-		{
-			if(((CSharpReferenceExpression) element).getQualifier() == null && element.getParent() instanceof CSharpReferenceExpressionEx)
-			{
-				parent = (CSharpReferenceExpressionEx) element.getParent();
-			}
-		}
-		return new StaticVsInstanceComparator(element, parent);
-	}
+public class StaticVsInstanceComparator implements Comparator<ResolveResult> {
+    @RequiredReadAction
+    public static StaticVsInstanceComparator create(PsiElement element) {
+        CSharpReferenceExpressionEx parent = null;
+        if (element instanceof CSharpReferenceExpression) {
+            if (((CSharpReferenceExpression) element).getQualifier() == null && element.getParent() instanceof CSharpReferenceExpressionEx) {
+                parent = (CSharpReferenceExpressionEx) element.getParent();
+            }
+        }
+        return new StaticVsInstanceComparator(element, parent);
+    }
 
-	private final TypeLikeComparator myComparator;
-	@Nullable
-	private final CSharpReferenceExpressionEx myParent;
+    private final TypeLikeComparator myComparator;
+    @Nullable
+    private final CSharpReferenceExpressionEx myParent;
 
-	private int myTypeArgumentsSize;
+    private int myTypeArgumentsSize;
 
-	@RequiredReadAction
-	public StaticVsInstanceComparator(PsiElement element, @Nullable CSharpReferenceExpressionEx parent)
-	{
-		myComparator = TypeLikeComparator.create(element);
-		myTypeArgumentsSize = CSharpReferenceExpressionImplUtil.getTypeArgumentListSize(element);
-		myParent = parent;
-	}
+    @RequiredReadAction
+    public StaticVsInstanceComparator(PsiElement element, @Nullable CSharpReferenceExpressionEx parent) {
+        myComparator = TypeLikeComparator.create(element);
+        myTypeArgumentsSize = CSharpReferenceExpressionImplUtil.getTypeArgumentListSize(element);
+        myParent = parent;
+    }
 
-	@Override
-	@RequiredReadAction
-	public int compare(ResolveResult o1, ResolveResult o2)
-	{
-		if(isNameEqual(o1, o2))
-		{
-			int i = getWeightByContext(o2) - getWeightByContext(o1);
-			if(i == 0)
-			{
-				return getWeightByTypeArguments(o2) - getWeightByTypeArguments(o1);
-			}
-			return i;
-		}
-		return myComparator.compare(o1, o2);
-	}
+    @Override
+    @RequiredReadAction
+    public int compare(ResolveResult o1, ResolveResult o2) {
+        if (isNameEqual(o1, o2)) {
+            int shadowing = compareShadowing(o1.getElement(), o2.getElement());
+            if (shadowing != 0) {
+                return shadowing;
+            }
 
-	private static boolean isNameEqual(ResolveResult o1, ResolveResult o2)
-	{
-		PsiElement e1 = o1.getElement();
-		PsiElement e2 = o2.getElement();
-		if(e1 instanceof PsiNamedElement && e2 instanceof PsiNamedElement)
-		{
-			return Comparing.equal(((PsiNamedElement) e1).getName(), ((PsiNamedElement) e2).getName());
-		}
-		return false;
-	}
+            int i = Integer.compare(getWeightByContext(o2), getWeightByContext(o1));
+            if (i == 0) {
+                return getWeightByTypeArguments(o2) - getWeightByTypeArguments(o1);
+            }
+            return i;
+        }
+        return myComparator.compare(o1, o2);
+    }
 
-	@RequiredReadAction
-	private int getWeightByTypeArguments(ResolveResult o1)
-	{
-		PsiElement element = o1.getElement();
-		if(element instanceof DotNetGenericParameterListOwner)
-		{
-			int genericParametersCount = ((DotNetGenericParameterListOwner) element).getGenericParametersCount();
-			int weight = genericParametersCount * 10;
-			if(genericParametersCount == myTypeArgumentsSize)
-			{
-				weight += 1000;
-			}
-			return weight;
-		}
-		return 0;
-	}
+    /**
+     * A variable and a type of the same name are the Color Color case only if the variable is of that type - otherwise the
+     * variable, found in an inner scope, hides the type.
+     */
+    @RequiredReadAction
+    private int compareShadowing(@Nullable PsiElement e1, @Nullable PsiElement e2) {
+        if (myParent == null) {
+            return 0;
+        }
+        if (e1 instanceof DotNetVariable variable && isTypeLike(e2) && !isColorColor(variable, e2)) {
+            return -1;
+        }
+        if (e2 instanceof DotNetVariable variable && isTypeLike(e1) && !isColorColor(variable, e1)) {
+            return 1;
+        }
+        return 0;
+    }
 
-	@RequiredReadAction
-	private int getWeightByContext(ResolveResult resolveResult)
-	{
-		final PsiElement element = resolveResult.getElement();
-		if(element == null)
-		{
-			return -100;
-		}
+    private static boolean isTypeLike(@Nullable PsiElement element) {
+        return element instanceof CSharpTypeDeclaration || element instanceof CSharpTypeDefStatement;
+    }
 
-		// type alias have max priority
-		if(element instanceof CSharpTypeDefStatement)
-		{
-			return Integer.MAX_VALUE;
-		}
+    @RequiredReadAction
+    private boolean isColorColor(DotNetVariable variable, PsiElement type) {
+        // inside its enum declaration an enum constant is of the underlying type
+        if (variable instanceof CSharpEnumConstantDeclaration && PsiTreeUtil.isAncestor(variable.getParent(), myParent, false)) {
+            return false;
+        }
+        DotNetTypeDeclaration variableType = resolveTargetElement(variable, myParent);
+        DotNetTypeDeclaration typeType = resolveTargetElement(type, myParent);
+        return variableType == null || typeType == null || Comparing.equal(variableType.getVmQName(), typeType.getVmQName());
+    }
 
-		if(myParent != null)
-		{
-			CSharpContextUtil.ContextType parentContext = CSharpContextUtil.ContextType.ANY;
-			if(element instanceof CSharpTypeDeclaration)
-			{
-				parentContext = CSharpContextUtil.ContextType.STATIC;
-			}
-			else if(element instanceof DotNetVariable)
-			{
-				parentContext = CSharpContextUtil.ContextType.INSTANCE;
-			}
+    private static boolean isNameEqual(ResolveResult o1, ResolveResult o2) {
+        PsiElement e1 = o1.getElement();
+        PsiElement e2 = o2.getElement();
+        if (e1 instanceof PsiNamedElement && e2 instanceof PsiNamedElement) {
+            return Comparing.equal(((PsiNamedElement) e1).getName(), ((PsiNamedElement) e2).getName());
+        }
+        return false;
+    }
 
-			DotNetTypeDeclaration forceTarget = resolveTargetElement(element, myParent);
-			if(forceTarget == null)
-			{
-				return parentContext == CSharpContextUtil.ContextType.INSTANCE ? 10 : 5;
-			}
+    @RequiredReadAction
+    private int getWeightByTypeArguments(ResolveResult o1) {
+        PsiElement element = o1.getElement();
+        if (element instanceof DotNetGenericParameterListOwner) {
+            int genericParametersCount = ((DotNetGenericParameterListOwner) element).getGenericParametersCount();
+            int weight = genericParametersCount * 10;
+            if (genericParametersCount == myTypeArgumentsSize) {
+                weight += 1000;
+            }
+            return weight;
+        }
+        return 0;
+    }
 
-			ResolveResult[] resolveResults = RecursionManager.doPreventingRecursion(myParent, false, () -> myParent.tryResolveFromQualifier(forceTarget));
-			if(resolveResults == null || resolveResults.length == 0)
-			{
-				return parentContext == CSharpContextUtil.ContextType.INSTANCE ? 10 : 5;
-			}
+    @RequiredReadAction
+    private int getWeightByContext(ResolveResult resolveResult) {
+        final PsiElement element = resolveResult.getElement();
+        if (element == null) {
+            return -100;
+        }
 
-			for(ResolveResult result : resolveResults)
-			{
-				PsiElement element1 = result.getElement();
-				if(element1 == null)
-				{
-					continue;
-				}
+        if (myParent != null) {
+            CSharpContextUtil.ContextType parentContext = CSharpContextUtil.ContextType.ANY;
+            if (element instanceof CSharpTypeDeclaration || element instanceof CSharpTypeDefStatement) {
+                parentContext = CSharpContextUtil.ContextType.STATIC;
+            }
+            else if (element instanceof DotNetVariable) {
+                parentContext = CSharpContextUtil.ContextType.INSTANCE;
+            }
+            // with nothing to tell them apart the value goes first - Roslyn binds an erroneous member access to it
+            int byDefault = parentContext == CSharpContextUtil.ContextType.INSTANCE ? 10 : 5;
 
-				CSharpContextUtil.ContextType contextForResolved = CSharpContextUtil.getContextForResolved(element1);
+            DotNetTypeDeclaration forceTarget = resolveTargetElement(element, myParent);
+            if (forceTarget == null) {
+                return byDefault;
+            }
 
-				if(parentContext != CSharpContextUtil.ContextType.ANY)
-				{
-					switch(parentContext)
-					{
-						case INSTANCE:
-							if(contextForResolved.isAllowInstance())
-							{
-								return 5000;
-							}
-							break;
-						case STATIC:
-							if(contextForResolved == CSharpContextUtil.ContextType.STATIC)
-							{
-								return 5000;
-							}
-							break;
-					}
-				}
-			}
-		}
-		else
-		{
-			// if expression is single - types and namespaces are in the end of queue
-			if(element instanceof CSharpTypeDeclaration || element instanceof DotNetNamespaceAsElement)
-			{
-				return -1;
-			}
-		}
-		return 0;
-	}
+            ResolveResult[] resolveResults = RecursionManager.doPreventingRecursion(myParent, false, () -> myParent.tryResolveFromQualifier(forceTarget));
+            if (resolveResults == null) {
+                return byDefault;
+            }
 
-	@Nullable
-	@RequiredReadAction
-	private static DotNetTypeDeclaration resolveTargetElement(PsiElement element, PsiElement scope)
-	{
-		if(element instanceof CSharpTypeDeclaration)
-		{
-			return (DotNetTypeDeclaration) element;
-		}
-		else if(element instanceof DotNetVariable)
-		{
-			DotNetTypeRef typeRef = ((DotNetVariable) element).toTypeRef(true);
-			PsiElement resolvedElement = typeRef.resolve().getElement();
-			if(resolvedElement == null)
-			{
-				return null;
-			}
-			return resolveTargetElement(resolvedElement, scope);
-		}
-		return null;
-	}
+            // the member the parent binds to decides (C# spec 12.8.7.2, Color Color) - an instance one makes the name the value,
+            // a static one the type
+            for (ResolveResult result : resolveResults) {
+                PsiElement member = result.getElement();
+                if (member == null || !result.isValidResult()) {
+                    continue;
+                }
+
+                CSharpContextUtil.ContextType contextForResolved = CSharpContextUtil.getContextForResolved(member);
+                if (contextForResolved == CSharpContextUtil.ContextType.ANY || parentContext == CSharpContextUtil.ContextType.ANY) {
+                    return byDefault;
+                }
+                boolean matches = parentContext == CSharpContextUtil.ContextType.INSTANCE ? contextForResolved.isAllowInstance() : contextForResolved == CSharpContextUtil.ContextType.STATIC;
+                return matches ? 5000 : 0;
+            }
+            return byDefault;
+        }
+
+        // type alias have max priority
+        if (element instanceof CSharpTypeDefStatement) {
+            return Integer.MAX_VALUE;
+        }
+        // if expression is single - types and namespaces are in the end of queue
+        if (element instanceof CSharpTypeDeclaration || element instanceof DotNetNamespaceAsElement) {
+            return -1;
+        }
+        return 0;
+    }
+
+    @Nullable
+    @RequiredReadAction
+    private static DotNetTypeDeclaration resolveTargetElement(PsiElement element, PsiElement scope) {
+        if (element instanceof CSharpTypeDeclaration) {
+            return (DotNetTypeDeclaration) element;
+        }
+        else if (element instanceof CSharpTypeDefStatement typeDef) {
+            PsiElement aliased = typeDef.toTypeRef().resolve().getElement();
+            return aliased instanceof DotNetTypeDeclaration typeDeclaration ? typeDeclaration : null;
+        }
+        else if (element instanceof DotNetVariable) {
+            DotNetTypeRef typeRef = ((DotNetVariable) element).toTypeRef(true);
+            PsiElement resolvedElement = typeRef.resolve().getElement();
+            if (resolvedElement == null) {
+                return null;
+            }
+            return resolveTargetElement(resolvedElement, scope);
+        }
+        return null;
+    }
 }

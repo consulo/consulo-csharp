@@ -30,6 +30,8 @@ import consulo.it.HeadlessProjectExtension;
 import consulo.it.HeadlessProjects;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
+import consulo.language.psi.ResolveResult;
+import consulo.csharp.lang.impl.psi.source.resolve.MethodResolveResult;
 import consulo.language.psi.util.PsiTreeUtil;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -86,17 +88,25 @@ public class RoslynOverloadResolutionTest
 
 		PsiFile file = CSharpResolveTesting.openSource(projects, MockSdk.MONO_4_5, fileName, source, List.of());
 
+		StringBuilder candidates = new StringBuilder();
 		List<String> actual = ReadAction.compute(() ->
 		{
 			List<String> result = new ArrayList<>();
 			for(CSharpMethodCallExpressionImpl call : PsiTreeUtil.findChildrenOfType(methodM(file), CSharpMethodCallExpressionImpl.class))
 			{
 				result.add(normalize(display(call.resolveToCallable())));
+
+				candidates.append(call.getText().replaceAll("\\s+", " ")).append('\n');
+				for(ResolveResult resolveResult : call.multiResolve(true))
+				{
+					String weight = resolveResult instanceof MethodResolveResult methodResult ? String.valueOf(methodResult.getCalcResult().getWeight()) : "?";
+					candidates.append("  ").append(resolveResult.isValidResult() ? "" : "!").append(weight).append(' ').append(display(resolveResult.getElement())).append('\n');
+				}
 			}
 			return result;
 		});
 
-		assertThat(String.join("\n", actual)).isEqualTo(String.join("\n", expected));
+		assertThat(String.join("\n", actual)).as("candidates:%n%s", candidates).isEqualTo(String.join("\n", expected));
 	}
 
 	@RequiredReadAction

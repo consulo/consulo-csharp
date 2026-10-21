@@ -24,12 +24,16 @@ import consulo.csharp.lang.impl.psi.cast.PredefinedConversions;
 import consulo.csharp.lang.impl.psi.cast.CSharpCastSession;
 import consulo.csharp.lang.impl.psi.cast.CSharpInheritableCheckerCacher;
 import consulo.csharp.lang.impl.psi.source.CSharpOutRefAutoTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.MethodGroupConversion;
 import consulo.csharp.lang.impl.psi.source.resolve.type.*;
 import consulo.csharp.lang.psi.CSharpGenericParameter;
 import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.dotnet.psi.DotNetModifier;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetGenericParameter;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.*;
 import consulo.language.psi.PsiElement;
@@ -38,6 +42,7 @@ import consulo.util.lang.Pair;
 import org.jspecify.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * @author VISTALL
@@ -114,7 +119,16 @@ public class CSharpInheritableChecker {
             return fail();
         }
 
-        if (target instanceof CSharpFastImplicitTypeRef) {
+        // a method group converts to a delegate if one of its methods does - by parameters, their ref kinds and the return
+        if (target instanceof CSharpElementGroupTypeRef group && top.resolve() instanceof CSharpLambdaResolveResult delegate) {
+            GlobalSearchScope scope = castResolvingInfo != null ? castResolvingInfo.getSecond() : group.getResolveScope();
+            for (PsiElement element : group.getElementGroup().getElements()) {
+                if (element instanceof DotNetLikeMethodDeclaration method && MethodGroupConversion.calc(delegate, method, scope).isValidResult()) {
+                    return new CSharpTypeUtil.InheritResult(true, group.isConversion());
+                }
+            }
+        }
+        else if (target instanceof CSharpFastImplicitTypeRef) {
             DotNetTypeRef implicitTypeRef = ((CSharpFastImplicitTypeRef) target).doMirror(top);
             if (implicitTypeRef != null) {
                 return new CSharpTypeUtil.InheritResult(true, ((CSharpFastImplicitTypeRef) target).isConversion());
@@ -125,7 +139,10 @@ public class CSharpInheritableChecker {
             if (((CSharpRefTypeRef) target).getType() != ((CSharpRefTypeRef) top).getType()) {
                 return fail();
             }
-            return isInheritable(((CSharpRefTypeRef) top).getInnerTypeRef(), ((CSharpRefTypeRef) target).getInnerTypeRef(), castResolvingInfo);
+            // a variable passed by reference is of the type of the parameter - no conversion
+            return CSharpTypeUtil.isTypeEqual(((CSharpRefTypeRef) top).getInnerTypeRef(), ((CSharpRefTypeRef) target).getInnerTypeRef())
+                ? CSharpTypeUtil.SIMPLE_SUCCESS
+                : fail();
         }
 
         if (top instanceof CSharpRefTypeRef && target instanceof CSharpOutRefAutoTypeRef) {
@@ -209,6 +226,14 @@ public class CSharpInheritableChecker {
         DotNetTypeResolveResult topTypeResolveResult = top.resolve();
         DotNetTypeResolveResult targetTypeResolveResult = target.resolve();
         if (topTypeResolveResult instanceof CSharpLambdaResolveResult && targetTypeResolveResult instanceof CSharpLambdaResolveResult) {
+            // a value of a delegate type converts to the same delegate only - by the variance of its type parameters
+            CSharpMethodDeclaration topDelegate = originalDelegate((CSharpLambdaResolveResult) topTypeResolveResult);
+            CSharpMethodDeclaration targetDelegate = originalDelegate((CSharpLambdaResolveResult) targetTypeResolveResult);
+            if (topDelegate != null && targetDelegate != null) {
+                return isVarianceConvertible(topDelegate, topTypeResolveResult.getGenericExtractor(), targetDelegate, targetTypeResolveResult.getGenericExtractor(),
+                    castResolvingInfo) ? CSharpTypeUtil.SIMPLE_SUCCESS : fail();
+            }
+
             if (!((CSharpLambdaResolveResult) targetTypeResolveResult).isInheritParameters()) {
                 DotNetTypeRef[] targetParameters = ((CSharpLambdaResolveResult) targetTypeResolveResult).getParameterTypeRefs();
                 DotNetTypeRef[] topParameters = ((CSharpLambdaResolveResult) topTypeResolveResult).getParameterTypeRefs();
@@ -228,6 +253,12 @@ public class CSharpInheritableChecker {
             }
             DotNetTypeRef targetReturnType = ((CSharpLambdaResolveResult) targetTypeResolveResult).getReturnTypeRef();
             DotNetTypeRef topReturnType = ((CSharpLambdaResolveResult) topTypeResolveResult).getReturnTypeRef();
+
+            // ref int returns by reference, int by value - they do not convert to each other
+            if (targetReturnType != DotNetTypeRef.AUTO_TYPE
+                && MethodGroupConversion.isRefReturn((CSharpLambdaResolveResult) targetTypeResolveResult) != MethodGroupConversion.isRefReturn((CSharpLambdaResolveResult) topTypeResolveResult)) {
+                return fail();
+            }
 
             boolean result = targetReturnType == DotNetTypeRef.AUTO_TYPE || isInheritable(topReturnType, targetReturnType, castResolvingInfo).isSuccess();
             return result ? CSharpTypeUtil.SIMPLE_SUCCESS : fail();
@@ -352,6 +383,69 @@ public class CSharpInheritableChecker {
         }
 
         return fail();
+    }
+
+    @Nullable
+    @RequiredReadAction
+    private static CSharpMethodDeclaration originalDelegate(CSharpLambdaResolveResult result) {
+        CSharpMethodDeclaration delegate = result.getDelegateDeclaration();
+        return delegate != null && delegate.isDelegate() ? delegate : null;
+    }
+
+    /**
+     * C# spec 18.2.3.3: {@code D<A>} converts to {@code D<B>} if for each type parameter A and B are identical, or reference
+     * types with a reference conversion from A to B for an out parameter, from B to A for an in one.
+     */
+    @RequiredReadAction
+    private static boolean isVarianceConvertible(CSharpMethodDeclaration top,
+                                                 DotNetGenericExtractor topExtractor,
+                                                 CSharpMethodDeclaration target,
+                                                 DotNetGenericExtractor targetExtractor,
+                                                 @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo) {
+        if (!top.isEquivalentTo(target) && !Objects.equals(top.getPresentableQName(), target.getPresentableQName())) {
+            return false;
+        }
+
+        DotNetGenericParameter[] topParameters = top.getGenericParameters();
+        DotNetGenericParameter[] targetParameters = target.getGenericParameters();
+        if (topParameters.length != targetParameters.length) {
+            return false;
+        }
+
+        for (int i = 0; i < topParameters.length; i++) {
+            DotNetTypeRef to = topExtractor.extract(topParameters[i]);
+            DotNetTypeRef from = targetExtractor.extract(targetParameters[i]);
+            if (to == null || from == null || CSharpTypeUtil.isTypeEqual(to, from)) {
+                continue;
+            }
+            if (!isReferenceType(to) || !isReferenceType(from)) {
+                return false;
+            }
+            DotNetGenericParameter parameter = topParameters[i];
+            boolean converts;
+            if (parameter.hasModifier(DotNetModifier.COVARIANT)) {
+                converts = isInheritable(to, from, castResolvingInfo).isSuccess();
+            }
+            else if (parameter.hasModifier(DotNetModifier.CONTRAVARIANT)) {
+                converts = isInheritable(from, to, castResolvingInfo).isSuccess();
+            }
+            else {
+                converts = false;
+            }
+            if (!converts) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @RequiredReadAction
+    private static boolean isReferenceType(DotNetTypeRef typeRef) {
+        PsiElement element = typeRef.resolve().getElement();
+        if (element instanceof DotNetTypeDeclaration typeDeclaration) {
+            return !typeDeclaration.isStruct() && !typeDeclaration.isEnum();
+        }
+        return element != null && !(element instanceof DotNetGenericParameter);
     }
 
     private static CSharpTypeUtil.InheritResult fail() {

@@ -134,6 +134,11 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult {
         public CSharpMethodDeclaration getTarget() {
             return GenericUnwrapTool.extract(myElement, getGenericExtractor());
         }
+
+        @Override
+        public CSharpMethodDeclaration getDelegateDeclaration() {
+            return myElement;
+        }
     }
 
     protected final CSharpReferenceExpression myReferenceExpression;

@@ -25,7 +25,7 @@ import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveOptions;
 import consulo.csharp.lang.impl.psi.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.impl.psi.source.resolve.WeightUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.MethodResolvePriorityInfo;
-import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.NCallArgumentBuilder;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.MethodGroupConversion;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -71,8 +71,7 @@ public class AnyMemberKindProcessor implements KindProcessor
 						{
 							if(psiElement instanceof DotNetLikeMethodDeclaration)
 							{
-								MethodResolvePriorityInfo calc = NCallArgumentBuilder.calc(lambdaResolveResult.getParameterTypeRefs(), ((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs
-										(), resolveScope);
+								MethodResolvePriorityInfo calc = MethodGroupConversion.calc(lambdaResolveResult, (DotNetLikeMethodDeclaration) psiElement, resolveScope);
 
 								methodResolveResults.add(MethodResolveResult.createResult(calc, psiElement, result));
 							}

@@ -236,6 +236,20 @@ public class CSharpElementCompareUtil
 				return false;
 			}
 		}
+
+		// M(in T) and M(T) are different signatures - in is a modifier, not a part of the type as ref and out are
+		DotNetParameter[] parameters = ((DotNetParameterListOwner) listOwner).getParameters();
+		DotNetParameter[] parameters1 = ((DotNetParameterListOwner) listOwner2).getParameters();
+		if(parameters.length == parameters1.length)
+		{
+			for(int i = 0; i < parameters.length; i++)
+			{
+				if(parameters[i].hasModifier(CSharpModifier.IN) != parameters1[i].hasModifier(CSharpModifier.IN))
+				{
+					return false;
+				}
+			}
+		}
 		return true;
 	}
 }

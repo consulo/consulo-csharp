@@ -766,7 +766,8 @@ public class CSharpReferenceExpressionImplUtil
 	private static ResolveResult[] tryResolveFromQualifierImpl(CSharpReferenceExpressionEx referenceExpressionEx, PsiElement qualifierElement)
 	{
 		ResolveToKind kind = referenceExpressionEx.kind();
-		return buildSelectorAndMultiResolve(kind, findCallArgumentListOwner(kind, referenceExpressionEx), referenceExpressionEx, qualifierElement, false);
+		// from the parent - a method group picks its method by the delegate it converts to
+		return buildSelectorAndMultiResolve(kind, findCallArgumentListOwner(kind, referenceExpressionEx), referenceExpressionEx, qualifierElement, true);
 	}
 
 	@RequiredReadAction

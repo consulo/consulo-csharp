@@ -42,4 +42,14 @@ public interface CSharpLambdaResolveResult extends DotNetTypeResolveResult, CSha
 
 	@Nullable
 	CSharpMethodDeclaration getTarget();
+
+	/**
+	 * @return the delegate declaration of a delegate type - its generic parameters are what {@link #getGenericExtractor()}
+	 * fills in; null for the type of a lambda
+	 */
+	@Nullable
+	default CSharpMethodDeclaration getDelegateDeclaration()
+	{
+		return null;
+	}
 }

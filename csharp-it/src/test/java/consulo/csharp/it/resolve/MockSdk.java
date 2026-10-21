@@ -38,9 +38,9 @@ public enum MockSdk
 	/**
 	 * The .NET 10 reference assemblies: {@code System.Runtime.dll}, whose primitive types implement the generic math
 	 * interfaces ({@code IAdditionOperators`3}, {@code IBitwiseOperators`3}...) with static abstract operators, and
-	 * {@code System.Collections}. LINQ and expression trees: {@code System.Linq}, {@code System.Linq.Expressions}.
+	 * {@code System.Collections} and {@code System.Console}. LINQ and expression trees: {@code System.Linq}, {@code System.Linq.Expressions}.
 	 */
-	NET_10("net10.0", new String[]{"System.Runtime.dll", "System.Collections.dll"}, new String[]{"System.Linq.dll", "System.Linq.Expressions.dll"});
+	NET_10("net10.0", new String[]{"System.Runtime.dll", "System.Collections.dll", "System.Console.dll", "System.Runtime.InteropServices.dll"}, new String[]{"System.Linq.dll", "System.Linq.Expressions.dll"});
 
 	private final String myDirectory;
 	private final String[] myLibraries;

@@ -26,7 +26,13 @@ import consulo.csharp.lang.impl.psi.CSharpInheritableChecker;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpNullTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.operatorResolving.ImplicitCastInfo;
+import consulo.csharp.lang.impl.psi.source.CSharpOutRefAutoTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
+import consulo.dotnet.psi.DotNetAttributeUtil;
 import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetParameterList;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.resolve.DotNetRefTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.util.dataholder.UserDataHolderBase;
 
@@ -57,6 +63,8 @@ public class NCallArgument extends UserDataHolderBase
 	private final Object myParameterObject;
 
 	protected int myValid = NOT_CALCULATED;
+
+	private boolean myRefOmitted;
 
 	public NCallArgument(DotNetTypeRef typeRef, @Nullable CSharpCallArgument callArgument, @Nullable Object parameterObject)
 	{
@@ -90,6 +98,12 @@ public class NCallArgument extends UserDataHolderBase
 	}
 
 	@Nullable
+	public DotNetParameter getParameter()
+	{
+		return myParameterObject instanceof DotNetParameter parameter ? parameter : null;
+	}
+
+	@Nullable
 	public DotNetTypeRef getParameterTypeRef()
 	{
 		if(myParameterObject instanceof DotNetTypeRef)
@@ -116,6 +130,11 @@ public class NCallArgument extends UserDataHolderBase
 		return myValid != FAIL;
 	}
 
+	public boolean isRefOmitted()
+	{
+		return myRefOmitted;
+	}
+
 	@RequiredReadAction
 	public int calcValid(GlobalSearchScope implicitCastResolveScope)
 	{
@@ -124,6 +143,25 @@ public class NCallArgument extends UserDataHolderBase
 		if(parameterTypeRef != null)
 		{
 			DotNetTypeRef typeRef = getTypeRef();
+
+			// a ref or out parameter takes an argument passed so, a parameter by value one passed by value - but a method of a
+			// COM interface takes a value for a ref parameter (C# spec 12.6.4.2)
+			boolean refParameter = parameterTypeRef instanceof DotNetRefTypeRef;
+			boolean refArgument = typeRef instanceof DotNetRefTypeRef || typeRef instanceof CSharpOutRefAutoTypeRef;
+			if(refParameter != refArgument && myCallArgument != null && typeRef != DotNetTypeRef.ERROR_TYPE)
+			{
+				if(refParameter && parameterTypeRef instanceof CSharpRefTypeRef refTypeRef && refTypeRef.getType() == CSharpRefTypeRef.Type.ref
+						&& isComImportMember(getParameterElement()))
+				{
+					parameterTypeRef = refTypeRef.getInnerTypeRef();
+					myRefOmitted = true;
+				}
+				else
+				{
+					myValid = FAIL;
+					return myValid;
+				}
+			}
 			// null to object is a reference conversion, not identity - F(C) and F(object) are equal candidates for F(null)
 			if(!(typeRef instanceof CSharpNullTypeRef) && CSharpTypeUtil.isTypeEqual(parameterTypeRef, typeRef))
 			{
@@ -149,6 +187,18 @@ public class NCallArgument extends UserDataHolderBase
 
 		myValid = newVal;
 		return myValid;
+	}
+
+	@RequiredReadAction
+	private static boolean isComImportMember(@Nullable PsiElement parameter)
+	{
+		if(!(parameter instanceof DotNetParameter))
+		{
+			return false;
+		}
+		PsiElement method = parameter.getParent() instanceof DotNetParameterList list ? list.getParent() : parameter.getParent();
+		PsiElement owner = method == null ? null : method.getParent();
+		return owner instanceof DotNetTypeDeclaration type && type.isInterface() && DotNetAttributeUtil.hasAttribute(type, "System.Runtime.InteropServices.ComImportAttribute");
 	}
 
 	@Nullable

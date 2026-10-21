@@ -160,6 +160,46 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 		return new CSharpLambdaTypeRef(getProject(), getResolveScope(), null, getParameterInfos(true), returnType);
 	}
 
+	/**
+	 * The expressions the lambda returns - its body, or those of its return statements (null for {@code return;}),
+	 * nested lambdas not looked into.
+	 */
+	@RequiredReadAction
+	public List<DotNetExpression> getReturnExpressions()
+	{
+		PsiElement codeBlock = getCodeBlock().getElement();
+		if(codeBlock instanceof DotNetExpression expression)
+		{
+			return List.of(expression);
+		}
+		if(codeBlock == null)
+		{
+			return List.of();
+		}
+
+		List<DotNetExpression> expressions = new ArrayList<>();
+		codeBlock.accept(new CSharpRecursiveElementVisitor()
+		{
+			@Override
+			public void visitAnonymousMethodExpression(CSharpDelegateExpressionImpl method)
+			{
+			}
+
+			@Override
+			public void visitLambdaExpression(CSharpLambdaExpressionImpl expression)
+			{
+			}
+
+			@Override
+			@RequiredReadAction
+			public void visitReturnStatement(CSharpReturnStatementImpl statement)
+			{
+				expressions.add(statement.getExpression());
+			}
+		});
+		return expressions;
+	}
+
 	@RequiredReadAction
 	private DotNetTypeRef findPossibleReturnTypeRef()
 	{

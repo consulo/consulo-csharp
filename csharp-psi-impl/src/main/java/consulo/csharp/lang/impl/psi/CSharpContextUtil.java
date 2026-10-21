@@ -159,21 +159,52 @@ public class CSharpContextUtil
 		}
 		else if(qualifier instanceof CSharpReferenceExpression)
 		{
-			CSharpReferenceExpression.ResolveToKind kind = ((CSharpReferenceExpression) qualifier).kind();
-			// this.<caret> and base.<caret> accept only instance elements
-			if(kind == CSharpReferenceExpression.ResolveToKind.BASE || kind == CSharpReferenceExpression.ResolveToKind.THIS)
-			{
-				return ContextType.INSTANCE;
-			}
+			return getQualifierContextType((CSharpReferenceExpression) qualifier);
+		}
+		return ContextType.ANY;
+	}
 
-			PsiElement qualifiedResolvedElement = ((CSharpReferenceExpression) qualifier).resolve();
-			// Console.<caret>
-			if(isLikeType(qualifiedResolvedElement))
-			{
-				return ContextType.STATIC;
-			}
-
+	/**
+	 * {@code this.M} and {@code value.M} - instance members, {@code Console.M} - static ones.
+	 */
+	@RequiredReadAction
+	public static ContextType getQualifierContextType(CSharpReferenceExpression qualifier)
+	{
+		CSharpReferenceExpression.ResolveToKind kind = qualifier.kind();
+		// this.<caret> and base.<caret> accept only instance elements
+		if(kind == CSharpReferenceExpression.ResolveToKind.BASE || kind == CSharpReferenceExpression.ResolveToKind.THIS)
+		{
 			return ContextType.INSTANCE;
+		}
+
+		PsiElement qualifiedResolvedElement = qualifier.resolve();
+		// Console.<caret>
+		if(isLikeType(qualifiedResolvedElement))
+		{
+			return ContextType.STATIC;
+		}
+
+		return ContextType.INSTANCE;
+	}
+
+	/**
+	 * The context of a member named without a qualifier - without resolving the name, so it can be asked while the name
+	 * is resolved: static inside a static member and inside the initializer of an instance field (no {@code this} there
+	 * either), instance with static inside an instance member.
+	 */
+	@RequiredReadAction
+	public static ContextType getUnqualifiedContextType(PsiElement place)
+	{
+		PsiElement member = place;
+		while((member = PsiTreeUtil.getParentOfType(member, DotNetModifierListOwner.class)) != null)
+		{
+			if(!(member.getParent() instanceof DotNetTypeDeclaration))
+			{
+				// a lambda parameter, a local - not a member
+				continue;
+			}
+			DotNetModifierListOwner owner = (DotNetModifierListOwner) member;
+			return owner.hasModifier(DotNetModifier.STATIC) || owner instanceof DotNetFieldDeclaration ? ContextType.STATIC : ContextType.INSTANCE_WITH_STATIC;
 		}
 		return ContextType.ANY;
 	}

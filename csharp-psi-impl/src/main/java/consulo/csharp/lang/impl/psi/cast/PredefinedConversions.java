@@ -18,6 +18,7 @@ package consulo.csharp.lang.impl.psi.cast;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpNullableTypeUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpNullTypeRef;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
@@ -166,6 +167,10 @@ public final class PredefinedConversions {
     @Nullable
     @RequiredReadAction
     private static PredefinedType predefined(DotNetTypeRef typeRef) {
+        // the null literal resolves to object, but converts like no predefined type - to any reference or nullable type
+        if (typeRef instanceof CSharpNullTypeRef) {
+            return null;
+        }
         DotNetTypeRef underlying = CSharpNullableTypeUtil.unbox(typeRef);
         String vmQName = vmQName(underlying);
         if (vmQName == null) {

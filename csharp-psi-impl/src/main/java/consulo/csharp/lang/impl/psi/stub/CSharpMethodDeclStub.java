@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.stub;
 
+import consulo.csharp.lang.impl.psi.source.CSharpMethodDeclarationImpl;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.impl.psi.CSharpTokenSets;
@@ -37,6 +38,7 @@ public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration> {
     public static final int EXTENSION_MASK = 1 << 1;
     public static final int DE_CONSTRUCTOR_MASK = 1 << 2;
     public static final int CHECKED_OPERATOR = 1 << 3;
+    public static final int REF_DELEGATE = 1 << 4;
 
     private final int myOperatorIndex;
 
@@ -80,6 +82,9 @@ public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration> {
 
         if (methodDeclaration instanceof CSharpMethodDeclaration method && method.isCheckedOperator()) {
             i |= CHECKED_OPERATOR;
+        }
+        if (methodDeclaration instanceof CSharpMethodDeclarationImpl method && method.isRefDelegate()) {
+            i |= REF_DELEGATE;
         }
         return i;
     }

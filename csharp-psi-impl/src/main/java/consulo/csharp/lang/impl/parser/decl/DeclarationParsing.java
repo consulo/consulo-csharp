@@ -117,6 +117,14 @@ public class DeclarationParsing extends SharedParsingHelpers {
         else if (tokenType == DELEGATE_KEYWORD) {
             builder.advanceLexer();
 
+            // delegate ref int D(); delegate ref readonly int D();
+            if (builder.getTokenType() == REF_KEYWORD) {
+                builder.advanceLexer();
+                if (builder.getTokenType() == READONLY_KEYWORD) {
+                    builder.advanceLexer();
+                }
+            }
+
             MethodParsing.parseMethodStartAtType(builder, marker, modifierSet);
         }
         else if (tokenType == USING_KEYWORD) {
