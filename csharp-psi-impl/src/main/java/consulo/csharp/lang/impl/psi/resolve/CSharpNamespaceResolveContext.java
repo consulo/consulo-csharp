@@ -35,6 +35,8 @@ import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.resolve.DotNetPsiSearcher;
+import consulo.language.psi.util.PsiTreeUtil;
 import consulo.dotnet.psi.impl.BaseDotNetNamespaceAsElement;
 import consulo.dotnet.psi.impl.stub.DotNetNamespaceStubUtil;
 import consulo.dotnet.psi.resolve.DotNetNamespaceAsElement;
@@ -96,7 +98,9 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	private CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName0(String name)
 	{
 		int indexKey = CSharpMsilStubIndexer.makeExtensionMethodIndexKey(myNamespaceAsElement.getPresentableQName(), name);
-		Collection<DotNetLikeMethodDeclaration> declarations = ExtensionMethodByNamespacePlusNameIndex.getInstance().get(indexKey, myNamespaceAsElement.getProject(), myResolveScope);
+		Collection<DotNetLikeMethodDeclaration> declarations = new ArrayList<>(ExtensionMethodByNamespacePlusNameIndex.getInstance().get(indexKey, myNamespaceAsElement.getProject(), myResolveScope));
+		// extension methods of other .NET languages (VB modules), they are not in C# indexes
+		declarations.addAll(DotNetPsiSearcher.getInstance(myNamespaceAsElement.getProject()).findExtensionMethods(StringUtil.notNullize(myNamespaceAsElement.getPresentableQName()), name, myResolveScope));
 
 		if(declarations.isEmpty())
 		{
@@ -120,7 +124,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		int indexKey = DotNetNamespaceStubUtil.getIndexableNamespace(StringUtil.notNullize(myNamespaceAsElement.getPresentableQName())).hashCode();
 
 		Project project = myNamespaceAsElement.getProject();
-		return StubIndex.getInstance().processElements(CSharpIndexKeys.EXTENSION_METHOD_BY_NAMESPACE, indexKey, project, myResolveScope, DotNetLikeMethodDeclaration.class, it ->
+		boolean result = StubIndex.getInstance().processElements(CSharpIndexKeys.EXTENSION_METHOD_BY_NAMESPACE, indexKey, project, myResolveScope, DotNetLikeMethodDeclaration.class, it ->
 		{
 			CSharpMethodDeclaration declaration = convertMethodIfNeed(it);
 			if(declaration == null)
@@ -130,6 +134,15 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 			// just return not grouped
 			return processor.process(declaration);
+		});
+		if(!result)
+		{
+			return false;
+		}
+		return DotNetPsiSearcher.getInstance(project).processExtensionMethods(StringUtil.notNullize(myNamespaceAsElement.getPresentableQName()), myResolveScope, it ->
+		{
+			CSharpMethodDeclaration declaration = convertMethodIfNeed(it);
+			return declaration == null || processor.process(declaration);
 		});
 	}
 
@@ -160,6 +173,22 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		else if(methodDeclaration instanceof CSharpMethodDeclaration)
 		{
 			return (CSharpMethodDeclaration) methodDeclaration;
+		}
+		else
+		{
+			// other .NET languages: the method of the C# wrapper of its type
+			DotNetTypeDeclaration owner = PsiTreeUtil.getParentOfType(methodDeclaration, DotNetTypeDeclaration.class);
+			PsiElement wrapper = owner == null ? null : ToNativeElementTransformers.transform(owner);
+			if(wrapper instanceof CSharpTypeDeclaration)
+			{
+				for(DotNetNamedElement element : ((CSharpTypeDeclaration) wrapper).getMembers())
+				{
+					if(element instanceof CSharpMethodDeclaration && element.getNavigationElement().isEquivalentTo(methodDeclaration))
+					{
+						return (CSharpMethodDeclaration) element;
+					}
+				}
+			}
 		}
 		return null;
 	}
