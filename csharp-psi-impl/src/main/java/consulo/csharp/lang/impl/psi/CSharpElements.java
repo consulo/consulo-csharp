@@ -145,6 +145,32 @@ public interface CSharpElements {
 
     IElementType CASE_VARIABLE = new CompositeElementTypeAsPsiFactory("CASE_VARIABLE", CSharpLanguage.INSTANCE, CSharpCaseVariableImpl::new);
 
+    IElementType SWITCH_EXPRESSION = new CompositeElementTypeAsPsiFactory("SWITCH_EXPRESSION", CSharpLanguage.INSTANCE, CSharpSwitchExpressionImpl::new);
+
+    IElementType SWITCH_EXPRESSION_ARM = new CompositeElementTypeAsPsiFactory("SWITCH_EXPRESSION_ARM", CSharpLanguage.INSTANCE, CSharpSwitchExpressionArmImpl::new);
+
+    IElementType COLLECTION_EXPRESSION = new CompositeElementTypeAsPsiFactory("COLLECTION_EXPRESSION", CSharpLanguage.INSTANCE, CSharpCollectionExpressionImpl::new);
+
+    IElementType COLLECTION_SPREAD_ELEMENT = new CompositeElementTypeAsPsiFactory("COLLECTION_SPREAD_ELEMENT", CSharpLanguage.INSTANCE, CSharpCollectionSpreadElementImpl::new);
+
+    IElementType THROW_EXPRESSION = new CompositeElementTypeAsPsiFactory("THROW_EXPRESSION", CSharpLanguage.INSTANCE, CSharpThrowExpressionImpl::new);
+
+    IElementType DISCARD_PATTERN = new CompositeElementTypeAsPsiFactory("DISCARD_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
+
+    IElementType CONSTANT_PATTERN = new CompositeElementTypeAsPsiFactory("CONSTANT_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
+
+    IElementType RELATIONAL_PATTERN = new CompositeElementTypeAsPsiFactory("RELATIONAL_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
+
+    IElementType NOT_PATTERN = new CompositeElementTypeAsPsiFactory("NOT_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
+
+    IElementType BINARY_PATTERN = new CompositeElementTypeAsPsiFactory("BINARY_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
+
+    IElementType PARENTHESIZED_PATTERN = new CompositeElementTypeAsPsiFactory("PARENTHESIZED_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
+
+    IElementType PROPERTY_PATTERN = new CompositeElementTypeAsPsiFactory("PROPERTY_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
+
+    IElementType PROPERTY_SUBPATTERN = new CompositeElementTypeAsPsiFactory("PROPERTY_SUBPATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
+
     IElementType AS_EXPRESSION = new CompositeElementTypeAsPsiFactory("AS_EXPRESSION", CSharpLanguage.INSTANCE, CSharpAsExpressionImpl::new);
 
     IElementType NEW_ARRAY_LENGTH = new CompositeElementTypeAsPsiFactory("NEW_ARRAY_LENGTH", CSharpLanguage.INSTANCE, CSharpNewArrayLengthImpl::new);

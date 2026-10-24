@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.impl.psi.light.builder;
 
+import consulo.csharp.lang.impl.psi.light.CSharpLightParameterList;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.source.CSharpLikeMethodDeclarationImplUtil;
 import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
@@ -119,11 +120,14 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return typeRefs;
 	}
 
+	/**
+	 * A light list over the parameters - extension method resolve and the generic unwrapping rebuild it
+	 */
 	@Nullable
 	@Override
 	public DotNetParameterList getParameterList()
 	{
-		return null;
+		return new CSharpLightParameterList(this, getParameters());
 	}
 
 	@Override

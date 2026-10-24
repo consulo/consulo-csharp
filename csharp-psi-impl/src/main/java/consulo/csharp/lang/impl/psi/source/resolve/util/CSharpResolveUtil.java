@@ -400,22 +400,35 @@ public class CSharpResolveUtil
 		}
 		else if(entrance instanceof DotNetNamespaceDeclaration)
 		{
-			String presentableQName = ((DotNetNamespaceDeclaration) entrance).getPresentableQName();
-			if(presentableQName == null)
-			{
-				return true;
-			}
-
-			state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
-			state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
-
-			DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(presentableQName, resolveScope);
-			if(namespace != null && !walkChildren(processor, namespace, walkParent, walkDeep, state))
-			{
-				return false;
-			}
+			return walkNamespace(processor, entrance, ((DotNetNamespaceDeclaration) entrance).getPresentableQName(), walkParent, walkDeep, state);
+		}
+		// namespace N; - the file-scoped namespace holds the members of the file
+		else if(entrance instanceof CSharpFile file && file.getNamespaceStatement() != null)
+		{
+			return walkNamespace(processor, entrance, file.getNamespaceStatement().getPresentableQName(), walkParent, walkDeep, state);
 		}
 		return true;
+	}
+
+	@RequiredReadAction
+	private static boolean walkNamespace(PsiScopeProcessor processor,
+										 PsiElement entrance,
+										 @Nullable String presentableQName,
+										 boolean walkParent,
+										 boolean walkDeep,
+										 ResolveState state)
+	{
+		if(presentableQName == null)
+		{
+			return true;
+		}
+
+		GlobalSearchScope resolveScope = entrance.getResolveScope();
+		state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
+		state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
+
+		DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(presentableQName, resolveScope);
+		return namespace == null || walkChildren(processor, namespace, walkParent, walkDeep, state);
 	}
 
 	public static boolean walkForLabel(final PsiScopeProcessor processor, final PsiElement entrance, ResolveState state)

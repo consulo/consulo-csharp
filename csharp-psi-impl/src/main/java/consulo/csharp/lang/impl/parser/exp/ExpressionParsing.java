@@ -44,6 +44,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         SHIFT,
         ADDITIVE,
         MULTIPLICATIVE,
+        SWITCH,
         UNARY,
         MAYBE_NULLABLE_TYPE,
         MAYBE_NULLABLE_WITH_VARIABLE
@@ -189,7 +190,10 @@ public class ExpressionParsing extends SharedParsingHelpers {
                 return parseBinary(builder, ExprType.MULTIPLICATIVE, ADDITIVE_OPS, set, flags);
 
             case MULTIPLICATIVE:
-                return parseBinary(builder, ExprType.UNARY, MULTIPLICATIVE_OPS, set, flags);
+                return parseBinary(builder, ExprType.SWITCH, MULTIPLICATIVE_OPS, set, flags);
+
+            case SWITCH:
+                return parseSwitchExpression(builder, set, flags);
 
             case UNARY:
                 return parseUnary(builder, set, flags);
@@ -249,8 +253,299 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
     }
 
+    /**
+     * {@code value switch { pattern [when condition] => result, ... }} - C# 8, binds tighter than {@code *}
+     */
+    private static PsiBuilder.@Nullable Marker parseSwitchExpression(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+        PsiBuilder.Marker value = parseUnary(builder, set, flags);
+        if (value == null) {
+            return null;
+        }
+
+        while (builder.getTokenType() == SWITCH_KEYWORD && builder.lookAhead(1) == LBRACE) {
+            PsiBuilder.Marker switchExpression = value.precede();
+            builder.advanceLexer();
+            builder.advanceLexer();
+
+            while (!builder.eof() && builder.getTokenType() != RBRACE) {
+                int offset = builder.getCurrentOffset();
+                parseSwitchExpressionArm(builder, set, flags);
+
+                if (builder.getTokenType() == COMMA) {
+                    builder.advanceLexer();
+                }
+                else if (builder.getTokenType() != RBRACE) {
+                    builder.error("',' or '}' expected");
+                    if (builder.getCurrentOffset() == offset) {
+                        builder.advanceLexer();
+                    }
+                    break;
+                }
+            }
+
+            expect(builder, RBRACE, "'}' expected");
+            switchExpression.done(SWITCH_EXPRESSION);
+            value = switchExpression;
+        }
+        return value;
+    }
+
+    private static void parseSwitchExpressionArm(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+        PsiBuilder.Marker arm = builder.mark();
+
+        if (!parsePattern(builder, set, flags)) {
+            builder.error("Pattern expected");
+        }
+
+        builder.enableSoftKeyword(CSharpSoftTokens.WHEN_KEYWORD);
+        IElementType tokenType = builder.getTokenType();
+        builder.disableSoftKeyword(CSharpSoftTokens.WHEN_KEYWORD);
+        if (tokenType == CSharpSoftTokens.WHEN_KEYWORD) {
+            builder.remapCurrentToken(CSharpSoftTokens.WHEN_KEYWORD);
+            builder.advanceLexer();
+            if (parse(builder, set) == null) {
+                builder.error("Expression expected");
+            }
+        }
+
+        if (expect(builder, DARROW, "'=>' expected")) {
+            if (parse(builder, set) == null) {
+                builder.error("Expression expected");
+            }
+        }
+
+        arm.done(SWITCH_EXPRESSION_ARM);
+    }
+
+    /**
+     * Patterns of C# 9: {@code p or p}, {@code p and p}, {@code not p}, and the primary ones
+     */
+    public static boolean parsePattern(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+        PsiBuilder.Marker left = builder.mark();
+        if (!parseAndPattern(builder, set, flags)) {
+            left.drop();
+            return false;
+        }
+        while (isContextualWord(builder, "or")) {
+            builder.advanceLexer();
+            if (!parseAndPattern(builder, set, flags)) {
+                builder.error("Pattern expected");
+            }
+            left.done(BINARY_PATTERN);
+            left = left.precede();
+        }
+        left.drop();
+        return true;
+    }
+
+    private static boolean parseAndPattern(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+        PsiBuilder.Marker left = builder.mark();
+        if (!parseNotPattern(builder, set, flags)) {
+            left.drop();
+            return false;
+        }
+        while (isContextualWord(builder, "and")) {
+            builder.advanceLexer();
+            if (!parseNotPattern(builder, set, flags)) {
+                builder.error("Pattern expected");
+            }
+            left.done(BINARY_PATTERN);
+            left = left.precede();
+        }
+        left.drop();
+        return true;
+    }
+
+    private static boolean parseNotPattern(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+        if (isContextualWord(builder, "not")) {
+            PsiBuilder.Marker not = builder.mark();
+            builder.advanceLexer();
+            if (!parseNotPattern(builder, set, flags)) {
+                builder.error("Pattern expected");
+            }
+            not.done(NOT_PATTERN);
+            return true;
+        }
+        return parsePrimaryPattern(builder, set, flags);
+    }
+
+    private static boolean parsePrimaryPattern(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+        IElementType tokenType = builder.getTokenType();
+
+        // _
+        if (tokenType == CSharpTokens.IDENTIFIER && "_".equals(builder.getTokenText()) && builder.lookAhead(1) != DOT && builder.lookAhead(1) != LPAR) {
+            PsiBuilder.Marker discard = builder.mark();
+            builder.advanceLexer();
+            discard.done(DISCARD_PATTERN);
+            return true;
+        }
+
+        // < 0, >= 10
+        if (RELATIONAL_OPS.contains(tokenType)) {
+            PsiBuilder.Marker relational = builder.mark();
+            builder.advanceLexer();
+            if (parseExpression(builder, ExprType.SHIFT, set, flags | NO_LAMBDA) == null) {
+                builder.error("Expression expected");
+            }
+            relational.done(RELATIONAL_PATTERN);
+            return true;
+        }
+
+        if (tokenType == LPAR) {
+            PsiBuilder.Marker parenthesized = builder.mark();
+            builder.advanceLexer();
+            if (!parsePattern(builder, set, flags)) {
+                builder.error("Pattern expected");
+            }
+            expect(builder, RPAR, "')' expected");
+            parenthesized.done(PARENTHESIZED_PATTERN);
+            return true;
+        }
+
+        // { Name: pattern } [designation]
+        if (tokenType == LBRACE) {
+            PsiBuilder.Marker property = builder.mark();
+            parsePropertyPatternClause(builder, set, flags);
+            if (builder.getTokenType() == CSharpTokens.IDENTIFIER && !isPatternWord(builder)) {
+                builder.advanceLexer();
+            }
+            property.done(PROPERTY_PATTERN);
+            return true;
+        }
+
+        // Type designation, var designation, Type { ... } [designation]
+        PsiBuilder.Marker declaration = builder.mark();
+        TypeInfo typeInfo = parseType(builder, VAR_SUPPORT);
+        if (typeInfo != null) {
+            if (builder.getTokenType() == LBRACE) {
+                parsePropertyPatternClause(builder, set, flags);
+                if (builder.getTokenType() == CSharpTokens.IDENTIFIER && !isPatternWord(builder)) {
+                    doneIdentifier(builder, NONE);
+                    declaration.done(CASE_VARIABLE);
+                }
+                else {
+                    declaration.done(PROPERTY_PATTERN);
+                }
+                return true;
+            }
+            if (builder.getTokenType() == CSharpTokens.IDENTIFIER && !isPatternWord(builder)) {
+                doneIdentifier(builder, NONE);
+                declaration.done(CASE_VARIABLE);
+                return true;
+            }
+        }
+        declaration.rollbackTo();
+
+        // a constant, or a type - Kind.Round, null, 1, Circle
+        PsiBuilder.Marker constant = builder.mark();
+        if (parseExpression(builder, ExprType.SHIFT, set, flags | NO_LAMBDA) == null) {
+            constant.drop();
+            return false;
+        }
+        constant.done(CONSTANT_PATTERN);
+        return true;
+    }
+
+    private static void parsePropertyPatternClause(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+        builder.advanceLexer();
+        while (!builder.eof() && builder.getTokenType() != RBRACE) {
+            PsiBuilder.Marker subpattern = builder.mark();
+            int offset = builder.getCurrentOffset();
+            // Name: or Name.Inner: - not resolved, the members of the matched type
+            if (builder.getTokenType() == CSharpTokens.IDENTIFIER && (builder.lookAhead(1) == COLON || builder.lookAhead(1) == DOT)) {
+                PsiBuilder.Marker probe = builder.mark();
+                while (builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == DOT) {
+                    builder.advanceLexer();
+                    builder.advanceLexer();
+                }
+                if (builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == COLON) {
+                    builder.advanceLexer();
+                    builder.advanceLexer();
+                    probe.drop();
+                }
+                else {
+                    probe.rollbackTo();
+                }
+            }
+            if (!parsePattern(builder, set, flags)) {
+                builder.error("Pattern expected");
+            }
+            subpattern.done(PROPERTY_SUBPATTERN);
+
+            if (builder.getTokenType() == COMMA) {
+                builder.advanceLexer();
+            }
+            else if (builder.getTokenType() != RBRACE) {
+                builder.error("',' or '}' expected");
+                if (builder.getCurrentOffset() == offset) {
+                    builder.advanceLexer();
+                }
+                break;
+            }
+        }
+        expect(builder, RBRACE, "'}' expected");
+    }
+
+    /**
+     * {@code [a, b, ..rest]} - C# 12
+     */
+    private static PsiBuilder.Marker parseCollectionExpression(CSharpBuilderWrapper builder, ModifierSet set) {
+        PsiBuilder.Marker collection = builder.mark();
+        builder.advanceLexer();
+
+        while (!builder.eof() && builder.getTokenType() != RBRACKET) {
+            int offset = builder.getCurrentOffset();
+            if (builder.getTokenType() == DOT && builder.lookAhead(1) == DOT) {
+                PsiBuilder.Marker spread = builder.mark();
+                builder.advanceLexer();
+                builder.advanceLexer();
+                if (parse(builder, set) == null) {
+                    builder.error("Expression expected");
+                }
+                spread.done(COLLECTION_SPREAD_ELEMENT);
+            }
+            else if (parse(builder, set) == null) {
+                builder.error("Expression expected");
+            }
+
+            if (builder.getTokenType() == COMMA) {
+                builder.advanceLexer();
+            }
+            else if (builder.getTokenType() != RBRACKET) {
+                builder.error("',' or ']' expected");
+                if (builder.getCurrentOffset() == offset) {
+                    builder.advanceLexer();
+                }
+                break;
+            }
+        }
+
+        expect(builder, RBRACKET, "']' expected");
+        collection.done(COLLECTION_EXPRESSION);
+        return collection;
+    }
+
+    private static boolean isContextualWord(CSharpBuilderWrapper builder, String word) {
+        return builder.getTokenType() == CSharpTokens.IDENTIFIER && word.equals(builder.getTokenText());
+    }
+
+    private static boolean isPatternWord(CSharpBuilderWrapper builder) {
+        return isContextualWord(builder, "when") || isContextualWord(builder, "and") || isContextualWord(builder, "or");
+    }
+
     private static PsiBuilder.@Nullable Marker parseUnary(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         final IElementType tokenType = builder.getTokenType();
+
+        // x ?? throw new E(), _ => throw new E()
+        if (tokenType == THROW_KEYWORD) {
+            PsiBuilder.Marker throwExpression = builder.mark();
+            builder.advanceLexer();
+            if (parse(builder, set) == null) {
+                builder.error("Expression expected");
+            }
+            throwExpression.done(THROW_EXPRESSION);
+            return throwExpression;
+        }
 
         if (PREFIX_OPS.contains(tokenType)) {
             final PsiBuilder.Marker unary = builder.mark();
@@ -634,6 +929,10 @@ public class ExpressionParsing extends SharedParsingHelpers {
 
         builder.disableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
 
+        if (tokenType == LBRACKET) {
+            return parseCollectionExpression(builder, modifierSet);
+        }
+
         if (tokenType == LBRACE && modifierSet.isAllowShortObjectInitializer()) {
             PsiBuilder.Marker mark = builder.mark();
             parseNamedFieldOrPropertySetBlock(builder, modifierSet, flags);
@@ -777,7 +1076,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
 
         if (tokenType == CSharpTokens.IDENTIFIER) {
-            if (builder.lookAhead(1) == DARROW) {
+            if (builder.lookAhead(1) == DARROW && !BitUtil.isSet(flags, NO_LAMBDA)) {
                 return parseLambdaExpression(builder, null, modifierSet.remove(CSharpSoftTokens.ASYNC_KEYWORD));
             }
 

@@ -119,6 +119,11 @@ public class CSharpInheritableChecker {
             return fail();
         }
 
+        // [1, 2] converts to arrays and collection types
+        if (target instanceof CSharpCollectionExpressionTypeRef) {
+            return CSharpCollectionExpressionTypeRef.isCollectionType(top) ? CSharpTypeUtil.SIMPLE_SUCCESS : fail();
+        }
+
         // a method group converts to a delegate if one of its methods does - by parameters, their ref kinds and the return
         if (target instanceof CSharpElementGroupTypeRef group && top.resolve() instanceof CSharpLambdaResolveResult delegate) {
             GlobalSearchScope scope = castResolvingInfo != null ? castResolvingInfo.getSecond() : group.getResolveScope();

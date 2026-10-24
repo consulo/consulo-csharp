@@ -20,6 +20,10 @@ import consulo.language.ast.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetType;
+import consulo.language.psi.PsiElement;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.csharp.lang.impl.psi.CSharpElements;
 
 import org.jspecify.annotations.Nullable;
 
@@ -46,5 +50,35 @@ public class CSharpCaseVariableImpl extends CSharpVariableImpl
 	public DotNetType getType()
 	{
 		return findNotNullChildByClass(DotNetType.class);
+	}
+
+	/**
+	 * {@code var v} of a switch expression arm is of the type of the value matched
+	 */
+	@RequiredReadAction
+	@Override
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
+	{
+		DotNetType type = getType();
+		DotNetTypeRef typeRef = type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
+		if(typeRef != DotNetTypeRef.AUTO_TYPE)
+		{
+			return typeRef;
+		}
+
+		PsiElement current = this;
+		while(current.getParent() instanceof CSharpPatternImpl pattern && pattern.getNode().getElementType() != CSharpElements.PROPERTY_PATTERN)
+		{
+			current = pattern;
+		}
+		if(current.getParent() instanceof CSharpSwitchExpressionArmImpl arm && arm.getParent() instanceof CSharpSwitchExpressionImpl switchExpression)
+		{
+			DotNetExpression value = switchExpression.getExpression();
+			if(value != null)
+			{
+				return value.toTypeRef(resolveFromInitializer);
+			}
+		}
+		return DotNetTypeRef.ERROR_TYPE;
 	}
 }

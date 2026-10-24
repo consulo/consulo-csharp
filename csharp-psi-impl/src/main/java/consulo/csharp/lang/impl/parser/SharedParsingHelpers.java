@@ -76,6 +76,10 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
      * parsed as full expression, but need convert TOther to generic parameter, not type
      */
     public static final int TYPE_PARAMS_TO_GENERIC_PARAMS = 1 << 8;
+    /**
+     * {@code Circle => true} of a switch expression arm is a pattern and a result, not a lambda
+     */
+    public static final int NO_LAMBDA = 1 << 9;
 
     public static class TypeInfo {
         public IElementType nativeElementType;
