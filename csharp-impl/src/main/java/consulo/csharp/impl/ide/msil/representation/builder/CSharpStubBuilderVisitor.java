@@ -75,7 +75,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor {
         StringBuilder builder = new StringBuilder();
         processAttributeListAsLine(declaration, myBlocks);
         processModifierList(builder, declaration);
-        appendTypeRef(declaration.getProject(), builder, declaration.toTypeRef(false));
+        CSharpNullableStubUtil.appendTypeRef(builder, declaration.toTypeRef(false), CSharpNullableStubUtil.getFlags(declaration));
         builder.append(" ");
         appendName(declaration, builder);
         StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
@@ -130,7 +130,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor {
         if (declaration.isConstant()) {
             builder.append("const ");
         }
-        appendTypeRef(declaration.getProject(), builder, declaration.toTypeRef(false));
+        CSharpNullableStubUtil.appendTypeRef(builder, declaration.toTypeRef(false), CSharpNullableStubUtil.getFlags(declaration));
         builder.append(" ");
         appendValidName(builder, declaration.getName());
         appendInitializer(builder, declaration);
@@ -145,7 +145,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor {
         processAttributeListAsLine(declaration, myBlocks);
         processModifierList(builder, declaration);
         builder.append("event ");
-        appendTypeRef(declaration.getProject(), builder, declaration.toTypeRef(false));
+        CSharpNullableStubUtil.appendTypeRef(builder, declaration.toTypeRef(false), CSharpNullableStubUtil.getFlags(declaration));
         builder.append(" ");
         appendName(declaration, builder);
 
@@ -163,7 +163,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor {
 
         processAttributeListAsLine(declaration, myBlocks);
         processModifierList(builder, declaration);
-        appendTypeRef(declaration.getProject(), builder, declaration.getReturnTypeRef());
+        CSharpNullableStubUtil.appendTypeRef(builder, declaration.getReturnTypeRef(), CSharpNullableStubUtil.getFlags(declaration));
         builder.append(" ");
         appendName(declaration, builder);
         processParameterList(declaration, builder, '[', ']');
@@ -221,8 +221,8 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor {
         if (declaration.isDelegate()) {
             builder.append("delegate ");
         }
-        
-        appendTypeRef(declaration.getProject(), builder, declaration.getReturnTypeRef());
+
+        CSharpNullableStubUtil.appendTypeRef(builder, declaration.getReturnTypeRef(), CSharpNullableStubUtil.getReturnFlags(declaration));
 
         if (declaration.isOperator()) {
             builder.append(" ");
@@ -437,7 +437,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor {
                 appendAttributeList(t, v);
                 processModifierList(t, v);
                 DotNetTypeRef typeRef = v.toTypeRef(false);
-                appendTypeRef(declaration.getProject(), t, typeRef);
+                CSharpNullableStubUtil.appendTypeRef(t, typeRef, CSharpNullableStubUtil.getFlags(v));
                 if (typeRef != CSharpStaticTypeRef.__ARGLIST_TYPE) {
                     t.append(" ");
                     appendValidName(t, v.getName());
@@ -460,7 +460,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor {
 
     @RequiredReadAction
     public static void processAttributeListAsLine(PsiElement scope, List<StubBlock> blocks, DotNetAttributeTargetType targetType, DotNetAttribute[] attributes) {
-        for (DotNetAttribute dotNetAttribute : attributes) {
+        for (DotNetAttribute dotNetAttribute : CSharpNullableStubUtil.withoutNullableAttributes(attributes)) {
             StringBuilder builder = new StringBuilder();
             builder.append("[");
 
@@ -509,7 +509,8 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor {
     }
 
     @RequiredReadAction
-    private static void appendAttributeList(final PsiElement scope, final StringBuilder builder, final DotNetAttribute[] attributes) {
+    private static void appendAttributeList(final PsiElement scope, final StringBuilder builder, final DotNetAttribute[] allAttributes) {
+        DotNetAttribute[] attributes = CSharpNullableStubUtil.withoutNullableAttributes(allAttributes);
         if (attributes.length == 0) {
             return;
         }
