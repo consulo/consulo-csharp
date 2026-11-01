@@ -181,6 +181,11 @@ public final class CSharpResolveTesting
 			public void visitElement(PsiElement element)
 			{
 				super.visitElement(element);
+				// comments get references of the platform, like urls: the data records the resolve of C# only
+				if(element instanceof PsiComment)
+				{
+					return;
+				}
 				for(PsiReference reference : element.getReferences())
 				{
 					ResolveResult[] results;
