@@ -20,20 +20,18 @@ import consulo.language.ast.IElementType;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 import consulo.language.psi.PsiElement;
-import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.psi.ResolveResult;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpTargetTypeUtil;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpAnonymousTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpArrayTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpGenericWrapperTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpNullTypeRef;
 import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.DotNetReferenceExpression;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
@@ -80,7 +78,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 
             // new() / new(1, 2) { X = 3 } - C# 9 target-typed new
             if (arrayLengths.length == 0 && getParameterList() != null) {
-                return inferTargetTypeRef();
+                return CSharpTargetTypeUtil.targetTypeRef(this);
             }
 
             CSharpFieldOrPropertySetBlock fieldOrPropertySetBlock = getFieldOrPropertySetBlock();
@@ -119,32 +117,6 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
             }
             return typeRef;
         }
-    }
-
-    @RequiredReadAction
-    private DotNetTypeRef inferTargetTypeRef() {
-        PsiElement expression = this;
-        PsiElement parent = getParent();
-        while (parent instanceof CSharpParenthesesExpressionImpl) {
-            expression = parent;
-            parent = parent.getParent();
-        }
-
-        DotNetTypeRef typeRef = DotNetTypeRef.ERROR_TYPE;
-        if (parent instanceof DotNetVariable variable && variable.getInitializer() == expression) {
-            DotNetType type = variable.getType();
-            typeRef = type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
-        }
-        else if (parent instanceof CSharpAssignmentExpressionImpl assignment && assignment.getRightExpression() == expression) {
-            typeRef = assignment.getLeftExpression().toTypeRef(false);
-        }
-        else if (parent instanceof CSharpReturnStatementImpl) {
-            PsiElement owner = PsiTreeUtil.getParentOfType(this, DotNetLikeMethodDeclaration.class, CSharpLambdaExpressionImpl.class);
-            if (owner instanceof DotNetLikeMethodDeclaration method) {
-                typeRef = method.getReturnTypeRef();
-            }
-        }
-        return typeRef == DotNetTypeRef.AUTO_TYPE ? DotNetTypeRef.ERROR_TYPE : typeRef;
     }
 
     private static DotNetTypeRef calcType(CSharpNewExpressionImpl newExpression, CSharpArrayInitializerValue[] values) {

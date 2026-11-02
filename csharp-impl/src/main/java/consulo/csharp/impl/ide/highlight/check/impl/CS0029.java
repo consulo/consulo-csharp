@@ -169,6 +169,10 @@ public class CS0029 extends CompilerCheck<PsiElement> {
         target.check();
 
         PsiElement elementToHighlight = target.myTarget;
+        // reported by CS0173
+        if (elementToHighlight instanceof CSharpConditionalExpressionImpl conditional && CS0173.isWithoutType(conditional, languageVersion)) {
+            return null;
+        }
 
         DotNetTypeRef actualTypeRef = target.myActualTypeRef;
         if (CSharpTypeUtil.isErrorTypeRef(actualTypeRef)) {
