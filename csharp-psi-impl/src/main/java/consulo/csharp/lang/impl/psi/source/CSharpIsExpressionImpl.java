@@ -34,52 +34,43 @@ import org.jspecify.annotations.Nullable;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpIsExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
-{
-	public CSharpIsExpressionImpl(IElementType elementType)
-	{
-		super(elementType);
-	}
+public class CSharpIsExpressionImpl extends CSharpExpressionImpl implements DotNetExpression {
+    public CSharpIsExpressionImpl(IElementType elementType) {
+        super(elementType);
+    }
 
-	@RequiredReadAction
-	public DotNetTypeRef getIsTypeRef()
-	{
-		DotNetType type = findChildByClass(DotNetType.class);
-		return type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
-	}
+    @RequiredReadAction
+    public DotNetTypeRef getIsTypeRef() {
+        DotNetType type = findChildByClass(DotNetType.class);
+        return type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
+    }
 
-	public DotNetExpression getExpression()
-	{
-		return findNotNullChildByClass(DotNetExpression.class);
-	}
+    public DotNetExpression getExpression() {
+        return findNotNullChildByClass(DotNetExpression.class);
+    }
 
-	@Override
-	public void accept(CSharpElementVisitor visitor)
-	{
-		visitor.visitIsExpression(this);
-	}
+    @Override
+    public void accept(CSharpElementVisitor visitor) {
+        visitor.visitIsExpression(this);
+    }
 
-	@RequiredReadAction
-	@Override
-	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
-	{
-		return new CSharpTypeRefByQName(this, DotNetTypes.System.Boolean);
-	}
+    @RequiredReadAction
+    @Override
+    public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent) {
+        return new CSharpTypeRefByQName(this, DotNetTypes.System.Boolean);
+    }
 
-	@Nullable
-	public CSharpIsVariableImpl getVariable()
-	{
-		return findChildByClass(CSharpIsVariableImpl.class);
-	}
+    @Nullable
+    public CSharpIsVariableImpl getVariable() {
+        return findChildByClass(CSharpIsVariableImpl.class);
+    }
 
-	@Override
-	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
-	{
-		CSharpIsVariableImpl variable = getVariable();
-		if(variable != null && !processor.execute(variable, state))
-		{
-			return false;
-		}
-		return super.processDeclarations(processor, state, lastParent, place);
-	}
+    @Override
+    public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place) {
+        CSharpIsVariableImpl variable = getVariable();
+        if (variable != null && !processor.execute(variable, state)) {
+            return false;
+        }
+        return super.processDeclarations(processor, state, lastParent, place);
+    }
 }

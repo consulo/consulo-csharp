@@ -52,286 +52,231 @@ import java.math.BigInteger;
  * @author VISTALL
  * @since 16.12.13.
  */
-public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implements DotNetConstantExpression, PsiLanguageInjectionHost, ContributedReferenceHost
-{
-	private static class FormattableStringTypeRef extends CSharpTypeRefByQName implements CSharpFastImplicitTypeRef
-	{
-		public FormattableStringTypeRef(Project project, GlobalSearchScope searchScope, String qualifiedName)
-		{
-			super(project, searchScope, qualifiedName);
-		}
+public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implements DotNetConstantExpression, PsiLanguageInjectionHost, ContributedReferenceHost {
+    private static class FormattableStringTypeRef extends CSharpTypeRefByQName implements CSharpFastImplicitTypeRef {
+        public FormattableStringTypeRef(Project project, GlobalSearchScope searchScope, String qualifiedName) {
+            super(project, searchScope, qualifiedName);
+        }
 
-		@RequiredReadAction
-		@Nullable
-		@Override
-		public DotNetTypeRef doMirror(DotNetTypeRef another)
-		{
-			if(DotNetTypeRefUtil.isVmQNameEqual(another, DotNetTypes2.System.FormattableString))
-			{
-				return another;
-			}
-			return null;
-		}
+        @RequiredReadAction
+        @Nullable
+        @Override
+        public DotNetTypeRef doMirror(DotNetTypeRef another) {
+            if (DotNetTypeRefUtil.isVmQNameEqual(another, DotNetTypes2.System.FormattableString)) {
+                return another;
+            }
+            return null;
+        }
 
-		@Override
-		public boolean isConversion()
-		{
-			return true;
-		}
-	}
+        @Override
+        public boolean isConversion() {
+            return true;
+        }
+    }
 
-	public CSharpConstantExpressionImpl(IElementType elementType)
-	{
-		super(elementType);
-	}
+    public CSharpConstantExpressionImpl(IElementType elementType) {
+        super(elementType);
+    }
 
-	@Override
-	public void accept(CSharpElementVisitor visitor)
-	{
-		visitor.visitConstantExpression(this);
-	}
+    @Override
+    public void accept(CSharpElementVisitor visitor) {
+        visitor.visitConstantExpression(this);
+    }
 
-	@RequiredReadAction
-	@Override
-	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
-	{
-		IElementType elementType = getLiteralType();
+    @RequiredReadAction
+    @Override
+    public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent) {
+        IElementType elementType = getLiteralType();
 
-		PsiElement parent = getParent();
-		if(parent instanceof DotNetVariable)
-		{
-			DotNetTypeRef typeRef = ((DotNetVariable) parent).toTypeRef(false);
-			if(typeRef == DotNetTypeRef.AUTO_TYPE)
-			{
-				if(elementType == CSharpTokens.INTEGER_LITERAL)
-				{
-					CSharpTypeRefByQName another = new CSharpTypeRefByQName(getProject(), getResolveScope(), DotNetTypes.System.Int32);
-					if(CSharpConstantTypeRef.testNumberConstant(this, "", another) != null)
-					{
-						return another;
-					}
-					another = new CSharpTypeRefByQName(getProject(), getResolveScope(), DotNetTypes.System.Int64);
-					if(CSharpConstantTypeRef.testNumberConstant(this, "", another) != null)
-					{
-						return another;
-					}
-					return DotNetTypeRef.ERROR_TYPE;
-				}
-			}
-		}
+        PsiElement parent = getParent();
+        if (parent instanceof DotNetVariable) {
+            DotNetTypeRef typeRef = ((DotNetVariable) parent).toTypeRef(false);
+            if (typeRef == DotNetTypeRef.AUTO_TYPE) {
+                if (elementType == CSharpTokens.INTEGER_LITERAL) {
+                    CSharpTypeRefByQName another = new CSharpTypeRefByQName(getProject(), getResolveScope(), DotNetTypes.System.Int32);
+                    if (CSharpConstantTypeRef.testNumberConstant(this, "", another) != null) {
+                        return another;
+                    }
+                    another = new CSharpTypeRefByQName(getProject(), getResolveScope(), DotNetTypes.System.Int64);
+                    if (CSharpConstantTypeRef.testNumberConstant(this, "", another) != null) {
+                        return another;
+                    }
+                    return DotNetTypeRef.ERROR_TYPE;
+                }
+            }
+        }
 
-		DotNetTypeRef defaultConstantTypeRef = getDefaultConstantTypeRef();
-		if(defaultConstantTypeRef != null)
-		{
-			return defaultConstantTypeRef;
-		}
-		else
-		{
-			throw new UnsupportedOperationException(elementType.toString());
-		}
-	}
+        DotNetTypeRef defaultConstantTypeRef = getDefaultConstantTypeRef();
+        if (defaultConstantTypeRef != null) {
+            return defaultConstantTypeRef;
+        }
+        else {
+            throw new UnsupportedOperationException(elementType.toString());
+        }
+    }
 
-	@RequiredReadAction
-	@Nullable
-	public DotNetTypeRef getDefaultConstantTypeRef()
-	{
-		IElementType elementType = getLiteralType();
-		if(elementType == CSharpTokens.INTEGER_LITERAL)
-		{
-			return new CSharpConstantTypeRef(this, new CSharpTypeRefByQName(this, DotNetTypes.System.Int32));
-		}
-		else if(elementType == CSharpTokens.DOUBLE_LITERAL)
-		{
-			String text = this.getText();
-			// explicit type
-			if(text.endsWith("d") || text.endsWith("D"))
-			{
-				return new CSharpConstantTypeRef(this, new CSharpTypeRefByQName(this, DotNetTypes.System.Double));
-			}
+    @RequiredReadAction
+    @Nullable
+    public DotNetTypeRef getDefaultConstantTypeRef() {
+        IElementType elementType = getLiteralType();
+        if (elementType == CSharpTokens.INTEGER_LITERAL) {
+            return new CSharpConstantTypeRef(this, new CSharpTypeRefByQName(this, DotNetTypes.System.Int32));
+        }
+        else if (elementType == CSharpTokens.DOUBLE_LITERAL) {
+            String text = this.getText();
+            // explicit type
+            if (text.endsWith("d") || text.endsWith("D")) {
+                return new CSharpConstantTypeRef(this, new CSharpTypeRefByQName(this, DotNetTypes.System.Double));
+            }
 
-			return new CSharpConstantTypeRef(this, new CSharpTypeRefByQName(this, DotNetTypes.System.Double));
-		}
-		else if(elementType == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL)
-		{
-			return new FormattableStringTypeRef(getProject(), getResolveScope(), DotNetTypes.System.String);
-		}
-		else if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL)
-		{
-			return new CSharpTypeRefByQName(this, DotNetTypes.System.String);
-		}
-		else if(elementType == CSharpTokens.CHARACTER_LITERAL)
-		{
-			return new CSharpTypeRefByQName(this, DotNetTypes.System.Char);
-		}
-		else if(elementType == CSharpTokens.UINTEGER_LITERAL)
-		{
-			return new CSharpTypeRefByQName(this, DotNetTypes.System.UInt32);
-		}
-		else if(elementType == CSharpTokens.ULONG_LITERAL)
-		{
-			return new CSharpTypeRefByQName(this, DotNetTypes.System.UInt64);
-		}
-		else if(elementType == CSharpTokens.LONG_LITERAL)
-		{
-			return new CSharpTypeRefByQName(this, DotNetTypes.System.Int64);
-		}
-		else if(elementType == CSharpTokens.FLOAT_LITERAL)
-		{
-			return new CSharpTypeRefByQName(this, DotNetTypes.System.Single);
-		}
-		else if(elementType == CSharpTokens.DECIMAL_LITERAL)
-		{
-			return new CSharpTypeRefByQName(this, DotNetTypes.System.Decimal);
-		}
-		else if(elementType == CSharpTokens.NULL_LITERAL)
-		{
-			return new CSharpNullTypeRef(getProject(), getResolveScope());
-		}
-		else if(elementType == CSharpTokens.TRUE_KEYWORD || elementType == CSharpTokens.FALSE_KEYWORD)
-		{
-			return new CSharpTypeRefByQName(this, DotNetTypes.System.Boolean);
-		}
-		return null;
-	}
+            return new CSharpConstantTypeRef(this, new CSharpTypeRefByQName(this, DotNetTypes.System.Double));
+        }
+        else if (elementType == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL) {
+            return new FormattableStringTypeRef(getProject(), getResolveScope(), DotNetTypes.System.String);
+        }
+        else if (elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL) {
+            return new CSharpTypeRefByQName(this, DotNetTypes.System.String);
+        }
+        else if (elementType == CSharpTokens.CHARACTER_LITERAL) {
+            return new CSharpTypeRefByQName(this, DotNetTypes.System.Char);
+        }
+        else if (elementType == CSharpTokens.UINTEGER_LITERAL) {
+            return new CSharpTypeRefByQName(this, DotNetTypes.System.UInt32);
+        }
+        else if (elementType == CSharpTokens.ULONG_LITERAL) {
+            return new CSharpTypeRefByQName(this, DotNetTypes.System.UInt64);
+        }
+        else if (elementType == CSharpTokens.LONG_LITERAL) {
+            return new CSharpTypeRefByQName(this, DotNetTypes.System.Int64);
+        }
+        else if (elementType == CSharpTokens.FLOAT_LITERAL) {
+            return new CSharpTypeRefByQName(this, DotNetTypes.System.Single);
+        }
+        else if (elementType == CSharpTokens.DECIMAL_LITERAL) {
+            return new CSharpTypeRefByQName(this, DotNetTypes.System.Decimal);
+        }
+        else if (elementType == CSharpTokens.NULL_LITERAL) {
+            return new CSharpNullTypeRef(getProject(), getResolveScope());
+        }
+        else if (elementType == CSharpTokens.TRUE_KEYWORD || elementType == CSharpTokens.FALSE_KEYWORD) {
+            return new CSharpTypeRefByQName(this, DotNetTypes.System.Boolean);
+        }
+        return null;
+    }
 
-	@Nullable
-	@RequiredReadAction
-	public Object getValue(String prefix)
-	{
-		PsiElement byType = getFirstChild();
-		assert byType != null;
-		IElementType elementType = getLiteralType();
-		String text = prefix.isEmpty() ? getText() : prefix + getText();
-		if(elementType == CSharpTokens.STRING_LITERAL)
-		{
-			return StringUtil.unquoteString(text);
-		}
-		else if(elementType == CSharpTokens.VERBATIM_STRING_LITERAL)
-		{
-			return getText(); //TODO [VISTALL] unquote @ "" and escape \n \t
-		}
-		else if(elementType == CSharpTokens.CHARACTER_LITERAL)
-		{
-			return StringUtil.unquoteString(text).charAt(0);
-		}
-		else if(elementType == CSharpTokens.UINTEGER_LITERAL)
-		{
-			text = text.substring(0, text.length() - 1); //cut U
-			return getBigInteger(text);
-		}
-		else if(elementType == CSharpTokens.ULONG_LITERAL)
-		{
-			text = text.substring(0, text.length() - 2); //cut UL
-			return getBigInteger(text);
-		}
-		else if(elementType == CSharpTokens.INTEGER_LITERAL)
-		{
-			return getBigInteger(text);
-		}
-		else if(elementType == CSharpTokens.LONG_LITERAL)
-		{
-			text = text.substring(0, text.length() - 1); //cut L
-			return getBigInteger(text);
-		}
-		else if(elementType == CSharpTokens.FLOAT_LITERAL)
-		{
-			return Double.parseDouble(text);
-		}
-		else if(elementType == CSharpTokens.DOUBLE_LITERAL)
-		{
-			return Double.parseDouble(text);
-		}
-		else if(elementType == CSharpTokens.NULL_LITERAL)
-		{
-			return null;
-		}
-		else if(elementType == CSharpTokens.TRUE_KEYWORD || elementType == CSharpTokens.FALSE_KEYWORD)
-		{
-			return Boolean.parseBoolean(text);
-		}
-		throw new IllegalArgumentException(elementType.toString());
-	}
+    @Nullable
+    @RequiredReadAction
+    public Object getValue(String prefix) {
+        PsiElement byType = getFirstChild();
+        assert byType != null;
+        IElementType elementType = getLiteralType();
+        String text = prefix.isEmpty() ? getText() : prefix + getText();
+        if (elementType == CSharpTokens.STRING_LITERAL) {
+            return StringUtil.unquoteString(text);
+        }
+        else if (elementType == CSharpTokens.VERBATIM_STRING_LITERAL) {
+            return getText(); //TODO [VISTALL] unquote @ "" and escape \n \t
+        }
+        else if (elementType == CSharpTokens.CHARACTER_LITERAL) {
+            return StringUtil.unquoteString(text).charAt(0);
+        }
+        else if (elementType == CSharpTokens.UINTEGER_LITERAL) {
+            text = text.substring(0, text.length() - 1); //cut U
+            return getBigInteger(text);
+        }
+        else if (elementType == CSharpTokens.ULONG_LITERAL) {
+            text = text.substring(0, text.length() - 2); //cut UL
+            return getBigInteger(text);
+        }
+        else if (elementType == CSharpTokens.INTEGER_LITERAL) {
+            return getBigInteger(text);
+        }
+        else if (elementType == CSharpTokens.LONG_LITERAL) {
+            text = text.substring(0, text.length() - 1); //cut L
+            return getBigInteger(text);
+        }
+        else if (elementType == CSharpTokens.FLOAT_LITERAL) {
+            return Double.parseDouble(text);
+        }
+        else if (elementType == CSharpTokens.DOUBLE_LITERAL) {
+            return Double.parseDouble(text);
+        }
+        else if (elementType == CSharpTokens.NULL_LITERAL) {
+            return null;
+        }
+        else if (elementType == CSharpTokens.TRUE_KEYWORD || elementType == CSharpTokens.FALSE_KEYWORD) {
+            return Boolean.parseBoolean(text);
+        }
+        throw new IllegalArgumentException(elementType.toString());
+    }
 
-	private static BigInteger getBigInteger(String text)
-	{
-		int radix = 10;
-		if(text.startsWith("0x") || text.startsWith("0X"))
-		{
-			radix = 16;
-			text = text.substring(2, text.length());
-		}
-		return new BigInteger(text, radix);
-	}
+    private static BigInteger getBigInteger(String text) {
+        int radix = 10;
+        if (text.startsWith("0x") || text.startsWith("0X")) {
+            radix = 16;
+            text = text.substring(2, text.length());
+        }
+        return new BigInteger(text, radix);
+    }
 
-	@Nullable
-	@Override
-	@RequiredReadAction
-	public Object getValue()
-	{
-		return getValue("");
-	}
+    @Nullable
+    @Override
+    @RequiredReadAction
+    public Object getValue() {
+        return getValue("");
+    }
 
-	@Override
-	@RequiredReadAction
-	public IElementType getLiteralType()
-	{
-		PsiElement byType = getFirstChild();
-		assert byType != null;
-		return byType.getNode().getElementType();
-	}
+    @Override
+    @RequiredReadAction
+    public IElementType getLiteralType() {
+        PsiElement byType = getFirstChild();
+        assert byType != null;
+        return byType.getNode().getElementType();
+    }
 
-	@Override
-	@RequiredReadAction
-	public boolean isValidHost()
-	{
-		IElementType elementType = getLiteralType();
-		return elementType != CSharpTokens.CHARACTER_LITERAL && CSharpTokenSets.STRINGS.contains(elementType);
-	}
+    @Override
+    @RequiredReadAction
+    public boolean isValidHost() {
+        IElementType elementType = getLiteralType();
+        return elementType != CSharpTokens.CHARACTER_LITERAL && CSharpTokenSets.STRINGS.contains(elementType);
+    }
 
-	@Override
-	@RequiredReadAction
-	public PsiReference[] getReferences()
-	{
-		return PsiReferenceService.getService().getContributedReferences(this);
-	}
+    @Override
+    @RequiredReadAction
+    public PsiReference[] getReferences() {
+        return PsiReferenceService.getService().getContributedReferences(this);
+    }
 
-	@Override
-	@RequiredReadAction
-	public PsiLanguageInjectionHost updateText(String s)
-	{
-		LeafPsiElement first = (LeafPsiElement) getFirstChild();
-		first.replaceWithText(s);
-		return this;
-	}
+    @Override
+    @RequiredReadAction
+    public PsiLanguageInjectionHost updateText(String s) {
+        LeafPsiElement first = (LeafPsiElement) getFirstChild();
+        first.replaceWithText(s);
+        return this;
+    }
 
-	@Override
-	@RequiredReadAction
-	public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper()
-	{
-		IElementType elementType = getLiteralType();
-		if(elementType == CSharpTokens.STRING_LITERAL)
-		{
-			return new CSharpStringLiteralEscaper<>(this);
-		}
-		else if(elementType == CSharpTokens.VERBATIM_STRING_LITERAL)
-		{
-			return LiteralTextEscaper.createSimple(this);
-		}
-		throw new IllegalArgumentException("Unknown " + elementType);
-	}
+    @Override
+    @RequiredReadAction
+    public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper() {
+        IElementType elementType = getLiteralType();
+        if (elementType == CSharpTokens.STRING_LITERAL) {
+            return new CSharpStringLiteralEscaper<>(this);
+        }
+        else if (elementType == CSharpTokens.VERBATIM_STRING_LITERAL) {
+            return LiteralTextEscaper.createSimple(this);
+        }
+        throw new IllegalArgumentException("Unknown " + elementType);
+    }
 
-	@RequiredReadAction
-	public static TextRange getStringValueTextRange(CSharpConstantExpressionImpl expression)
-	{
-		IElementType literalType = expression.getLiteralType();
-		if(literalType == CSharpTokens.VERBATIM_STRING_LITERAL || literalType == CSharpTokenSets.INTERPOLATION_STRING_LITERAL)
-		{
-			return new TextRange(2, expression.getTextLength() - 1);
-		}
-		else if(literalType == CSharpTokens.STRING_LITERAL)
-		{
-			return new TextRange(1, expression.getTextLength() - 1);
-		}
-		return new TextRange(0, expression.getTextLength());
-	}
+    @RequiredReadAction
+    public static TextRange getStringValueTextRange(CSharpConstantExpressionImpl expression) {
+        IElementType literalType = expression.getLiteralType();
+        if (literalType == CSharpTokens.VERBATIM_STRING_LITERAL || literalType == CSharpTokenSets.INTERPOLATION_STRING_LITERAL) {
+            return new TextRange(2, expression.getTextLength() - 1);
+        }
+        else if (literalType == CSharpTokens.STRING_LITERAL) {
+            return new TextRange(1, expression.getTextLength() - 1);
+        }
+        return new TextRange(0, expression.getTextLength());
+    }
 }

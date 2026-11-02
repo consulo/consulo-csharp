@@ -45,228 +45,187 @@ import java.util.Set;
  * @author VISTALL
  * @since 29.12.13.
  */
-public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSharpNewExpression, CSharpArrayInitializerOwner
-{
-	public CSharpNewExpressionImpl(IElementType elementType)
-	{
-		super(elementType);
-	}
+public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSharpNewExpression, CSharpArrayInitializerOwner {
+    public CSharpNewExpressionImpl(IElementType elementType) {
+        super(elementType);
+    }
 
-	@Override
-	public boolean canResolve()
-	{
-		return getParameterList() != null;
-	}
+    @Override
+    public boolean canResolve() {
+        return getParameterList() != null;
+    }
 
-	@Override
-	public void accept(CSharpElementVisitor visitor)
-	{
-		visitor.visitNewExpression(this);
-	}
+    @Override
+    public void accept(CSharpElementVisitor visitor) {
+        visitor.visitNewExpression(this);
+    }
 
-	@RequiredReadAction
-	@Override
-	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
-	{
-		CSharpNewArrayLengthImpl[] arrayLengths = getNewArrayLengths();
-		DotNetType type = getNewType();
-		if(type == null)
-		{
-			if(arrayLengths.length == 1)
-			{
-				CSharpArrayInitializerImpl arrayInitializer = getArrayInitializer();
-				if(arrayInitializer == null)
-				{
-					return DotNetTypeRef.ERROR_TYPE;
-				}
+    @RequiredReadAction
+    @Override
+    public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent) {
+        CSharpNewArrayLengthImpl[] arrayLengths = getNewArrayLengths();
+        DotNetType type = getNewType();
+        if (type == null) {
+            if (arrayLengths.length == 1) {
+                CSharpArrayInitializerImpl arrayInitializer = getArrayInitializer();
+                if (arrayInitializer == null) {
+                    return DotNetTypeRef.ERROR_TYPE;
+                }
 
-				return calcType(this, arrayInitializer.getValues());
-			}
+                return calcType(this, arrayInitializer.getValues());
+            }
 
-			CSharpFieldOrPropertySetBlock fieldOrPropertySetBlock = getFieldOrPropertySetBlock();
-			if(fieldOrPropertySetBlock == null)
-			{
-				return DotNetTypeRef.ERROR_TYPE;
-			}
-			return new CSharpAnonymousTypeRef(getContainingFile(), fieldOrPropertySetBlock.getSets());
-		}
-		else
-		{
-			DotNetTypeRef typeRef;
-			Project project = getProject();
-			GlobalSearchScope resolveScope = getResolveScope();
-			if(canResolve())
-			{
-				DotNetTypeRef[] arguments = DotNetTypeRef.EMPTY_ARRAY;
+            CSharpFieldOrPropertySetBlock fieldOrPropertySetBlock = getFieldOrPropertySetBlock();
+            if (fieldOrPropertySetBlock == null) {
+                return DotNetTypeRef.ERROR_TYPE;
+            }
+            return new CSharpAnonymousTypeRef(getContainingFile(), fieldOrPropertySetBlock.getSets());
+        }
+        else {
+            DotNetTypeRef typeRef;
+            Project project = getProject();
+            GlobalSearchScope resolveScope = getResolveScope();
+            if (canResolve()) {
+                DotNetTypeRef[] arguments = DotNetTypeRef.EMPTY_ARRAY;
 
-				if(type instanceof CSharpUserType)
-				{
-					arguments = ((CSharpUserType) type).getReferenceExpression().getTypeArgumentListRefs();
-					PsiElement psiElement = CSharpReferenceExpressionImplUtil.resolveByTypeKind(((CSharpUserType) type).getReferenceExpression(),
-							false);
-					typeRef = CSharpReferenceExpressionImplUtil.toTypeRef(resolveScope, psiElement);
-				}
-				else
-				{
-					typeRef = type.toTypeRef();
-				}
+                if (type instanceof CSharpUserType) {
+                    arguments = ((CSharpUserType) type).getReferenceExpression().getTypeArgumentListRefs();
+                    PsiElement psiElement = CSharpReferenceExpressionImplUtil.resolveByTypeKind(((CSharpUserType) type).getReferenceExpression(),
+                            false);
+                    typeRef = CSharpReferenceExpressionImplUtil.toTypeRef(resolveScope, psiElement);
+                }
+                else {
+                    typeRef = type.toTypeRef();
+                }
 
-				if(arguments.length != 0)
-				{
-					typeRef = new CSharpGenericWrapperTypeRef(project, resolveScope, typeRef, arguments);
-				}
-			}
-			else
-			{
-				typeRef = type.toTypeRef();
-			}
+                if (arguments.length != 0) {
+                    typeRef = new CSharpGenericWrapperTypeRef(project, resolveScope, typeRef, arguments);
+                }
+            }
+            else {
+                typeRef = type.toTypeRef();
+            }
 
-			for(CSharpNewArrayLengthImpl length : arrayLengths)
-			{
-				typeRef = new CSharpArrayTypeRef(project, resolveScope, typeRef, length.getDimensionSize());
-			}
-			return typeRef;
-		}
-	}
+            for (CSharpNewArrayLengthImpl length : arrayLengths) {
+                typeRef = new CSharpArrayTypeRef(project, resolveScope, typeRef, length.getDimensionSize());
+            }
+            return typeRef;
+        }
+    }
 
-	private static DotNetTypeRef calcType(CSharpNewExpressionImpl newExpression, CSharpArrayInitializerValue[] values)
-	{
-		if(values.length == 0)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
+    private static DotNetTypeRef calcType(CSharpNewExpressionImpl newExpression, CSharpArrayInitializerValue[] values) {
+        if (values.length == 0) {
+            return DotNetTypeRef.ERROR_TYPE;
+        }
 
-		Set<DotNetTypeRef> typeRefs = new LinkedHashSet<DotNetTypeRef>();
-		for(int i = 0; i < values.length; i++)
-		{
-			CSharpArrayInitializerValue value = values[i];
+        Set<DotNetTypeRef> typeRefs = new LinkedHashSet<DotNetTypeRef>();
+        for (int i = 0; i < values.length; i++) {
+            CSharpArrayInitializerValue value = values[i];
 
-			if(value instanceof CSharpArrayInitializerCompositeValueImpl)
-			{
-				return DotNetTypeRef.ERROR_TYPE;
-			}
-			else if(value instanceof CSharpArrayInitializerSingleValueImpl)
-			{
-				DotNetExpression expression = ((CSharpArrayInitializerSingleValueImpl) value).getArgumentExpression();
-				if(expression == null)
-				{
-					continue;
-				}
+            if (value instanceof CSharpArrayInitializerCompositeValueImpl) {
+                return DotNetTypeRef.ERROR_TYPE;
+            }
+            else if (value instanceof CSharpArrayInitializerSingleValueImpl) {
+                DotNetExpression expression = ((CSharpArrayInitializerSingleValueImpl) value).getArgumentExpression();
+                if (expression == null) {
+                    continue;
+                }
 
-				typeRefs.add(expression.toTypeRef(true));
-			}
-		}
+                typeRefs.add(expression.toTypeRef(true));
+            }
+        }
 
-		for(Iterator<DotNetTypeRef> iterator = typeRefs.iterator(); iterator.hasNext(); )
-		{
-			DotNetTypeRef next = iterator.next();
-			if(next instanceof CSharpNullTypeRef)
-			{
-				iterator.remove();
-			}
-		}
+        for (Iterator<DotNetTypeRef> iterator = typeRefs.iterator(); iterator.hasNext(); ) {
+            DotNetTypeRef next = iterator.next();
+            if (next instanceof CSharpNullTypeRef) {
+                iterator.remove();
+            }
+        }
 
-		if(typeRefs.isEmpty())
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-		//TODO [VISTALL] better calc
-		DotNetTypeRef firstItem = ContainerUtil.getFirstItem(typeRefs);
-		return new CSharpArrayTypeRef(newExpression.getProject(), newExpression.getResolveScope(), firstItem, 0);
-	}
+        if (typeRefs.isEmpty()) {
+            return DotNetTypeRef.ERROR_TYPE;
+        }
+        //TODO [VISTALL] better calc
+        DotNetTypeRef firstItem = ContainerUtil.getFirstItem(typeRefs);
+        return new CSharpArrayTypeRef(newExpression.getProject(), newExpression.getResolveScope(), firstItem, 0);
+    }
 
-	@Override
-	@Nullable
-	public CSharpArrayInitializerImpl getArrayInitializer()
-	{
-		return findChildByClass(CSharpArrayInitializerImpl.class);
-	}
+    @Override
+    @Nullable
+    public CSharpArrayInitializerImpl getArrayInitializer() {
+        return findChildByClass(CSharpArrayInitializerImpl.class);
+    }
 
-	public CSharpNewArrayLengthImpl[] getNewArrayLengths()
-	{
-		return findChildrenByClass(CSharpNewArrayLengthImpl.class);
-	}
+    public CSharpNewArrayLengthImpl[] getNewArrayLengths() {
+        return findChildrenByClass(CSharpNewArrayLengthImpl.class);
+    }
 
-	@Nullable
-	@Override
-	public DotNetType getNewType()
-	{
-		return findChildByClass(DotNetType.class);
-	}
+    @Nullable
+    @Override
+    public DotNetType getNewType() {
+        return findChildByClass(DotNetType.class);
+    }
 
-	@Nullable
-	@Override
-	public CSharpFieldOrPropertySetBlock getFieldOrPropertySetBlock()
-	{
-		return findChildByClass(CSharpFieldOrPropertySetBlock.class);
-	}
+    @Nullable
+    @Override
+    public CSharpFieldOrPropertySetBlock getFieldOrPropertySetBlock() {
+        return findChildByClass(CSharpFieldOrPropertySetBlock.class);
+    }
 
-	@Nullable
-	@Override
-	public CSharpCallArgumentList getParameterList()
-	{
-		return findChildByClass(CSharpCallArgumentList.class);
-	}
+    @Nullable
+    @Override
+    public CSharpCallArgumentList getParameterList() {
+        return findChildByClass(CSharpCallArgumentList.class);
+    }
 
-	@Nullable
-	@Override
-	public PsiElement resolveToCallable()
-	{
-		if(!canResolve())
-		{
-			return null;
-		}
-		DotNetReferenceExpression expressionForResolving = getExpressionForResolving();
-		return expressionForResolving != null ? expressionForResolving.resolve() : null;
-	}
+    @Nullable
+    @Override
+    public PsiElement resolveToCallable() {
+        if (!canResolve()) {
+            return null;
+        }
+        DotNetReferenceExpression expressionForResolving = getExpressionForResolving();
+        return expressionForResolving != null ? expressionForResolving.resolve() : null;
+    }
 
-	@Override
-	public ResolveResult[] multiResolve(boolean incompleteCode)
-	{
-		if(!canResolve())
-		{
-			return ResolveResult.EMPTY_ARRAY;
-		}
-		DotNetReferenceExpression expressionForResolving = getExpressionForResolving();
-		return expressionForResolving != null ? expressionForResolving.multiResolve(incompleteCode) : ResolveResult.EMPTY_ARRAY;
-	}
+    @Override
+    public ResolveResult[] multiResolve(boolean incompleteCode) {
+        if (!canResolve()) {
+            return ResolveResult.EMPTY_ARRAY;
+        }
+        DotNetReferenceExpression expressionForResolving = getExpressionForResolving();
+        return expressionForResolving != null ? expressionForResolving.multiResolve(incompleteCode) : ResolveResult.EMPTY_ARRAY;
+    }
 
-	@Nullable
-	private CSharpReferenceExpression getExpressionForResolving()
-	{
-		DotNetType newType = getNewType();
-		if(newType instanceof CSharpUserType)
-		{
-			return ((CSharpUserType) newType).getReferenceExpression();
-		}
-		return null;
-	}
+    @Nullable
+    private CSharpReferenceExpression getExpressionForResolving() {
+        DotNetType newType = getNewType();
+        if (newType instanceof CSharpUserType) {
+            return ((CSharpUserType) newType).getReferenceExpression();
+        }
+        return null;
+    }
 
-	@Override
-	public DotNetExpression[] getParameterExpressions()
-	{
-		CSharpCallArgumentList parameterList = getParameterList();
-		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
-	}
+    @Override
+    public DotNetExpression[] getParameterExpressions() {
+        CSharpCallArgumentList parameterList = getParameterList();
+        return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
+    }
 
-	@Override
-	public CSharpCallArgument[] getCallArguments()
-	{
-		CSharpCallArgumentList parameterList = getParameterList();
-		return parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
-	}
+    @Override
+    public CSharpCallArgument[] getCallArguments() {
+        CSharpCallArgumentList parameterList = getParameterList();
+        return parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
+    }
 
-	@Override
-	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
-	{
-		CSharpCallArgument[] callArguments = getCallArguments();
-		for(CSharpCallArgument callArgument : callArguments)
-		{
-			if(!callArgument.processDeclarations(processor, state, lastParent, place))
-			{
-				return false;
-			}
-		}
-		return super.processDeclarations(processor, state, lastParent, place);
-	}
+    @Override
+    public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place) {
+        CSharpCallArgument[] callArguments = getCallArguments();
+        for (CSharpCallArgument callArgument : callArguments) {
+            if (!callArgument.processDeclarations(processor, state, lastParent, place)) {
+                return false;
+            }
+        }
+        return super.processDeclarations(processor, state, lastParent, place);
+    }
 }
