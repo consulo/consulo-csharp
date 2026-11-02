@@ -49,6 +49,7 @@ import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.psi.resolve.DotNetTypeResolveResult;
 import consulo.language.editor.rawHighlight.HighlightInfoType;
 import consulo.language.psi.PsiElement;
+import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.localize.LocalizeValue;
 import consulo.util.collection.ContainerUtil;
@@ -122,6 +123,34 @@ public class CS0029 extends CompilerCheck<PsiElement> {
             ownerTypeRef = variable.toTypeRef(false);
         }
         return ownerTypeRef instanceof CSharpArrayTypeRef arrayTypeRef && arrayTypeRef.getDimensions() == 0 ? arrayTypeRef.getInnerTypeRef() : null;
+    }
+
+    /**
+     * C# spec 12.21.4: {@code x op= y} is {@code x = x op y} if the result converts to x implicitly; for a predefined
+     * operator it is {@code x = (T) (x op y)} if y converts to T implicitly - {@code short s; s += 1;}, but not {@code s += i}
+     */
+    @Nullable
+    @RequiredReadAction
+    private static CheckTarget compoundAssignment(PsiElement assignment, DotNetTypeRef leftTypeRef, DotNetExpression right, CSharpOperatorReferenceImpl operatorElement) {
+        if (!(operatorElement.resolve() instanceof DotNetLikeMethodDeclaration operator)) {
+            return null;
+        }
+
+        DotNetTypeRef resultTypeRef = operator.getReturnTypeRef();
+        if (CSharpTypeUtil.isErrorTypeRef(resultTypeRef) || CSharpTypeUtil.isErrorTypeRef(leftTypeRef)) {
+            return null;
+        }
+
+        GlobalSearchScope scope = assignment.getResolveScope();
+        if (CSharpTypeUtil.isInheritable(leftTypeRef, resultTypeRef, CSharpCastType.IMPLICIT, scope).isSuccess()) {
+            return null;
+        }
+
+        if (CSharpTypeUtil.isInheritable(leftTypeRef, resultTypeRef, CSharpCastType.EXPLICIT, scope).isSuccess()
+            && CSharpTypeUtil.isInheritable(leftTypeRef, right.toTypeRef(true), CSharpCastType.IMPLICIT, scope).isSuccess()) {
+            return null;
+        }
+        return target(leftTypeRef, resultTypeRef, assignment);
     }
 
     private static CheckTarget target(DotNetTypeRef expected, DotNetTypeRef actual, PsiElement target) {
@@ -268,12 +297,12 @@ public class CS0029 extends CompilerCheck<PsiElement> {
         }
         else if (element instanceof CSharpAssignmentExpressionImpl) {
             CSharpOperatorReferenceImpl operatorElement = ((CSharpAssignmentExpressionImpl) element).getOperatorElement();
-            if (operatorElement.getOperatorElementType() != CSharpTokens.EQ) {
-                return null;
-            }
             DotNetExpression[] expressions = ((CSharpAssignmentExpressionImpl) element).getParameterExpressions();
             if (expressions.length != 2) {
                 return null;
+            }
+            if (operatorElement.getOperatorElementType() != CSharpTokens.EQ) {
+                return compoundAssignment(element, expressions[0].toTypeRef(true), expressions[1], operatorElement);
             }
             return target(expressions[0].toTypeRef(true), expressions[1].toTypeRef(true), expressions[1]);
         }
