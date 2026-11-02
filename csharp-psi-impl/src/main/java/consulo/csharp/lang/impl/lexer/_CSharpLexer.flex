@@ -39,6 +39,13 @@ import consulo.language.lexer.LexerBase;
      yybegin(value);
   }
 
+  /**
+   * @return true if no string interpolation is open - the lexer state is all in {@link #yystate()}
+   */
+  public boolean isClean() {
+     return myStringInterpolationBalance == 0 && myInsideStringInterpolationParenthesesBalance == 0 && myStates.isEmpty() && myStacks.isEmpty();
+  }
+
   public void clear() {
      myStringInterpolationBalance = 0;
      myStates.clear();
