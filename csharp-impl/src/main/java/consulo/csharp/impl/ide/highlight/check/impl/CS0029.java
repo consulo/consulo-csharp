@@ -32,6 +32,7 @@ import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.lang.impl.psi.source.*;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpArrayTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpPointerTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
@@ -102,6 +103,26 @@ public class CS0029 extends CompilerCheck<PsiElement> {
             DotNetTypes.System.Int64,
             DotNetTypes.System.UInt64,
     };
+
+    /**
+     * The element type of the array whose initializer it is: {@code new short[] {...}}, {@code short[] a = {...}} - not
+     * of a collection initializer, nor of the rows of a multidimensional one
+     */
+    @Nullable
+    @RequiredReadAction
+    private static DotNetTypeRef arrayElementTypeRef(PsiElement arrayInitializer) {
+        DotNetTypeRef ownerTypeRef = null;
+        if (arrayInitializer instanceof CSharpArrayInitializerImpl
+            && arrayInitializer.getParent() instanceof CSharpNewExpressionImpl newExpression
+            && newExpression.getNewType() != null) {
+            ownerTypeRef = newExpression.toTypeRef(false);
+        }
+        // short[] a = {...} - the values are of the initializer expression itself
+        else if (arrayInitializer instanceof CSharpImplicitArrayInitializationExpressionImpl && arrayInitializer.getParent() instanceof DotNetVariable variable) {
+            ownerTypeRef = variable.toTypeRef(false);
+        }
+        return ownerTypeRef instanceof CSharpArrayTypeRef arrayTypeRef && arrayTypeRef.getDimensions() == 0 ? arrayTypeRef.getInnerTypeRef() : null;
+    }
 
     private static CheckTarget target(DotNetTypeRef expected, DotNetTypeRef actual, PsiElement target) {
         return new CheckTarget().expect(expected).actual(actual).target(target);
@@ -193,7 +214,25 @@ public class CS0029 extends CompilerCheck<PsiElement> {
 
     @RequiredReadAction
     private CheckTarget resolve(PsiElement element) {
-        if (element instanceof DotNetVariable) {
+        if (element instanceof CSharpEnumConstantDeclarationImpl enumConstant) {
+            DotNetExpression initializer = PsiTreeUtil.getChildOfType(enumConstant, DotNetExpression.class);
+            CSharpTypeDeclaration enumType = PsiTreeUtil.getParentOfType(enumConstant, CSharpTypeDeclaration.class);
+            if (initializer == null || enumType == null) {
+                return null;
+            }
+            // the value of the underlying type - or of another constant of the enum: B = A | C
+            return target(enumType.getTypeRefForEnumConstants(), initializer.toTypeRef(true), initializer)
+                .expect(new CSharpTypeRefByTypeDeclaration(enumType));
+        }
+        else if (element instanceof CSharpArrayInitializerSingleValueImpl value) {
+            DotNetExpression expression = value.getArgumentExpression();
+            DotNetTypeRef elementTypeRef = arrayElementTypeRef(value.getParent());
+            if (expression == null || elementTypeRef == null) {
+                return null;
+            }
+            return target(elementTypeRef, expression.toTypeRef(true), expression);
+        }
+        else if (element instanceof DotNetVariable) {
             DotNetExpression initializer = ((DotNetVariable) element).getInitializer();
             if (initializer == null) {
                 return null;
