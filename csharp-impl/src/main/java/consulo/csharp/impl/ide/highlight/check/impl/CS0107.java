@@ -36,70 +36,57 @@ import consulo.language.psi.PsiElement;
  * @author VISTALL
  * @since 2014-06-10
  */
-public class CS0107 extends CompilerCheck<DotNetModifierListOwner>
-{
-	@RequiredReadAction
-	@Override
-	public List<CompilerCheckBuilder> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetModifierListOwner element)
-	{
-		DotNetModifierList modifierList = element.getModifierList();
-		if(modifierList == null)
-		{
-			return Collections.emptyList();
-		}
+public class CS0107 extends CompilerCheck<DotNetModifierListOwner> {
+    @RequiredReadAction
+    @Override
+    public List<CompilerCheckBuilder> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetModifierListOwner element) {
+        DotNetModifierList modifierList = element.getModifierList();
+        if (modifierList == null) {
+            return Collections.emptyList();
+        }
 
-		Map<CSharpAccessModifier, Map<CSharpModifier, PsiElement>> map = new LinkedHashMap<CSharpAccessModifier, Map<CSharpModifier, PsiElement>>(5);
-		for(CSharpAccessModifier value : CSharpAccessModifier.VALUES)
-		{
-			collectModifierElements(value, modifierList, map);
-		}
+        Map<CSharpAccessModifier, Map<CSharpModifier, PsiElement>> map = new LinkedHashMap<CSharpAccessModifier, Map<CSharpModifier, PsiElement>>(5);
+        for (CSharpAccessModifier value : CSharpAccessModifier.VALUES) {
+            collectModifierElements(value, modifierList, map);
+        }
 
-		if(map.size() <= 1)
-		{
-			return Collections.emptyList();
-		}
-		List<CompilerCheckBuilder> list = new ArrayList<CompilerCheckBuilder>(map.size());
-		for(Map.Entry<CSharpAccessModifier, Map<CSharpModifier, PsiElement>> entry : map.entrySet())
-		{
-			RemoveModifierFix modifierFix = new RemoveModifierFix(entry.getValue().keySet().toArray(CSharpModifier.EMPTY_ARRAY), element);
+        if (map.size() <= 1) {
+            return Collections.emptyList();
+        }
+        List<CompilerCheckBuilder> list = new ArrayList<CompilerCheckBuilder>(map.size());
+        for (Map.Entry<CSharpAccessModifier, Map<CSharpModifier, PsiElement>> entry : map.entrySet()) {
+            RemoveModifierFix modifierFix = new RemoveModifierFix(entry.getValue().keySet().toArray(CSharpModifier.EMPTY_ARRAY), element);
 
-			for(Map.Entry<CSharpModifier, PsiElement> psiElement : entry.getValue().entrySet())
-			{
-				list.add(newBuilder(psiElement.getValue()).withQuickFix(modifierFix));
-			}
-		}
-		return list;
-	}
+            for (Map.Entry<CSharpModifier, PsiElement> psiElement : entry.getValue().entrySet()) {
+                list.add(newBuilder(psiElement.getValue()).withQuickFix(modifierFix));
+            }
+        }
+        return list;
+    }
 
-	private static void collectModifierElements(CSharpAccessModifier accessModifier,
-			DotNetModifierList modifierList,
-			Map<CSharpAccessModifier, Map<CSharpModifier, PsiElement>> result)
-	{
-		if(accessModifier == CSharpAccessModifier.NONE)
-		{
-			return;
-		}
-		Map<CSharpModifier, PsiElement> map = new LinkedHashMap<CSharpModifier, PsiElement>();
-		CSharpModifier[] modifiers = accessModifier.getModifiers();
-		for(CSharpModifier modifier : modifiers)
-		{
-			if((modifier == CSharpModifier.INTERNAL || modifier == CSharpModifier.PROTECTED) && result.containsKey(CSharpAccessModifier
-					.PROTECTED_INTERNAL))
-			{
-				continue;
-			}
-			PsiElement modifierElement = modifierList.getModifierElement(modifier);
-			if(modifierElement != null)
-			{
-				map.put(modifier, modifierElement);
-			}
-		}
-		// Don't return array if size of elements is not equal to tokens
-		if(modifiers.length != map.size())
-		{
-			return;
-		}
+    private static void collectModifierElements(CSharpAccessModifier accessModifier,
+            DotNetModifierList modifierList,
+            Map<CSharpAccessModifier, Map<CSharpModifier, PsiElement>> result) {
+        if (accessModifier == CSharpAccessModifier.NONE) {
+            return;
+        }
+        Map<CSharpModifier, PsiElement> map = new LinkedHashMap<CSharpModifier, PsiElement>();
+        CSharpModifier[] modifiers = accessModifier.getModifiers();
+        for (CSharpModifier modifier : modifiers) {
+            if ((modifier == CSharpModifier.INTERNAL || modifier == CSharpModifier.PROTECTED) && result.containsKey(CSharpAccessModifier
+                    .PROTECTED_INTERNAL)) {
+                continue;
+            }
+            PsiElement modifierElement = modifierList.getModifierElement(modifier);
+            if (modifierElement != null) {
+                map.put(modifier, modifierElement);
+            }
+        }
+        // Don't return array if size of elements is not equal to tokens
+        if (modifiers.length != map.size()) {
+            return;
+        }
 
-		result.put(accessModifier, map);
-	}
+        result.put(accessModifier, map);
+    }
 }
