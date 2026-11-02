@@ -1529,7 +1529,22 @@ public class ExpressionParsing extends SharedParsingHelpers {
 
         builder.advanceLexer();
 
-        TypeInfo typeInfo = parseType(builder, BRACKET_RETURN_BEFORE);
+        TypeInfo typeInfo;
+        if (builder.getTokenType() == LPAR) {
+            // new (int, string)[2] - a tuple type, otherwise new() / new(1) - C# 9 target-typed new
+            PsiBuilder.Marker tupleMarker = builder.mark();
+            typeInfo = parseType(builder, BRACKET_RETURN_BEFORE);
+            if (typeInfo != null && builder.getTokenType() == LBRACKET) {
+                tupleMarker.drop();
+            }
+            else {
+                tupleMarker.rollbackTo();
+                typeInfo = null;
+            }
+        }
+        else {
+            typeInfo = parseType(builder, BRACKET_RETURN_BEFORE);
+        }
 
         boolean forceArray = false;
 
@@ -1548,7 +1563,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
             argumentsPassed = true;
         }
 
-        AfterNewParsingTarget target = getTarget(builder, forceArray, typeInfo);
+        AfterNewParsingTarget target = getTarget(builder, forceArray, typeInfo, argumentsPassed);
         switch (target) {
             case NONE:
                 if (!argumentsPassed && !forceArray) {
@@ -1627,7 +1642,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return newExpr;
     }
 
-    private static AfterNewParsingTarget getTarget(CSharpBuilderWrapper builderWrapper, boolean forceArray, TypeInfo typeInfo) {
+    private static AfterNewParsingTarget getTarget(CSharpBuilderWrapper builderWrapper, boolean forceArray, TypeInfo typeInfo, boolean argumentsPassed) {
         if (typeInfo != null && typeInfo.isArray) {
             return AfterNewParsingTarget.ARRAY_INITIALIZER;
         }
@@ -1640,8 +1655,8 @@ public class ExpressionParsing extends SharedParsingHelpers {
             return AfterNewParsingTarget.ARRAY_INITIALIZER;
         }
 
-        // force property list, anonymous object
-        if (typeInfo == null) {
+        // force property list, anonymous object - new() { X = 1 } is a target-typed one
+        if (typeInfo == null && !argumentsPassed) {
             return AfterNewParsingTarget.ANONYMOUS_PROPERTY_SET_LIST;
         }
 
