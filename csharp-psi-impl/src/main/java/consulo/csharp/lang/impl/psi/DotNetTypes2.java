@@ -20,63 +20,52 @@ package consulo.csharp.lang.impl.psi;
  * @author VISTALL
  * @since 27.11.14
  */
-public interface DotNetTypes2
-{
-	interface System
-	{
-		interface Runtime
-		{
-			interface CompilerServices
-			{
-				String InternalsVisibleToAttribute = "System.Runtime.CompilerServices.InternalsVisibleToAttribute";
-				String AsyncStateMachineAttribute = "System.Runtime.CompilerServices.AsyncStateMachineAttribute";
+public interface DotNetTypes2 {
+    interface System {
+        interface Runtime {
+            interface CompilerServices {
+                String InternalsVisibleToAttribute = "System.Runtime.CompilerServices.InternalsVisibleToAttribute";
+                String AsyncStateMachineAttribute = "System.Runtime.CompilerServices.AsyncStateMachineAttribute";
 
-			}
+            }
 
-			interface InteropServices
-			{
-				String InAttribute = "System.Runtime.InteropServices.InAttribute";
-				String OutAttribute = "System.Runtime.InteropServices.OutAttribute";
-			}
-		}
+            interface InteropServices {
+                String InAttribute = "System.Runtime.InteropServices.InAttribute";
+                String OutAttribute = "System.Runtime.InteropServices.OutAttribute";
+            }
+        }
 
-		interface Linq
-		{
-			String IGrouping$2 = "System.Linq.IGrouping`2";
-			String Enumerable = "System.Linq.Enumerable";
-		}
+        interface Linq {
+            String IGrouping$2 = "System.Linq.IGrouping`2";
+            String Enumerable = "System.Linq.Enumerable";
+        }
 
-		interface Threading
-		{
-			interface Tasks
-			{
+        interface Threading {
+            interface Tasks {
 
-				String Task = "System.Threading.Tasks.Task";
-				String Task$1 = "System.Threading.Tasks.Task`1";
-			}
-		}
+                String Task = "System.Threading.Tasks.Task";
+                String Task$1 = "System.Threading.Tasks.Task`1";
+            }
+        }
 
-		interface Collections
-		{
-			interface Generic
-			{
-				String IEnumerable$1 = "System.Collections.Generic.IEnumerable`1";
-				String IEnumerator$1 = "System.Collections.Generic.IEnumerator`1";
-				String IList$1 = "System.Collections.Generic.IList`1";
-			}
+        interface Collections {
+            interface Generic {
+                String IEnumerable$1 = "System.Collections.Generic.IEnumerable`1";
+                String IEnumerator$1 = "System.Collections.Generic.IEnumerator`1";
+                String IList$1 = "System.Collections.Generic.IList`1";
+            }
 
-			String IEnumerable = "System.Collections.IEnumerable";
-			String IEnumerator = "System.Collections.IEnumerator";
-		}
+            String IEnumerable = "System.Collections.IEnumerable";
+            String IEnumerator = "System.Collections.IEnumerator";
+        }
 
-		interface Diagnostics
-		{
-			String DebuggerDisplayAttribute = "System.Diagnostics.DebuggerDisplayAttribute";
-		}
+        interface Diagnostics {
+            String DebuggerDisplayAttribute = "System.Diagnostics.DebuggerDisplayAttribute";
+        }
 
-		String RuntimeArgumentHandle = "System.RuntimeArgumentHandle";
-		String FlagsAttribute  = "System.FlagsAttribute";
-		String FormattableString  = "System.FormattableString";
-		String NullReferenceException  = "System.NullReferenceException";
-	}
+        String RuntimeArgumentHandle = "System.RuntimeArgumentHandle";
+        String FlagsAttribute  = "System.FlagsAttribute";
+        String FormattableString  = "System.FormattableString";
+        String NullReferenceException  = "System.NullReferenceException";
+    }
 }
