@@ -32,44 +32,35 @@ import org.jspecify.annotations.Nullable;
  * @author VISTALL
  * @since 20.05.14
  */
-public class CS0128 extends CompilerCheck<CSharpLocalVariable>
-{
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpLocalVariable element)
-	{
-		CSharpBlockStatementImpl blockStatement = PsiTreeUtil.getParentOfType(element, CSharpBlockStatementImpl.class);
-		if(blockStatement == null)
-		{
-			return null;
-		}
+public class CS0128 extends CompilerCheck<CSharpLocalVariable> {
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpLocalVariable element) {
+        CSharpBlockStatementImpl blockStatement = PsiTreeUtil.getParentOfType(element, CSharpBlockStatementImpl.class);
+        if (blockStatement == null) {
+            return null;
+        }
 
-		String name = element.getName();
-		if(name == null)
-		{
-			return null;
-		}
+        String name = element.getName();
+        if (name == null) {
+            return null;
+        }
 
-		for(DotNetStatement statement : blockStatement.getStatements())
-		{
-			if(statement instanceof CSharpLocalVariableDeclarationStatement)
-			{
-				CSharpLocalVariable[] variables = ((CSharpLocalVariableDeclarationStatement) statement).getVariables();
-				for(CSharpLocalVariable variable : variables)
-				{
-					if(name.equals(variable.getName()) && variable != element)
-					{
-						return newBuilder(getNameIdentifier(element), name);
-					}
+        for (DotNetStatement statement : blockStatement.getStatements()) {
+            if (statement instanceof CSharpLocalVariableDeclarationStatement) {
+                CSharpLocalVariable[] variables = ((CSharpLocalVariableDeclarationStatement) statement).getVariables();
+                for (CSharpLocalVariable variable : variables) {
+                    if (name.equals(variable.getName()) && variable != element) {
+                        return newBuilder(getNameIdentifier(element), name);
+                    }
 
-					if(variable == element)
-					{
-						return null;
-					}
-				}
-			}
-		}
-		return null;
-	}
+                    if (variable == element) {
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }
