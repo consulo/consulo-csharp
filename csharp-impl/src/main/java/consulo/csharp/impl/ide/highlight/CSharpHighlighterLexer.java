@@ -25,28 +25,23 @@ import consulo.language.lexer.TokenIterator;
  * @author VISTALL
  * @since 2020-08-08
  */
-public class CSharpHighlighterLexer extends CSharpLexer implements RestartableLexer
-{
-	public CSharpHighlighterLexer()
-	{
-		super(new _CSharpLexer(true));
-	}
+public class CSharpHighlighterLexer extends CSharpLexer implements RestartableLexer {
+    public CSharpHighlighterLexer() {
+        super(new _CSharpLexer(true));
+    }
 
-	@Override
-	public int getStartState()
-	{
-		return getState();
-	}
+    @Override
+    public int getStartState() {
+        return getState();
+    }
 
-	@Override
-	public boolean isRestartableState(int state)
-	{
-		return false;
-	}
+    @Override
+    public boolean isRestartableState(int state) {
+        return false;
+    }
 
-	@Override
-	public void start(CharSequence buffer, int startOffset, int endOffset, int initialState, TokenIterator tokenIterator)
-	{
-		start(buffer, startOffset, endOffset, initialState);
-	}
+    @Override
+    public void start(CharSequence buffer, int startOffset, int endOffset, int initialState, TokenIterator tokenIterator) {
+        start(buffer, startOffset, endOffset, initialState);
+    }
 }
