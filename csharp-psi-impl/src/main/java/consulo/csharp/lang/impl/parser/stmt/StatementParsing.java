@@ -150,8 +150,16 @@ public class StatementParsing extends SharedParsingHelpers {
         else if (tokenType == CHECKED_KEYWORD || tokenType == UNCHECKED_KEYWORD) {
             parseCheckedStatement(builder, marker, set);
         }
+        else if (tokenType == USING_KEYWORD && builder.lookAhead(1) != LPAR) {
+            // using var x = ...; (C# 8)
+            parseLocalVariableWithLeadingKeywords(builder, marker, set);
+        }
         else if (tokenType == USING_KEYWORD) {
             parseUsingOrFixed(builder, marker, USING_STATEMENT, set);
+        }
+        else if (tokenType == REF_KEYWORD) {
+            // ref int x = ref y; ref readonly var z = ref w; (C# 7)
+            parseLocalVariableWithLeadingKeywords(builder, marker, set);
         }
         else if (tokenType == FIXED_KEYWORD) {
             parseUsingOrFixed(builder, marker, FIXED_STATEMENT, set);
@@ -181,6 +189,28 @@ public class StatementParsing extends SharedParsingHelpers {
             return parseLabelOrVariableOrExpression(tokenType, builder, marker, set);
         }
         return marker;
+    }
+
+    private static void parseLocalVariableWithLeadingKeywords(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set) {
+        PsiBuilder.Marker varMark = builder.mark();
+
+        if (builder.getTokenType() == USING_KEYWORD) {
+            builder.advanceLexer();
+        }
+
+        if (builder.getTokenType() == REF_KEYWORD) {
+            builder.advanceLexer();
+
+            if (builder.getTokenType() == READONLY_KEYWORD) {
+                builder.advanceLexer();
+            }
+        }
+
+        FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, varMark, LOCAL_VARIABLE, VAR_SUPPORT, false, set);
+
+        expect(builder, SEMICOLON, "';' expected");
+
+        marker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
     }
 
     private static PsiBuilder.@Nullable Marker parseLabelOrVariableOrExpression(IElementType tokenType, CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set) {

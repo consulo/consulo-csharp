@@ -22,6 +22,7 @@ import consulo.content.scope.SearchScope;
 import consulo.csharp.lang.impl.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpConstantTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
@@ -96,6 +97,10 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
         }
         else {
             DotNetTypeRef defaultTypeRef = super.toTypeRefImpl(resolveFromInitializer);
+            // ref var x = ref y;
+            if (defaultTypeRef instanceof CSharpRefTypeRef refTypeRef) {
+                return refTypeRef.getInnerTypeRef();
+            }
             if (isConstant()) {
                 DotNetExpression initializer = getInitializer();
                 if (initializer instanceof CSharpConstantExpressionImpl) {
