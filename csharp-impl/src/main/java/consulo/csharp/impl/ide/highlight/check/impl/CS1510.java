@@ -20,12 +20,16 @@ package consulo.csharp.impl.ide.highlight.check.impl;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.impl.psi.source.resolve.methodResolving.MethodGroupConversion;
+import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.impl.psi.source.CSharpIndexAccessExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpOutRefWrapExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.language.psi.PsiElement;
 import org.jspecify.annotations.Nullable;
@@ -47,8 +51,21 @@ public class CS1510 extends CompilerCheck<CSharpOutRefWrapExpressionImpl> {
             return null;
         }
 
+        // ref First() - a method returning by reference
+        if (innerExpression instanceof CSharpCallArgumentListOwner call
+            && call.resolveToCallable() instanceof DotNetLikeMethodDeclaration method
+            && MethodGroupConversion.isRefReturn(method)) {
+            return null;
+        }
+
         if (!(innerExpression instanceof CSharpReferenceExpression)) {
             return newBuilder(innerExpression);
+        }
+
+        // ref this - a variable inside a struct only
+        if (((CSharpReferenceExpression) innerExpression).kind() == CSharpReferenceExpression.ResolveToKind.THIS) {
+            PsiElement type = ((CSharpReferenceExpression) innerExpression).resolve();
+            return type instanceof CSharpTypeDeclaration typeDeclaration && typeDeclaration.isStruct() ? null : newBuilder(innerExpression);
         }
 
         PsiElement psiElement = ((CSharpReferenceExpression) innerExpression).resolve();
