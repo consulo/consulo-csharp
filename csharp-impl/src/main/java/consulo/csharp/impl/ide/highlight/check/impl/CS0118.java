@@ -31,25 +31,21 @@ import org.jspecify.annotations.Nullable;
  * @author VISTALL
  * @since 06.03.2016
  */
-public class CS0118 extends CompilerCheck<CSharpReferenceExpression>
-{
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpReferenceExpression element)
-	{
-		CSharpReferenceExpression.ResolveToKind kind = element.kind();
-		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || kind == CSharpReferenceExpression.ResolveToKind.THIS)
-		{
-			return null;
-		}
-		// qualifier of another expression
-		PsiElement parent = element.getParent();
-		if(parent instanceof CSharpReferenceExpression || parent instanceof CSharpNameOfExpressionImpl)
-		{
-			return null;
-		}
-		PsiElement psiElement = element.resolve();
-		return psiElement instanceof CSharpTypeDeclaration ? newBuilder(element, formatElement(psiElement)) : null;
-	}
+public class CS0118 extends CompilerCheck<CSharpReferenceExpression> {
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpReferenceExpression element) {
+        CSharpReferenceExpression.ResolveToKind kind = element.kind();
+        if (kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || kind == CSharpReferenceExpression.ResolveToKind.THIS) {
+            return null;
+        }
+        // qualifier of another expression
+        PsiElement parent = element.getParent();
+        if (parent instanceof CSharpReferenceExpression || parent instanceof CSharpNameOfExpressionImpl) {
+            return null;
+        }
+        PsiElement psiElement = element.resolve();
+        return psiElement instanceof CSharpTypeDeclaration ? newBuilder(element, formatElement(psiElement)) : null;
+    }
 }

@@ -36,34 +36,29 @@ import org.jspecify.annotations.Nullable;
  *
  * @see CS0206
  */
-public class CS1510 extends CompilerCheck<CSharpOutRefWrapExpressionImpl>
-{
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpOutRefWrapExpressionImpl element)
-	{
-		DotNetExpression innerExpression = element.getInnerExpression();
-		if(innerExpression == null || innerExpression instanceof CSharpIndexAccessExpressionImpl)  // ignore index access see CS0206
-		{
-			return null;
-		}
+public class CS1510 extends CompilerCheck<CSharpOutRefWrapExpressionImpl> {
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpOutRefWrapExpressionImpl element) {
+        DotNetExpression innerExpression = element.getInnerExpression();
+        if (innerExpression == null || innerExpression instanceof CSharpIndexAccessExpressionImpl)  // ignore index access see CS0206
+        {
+            return null;
+        }
 
-		if(!(innerExpression instanceof CSharpReferenceExpression))
-		{
-			return newBuilder(innerExpression);
-		}
+        if (!(innerExpression instanceof CSharpReferenceExpression)) {
+            return newBuilder(innerExpression);
+        }
 
-		PsiElement psiElement = ((CSharpReferenceExpression) innerExpression).resolve();
-		// reference already highlighted by error
-		if(psiElement == null)
-		{
-			return null;
-		}
-		if(!(psiElement instanceof DotNetVariable) || ((DotNetVariable) psiElement).isConstant() || ((DotNetVariable) psiElement).hasModifier(CSharpModifier.READONLY))
-		{
-			return newBuilder(innerExpression);
-		}
-		return null;
-	}
+        PsiElement psiElement = ((CSharpReferenceExpression) innerExpression).resolve();
+        // reference already highlighted by error
+        if (psiElement == null) {
+            return null;
+        }
+        if (!(psiElement instanceof DotNetVariable) || ((DotNetVariable) psiElement).isConstant() || ((DotNetVariable) psiElement).hasModifier(CSharpModifier.READONLY)) {
+            return newBuilder(innerExpression);
+        }
+        return null;
+    }
 }
