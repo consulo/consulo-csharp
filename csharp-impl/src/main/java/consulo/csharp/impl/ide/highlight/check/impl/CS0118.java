@@ -22,6 +22,7 @@ import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.impl.psi.source.CSharpNameOfExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPatternImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.psi.PsiElement;
 
@@ -42,7 +43,8 @@ public class CS0118 extends CompilerCheck<CSharpReferenceExpression> {
         }
         // qualifier of another expression
         PsiElement parent = element.getParent();
-        if (parent instanceof CSharpReferenceExpression || parent instanceof CSharpNameOfExpressionImpl) {
+        // o is int or long - a type pattern
+        if (parent instanceof CSharpReferenceExpression || parent instanceof CSharpNameOfExpressionImpl || parent instanceof CSharpPatternImpl) {
             return null;
         }
         PsiElement psiElement = element.resolve();
