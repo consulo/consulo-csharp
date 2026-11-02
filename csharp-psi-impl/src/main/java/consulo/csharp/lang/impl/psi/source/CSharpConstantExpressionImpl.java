@@ -196,10 +196,10 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
             return getBigInteger(text);
         }
         else if (elementType == CSharpTokens.FLOAT_LITERAL) {
-            return Double.parseDouble(text);
+            return Double.parseDouble(text.replace("_", ""));
         }
         else if (elementType == CSharpTokens.DOUBLE_LITERAL) {
-            return Double.parseDouble(text);
+            return Double.parseDouble(text.replace("_", ""));
         }
         else if (elementType == CSharpTokens.NULL_LITERAL) {
             return null;
@@ -211,12 +211,24 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
     }
 
     private static BigInteger getBigInteger(String text) {
-        int radix = 10;
-        if (text.startsWith("0x") || text.startsWith("0X")) {
-            radix = 16;
-            text = text.substring(2, text.length());
+        String value = text.replace("_", "");
+        boolean negative = value.startsWith("-");
+        if (negative) {
+            value = value.substring(1);
         }
-        return new BigInteger(text, radix);
+
+        int radix = 10;
+        if (value.startsWith("0x") || value.startsWith("0X")) {
+            radix = 16;
+            value = value.substring(2);
+        }
+        else if (value.startsWith("0b") || value.startsWith("0B")) {
+            radix = 2;
+            value = value.substring(2);
+        }
+
+        BigInteger result = new BigInteger(value, radix);
+        return negative ? result.negate() : result;
     }
 
     @Nullable
