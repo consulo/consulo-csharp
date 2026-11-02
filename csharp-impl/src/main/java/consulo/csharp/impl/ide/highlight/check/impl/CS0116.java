@@ -33,25 +33,21 @@ import consulo.dotnet.psi.DotNetQualifiedElement;
  * @author VISTALL
  * @since 2020-02-07
  */
-public class CS0116 extends CompilerCheck<DotNetQualifiedElement>
-{
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetQualifiedElement element)
-	{
-		if(element instanceof CSharpTypeDeclaration ||
-				element instanceof CSharpNamespaceDeclaration ||
-				element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isDelegate())
-		{
-			return null;
-		}
+public class CS0116 extends CompilerCheck<DotNetQualifiedElement> {
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetQualifiedElement element) {
+        if (element instanceof CSharpTypeDeclaration ||
+                element instanceof CSharpNamespaceDeclaration ||
+                element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isDelegate()) {
+            return null;
+        }
 
-		PsiElement parent = element.getParent();
-		if(parent instanceof CSharpNamespaceDeclaration)
-		{
-			return newBuilder(getNameIdentifier(element));
-		}
-		return null;
-	}
+        PsiElement parent = element.getParent();
+        if (parent instanceof CSharpNamespaceDeclaration) {
+            return newBuilder(getNameIdentifier(element));
+        }
+        return null;
+    }
 }
