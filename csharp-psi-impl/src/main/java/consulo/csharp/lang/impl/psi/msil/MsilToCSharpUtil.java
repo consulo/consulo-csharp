@@ -74,6 +74,10 @@ public class MsilToCSharpUtil {
                 elementType = MsilTokens.PRIVATE_KEYWORD;
                 break;
             case PROTECTED:
+                // famorassem - protected internal
+                if (modifierList.hasModifier(MsilTokens.FAMORASSEMBLY_KEYWORD)) {
+                    return true;
+                }
                 elementType = MsilTokens.PROTECTED_KEYWORD;
                 break;
             case STATIC:
@@ -93,6 +97,9 @@ public class MsilToCSharpUtil {
             case ASYNC:
                 return hasAttribute(modifierList, DotNetTypes2.System.Runtime.CompilerServices.AsyncStateMachineAttribute);
             case INTERNAL:
+                if (modifierList.hasModifier(MsilTokens.FAMORASSEMBLY_KEYWORD)) {
+                    return true;
+                }
                 elementType = MsilTokens.ASSEMBLY_KEYWORD;
                 break;
             case VIRTUAL:

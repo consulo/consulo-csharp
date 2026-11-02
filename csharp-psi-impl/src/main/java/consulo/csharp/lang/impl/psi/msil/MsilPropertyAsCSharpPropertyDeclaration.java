@@ -108,7 +108,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
         else if (second.hasModifier(MsilTokens.PUBLIC_KEYWORD)) {
             return CSharpAccessModifier.PUBLIC;
         }
-        else if (second.hasModifier(MsilTokens.ASSEMBLY_KEYWORD) && second.hasModifier(MsilTokens.PROTECTED_KEYWORD)) {
+        else if (second.hasModifier(MsilTokens.FAMORASSEMBLY_KEYWORD)) {
             return CSharpAccessModifier.PROTECTED_INTERNAL;
         }
         else if (second.hasModifier(MsilTokens.ASSEMBLY_KEYWORD)) {

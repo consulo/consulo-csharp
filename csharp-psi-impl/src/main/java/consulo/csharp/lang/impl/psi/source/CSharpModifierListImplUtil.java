@@ -178,6 +178,10 @@ public class CSharpModifierListImplUtil {
         return false;
     }
 
+    /**
+     * The explicit access modifier other than {@code skipModifier} - by the modifiers in the tree only: the implicit ones
+     * come from here, private protected would ask for private again
+     */
     @RequiredReadAction
     private static CSharpAccessModifier findModifier(CSharpModifierList list, CSharpModifier skipModifier) {
         loop:
@@ -191,7 +195,7 @@ public class CSharpModifierListImplUtil {
             }
 
             for (CSharpModifier modifier : value.getModifiers()) {
-                if (!hasModifier(list, modifier)) {
+                if (!list.hasModifierInTree(modifier)) {
                     continue loop;
                 }
             }

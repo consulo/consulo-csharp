@@ -34,8 +34,10 @@ public enum CSharpAccessModifier {
         }
     },
     PUBLIC(CSharpModifier.PUBLIC),
-    // protected internal need be first
+    // the combined ones need be before their parts
     PROTECTED_INTERNAL(CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
+    // C# 7.2
+    PRIVATE_PROTECTED(CSharpModifier.PRIVATE, CSharpModifier.PROTECTED),
     INTERNAL(CSharpModifier.INTERNAL),
     PROTECTED(CSharpModifier.PROTECTED),
     PRIVATE(CSharpModifier.PRIVATE);

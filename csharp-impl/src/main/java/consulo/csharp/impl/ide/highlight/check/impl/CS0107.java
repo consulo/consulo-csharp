@@ -31,6 +31,7 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.language.psi.PsiElement;
+import consulo.util.collection.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -64,6 +65,15 @@ public class CS0107 extends CompilerCheck<DotNetModifierListOwner> {
         return list;
     }
 
+    private static boolean isPartOfCombined(CSharpModifier modifier, Map<CSharpAccessModifier, Map<CSharpModifier, PsiElement>> result) {
+        for (CSharpAccessModifier collected : result.keySet()) {
+            if (collected.getModifiers().length > 1 && ArrayUtil.contains(modifier, collected.getModifiers())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static void collectModifierElements(CSharpAccessModifier accessModifier,
             DotNetModifierList modifierList,
             Map<CSharpAccessModifier, Map<CSharpModifier, PsiElement>> result) {
@@ -73,8 +83,8 @@ public class CS0107 extends CompilerCheck<DotNetModifierListOwner> {
         Map<CSharpModifier, PsiElement> map = new LinkedHashMap<CSharpModifier, PsiElement>();
         CSharpModifier[] modifiers = accessModifier.getModifiers();
         for (CSharpModifier modifier : modifiers) {
-            if ((modifier == CSharpModifier.INTERNAL || modifier == CSharpModifier.PROTECTED) && result.containsKey(CSharpAccessModifier
-                    .PROTECTED_INTERNAL)) {
+            // a part of protected internal or private protected
+            if (isPartOfCombined(modifier, result)) {
                 continue;
             }
             PsiElement modifierElement = modifierList.getModifierElement(modifier);

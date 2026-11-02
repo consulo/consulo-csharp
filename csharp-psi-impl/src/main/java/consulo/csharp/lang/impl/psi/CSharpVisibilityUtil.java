@@ -47,8 +47,12 @@ public class CSharpVisibilityUtil {
             case PUBLIC:
             case NONE:
                 return true;
+            // the assembly or a derived type
             case PROTECTED_INTERNAL:
-                return isVisible(target, place, CSharpAccessModifier.INTERNAL);
+                return isVisible(target, place, CSharpAccessModifier.INTERNAL) || isVisible(target, place, CSharpAccessModifier.PROTECTED);
+            // a derived type of the assembly
+            case PRIVATE_PROTECTED:
+                return isVisible(target, place, CSharpAccessModifier.INTERNAL) && isVisible(target, place, CSharpAccessModifier.PROTECTED);
             case INTERNAL:
                 AssemblyModuleService assemblyModuleService = AssemblyModuleService.getInstance(place.getProject());
 
