@@ -46,7 +46,7 @@ public class NamespaceDeclarationParsing extends SharedParsingHelpers
 		{
 			if(expect(builder, LBRACE, "'{' expected"))
 			{
-				DeclarationParsing.parseAll(builder, false, false);
+				DeclarationParsing.parseAll(builder, false, false, true);
 
 				expect(builder, RBRACE, "'}' expected");
 				expect(builder, SEMICOLON, null);

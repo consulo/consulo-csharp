@@ -1,0 +1,167 @@
+CSHARP_FILE
+  CSharpUsingNamespaceStatementImpl [USING_NAMESPACE_STATEMENT]
+    PsiElement(USING_KEYWORD)('using')
+    PsiWhiteSpace(' ')
+    CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+      PsiElement(IDENTIFIER)('System')
+    PsiElement(SEMICOLON)(';')
+  PsiWhiteSpace('\n\n')
+  CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+    PsiElement(LBRACKET)('[')
+    PsiElement(ASSEMBLY_KEYWORD)('assembly')
+    PsiElement(COLON)(':')
+    PsiWhiteSpace(' ')
+    CSharpStubAttributeImpl [ATTRIBUTE]
+      CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+        PsiElement(IDENTIFIER)('AssemblyTitle')
+      CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+        PsiElement(LPAR)('(')
+        CSharpCallArgumentImpl(CALL_ARGUMENT)
+          CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+            PsiElement(STRING_LITERAL)('"a"')
+        PsiElement(RPAR)(')')
+    PsiElement(RBRACKET)(']')
+  PsiWhiteSpace('\n')
+  CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+    PsiElement(LBRACKET)('[')
+    PsiElement(ASSEMBLY_KEYWORD)('assembly')
+    PsiElement(COLON)(':')
+    PsiWhiteSpace(' ')
+    CSharpStubAttributeImpl [ATTRIBUTE]
+      CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+        PsiElement(IDENTIFIER)('AssemblyVersion')
+      CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+        PsiElement(LPAR)('(')
+        CSharpCallArgumentImpl(CALL_ARGUMENT)
+          CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+            PsiElement(STRING_LITERAL)('"1.0"')
+        PsiElement(RPAR)(')')
+    PsiElement(COMMA)(',')
+    PsiWhiteSpace(' ')
+    CSharpStubAttributeImpl [ATTRIBUTE]
+      CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+        PsiElement(IDENTIFIER)('AssemblyCulture')
+      CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+        PsiElement(LPAR)('(')
+        CSharpCallArgumentImpl(CALL_ARGUMENT)
+          CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+            PsiElement(STRING_LITERAL)('""')
+        PsiElement(RPAR)(')')
+    PsiElement(RBRACKET)(']')
+  PsiWhiteSpace('\n')
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('Serializable')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            <empty list>
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      PsiElement(PUBLIC_KEYWORD)('public')
+    PsiWhiteSpace(' ')
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('First')
+    PsiWhiteSpace('\n')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace('\n')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n\n')
+  CSharpNamespaceDeclarationImpl [NAMESPACE_DECLARATION]
+    PsiElement(NAMESPACE_KEYWORD)('namespace')
+    PsiWhiteSpace(' ')
+    CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+      PsiElement(IDENTIFIER)('Inner')
+    PsiWhiteSpace('\n')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace('\n    ')
+    CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+      PsiElement(LBRACKET)('[')
+      PsiElement(MODULE_KEYWORD)('module')
+      PsiElement(COLON)(':')
+      PsiWhiteSpace(' ')
+      CSharpStubAttributeImpl [ATTRIBUTE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          PsiElement(IDENTIFIER)('Unverifiable')
+        CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+          <empty list>
+      PsiElement(RBRACKET)(']')
+    PsiWhiteSpace('\n    ')
+    CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+          PsiElement(LBRACKET)('[')
+          PsiElement(FIELD_KEYWORD)('field')
+          PsiElement(COLON)(':')
+          PsiWhiteSpace(' ')
+          CSharpStubAttributeImpl [ATTRIBUTE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('NonSerialized')
+            CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+              <empty list>
+          PsiElement(RBRACKET)(']')
+        PsiWhiteSpace('\n    ')
+        PsiElement(PUBLIC_KEYWORD)('public')
+      PsiWhiteSpace(' ')
+      PsiElement(CLASS_KEYWORD)('class')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('Second')
+      PsiWhiteSpace('\n    ')
+      PsiElement(LBRACE)('{')
+      PsiWhiteSpace('\n        ')
+      CSharpFieldDeclarationImpl [FIELD_DECLARATION]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+            PsiElement(LBRACKET)('[')
+            PsiElement(ASSEMBLY_KEYWORD)('assembly')
+            PsiElement(COLON)(':')
+            PsiWhiteSpace(' ')
+            CSharpStubAttributeImpl [ATTRIBUTE]
+              CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+                PsiElement(IDENTIFIER)('Wrong')
+              CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+                <empty list>
+            PsiElement(RBRACKET)(']')
+          PsiWhiteSpace('\n        ')
+          PsiElement(PUBLIC_KEYWORD)('public')
+        PsiWhiteSpace(' ')
+        CSharpStubNativeTypeImpl [NATIVE_TYPE]
+          PsiElement(INT_KEYWORD)('int')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('Value')
+        PsiElement(SEMICOLON)(';')
+      PsiWhiteSpace('\n    ')
+      PsiElement(RBRACE)('}')
+    PsiWhiteSpace('\n\n    ')
+    CSharpDummyDeclarationImpl [DUMMY_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+          PsiElement(LBRACKET)('[')
+          CSharpStubAttributeImpl [ATTRIBUTE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('Obsolete')
+            CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+              <empty list>
+          PsiElement(RBRACKET)(']')
+    PsiWhiteSpace('\n')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n\n')
+  CSharpDummyDeclarationImpl [DUMMY_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('Obsolete')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            <empty list>
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace(' ')
+      PsiElement(PUBLIC_KEYWORD)('public')
+  PsiWhiteSpace('\n')

@@ -19,7 +19,9 @@ package consulo.csharp.impl.ide.highlight.check.impl;
 import org.jspecify.annotations.Nullable;
 
 
+import consulo.csharp.lang.impl.psi.source.CSharpDummyDeclarationImpl;
 import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
@@ -45,7 +47,8 @@ public class CS0116 extends CompilerCheck<DotNetQualifiedElement> {
         }
 
         PsiElement parent = element.getParent();
-        if (parent instanceof CSharpNamespaceDeclaration) {
+        // [Obsolete] with no member after it - an incomplete member, of the file too (Roslyn IncompleteMemberSyntax)
+        if (parent instanceof CSharpNamespaceDeclaration || element instanceof CSharpDummyDeclarationImpl && parent instanceof PsiFile) {
             return newBuilder(getNameIdentifier(element));
         }
         return null;

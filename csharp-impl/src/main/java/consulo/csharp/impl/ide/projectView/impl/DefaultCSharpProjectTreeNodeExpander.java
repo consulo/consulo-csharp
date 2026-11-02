@@ -48,7 +48,8 @@ public class DefaultCSharpProjectTreeNodeExpander implements CSharpProjectTreeNo
             if (file != null) {
                 if (CSharpLocationUtil.isValidLocation(project, ((PsiFile) value).getVirtualFile())) {
                     DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElementNoNameCheck(file);
-                    if (singleElement instanceof CSharpDummyDeclarationImpl) {
+                    // AssemblyInfo.cs - global attributes only
+                    if (singleElement instanceof CSharpDummyDeclarationImpl || file.getMembers().length == 0) {
                         return new CSharpElementTreeNode(file, settings, 0);
                     }
                     else if (singleElement != null) {

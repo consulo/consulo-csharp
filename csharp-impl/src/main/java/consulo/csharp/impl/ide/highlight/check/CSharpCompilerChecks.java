@@ -131,6 +131,7 @@ public enum CSharpCompilerChecks {
     CS1676(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // lambda parameter validation with out / ref params
     CS1722(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // base type must be first in extend list
     CS1729(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constructor ref to not existed empty base constructor
+    CS1730(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // assembly and module attributes must precede all declarations
     CS1736(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter value must be compile time constant
     CS1737(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter default values check for order
     CS1738(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter default values check for order

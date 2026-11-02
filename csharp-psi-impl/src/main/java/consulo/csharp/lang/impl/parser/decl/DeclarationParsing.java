@@ -40,6 +40,13 @@ public class DeclarationParsing extends SharedParsingHelpers {
     private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR, THIS_KEYWORD, OPERATOR_KEYWORD);
 
     public static void parseAll(CSharpBuilderWrapper builder, boolean root, boolean isEnum) {
+        parseAll(builder, root, isEnum, root);
+    }
+
+    /**
+     * @param globalAttributes the file or a namespace body - {@code [assembly: A]} there is an attribute list of its own
+     */
+    public static void parseAll(CSharpBuilderWrapper builder, boolean root, boolean isEnum, boolean globalAttributes) {
         if (isEnum) {
             IElementType prevToken;
             while (!builder.eof()) {
@@ -71,12 +78,21 @@ public class DeclarationParsing extends SharedParsingHelpers {
 
                 builder.skipNonInterestItems();
 
-                parse(builder, root);
+                if (globalAttributes && isGlobalAttributeList(builder)) {
+                    parseSingleAttributeList(builder, ModifierSet.EMPTY, STUB_SUPPORT);
+                    continue;
+                }
+
+                parse(builder, globalAttributes);
             }
         }
     }
 
-    private static void parse(CSharpBuilderWrapper builder, boolean root) {
+    /**
+     * @param namespaceLevel the file or a namespace body - attributes and modifiers with no member after them are an
+     *                       incomplete member there (Roslyn IncompleteMemberSyntax), not a field without a type
+     */
+    private static void parse(CSharpBuilderWrapper builder, boolean namespaceLevel) {
         PsiBuilder.Marker marker = builder.mark();
 
         Pair<PsiBuilder.Marker, ModifierSet> modifierListPair = parseWithSoftElements(b -> parseModifierListWithAttributes(b, STUB_SUPPORT), builder, PARTIAL_KEYWORD, ASYNC_KEYWORD);
@@ -90,7 +106,7 @@ public class DeclarationParsing extends SharedParsingHelpers {
                 marker.drop();
             }
             else {
-                if (root) {
+                if (namespaceLevel) {
                     marker.done(DUMMY_DECLARATION);
                 }
                 else {
@@ -171,7 +187,7 @@ public class DeclarationParsing extends SharedParsingHelpers {
                     TypeInfo typeInfo = parseType(builder, STUB_SUPPORT);
                     if (typeInfo == null) {
                         if (!modifierSet.isEmpty()) {
-                            if (root) {
+                            if (namespaceLevel) {
                                 marker.done(DUMMY_DECLARATION);
                                 return;
                             }

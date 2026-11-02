@@ -198,6 +198,8 @@ CS1722:
     text: "''{0}'': Base class ''{1}'' must be specified as first"
 CS1729:
     text: "''{0}'' does not contain a constructor that takes {1} arguments"
+CS1730:
+    text: Assembly and module attributes must precede all other elements defined in a file except using clauses and extern alias declarations
 CS1736:
     text: "Default parameter value for ''{0}'' must be a compile-time constant"
 CS1737:

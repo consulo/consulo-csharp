@@ -374,43 +374,66 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
         boolean empty = true;
         while (builder.getTokenType() == LBRACKET) {
             empty = false;
-            PsiBuilder.Marker mark = builder.mark();
-            builder.advanceLexer();
-
-            builder.enableSoftKeywords(ATTRIBUTE_TARGETS);
-            IElementType tokenType = builder.getTokenType();
-            builder.disableSoftKeywords(ATTRIBUTE_TARGETS);
-
-            if (builder.lookAhead(1) != COLON) {
-                builder.remapBackIfSoft();
-            }
-            else {
-                if (!ATTRIBUTE_TARGETS.contains(tokenType)) {
-                    builder.error("Wrong attribute target");
-                }
-                builder.advanceLexer(); // target type
-                builder.advanceLexer(); // colon
-            }
-
-            while (!builder.eof()) {
-                PsiBuilder.Marker attMark = parseAttribute(builder, set, flags);
-                if (attMark == null) {
-                    builder.error("Attribute name expected");
-                    break;
-                }
-
-                if (builder.getTokenType() == COMMA) {
-                    builder.advanceLexer();
-                }
-                else if (builder.getTokenType() == RBRACKET) {
-                    break;
-                }
-            }
-
-            expect(builder, RBRACKET, "']' expected");
-            mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.ATTRIBUTE_LIST : CSharpElements.ATTRIBUTE_LIST);
+            parseSingleAttributeList(builder, set, flags);
         }
         return empty;
+    }
+
+    /**
+     * {@code [assembly: A]} or {@code [module: A]} - a global attribute list, of the file and not of the next member (Roslyn
+     * LanguageParser.IsPossibleGlobalAttributeDeclaration)
+     */
+    protected static boolean isGlobalAttributeList(CSharpBuilderWrapper builder) {
+        if (builder.getTokenType() != LBRACKET || builder.lookAhead(2) != COLON) {
+            return false;
+        }
+
+        PsiBuilder.Marker probe = builder.mark();
+        builder.advanceLexer();
+        builder.enableSoftKeywords(GLOBAL_ATTRIBUTE_TARGETS);
+        IElementType target = builder.getTokenType();
+        builder.disableSoftKeywords(GLOBAL_ATTRIBUTE_TARGETS);
+        builder.remapBackIfSoft();
+        probe.rollbackTo();
+        return GLOBAL_ATTRIBUTE_TARGETS.contains(target);
+    }
+
+    protected static void parseSingleAttributeList(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+        PsiBuilder.Marker mark = builder.mark();
+        builder.advanceLexer();
+
+        builder.enableSoftKeywords(ATTRIBUTE_TARGETS);
+        IElementType tokenType = builder.getTokenType();
+        builder.disableSoftKeywords(ATTRIBUTE_TARGETS);
+
+        if (builder.lookAhead(1) != COLON) {
+            builder.remapBackIfSoft();
+        }
+        else {
+            if (!ATTRIBUTE_TARGETS.contains(tokenType)) {
+                builder.error("Wrong attribute target");
+            }
+            builder.advanceLexer(); // target type
+            builder.advanceLexer(); // colon
+        }
+
+        while (!builder.eof()) {
+            PsiBuilder.Marker attMark = parseAttribute(builder, set, flags);
+            if (attMark == null) {
+                builder.error("Attribute name expected");
+                break;
+            }
+
+            if (builder.getTokenType() == COMMA) {
+                builder.advanceLexer();
+            }
+            else if (builder.getTokenType() == RBRACKET) {
+                break;
+            }
+        }
+
+        expect(builder, RBRACKET, "']' expected");
+        mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.ATTRIBUTE_LIST : CSharpElements.ATTRIBUTE_LIST);
     }
 
     private static PsiBuilder.Marker parseAttribute(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
