@@ -30,25 +30,21 @@ import org.jspecify.annotations.Nullable;
  * @author VISTALL
  * @since 04-Nov-17
  */
-public class CS0173 extends CompilerCheck<CSharpConditionalExpressionImpl>
-{
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpConditionalExpressionImpl element)
-	{
-		DotNetExpression trueExpression = element.getTrueExpression();
-		DotNetExpression falseExpression = element.getFalseExpression();
-		if(trueExpression == null || falseExpression == null)
-		{
-			return null;
-		}
+public class CS0173 extends CompilerCheck<CSharpConditionalExpressionImpl> {
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpConditionalExpressionImpl element) {
+        DotNetExpression trueExpression = element.getTrueExpression();
+        DotNetExpression falseExpression = element.getFalseExpression();
+        if (trueExpression == null || falseExpression == null) {
+            return null;
+        }
 
-		DotNetTypeRef typeRef = element.toTypeRef(true);
-		if(typeRef instanceof CSharpNullTypeRef)
-		{
-			return newBuilder(element, formatTypeRef(trueExpression.toTypeRef(true)), formatTypeRef(falseExpression.toTypeRef(true)));
-		}
-		return null;
-	}
+        DotNetTypeRef typeRef = element.toTypeRef(true);
+        if (typeRef instanceof CSharpNullTypeRef) {
+            return newBuilder(element, formatTypeRef(trueExpression.toTypeRef(true)), formatTypeRef(falseExpression.toTypeRef(true)));
+        }
+        return null;
+    }
 }
