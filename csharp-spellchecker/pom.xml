@@ -49,7 +49,18 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>consulo.csharp-csharp.doc.psi.impl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>consulo.dotnet-dotnet.psi.impl</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>consulo.dotnet-dotnet.documentation.api</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>

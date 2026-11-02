@@ -8,6 +8,7 @@ module consulo.csharp.spellchecker {
     requires consulo.dotnet.psi.impl;
 
     requires consulo.csharp.psi.impl;
+    requires consulo.csharp.doc.psi.impl;
 
     requires consulo.language.spellchecker.api;
 }
