@@ -381,7 +381,7 @@ public class CSharpInheritableChecker {
             }
         }
 
-        if (castResolvingInfo != null) {
+        if (castResolvingInfo != null && !CSharpCastSession.get().isInsideUserConversion()) {
             if (topElement instanceof DotNetTypeDeclaration) {
                 CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) topElement, topGenericExtractor,
                     castResolvingInfo);

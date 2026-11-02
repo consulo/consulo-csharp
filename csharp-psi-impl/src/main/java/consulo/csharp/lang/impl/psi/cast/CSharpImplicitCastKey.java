@@ -16,6 +16,7 @@
 package consulo.csharp.lang.impl.psi.cast;
 
 import consulo.csharp.lang.CSharpCastType;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.scope.GlobalSearchScope;
 
@@ -26,6 +27,8 @@ import consulo.language.psi.scope.GlobalSearchScope;
 public record CSharpImplicitCastKey(
     DotNetTypeRef to,
     DotNetTypeRef from,
+    // the type whose conversion operators are looked at - both the source and the target type declare them
+    DotNetTypeDeclaration operatorOwner,
     CSharpCastType castType,
     GlobalSearchScope searchScope
 ) {

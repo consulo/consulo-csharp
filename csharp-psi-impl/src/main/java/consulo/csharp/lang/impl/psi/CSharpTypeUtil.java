@@ -271,6 +271,7 @@ public class CSharpTypeUtil {
         CSharpImplicitCastKey key = new CSharpImplicitCastKey(
             to,
             from,
+            typeDeclaration,
             castResolvingInfo.getFirst(),
             castResolvingInfo.getValue()
         );
@@ -301,23 +302,31 @@ public class CSharpTypeUtil {
             from = temp;
         }
 
-        for (CSharpConversionMethodDeclaration declaration : conversionMethodGroup.getElements()) {
-            // extract here
-            declaration = GenericUnwrapTool.extract(declaration, extractor);
+        // standard conversions only around the operator - not cached, a check outside an operator may use the operators
+        Pair<CSharpCastType, GlobalSearchScope> standardConversion = Pair.create(CSharpCastType.IMPLICIT, resolveScope);
+        session.enterUserConversion();
+        try {
+            for (CSharpConversionMethodDeclaration declaration : conversionMethodGroup.getElements()) {
+                // extract here
+                declaration = GenericUnwrapTool.extract(declaration, extractor);
 
-            if (!CSharpInheritableChecker.create(declaration.getReturnTypeRef(), to).withCastType(CSharpCastType.IMPLICIT, resolveScope).check().isSuccess()) {
-                continue;
-            }
+                if (!CSharpInheritableChecker.isInheritable(declaration.getReturnTypeRef(), to, standardConversion).isSuccess()) {
+                    continue;
+                }
 
-            DotNetTypeRef[] parameters = declaration.getParameterTypeRefs();
-            DotNetTypeRef parameterTypeRef = ArrayUtil2.safeGet(parameters, 0);
-            if (parameterTypeRef == null) {
-                continue;
-            }
+                DotNetTypeRef[] parameters = declaration.getParameterTypeRefs();
+                DotNetTypeRef parameterTypeRef = ArrayUtil2.safeGet(parameters, 0);
+                if (parameterTypeRef == null) {
+                    continue;
+                }
 
-            if (CSharpInheritableChecker.create(parameterTypeRef, from).withCastType(CSharpCastType.IMPLICIT, resolveScope).check().isSuccess()) {
-                return session.recordImplicit(key, new InheritResult(true, declaration), recursionCount);
+                if (CSharpInheritableChecker.isInheritable(parameterTypeRef, from, standardConversion).isSuccess()) {
+                    return session.recordImplicit(key, new InheritResult(true, declaration), recursionCount);
+                }
             }
+        }
+        finally {
+            session.exitUserConversion();
         }
 
         return session.recordImplicit(key, fail(), recursionCount);

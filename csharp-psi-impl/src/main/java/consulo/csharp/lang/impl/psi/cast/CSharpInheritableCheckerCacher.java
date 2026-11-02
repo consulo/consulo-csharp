@@ -33,10 +33,8 @@ import org.jspecify.annotations.Nullable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * @author VISTALL
@@ -51,7 +49,8 @@ public class CSharpInheritableCheckerCacher implements Disposable {
     }
 
     private final Map<CSharpInheritKey, CSharpTypeUtil.InheritResult> myCache = new ConcurrentHashMap<>();
-    private final Map<CSharpImplicitCastKey, CSharpTypeUtil.InheritResult> myImplicitCasts = new ConcurrentSkipListMap<>(Comparator.comparing(Object::toString));
+    // by equals - the text of different keys can be the same: the type declarations of the operators print alike
+    private final Map<CSharpImplicitCastKey, CSharpTypeUtil.InheritResult> myImplicitCasts = new ConcurrentHashMap<>();
 
     @Inject
     public CSharpInheritableCheckerCacher(Project project) {

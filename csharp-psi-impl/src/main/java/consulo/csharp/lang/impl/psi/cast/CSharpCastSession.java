@@ -61,6 +61,24 @@ public class CSharpCastSession implements Closeable {
      */
     private int myRecursionCount;
 
+    private int myUserConversionDepth;
+
+    /**
+     * C# spec 10.5.3: a user-defined conversion is one operator between standard conversions - inside it no other
+     * operator applies
+     */
+    public boolean isInsideUserConversion() {
+        return myUserConversionDepth > 0;
+    }
+
+    public void enterUserConversion() {
+        myUserConversionDepth++;
+    }
+
+    public void exitUserConversion() {
+        myUserConversionDepth--;
+    }
+
     public boolean mark(DotNetTypeRef top, DotNetTypeRef target, @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo) {
         CSharpInheritKey key = new CSharpInheritKey(top, target, castResolvingInfo);
         if (myVisited.add(key)) {
