@@ -45,6 +45,8 @@ public interface DotNetTypes2 {
 
                 String Task = "System.Threading.Tasks.Task";
                 String Task$1 = "System.Threading.Tasks.Task`1";
+                String ValueTask = "System.Threading.Tasks.ValueTask";
+                String ValueTask$1 = "System.Threading.Tasks.ValueTask`1";
             }
         }
 

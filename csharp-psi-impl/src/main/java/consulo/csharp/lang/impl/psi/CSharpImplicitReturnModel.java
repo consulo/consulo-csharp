@@ -45,6 +45,21 @@ public enum CSharpImplicitReturnModel {
         public boolean canHandle(CSharpSimpleLikeMethodAsElement methodAsElement, CSharpReturnStatementImpl returnStatement) {
             return methodAsElement.hasModifier(CSharpModifier.ASYNC);
         }
+
+        @Nullable
+        @RequiredReadAction
+        @Override
+        public DotNetTypeRef extractTypeRefImpl(DotNetTypeRef expectedTypeRef) {
+            DotNetTypeRef typeRef = super.extractTypeRefImpl(expectedTypeRef);
+            if (typeRef != null) {
+                return typeRef;
+            }
+            // async ValueTask / ValueTask<T> - C# 7
+            return extractTypeRefImpl(expectedTypeRef,
+                DotNetTypes2.System.Threading.Tasks.ValueTask$1,
+                DotNetTypes2.System.Threading.Tasks.ValueTask,
+                DotNetTypes.System.Void);
+        }
     },
     YieldEnumerator(DotNetTypes2.System.Collections.Generic.IEnumerator$1, DotNetTypes2.System.Collections.IEnumerator, DotNetTypes.System.Object) {
         @RequiredReadAction
@@ -105,7 +120,16 @@ public enum CSharpImplicitReturnModel {
     @Nullable
     @RequiredReadAction
     public DotNetTypeRef extractTypeRefImpl(DotNetTypeRef expectedTypeRef) {
-        Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, myGenericVmQName);
+        return extractTypeRefImpl(expectedTypeRef, myGenericVmQName, myVmQName, myNoGenericTypeVmQName);
+    }
+
+    @Nullable
+    @RequiredReadAction
+    protected static DotNetTypeRef extractTypeRefImpl(DotNetTypeRef expectedTypeRef,
+                                                      String genericVmQName,
+                                                      String vmQName,
+                                                      String noGenericTypeVmQName) {
+        Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, genericVmQName);
         if (typeInSuper != null) {
             DotNetGenericParameter genericParameter = ArrayUtil2.safeGet(typeInSuper.getFirst().getGenericParameters(), 0);
             if (genericParameter == null) {
@@ -119,9 +143,9 @@ public enum CSharpImplicitReturnModel {
             return extract;
         }
 
-        typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, myVmQName);
+        typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, vmQName);
         if (typeInSuper != null) {
-            return new CSharpTypeRefByQName(expectedTypeRef.getProject(), expectedTypeRef.getResolveScope(), myNoGenericTypeVmQName);
+            return new CSharpTypeRefByQName(expectedTypeRef.getProject(), expectedTypeRef.getResolveScope(), noGenericTypeVmQName);
         }
         return null;
     }
