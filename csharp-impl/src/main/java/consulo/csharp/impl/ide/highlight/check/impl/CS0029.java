@@ -61,376 +61,309 @@ import java.util.List;
  * @author VISTALL
  * @since 15.05.14
  */
-public class CS0029 extends CompilerCheck<PsiElement>
-{
-	private static class CheckTarget
-	{
-		private List<DotNetTypeRef> myExpectedTypeRefs = new ArrayList<>();
+public class CS0029 extends CompilerCheck<PsiElement> {
+    private static class CheckTarget {
+        private List<DotNetTypeRef> myExpectedTypeRefs = new ArrayList<>();
 
-		private DotNetTypeRef myActualTypeRef;
+        private DotNetTypeRef myActualTypeRef;
 
-		private PsiElement myTarget;
+        private PsiElement myTarget;
 
-		private CheckTarget expect(DotNetTypeRef typeRef)
-		{
-			myExpectedTypeRefs.add(typeRef);
-			return this;
-		}
+        private CheckTarget expect(DotNetTypeRef typeRef) {
+            myExpectedTypeRefs.add(typeRef);
+            return this;
+        }
 
-		private CheckTarget actual(DotNetTypeRef typeRef)
-		{
-			myActualTypeRef = typeRef;
-			return this;
-		}
+        private CheckTarget actual(DotNetTypeRef typeRef) {
+            myActualTypeRef = typeRef;
+            return this;
+        }
 
-		private CheckTarget target(PsiElement target)
-		{
-			myTarget = target;
-			return this;
-		}
+        private CheckTarget target(PsiElement target) {
+            myTarget = target;
+            return this;
+        }
 
-		private void check()
-		{
-			if(myExpectedTypeRefs.isEmpty() || myActualTypeRef == null || myTarget == null)
-			{
-				throw new IllegalArgumentException("not full data");
-			}
-		}
-	}
+        private void check() {
+            if (myExpectedTypeRefs.isEmpty() || myActualTypeRef == null || myTarget == null) {
+                throw new IllegalArgumentException("not full data");
+            }
+        }
+    }
 
-	private static final String[] ourNewArrayLengthTypes = new String[]{
-			DotNetTypes.System.Int32,
-			// set int32 as default type for new array length
-			DotNetTypes.System.Byte,
-			DotNetTypes.System.SByte,
-			DotNetTypes.System.Int16,
-			DotNetTypes.System.UInt16,
-			DotNetTypes.System.UInt32,
-			DotNetTypes.System.Int64,
-			DotNetTypes.System.UInt64,
-	};
+    private static final String[] ourNewArrayLengthTypes = new String[]{
+            DotNetTypes.System.Int32,
+            // set int32 as default type for new array length
+            DotNetTypes.System.Byte,
+            DotNetTypes.System.SByte,
+            DotNetTypes.System.Int16,
+            DotNetTypes.System.UInt16,
+            DotNetTypes.System.UInt32,
+            DotNetTypes.System.Int64,
+            DotNetTypes.System.UInt64,
+    };
 
-	private static CheckTarget target(DotNetTypeRef expected, DotNetTypeRef actual, PsiElement target)
-	{
-		return new CheckTarget().expect(expected).actual(actual).target(target);
-	}
+    private static CheckTarget target(DotNetTypeRef expected, DotNetTypeRef actual, PsiElement target) {
+        return new CheckTarget().expect(expected).actual(actual).target(target);
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, PsiElement element)
-	{
-		CheckTarget target = resolve(element);
-		if(target == null)
-		{
-			return null;
-		}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, PsiElement element) {
+        CheckTarget target = resolve(element);
+        if (target == null) {
+            return null;
+        }
 
-		target.check();
+        target.check();
 
-		PsiElement elementToHighlight = target.myTarget;
+        PsiElement elementToHighlight = target.myTarget;
 
-		DotNetTypeRef actualTypeRef = target.myActualTypeRef;
-		if(CSharpTypeUtil.isErrorTypeRef(actualTypeRef))
-		{
-			return null;
-		}
+        DotNetTypeRef actualTypeRef = target.myActualTypeRef;
+        if (CSharpTypeUtil.isErrorTypeRef(actualTypeRef)) {
+            return null;
+        }
 
-		List<DotNetTypeRef> expectedTypeRefs = target.myExpectedTypeRefs;
-		for(DotNetTypeRef expectedTypeRef : expectedTypeRefs)
-		{
-			if(CSharpTypeUtil.isErrorTypeRef(expectedTypeRef))
-			{
-				return null;
-			}
-		}
+        List<DotNetTypeRef> expectedTypeRefs = target.myExpectedTypeRefs;
+        for (DotNetTypeRef expectedTypeRef : expectedTypeRefs) {
+            if (CSharpTypeUtil.isErrorTypeRef(expectedTypeRef)) {
+                return null;
+            }
+        }
 
-		CSharpTypeUtil.InheritResult successResult = null;
-		DotNetTypeRef conversionResultTypeRef = null;
+        CSharpTypeUtil.InheritResult successResult = null;
+        DotNetTypeRef conversionResultTypeRef = null;
 
-		for(DotNetTypeRef expectedTypeRef : expectedTypeRefs)
-		{
-			CSharpTypeUtil.InheritResult result = CSharpInheritableChecker.create(expectedTypeRef, actualTypeRef).withCastType(CSharpCastType.IMPLICIT, element.getResolveScope()).check();
+        for (DotNetTypeRef expectedTypeRef : expectedTypeRefs) {
+            CSharpTypeUtil.InheritResult result = CSharpInheritableChecker.create(expectedTypeRef, actualTypeRef).withCastType(CSharpCastType.IMPLICIT, element.getResolveScope()).check();
 
-			if(result.isConversion())
-			{
-				conversionResultTypeRef = expectedTypeRef;
-			}
+            if (result.isConversion()) {
+                conversionResultTypeRef = expectedTypeRef;
+            }
 
-			if(result.isSuccess())
-			{
-				successResult = result;
-				break;
-			}
-		}
+            if (result.isSuccess()) {
+                successResult = result;
+                break;
+            }
+        }
 
-		if(successResult == null)
-		{
-			DotNetTypeRef firstExpectedTypeRef = ContainerUtil.getFirstItem(expectedTypeRefs);
+        if (successResult == null) {
+            DotNetTypeRef firstExpectedTypeRef = ContainerUtil.getFirstItem(expectedTypeRefs);
 
-			CompilerCheckBuilder builder = newBuilder(elementToHighlight, formatTypeRef(actualTypeRef), formatTypeRef(firstExpectedTypeRef));
+            CompilerCheckBuilder builder = newBuilder(elementToHighlight, formatTypeRef(actualTypeRef), formatTypeRef(firstExpectedTypeRef));
 
-			if(elementToHighlight instanceof DotNetExpression)
-			{
-				builder.withQuickFix(new CastExpressionToTypeRef((DotNetExpression) elementToHighlight, firstExpectedTypeRef));
-			}
+            if (elementToHighlight instanceof DotNetExpression) {
+                builder.withQuickFix(new CastExpressionToTypeRef((DotNetExpression) elementToHighlight, firstExpectedTypeRef));
+            }
 
-			if(element instanceof DotNetVariable)
-			{
-				builder.withQuickFix(new ChangeVariableToTypeRefFix((DotNetVariable) element, actualTypeRef));
-			}
+            if (element instanceof DotNetVariable) {
+                builder.withQuickFix(new ChangeVariableToTypeRefFix((DotNetVariable) element, actualTypeRef));
+            }
 
-			if(element instanceof CSharpReturnStatementImpl)
-			{
-				CSharpSimpleLikeMethodAsElement methodElement = PsiTreeUtil.getParentOfType(element, CSharpSimpleLikeMethodAsElement.class);
-				if(methodElement instanceof CSharpConversionMethodDeclaration || methodElement instanceof CSharpMethodDeclaration)
-				{
-					builder.withQuickFix(new ChangeReturnToTypeRefFix((DotNetLikeMethodDeclaration) methodElement, actualTypeRef));
-				}
+            if (element instanceof CSharpReturnStatementImpl) {
+                CSharpSimpleLikeMethodAsElement methodElement = PsiTreeUtil.getParentOfType(element, CSharpSimpleLikeMethodAsElement.class);
+                if (methodElement instanceof CSharpConversionMethodDeclaration || methodElement instanceof CSharpMethodDeclaration) {
+                    builder.withQuickFix(new ChangeReturnToTypeRefFix((DotNetLikeMethodDeclaration) methodElement, actualTypeRef));
+                }
 
-				if(CSharpModuleUtil.findLanguageVersion(element).isAtLeast(CSharpLanguageVersion._4_0))
-				{
-					DotNetTypeResolveResult typeResolveResult = firstExpectedTypeRef.resolve();
-					PsiElement firstElement = typeResolveResult.getElement();
-					if(firstElement instanceof CSharpTypeDeclaration && DotNetTypes.System.Threading.Tasks.Task$1.equals(((CSharpTypeDeclaration) firstElement).getVmQName()))
-					{
-						DotNetGenericParameter[] genericParameters = ((CSharpTypeDeclaration) firstElement).getGenericParameters();
-						DotNetTypeRef genericParameterTypeRef = typeResolveResult.getGenericExtractor().extract(genericParameters[0]);
-						if(genericParameterTypeRef != null && CSharpTypeUtil.isInheritable(genericParameterTypeRef, actualTypeRef))
-						{
-							builder.withQuickFix(new AddModifierFix(CSharpModifier.ASYNC, methodElement));
-						}
-					}
-				}
-			}
-			return builder;
-		}
-		else if(conversionResultTypeRef != null)
-		{
-			LocalizeValue text = CSharpErrorLocalize.impicitCastFrom0To1(CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(actualTypeRef), CSharpTypeRefPresentationUtil
-					.buildTextWithKeywordAndNull(conversionResultTypeRef));
+                if (CSharpModuleUtil.findLanguageVersion(element).isAtLeast(CSharpLanguageVersion._4_0)) {
+                    DotNetTypeResolveResult typeResolveResult = firstExpectedTypeRef.resolve();
+                    PsiElement firstElement = typeResolveResult.getElement();
+                    if (firstElement instanceof CSharpTypeDeclaration && DotNetTypes.System.Threading.Tasks.Task$1.equals(((CSharpTypeDeclaration) firstElement).getVmQName())) {
+                        DotNetGenericParameter[] genericParameters = ((CSharpTypeDeclaration) firstElement).getGenericParameters();
+                        DotNetTypeRef genericParameterTypeRef = typeResolveResult.getGenericExtractor().extract(genericParameters[0]);
+                        if (genericParameterTypeRef != null && CSharpTypeUtil.isInheritable(genericParameterTypeRef, actualTypeRef)) {
+                            builder.withQuickFix(new AddModifierFix(CSharpModifier.ASYNC, methodElement));
+                        }
+                    }
+                }
+            }
+            return builder;
+        }
+        else if (conversionResultTypeRef != null) {
+            LocalizeValue text = CSharpErrorLocalize.impicitCastFrom0To1(CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(actualTypeRef), CSharpTypeRefPresentationUtil
+                    .buildTextWithKeywordAndNull(conversionResultTypeRef));
 
-			return newBuilder(elementToHighlight).withText(text).withHighlightInfoType(HighlightInfoType.INFORMATION).withTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
-		}
+            return newBuilder(elementToHighlight).withText(text).withHighlightInfoType(HighlightInfoType.INFORMATION).withTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@RequiredReadAction
-	private CheckTarget resolve(PsiElement element)
-	{
-		if(element instanceof DotNetVariable)
-		{
-			DotNetExpression initializer = ((DotNetVariable) element).getInitializer();
-			if(initializer == null)
-			{
-				return null;
-			}
-			DotNetTypeRef variableTypRef = ((DotNetVariable) element).toTypeRef(false);
-			if(variableTypRef == DotNetTypeRef.AUTO_TYPE)
-			{
-				return null;
-			}
-			DotNetTypeRef initializerTypeRef = initializer.toTypeRef(true);
+    @RequiredReadAction
+    private CheckTarget resolve(PsiElement element) {
+        if (element instanceof DotNetVariable) {
+            DotNetExpression initializer = ((DotNetVariable) element).getInitializer();
+            if (initializer == null) {
+                return null;
+            }
+            DotNetTypeRef variableTypRef = ((DotNetVariable) element).toTypeRef(false);
+            if (variableTypRef == DotNetTypeRef.AUTO_TYPE) {
+                return null;
+            }
+            DotNetTypeRef initializerTypeRef = initializer.toTypeRef(true);
 
-			PsiElement parent = element.getParent();
-			if(parent instanceof CSharpFixedStatementImpl)
-			{
-				if(initializerTypeRef instanceof CSharpArrayTypeRef)
-				{
-					if(((CSharpArrayTypeRef) initializerTypeRef).getDimensions() == 0)
-					{
-						DotNetTypeRef innerTypeRef = ((CSharpArrayTypeRef) initializerTypeRef).getInnerTypeRef();
-						initializerTypeRef = new CSharpPointerTypeRef(innerTypeRef);
-					}
-				}
-			}
-			return target(variableTypRef, initializerTypeRef, initializer);
-		}
-		else if(element instanceof DotNetExpression && element.getParent() instanceof CSharpMethodDeclaration)
-		{
-			CSharpMethodDeclaration parent = (CSharpMethodDeclaration) element.getParent();
-			assert parent.getCodeBlock().getElement() == element;
+            PsiElement parent = element.getParent();
+            if (parent instanceof CSharpFixedStatementImpl) {
+                if (initializerTypeRef instanceof CSharpArrayTypeRef) {
+                    if (((CSharpArrayTypeRef) initializerTypeRef).getDimensions() == 0) {
+                        DotNetTypeRef innerTypeRef = ((CSharpArrayTypeRef) initializerTypeRef).getInnerTypeRef();
+                        initializerTypeRef = new CSharpPointerTypeRef(innerTypeRef);
+                    }
+                }
+            }
+            return target(variableTypRef, initializerTypeRef, initializer);
+        }
+        else if (element instanceof DotNetExpression && element.getParent() instanceof CSharpMethodDeclaration) {
+            CSharpMethodDeclaration parent = (CSharpMethodDeclaration) element.getParent();
+            assert parent.getCodeBlock().getElement() == element;
 
-			CSharpImplicitReturnModel model = CSharpImplicitReturnModel.None;
-			if(parent.hasModifier(CSharpModifier.ASYNC))
-			{
-				model = CSharpImplicitReturnModel.Async;
-			}
+            CSharpImplicitReturnModel model = CSharpImplicitReturnModel.None;
+            if (parent.hasModifier(CSharpModifier.ASYNC)) {
+                model = CSharpImplicitReturnModel.Async;
+            }
 
-			DotNetTypeRef returnTypeRef = model.extractTypeRef(parent.getReturnTypeRef(), element);
-			return target(returnTypeRef, ((DotNetExpression) element).toTypeRef(true), element);
-		}
-		else if(element instanceof CSharpAssignmentExpressionImpl)
-		{
-			CSharpOperatorReferenceImpl operatorElement = ((CSharpAssignmentExpressionImpl) element).getOperatorElement();
-			if(operatorElement.getOperatorElementType() != CSharpTokens.EQ)
-			{
-				return null;
-			}
-			DotNetExpression[] expressions = ((CSharpAssignmentExpressionImpl) element).getParameterExpressions();
-			if(expressions.length != 2)
-			{
-				return null;
-			}
-			return target(expressions[0].toTypeRef(true), expressions[1].toTypeRef(true), expressions[1]);
-		}
-		else if(element instanceof CSharpWhileStatementImpl)
-		{
-			DotNetExpression conditionExpression = ((CSharpWhileStatementImpl) element).getConditionExpression();
-			if(conditionExpression == null)
-			{
-				return null;
-			}
-			return target(new CSharpTypeRefByQName(element, DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
-		}
-		else if(element instanceof CSharpDoWhileStatementImpl)
-		{
-			DotNetExpression conditionExpression = ((CSharpDoWhileStatementImpl) element).getConditionExpression();
-			if(conditionExpression == null)
-			{
-				return null;
-			}
-			return target(new CSharpTypeRefByQName(element, DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
-		}
-		else if(element instanceof CSharpIfStatementImpl)
-		{
-			DotNetExpression conditionExpression = ((CSharpIfStatementImpl) element).getConditionExpression();
-			if(conditionExpression == null)
-			{
-				return null;
-			}
-			return target(new CSharpTypeRefByQName(element, DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
-		}
-		else if(element instanceof CSharpRefTypeExpressionImpl)
-		{
-			DotNetExpression expression = ((CSharpRefTypeExpressionImpl) element).getExpression();
-			if(expression == null)
-			{
-				return null;
-			}
-			return target(new CSharpTypeRefByQName(element, DotNetTypes.System.TypedReference), expression.toTypeRef(true), expression);
-		}
-		else if(element instanceof CSharpCaseOrDefaultStatementImpl)
-		{
-			DotNetExpression expression = ((CSharpCaseOrDefaultStatementImpl) element).getExpression();
-			if(expression == null)
-			{
-				return null;
-			}
+            DotNetTypeRef returnTypeRef = model.extractTypeRef(parent.getReturnTypeRef(), element);
+            return target(returnTypeRef, ((DotNetExpression) element).toTypeRef(true), element);
+        }
+        else if (element instanceof CSharpAssignmentExpressionImpl) {
+            CSharpOperatorReferenceImpl operatorElement = ((CSharpAssignmentExpressionImpl) element).getOperatorElement();
+            if (operatorElement.getOperatorElementType() != CSharpTokens.EQ) {
+                return null;
+            }
+            DotNetExpression[] expressions = ((CSharpAssignmentExpressionImpl) element).getParameterExpressions();
+            if (expressions.length != 2) {
+                return null;
+            }
+            return target(expressions[0].toTypeRef(true), expressions[1].toTypeRef(true), expressions[1]);
+        }
+        else if (element instanceof CSharpWhileStatementImpl) {
+            DotNetExpression conditionExpression = ((CSharpWhileStatementImpl) element).getConditionExpression();
+            if (conditionExpression == null) {
+                return null;
+            }
+            return target(new CSharpTypeRefByQName(element, DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
+        }
+        else if (element instanceof CSharpDoWhileStatementImpl) {
+            DotNetExpression conditionExpression = ((CSharpDoWhileStatementImpl) element).getConditionExpression();
+            if (conditionExpression == null) {
+                return null;
+            }
+            return target(new CSharpTypeRefByQName(element, DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
+        }
+        else if (element instanceof CSharpIfStatementImpl) {
+            DotNetExpression conditionExpression = ((CSharpIfStatementImpl) element).getConditionExpression();
+            if (conditionExpression == null) {
+                return null;
+            }
+            return target(new CSharpTypeRefByQName(element, DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
+        }
+        else if (element instanceof CSharpRefTypeExpressionImpl) {
+            DotNetExpression expression = ((CSharpRefTypeExpressionImpl) element).getExpression();
+            if (expression == null) {
+                return null;
+            }
+            return target(new CSharpTypeRefByQName(element, DotNetTypes.System.TypedReference), expression.toTypeRef(true), expression);
+        }
+        else if (element instanceof CSharpCaseOrDefaultStatementImpl) {
+            DotNetExpression expression = ((CSharpCaseOrDefaultStatementImpl) element).getExpression();
+            if (expression == null) {
+                return null;
+            }
 
-			PsiElement parent = element.getParent().getParent();
-			if(!(parent instanceof CSharpSwitchStatementImpl))
-			{
-				return null;
-			}
-			DotNetExpression switchExpression = ((CSharpSwitchStatementImpl) parent).getExpression();
-			if(switchExpression == null)
-			{
-				return null;
-			}
-			return target(switchExpression.toTypeRef(true), expression.toTypeRef(true), expression);
-		}
-		else if(element instanceof CSharpRefValueExpressionImpl)
-		{
-			DotNetExpression expression = ((CSharpRefValueExpressionImpl) element).getExpression();
-			if(expression == null)
-			{
-				return null;
-			}
-			return target(new CSharpTypeRefByQName(element, DotNetTypes.System.TypedReference), expression.toTypeRef(true), expression);
-		}
-		else if(element instanceof CSharpLambdaExpressionImpl)
-		{
-			CSharpLambdaExpressionImpl lambdaExpression = (CSharpLambdaExpressionImpl) element;
-			DotNetTypeRef typeRefOfLambda = lambdaExpression.toTypeRef(true);
-			if(typeRefOfLambda == DotNetTypeRef.ERROR_TYPE)
-			{
-				return null;
-			}
+            PsiElement parent = element.getParent().getParent();
+            if (!(parent instanceof CSharpSwitchStatementImpl)) {
+                return null;
+            }
+            DotNetExpression switchExpression = ((CSharpSwitchStatementImpl) parent).getExpression();
+            if (switchExpression == null) {
+                return null;
+            }
+            return target(switchExpression.toTypeRef(true), expression.toTypeRef(true), expression);
+        }
+        else if (element instanceof CSharpRefValueExpressionImpl) {
+            DotNetExpression expression = ((CSharpRefValueExpressionImpl) element).getExpression();
+            if (expression == null) {
+                return null;
+            }
+            return target(new CSharpTypeRefByQName(element, DotNetTypes.System.TypedReference), expression.toTypeRef(true), expression);
+        }
+        else if (element instanceof CSharpLambdaExpressionImpl) {
+            CSharpLambdaExpressionImpl lambdaExpression = (CSharpLambdaExpressionImpl) element;
+            DotNetTypeRef typeRefOfLambda = lambdaExpression.toTypeRef(true);
+            if (typeRefOfLambda == DotNetTypeRef.ERROR_TYPE) {
+                return null;
+            }
 
-			DotNetTypeResolveResult typeResolveResult = typeRefOfLambda.resolve();
-			if(!(typeResolveResult instanceof CSharpLambdaResolveResult))
-			{
-				return null;
-			}
-			DotNetExpression singleExpression = lambdaExpression.getCodeBlock().asExpression();
-			if(singleExpression != null)
-			{
-				DotNetTypeRef returnTypeRef = ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
+            DotNetTypeResolveResult typeResolveResult = typeRefOfLambda.resolve();
+            if (!(typeResolveResult instanceof CSharpLambdaResolveResult)) {
+                return null;
+            }
+            DotNetExpression singleExpression = lambdaExpression.getCodeBlock().asExpression();
+            if (singleExpression != null) {
+                DotNetTypeRef returnTypeRef = ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
 
-				CSharpImplicitReturnModel model = CSharpImplicitReturnModel.None;
-				if(lambdaExpression.hasModifier(CSharpModifier.ASYNC))
-				{
-					model = CSharpImplicitReturnModel.Async;
-				}
+                CSharpImplicitReturnModel model = CSharpImplicitReturnModel.None;
+                if (lambdaExpression.hasModifier(CSharpModifier.ASYNC)) {
+                    model = CSharpImplicitReturnModel.Async;
+                }
 
-				returnTypeRef = model.extractTypeRef(returnTypeRef, element);
+                returnTypeRef = model.extractTypeRef(returnTypeRef, element);
 
-				// void type allow any type if used expression body
-				if(DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, DotNetTypes.System.Void))
-				{
-					return null;
-				}
-				return target(returnTypeRef, ((DotNetExpression) singleExpression).toTypeRef(true), singleExpression);
-			}
-		}
-		else if(element instanceof CSharpNamedFieldOrPropertySetImpl)
-		{
-			CSharpReferenceExpression nameElement = ((CSharpNamedFieldOrPropertySetImpl) element).getNameElement();
-			DotNetExpression valueExpression = ((CSharpNamedFieldOrPropertySetImpl) element).getValueExpression();
-			if(valueExpression == null)
-			{
-				return null;
-			}
-			return target(nameElement.toTypeRef(true), valueExpression.toTypeRef(true), valueExpression);
-		}
-		else if(element instanceof CSharpReturnStatementImpl)
-		{
-			CSharpSimpleLikeMethodAsElement pseudoMethod = PsiTreeUtil.getParentOfType(element, CSharpSimpleLikeMethodAsElement.class);
-			if(pseudoMethod == null)
-			{
-				return null;
-			}
+                // void type allow any type if used expression body
+                if (DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, DotNetTypes.System.Void)) {
+                    return null;
+                }
+                return target(returnTypeRef, ((DotNetExpression) singleExpression).toTypeRef(true), singleExpression);
+            }
+        }
+        else if (element instanceof CSharpNamedFieldOrPropertySetImpl) {
+            CSharpReferenceExpression nameElement = ((CSharpNamedFieldOrPropertySetImpl) element).getNameElement();
+            DotNetExpression valueExpression = ((CSharpNamedFieldOrPropertySetImpl) element).getValueExpression();
+            if (valueExpression == null) {
+                return null;
+            }
+            return target(nameElement.toTypeRef(true), valueExpression.toTypeRef(true), valueExpression);
+        }
+        else if (element instanceof CSharpReturnStatementImpl) {
+            CSharpSimpleLikeMethodAsElement pseudoMethod = PsiTreeUtil.getParentOfType(element, CSharpSimpleLikeMethodAsElement.class);
+            if (pseudoMethod == null) {
+                return null;
+            }
 
-			DotNetTypeRef expected = pseudoMethod.getReturnTypeRef();
-			if(expected == DotNetTypeRef.UNKNOWN_TYPE)
-			{
-				return null;
-			}
+            DotNetTypeRef expected = pseudoMethod.getReturnTypeRef();
+            if (expected == DotNetTypeRef.UNKNOWN_TYPE) {
+                return null;
+            }
 
-			DotNetTypeRef actual;
-			DotNetExpression expression = ((CSharpReturnStatementImpl) element).getExpression();
-			if(expression == null)
-			{
-				actual = new CSharpTypeRefByQName(element, DotNetTypes.System.Void);
-			}
-			else
-			{
-				actual = expression.toTypeRef(true);
-			}
+            DotNetTypeRef actual;
+            DotNetExpression expression = ((CSharpReturnStatementImpl) element).getExpression();
+            if (expression == null) {
+                actual = new CSharpTypeRefByQName(element, DotNetTypes.System.Void);
+            }
+            else {
+                actual = expression.toTypeRef(true);
+            }
 
-			CSharpImplicitReturnModel implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel((CSharpReturnStatementImpl) element, pseudoMethod);
-			DotNetTypeRef typeRef = implicitReturnModel.extractTypeRef(expected, element);
-			if(typeRef != DotNetTypeRef.ERROR_TYPE)
-			{
-				expected = typeRef;
-			}
-			return target(expected, actual, ObjectUtil.notNull(expression, element));
-		}
+            CSharpImplicitReturnModel implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel((CSharpReturnStatementImpl) element, pseudoMethod);
+            DotNetTypeRef typeRef = implicitReturnModel.extractTypeRef(expected, element);
+            if (typeRef != DotNetTypeRef.ERROR_TYPE) {
+                expected = typeRef;
+            }
+            return target(expected, actual, ObjectUtil.notNull(expression, element));
+        }
 
-		PsiElement parent = element.getParent();
-		if(element instanceof DotNetExpression && parent instanceof CSharpNewArrayLengthImpl)
-		{
-			CheckTarget target = new CheckTarget();
-			target.target(element);
-			target.actual(((DotNetExpression) element).toTypeRef(true));
-			for(String newArrayLengthType : ourNewArrayLengthTypes)
-			{
-				target.expect(new CSharpTypeRefByQName(element, newArrayLengthType));
-			}
-			return target;
-		}
-		return null;
-	}
+        PsiElement parent = element.getParent();
+        if (element instanceof DotNetExpression && parent instanceof CSharpNewArrayLengthImpl) {
+            CheckTarget target = new CheckTarget();
+            target.target(element);
+            target.actual(((DotNetExpression) element).toTypeRef(true));
+            for (String newArrayLengthType : ourNewArrayLengthTypes) {
+                target.expect(new CSharpTypeRefByQName(element, newArrayLengthType));
+            }
+            return target;
+        }
+        return null;
+    }
 }
