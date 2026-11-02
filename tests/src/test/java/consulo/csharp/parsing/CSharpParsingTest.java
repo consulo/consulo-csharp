@@ -166,6 +166,12 @@ public class CSharpParsingTest extends CSharpBaseParsingTest {
         doTest(context, null);
     }
 
+    @SetLanguageVersion(version = CSharpLanguageVersion._9_0)
+    @Test
+    public void testTopLevelStatements(Context context) throws Exception {
+        doTest(context, null);
+    }
+
     @SetLanguageVersion(version = CSharpLanguageVersion._6_0)
     @Test
     public void testGlobalAttributes(Context context) throws Exception {

@@ -16,6 +16,8 @@
 
 package consulo.csharp.lang.impl.parser.decl;
 
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.lang.impl.parser.stmt.StatementParsing;
 import consulo.csharp.lang.impl.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.impl.parser.ModifierSet;
 import consulo.csharp.lang.impl.parser.SharedParsingHelpers;
@@ -83,10 +85,76 @@ public class DeclarationParsing extends SharedParsingHelpers {
                     continue;
                 }
 
+                if (root && builder.getVersion().isAtLeast(CSharpLanguageVersion._9_0) && isTopLevelStatementStart(builder)) {
+                    parseTopLevelStatements(builder);
+                    continue;
+                }
+
                 parse(builder, globalAttributes);
             }
         }
     }
+
+    /**
+     * C# 9 top-level statements - a run of them is one {@link CSharpElements#TOP_LEVEL_STATEMENTS}, the body of the
+     * implicit entry point (Roslyn GlobalStatementSyntax)
+     */
+    private static void parseTopLevelStatements(CSharpBuilderWrapper builder) {
+        PsiBuilder.Marker statements = builder.mark();
+        // await is an expression there
+        ModifierSet set = ModifierSet.EMPTY.add(CSharpSoftTokens.ASYNC_KEYWORD);
+        while (!builder.eof() && isTopLevelStatementStart(builder)) {
+            int offset = builder.getCurrentOffset();
+            if (StatementParsing.parse(builder, set) == null) {
+                builder.error("Statement expected");
+            }
+            if (builder.getCurrentOffset() == offset) {
+                builder.advanceLexer();
+            }
+            builder.skipNonInterestItems();
+        }
+        statements.done(TOP_LEVEL_STATEMENTS);
+    }
+
+    /**
+     * Not a namespace, a type, a using directive or an attributed / accessible member - they are declarations at the
+     * file root as before C# 9
+     */
+    private static boolean isTopLevelStatementStart(CSharpBuilderWrapper builder) {
+        IElementType tokenType = builder.getTokenType();
+        if (tokenType == null || tokenType == NAMESPACE_KEYWORD || tokenType == LBRACKET || tokenType == RBRACE || tokenType == DELEGATE_KEYWORD
+            || tokenType == EXTERN_KEYWORD || CSharpTokenSets.TYPE_DECLARATION_START.contains(tokenType)) {
+            return false;
+        }
+
+        if (tokenType == USING_KEYWORD) {
+            // using (...) and using var x = ... - not using System; using static ...; using A = B;
+            IElementType next = builder.lookAhead(1);
+            return next == LPAR || next == CSharpTokens.IDENTIFIER && builder.lookAhead(2) == CSharpTokens.IDENTIFIER;
+        }
+
+        if (tokenType == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == USING_KEYWORD && "global".equals(builder.getTokenText())) {
+            return false;
+        }
+
+        int i = 0;
+        IElementType current = tokenType;
+        while (MODIFIERS.contains(current)) {
+            if (DECLARATION_ONLY_MODIFIERS.contains(current)) {
+                return false;
+            }
+            current = builder.lookAhead(++i);
+        }
+
+        // partial class, static partial class
+        if (current == CSharpTokens.IDENTIFIER && CSharpTokenSets.TYPE_DECLARATION_START.contains(builder.lookAhead(i + 1))) {
+            return false;
+        }
+        return !(i > 0 && (CSharpTokenSets.TYPE_DECLARATION_START.contains(current) || current == DELEGATE_KEYWORD || current == EVENT_KEYWORD));
+    }
+
+    private static final TokenSet DECLARATION_ONLY_MODIFIERS = TokenSet.create(PUBLIC_KEYWORD, PRIVATE_KEYWORD, PROTECTED_KEYWORD, INTERNAL_KEYWORD,
+        ABSTRACT_KEYWORD, SEALED_KEYWORD, OVERRIDE_KEYWORD, VIRTUAL_KEYWORD, VOLATILE_KEYWORD, READONLY_KEYWORD);
 
     /**
      * @param namespaceLevel the file or a namespace body - attributes and modifiers with no member after them are an

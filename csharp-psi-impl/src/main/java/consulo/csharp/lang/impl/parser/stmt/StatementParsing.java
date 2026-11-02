@@ -131,6 +131,16 @@ public class StatementParsing extends SharedParsingHelpers {
 
             return parseLabelOrVariableOrExpression(tokenType, builder, marker, set);
         }
+        else if (tokenType == STATIC_KEYWORD) {
+            // static int Local() => 1; - C# 8 static local function
+            PsiBuilder.Marker methodMarker = parseLocalMethodDeclaration(builder, marker, false);
+            if (methodMarker != null) {
+                return methodMarker;
+            }
+            builder.error("Local function expected");
+            builder.advanceLexer();
+            marker.done(EMPTY_STATEMENT);
+        }
         else if (tokenType == UNSAFE_KEYWORD) {
             PsiBuilder.Marker methodMarker = parseLocalMethodDeclaration(builder, marker, false);
             if (methodMarker != null) {
@@ -232,8 +242,8 @@ public class StatementParsing extends SharedParsingHelpers {
         ModifierSet modifierSet = ModifierSet.EMPTY;
 
         IElementType tokenType = builder.getTokenType();
-        if (tokenType == UNSAFE_KEYWORD || tokenType == ASYNC_KEYWORD) {
-            Pair<PsiBuilder.Marker, ModifierSet> pair = parseModifierList(builder, NONE);
+        if (tokenType == UNSAFE_KEYWORD || tokenType == ASYNC_KEYWORD || tokenType == STATIC_KEYWORD) {
+            Pair<PsiBuilder.Marker, ModifierSet> pair = parseWithSoftElements(b -> parseModifierList(b, NONE), builder, ASYNC_KEYWORD);
             modifierSet = pair.getSecond();
         }
 

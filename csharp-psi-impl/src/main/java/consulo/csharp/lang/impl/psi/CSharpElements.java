@@ -209,6 +209,8 @@ public interface CSharpElements {
 
     IElementType BLOCK_STATEMENT = new CompositeElementTypeAsPsiFactory("BLOCK_STATEMENT", CSharpLanguage.INSTANCE, CSharpBlockStatementImpl::new);
 
+    IElementType TOP_LEVEL_STATEMENTS = new CompositeElementTypeAsPsiFactory("TOP_LEVEL_STATEMENTS", CSharpLanguage.INSTANCE, CSharpTopLevelStatementsImpl::new);
+
     IElementType INDEX_ACCESS_EXPRESSION = new CompositeElementTypeAsPsiFactory("ARRAY_ACCESS_EXPRESSION", CSharpLanguage.INSTANCE, CSharpIndexAccessExpressionImpl::new);
 
     IElementType POSTFIX_EXPRESSION = new CompositeElementTypeAsPsiFactory("POSTFIX_EXPRESSION", CSharpLanguage.INSTANCE, CSharpPostfixExpressionImpl::new);
