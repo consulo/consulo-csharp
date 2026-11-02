@@ -24,6 +24,7 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
+import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
@@ -85,6 +86,8 @@ public class CastExpressionToTypeRef implements SyntheticIntentionAction {
 
         DotNetExpression expression = CSharpFileFactory.createExpression(project, "(" + typeText + ") " + element.getText());
 
-        element.replace(expression);
+        WriteCommandAction.runWriteCommandAction(project, () -> {
+            element.replace(expression);
+        });
     }
 }
