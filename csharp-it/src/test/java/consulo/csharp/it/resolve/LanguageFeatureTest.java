@@ -17,14 +17,20 @@ package consulo.csharp.it.resolve;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.ReadAction;
+import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
+import consulo.csharp.impl.ide.highlight.check.CSharpCompilerChecks;
+import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.impl.psi.source.CSharpConstantExpressionImpl;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.it.HeadlessProjectExtension;
 import consulo.it.HeadlessProjects;
+import consulo.language.editor.rawHighlight.HighlightInfoType;
 import consulo.language.psi.PsiComment;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiErrorElement;
@@ -53,7 +59,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <ul>
  * <li>{@code /*type:T*&#47;} - the type of the expression starting there, or of the variable named there</li>
  * <li>{@code /*value:V*&#47;} - the value of the literal starting there</li>
+ * <li>{@code /*error:CS0000*&#47;} - the compiler check reporting an error there; no other check may report one</li>
  * </ul>
+ * A {@code // sdk:NET_10} comment limits the file to the listed {@link MockSdk}s.
  *
  * @author VISTALL
  */
@@ -61,7 +69,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LanguageFeatureTest {
     private static final String DIRECTORY = "language";
 
-    private static final Pattern MARKER = Pattern.compile("/\\*(type|value):(.+)\\*/");
+    private static final Pattern SDK_MARKER = Pattern.compile("// sdk:([A-Z0-9_,]+)");
+
+    private static final Pattern MARKER = Pattern.compile("/\\*(type|value|error):(.+)\\*/");
 
     static Stream<Arguments> sources() throws Exception {
         List<String> files;
@@ -71,8 +81,12 @@ public class LanguageFeatureTest {
 
         List<Arguments> arguments = new ArrayList<>();
         for (String file : files) {
+            String source = Files.readString(CSharpResolveTesting.resource(DIRECTORY + "/" + file), StandardCharsets.UTF_8);
+            Matcher sdks = SDK_MARKER.matcher(source);
             for (MockSdk sdk : MockSdk.values()) {
-                arguments.add(Arguments.of(file, sdk));
+                if (!sdks.find(0) || List.of(sdks.group(1).split(",")).contains(sdk.name())) {
+                    arguments.add(Arguments.of(file, sdk));
+                }
             }
         }
         return arguments.stream();
@@ -113,11 +127,45 @@ public class LanguageFeatureTest {
 
                 String kind = matcher.group(1);
                 String prefix = kind + ":" + leaf.getText() + "@" + leaf.getTextOffset() + " ";
+                if ("error".equals(kind)) {
+                    expected.add(prefix + matcher.group(2));
+                    continue;
+                }
                 expected.add(prefix + matcher.group(2));
                 actual.add(prefix + ("type".equals(kind) ? typeAt(leaf) : valueAt(leaf)));
             }
+            actual.addAll(compilerErrors(file));
+
+            expected.sort(null);
+            actual.sort(null);
             assertThat(actual).isEqualTo(expected);
         });
+    }
+
+    /**
+     * The compiler checks reporting an error, as {@code error:<leaf>@<offset> <check>} at the start of their range
+     */
+    @RequiredReadAction
+    private static List<String> compilerErrors(PsiFile file) {
+        CSharpHighlightContext context = new CSharpHighlightContext(file);
+        CSharpLanguageVersion languageVersion = context.getLanguageVersion();
+
+        List<String> errors = new ArrayList<>();
+        for (DotNetElement element : PsiTreeUtil.findChildrenOfType(file, DotNetElement.class)) {
+            for (CSharpCompilerChecks check : CSharpCompilerChecks.VALUES) {
+                if (languageVersion.ordinal() < check.getLanguageVersion().ordinal() || !check.getTargetClass().isAssignableFrom(element.getClass())) {
+                    continue;
+                }
+
+                for (CompilerCheck.HighlightInfoFactory result : check.check(languageVersion, context, element)) {
+                    if (result instanceof CompilerCheck.CompilerCheckBuilder builder && builder.getHighlightInfoType() == HighlightInfoType.ERROR) {
+                        PsiElement leaf = file.findElementAt(builder.getTextRange().getStartOffset());
+                        errors.add("error:" + (leaf == null ? "" : leaf.getText()) + "@" + builder.getTextRange().getStartOffset() + " " + check.name());
+                    }
+                }
+            }
+        }
+        return errors;
     }
 
     @RequiredReadAction

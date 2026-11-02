@@ -71,14 +71,21 @@ public class CSharpInheritableCheckerCacher implements Disposable {
             return result;
         }
 
+        boolean cacheable;
         try (CSharpCastSession session = CSharpCastSession.start(myImplicitCasts)) {
+            int recursionCount = session.getRecursionCount();
+
             result = CSharpInheritableChecker.isInheritable(key.top(), key.target(), key.castResolvingInfo());
+
+            cacheable = session.isOutermost() || session.getRecursionCount() == recursionCount;
 
             session.storeImplicit(myImplicitCasts);
         }
 
-        // we can't use computeIfAbsent since we can call store data in recursive mode, which ConcurrentHashMap not allow
-        myCache.putIfAbsent(key, result);
+        if (cacheable) {
+            // we can't use computeIfAbsent since we can call store data in recursive mode, which ConcurrentHashMap not allow
+            myCache.putIfAbsent(key, result);
+        }
         return result;
     }
 

@@ -282,6 +282,8 @@ public class CSharpTypeUtil {
             return oldResult;
         }
 
+        int recursionCount = session.getRecursionCount();
+
         CSharpCastType castType = castResolvingInfo.getFirst();
         GlobalSearchScope resolveScope = castResolvingInfo.getSecond();
 
@@ -289,7 +291,7 @@ public class CSharpTypeUtil {
 
         CSharpElementGroup<CSharpConversionMethodDeclaration> conversionMethodGroup = resolveContext.findConversionMethodGroup(castType, true);
         if (conversionMethodGroup == null) {
-            return session.recordImplicit(key, fail());
+            return session.recordImplicit(key, fail(), recursionCount);
         }
 
         // we need swap to vs from for explicit
@@ -314,11 +316,11 @@ public class CSharpTypeUtil {
             }
 
             if (CSharpInheritableChecker.create(parameterTypeRef, from).withCastType(CSharpCastType.IMPLICIT, resolveScope).check().isSuccess()) {
-                return session.recordImplicit(key, new InheritResult(true, declaration));
+                return session.recordImplicit(key, new InheritResult(true, declaration), recursionCount);
             }
         }
 
-        return session.recordImplicit(key, fail());
+        return session.recordImplicit(key, fail(), recursionCount);
     }
 
     @RequiredReadAction

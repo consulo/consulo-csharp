@@ -33,9 +33,14 @@ import java.util.*;
 public class CSharpCastSession implements Closeable {
     private static final ThreadLocal<CSharpCastSession> ourSession = ThreadLocal.withInitial(CSharpCastSession::new);
 
+    /**
+     * Starts a session, or joins the session of an outer check - closed by the outermost one only
+     */
     public static CSharpCastSession start(Map<CSharpImplicitCastKey, CSharpTypeUtil.InheritResult> implicitCast) {
         CSharpCastSession session = get();
-        session.myServiceImplicitMap = Collections.unmodifiableMap(implicitCast);
+        if (session.myDepth++ == 0) {
+            session.myServiceImplicitMap = Collections.unmodifiableMap(implicitCast);
+        }
         return session;
     }
 
@@ -49,13 +54,42 @@ public class CSharpCastSession implements Closeable {
 
     private Map<CSharpImplicitCastKey, CSharpTypeUtil.InheritResult> myNewImplicitMap = new HashMap<>();
 
+    private int myDepth;
+
+    /**
+     * @return false if the same check is already in progress - a recursion
+     */
+    private int myRecursionCount;
+
     public boolean mark(DotNetTypeRef top, DotNetTypeRef target, @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo) {
         CSharpInheritKey key = new CSharpInheritKey(top, target, castResolvingInfo);
-        return myVisited.add(key);
+        if (myVisited.add(key)) {
+            return true;
+        }
+        myRecursionCount++;
+        return false;
     }
 
-    public CSharpTypeUtil.InheritResult recordImplicit(CSharpImplicitCastKey key, CSharpTypeUtil.InheritResult result) {
-        myNewImplicitMap.put(key, result);
+    /**
+     * How many checks failed as a recursion - a result computed while it grows depends on the checks in progress, so it
+     * can be cached by the outermost check only
+     */
+    public int getRecursionCount() {
+        return myRecursionCount;
+    }
+
+    public boolean isOutermost() {
+        return myDepth <= 1;
+    }
+
+    public void unmark(DotNetTypeRef top, DotNetTypeRef target, @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo) {
+        myVisited.remove(new CSharpInheritKey(top, target, castResolvingInfo));
+    }
+
+    public CSharpTypeUtil.InheritResult recordImplicit(CSharpImplicitCastKey key, CSharpTypeUtil.InheritResult result, int recursionCountBefore) {
+        if (myRecursionCount == recursionCountBefore) {
+            myNewImplicitMap.put(key, result);
+        }
         return result;
     }
 
@@ -77,6 +111,8 @@ public class CSharpCastSession implements Closeable {
 
     @Override
     public void close() {
-        ourSession.remove();
+        if (--myDepth <= 0) {
+            ourSession.remove();
+        }
     }
 }

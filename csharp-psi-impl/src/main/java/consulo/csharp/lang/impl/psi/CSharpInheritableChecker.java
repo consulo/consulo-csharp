@@ -115,10 +115,23 @@ public class CSharpInheritableChecker {
 
         CSharpCastSession session = CSharpCastSession.get();
 
+        // the same check inside itself - a recursion; once it returns, the same pair may be checked again
         if (!session.mark(top, target, castResolvingInfo)) {
             return fail();
         }
 
+        try {
+            return isInheritableImpl(top, target, castResolvingInfo);
+        }
+        finally {
+            session.unmark(top, target, castResolvingInfo);
+        }
+    }
+
+    @RequiredReadAction
+    private static CSharpTypeUtil.InheritResult isInheritableImpl(DotNetTypeRef top,
+                                                                  DotNetTypeRef target,
+                                                                  @Nullable Pair<CSharpCastType, GlobalSearchScope> castResolvingInfo) {
         // [1, 2] converts to arrays and collection types
         if (target instanceof CSharpCollectionExpressionTypeRef) {
             return CSharpCollectionExpressionTypeRef.isCollectionType(top) ? CSharpTypeUtil.SIMPLE_SUCCESS : fail();
