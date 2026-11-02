@@ -48,173 +48,145 @@ import java.util.List;
  * @author VISTALL
  * @since 24.05.14
  */
-public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCSharpVariable implements CSharpPropertyDeclaration
-{
-	private DotNetXAccessor[] myAccessors;
+public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCSharpVariable implements CSharpPropertyDeclaration {
+    private DotNetXAccessor[] myAccessors;
 
-	private final NullableLazyValue<DotNetType> myTypeForImplementValue;
+    private final NullableLazyValue<DotNetType> myTypeForImplementValue;
 
-	@RequiredReadAction
-	public MsilPropertyAsCSharpPropertyDeclaration(PsiElement parent, MsilPropertyEntry variable, List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs)
-	{
-		super(parent, getAdditionalModifiers(variable, pairs), variable);
-		myAccessors = buildAccessors(this, pairs);
+    @RequiredReadAction
+    public MsilPropertyAsCSharpPropertyDeclaration(PsiElement parent, MsilPropertyEntry variable, List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs) {
+        super(parent, getAdditionalModifiers(variable, pairs), variable);
+        myAccessors = buildAccessors(this, pairs);
 
-		myTypeForImplementValue = NullableLazyValue.of(() ->
-		{
-			String nameFromBytecode = getVariable().getNameFromBytecode();
-			String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
-			SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
-			if(someType != null)
-			{
-				return new DummyType(getProject(), MsilPropertyAsCSharpPropertyDeclaration.this, someType);
-			}
-			return null;
-		});
-	}
+        myTypeForImplementValue = NullableLazyValue.of(() -> {
+            String nameFromBytecode = getVariable().getNameFromBytecode();
+            String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
+            SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
+            if (someType != null) {
+                return new DummyType(getProject(), MsilPropertyAsCSharpPropertyDeclaration.this, someType);
+            }
+            return null;
+        });
+    }
 
-	public static DotNetXAccessor[] buildAccessors(PsiElement parent, List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs)
-	{
-		List<DotNetXAccessor> accessors = new ArrayList<DotNetXAccessor>(2);
+    public static DotNetXAccessor[] buildAccessors(PsiElement parent, List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs) {
+        List<DotNetXAccessor> accessors = new ArrayList<DotNetXAccessor>(2);
 
-		for(Pair<DotNetXAccessor, MsilMethodEntry> pair : pairs)
-		{
-			accessors.add(new MsilXAccessorAsCSharpXAccessor(parent, pair.getFirst(), pair.getSecond()));
-		}
-		return ContainerUtil.toArray(accessors, DotNetXAccessor.ARRAY_FACTORY);
-	}
+        for (Pair<DotNetXAccessor, MsilMethodEntry> pair : pairs) {
+            accessors.add(new MsilXAccessorAsCSharpXAccessor(parent, pair.getFirst(), pair.getSecond()));
+        }
+        return ContainerUtil.toArray(accessors, DotNetXAccessor.ARRAY_FACTORY);
+    }
 
-	public static CSharpModifier[] getAdditionalModifiers(PsiElement parent, List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs)
-	{
-		PsiElement maybeTypeParent = parent.getParent();
-		if(maybeTypeParent instanceof MsilClassEntry && ((MsilClassEntry) maybeTypeParent).hasModifier(MsilTokens.INTERFACE_KEYWORD))
-		{
-			return CSharpModifier.EMPTY_ARRAY;
-		}
+    public static CSharpModifier[] getAdditionalModifiers(PsiElement parent, List<Pair<DotNetXAccessor, MsilMethodEntry>> pairs) {
+        PsiElement maybeTypeParent = parent.getParent();
+        if (maybeTypeParent instanceof MsilClassEntry && ((MsilClassEntry) maybeTypeParent).hasModifier(MsilTokens.INTERFACE_KEYWORD)) {
+            return CSharpModifier.EMPTY_ARRAY;
+        }
 
-		boolean staticMod = false;
-		List<CSharpAccessModifier> modifiers = new SmartList<CSharpAccessModifier>();
-		for(Pair<DotNetXAccessor, MsilMethodEntry> pair : pairs)
-		{
-			CSharpAccessModifier accessModifier = getAccessModifier(pair.getSecond());
-			modifiers.add(accessModifier);
+        boolean staticMod = false;
+        List<CSharpAccessModifier> modifiers = new SmartList<CSharpAccessModifier>();
+        for (Pair<DotNetXAccessor, MsilMethodEntry> pair : pairs) {
+            CSharpAccessModifier accessModifier = getAccessModifier(pair.getSecond());
+            modifiers.add(accessModifier);
 
-			if(pair.getSecond().hasModifier(MsilTokens.STATIC_KEYWORD))
-			{
-				staticMod = true;
-			}
-		}
-		ContainerUtil.sort(modifiers);
+            if (pair.getSecond().hasModifier(MsilTokens.STATIC_KEYWORD)) {
+                staticMod = true;
+            }
+        }
+        ContainerUtil.sort(modifiers);
 
-		CSharpAccessModifier access = modifiers.isEmpty() ? CSharpAccessModifier.PUBLIC : modifiers.get(0);
-		return staticMod ? ArrayUtil.append(access.getModifiers(), CSharpModifier.STATIC) : access.getModifiers();
-	}
+        CSharpAccessModifier access = modifiers.isEmpty() ? CSharpAccessModifier.PUBLIC : modifiers.get(0);
+        return staticMod ? ArrayUtil.append(access.getModifiers(), CSharpModifier.STATIC) : access.getModifiers();
+    }
 
-	@RequiredReadAction
-	private static CSharpAccessModifier getAccessModifier(MsilMethodEntry second)
-	{
-		if(second.hasModifier(MsilTokens.PRIVATE_KEYWORD))
-		{
-			return CSharpAccessModifier.PRIVATE;
-		}
-		else if(second.hasModifier(MsilTokens.PUBLIC_KEYWORD))
-		{
-			return CSharpAccessModifier.PUBLIC;
-		}
-		else if(second.hasModifier(MsilTokens.ASSEMBLY_KEYWORD) && second.hasModifier(MsilTokens.PROTECTED_KEYWORD))
-		{
-			return CSharpAccessModifier.PROTECTED_INTERNAL;
-		}
-		else if(second.hasModifier(MsilTokens.ASSEMBLY_KEYWORD))
-		{
-			return CSharpAccessModifier.INTERNAL;
-		}
-		else if(second.hasModifier(MsilTokens.PROTECTED_KEYWORD))
-		{
-			return CSharpAccessModifier.PROTECTED;
-		}
-		return CSharpAccessModifier.PUBLIC;
-	}
+    @RequiredReadAction
+    private static CSharpAccessModifier getAccessModifier(MsilMethodEntry second) {
+        if (second.hasModifier(MsilTokens.PRIVATE_KEYWORD)) {
+            return CSharpAccessModifier.PRIVATE;
+        }
+        else if (second.hasModifier(MsilTokens.PUBLIC_KEYWORD)) {
+            return CSharpAccessModifier.PUBLIC;
+        }
+        else if (second.hasModifier(MsilTokens.ASSEMBLY_KEYWORD) && second.hasModifier(MsilTokens.PROTECTED_KEYWORD)) {
+            return CSharpAccessModifier.PROTECTED_INTERNAL;
+        }
+        else if (second.hasModifier(MsilTokens.ASSEMBLY_KEYWORD)) {
+            return CSharpAccessModifier.INTERNAL;
+        }
+        else if (second.hasModifier(MsilTokens.PROTECTED_KEYWORD)) {
+            return CSharpAccessModifier.PROTECTED;
+        }
+        return CSharpAccessModifier.PUBLIC;
+    }
 
-	@Override
-	public void accept(CSharpElementVisitor visitor)
-	{
-		visitor.visitPropertyDeclaration(this);
-	}
+    @Override
+    public void accept(CSharpElementVisitor visitor) {
+        visitor.visitPropertyDeclaration(this);
+    }
 
-	@Override
-	public MsilPropertyEntry getVariable()
-	{
-		return (MsilPropertyEntry) super.getVariable();
-	}
+    @Override
+    public MsilPropertyEntry getVariable() {
+        return (MsilPropertyEntry) super.getVariable();
+    }
 
-	@RequiredReadAction
-	@Override
-	public PsiElement getLeftBrace()
-	{
-		return null;
-	}
+    @RequiredReadAction
+    @Override
+    public PsiElement getLeftBrace() {
+        return null;
+    }
 
-	@RequiredReadAction
-	@Override
-	public PsiElement getRightBrace()
-	{
-		return null;
-	}
+    @RequiredReadAction
+    @Override
+    public PsiElement getRightBrace() {
+        return null;
+    }
 
-	@Override
-	public DotNetXAccessor[] getAccessors()
-	{
-		return myAccessors;
-	}
+    @Override
+    public DotNetXAccessor[] getAccessors() {
+        return myAccessors;
+    }
 
-	@Override
-	public DotNetNamedElement[] getMembers()
-	{
-		return getAccessors();
-	}
+    @Override
+    public DotNetNamedElement[] getMembers() {
+        return getAccessors();
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public String getPresentableParentQName()
-	{
-		return getVariable().getPresentableParentQName();
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public String getPresentableParentQName() {
+        return getVariable().getPresentableParentQName();
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public String getPresentableQName()
-	{
-		return getVariable().getPresentableQName();
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public String getPresentableQName() {
+        return getVariable().getPresentableQName();
+    }
 
-	@Nullable
-	@Override
-	public DotNetType getTypeForImplement()
-	{
-		return myTypeForImplementValue.getValue();
-	}
+    @Nullable
+    @Override
+    public DotNetType getTypeForImplement() {
+        return myTypeForImplementValue.getValue();
+    }
 
-	@Override
-	public DotNetTypeRef getTypeRefForImplement()
-	{
-		DotNetType typeForImplement = getTypeForImplement();
-		return typeForImplement != null ? typeForImplement.toTypeRef() : DotNetTypeRef.ERROR_TYPE;
-	}
+    @Override
+    public DotNetTypeRef getTypeRefForImplement() {
+        DotNetType typeForImplement = getTypeForImplement();
+        return typeForImplement != null ? typeForImplement.toTypeRef() : DotNetTypeRef.ERROR_TYPE;
+    }
 
-	@Nullable
-	@Override
-	protected Class<? extends PsiElement> getNavigationElementClass()
-	{
-		return CSharpPropertyDeclaration.class;
-	}
+    @Nullable
+    @Override
+    protected Class<? extends PsiElement> getNavigationElementClass() {
+        return CSharpPropertyDeclaration.class;
+    }
 
-	@RequiredReadAction
-	@Override
-	public boolean isAutoGet()
-	{
-		return false;
-	}
+    @RequiredReadAction
+    @Override
+    public boolean isAutoGet() {
+        return false;
+    }
 }

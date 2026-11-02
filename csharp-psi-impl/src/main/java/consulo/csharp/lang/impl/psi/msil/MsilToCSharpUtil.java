@@ -57,248 +57,210 @@ import java.util.List;
  * @author VISTALL
  * @since 22.05.14
  */
-public class MsilToCSharpUtil
-{
-	private static final Key<ParameterizedCachedValue<PsiElement, GenericParameterContext>> WRAP_TYPE_KEY = Key.create("WRAP_TYPE_CACHE");
+public class MsilToCSharpUtil {
+    private static final Key<ParameterizedCachedValue<PsiElement, GenericParameterContext>> WRAP_TYPE_KEY = Key.create("WRAP_TYPE_CACHE");
 
-	@RequiredReadAction
-	public static boolean hasCSharpInMsilModifierList(CSharpModifier modifier, DotNetModifierList modifierList)
-	{
-		MsilModifierElementType elementType = null;
-		switch(modifier)
-		{
-			case PUBLIC:
-				if(hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD))
-				{
-					return false;
-				}
-				elementType = MsilTokens.PUBLIC_KEYWORD;
-				break;
-			case PRIVATE:
-				elementType = MsilTokens.PRIVATE_KEYWORD;
-				break;
-			case PROTECTED:
-				elementType = MsilTokens.PROTECTED_KEYWORD;
-				break;
-			case STATIC:
-				// all members with extension attribute are static
-				if(hasAttribute(modifierList, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute))
-				{
-					return true;
-				}
-				elementType = MsilTokens.STATIC_KEYWORD;
-				break;
-			case SEALED:
-				// hide sealed attribute
-				if(hasAttribute(modifierList, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute))
-				{
-					return false;
-				}
-				elementType = MsilTokens.SEALED_KEYWORD;
-				break;
-			case ASYNC:
-				return hasAttribute(modifierList, DotNetTypes2.System.Runtime.CompilerServices.AsyncStateMachineAttribute);
-			case INTERNAL:
-				elementType = MsilTokens.ASSEMBLY_KEYWORD;
-				break;
-			case VIRTUAL:
-				if(hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD))
-				{
-					return false;
-				}
-				elementType = MsilTokens.VIRTUAL_KEYWORD;
-				break;
-			case READONLY:
-				elementType = MsilTokens.INITONLY_KEYWORD;
-				break;
-			case UNSAFE:
-				break;
-			case PARAMS:
-				return hasAttribute(modifierList, DotNetTypes.System.ParamArrayAttribute);
-			case ABSTRACT:
-				if(hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD))
-				{
-					return false;
-				}
-				// hide abstract attribute
-				if(hasAttribute(modifierList, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute))
-				{
-					return false;
-				}
-				elementType = MsilTokens.ABSTRACT_KEYWORD;
-				break;
-		}
-		return elementType != null && modifierList.hasModifier(elementType);
-	}
+    @RequiredReadAction
+    public static boolean hasCSharpInMsilModifierList(CSharpModifier modifier, DotNetModifierList modifierList) {
+        MsilModifierElementType elementType = null;
+        switch (modifier) {
+            case PUBLIC:
+                if (hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD)) {
+                    return false;
+                }
+                elementType = MsilTokens.PUBLIC_KEYWORD;
+                break;
+            case PRIVATE:
+                elementType = MsilTokens.PRIVATE_KEYWORD;
+                break;
+            case PROTECTED:
+                elementType = MsilTokens.PROTECTED_KEYWORD;
+                break;
+            case STATIC:
+                // all members with extension attribute are static
+                if (hasAttribute(modifierList, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute)) {
+                    return true;
+                }
+                elementType = MsilTokens.STATIC_KEYWORD;
+                break;
+            case SEALED:
+                // hide sealed attribute
+                if (hasAttribute(modifierList, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute)) {
+                    return false;
+                }
+                elementType = MsilTokens.SEALED_KEYWORD;
+                break;
+            case ASYNC:
+                return hasAttribute(modifierList, DotNetTypes2.System.Runtime.CompilerServices.AsyncStateMachineAttribute);
+            case INTERNAL:
+                elementType = MsilTokens.ASSEMBLY_KEYWORD;
+                break;
+            case VIRTUAL:
+                if (hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD)) {
+                    return false;
+                }
+                elementType = MsilTokens.VIRTUAL_KEYWORD;
+                break;
+            case READONLY:
+                elementType = MsilTokens.INITONLY_KEYWORD;
+                break;
+            case UNSAFE:
+                break;
+            case PARAMS:
+                return hasAttribute(modifierList, DotNetTypes.System.ParamArrayAttribute);
+            case ABSTRACT:
+                if (hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD)) {
+                    return false;
+                }
+                // hide abstract attribute
+                if (hasAttribute(modifierList, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute)) {
+                    return false;
+                }
+                elementType = MsilTokens.ABSTRACT_KEYWORD;
+                break;
+        }
+        return elementType != null && modifierList.hasModifier(elementType);
+    }
 
-	@SuppressWarnings("unchecked")
-	@RequiredReadAction
-	private static <T extends DotNetModifierListOwner> boolean hasModifierInParentIfType(DotNetModifierList msilModifierList, DotNetModifier modifier)
-	{
-		PsiElement parent = msilModifierList.getParent();
-		if(parent == null)
-		{
-			return false;
-		}
+    @SuppressWarnings("unchecked")
+    @RequiredReadAction
+    private static <T extends DotNetModifierListOwner> boolean hasModifierInParentIfType(DotNetModifierList msilModifierList, DotNetModifier modifier) {
+        PsiElement parent = msilModifierList.getParent();
+        if (parent == null) {
+            return false;
+        }
 
-		PsiElement parent1 = parent.getParent();
-		if(!(parent1 instanceof MsilClassEntry))
-		{
-			return false;
-		}
+        PsiElement parent1 = parent.getParent();
+        if (!(parent1 instanceof MsilClassEntry)) {
+            return false;
+        }
 
-		T modifierListOwner = (T) parent1;
-		return modifierListOwner.hasModifier(modifier);
-	}
+        T modifierListOwner = (T) parent1;
+        return modifierListOwner.hasModifier(modifier);
+    }
 
-	@RequiredReadAction
-	private static boolean hasAttribute(DotNetModifierList modifierList, String qName)
-	{
-		for(DotNetAttribute attribute : modifierList.getAttributes())
-		{
-			DotNetTypeDeclaration typeDeclaration = attribute.resolveToType();
-			if(typeDeclaration != null && Comparing.equal(typeDeclaration.getPresentableQName(), qName))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+    @RequiredReadAction
+    private static boolean hasAttribute(DotNetModifierList modifierList, String qName) {
+        for (DotNetAttribute attribute : modifierList.getAttributes()) {
+            DotNetTypeDeclaration typeDeclaration = attribute.resolveToType();
+            if (typeDeclaration != null && Comparing.equal(typeDeclaration.getPresentableQName(), qName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@RequiredReadAction
-	public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent)
-	{
-		return wrap(element, parent, new GenericParameterContext(null));
-	}
+    @RequiredReadAction
+    public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent) {
+        return wrap(element, parent, new GenericParameterContext(null));
+    }
 
-	@RequiredReadAction
-	public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent, GenericParameterContext context)
-	{
-		if(element instanceof MsilClassEntry)
-		{
-			if(((MsilClassEntry) element).isNested() && parent == null)
-			{
-				throw new IllegalArgumentException("can't wrap without parent: " + ((MsilClassEntry) element).getVmQName());
-			}
+    @RequiredReadAction
+    public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent, GenericParameterContext context) {
+        if (element instanceof MsilClassEntry) {
+            if (((MsilClassEntry) element).isNested() && parent == null) {
+                throw new IllegalArgumentException("can't wrap without parent: " + ((MsilClassEntry) element).getVmQName());
+            }
 
-			if(parent != null)
-			{
-				PsiElement wrapElement = wrapToDelegateMethod((MsilClassEntry) element, parent, context);
-				if(wrapElement == null)
-				{
-					wrapElement = new MsilClassAsCSharpTypeDefinition(parent, (MsilClassEntry) element, context);
-				}
-				return wrapElement;
-			}
-			else
-			{
-				return CachedValuesManager.getManager(element.getProject()).getParameterizedCachedValue(element, WRAP_TYPE_KEY, paramContext -> {
-					PsiElement thisParent = null;
-					String parentQName = ((MsilClassEntry) element).getPresentableParentQName();
-					if(!StringUtil.isEmpty(parentQName))
-					{
-						thisParent = new CSharpLightNamespaceDeclarationBuilder(element.getProject(), parentQName);
-					}
+            if (parent != null) {
+                PsiElement wrapElement = wrapToDelegateMethod((MsilClassEntry) element, parent, context);
+                if (wrapElement == null) {
+                    wrapElement = new MsilClassAsCSharpTypeDefinition(parent, (MsilClassEntry) element, context);
+                }
+                return wrapElement;
+            }
+            else {
+                return CachedValuesManager.getManager(element.getProject()).getParameterizedCachedValue(element, WRAP_TYPE_KEY, paramContext -> {
+                    PsiElement thisParent = null;
+                    String parentQName = ((MsilClassEntry) element).getPresentableParentQName();
+                    if (!StringUtil.isEmpty(parentQName)) {
+                        thisParent = new CSharpLightNamespaceDeclarationBuilder(element.getProject(), parentQName);
+                    }
 
-					PsiElement wrapElement = wrapToDelegateMethod((MsilClassEntry) element, thisParent, paramContext);
-					if(wrapElement == null)
-					{
-						wrapElement = new MsilClassAsCSharpTypeDefinition(thisParent, (MsilClassEntry) element, paramContext);
-					}
+                    PsiElement wrapElement = wrapToDelegateMethod((MsilClassEntry) element, thisParent, paramContext);
+                    if (wrapElement == null) {
+                        wrapElement = new MsilClassAsCSharpTypeDefinition(thisParent, (MsilClassEntry) element, paramContext);
+                    }
 
-					return CachedValueProvider.Result.create(wrapElement, PsiModificationTracker.MODIFICATION_COUNT);
-				}, false, context);
-			}
-		}
-		return element;
-	}
+                    return CachedValueProvider.Result.create(wrapElement, PsiModificationTracker.MODIFICATION_COUNT);
+                }, false, context);
+            }
+        }
+        return element;
+    }
 
-	@Nullable
-	@RequiredReadAction
-	private static CSharpMethodDeclaration wrapToDelegateMethod(MsilClassEntry typeDeclaration, @Nullable PsiElement parent, GenericParameterContext context)
-	{
-		if(DotNetInheritUtil.isInheritor(typeDeclaration, DotNetTypes.System.MulticastDelegate, false))
-		{
-			MsilMethodEntry msilMethodEntry = (MsilMethodEntry) ContainerUtil.find((typeDeclaration).getMembers(), element -> element instanceof MsilMethodEntry && Comparing.equal(element.getName(),
-					"Invoke"));
+    @Nullable
+    @RequiredReadAction
+    private static CSharpMethodDeclaration wrapToDelegateMethod(MsilClassEntry typeDeclaration, @Nullable PsiElement parent, GenericParameterContext context) {
+        if (DotNetInheritUtil.isInheritor(typeDeclaration, DotNetTypes.System.MulticastDelegate, false)) {
+            MsilMethodEntry msilMethodEntry = (MsilMethodEntry) ContainerUtil.find((typeDeclaration).getMembers(), element -> element instanceof MsilMethodEntry && Comparing.equal(element.getName(),
+                    "Invoke"));
 
-			assert msilMethodEntry != null : typeDeclaration.getPresentableQName();
+            assert msilMethodEntry != null : typeDeclaration.getPresentableQName();
 
-			return new MsilMethodAsCSharpMethodDeclaration(parent, typeDeclaration, context, msilMethodEntry);
-		}
-		else
-		{
-			return null;
-		}
-	}
+            return new MsilMethodAsCSharpMethodDeclaration(parent, typeDeclaration, context, msilMethodEntry);
+        }
+        else {
+            return null;
+        }
+    }
 
-	@RequiredReadAction
-	public static DotNetTypeRef extractToCSharp(DotNetTypeRef typeRef)
-	{
-		if(typeRef == DotNetTypeRef.ERROR_TYPE)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
+    @RequiredReadAction
+    public static DotNetTypeRef extractToCSharp(DotNetTypeRef typeRef) {
+        if (typeRef == DotNetTypeRef.ERROR_TYPE) {
+            return DotNetTypeRef.ERROR_TYPE;
+        }
 
-		Project project = typeRef.getProject();
-		GlobalSearchScope resolveScope = typeRef.getResolveScope();
+        Project project = typeRef.getProject();
+        GlobalSearchScope resolveScope = typeRef.getResolveScope();
 
-		if(typeRef instanceof MsilNativeTypeRefImpl)
-		{
-			return new CSharpTypeRefByQName(project, resolveScope, typeRef.toString());
-		}
-		else if(typeRef instanceof MsilArrayTypRefImpl)
-		{
-			int[] lowerValues = ((MsilArrayTypRefImpl) typeRef).getLowerValues();
-			return new CSharpArrayTypeRef(project, resolveScope, extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef()), lowerValues.length == 0 ? 0 : lowerValues.length - 1);
-		}
-		else if(typeRef instanceof MsilPointerTypeRefImpl)
-		{
-			return new CSharpPointerTypeRef(extractToCSharp(((DotNetPointerTypeRef) typeRef).getInnerTypeRef()));
-		}
-		else if(typeRef instanceof MsilRefTypeRefImpl)
-		{
-			DotNetTypeRef innerTypeRef = extractToCSharp(((DotNetRefTypeRef) typeRef).getInnerTypeRef());
-			return new CSharpRefTypeRef(project, resolveScope, CSharpRefTypeRef.Type.ref, innerTypeRef);
-		}
-		else if(typeRef instanceof DotNetGenericWrapperTypeRef)
-		{
-			DotNetTypeRef innerTypeRef = ((DotNetGenericWrapperTypeRef) typeRef).getInnerTypeRef();
-			DotNetTypeRef[] arguments = ((DotNetGenericWrapperTypeRef) typeRef).getArgumentTypeRefs();
+        if (typeRef instanceof MsilNativeTypeRefImpl) {
+            return new CSharpTypeRefByQName(project, resolveScope, typeRef.toString());
+        }
+        else if (typeRef instanceof MsilArrayTypRefImpl) {
+            int[] lowerValues = ((MsilArrayTypRefImpl) typeRef).getLowerValues();
+            return new CSharpArrayTypeRef(project, resolveScope, extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef()), lowerValues.length == 0 ? 0 : lowerValues.length - 1);
+        }
+        else if (typeRef instanceof MsilPointerTypeRefImpl) {
+            return new CSharpPointerTypeRef(extractToCSharp(((DotNetPointerTypeRef) typeRef).getInnerTypeRef()));
+        }
+        else if (typeRef instanceof MsilRefTypeRefImpl) {
+            DotNetTypeRef innerTypeRef = extractToCSharp(((DotNetRefTypeRef) typeRef).getInnerTypeRef());
+            return new CSharpRefTypeRef(project, resolveScope, CSharpRefTypeRef.Type.ref, innerTypeRef);
+        }
+        else if (typeRef instanceof DotNetGenericWrapperTypeRef) {
+            DotNetTypeRef innerTypeRef = ((DotNetGenericWrapperTypeRef) typeRef).getInnerTypeRef();
+            DotNetTypeRef[] arguments = ((DotNetGenericWrapperTypeRef) typeRef).getArgumentTypeRefs();
 
-			DotNetTypeRef inner = extractToCSharp(innerTypeRef);
+            DotNetTypeRef inner = extractToCSharp(innerTypeRef);
 
-			PsiElement element = inner.resolve().getElement();
-			if(element instanceof DotNetGenericParameterListOwner)
-			{
-				int genericParametersCount = ((DotNetGenericParameterListOwner) element).getGenericParametersCount();
-				if(genericParametersCount == 0)
-				{
-					return inner;
-				}
+            PsiElement element = inner.resolve().getElement();
+            if (element instanceof DotNetGenericParameterListOwner) {
+                int genericParametersCount = ((DotNetGenericParameterListOwner) element).getGenericParametersCount();
+                if (genericParametersCount == 0) {
+                    return inner;
+                }
 
-				DotNetTypeRef[] anotherArray = ArrayUtil.reverseArray(arguments);
-				List<DotNetTypeRef> list = new ArrayList<>(genericParametersCount);
-				for(int i = 0; i < genericParametersCount; i++)
-				{
-					list.add(extractToCSharp(anotherArray[i]));
-				}
+                DotNetTypeRef[] anotherArray = ArrayUtil.reverseArray(arguments);
+                List<DotNetTypeRef> list = new ArrayList<>(genericParametersCount);
+                for (int i = 0; i < genericParametersCount; i++) {
+                    list.add(extractToCSharp(anotherArray[i]));
+                }
 
-				list = ContainerUtil.reverse(list);
+                list = ContainerUtil.reverse(list);
 
-				return new CSharpGenericWrapperTypeRef(project, resolveScope, inner, ContainerUtil.toArray(list, DotNetTypeRef.ARRAY_FACTORY));
-			}
-			else  // fallback
-			{
-				DotNetTypeRef[] newArguments = new DotNetTypeRef[arguments.length];
-				for(int i = 0; i < newArguments.length; i++)
-				{
-					newArguments[i] = extractToCSharp(arguments[i]);
-				}
+                return new CSharpGenericWrapperTypeRef(project, resolveScope, inner, ContainerUtil.toArray(list, DotNetTypeRef.ARRAY_FACTORY));
+            }
+            else  // fallback
+            {
+                DotNetTypeRef[] newArguments = new DotNetTypeRef[arguments.length];
+                for (int i = 0; i < newArguments.length; i++) {
+                    newArguments[i] = extractToCSharp(arguments[i]);
+                }
 
-				return new CSharpGenericWrapperTypeRef(project, resolveScope, inner, newArguments);
-			}
-		}
-		return new MsilDelegateTypeRef(typeRef);
-	}
+                return new CSharpGenericWrapperTypeRef(project, resolveScope, inner, newArguments);
+            }
+        }
+        return new MsilDelegateTypeRef(typeRef);
+    }
 }
