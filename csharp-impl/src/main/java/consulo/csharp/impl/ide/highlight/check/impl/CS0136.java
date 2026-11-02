@@ -24,6 +24,7 @@ import consulo.csharp.lang.impl.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpLambdaParameterImpl;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
@@ -111,19 +112,53 @@ public class CS0136 extends CompilerCheck<DotNetVariable> {
             return null;
         }
 
-        DotNetVariable prevVariable = null;
+        PsiElement scope = getDeclarationScope(element);
+        if (scope == null) {
+            return null;
+        }
+
         for (DotNetVariable variable : variables) {
             if (variable == element) {
-                break;
+                continue;
             }
 
-            prevVariable = variable;
-        }
+            PsiElement outerScope = getDeclarationScope(variable);
+            // the same scope is a duplicate (CS0128), sibling scopes do not conflict
+            if (outerScope == null || outerScope == scope || !PsiTreeUtil.isAncestor(outerScope, element, true)) {
+                continue;
+            }
 
-        if (prevVariable != null) {
-            //return newBuilder(getNameIdentifier(element), name, name, getScope(prevVariable, element));
+            // C# 8: a lambda or a local function may reuse the names of the enclosing one
+            if (languageVersion.isAtLeast(CSharpLanguageVersion._8_0) && getFunction(element) != PsiTreeUtil.getParentOfType(outerScope, CSharpSimpleLikeMethodAsElement.class, false)) {
+                continue;
+            }
+
+            return newBuilder(getNameIdentifier(element), name, name, getScope(variable, element));
         }
         return null;
+    }
+
+    /**
+     * Where the name of the variable is reserved: the whole block of a local, the statement of a loop, using, fixed or
+     * catch variable, the function of a parameter
+     */
+    @Nullable
+    @RequiredReadAction
+    private static PsiElement getDeclarationScope(DotNetVariable variable) {
+        if (variable instanceof DotNetParameter || variable instanceof CSharpLambdaParameterImpl) {
+            return getFunction(variable);
+        }
+
+        PsiElement parent = variable.getParent();
+        if (parent instanceof CSharpLocalVariableDeclarationStatement) {
+            return parent.getParent();
+        }
+        return parent;
+    }
+
+    @Nullable
+    private static CSharpSimpleLikeMethodAsElement getFunction(PsiElement element) {
+        return PsiTreeUtil.getParentOfType(element, CSharpSimpleLikeMethodAsElement.class, true);
     }
 
     private static String getScope(PsiElement mainDeclaration, PsiElement redeclaration) {

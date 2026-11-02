@@ -25,7 +25,6 @@ import consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetStatement;
-import consulo.language.psi.util.PsiTreeUtil;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -37,8 +36,9 @@ public class CS0128 extends CompilerCheck<CSharpLocalVariable> {
     @Nullable
     @Override
     public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpLocalVariable element) {
-        CSharpBlockStatementImpl blockStatement = PsiTreeUtil.getParentOfType(element, CSharpBlockStatementImpl.class);
-        if (blockStatement == null) {
+        // a variable of a for, foreach, using statement is not of the block - a redeclaration of it is CS0136
+        if (!(element.getParent() instanceof CSharpLocalVariableDeclarationStatement declaration)
+            || !(declaration.getParent() instanceof CSharpBlockStatementImpl blockStatement)) {
             return null;
         }
 
