@@ -206,7 +206,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
                     return null;
                 }
 
-                if (builder.getTokenType() == CSharpTokens.IDENTIFIER) {
+                if (builder.getTokenType() == CSharpTokens.IDENTIFIER && !isPatternWord(builder)) {
                     PsiBuilder.Marker varIdentifierMarker = builder.mark();
                     doneIdentifier(builder, flags);
                     varIdentifierMarker.done(IS_VARIABLE);
@@ -682,6 +682,15 @@ public class ExpressionParsing extends SharedParsingHelpers {
                 builder.advanceLexerGGLL();
             }
 
+            if (toCreate == IS_EXPRESSION) {
+                if (!parseIsPatternOrType(builder, set, flags)) {
+                    builder.error("Type or pattern expected");
+                }
+                expression.done(toCreate);
+                left = expression;
+                continue;
+            }
+
             final PsiBuilder.Marker right = parseExpression(builder, toParse, set, flags);
             if (right == null) {
                 builder.error(toParse == ExprType.MAYBE_NULLABLE_TYPE || toParse == ExprType.MAYBE_NULLABLE_WITH_VARIABLE ? "Type expected" : "Expression expected");
@@ -696,6 +705,27 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return left;
     }
 
+
+    /**
+     * Right side of {@code is}: a type with an optional designation ({@code o is string s}), or a C# 9 pattern
+     * ({@code o is null}, {@code o is not null}, {@code o is { Length: > 0 }}, {@code o is > 0 and < 10})
+     */
+    private static boolean parseIsPatternOrType(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+        IElementType tokenType = builder.getTokenType();
+        if (tokenType == LBRACE || RELATIONAL_OPS.contains(tokenType) || isContextualWord(builder, "not")) {
+            return parsePattern(builder, set, flags);
+        }
+
+        PsiBuilder.Marker typeMarker = builder.mark();
+        PsiBuilder.Marker type = parseExpression(builder, ExprType.MAYBE_NULLABLE_WITH_VARIABLE, set, flags);
+        if (type != null && builder.getTokenType() != LBRACE && !isContextualWord(builder, "and") && !isContextualWord(builder, "or")) {
+            typeMarker.drop();
+            return true;
+        }
+
+        typeMarker.rollbackTo();
+        return parsePattern(builder, set, flags);
+    }
 
     private static PsiBuilder.@Nullable Marker parsePrimary(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         PsiBuilder.Marker startMarker = builder.mark();

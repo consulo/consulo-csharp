@@ -27,6 +27,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 
 import org.jspecify.annotations.Nullable;
 
@@ -70,6 +71,12 @@ public class CSharpIsExpressionImpl extends CSharpExpressionImpl implements DotN
         CSharpIsVariableImpl variable = getVariable();
         if (variable != null && !processor.execute(variable, state)) {
             return false;
+        }
+        // o is { Length: > 0 } s, o is Circle { Radius: var r }
+        for (CSharpCaseVariableImpl caseVariable : PsiTreeUtil.findChildrenOfType(this, CSharpCaseVariableImpl.class)) {
+            if (!processor.execute(caseVariable, state)) {
+                return false;
+            }
         }
         return super.processDeclarations(processor, state, lastParent, place);
     }
