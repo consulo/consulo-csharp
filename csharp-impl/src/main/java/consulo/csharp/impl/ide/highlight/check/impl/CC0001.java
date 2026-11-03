@@ -78,7 +78,18 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
             return Collections.emptyList();
         }
 
+        // a method as a qualifier is CS0119; a member of an unresolved qualifier has its error there - like Roslyn, no cascade
+        if (CS0119.findMethodAsQualifier(expression) != null || isQualifierUnresolved(expression)) {
+            return Collections.emptyList();
+        }
+
         return checkReference(expression, Arrays.asList(referenceElement));
+    }
+
+    @RequiredReadAction
+    private static boolean isQualifierUnresolved(CSharpReferenceExpression expression) {
+        return expression.getQualifier() instanceof CSharpReferenceExpression qualifier
+            && CSharpResolveUtil.findFirstValidResult(qualifier.multiResolve(true)) == null;
     }
 
     @RequiredReadAction

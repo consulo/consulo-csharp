@@ -36,6 +36,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiErrorElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -61,7 +62,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <li>{@code /*value:V*&#47;} - the value of the literal starting there</li>
  * <li>{@code /*error:CS0000*&#47;} - the compiler check reporting an error there; no other check may report one</li>
  * </ul>
- * A {@code // sdk:NET_10} comment limits the file to the listed {@link MockSdk}s.
+ * A {@code /*unresolved*&#47;} comment before a name expects it not to resolve; a {@code // sdk:NET_10} comment limits the
+ * file to the listed {@link MockSdk}s.
  *
  * @author VISTALL
  */
@@ -106,13 +108,24 @@ public class LanguageFeatureTest {
             }
             assertThat(errors).as("parse errors").isEmpty();
 
-            List<String> unresolved = new ArrayList<>();
-            for (CSharpReferenceExpression reference : PsiTreeUtil.findChildrenOfType(file, CSharpReferenceExpression.class)) {
-                if (reference.resolve() == null) {
-                    unresolved.add(reference.getText() + "@" + reference.getTextOffset());
+            // the names after /*unresolved*/ - and none else
+            List<String> expectedUnresolved = new ArrayList<>();
+            for (PsiComment comment : PsiTreeUtil.findChildrenOfType(file, PsiComment.class)) {
+                PsiElement leaf = nextCode(comment);
+                if (comment.getText().equals("/*unresolved*/") && leaf != null) {
+                    expectedUnresolved.add(leaf.getText() + "@" + leaf.getTextOffset());
                 }
             }
-            assertThat(unresolved).as("unresolved references").isEmpty();
+            List<String> unresolved = new ArrayList<>();
+            for (CSharpReferenceExpression reference : PsiTreeUtil.findChildrenOfType(file, CSharpReferenceExpression.class)) {
+                PsiElement name = reference.getReferenceElement();
+                if (reference.resolve() == null && name != null) {
+                    unresolved.add(name.getText() + "@" + name.getTextOffset());
+                }
+            }
+            unresolved.sort(null);
+            expectedUnresolved.sort(null);
+            assertThat(unresolved).as("unresolved references").isEqualTo(expectedUnresolved);
 
             List<String> expected = new ArrayList<>();
             List<String> actual = new ArrayList<>();
@@ -122,7 +135,7 @@ public class LanguageFeatureTest {
                     continue;
                 }
 
-                PsiElement leaf = PsiTreeUtil.nextVisibleLeaf(comment);
+                PsiElement leaf = nextCode(comment);
                 assertThat(leaf).as("code after %s", comment.getText()).isNotNull();
 
                 String kind = matcher.group(1);
@@ -166,6 +179,18 @@ public class LanguageFeatureTest {
             }
         }
         return errors;
+    }
+
+    /**
+     * The code after a marker - past the other markers next to it
+     */
+    @Nullable
+    private static PsiElement nextCode(PsiComment comment) {
+        PsiElement leaf = PsiTreeUtil.nextVisibleLeaf(comment);
+        while (leaf instanceof PsiComment) {
+            leaf = PsiTreeUtil.nextVisibleLeaf(leaf);
+        }
+        return leaf;
     }
 
     @RequiredReadAction

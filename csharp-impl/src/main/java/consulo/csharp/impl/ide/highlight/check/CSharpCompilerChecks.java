@@ -49,6 +49,7 @@ public enum CSharpCompilerChecks {
     CS0113(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // virtual/new can't be with override
     CS0116(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // namespaces can contains only classes or delegate methods
     CS0118(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expected variable but found type
+    CS0119(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // a method as the qualifier of a member access
     CS0120(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // instance members required instance object reference
     CS0122(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // visibility checks
     CS0128(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // local variable redeclaration check

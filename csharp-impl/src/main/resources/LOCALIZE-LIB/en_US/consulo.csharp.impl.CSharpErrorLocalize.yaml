@@ -34,6 +34,8 @@ CS0116:
     text: A namespace cannot directly contain members such as fields or methods
 CS0118:
     text: "''{0}'' is a 'type' but a 'variable' was expected"
+CS0119:
+    text: "''{0}'' is a method, which is not valid in the given context"
 CS0120:
     text: "An object reference is required to access non-static member ''{0}''"
 CS0122:
