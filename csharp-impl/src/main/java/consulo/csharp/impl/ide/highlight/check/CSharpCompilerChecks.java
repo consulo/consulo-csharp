@@ -143,6 +143,7 @@ public enum CSharpCompilerChecks {
     CS1998(CSharpLanguageVersion._4_0, CSharpHighlightInfoType::getUnusedDeclaration), // async modifier - then no await
     CS4009(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // async modifier cant be at entry point
     CS8632(CSharpLanguageVersion._8_0, HighlightInfoType.WARNING), // nullable type check
+    CS8803(CSharpLanguageVersion._9_0, HighlightInfoType.ERROR), // top-level statements must precede namespace and type declarations
 
     CC0001(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //reference checks
     CC0002(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //operator reference checks

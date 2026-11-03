@@ -224,6 +224,8 @@ CS8625:
     text: Cannot convert null literal to non-nullable reference type.
 CS8632:
     text: "The annotation for nullable reference types should only be used in code within a '#nullable' annotations context."
+CS8803:
+    text: Top-level statements must precede namespace and type declarations
 add.using:
     text: Add Using
 cast.argument.0.to.1:
