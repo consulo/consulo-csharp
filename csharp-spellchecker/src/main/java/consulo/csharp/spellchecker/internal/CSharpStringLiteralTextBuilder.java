@@ -20,6 +20,7 @@ import consulo.document.util.TextRange;
 import consulo.language.psi.PsiElement;
 import consulo.language.spellcheker.text.TextContent;
 import consulo.language.spellcheker.text.util.EscapeUtils;
+import consulo.util.lang.StringUtil;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -128,7 +129,7 @@ public final class CSharpStringLiteralTextBuilder {
             content = EscapeUtils.replaceBackslashEscapedWhitespace(content);
         }
         content = content.trimWhitespace();
-        return content.length() == 0 ? null : content;
+        return StringUtil.isEmpty(content) ? null : content;
     }
 
     private static int findEscapeEnd(String text, int backslash, int end) {
