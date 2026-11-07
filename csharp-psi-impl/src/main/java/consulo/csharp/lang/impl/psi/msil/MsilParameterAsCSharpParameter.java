@@ -72,12 +72,15 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 		}
 
 		DotNetModifierList modifierList = variable.getModifierList();
-		if(modifierList != null && modifierList.hasModifier(MsilTokens.BRACKET_OUT_KEYWORD))
+		if(modifierList != null && variable.getType() instanceof MsilTypeByRefImpl)
 		{
-			DotNetType type = variable.getType();
-			if(type instanceof MsilTypeByRefImpl)
+			if(modifierList.hasModifier(MsilTokens.BRACKET_OUT_KEYWORD))
 			{
 				return new CSharpModifier[]{CSharpModifier.OUT};
+			}
+			if(MsilTypeAttributeDecoder.isReadOnlyReference(modifierList.getAttributes()))
+			{
+				return new CSharpModifier[]{CSharpModifier.IN};
 			}
 		}
 		return CSharpModifier.EMPTY_ARRAY;
@@ -194,6 +197,11 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 	public DotNetTypeRef toTypeRefImpl()
 	{
 		DotNetTypeRef typeRef = super.toTypeRefImpl();
+		// an in parameter is passed by reference - but has the type of the value, as in C#
+		if(hasModifier(CSharpModifier.IN) && typeRef instanceof DotNetRefTypeRef refTypeRef)
+		{
+			return refTypeRef.getInnerTypeRef();
+		}
 		// check to ref not needed - it default wrapping to ref
 		if(hasModifier(CSharpModifier.OUT))
 		{

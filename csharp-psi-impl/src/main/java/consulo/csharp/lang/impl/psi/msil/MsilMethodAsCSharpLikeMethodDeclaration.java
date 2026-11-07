@@ -66,7 +66,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 			DotNetTypeRef[] refs = new DotNetTypeRef[parameters.length];
 			for(int i = 0; i < parameters.length; i++)
 			{
-				refs[i] = MsilTypeAttributeDecoder.decode(MsilToCSharpUtil.extractToCSharp(parameters[i]), methodEntry.getParameterAttributes(i));
+				refs[i] = MsilTypeAttributeDecoder.decodeParameterType(MsilToCSharpUtil.extractToCSharp(parameters[i]), methodEntry.getParameterAttributes(i));
 			}
 			return refs;
 		});

@@ -56,6 +56,28 @@ public final class MsilTypeAttributeDecoder {
     }
 
     /**
+     * The C# type of a parameter - an in one has the type of the value
+     */
+    @RequiredReadAction
+    public static DotNetTypeRef decodeParameterType(DotNetTypeRef typeRef, DotNetAttribute[] attributes) {
+        DotNetTypeRef decoded = decode(typeRef, attributes);
+        if (decoded instanceof CSharpRefTypeRef refTypeRef && isReadOnlyReference(attributes)) {
+            return refTypeRef.getInnerTypeRef();
+        }
+        return decoded;
+    }
+
+    /**
+     * in and ref readonly of a byref parameter: IsReadOnlyAttribute, or RequiresLocationAttribute - C# 12 ref readonly, which C# here
+     * knows as in
+     */
+    @RequiredReadAction
+    public static boolean isReadOnlyReference(DotNetAttribute[] attributes) {
+        return findAttribute(attributes, DotNetTypes2.System.Runtime.CompilerServices.IsReadOnlyAttribute) != null
+            || findAttribute(attributes, DotNetTypes2.System.Runtime.CompilerServices.RequiresLocationAttribute) != null;
+    }
+
+    /**
      * @param typeRef    the C# type of a field, property, parameter or return value - from {@link MsilToCSharpUtil#extractToCSharp}
      * @param attributes the attributes of that declaration
      */

@@ -28,6 +28,8 @@ public interface DotNetTypes2 {
                 String AsyncStateMachineAttribute = "System.Runtime.CompilerServices.AsyncStateMachineAttribute";
                 String DynamicAttribute = "System.Runtime.CompilerServices.DynamicAttribute";
                 String TupleElementNamesAttribute = "System.Runtime.CompilerServices.TupleElementNamesAttribute";
+                String IsReadOnlyAttribute = "System.Runtime.CompilerServices.IsReadOnlyAttribute";
+                String RequiresLocationAttribute = "System.Runtime.CompilerServices.RequiresLocationAttribute";
             }
 
             interface InteropServices {

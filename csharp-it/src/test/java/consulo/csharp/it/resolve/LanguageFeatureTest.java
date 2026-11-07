@@ -22,10 +22,12 @@ import consulo.csharp.impl.ide.highlight.check.CSharpCompilerChecks;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.impl.psi.source.CSharpConstantExpressionImpl;
+import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.it.HeadlessProjectExtension;
@@ -47,6 +49,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,6 +64,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <li>{@code /*type:T*&#47;} - the type of the expression starting there, or of the variable named there</li>
  * <li>{@code /*value:V*&#47;} - the value of the literal starting there</li>
  * <li>{@code /*error:CS0000*&#47;} - the compiler check reporting an error there; no other check may report one</li>
+ * <li>{@code /*modifier:readonly*&#47;} - a modifier of the declaration the name there resolves to</li>
  * </ul>
  * A {@code /*unresolved*&#47;} comment before a name expects it not to resolve; a {@code // sdk:NET_10} comment limits the
  * file to the listed {@link MockSdk}s. A {@code language/<name>.dll} is a library of {@code <name>.cs}, built from
@@ -74,7 +78,7 @@ public class LanguageFeatureTest {
 
     private static final Pattern SDK_MARKER = Pattern.compile("// sdk:([A-Z0-9_,]+)");
 
-    private static final Pattern MARKER = Pattern.compile("/\\*(type|value|error):(.+)\\*/");
+    private static final Pattern MARKER = Pattern.compile("/\\*(type|value|error|modifier):(.+)\\*/");
 
     static Stream<Arguments> sources() throws Exception {
         List<String> files;
@@ -152,7 +156,11 @@ public class LanguageFeatureTest {
                     continue;
                 }
                 expected.add(prefix + matcher.group(2));
-                actual.add(prefix + ("type".equals(kind) ? typeAt(leaf) : valueAt(leaf)));
+                actual.add(prefix + switch (kind) {
+                    case "type" -> typeAt(leaf);
+                    case "modifier" -> modifierAt(leaf, matcher.group(2));
+                    default -> valueAt(leaf);
+                });
             }
             actual.addAll(compilerErrors(file));
 
@@ -214,6 +222,22 @@ public class LanguageFeatureTest {
             }
         }
         return outermost == null ? "<no expression>" : presentation(outermost.toTypeRef(true));
+    }
+
+    /**
+     * The modifier, if the declaration the name resolves to has it - else {@code !modifier}
+     */
+    @RequiredReadAction
+    private static String modifierAt(PsiElement leaf, String modifier) {
+        CSharpReferenceExpression reference = PsiTreeUtil.getParentOfType(leaf, CSharpReferenceExpression.class);
+        if (reference == null || reference.getReferenceElement() != leaf) {
+            return "<no reference>";
+        }
+        PsiElement resolved = reference.resolve();
+        if (!(resolved instanceof DotNetModifierListOwner owner)) {
+            return "<no declaration>";
+        }
+        return owner.hasModifier(CSharpModifier.valueOf(modifier.toUpperCase(Locale.ROOT))) ? modifier : "!" + modifier;
     }
 
     @RequiredReadAction

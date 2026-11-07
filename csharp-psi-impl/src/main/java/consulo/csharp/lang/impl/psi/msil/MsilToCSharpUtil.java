@@ -111,6 +111,10 @@ public class MsilToCSharpUtil {
                 elementType = MsilTokens.VIRTUAL_KEYWORD;
                 break;
             case READONLY:
+                // readonly struct
+                if (modifierList.getParent() instanceof MsilClassEntry && hasAttribute(modifierList, DotNetTypes2.System.Runtime.CompilerServices.IsReadOnlyAttribute)) {
+                    return true;
+                }
                 elementType = MsilTokens.INITONLY_KEYWORD;
                 break;
             case UNSAFE:
