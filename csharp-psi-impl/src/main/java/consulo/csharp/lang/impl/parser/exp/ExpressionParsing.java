@@ -868,6 +868,16 @@ public class ExpressionParsing extends SharedParsingHelpers {
         mark.done(CALL_ARGUMENT_LIST);
     }
 
+    /**
+     * The expression of an argument - {@code in x} too, which is no expression elsewhere
+     */
+    private static PsiBuilder.@Nullable Marker parseArgumentValue(CSharpBuilderWrapper builder, ModifierSet set) {
+        if (builder.getTokenType() == CSharpTokens.IN_KEYWORD) {
+            return parseOutRefWrapExpression(builder, set);
+        }
+        return parse(builder, set);
+    }
+
     private static void parseArguments(CSharpBuilderWrapper builder, IElementType stopElement, boolean fieldSet, ModifierSet set, int flags) {
         TokenSet stoppers = TokenSet.create(stopElement, CSharpTokens.RBRACE, CSharpTokens.SEMICOLON);
 
@@ -888,7 +898,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
                 PsiBuilder.Marker marker = builder.mark();
                 doneOneElement(builder, CSharpTokens.IDENTIFIER, referenceExpression(flags), null);
                 builder.advanceLexer(); // eq
-                PsiBuilder.Marker expressionParser = parse(builder, set);
+                PsiBuilder.Marker expressionParser = parseArgumentValue(builder, set);
                 if (expressionParser == null) {
                     builder.error("Expression expected");
                 }
@@ -906,7 +916,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
             }
             else {
                 PsiBuilder.Marker argumentMarker = builder.mark();
-                PsiBuilder.Marker marker = parse(builder, set);
+                PsiBuilder.Marker marker = parseArgumentValue(builder, set);
                 if (marker == null) {
                     PsiBuilder.Marker errorMarker = builder.mark();
                     builder.advanceLexer();

@@ -35,7 +35,7 @@ import org.jspecify.annotations.Nullable;
  */
 public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl implements CSharpOutRefExpression
 {
-	public static final TokenSet ourStartTypes = TokenSet.create(CSharpTokens.OUT_KEYWORD, CSharpTokens.REF_KEYWORD);
+	public static final TokenSet ourStartTypes = TokenSet.create(CSharpTokens.OUT_KEYWORD, CSharpTokens.REF_KEYWORD, CSharpTokens.IN_KEYWORD);
 
 	private final ThreadLocal<Boolean> myTypeRefProcessing = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
@@ -71,6 +71,12 @@ public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl impleme
 		if(innerExpression == null)
 		{
 			return DotNetTypeRef.ERROR_TYPE;
+		}
+
+		// in x - passed by reference, but an in parameter has the type of the value
+		if(getStartElement().getNode().getElementType() == CSharpTokens.IN_KEYWORD)
+		{
+			return innerExpression.toTypeRef(resolveFromParent);
 		}
 
 		CSharpRefTypeRef.Type type = getExpressionType();
