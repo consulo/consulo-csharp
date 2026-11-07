@@ -76,7 +76,8 @@ public abstract class CSharpLightLikeMethodDeclarationWithImplType<S extends Dot
     @SuppressWarnings("unchecked")
     public DotNetTypeRef getTypeRefForImplement() {
         if (myTypeRefForImplement == null) {
-            return ((S) getOriginalElement()).getTypeRefForImplement();
+            // the wrapped declaration - its original can be a MSIL entry, with a type out of C#
+            return myOriginal.getTypeRefForImplement();
         }
 
         return myTypeRefForImplement.get();
@@ -87,7 +88,8 @@ public abstract class CSharpLightLikeMethodDeclarationWithImplType<S extends Dot
     @SuppressWarnings("unchecked")
     public DotNetTypeRef getReturnTypeRef() {
         if (myReturnTypeRef == null) {
-            return ((S) getOriginalElement()).getReturnTypeRef();
+            // the wrapped declaration - its original can be a MSIL entry, with a type out of C#
+            return myOriginal.getReturnTypeRef();
         }
 
         return myReturnTypeRef.get();
