@@ -30,79 +30,66 @@ import java.util.function.Supplier;
  * @since 06.09.14
  */
 public abstract class CSharpLightLikeMethodDeclarationWithImplType<S extends DotNetLikeMethodDeclaration & DotNetVirtualImplementOwner> extends
-		CSharpLightLikeMethodDeclaration<S> implements DotNetVirtualImplementOwner
-{
-	@Nullable
-	private Supplier<DotNetTypeRef> myReturnTypeRef;
-	@Nullable
-	private Supplier<DotNetTypeRef> myTypeRefForImplement;
+        CSharpLightLikeMethodDeclaration<S> implements DotNetVirtualImplementOwner {
+    @Nullable
+    private Supplier<DotNetTypeRef> myReturnTypeRef;
+    @Nullable
+    private Supplier<DotNetTypeRef> myTypeRefForImplement;
 
-	@RequiredReadAction
-	public CSharpLightLikeMethodDeclarationWithImplType(S declaration)
-	{
-		this(declaration, declaration.getParameterList());
-	}
+    @RequiredReadAction
+    public CSharpLightLikeMethodDeclarationWithImplType(S declaration) {
+        this(declaration, declaration.getParameterList());
+    }
 
-	@RequiredReadAction
-	public CSharpLightLikeMethodDeclarationWithImplType(S original, @Nullable DotNetParameterList parameterList)
-	{
-		super(original, parameterList);
-	}
+    @RequiredReadAction
+    public CSharpLightLikeMethodDeclarationWithImplType(S original, @Nullable DotNetParameterList parameterList) {
+        super(original, parameterList);
+    }
 
-	public CSharpLightLikeMethodDeclarationWithImplType<S> withTypeRefForImplement(Supplier<DotNetTypeRef> typeRef)
-	{
-		if(myTypeRefForImplement != null)
-		{
-			throw new UnsupportedOperationException();
-		}
+    public CSharpLightLikeMethodDeclarationWithImplType<S> withTypeRefForImplement(Supplier<DotNetTypeRef> typeRef) {
+        if (myTypeRefForImplement != null) {
+            throw new UnsupportedOperationException();
+        }
 
-		myTypeRefForImplement = typeRef;
-		return this;
-	}
+        myTypeRefForImplement = typeRef;
+        return this;
+    }
 
-	public CSharpLightLikeMethodDeclarationWithImplType<S> withReturnTypeRef(Supplier<DotNetTypeRef> typeRef)
-	{
-		if (myReturnTypeRef != null)
-		{
-			throw new UnsupportedOperationException();
-		}
+    public CSharpLightLikeMethodDeclarationWithImplType<S> withReturnTypeRef(Supplier<DotNetTypeRef> typeRef) {
+        if (myReturnTypeRef != null) {
+            throw new UnsupportedOperationException();
+        }
 
-		myReturnTypeRef = typeRef;
-		return this;
-	}
+        myReturnTypeRef = typeRef;
+        return this;
+    }
 
-	public CSharpLightLikeMethodDeclarationWithImplType<S> withTypeRefForImplement(DotNetTypeRef type)
-	{
-		return withTypeRefForImplement(() -> type);
-	}
+    public CSharpLightLikeMethodDeclarationWithImplType<S> withTypeRefForImplement(DotNetTypeRef type) {
+        return withTypeRefForImplement(() -> type);
+    }
 
-	public CSharpLightLikeMethodDeclarationWithImplType<S> withReturnTypeRef(DotNetTypeRef type)
-	{
-		return withReturnTypeRef(() -> type);
-	}
+    public CSharpLightLikeMethodDeclarationWithImplType<S> withReturnTypeRef(DotNetTypeRef type) {
+        return withReturnTypeRef(() -> type);
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public DotNetTypeRef getTypeRefForImplement()
-	{
-		if(myTypeRefForImplement == null)
-		{
-			return ((S) getOriginalElement()).getTypeRefForImplement();
-		}
+    @Override
+    @SuppressWarnings("unchecked")
+    public DotNetTypeRef getTypeRefForImplement() {
+        if (myTypeRefForImplement == null) {
+            return ((S) getOriginalElement()).getTypeRefForImplement();
+        }
 
-		return myTypeRefForImplement.get();
-	}
+        return myTypeRefForImplement.get();
+    }
 
-	@RequiredReadAction
-	@Override
-	@SuppressWarnings("unchecked")
-	public DotNetTypeRef getReturnTypeRef()
-	{
-		if(myReturnTypeRef == null)
-		{
-			return ((S) getOriginalElement()).getReturnTypeRef();
-		}
+    @RequiredReadAction
+    @Override
+    @SuppressWarnings("unchecked")
+    public DotNetTypeRef getReturnTypeRef() {
+        if (myReturnTypeRef == null) {
+            return ((S) getOriginalElement()).getReturnTypeRef();
+        }
 
-		return myReturnTypeRef.get();
-	}
+        return myReturnTypeRef.get();
+    }
 }
