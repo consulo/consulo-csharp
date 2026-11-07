@@ -40,7 +40,7 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	public MsilMethodAsCSharpConversionMethodDeclaration(PsiElement parent, MsilMethodEntry methodEntry)
 	{
 		super(parent, methodEntry);
-		myReturnTypeRefValue = NotNullLazyValue.createValue(() -> MsilToCSharpUtil.extractToCSharp(myOriginal.getReturnTypeRef()));
+		myReturnTypeRefValue = NotNullLazyValue.createValue(() -> MsilTypeAttributeDecoder.decodeReturnType(methodEntry));
 	}
 
 	@Override

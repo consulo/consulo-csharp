@@ -63,7 +63,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <li>{@code /*error:CS0000*&#47;} - the compiler check reporting an error there; no other check may report one</li>
  * </ul>
  * A {@code /*unresolved*&#47;} comment before a name expects it not to resolve; a {@code // sdk:NET_10} comment limits the
- * file to the listed {@link MockSdk}s.
+ * file to the listed {@link MockSdk}s. A {@code language/<name>.dll} is a library of {@code <name>.cs}, built from
+ * {@code src/test/library/<name>.cs} by {@code build.sh} there.
  *
  * @author VISTALL
  */
@@ -99,7 +100,13 @@ public class LanguageFeatureTest {
     public void check(String fileName, MockSdk sdk, HeadlessProjects projects) throws Exception {
         String source = Files.readString(CSharpResolveTesting.resource(DIRECTORY + "/" + fileName), StandardCharsets.UTF_8);
 
-        PsiFile file = CSharpResolveTesting.openSource(projects, sdk, fileName, source, sdk.getLinqLibraries());
+        List<Path> libraries = new ArrayList<>(sdk.getLinqLibraries());
+        Path library = CSharpResolveTesting.resource(DIRECTORY).resolve(fileName.substring(0, fileName.length() - ".cs".length()) + ".dll");
+        if (Files.exists(library)) {
+            libraries.add(library);
+        }
+
+        PsiFile file = CSharpResolveTesting.openSource(projects, sdk, fileName, source, libraries);
 
         ReadAction.run(() -> {
             List<String> errors = new ArrayList<>();

@@ -59,14 +59,14 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		super(parent, methodEntry);
 		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, this, methodEntry.getModifierList());
 
-		myReturnTypeRefValue = NotNullLazyValue.createValue(() -> MsilToCSharpUtil.extractToCSharp(myOriginal.getReturnTypeRef()));
+		myReturnTypeRefValue = NotNullLazyValue.createValue(() -> MsilTypeAttributeDecoder.decodeReturnType(methodEntry));
 		myParameterTypeRefsValue = NotNullLazyValue.createValue(() ->
 		{
 			DotNetTypeRef[] parameters = myOriginal.getParameterTypeRefs();
 			DotNetTypeRef[] refs = new DotNetTypeRef[parameters.length];
 			for(int i = 0; i < parameters.length; i++)
 			{
-				refs[i] = MsilToCSharpUtil.extractToCSharp(parameters[i]);
+				refs[i] = MsilTypeAttributeDecoder.decode(MsilToCSharpUtil.extractToCSharp(parameters[i]), methodEntry.getParameterAttributes(i));
 			}
 			return refs;
 		});
