@@ -30,6 +30,7 @@ public interface DotNetTypes2 {
                 String TupleElementNamesAttribute = "System.Runtime.CompilerServices.TupleElementNamesAttribute";
                 String IsReadOnlyAttribute = "System.Runtime.CompilerServices.IsReadOnlyAttribute";
                 String RequiresLocationAttribute = "System.Runtime.CompilerServices.RequiresLocationAttribute";
+                String IsByRefLikeAttribute = "System.Runtime.CompilerServices.IsByRefLikeAttribute";
             }
 
             interface InteropServices {
