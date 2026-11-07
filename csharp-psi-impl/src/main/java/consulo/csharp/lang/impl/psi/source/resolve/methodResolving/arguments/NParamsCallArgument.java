@@ -23,6 +23,7 @@ import consulo.csharp.lang.impl.psi.CSharpInheritableChecker;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.lang.impl.psi.source.resolve.operatorResolving.ImplicitCastInfo;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpArrayTypeRef;
+import consulo.dotnet.psi.resolve.DotNetArrayTypeRef;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
@@ -53,6 +54,13 @@ public class NParamsCallArgument extends NCallArgument
 		myTypeRefValue = NotNullLazyValue.createValue(() ->
 		{
 			assert !myCallArguments.isEmpty();
+			// params of a collection (C# 13): the arguments are its elements, of which the compiler makes the collection
+			DotNetTypeRef parameterTypeRef = getParameterTypeRef();
+			if(parameterTypeRef != null && parameterTypeRef != DotNetTypeRef.ERROR_TYPE && !(parameterTypeRef instanceof DotNetArrayTypeRef))
+			{
+				return parameterTypeRef;
+			}
+
 			List<DotNetTypeRef> typeRefs = new ArrayList<>(myCallArguments.size());
 			for(CSharpCallArgument expression : myCallArguments)
 			{
