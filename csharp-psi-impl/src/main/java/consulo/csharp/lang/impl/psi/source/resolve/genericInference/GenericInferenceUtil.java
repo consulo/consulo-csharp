@@ -309,6 +309,9 @@ public class GenericInferenceUtil
 
 		CSharpLambdaExpressionImpl lambdaExpression = (CSharpLambdaExpressionImpl) argumentExpression;
 
+		// Expression<Func<string, T>> types the lambda as Func<string, T>
+		parameterTypeRef = CSharpExpressionTreeUtil.unwrap(parameterTypeRef);
+
 		CSharpLambdaTypeRef baseTypeRefOfLambda = new CSharpLambdaTypeRef(lambdaExpression.getProject(), lambdaExpression.getResolveScope(), null, lambdaExpression.getParameterInfos(), DotNetTypeRef
 				.AUTO_TYPE);
 		if(CSharpTypeUtil.isInheritable(parameterTypeRef, baseTypeRefOfLambda))
