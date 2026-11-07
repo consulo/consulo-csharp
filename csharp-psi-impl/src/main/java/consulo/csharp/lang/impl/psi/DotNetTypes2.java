@@ -27,6 +27,7 @@ public interface DotNetTypes2 {
                 String InternalsVisibleToAttribute = "System.Runtime.CompilerServices.InternalsVisibleToAttribute";
                 String AsyncStateMachineAttribute = "System.Runtime.CompilerServices.AsyncStateMachineAttribute";
                 String DynamicAttribute = "System.Runtime.CompilerServices.DynamicAttribute";
+                String TupleElementNamesAttribute = "System.Runtime.CompilerServices.TupleElementNamesAttribute";
             }
 
             interface InteropServices {
