@@ -124,7 +124,8 @@ public class MsilToCSharpUtil {
             case UNSAFE:
                 break;
             case PARAMS:
-                return hasAttribute(modifierList, DotNetTypes.System.ParamArrayAttribute);
+                return hasAttribute(modifierList, DotNetTypes.System.ParamArrayAttribute)
+                    || hasAttribute(modifierList, DotNetTypes2.System.Runtime.CompilerServices.ParamCollectionAttribute);
             case ABSTRACT:
                 if (hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD)) {
                     return false;
