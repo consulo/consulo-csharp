@@ -115,6 +115,10 @@ public class MsilToCSharpUtil {
                 return modifierList.getParent() instanceof MsilClassEntry
                     && hasAttribute(modifierList, DotNetTypes2.System.Runtime.CompilerServices.IsByRefLikeAttribute);
             case READONLY:
+                // const decimal
+                if (isDecimalConstant(modifierList)) {
+                    return false;
+                }
                 // readonly struct
                 if (modifierList.getParent() instanceof MsilClassEntry && hasAttribute(modifierList, DotNetTypes2.System.Runtime.CompilerServices.IsReadOnlyAttribute)) {
                     return true;
@@ -138,6 +142,17 @@ public class MsilToCSharpUtil {
                 break;
         }
         return elementType != null && modifierList.hasModifier(elementType);
+    }
+
+    /**
+     * const decimal: a static readonly field with DecimalConstantAttribute
+     */
+    @RequiredReadAction
+    public static boolean isDecimalConstant(@Nullable DotNetModifierList modifierList) {
+        return modifierList != null
+            && modifierList.hasModifier(MsilTokens.INITONLY_KEYWORD)
+            && modifierList.hasModifier(MsilTokens.STATIC_KEYWORD)
+            && hasAttribute(modifierList, DotNetTypes2.System.Runtime.CompilerServices.DecimalConstantAttribute);
     }
 
     @SuppressWarnings("unchecked")

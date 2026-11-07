@@ -33,6 +33,7 @@ public interface DotNetTypes2 {
                 String IsByRefLikeAttribute = "System.Runtime.CompilerServices.IsByRefLikeAttribute";
                 String CompilerFeatureRequiredAttribute = "System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute";
                 String ParamCollectionAttribute = "System.Runtime.CompilerServices.ParamCollectionAttribute";
+                String DecimalConstantAttribute = "System.Runtime.CompilerServices.DecimalConstantAttribute";
             }
 
             interface InteropServices {

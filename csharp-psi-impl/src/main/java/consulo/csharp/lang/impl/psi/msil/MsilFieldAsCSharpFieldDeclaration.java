@@ -47,7 +47,9 @@ public class MsilFieldAsCSharpFieldDeclaration extends MsilVariableAsCSharpVaria
 	@RequiredReadAction
 	public boolean isConstant()
 	{
-		return getVariable().hasModifier(MsilTokens.LITERAL_KEYWORD);
+		// const decimal - a static readonly field with DecimalConstantAttribute, decimal is no constant of the CLR
+		return getVariable().hasModifier(MsilTokens.LITERAL_KEYWORD)
+				|| MsilToCSharpUtil.isDecimalConstant(getVariable().getModifierList());
 	}
 
 	@RequiredReadAction
