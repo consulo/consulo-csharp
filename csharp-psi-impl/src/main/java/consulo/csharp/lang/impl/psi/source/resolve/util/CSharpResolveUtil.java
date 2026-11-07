@@ -483,6 +483,17 @@ public class CSharpResolveUtil
 			return current.toTypeRef(false);
 		}
 
+		// the pattern of foreach: GetEnumerator() of the type itself, with Current - Span<T> has no IEnumerable<T>
+		DotNetMethodDeclaration patternMethod = CSharpSearchUtil.findMethodByName("GetEnumerator", null, typeRef, 0);
+		if(patternMethod != null)
+		{
+			DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", null, patternMethod.getReturnTypeRef());
+			if(current != null)
+			{
+				return current.toTypeRef(false);
+			}
+		}
+
 		if(DotNetInheritUtil.isParentOrSelf(DotNetTypes2.System.Collections.IEnumerable, typeRef, true))
 		{
 			return new CSharpTypeRefByQName(typeRef.getProject(), typeRef.getResolveScope(), DotNetTypes.System.Object);
