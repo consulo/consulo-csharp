@@ -16,6 +16,8 @@
 
 package consulo.csharp.lang.impl.psi.msil;
 
+import consulo.csharp.lang.impl.psi.msil.transformer.MsilToNativeElementTransformer;
+import consulo.csharp.lang.impl.psi.ToNativeElementTransformers;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.CachedValueProvider;
 import consulo.application.util.CachedValuesManager;
@@ -212,6 +214,23 @@ public class MsilToCSharpUtil {
         }
     }
 
+    /**
+     * The C# view of an MSIL class - of a nested one inside the C# view of its root class, as {@link MsilDelegateTypeRef}
+     */
+    @Nullable
+    @RequiredReadAction
+    private static PsiElement toCSharpView(@Nullable PsiElement element) {
+        if (!(element instanceof MsilClassEntry classEntry)) {
+            return element;
+        }
+        MsilClassEntry rootClassEntry = MsilToNativeElementTransformer.findRootClassEntry(classEntry);
+        PsiElement wrappedRoot = ToNativeElementTransformers.transform(rootClassEntry);
+        if (wrappedRoot == rootClassEntry) {
+            return element;
+        }
+        return rootClassEntry == classEntry ? wrappedRoot : MsilToNativeElementTransformer.findElementByOriginal(wrappedRoot, classEntry);
+    }
+
     @RequiredReadAction
     public static DotNetTypeRef extractToCSharp(DotNetTypeRef typeRef) {
         if (typeRef == DotNetTypeRef.ERROR_TYPE) {
@@ -242,6 +261,19 @@ public class MsilToCSharpUtil {
             DotNetTypeRef inner = extractToCSharp(innerTypeRef);
 
             PsiElement element = inner.resolve().getElement();
+
+            // Dictionary`2/KeyCollection<!0, !1> - a nested type takes the arguments of its outer types too, outer first:
+            // keep them all, on the C# view of the type (CSharpGenericWrapperTypeRef maps them to the outer parameters)
+            if (toCSharpView(element) instanceof DotNetTypeDeclaration typeDeclaration
+                && typeDeclaration.getGenericParametersCount() < arguments.length
+                && CSharpGenericWrapperTypeRef.genericParametersWithOuter(typeDeclaration).length == arguments.length) {
+                DotNetTypeRef[] converted = new DotNetTypeRef[arguments.length];
+                for (int i = 0; i < arguments.length; i++) {
+                    converted[i] = extractToCSharp(arguments[i]);
+                }
+                return new CSharpGenericWrapperTypeRef(project, resolveScope, new CSharpTypeRefByTypeDeclaration(typeDeclaration), converted);
+            }
+
             if (element instanceof DotNetGenericParameterListOwner) {
                 int genericParametersCount = ((DotNetGenericParameterListOwner) element).getGenericParametersCount();
                 if (genericParametersCount == 0) {

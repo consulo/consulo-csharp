@@ -16,6 +16,9 @@
 
 package consulo.csharp.lang.impl.psi.source.resolve.type;
 
+import java.util.List;
+import java.util.ArrayList;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -89,10 +92,29 @@ public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult i
         }
 
         DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) resolved).getGenericParameters();
+        if (genericParameters.length != getArgumentTypeRefs().length && resolved instanceof DotNetTypeDeclaration typeDeclaration) {
+            // Dictionary`2/KeyCollection<TKey, TValue> - the arguments of a nested type are of its outer types too
+            genericParameters = genericParametersWithOuter(typeDeclaration);
+        }
         if (genericParameters.length != getArgumentTypeRefs().length) {
             return DotNetGenericExtractor.EMPTY;
         }
         return CSharpGenericExtractor.create(genericParameters, getArgumentTypeRefs());
+    }
+
+    /**
+     * The generic parameters of the outer types, outermost first, then of the type - the order of MSIL, where a nested
+     * type repeats the parameters of its outer types
+     */
+    @RequiredReadAction
+    public static DotNetGenericParameter[] genericParametersWithOuter(DotNetTypeDeclaration typeDeclaration) {
+        List<DotNetGenericParameter> parameters = new ArrayList<>();
+        PsiElement current = typeDeclaration;
+        while (current instanceof DotNetTypeDeclaration declaration) {
+            parameters.addAll(0, List.of(declaration.getGenericParameters()));
+            current = declaration.getParent();
+        }
+        return parameters.toArray(DotNetGenericParameter.ARRAY_FACTORY::create);
     }
 
     @Override
