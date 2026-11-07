@@ -31,6 +31,7 @@ public interface DotNetTypes2 {
                 String IsReadOnlyAttribute = "System.Runtime.CompilerServices.IsReadOnlyAttribute";
                 String RequiresLocationAttribute = "System.Runtime.CompilerServices.RequiresLocationAttribute";
                 String IsByRefLikeAttribute = "System.Runtime.CompilerServices.IsByRefLikeAttribute";
+                String CompilerFeatureRequiredAttribute = "System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute";
             }
 
             interface InteropServices {

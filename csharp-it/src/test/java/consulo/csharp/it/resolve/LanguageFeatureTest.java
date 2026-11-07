@@ -26,6 +26,7 @@ import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetElement;
+import consulo.dotnet.psi.DotNetAttributeUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetVariable;
@@ -38,6 +39,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiErrorElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.lang.StringUtil;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -65,6 +67,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <li>{@code /*value:V*&#47;} - the value of the literal starting there</li>
  * <li>{@code /*error:CS0000*&#47;} - the compiler check reporting an error there; no other check may report one</li>
  * <li>{@code /*modifier:readonly*&#47;} - a modifier of the declaration the name there resolves to</li>
+ * <li>{@code /*attribute:System.ObsoleteAttribute*&#47;} - an attribute of the declaration the name there resolves to</li>
+ * </ul>
+ * A {@code !} before a modifier or an attribute expects the declaration to have none such.
+ * <ul>
  * </ul>
  * A {@code /*unresolved*&#47;} comment before a name expects it not to resolve; a {@code // sdk:NET_10} comment limits the
  * file to the listed {@link MockSdk}s. A {@code language/<name>.dll} is a library of {@code <name>.cs}, built from
@@ -78,7 +84,7 @@ public class LanguageFeatureTest {
 
     private static final Pattern SDK_MARKER = Pattern.compile("// sdk:([A-Z0-9_,]+)");
 
-    private static final Pattern MARKER = Pattern.compile("/\\*(type|value|error|modifier):(.+)\\*/");
+    private static final Pattern MARKER = Pattern.compile("/\\*(type|value|error|modifier|attribute):(.+)\\*/");
 
     static Stream<Arguments> sources() throws Exception {
         List<String> files;
@@ -158,7 +164,7 @@ public class LanguageFeatureTest {
                 expected.add(prefix + matcher.group(2));
                 actual.add(prefix + switch (kind) {
                     case "type" -> typeAt(leaf);
-                    case "modifier" -> modifierAt(leaf, matcher.group(2));
+                    case "modifier", "attribute" -> declarationAt(leaf, kind, StringUtil.trimStart(matcher.group(2), "!"));
                     default -> valueAt(leaf);
                 });
             }
@@ -225,10 +231,10 @@ public class LanguageFeatureTest {
     }
 
     /**
-     * The modifier, if the declaration the name resolves to has it - else {@code !modifier}
+     * The modifier or the attribute, if the declaration the name resolves to has it - else {@code !name}
      */
     @RequiredReadAction
-    private static String modifierAt(PsiElement leaf, String modifier) {
+    private static String declarationAt(PsiElement leaf, String kind, String name) {
         CSharpReferenceExpression reference = PsiTreeUtil.getParentOfType(leaf, CSharpReferenceExpression.class);
         if (reference == null || reference.getReferenceElement() != leaf) {
             return "<no reference>";
@@ -237,7 +243,10 @@ public class LanguageFeatureTest {
         if (!(resolved instanceof DotNetModifierListOwner owner)) {
             return "<no declaration>";
         }
-        return owner.hasModifier(CSharpModifier.valueOf(modifier.toUpperCase(Locale.ROOT))) ? modifier : "!" + modifier;
+        boolean has = "modifier".equals(kind)
+            ? owner.hasModifier(CSharpModifier.valueOf(name.toUpperCase(Locale.ROOT)))
+            : DotNetAttributeUtil.hasAttribute(owner, name);
+        return has ? name : "!" + name;
     }
 
     @RequiredReadAction

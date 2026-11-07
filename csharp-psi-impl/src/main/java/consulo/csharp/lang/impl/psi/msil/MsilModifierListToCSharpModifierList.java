@@ -37,6 +37,9 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.impl.externalAttributes.ExternalAttributesUtil;
 import consulo.language.psi.PsiElement;
 import consulo.msil.impl.lang.psi.MsilTokens;
+import consulo.msil.impl.lang.stubbing.MsilCustomAttributeStubber;
+import consulo.msil.impl.lang.stubbing.values.MsiCustomAttributeValue;
+import consulo.msil.lang.psi.MsilCustomAttribute;
 import consulo.util.collection.ArrayUtil;
 
 import org.jspecify.annotations.Nullable;
@@ -55,6 +58,11 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 			DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute,
 			DotNetTypes2.System.Runtime.CompilerServices.AsyncStateMachineAttribute
 	};
+
+	/**
+	 * The features of {@code CompilerFeatureRequiredAttribute} C# here has - the ObsoleteAttribute next to it is for a compiler without them
+	 */
+	private static final Set<String> ourKnownCompilerFeatures = Set.of("RefStructs", "RequiredMembers");
 
 	private final DotNetModifierList myModifierList;
 
@@ -144,11 +152,18 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	public DotNetAttribute[] getAttributes()
 	{
 		DotNetAttribute[] oldAttributes = myModifierList.getAttributes();
+		boolean knownFeatures = requiresKnownCompilerFeatures(oldAttributes);
 		List<DotNetAttribute> attributes = new ArrayList<>(oldAttributes.length + myAdditionalAttributes.size());
 		for(DotNetAttribute oldAttribute : oldAttributes)
 		{
 			DotNetTypeDeclaration resolvedType = oldAttribute.resolveToType();
 			if(resolvedType != null && ArrayUtil.contains(resolvedType.getVmQName(), ourAttributeBans))
+			{
+				continue;
+			}
+			// a ref struct, or a constructor of a type with required members, is obsolete for a compiler without the feature only
+			if(knownFeatures && resolvedType != null && (DotNetTypes.System.ObsoleteAttribute.equals(resolvedType.getVmQName())
+					|| DotNetTypes2.System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute.equals(resolvedType.getVmQName())))
 			{
 				continue;
 			}
@@ -173,6 +188,24 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 			}
 		}
 		return attributes.toArray(new DotNetAttribute[attributes.size()]);
+	}
+
+	@RequiredReadAction
+	private static boolean requiresKnownCompilerFeatures(DotNetAttribute[] attributes)
+	{
+		for(DotNetAttribute attribute : attributes)
+		{
+			if(attribute instanceof MsilCustomAttribute customAttribute
+					&& DotNetTypes2.System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute.equals(attribute.toTypeRef().getVmQName()))
+			{
+				List<MsiCustomAttributeValue> arguments = MsilCustomAttributeStubber.build(customAttribute).getConstructorArguments();
+				if(arguments.size() == 1 && arguments.get(0).getValue() != null && ourKnownCompilerFeatures.contains(arguments.get(0).getValue().toString()))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public List<ExternalAttributeNode> findAttributes(ExternalAttributeHolder holder)
