@@ -162,6 +162,12 @@ CS0820:
     text: An implicitly typed local variable declarator cannot use an array initializer
 CS0826:
     text: The type of an implicitly typed array cannot be inferred from the initializer. Try specifying array type explicitly
+CS0832:
+    text: An expression tree may not contain an assignment operator
+CS0834:
+    text: A lambda expression with a statement body cannot be converted to an expression tree
+CS0838:
+    text: An expression tree may not contain a multidimensional array initializer
 CS1004:
     text: "Duplicate ''{0}'' modifier"
 CS1008:
@@ -210,6 +216,8 @@ CS1738:
     text: Named argument specifications must appear after all fixed arguments have been specified
 CS1741:
     text: "Cannot specify a default value for the ''{0}'' parameter"
+CS1945:
+    text: An expression tree may not contain an anonymous method expression
 CS1960:
     text: Variant type parameters can only be used with interfaces and delegates
 CS1980:
@@ -218,16 +226,38 @@ CS1984:
     text: "The ''{0}'' operator cannot be used in the body of a finally clause"
 CS1985:
     text: "The ''{0}'' operator cannot be used in the body of a catch clause"
+CS1989:
+    text: Async lambda expressions cannot be converted to expression trees
 CS1998:
     text: "Async block lacks 'await' operator and will run synchronously"
 CS4009:
     text: "''{0}'': an entry point cannot be async method"
+CS8072:
+    text: An expression tree lambda may not contain a null propagating operator
+CS8110:
+    text: An expression tree may not contain a reference to a local function
+CS8122:
+    text: "An expression tree may not contain an 'is' pattern-matching operator"
+CS8143:
+    text: An expression tree may not contain a tuple literal
+CS8153:
+    text: An expression tree lambda may not contain a call to a method, property, or indexer that returns by reference
+CS8188:
+    text: An expression tree may not contain a throw-expression
+CS8198:
+    text: An expression tree may not contain an out argument variable declaration
+CS8207:
+    text: An expression tree may not contain a discard
+CS8514:
+    text: An expression tree may not contain a switch expression
 CS8625:
     text: Cannot convert null literal to non-nullable reference type.
 CS8632:
     text: "The annotation for nullable reference types should only be used in code within a '#nullable' annotations context."
 CS8803:
     text: Top-level statements must precede namespace and type declarations
+CS9175:
+    text: An expression tree may not contain a collection expression
 add.using:
     text: Add Using
 cast.argument.0.to.1:

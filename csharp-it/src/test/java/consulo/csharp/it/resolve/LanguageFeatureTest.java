@@ -22,6 +22,7 @@ import consulo.csharp.impl.ide.highlight.check.CSharpCompilerChecks;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
 import consulo.csharp.lang.impl.psi.source.CSharpConstantExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpOutRefWrapExpressionImpl;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -136,7 +137,9 @@ public class LanguageFeatureTest {
             List<String> unresolved = new ArrayList<>();
             for (CSharpReferenceExpression reference : PsiTreeUtil.findChildrenOfType(file, CSharpReferenceExpression.class)) {
                 PsiElement name = reference.getReferenceElement();
-                if (reference.resolve() == null && name != null) {
+                // out _ - a discard, no reference
+                boolean discard = reference.isPlaceholderReference() && reference.getParent() instanceof CSharpOutRefWrapExpressionImpl;
+                if (reference.resolve() == null && name != null && !discard) {
                     unresolved.add(name.getText() + "@" + name.getTextOffset());
                 }
             }

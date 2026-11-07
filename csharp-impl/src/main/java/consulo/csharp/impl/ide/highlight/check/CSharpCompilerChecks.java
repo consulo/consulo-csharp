@@ -111,6 +111,9 @@ public enum CSharpCompilerChecks {
     CS0818(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var cant be used if not initializer
     CS0820(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var cant be use it initializer is implicit array initializer
     CS0826(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // fail inherit type of typed array initializer
+    CS0832(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // assignment in expression tree
+    CS0834(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // statement lambda as expression tree
+    CS0838(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // multidimensional array initializer in expression tree
     CS1004(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // duplicate modifier check
     CS1008(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // eum type can be only byte,sbyte,short,ushort,int,uint,long,ulong
     CS1021(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // too big number
@@ -137,14 +140,26 @@ public enum CSharpCompilerChecks {
     CS1737(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter default values check for order
     CS1738(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter default values check for order
     CS1741(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // default value cant be specified for ref/out parameters
+    CS1945(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // anonymous method in expression tree
     CS1960(CSharpLanguageVersion._2_0, HighlightInfoType.WRONG_REF), // in and out modifiers can be only for interface(or delegate) generic parameter
     CS1980(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // dynamic checks
     CS1984(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside finally statements
     CS1985(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside catch statements
+    CS1989(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // async lambda as expression tree
     CS1998(CSharpLanguageVersion._4_0, CSharpHighlightInfoType::getUnusedDeclaration), // async modifier - then no await
     CS4009(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // async modifier cant be at entry point
+    CS8072(CSharpLanguageVersion._6_0, HighlightInfoType.ERROR), // null propagating operator in expression tree
+    CS8110(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // local function in expression tree
+    CS8122(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // is pattern in expression tree
+    CS8143(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // tuple literal in expression tree
+    CS8153(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // ref returning call in expression tree
+    CS8188(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // throw expression in expression tree
+    CS8198(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // out variable in expression tree
+    CS8207(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // discard in expression tree
+    CS8514(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // switch expression in expression tree
     CS8632(CSharpLanguageVersion._8_0, HighlightInfoType.WARNING), // nullable type check
     CS8803(CSharpLanguageVersion._9_0, HighlightInfoType.ERROR), // top-level statements must precede namespace and type declarations
+    CS9175(CSharpLanguageVersion._10_0, HighlightInfoType.ERROR), // collection expression in expression tree
 
     CC0001(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //reference checks
     CC0002(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //operator reference checks
