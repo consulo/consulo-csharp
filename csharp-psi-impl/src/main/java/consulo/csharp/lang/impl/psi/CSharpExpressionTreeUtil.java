@@ -20,6 +20,10 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.CachedValueProvider;
 import consulo.csharp.lang.impl.psi.source.CSharpAssignmentExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpLambdaExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLambdaParameterImpl;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaTypeRef;
+import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.csharp.lang.impl.psi.source.CSharpParenthesesExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpReturnStatementImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpTypeCastExpressionImpl;
@@ -52,6 +56,8 @@ import org.jspecify.annotations.Nullable;
  */
 public final class CSharpExpressionTreeUtil {
     public static final String EXPRESSION_VM_QNAME = "System.Linq.Expressions.Expression`1";
+    public static final String LAMBDA_EXPRESSION_VM_QNAME = "System.Linq.Expressions.LambdaExpression";
+    public static final String BASE_EXPRESSION_VM_QNAME = "System.Linq.Expressions.Expression";
 
     private CSharpExpressionTreeUtil() {
     }
@@ -88,7 +94,34 @@ public final class CSharpExpressionTreeUtil {
 
     @RequiredReadAction
     private static boolean isExpressionType(DotNetTypeRef typeRef) {
-        return typeRef.resolve().getElement() instanceof DotNetTypeDeclaration type && EXPRESSION_VM_QNAME.equals(type.getVmQName());
+        return typeRef.resolve().getElement() instanceof DotNetTypeDeclaration type
+            && (EXPRESSION_VM_QNAME.equals(type.getVmQName()) || LAMBDA_EXPRESSION_VM_QNAME.equals(type.getVmQName())
+            || BASE_EXPRESSION_VM_QNAME.equals(type.getVmQName()));
+    }
+
+    /**
+     * @return true for {@code LambdaExpression} and {@code Expression} - the targets of a lambda with a natural type
+     */
+    @RequiredReadAction
+    public static boolean isNonGenericExpressionType(DotNetTypeRef typeRef) {
+        return typeRef.resolve().getElement() instanceof DotNetTypeDeclaration type
+            && (LAMBDA_EXPRESSION_VM_QNAME.equals(type.getVmQName()) || BASE_EXPRESSION_VM_QNAME.equals(type.getVmQName()));
+    }
+
+    /**
+     * A natural type of a lambda (C# 10) - a Func or an Action of its parameters: all of them have their types written
+     */
+    @RequiredReadAction
+    public static boolean hasNaturalType(CSharpLambdaTypeRef lambdaTypeRef) {
+        if (!(lambdaTypeRef.resolve() instanceof CSharpLambdaResolveResult lambda)) {
+            return false;
+        }
+        for (CSharpSimpleParameterInfo parameterInfo : lambda.getParameterInfos()) {
+            if (!(parameterInfo.getElement() instanceof CSharpLambdaParameterImpl parameter) || parameter.getType() == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

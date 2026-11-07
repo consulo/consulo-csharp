@@ -239,6 +239,10 @@ public class CSharpInheritableChecker {
             if (delegateTypeRef != top) {
                 return isInheritable(delegateTypeRef, target, castResolvingInfo);
             }
+            // a lambda with a natural type (C# 10) converts to LambdaExpression and Expression - as Expression<Func<...>>
+            if (CSharpExpressionTreeUtil.isNonGenericExpressionType(top) && CSharpExpressionTreeUtil.hasNaturalType(lambdaTypeRef)) {
+                return CSharpTypeUtil.SIMPLE_SUCCESS;
+            }
         }
 
         DotNetTypeResolveResult topTypeResolveResult = top.resolve();
