@@ -400,7 +400,8 @@ public class CS0029 extends CompilerCheck<PsiElement> {
         }
         else if (element instanceof CSharpReturnStatementImpl) {
             CSharpSimpleLikeMethodAsElement pseudoMethod = PsiTreeUtil.getParentOfType(element, CSharpSimpleLikeMethodAsElement.class);
-            if (pseudoMethod == null) {
+            // a value where none may be, none where one is required - CS0127, CS0126 and others
+            if (pseudoMethod == null || CS0127.returnError((CSharpReturnStatementImpl) element) != null) {
                 return null;
             }
 

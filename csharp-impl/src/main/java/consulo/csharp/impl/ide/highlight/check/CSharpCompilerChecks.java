@@ -52,7 +52,10 @@ public enum CSharpCompilerChecks {
     CS0119(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // a method as the qualifier of a member access
     CS0120(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // instance members required instance object reference
     CS0122(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // visibility checks
+    CS0126(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // return without a value where one is required
+    CS0127(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // return with a value from a void method
     CS0128(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // local variable redeclaration check
+    CS0131(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // assignment to what is not a variable
     CS0132(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static constructors are parameterless
     CS0133(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constant value must be compile time constant
     CS0136(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // variable redeclaration check in different scopes
@@ -77,6 +80,8 @@ public enum CSharpCompilerChecks {
     CS0173(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // failed to find conditional expression type
     CS0177(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // out parameter not assigned when control leaves
     CS0188(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // this of a struct used before all its fields are assigned
+    CS0191(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // readonly field assigned out of a constructor
+    CS0198(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static readonly field assigned out of the static constructor
     CS0200(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // readonly check
     CS0201(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expression statement can be only call, etc
     CS0206(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref/out expressions can be only indexer, etc
@@ -126,6 +131,7 @@ public enum CSharpCompilerChecks {
     CS0832(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // assignment in expression tree
     CS0834(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // statement lambda as expression tree
     CS0838(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // multidimensional array initializer in expression tree
+    CS0841(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // local used before its declaration
     CS0843(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // struct auto-property not assigned by a constructor
     CS1004(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // duplicate modifier check
     CS1008(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // eum type can be only byte,sbyte,short,ushort,int,uint,long,ulong
@@ -142,6 +148,7 @@ public enum CSharpCompilerChecks {
     CS1612(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // can't modify field value from non local reference
     CS1614(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // double resolving to X and XAttribute
     CS1620(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref out exp checks
+    CS1622(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // return in an iterator
     CS1632(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // break or continue out of a lambda
     CS1643(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // not all code paths of a lambda or an anonymous method return a value
     CS1644(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // features checks
@@ -161,8 +168,10 @@ public enum CSharpCompilerChecks {
     CS1984(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside finally statements
     CS1985(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside catch statements
     CS1989(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // async lambda as expression tree
+    CS1997(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // return with a value from an async Task method
     CS1998(CSharpLanguageVersion._4_0, CSharpHighlightInfoType::getUnusedDeclaration), // async modifier - then no await
     CS4009(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // async modifier cant be at entry point
+    CS8030(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // return with a value from a lambda of a void delegate
     CS8070(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // the final switch section falls out of the switch
     CS8072(CSharpLanguageVersion._6_0, HighlightInfoType.ERROR), // null propagating operator in expression tree
     CS8110(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // local function in expression tree

@@ -42,8 +42,14 @@ CS0120:
     text: "An object reference is required to access non-static member ''{0}''"
 CS0122:
     text: "''{0}'' is inaccessible due to its protection level"
+CS0126:
+    text: "An object of a type convertible to ''{0}'' is required"
+CS0127:
+    text: "Since ''{0}'' returns void, a return keyword must not be followed by an object expression"
 CS0128:
     text: "A local variable named ''{0}'' is already defined in this scope"
+CS0131:
+    text: The left-hand side of an assignment must be a variable, property or indexer
 CS0132:
     text: "''{0}'': The static constructor must be parameterless"
 CS0133:
@@ -94,6 +100,10 @@ CS0177:
     text: "The out parameter ''{0}'' must be assigned to before control leaves the current method"
 CS0188:
     text: "The ''this'' object cannot be used before all of its fields have been assigned. Consider updating to language version ''{0}'' to auto-default the unassigned fields"
+CS0191:
+    text: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+CS0198:
+    text: A static readonly field cannot be assigned to (except in a static constructor or a variable initializer)
 CS0200:
     text: "Property or indexer ''{0}'' cannot be assigned to -- it is read only"
 CS0201:
@@ -194,6 +204,8 @@ CS0834:
     text: A lambda expression with a statement body cannot be converted to an expression tree
 CS0838:
     text: An expression tree may not contain a multidimensional array initializer
+CS0841:
+    text: "Cannot use local variable ''{0}'' before it is declared"
 CS0843:
     text: "Auto-implemented property ''{0}'' must be fully assigned before control is returned to the caller. Consider updating to language version ''{1}'' to auto-default the property"
 CS1004:
@@ -222,6 +234,8 @@ CS1614:
     text: "''{0}'' is ambiguous between ''{0}'' and ''{0}Attribute''. Use either ''@{0}'' or ''{0}Attribute''"
 CS1620:
     text: "Argument {0} must be passed with the ''{1}'' keyword"
+CS1622:
+    text: Cannot return a value from an iterator. Use the yield return statement to return a value, or yield break to end the iteration
 CS1632:
     text: Control cannot leave the body of an anonymous method or lambda expression
 CS1643:
@@ -260,10 +274,14 @@ CS1985:
     text: "The ''{0}'' operator cannot be used in the body of a catch clause"
 CS1989:
     text: Async lambda expressions cannot be converted to expression trees
+CS1997:
+    text: "Since ''{0}'' is an async method that returns ''{1}'', a return keyword must not be followed by an object expression"
 CS1998:
     text: "Async block lacks 'await' operator and will run synchronously"
 CS4009:
     text: "''{0}'': an entry point cannot be async method"
+CS8030:
+    text: Anonymous function converted to a void returning delegate cannot return a value
 CS8070:
     text: "Control cannot fall out of switch from final case label (''{0}'')"
 CS8072:

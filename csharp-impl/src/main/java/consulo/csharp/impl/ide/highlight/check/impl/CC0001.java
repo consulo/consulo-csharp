@@ -77,8 +77,8 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
         if (parent instanceof CSharpMethodCallExpressionImpl || parent instanceof CSharpConstructorSuperCallImpl) {
             return Collections.emptyList();
         }
-        // goto L - CS0159
-        if (parent instanceof CSharpGotoStatementImpl) {
+        // goto L - CS0159; a local declared after - CS0841
+        if (parent instanceof CSharpGotoStatementImpl || CS0841.declaredLater(expression) != null) {
             return Collections.emptyList();
         }
 
