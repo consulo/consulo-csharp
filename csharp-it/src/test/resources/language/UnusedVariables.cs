@@ -43,6 +43,7 @@ class UnusedVariables
 
     void NotConstant()
     {
+        object /*unused:CC0007*/boxed = 1;
         int /*unused:CC0007*/call = F();
         /*unused:CC0007*/call = 1;
         var /*unused:CC0007*/created = new object();
