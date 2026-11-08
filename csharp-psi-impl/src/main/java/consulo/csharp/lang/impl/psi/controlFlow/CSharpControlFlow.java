@@ -57,6 +57,7 @@ public final class CSharpControlFlow implements ControlFlow {
 
     private volatile @Nullable Set<PsiElement> myUnreachableStatements;
     private volatile @Nullable CSharpDefiniteAssignment myDefiniteAssignment;
+    private volatile @Nullable List<CSharpUnusedValues.Write> myUnusedValues;
 
     CSharpControlFlow(PsiElement owner,
                       Instruction[] instructions,
@@ -190,6 +191,18 @@ public final class CSharpControlFlow implements ControlFlow {
      */
     public Map<Instruction, List<PsiElement>> getReturns() {
         return myReturns;
+    }
+
+    /**
+     * The assignments of variables of the owner whose value is never read
+     */
+    @RequiredReadAction
+    public List<CSharpUnusedValues.Write> getUnusedValues() {
+        List<CSharpUnusedValues.Write> result = myUnusedValues;
+        if (result == null) {
+            myUnusedValues = result = CSharpUnusedValues.compute(this);
+        }
+        return result;
     }
 
     @RequiredReadAction

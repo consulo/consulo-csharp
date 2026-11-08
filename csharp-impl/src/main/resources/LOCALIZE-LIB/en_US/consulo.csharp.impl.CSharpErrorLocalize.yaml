@@ -1,5 +1,7 @@
 CC0003:
     text: Index method is not resolved
+CC0007:
+    text: "Unnecessary assignment of a value to ''{0}''"
 CS0017:
     text: Program has more than one entry point defined. Compile with /main to specify the type that contains the entry point.
 CS0019:

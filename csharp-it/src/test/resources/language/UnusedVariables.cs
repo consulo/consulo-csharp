@@ -19,49 +19,48 @@ class UnusedVariables
 
     void Constants()
     {
-        int /*unused:CS0219*/reassigned = 1;
-        reassigned = 2;
+        int /*unused:CS0219*//*unused:CC0007*/reassigned = 1;
+        /*unused:CC0007*/reassigned = 2;
         int /*unused:CS0219*/assignedLater;
-        assignedLater = 1;
-        string /*unused:CS0219*/text = "a";
-        int /*unused:CS0219*/expression = (1 + 2) * Constant;
-        object /*unused:CS0219*/nothing = null;
-        int? /*unused:CS0219*/nullable = null;
-        Kind /*unused:CS0219*/kind = Kind.A;
-        int /*unused:CS0219*/size = sizeof(int);
-        string /*unused:CS0219*/name = nameof(UnusedVariables);
-        int /*unused:CS0219*/fallback = default;
-        int /*unused:CS0219*/first = 1, /*unused:CS0219*/second = 2;
-        bool /*unused:CS0219*/flag = !true;
-        const int /*unused:CS0219*/local = 1;
-        int /*unused:CS0219*/captured = 1;
-        Action action = () => captured = 2;
-        for (int /*unused:CS0219*/i = 0; ; )
+        /*unused:CC0007*/assignedLater = 1;
+        string /*unused:CS0219*//*unused:CC0007*/text = "a";
+        int /*unused:CS0219*//*unused:CC0007*/expression = (1 + 2) * Constant;
+        object /*unused:CS0219*//*unused:CC0007*/nothing = null;
+        int? /*unused:CS0219*//*unused:CC0007*/nullable = null;
+        Kind /*unused:CS0219*//*unused:CC0007*/kind = Kind.A;
+        int /*unused:CS0219*//*unused:CC0007*/size = sizeof(int);
+        int /*unused:CS0219*//*unused:CC0007*/fallback = default;
+        int /*unused:CS0219*//*unused:CC0007*/first = 1, /*unused:CS0219*//*unused:CC0007*/second = 2;
+        bool /*unused:CS0219*//*unused:CC0007*/flag = !true;
+        const int /*unused:CS0219*//*unused:CC0007*/local = 1;
+        int /*unused:CS0219*//*unused:CC0007*/captured = 1;
+        Action /*unused:CC0007*/action = () => captured = 2;
+        for (int /*unused:CS0219*//*unused:CC0007*/i = 0; ; )
         {
             break;
         }
     }
 
-    void Accepted()
+    void NotConstant()
     {
-        int call = F();
-        call = 1;
-        var created = new object();
+        int /*unused:CC0007*/call = F();
+        /*unused:CC0007*/call = 1;
+        var /*unused:CC0007*/created = new object();
         int read = 1;
         Use(read);
-        read = 2;
+        /*unused:CC0007*/read = 2;
         int incremented = 1;
-        incremented++;
+        /*unused:CC0007*/incremented++;
         int compound = 1;
-        compound += 2;
-        int passed = 1;
-        Try(out passed);
-        int named = 1;
+        /*unused:CC0007*/compound += 2;
+        int /*unused:CC0007*/passed = 1;
+        Try(out /*unused:CC0007*/passed);
+        int /*unused:CC0007*/named = 1;
         string nameOf = nameof(named);
         Use(nameOf.Length);
-        int chained = 1;
-        chained = chained = 2;
-        int conditional = F() > 0 ? 1 : 2;
-        Type type = typeof(int);
+        int /*unused:CC0007*/chained = 1;
+        /*unused:CC0007*/chained = /*unused:CC0007*/chained = 2;
+        int /*unused:CC0007*/conditional = F() > 0 ? 1 : 2;
+        Type /*unused:CC0007*/type = typeof(int);
     }
 }
