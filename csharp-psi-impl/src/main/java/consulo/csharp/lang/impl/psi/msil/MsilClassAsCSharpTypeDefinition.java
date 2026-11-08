@@ -17,6 +17,11 @@
 package consulo.csharp.lang.impl.psi.msil;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.psi.DotNetTypes2;
+import consulo.dotnet.psi.DotNetAttribute;
+import consulo.msil.impl.lang.stubbing.MsilCustomAttributeStubber;
+import consulo.msil.impl.lang.stubbing.values.MsiCustomAttributeValue;
+import consulo.msil.lang.psi.MsilCustomAttribute;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.application.util.NotNullLazyValue;
 import consulo.application.util.NullableLazyValue;
@@ -50,6 +55,32 @@ import java.util.*;
  */
 public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClassEntry> implements CSharpTypeDeclaration
 {
+	/**
+	 * The name of DefaultMemberAttribute of the type - of its indexers
+	 */
+	@Nullable
+	@RequiredReadAction
+	private static String findDefaultMember(MsilClassEntry classEntry)
+	{
+		for(DotNetAttribute attribute : classEntry.getAttributes())
+		{
+			if(attribute instanceof MsilCustomAttribute customAttribute && DotNetTypes2.System.Reflection.DefaultMemberAttribute.equals(attribute.toTypeRef().getVmQName()))
+			{
+				List<MsiCustomAttributeValue> arguments = MsilCustomAttributeStubber.build(customAttribute).getConstructorArguments();
+				return arguments.size() == 1 && arguments.get(0).getValue() != null ? arguments.get(0).getValue().toString() : null;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Without DefaultMemberAttribute every property with parameters - an explicit implementation of an indexer is named by its interface
+	 */
+	private static boolean isDefaultMember(@Nullable String name, @Nullable String defaultMember)
+	{
+		return defaultMember == null || name != null && (name.equals(defaultMember) || name.endsWith("." + defaultMember));
+	}
+
 	private NotNullLazyValue<DotNetNamedElement[]> myMembersValue = new NotNullLazyValue<DotNetNamedElement[]>()
 	{
 		@Override
@@ -65,6 +96,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 			List<DotNetNamedElement> list = new ArrayList<>(temp.length);
 
 			boolean isEnum = isEnum();
+			String defaultMember = findDefaultMember(myOriginal);
 			Set<String> bannedFieldNames = new HashSet<>();
 			for(DotNetNamedElement element : temp)
 			{
@@ -112,8 +144,10 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 					{
 						Pair<DotNetXAccessor, MsilMethodEntry> value = pairs.get(0);
 
-						if(value.getFirst().getAccessorKind() == DotNetXAccessor.Kind.GET && value.getSecond().getParameters().length == 1 || value.getFirst().getAccessorKind() ==
-								DotNetXAccessor.Kind.SET && value.getSecond().getParameters().length == 2)
+						// an indexer: a property with parameters, named by DefaultMemberAttribute of the type - Item, or the IndexerNameAttribute one
+						boolean withParameters = value.getFirst().getAccessorKind() == DotNetXAccessor.Kind.GET && value.getSecond().getParameters().length > 0
+								|| value.getFirst().getAccessorKind() == DotNetXAccessor.Kind.SET && value.getSecond().getParameters().length > 1;
+						if(withParameters && isDefaultMember(element.getName(), defaultMember))
 						{
 							list.add(new MsilPropertyAsCSharpIndexMethodDeclaration(parentThis, (MsilPropertyEntry) element, pairs));
 							continue;

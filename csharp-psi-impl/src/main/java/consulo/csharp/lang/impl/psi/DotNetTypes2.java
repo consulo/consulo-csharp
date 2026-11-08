@@ -42,6 +42,10 @@ public interface DotNetTypes2 {
             }
         }
 
+        interface Reflection {
+            String DefaultMemberAttribute = "System.Reflection.DefaultMemberAttribute";
+        }
+
         interface Linq {
             String IGrouping$2 = "System.Linq.IGrouping`2";
             String Enumerable = "System.Linq.Enumerable";

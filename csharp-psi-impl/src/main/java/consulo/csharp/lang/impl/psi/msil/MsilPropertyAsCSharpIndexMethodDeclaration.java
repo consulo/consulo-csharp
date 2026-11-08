@@ -78,8 +78,14 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		}
 		Pair<DotNetXAccessor, MsilMethodEntry> p = pairs.get(0);
 
-		DotNetParameter firstParameter = p.getSecond().getParameters()[0];
-		myParameters = new DotNetParameter[]{new MsilParameterAsCSharpParameter(this, firstParameter, this, 0)};
+		// the parameters of the getter - of the setter without its value
+		DotNetParameter[] accessorParameters = p.getSecond().getParameters();
+		int count = p.getFirst().getAccessorKind() == DotNetXAccessor.Kind.SET ? accessorParameters.length - 1 : accessorParameters.length;
+		myParameters = new DotNetParameter[count];
+		for(int i = 0; i < count; i++)
+		{
+			myParameters[i] = new MsilParameterAsCSharpParameter(this, accessorParameters[i], this, i);
+		}
 
 		myTypeForImplementValue = NullableLazyValue.of(() ->
 		{
