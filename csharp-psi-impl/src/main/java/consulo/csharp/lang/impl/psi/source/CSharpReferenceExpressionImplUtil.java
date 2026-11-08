@@ -28,6 +28,8 @@ import consulo.csharp.lang.impl.psi.CSharpFileFactory;
 import consulo.csharp.lang.impl.psi.CSharpNullableTypeUtil;
 import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.csharp.lang.impl.psi.resolve.AttributeByNameSelector;
+import consulo.csharp.lang.impl.psi.CSharpNativeIntegerUtil;
+import consulo.csharp.lang.impl.psi.msil.CSharpTransform;
 import consulo.csharp.lang.impl.psi.source.resolve.*;
 import consulo.csharp.lang.impl.psi.source.resolve.extensionResolver.ExtensionResolveScopeProcessor;
 import consulo.csharp.lang.impl.psi.source.resolve.genericInference.GenericInferenceManager;
@@ -631,6 +633,10 @@ public class CSharpReferenceExpressionImplUtil
 	public static ResolveResult[] multiResolveImpl(ResolveToKind kind, final CSharpCallArgumentListOwner callArgumentListOwner, final CSharpQualifiedNonReference element, boolean resolveFromParent)
 	{
 		ResolveResult[] resolveResults = buildSelectorAndMultiResolve(kind, callArgumentListOwner, element, resolveFromParent);
+		if(resolveResults.length == 0 && element instanceof CSharpReferenceExpression referenceExpression)
+		{
+			resolveResults = resolveNativeInteger(kind, referenceExpression);
+		}
 		if(element instanceof CSharpReferenceExpression)
 		{
 			int typeArgumentListSize = getTypeArgumentListSize(element);
@@ -663,6 +669,28 @@ public class CSharpReferenceExpressionImplUtil
 			}
 		}
 		return resolveResults;
+	}
+
+	/**
+	 * nint and nuint (C# 9) - System.IntPtr and System.UIntPtr, for a name which is no declaration: they are no keywords
+	 */
+	@RequiredReadAction
+	private static ResolveResult[] resolveNativeInteger(ResolveToKind kind, CSharpReferenceExpression expression)
+	{
+		if(kind != ResolveToKind.TYPE_LIKE && kind != ResolveToKind.EXPRESSION_OR_TYPE_LIKE && kind != ResolveToKind.ANY_MEMBER
+				|| expression.getQualifier() != null || getTypeArgumentListSize(expression) > 0)
+		{
+			return ResolveResult.EMPTY_ARRAY;
+		}
+
+		String vmQName = CSharpNativeIntegerUtil.toVmQName(expression.getReferenceName());
+		if(vmQName == null)
+		{
+			return ResolveResult.EMPTY_ARRAY;
+		}
+
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(expression.getProject()).findType(vmQName, expression.getResolveScope(), CSharpTransform.INSTANCE);
+		return type == null ? ResolveResult.EMPTY_ARRAY : new ResolveResult[]{new CSharpResolveResult(type)};
 	}
 
 	@RequiredReadAction

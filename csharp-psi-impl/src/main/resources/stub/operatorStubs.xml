@@ -779,6 +779,205 @@
 			<parameter/>
 		</operator>
 	</type>
+	<!-- nint and nuint (C# 9) - the operators of long and ulong, without -nuint -->
+	<type name="System.IntPtr">
+		<operator name="PLUS">
+			<parameter/>
+		</operator>
+
+		<operator name="PLUSPLUS">
+			<parameter/>
+		</operator>
+
+		<operator name="MINUS">
+			<parameter/>
+		</operator>
+
+		<operator name="MINUSMINUS">
+			<parameter/>
+		</operator>
+
+		<operator name="GT" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="LT" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="LTEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="GTEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="PLUS">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="MINUS">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="MUL">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="DIV">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="PERC">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="XOR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="AND">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="TILDE">
+			<parameter/>
+		</operator>
+
+		<operator name="GTGT">
+			<parameter/>
+			<parameter type="System.Int32"/>
+		</operator>
+
+		<operator name="LTLT">
+			<parameter/>
+			<parameter type="System.Int32"/>
+		</operator>
+
+		<operator name="EQEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="NTEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+	</type>
+	<type name="System.UIntPtr">
+		<operator name="PLUS">
+			<parameter/>
+		</operator>
+
+		<operator name="PLUSPLUS">
+			<parameter/>
+		</operator>
+
+		<operator name="MINUSMINUS">
+			<parameter/>
+		</operator>
+
+		<operator name="GT" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="LT" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="LTEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="GTEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="PLUS">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="MINUS">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="MUL">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="DIV">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="PERC">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="XOR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="AND">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="TILDE">
+			<parameter/>
+		</operator>
+
+		<operator name="GTGT">
+			<parameter/>
+			<parameter type="System.Int32"/>
+		</operator>
+
+		<operator name="LTLT">
+			<parameter/>
+			<parameter type="System.Int32"/>
+		</operator>
+
+		<operator name="EQEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="NTEQ" type="System.Boolean">
+			<parameter/>
+			<parameter/>
+		</operator>
+	</type>
 
 	<type name="System.Single">
 		<operator name="PLUS">

@@ -54,11 +54,13 @@ public final class NumericPromotion
 			DotNetTypes.System.UInt16, DotNetTypes.System.Char);
 
 	private static final Set<String> ourSigned = Set.of(DotNetTypes.System.SByte, DotNetTypes.System.Int16, DotNetTypes.System.Int32,
-			DotNetTypes.System.Int64);
+			DotNetTypes.System.Int64, DotNetTypes.System.IntPtr);
 
 	private static final Set<String> ourNumeric = Set.of(DotNetTypes.System.SByte, DotNetTypes.System.Byte, DotNetTypes.System.Int16,
 			DotNetTypes.System.UInt16, DotNetTypes.System.Char, DotNetTypes.System.Int32, DotNetTypes.System.UInt32, DotNetTypes.System.Int64,
-			DotNetTypes.System.UInt64, DotNetTypes.System.Single, DotNetTypes.System.Double, DotNetTypes.System.Decimal);
+			DotNetTypes.System.UInt64, DotNetTypes.System.Single, DotNetTypes.System.Double, DotNetTypes.System.Decimal,
+			// nint and nuint (C# 9)
+			DotNetTypes.System.IntPtr, DotNetTypes.System.UIntPtr);
 
 	private NumericPromotion()
 	{
@@ -129,7 +131,8 @@ public final class NumericPromotion
 			{
 				return DotNetTypes.System.Int64;
 			}
-			if(type.equals(DotNetTypes.System.UInt64))
+			// there is no -ulong, no -nuint
+			if(type.equals(DotNetTypes.System.UInt64) || type.equals(DotNetTypes.System.UIntPtr))
 			{
 				return null;
 			}
@@ -163,9 +166,19 @@ public final class NumericPromotion
 			// ulong with a signed operand has no common type
 			return ourSigned.contains(left) || ourSigned.contains(right) ? null : DotNetTypes.System.UInt64;
 		}
+		if(left.equals(DotNetTypes.System.UIntPtr) || right.equals(DotNetTypes.System.UIntPtr))
+		{
+			// nuint with a signed operand - long and nint too - has no common type
+			return ourSigned.contains(left) || ourSigned.contains(right) ? null : DotNetTypes.System.UIntPtr;
+		}
 		if(left.equals(DotNetTypes.System.Int64) || right.equals(DotNetTypes.System.Int64))
 		{
 			return DotNetTypes.System.Int64;
+		}
+		if(left.equals(DotNetTypes.System.IntPtr) || right.equals(DotNetTypes.System.IntPtr))
+		{
+			// uint does not convert to nint
+			return left.equals(DotNetTypes.System.UInt32) || right.equals(DotNetTypes.System.UInt32) ? DotNetTypes.System.Int64 : DotNetTypes.System.IntPtr;
 		}
 		if(left.equals(DotNetTypes.System.UInt32) || right.equals(DotNetTypes.System.UInt32))
 		{

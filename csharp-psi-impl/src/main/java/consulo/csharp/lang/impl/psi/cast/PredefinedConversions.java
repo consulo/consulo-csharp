@@ -74,30 +74,37 @@ public final class PredefinedConversions {
 
     private static final Set<String> ourNumeric = Set.of(DotNetTypes.System.Char, DotNetTypes.System.SByte, DotNetTypes.System.Byte,
         DotNetTypes.System.Int16, DotNetTypes.System.UInt16, DotNetTypes.System.Int32, DotNetTypes.System.UInt32, DotNetTypes.System.Int64,
-        DotNetTypes.System.UInt64, DotNetTypes.System.Single, DotNetTypes.System.Double, DotNetTypes.System.Decimal);
+        DotNetTypes.System.UInt64, DotNetTypes.System.Single, DotNetTypes.System.Double, DotNetTypes.System.Decimal,
+        // nint and nuint (C# 9)
+        DotNetTypes.System.IntPtr, DotNetTypes.System.UIntPtr);
 
     /**
-     * Implicit numeric conversions, C# spec 10.2.3.
+     * Implicit numeric conversions, C# spec 10.2.3 - with the native integers of C# 9.
      */
     private static final Map<String, Set<String>> ourImplicitNumeric = Map.ofEntries(
-        Map.entry(DotNetTypes.System.SByte, Set.of(DotNetTypes.System.Int16, DotNetTypes.System.Int32, DotNetTypes.System.Int64,
+        Map.entry(DotNetTypes.System.SByte, Set.of(DotNetTypes.System.IntPtr, DotNetTypes.System.Int16, DotNetTypes.System.Int32, DotNetTypes.System.Int64,
             DotNetTypes.System.Single, DotNetTypes.System.Double, DotNetTypes.System.Decimal)),
-        Map.entry(DotNetTypes.System.Byte, Set.of(DotNetTypes.System.Int16, DotNetTypes.System.UInt16, DotNetTypes.System.Int32,
+        Map.entry(DotNetTypes.System.Byte, Set.of(DotNetTypes.System.IntPtr, DotNetTypes.System.UIntPtr, DotNetTypes.System.Int16, DotNetTypes.System.UInt16, DotNetTypes.System.Int32,
             DotNetTypes.System.UInt32, DotNetTypes.System.Int64, DotNetTypes.System.UInt64, DotNetTypes.System.Single, DotNetTypes.System.Double,
             DotNetTypes.System.Decimal)),
-        Map.entry(DotNetTypes.System.Int16, Set.of(DotNetTypes.System.Int32, DotNetTypes.System.Int64, DotNetTypes.System.Single,
+        Map.entry(DotNetTypes.System.Int16, Set.of(DotNetTypes.System.IntPtr, DotNetTypes.System.Int32, DotNetTypes.System.Int64, DotNetTypes.System.Single,
             DotNetTypes.System.Double, DotNetTypes.System.Decimal)),
-        Map.entry(DotNetTypes.System.UInt16, Set.of(DotNetTypes.System.Int32, DotNetTypes.System.UInt32, DotNetTypes.System.Int64,
+        Map.entry(DotNetTypes.System.UInt16, Set.of(DotNetTypes.System.IntPtr, DotNetTypes.System.UIntPtr, DotNetTypes.System.Int32, DotNetTypes.System.UInt32, DotNetTypes.System.Int64,
             DotNetTypes.System.UInt64, DotNetTypes.System.Single, DotNetTypes.System.Double, DotNetTypes.System.Decimal)),
-        Map.entry(DotNetTypes.System.Int32, Set.of(DotNetTypes.System.Int64, DotNetTypes.System.Single, DotNetTypes.System.Double,
+        Map.entry(DotNetTypes.System.Int32, Set.of(DotNetTypes.System.IntPtr, DotNetTypes.System.Int64, DotNetTypes.System.Single, DotNetTypes.System.Double,
             DotNetTypes.System.Decimal)),
-        Map.entry(DotNetTypes.System.UInt32, Set.of(DotNetTypes.System.Int64, DotNetTypes.System.UInt64, DotNetTypes.System.Single,
+        Map.entry(DotNetTypes.System.UInt32, Set.of(DotNetTypes.System.UIntPtr, DotNetTypes.System.Int64, DotNetTypes.System.UInt64, DotNetTypes.System.Single,
             DotNetTypes.System.Double, DotNetTypes.System.Decimal)),
         Map.entry(DotNetTypes.System.Int64, Set.of(DotNetTypes.System.Single, DotNetTypes.System.Double, DotNetTypes.System.Decimal)),
         Map.entry(DotNetTypes.System.UInt64, Set.of(DotNetTypes.System.Single, DotNetTypes.System.Double, DotNetTypes.System.Decimal)),
-        Map.entry(DotNetTypes.System.Char, Set.of(DotNetTypes.System.UInt16, DotNetTypes.System.Int32, DotNetTypes.System.UInt32,
+        Map.entry(DotNetTypes.System.Char, Set.of(DotNetTypes.System.IntPtr, DotNetTypes.System.UIntPtr, DotNetTypes.System.UInt16, DotNetTypes.System.Int32, DotNetTypes.System.UInt32,
             DotNetTypes.System.Int64, DotNetTypes.System.UInt64, DotNetTypes.System.Single, DotNetTypes.System.Double, DotNetTypes.System.Decimal)),
-        Map.entry(DotNetTypes.System.Single, Set.of(DotNetTypes.System.Double))
+        Map.entry(DotNetTypes.System.Single, Set.of(DotNetTypes.System.Double)),
+        // nint and nuint (C# 9)
+        Map.entry(DotNetTypes.System.IntPtr, Set.of(DotNetTypes.System.Int64, DotNetTypes.System.Single, DotNetTypes.System.Double,
+            DotNetTypes.System.Decimal)),
+        Map.entry(DotNetTypes.System.UIntPtr, Set.of(DotNetTypes.System.UInt64, DotNetTypes.System.Single, DotNetTypes.System.Double,
+            DotNetTypes.System.Decimal))
     );
 
     private record PredefinedType(String vmQName, boolean nullable) {

@@ -147,6 +147,17 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 				return another;
 			}
 
+			// nint and nuint (C# 9) - their size is known at run time only, a constant must fit int and uint
+			if(testInteger(DotNetTypes.System.IntPtr, qName, numberValue, Integer.MIN_VALUE, Integer.MAX_VALUE))
+			{
+				return another;
+			}
+
+			if(testInteger(DotNetTypes.System.UIntPtr, qName, numberValue, UInteger.MIN_VALUE, UInteger.MAX_VALUE))
+			{
+				return another;
+			}
+
 			if(testBigInteger(DotNetTypes.System.UInt64, qName, numberValue, ULong.MIN_VALUE, ULong.MAX_VALUE))
 			{
 				return another;
