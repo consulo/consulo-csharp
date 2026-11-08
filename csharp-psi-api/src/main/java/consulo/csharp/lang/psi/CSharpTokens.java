@@ -236,6 +236,8 @@ public interface CSharpTokens extends StandardTokenTypes {
 
     IElementType DOT = new IElementType("DOT", CSharpLanguage.INSTANCE);
 
+    IElementType DOTDOT = new IElementType("DOTDOT", CSharpLanguage.INSTANCE);
+
     IElementType MUL = new IElementType("MUL", CSharpLanguage.INSTANCE);
 
     IElementType EQEQ = new IElementType("EQEQ", CSharpLanguage.INSTANCE);

@@ -18,6 +18,7 @@ package consulo.csharp.lang.impl.psi.source.resolve.type;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpTypeRefPresentationUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpRangeExpressionImpl;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightIndexMethodDeclarationBuilder;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightParameterBuilder;
 import consulo.csharp.lang.impl.psi.light.builder.CSharpLightTypeDeclarationBuilder;
@@ -93,6 +94,13 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 		addIndexMethodWithType(DotNetTypes.System.UInt32, builder, myProject, myResolveScope, myDimensions, myInnerTypeRef);
 		addIndexMethodWithType(DotNetTypes.System.Int64, builder, myProject, myResolveScope, myDimensions, myInnerTypeRef);
 		addIndexMethodWithType(DotNetTypes.System.UInt64, builder, myProject, myResolveScope, myDimensions, myInnerTypeRef);
+
+		// array[^1] and array[1..3] (C# 8) - an array of one dimension only
+		if(myDimensions == 0)
+		{
+			addIndexMethodWithType(CSharpRangeExpressionImpl.INDEX, builder, myProject, myResolveScope, myDimensions, myInnerTypeRef);
+			addIndexMethodWithType(CSharpRangeExpressionImpl.RANGE, builder, myProject, myResolveScope, myDimensions, this);
+		}
 
 		return new ArrayResolveResult(builder, myDimensions, myInnerTypeRef);
 	}

@@ -155,6 +155,8 @@ public interface CSharpElements {
 
     IElementType THROW_EXPRESSION = new CompositeElementTypeAsPsiFactory("THROW_EXPRESSION", CSharpLanguage.INSTANCE, CSharpThrowExpressionImpl::new);
 
+    IElementType RANGE_EXPRESSION = new CompositeElementTypeAsPsiFactory("RANGE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpRangeExpressionImpl::new);
+
     IElementType DISCARD_PATTERN = new CompositeElementTypeAsPsiFactory("DISCARD_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
 
     IElementType CONSTANT_PATTERN = new CompositeElementTypeAsPsiFactory("CONSTANT_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);

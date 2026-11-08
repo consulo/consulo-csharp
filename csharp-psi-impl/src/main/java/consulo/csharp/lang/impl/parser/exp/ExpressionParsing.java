@@ -62,7 +62,8 @@ public class ExpressionParsing extends SharedParsingHelpers {
     private static final TokenSet MULTIPLICATIVE_OPS = TokenSet.create(MUL, DIV, PERC);
     private static final TokenSet POSTFIX_OPS = TokenSet.create(PLUSPLUS, MINUSMINUS);
     private static final TokenSet PREF_ARITHMETIC_OPS = TokenSet.orSet(POSTFIX_OPS, TokenSet.create(PLUS, MINUS, MUL, AND));
-    private static final TokenSet PREFIX_OPS = TokenSet.orSet(PREF_ARITHMETIC_OPS, TokenSet.create(TILDE, EXCL));
+    // ^1 - an index from the end (C# 8)
+    private static final TokenSet PREFIX_OPS = TokenSet.orSet(PREF_ARITHMETIC_OPS, TokenSet.create(TILDE, EXCL, XOR));
     private static final TokenSet ID_OR_SUPER = TokenSet.create(CSharpTokens.IDENTIFIER, BASE_KEYWORD);
     private static final TokenSet THIS_OR_BASE = TokenSet.create(THIS_KEYWORD, BASE_KEYWORD);
 
@@ -256,8 +257,31 @@ public class ExpressionParsing extends SharedParsingHelpers {
     /**
      * {@code value switch { pattern [when condition] => result, ... }} - C# 8, binds tighter than {@code *}
      */
+    /**
+     * {@code a..b}, {@code a..}, {@code ..b}, {@code ..} (C# 8) - between the switch expression and the unary ones
+     */
+    private static PsiBuilder.@Nullable Marker parseRange(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+        PsiBuilder.Marker range;
+        if (builder.getTokenType() == DOTDOT) {
+            range = builder.mark();
+        }
+        else {
+            PsiBuilder.Marker start = parseUnary(builder, set, flags);
+            if (start == null || builder.getTokenType() != DOTDOT) {
+                return start;
+            }
+            range = start.precede();
+        }
+
+        builder.advanceLexer();
+        // the end is optional
+        parseUnary(builder, set, flags);
+        range.done(RANGE_EXPRESSION);
+        return range;
+    }
+
     private static PsiBuilder.@Nullable Marker parseSwitchExpression(final CSharpBuilderWrapper builder, ModifierSet set, int flags) {
-        PsiBuilder.Marker value = parseUnary(builder, set, flags);
+        PsiBuilder.Marker value = parseRange(builder, set, flags);
         if (value == null) {
             return null;
         }

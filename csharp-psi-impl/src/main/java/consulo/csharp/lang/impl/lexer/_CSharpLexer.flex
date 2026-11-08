@@ -532,6 +532,8 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"^"                       { return CSharpTokens.XOR; }
 
+	".."                      { return CSharpTokens.DOTDOT; }
+
 	"."                       { return CSharpTokens.DOT; }
 
 	","                       { return CSharpTokens.COMMA; }

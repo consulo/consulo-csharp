@@ -276,6 +276,11 @@
 	</type>
 
 	<type name="System.Int32">
+		<!-- ^1 - an index from the end (C# 8) -->
+		<operator name="XOR" type="System.Index">
+			<parameter/>
+		</operator>
+
 		<operator name="PLUS">
 			<parameter/>
 		</operator>

@@ -25,10 +25,14 @@ import consulo.csharp.lang.impl.psi.light.builder.CSharpLightParameterBuilder;
 import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveResult;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpSearchUtil;
 import consulo.csharp.lang.psi.*;
 import consulo.document.util.TextRange;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetMethodDeclaration;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import consulo.dotnet.psi.resolve.DotNetPointerTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.language.ast.IElementType;
@@ -67,7 +71,77 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 			}
 
 			ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.multiResolveImpl(CSharpReferenceExpression.ResolveToKind.ARRAY_METHOD, expression, expression, true);
+			if(CSharpResolveUtil.findFirstValidResult(resolveResults) == null)
+			{
+				ResolveResult implicitIndexer = resolveImplicitIndexOrRange(expression, typeRef, resolveResults);
+				if(implicitIndexer != null)
+				{
+					return new ResolveResult[]{implicitIndexer};
+				}
+			}
 			return incompleteCode ? resolveResults : CSharpResolveUtil.filterValidResults(resolveResults);
+		}
+
+		/**
+		 * The implicit Index and Range support of C# 8 - for a type without such indexers: x[^1] by its int indexer, when it has Length
+		 * or Count; x[1..3] by its Slice(int, int), of a string by Substring
+		 */
+		@Nullable
+		@RequiredReadAction
+		private static ResolveResult resolveImplicitIndexOrRange(CSharpIndexAccessExpressionImpl expression, DotNetTypeRef typeRef, ResolveResult[] candidates)
+		{
+			CSharpCallArgument[] arguments = expression.getCallArguments();
+			DotNetExpression argument = arguments.length == 1 ? arguments[0].getArgumentExpression() : null;
+			if(argument == null || !(argument.toTypeRef(true).resolve().getElement() instanceof DotNetTypeDeclaration argumentType))
+			{
+				return null;
+			}
+
+			String argumentVmQName = argumentType.getVmQName();
+			boolean index = CSharpRangeExpressionImpl.INDEX.equals(argumentVmQName);
+			if(!index && !CSharpRangeExpressionImpl.RANGE.equals(argumentVmQName))
+			{
+				return null;
+			}
+
+			// countable - with Length or Count
+			if(CSharpSearchUtil.findPropertyByName("Length", null, typeRef) == null && CSharpSearchUtil.findPropertyByName("Count", null, typeRef) == null)
+			{
+				return null;
+			}
+
+			DotNetTypeRef returnTypeRef = null;
+			if(index)
+			{
+				for(ResolveResult candidate : candidates)
+				{
+					if(candidate.getElement() instanceof CSharpIndexMethodDeclaration indexer && indexer.getParameterTypeRefs().length == 1
+							&& DotNetTypeRefUtil.isVmQNameEqual(indexer.getParameterTypeRefs()[0], DotNetTypes.System.Int32))
+					{
+						returnTypeRef = indexer.getReturnTypeRef();
+						break;
+					}
+				}
+			}
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, DotNetTypes.System.String))
+			{
+				returnTypeRef = typeRef;
+			}
+			else
+			{
+				DotNetMethodDeclaration slice = CSharpSearchUtil.findMethodByName("Slice", null, typeRef, 2);
+				returnTypeRef = slice == null ? null : slice.getReturnTypeRef();
+			}
+
+			if(returnTypeRef == null)
+			{
+				return null;
+			}
+
+			CSharpLightIndexMethodDeclarationBuilder builder = new CSharpLightIndexMethodDeclarationBuilder(expression.getProject(), 0);
+			builder.withReturnType(returnTypeRef);
+			builder.addParameter(new CSharpLightParameterBuilder(expression.getProject()).withName(index ? "index" : "range").withTypeRef(argument.toTypeRef(true)));
+			return new CSharpResolveResult(builder);
 		}
 	}
 
