@@ -28,6 +28,7 @@ import consulo.csharp.lang.impl.parser.decl.GenericParameterParsing;
 import consulo.csharp.lang.impl.parser.decl.MethodParsing;
 import consulo.csharp.lang.impl.parser.exp.ExpressionParsing;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.language.ast.LighterASTNode;
 
@@ -404,6 +405,14 @@ public class StatementParsing extends SharedParsingHelpers {
             }
 
             CharSequence sequence = builder.getOriginalText().subSequence(currentOffset, builder.getCurrentOffset());
+            // await Task.Yield(); out of an async method - an await expression, await x; - a declaration of x
+            if (!set.contains(CSharpSoftTokens.ASYNC_KEYWORD) && tokenType == CSharpTokens.IDENTIFIER && isAwait(sequence)
+                && builder.getVersion().isAtLeast(CSharpLanguageVersion._5_0)) {
+                IElementType afterName = builder.lookAhead(1);
+                if (afterName != CSharpTokens.SEMICOLON && afterName != CSharpTokens.EQ && afterName != CSharpTokens.COMMA) {
+                    return LocalVarType.NONE;
+                }
+            }
             if (tokenType == CSharpTokens.IDENTIFIER) {
                 if (builder.lookAhead(1) == CSharpTokens.SEMICOLON || builder.lookAhead(1) == CSharpTokens.EQ) {
                     return LocalVarType.WITH_NAME;

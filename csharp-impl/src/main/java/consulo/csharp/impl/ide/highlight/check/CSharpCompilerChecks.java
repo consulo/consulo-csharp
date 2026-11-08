@@ -168,9 +168,13 @@ public enum CSharpCompilerChecks {
     CS1984(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside finally statements
     CS1985(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside catch statements
     CS1989(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // async lambda as expression tree
+    CS1996(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // await in the body of a lock
     CS1997(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // return with a value from an async Task method
     CS1998(CSharpLanguageVersion._4_0, CSharpHighlightInfoType::getUnusedDeclaration), // async modifier - then no await
     CS4009(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // async modifier cant be at entry point
+    CS4032(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // await in a method not async
+    CS4033(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // await in a void method not async
+    CS4034(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // await in a lambda or anonymous method not async
     CS8030(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // return with a value from a lambda of a void delegate
     CS8070(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // the final switch section falls out of the switch
     CS8072(CSharpLanguageVersion._6_0, HighlightInfoType.ERROR), // null propagating operator in expression tree

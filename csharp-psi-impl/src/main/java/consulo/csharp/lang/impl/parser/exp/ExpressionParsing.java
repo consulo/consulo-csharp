@@ -23,6 +23,7 @@ import consulo.csharp.lang.impl.parser.decl.MethodParsing;
 import consulo.csharp.lang.impl.parser.stmt.StatementParsing;
 import consulo.csharp.lang.impl.psi.CSharpElements;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
+import consulo.csharp.lang.impl.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -971,7 +972,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
         if (version.isAtLeast(CSharpLanguageVersion._4_0)) {
             asyncState = builder.enableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
         }
-        if (modifierSet.contains(CSharpSoftTokens.ASYNC_KEYWORD)) {
+        if (modifierSet.contains(CSharpSoftTokens.ASYNC_KEYWORD) || isAwaitOutOfAsync(builder)) {
             awaitState = builder.enableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
         }
         if (version.isAtLeast(CSharpLanguageVersion._6_0)) {
@@ -1315,6 +1316,18 @@ public class ExpressionParsing extends SharedParsingHelpers {
             mark.done(OUT_REF_WRAP_EXPRESSION);
         }
         return mark;
+    }
+
+    private static final TokenSet AWAIT_OPERAND_START = TokenSet.orSet(CSharpTokenSets.LITERALS, TokenSet.create(CSharpTokens.IDENTIFIER, NEW_KEYWORD,
+        THIS_KEYWORD, BASE_KEYWORD, DELEGATE_KEYWORD, TYPEOF_KEYWORD, CHECKED_KEYWORD, UNCHECKED_KEYWORD, DEFAULT_KEYWORD));
+
+    /**
+     * await out of an async method followed by what cannot follow a name - an await expression, its error is CS4032
+     * and others (Roslyn LanguageParser.IsAwaitExpression); else await is a name
+     */
+    public static boolean isAwaitOutOfAsync(CSharpBuilderWrapper builder) {
+        return builder.getVersion().isAtLeast(CSharpLanguageVersion._5_0) && builder.getTokenType() == CSharpTokens.IDENTIFIER
+            && "await".contentEquals(builder.getTokenSequence()) && AWAIT_OPERAND_START.contains(builder.lookAhead(1));
     }
 
     private static PsiBuilder.Marker parseAwaitExpression(CSharpBuilderWrapper builder, ModifierSet set) {

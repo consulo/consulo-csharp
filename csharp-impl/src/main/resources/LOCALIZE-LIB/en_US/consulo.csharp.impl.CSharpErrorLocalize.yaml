@@ -274,12 +274,20 @@ CS1985:
     text: "The ''{0}'' operator cannot be used in the body of a catch clause"
 CS1989:
     text: Async lambda expressions cannot be converted to expression trees
+CS1996:
+    text: Cannot await in the body of a lock statement
 CS1997:
     text: "Since ''{0}'' is an async method that returns ''{1}'', a return keyword must not be followed by an object expression"
 CS1998:
     text: "Async block lacks 'await' operator and will run synchronously"
 CS4009:
     text: "''{0}'': an entry point cannot be async method"
+CS4032:
+    text: "The ''await'' operator can only be used within an async method. Consider marking this method with the ''async'' modifier and changing its return type to ''Task<{0}>''"
+CS4033:
+    text: The 'await' operator can only be used within an async method. Consider marking this method with the 'async' modifier and changing its return type to 'Task'
+CS4034:
+    text: "The ''await'' operator can only be used within an async {0}. Consider marking this {0} with the ''async'' modifier"
 CS8030:
     text: Anonymous function converted to a void returning delegate cannot return a value
 CS8070:
