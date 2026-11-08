@@ -16,12 +16,19 @@
 
 package consulo.csharp.lang.impl.evaluator;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.component.ProcessCanceledException;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.impl.psi.source.CSharpAsExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpBinaryExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpCheckedExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpConditionalExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpDefaultExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpNameOfExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpSizeOfExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpConstantExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpParenthesesExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpPrefixExpressionImpl;
@@ -31,6 +38,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 
 import org.jspecify.annotations.Nullable;
@@ -64,6 +72,44 @@ public class ConstantExpressionEvaluator extends CSharpElementVisitor {
     @Nullable
     public static Boolean evaluateBoolean(@Nullable DotNetExpression expression) {
         return new ConstantExpressionEvaluator(expression, true).getValueAs(Boolean.class);
+    }
+
+    /**
+     * A constant expression of the C# spec (12.23) - literals, null, default, const variables and enum members, sizeof,
+     * nameof, and the operators, casts and checked of them; its value need not be computable here
+     */
+    @RequiredReadAction
+    public static boolean isConstantExpression(@Nullable DotNetExpression expression) {
+        if (expression instanceof CSharpParenthesesExpressionImpl parentheses) {
+            return isConstantExpression(parentheses.getInnerExpression());
+        }
+        if (expression instanceof CSharpCheckedExpressionImpl checkedExpression) {
+            return isConstantExpression(checkedExpression.getInnerExpression());
+        }
+        if (expression instanceof CSharpTypeCastExpressionImpl cast) {
+            return isConstantExpression(cast.getInnerExpression());
+        }
+        if (expression instanceof CSharpConstantExpressionImpl || expression instanceof CSharpDefaultExpressionImpl
+            || expression instanceof CSharpSizeOfExpressionImpl || expression instanceof CSharpNameOfExpressionImpl) {
+            return true;
+        }
+        if (expression instanceof CSharpPrefixExpressionImpl prefix) {
+            IElementType operator = prefix.getOperatorElement().getOperatorElementType();
+            return (operator == CSharpTokens.MINUS || operator == CSharpTokens.PLUS || operator == CSharpTokens.EXCL || operator == CSharpTokens.TILDE)
+                && isConstantExpression(prefix.getExpression());
+        }
+        if (expression instanceof CSharpBinaryExpressionImpl binary) {
+            return isConstantExpression(binary.getLeftExpression()) && isConstantExpression(binary.getRightExpression());
+        }
+        if (expression instanceof CSharpConditionalExpressionImpl conditional) {
+            return isConstantExpression(conditional.getConditionExpression())
+                && isConstantExpression(conditional.getTrueExpression())
+                && isConstantExpression(conditional.getFalseExpression());
+        }
+        if (expression instanceof CSharpReferenceExpression reference) {
+            return reference.resolve() instanceof DotNetVariable variable && variable.isConstant();
+        }
+        return false;
     }
 
     @Override
