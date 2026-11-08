@@ -1,0 +1,94 @@
+# METHOD_DECLARATION static bool Try(out int value)
+  0(1) entry
+  1(2) EXPRESSION_STATEMENT value = 1;
+  2(3) WRITE value
+  3(5) RETURN_STATEMENT return true;
+! 4(5) end
+  5() exit
+
+# METHOD_DECLARATION void Use(int value)
+  0(1) entry
+  1(2) WRITE value
+  2(3) end
+  3() exit
+
+# METHOD_DECLARATION void Declarations(int parameter)
+  0(1) entry
+  1(2) WRITE parameter
+  2(3) LOCAL_VARIABLE_DECLARATION_STATEMENT int x;
+  3(4) DECLARE x
+  4(5) LOCAL_VARIABLE_DECLARATION_STATEMENT int y = parameter;
+  5(6) READ parameter
+  6(7) WRITE y
+  7(8) EXPRESSION_STATEMENT x = y + 1;
+  8(9) READ y
+  9(10) WRITE x
+  10(11) EXPRESSION_STATEMENT x++;
+  11(12) READ x
+  12(13) WRITE x
+  13(14) EXPRESSION_STATEMENT Use(x);
+  14(15) READ x
+  15(16) end
+  16() exit
+
+# METHOD_DECLARATION void Conditions()
+  0(1) entry
+  1(2) LOCAL_VARIABLE_DECLARATION_STATEMENT int x;
+  2(3) DECLARE x
+  3(4,8) IF_STATEMENT if (b && Try(out x)) { Use(x); }
+  4(5,8) WRITE x
+  5(6) BLOCK_STATEMENT { Use(x); }. Condition: b && Try(out x):true
+  6(7) EXPRESSION_STATEMENT Use(x);
+  7(9) READ x
+  8(9) IF_STATEMENT if (b && Try(out x)) { Use(x); }. Condition: b && Try(out x):false
+  9(10) IF_STATEMENT if (!(o is int i)) { return; }
+  10(11,12) DECLARE i
+  11(14) WRITE i
+  12(13) BLOCK_STATEMENT { return; }. Condition: !(o is int i):true
+  13(18) RETURN_STATEMENT return;
+  14(15) IF_STATEMENT if (!(o is int i)) { return; }. Condition: !(o is int i):false
+  15(16) EXPRESSION_STATEMENT Use(i);
+  16(17) READ i
+  17(18) end
+  18() exit
+
+# METHOD_DECLARATION void OutVar()
+  0(1) entry
+  1(2) IF_STATEMENT if (Try(out var y)) { Use(y); }
+  2(3) DECLARE y
+  3(4,7) WRITE y
+  4(5) BLOCK_STATEMENT { Use(y); }. Condition: Try(out var y):true
+  5(6) EXPRESSION_STATEMENT Use(y);
+  6(8) READ y
+  7(8) IF_STATEMENT if (Try(out var y)) { Use(y); }. Condition: Try(out var y):false
+  8(9) end
+  9() exit
+
+# METHOD_DECLARATION void Tuple()
+  0(1) entry
+  1(2) LOCAL_VARIABLE_DECLARATION_STATEMENT int x;
+  2(3) DECLARE x
+  3(4) LOCAL_VARIABLE_DECLARATION_STATEMENT int w;
+  4(5) DECLARE w
+  5(6) EXPRESSION_STATEMENT (x, w) = (1, 2);
+  6(7) WRITE x
+  7(8) WRITE w
+  8(9) end
+  9() exit
+
+# METHOD_DECLARATION void Catch()
+  0(1) entry
+  1(2) LOCAL_VARIABLE_DECLARATION_STATEMENT int z;
+  2(3) DECLARE z
+  3(4,6) TRY_STATEMENT try { z = 1; } catch (System.Exception e) { z = 2;...
+  4(5,6) EXPRESSION_STATEMENT z = 1;
+  5(6,10) WRITE z
+  6(7) CATCH_STATEMENT catch (System.Exception e) { z = 2; }
+  7(8) WRITE e
+  8(9) EXPRESSION_STATEMENT z = 2;
+  9(10) WRITE z
+  10(11) EXPRESSION_STATEMENT Use(z);
+  11(12) READ z
+  12(13) end
+  13() exit
+

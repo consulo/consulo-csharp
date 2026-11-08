@@ -17,11 +17,16 @@
   0(1) entry
   1(2) LOCAL_VARIABLE_DECLARATION_STATEMENT Func<int> lambda = () => { if (b) return 1; return...
   2(3) LAMBDA_EXPRESSION () => { if (b) return 1; return 2; }
-  3(4) LOCAL_VARIABLE_DECLARATION_STATEMENT Func<int> anonymous = delegate { return 1; };
-  4(5) DELEGATE_EXPRESSION delegate { return 1; }
-  5(6) EXPRESSION_STATEMENT Console.WriteLine(lambda() + anonymous() + Local()...
-  6(7) end
-  7() exit
+  3(4) WRITE lambda
+  4(5) LOCAL_VARIABLE_DECLARATION_STATEMENT Func<int> anonymous = delegate { return 1; };
+  5(6) DELEGATE_EXPRESSION delegate { return 1; }
+  6(7) WRITE anonymous
+  7(8) EXPRESSION_STATEMENT Console.WriteLine(lambda() + anonymous() + Local()...
+  8(9) READ lambda
+  9(10) READ anonymous
+  10(11) call REFERENCE_EXPRESSION Local
+  11(12) end
+  12() exit
 
 # LAMBDA_EXPRESSION () =>
   0(1) entry

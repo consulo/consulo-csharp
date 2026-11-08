@@ -51,17 +51,25 @@ public final class CSharpControlFlow implements ControlFlow {
     private final Instruction myEnd;
     private final boolean myIterator;
     private final List<SectionEnd> mySectionEnds;
+    private final Map<Instruction, List<PsiElement>> myReturns;
     private final Map<PsiElement, List<Instruction>> myIndex = new HashMap<>();
     private final BitSet myReachable = new BitSet();
 
     private volatile @Nullable Set<PsiElement> myUnreachableStatements;
+    private volatile @Nullable CSharpDefiniteAssignment myDefiniteAssignment;
 
-    CSharpControlFlow(PsiElement owner, Instruction[] instructions, Instruction end, boolean iterator, List<SectionEnd> sectionEnds) {
+    CSharpControlFlow(PsiElement owner,
+                      Instruction[] instructions,
+                      Instruction end,
+                      boolean iterator,
+                      List<SectionEnd> sectionEnds,
+                      Map<Instruction, List<PsiElement>> returns) {
         myOwner = owner;
         myInstructions = instructions;
         myEnd = end;
         myIterator = iterator;
         mySectionEnds = sectionEnds;
+        myReturns = returns;
 
         for (Instruction instruction : instructions) {
             PsiElement element = instruction.getElement();
@@ -167,6 +175,30 @@ public final class CSharpControlFlow implements ControlFlow {
 
     public List<SectionEnd> getSectionEnds() {
         return mySectionEnds;
+    }
+
+    /**
+     * The end of the body
+     */
+    public Instruction getEnd() {
+        return myEnd;
+    }
+
+    /**
+     * The nodes a return leaves from to the exit, with its statements - several through one copy of a finally block;
+     * the owner for an expression body
+     */
+    public Map<Instruction, List<PsiElement>> getReturns() {
+        return myReturns;
+    }
+
+    @RequiredReadAction
+    public CSharpDefiniteAssignment getDefiniteAssignment() {
+        CSharpDefiniteAssignment result = myDefiniteAssignment;
+        if (result == null) {
+            myDefiniteAssignment = result = CSharpDefiniteAssignment.compute(this);
+        }
+        return result;
     }
 
     /**

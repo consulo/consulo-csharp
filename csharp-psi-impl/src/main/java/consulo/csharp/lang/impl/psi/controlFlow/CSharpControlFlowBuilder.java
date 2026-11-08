@@ -20,15 +20,21 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.progress.ProgressManager;
 import consulo.csharp.lang.impl.evaluator.ConstantExpressionEvaluator;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
+import consulo.csharp.lang.impl.psi.CSharpElements;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.lang.impl.psi.source.*;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpNativeType;
+import consulo.csharp.lang.psi.CSharpNewExpression;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.CSharpTupleVariable;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -50,8 +56,11 @@ import java.util.*;
  * (not for blocks and empty statements), conditional nodes for the branches of {@code if} and loops, constant conditions
  * folded (C# spec 13.2: the then branch of {@code if (false)} is unreachable, {@code while (true)} has no exit), jumps as
  * pending edges, {@code finally} built once per way out of the {@code try} (normal completion, each jump target, an
- * exception). Expressions do not branch - as in Roslyn's reachability, only lambdas and anonymous methods get a node,
- * their bodies are other owners; a local function declaration has none.
+ * exception), an edge from every node of a try block to its catches. Reads and writes of the variables
+ * ({@link CSharpFlowVariables}) are nodes; a condition has a when-true and a when-false exit ({@code &&}, {@code ||},
+ * {@code !}, patterns assigning their variables when they match - C# spec 9.4.4), other expressions do not change the
+ * reachability of statements, as in Roslyn. A lambda or an anonymous method is one node, its body another owner; a
+ * local function declaration has none, a reference to it is a call node.
  *
  * @author VISTALL
  */
@@ -87,7 +96,16 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     /**
      * A jump out of a try with a finally - to the scope of a pending edge, or to a goto target
      */
-    private record JumpKey(@Nullable PsiElement scope, @Nullable PsiElement gotoTarget) {
+    private record JumpKey(@Nullable PsiElement scope, @Nullable PsiElement gotoTarget, boolean returns) {
+    }
+
+    /**
+     * The nodes a condition ends in when it is true, and when it is false
+     */
+    private record Exits(List<Instruction> whenTrue, List<Instruction> whenFalse) {
+        private Exits swap() {
+            return new Exits(whenFalse, whenTrue);
+        }
     }
 
     private final ControlFlowBuilder myBuilder = new ControlFlowBuilder();
@@ -101,20 +119,43 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
 
     private boolean myIterator;
     private final List<CSharpControlFlow.SectionEnd> mySectionEnds = new ArrayList<>();
+    private final Map<Instruction, List<PsiElement>> myReturns = new LinkedHashMap<>();
+
+    private final PsiElement myOwner;
+    private final @Nullable CSharpSimpleLikeMethodAsElement myTop;
+    private final Set<String> myNames;
+    // the out arguments of the call being visited - written after it
+    private @Nullable List<Map.Entry<PsiElement, DotNetVariable>> myOutWrites;
+
+    @RequiredReadAction
+    private CSharpControlFlowBuilder(PsiElement owner) {
+        myOwner = owner;
+        myTop = CSharpFlowVariables.topOwner(owner);
+        myNames = myTop == null ? Set.of() : CSharpFlowVariables.names(myTop);
+    }
 
     @RequiredReadAction
     public static CSharpControlFlow build(PsiElement owner, PsiElement body) {
-        return new CSharpControlFlowBuilder().buildImpl(owner, body);
+        return new CSharpControlFlowBuilder(owner).buildImpl(owner, body);
     }
 
     @RequiredReadAction
     private CSharpControlFlow buildImpl(PsiElement owner, PsiElement body) {
         node(null, CSharpInstruction.ENTRY);
 
+        // the parameters are assigned - not the out ones
+        DotNetVariable[] parameters = owner instanceof CSharpLambdaExpressionImpl lambda ? lambda.getParameters()
+            : owner instanceof DotNetParameterListOwner method ? method.getParameters() : new DotNetVariable[0];
+        for (DotNetVariable parameter : parameters) {
+            if (CSharpFlowVariables.isTracked(parameter) && !CSharpFlowVariables.isOut(parameter)) {
+                readWrite(parameter, parameter, CSharpReadWriteInstruction.Access.WRITE);
+            }
+        }
+
         if (body instanceof DotNetExpression expression) {
             // => expression - returns it
             expression.accept(this);
-            exitTo(null);
+            returnTo(owner);
         }
         else {
             visitChildren(body);
@@ -127,7 +168,7 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
         node(null, CSharpInstruction.EXIT);
 
         ControlFlow flow = myBuilder.completeControlFlow();
-        return new CSharpControlFlow(owner, flow.getInstructions(), end, myIterator, mySectionEnds);
+        return new CSharpControlFlow(owner, flow.getInstructions(), end, myIterator, mySectionEnds, myReturns);
     }
 
     // region nodes
@@ -152,6 +193,129 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     private void exitTo(@Nullable PsiElement scope) {
         myBuilder.addPendingEdge(scope, myBuilder.prevInstruction);
         myBuilder.flowAbrupted();
+    }
+
+    /**
+     * A return - to the exit, the out parameters must be assigned there
+     */
+    private void returnTo(PsiElement statement) {
+        Instruction instruction = myBuilder.prevInstruction;
+        if (instruction != null) {
+            myReturns.computeIfAbsent(instruction, it -> new ArrayList<>()).add(statement);
+        }
+        exitTo(null);
+    }
+
+    private void readWrite(PsiElement element, DotNetVariable variable, CSharpReadWriteInstruction.Access access) {
+        myBuilder.addNodeAndCheckPending(new CSharpReadWriteInstruction(myBuilder, element, variable, access));
+    }
+
+    /**
+     * The flow goes on from all the ends - joined in a node if more than one
+     */
+    private void join(List<Instruction> ends, PsiElement element) {
+        Set<Instruction> distinct = new LinkedHashSet<>(ends);
+        distinct.remove(null);
+        myBuilder.flowAbrupted();
+        if (distinct.size() == 1) {
+            myBuilder.prevInstruction = distinct.iterator().next();
+        }
+        else if (!distinct.isEmpty()) {
+            edges(List.copyOf(distinct), node(element, CSharpInstruction.JOIN));
+        }
+    }
+
+    /**
+     * A branch of a condition, from its exits
+     */
+    private void conditional(List<Instruction> exits, PsiElement element, PsiElement condition, boolean result) {
+        myBuilder.flowAbrupted();
+        CSharpConditionalInstruction instruction = new CSharpConditionalInstruction(myBuilder, element, condition, result);
+        myBuilder.addNodeAndCheckPending(instruction);
+        edges(exits, instruction);
+    }
+
+    private List<Instruction> current() {
+        Instruction instruction = myBuilder.prevInstruction;
+        return instruction == null ? List.of() : List.of(instruction);
+    }
+
+    /**
+     * Visits a condition - a missing one is true
+     */
+    @RequiredReadAction
+    private Exits condition(@Nullable DotNetExpression expression) {
+        while (expression instanceof CSharpParenthesesExpressionImpl parentheses) {
+            expression = parentheses.getInnerExpression();
+        }
+        if (expression == null) {
+            return new Exits(current(), current());
+        }
+
+        if (expression instanceof CSharpPrefixExpressionImpl prefix && prefix.getOperatorElement().getOperatorElementType() == CSharpTokens.EXCL) {
+            return condition(prefix.getExpression()).swap();
+        }
+
+        if (expression instanceof CSharpBinaryExpressionImpl binary) {
+            IElementType operator = binary.getOperatorElement().getOperatorElementType();
+            if (operator == CSharpTokens.ANDAND || operator == CSharpTokens.OROR) {
+                Exits left = condition(binary.getLeftExpression());
+                join(operator == CSharpTokens.ANDAND ? left.whenTrue() : left.whenFalse(), binary);
+                Exits right = condition(binary.getRightExpression());
+                return operator == CSharpTokens.ANDAND
+                    ? new Exits(right.whenTrue(), concat(left.whenFalse(), right.whenFalse()))
+                    : new Exits(concat(left.whenTrue(), right.whenTrue()), right.whenFalse());
+            }
+        }
+
+        if (expression instanceof CSharpIsExpressionImpl isExpression) {
+            accept(isExpression.getExpression());
+            List<DotNetVariable> variables = patternVariables(isExpression);
+            // unassigned when it does not match - also in the next iteration of a loop
+            for (DotNetVariable variable : variables) {
+                readWrite(variable, variable, CSharpReadWriteInstruction.Access.DECLARE);
+            }
+            Instruction unmatched = myBuilder.prevInstruction;
+            for (DotNetVariable variable : variables) {
+                readWrite(variable, variable, CSharpReadWriteInstruction.Access.WRITE);
+            }
+            Exits exits = new Exits(current(), unmatched == null ? List.of() : List.of(unmatched));
+            // o is not int i - assigned when false
+            return isNegated(isExpression) ? exits.swap() : exits;
+        }
+
+        Boolean value = ConstantExpressionEvaluator.evaluateBoolean(expression);
+        expression.accept(this);
+        if (value == null || myBuilder.prevInstruction == null) {
+            return new Exits(current(), current());
+        }
+        // false is definitely assigned when true - vacuously (C# spec 9.4.4.21)
+        Instruction instruction = myBuilder.prevInstruction;
+        Instruction vacuous = node(expression, CSharpInstruction.VACUOUS);
+        return value ? new Exits(List.of(instruction), List.of(vacuous)) : new Exits(List.of(vacuous), List.of(instruction));
+    }
+
+    private static List<Instruction> concat(List<Instruction> first, List<Instruction> second) {
+        List<Instruction> result = new ArrayList<>(first);
+        result.addAll(second);
+        return result;
+    }
+
+    private static List<DotNetVariable> patternVariables(PsiElement pattern) {
+        List<DotNetVariable> variables = new ArrayList<>();
+        for (DotNetVariable variable : PsiTreeUtil.findChildrenOfAnyType(pattern, CSharpIsVariableImpl.class, CSharpCaseVariableImpl.class)) {
+            variables.add(variable);
+        }
+        return variables;
+    }
+
+    private static boolean isNegated(CSharpIsExpressionImpl expression) {
+        for (PsiElement child = expression.getFirstChild(); child != null; child = child.getNextSibling()) {
+            if (child instanceof CSharpPatternImpl pattern) {
+                return pattern.getNode().getElementType() == CSharpElements.NOT_PATTERN;
+            }
+        }
+        return false;
     }
 
     /**
@@ -201,11 +365,306 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     @Override
     public void visitElement(PsiElement element) {
         ProgressManager.checkCanceled();
+        if (element instanceof CSharpSwitchExpressionImpl switchExpression) {
+            visitSwitchExpression(switchExpression);
+            return;
+        }
         if (element instanceof DotNetStatement) {
             node(element);
         }
         visitChildren(element);
     }
+
+    // region variables
+
+    @Override
+    @RequiredReadAction
+    public void visitReferenceExpression(CSharpReferenceExpression expression) {
+        PsiElement target = resolveLocal(expression);
+        if (target instanceof DotNetVariable variable) {
+            readWrite(expression, variable, CSharpReadWriteInstruction.Access.READ);
+            return;
+        }
+        if (target instanceof CSharpLocalMethodDeclarationImpl) {
+            // the variables it reads must be assigned here
+            node(expression, CSharpInstruction.CALL);
+        }
+        visitChildren(expression);
+    }
+
+    /**
+     * A variable or a local function of the member the reference is to - only a reference by one of their names is resolved
+     */
+    @RequiredReadAction
+    private @Nullable PsiElement resolveLocal(CSharpReferenceExpression expression) {
+        if (expression.getQualifier() != null || !myNames.contains(expression.getReferenceName())) {
+            return null;
+        }
+        PsiElement target = expression.resolve();
+        if (target == null || myTop == null || !PsiTreeUtil.isAncestor(myTop, target, false)) {
+            return null;
+        }
+        if (target instanceof CSharpLocalMethodDeclarationImpl) {
+            return target;
+        }
+        return CSharpFlowVariables.isTracked(target) ? target : null;
+    }
+
+    @Override
+    @RequiredReadAction
+    public void visitLocalVariable(CSharpLocalVariable variable) {
+        DotNetExpression initializer = variable.getInitializer();
+        if (initializer == null) {
+            if (CSharpFlowVariables.isTracked(variable)) {
+                readWrite(variable, variable, CSharpReadWriteInstruction.Access.DECLARE);
+            }
+            return;
+        }
+        initializer.accept(this);
+        if (CSharpFlowVariables.isTracked(variable)) {
+            readWrite(variable, variable, CSharpReadWriteInstruction.Access.WRITE);
+        }
+    }
+
+    @Override
+    @RequiredReadAction
+    public void visitDeconstructionStatement(CSharpDeconstructionStatementImpl declaration) {
+        node(declaration);
+        for (PsiElement child = declaration.getFirstChild(); child != null; child = child.getNextSibling()) {
+            if (child instanceof DotNetExpression) {
+                child.accept(this);
+            }
+        }
+        for (CSharpTupleVariable variable : declaration.getVariables()) {
+            readWrite(variable, variable, CSharpReadWriteInstruction.Access.WRITE);
+        }
+    }
+
+    @Override
+    @RequiredReadAction
+    public void visitAssignmentExpression(CSharpAssignmentExpressionImpl expression) {
+        DotNetExpression left = expression.getLeftExpression();
+        DotNetExpression right = expression.getRightExpression();
+        if (expression.getOperatorElement().getOperatorElementType() != CSharpTokens.EQ) {
+            // x += 1 - read, then written
+            accept(left);
+            accept(right);
+            write(left, false);
+            return;
+        }
+        // the target is assigned after the value
+        write(left, true);
+        accept(right);
+        write(left, false);
+    }
+
+    /**
+     * The writes to the target of an assignment - or, before the value (prepare), the reads of the target which is
+     * not a variable ({@code a.b = c} reads a)
+     */
+    @RequiredReadAction
+    private void write(@Nullable DotNetExpression target, boolean prepare) {
+        while (target instanceof CSharpParenthesesExpressionImpl parentheses) {
+            target = parentheses.getInnerExpression();
+        }
+        if (target instanceof CSharpReferenceExpression reference && resolveLocal(reference) instanceof DotNetVariable variable) {
+            if (!prepare) {
+                readWrite(reference, variable, CSharpReadWriteInstruction.Access.WRITE);
+            }
+            return;
+        }
+        if (target instanceof CSharpTupleExpressionImpl tuple) {
+            // (x, var y) = ...
+            for (CSharpTupleElementImpl element : tuple.getElements()) {
+                DotNetExpression expression = element.getExpression();
+                if (expression instanceof CSharpOutRefVariableExpressionImpl declaration) {
+                    if (!prepare && declaration.getVariable() instanceof DotNetVariable variable && CSharpFlowVariables.isTracked(variable)) {
+                        readWrite(variable, variable, CSharpReadWriteInstruction.Access.WRITE);
+                    }
+                }
+                else {
+                    write(expression, prepare);
+                }
+            }
+            return;
+        }
+        if (prepare) {
+            accept(target);
+        }
+    }
+
+    @Override
+    @RequiredReadAction
+    public void visitPostfixExpression(CSharpPostfixExpressionImpl expression) {
+        // x++ - read and written
+        accept(expression.getExpression());
+        write(expression.getExpression(), false);
+    }
+
+    @Override
+    @RequiredReadAction
+    public void visitPrefixExpression(CSharpPrefixExpressionImpl expression) {
+        IElementType operator = expression.getOperatorElement().getOperatorElementType();
+        if (operator == CSharpTokens.PLUSPLUS || operator == CSharpTokens.MINUSMINUS) {
+            accept(expression.getExpression());
+            write(expression.getExpression(), false);
+        }
+        else if (operator == CSharpTokens.AND) {
+            // &x - its address, it need not be assigned
+            write(expression.getExpression(), true);
+            write(expression.getExpression(), false);
+        }
+        else if (operator == CSharpTokens.EXCL) {
+            join(allExits(condition(expression)), expression);
+        }
+        else {
+            visitChildren(expression);
+        }
+    }
+
+    private static List<Instruction> allExits(Exits exits) {
+        return concat(exits.whenTrue(), exits.whenFalse());
+    }
+
+    @Override
+    @RequiredReadAction
+    public void visitBinaryExpression(CSharpBinaryExpressionImpl expression) {
+        IElementType operator = expression.getOperatorElement().getOperatorElementType();
+        if (operator == CSharpTokens.ANDAND || operator == CSharpTokens.OROR) {
+            join(allExits(condition(expression)), expression);
+            return;
+        }
+        visitChildren(expression);
+    }
+
+    @Override
+    @RequiredReadAction
+    public void visitIsExpression(CSharpIsExpressionImpl expression) {
+        join(allExits(condition(expression)), expression);
+    }
+
+    @Override
+    @RequiredReadAction
+    public void visitConditionalExpression(CSharpConditionalExpressionImpl expression) {
+        Exits exits = condition(expression.getConditionExpression());
+        join(exits.whenTrue(), expression);
+        accept(expression.getTrueExpression());
+        List<Instruction> trueEnd = current();
+        join(exits.whenFalse(), expression);
+        accept(expression.getFalseExpression());
+        join(concat(trueEnd, current()), expression);
+    }
+
+    @Override
+    @RequiredReadAction
+    public void visitNullCoalescingExpression(CSharpNullCoalescingExpressionImpl expression) {
+        // x ?? (y = 1) - y is not assigned when x is not null
+        accept(expression.getCondition());
+        List<Instruction> notNull = current();
+        accept(expression.getResult());
+        join(concat(notNull, current()), expression);
+    }
+
+    @RequiredReadAction
+    private void visitSwitchExpression(CSharpSwitchExpressionImpl expression) {
+        accept(expression.getExpression());
+        List<Instruction> head = current();
+        List<Instruction> ends = new ArrayList<>();
+        for (CSharpSwitchExpressionArmImpl arm : expression.getArms()) {
+            join(head, arm);
+            PsiElement pattern = arm.getPattern();
+            if (pattern != null) {
+                for (DotNetVariable variable : pattern instanceof CSharpCaseVariableImpl caseVariable ? List.<DotNetVariable>of(caseVariable) : patternVariables(pattern)) {
+                    readWrite(variable, variable, CSharpReadWriteInstruction.Access.WRITE);
+                }
+            }
+            if (arm.getWhenExpression() != null) {
+                join(condition(arm.getWhenExpression()).whenTrue(), arm);
+            }
+            accept(arm.getResultExpression());
+            ends.addAll(current());
+        }
+        // no arm matching - an exception
+        join(ends, expression);
+    }
+
+    @Override
+    public void visitNameOfExpression(CSharpNameOfExpressionImpl expression) {
+        // nameof(x) - not a read
+    }
+
+    @Override
+    @RequiredReadAction
+    public void visitOurRefWrapExpression(CSharpOutRefWrapExpressionImpl expression) {
+        DotNetExpression inner = expression.getInnerExpression();
+        if (expression.getExpressionType() != CSharpRefTypeRef.Type.out) {
+            // ref x - read
+            accept(inner);
+            return;
+        }
+        while (inner instanceof CSharpParenthesesExpressionImpl parentheses) {
+            inner = parentheses.getInnerExpression();
+        }
+        if (inner instanceof CSharpReferenceExpression reference && resolveLocal(reference) instanceof DotNetVariable variable) {
+            outWrite(reference, variable);
+            return;
+        }
+        accept(inner);
+    }
+
+    @Override
+    @RequiredReadAction
+    public void visitOutRefVariableExpression(CSharpOutRefVariableExpressionImpl expression) {
+        // out var x - declared, assigned by the call
+        if (expression.getVariable() instanceof DotNetVariable variable && CSharpFlowVariables.isTracked(variable)) {
+            readWrite(variable, variable, CSharpReadWriteInstruction.Access.DECLARE);
+            outWrite(variable, variable);
+        }
+    }
+
+    private void outWrite(PsiElement element, DotNetVariable variable) {
+        if (myOutWrites != null) {
+            myOutWrites.add(Map.entry(element, variable));
+        }
+        else {
+            readWrite(element, variable, CSharpReadWriteInstruction.Access.WRITE);
+        }
+    }
+
+    @Override
+    public void visitMethodCallExpression(CSharpMethodCallExpressionImpl expression) {
+        call(expression);
+    }
+
+    @Override
+    public void visitNewExpression(CSharpNewExpression expression) {
+        call(expression);
+    }
+
+    @Override
+    public void visitIndexAccessExpression(CSharpIndexAccessExpressionImpl expression) {
+        call(expression);
+    }
+
+    /**
+     * The arguments, then the out ones assigned (C# spec 9.4.4.6)
+     */
+    private void call(PsiElement expression) {
+        List<Map.Entry<PsiElement, DotNetVariable>> outer = myOutWrites;
+        List<Map.Entry<PsiElement, DotNetVariable>> outWrites = new ArrayList<>();
+        myOutWrites = outWrites;
+        try {
+            visitChildren(expression);
+        }
+        finally {
+            myOutWrites = outer;
+        }
+        for (Map.Entry<PsiElement, DotNetVariable> write : outWrites) {
+            readWrite(write.getKey(), write.getValue(), CSharpReadWriteInstruction.Access.WRITE);
+        }
+    }
+
+    // endregion
 
     // region nested owners
 
@@ -252,25 +711,34 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     public void visitIfStatement(CSharpIfStatementImpl statement) {
         node(statement);
         DotNetExpression condition = statement.getConditionExpression();
-        accept(condition);
-        Instruction head = myBuilder.prevInstruction;
+        Exits exits = condition(condition);
+        // a constant condition (C# spec 13.2) - not a constant part of it
         Boolean value = ConstantExpressionEvaluator.evaluateBoolean(condition);
 
         DotNetStatement trueStatement = statement.getTrueStatement();
         DotNetStatement falseStatement = statement.getFalseStatement();
 
-        myBuilder.prevInstruction = value == Boolean.FALSE ? null : head;
-        if (condition != null && trueStatement != null && value != Boolean.FALSE) {
-            conditional(trueStatement, condition, true);
-        }
+        branch(exits.whenTrue(), value != Boolean.FALSE, trueStatement != null ? trueStatement : statement, condition, true);
         accept(trueStatement);
         myBuilder.addPendingEdge(statement, myBuilder.prevInstruction);
 
-        myBuilder.prevInstruction = value == Boolean.TRUE ? null : head;
-        if (condition != null && value != Boolean.TRUE) {
-            conditional(falseStatement != null ? falseStatement : statement, condition, false);
-        }
+        branch(exits.whenFalse(), value != Boolean.TRUE, falseStatement != null ? falseStatement : statement, condition, false);
         accept(falseStatement);
+    }
+
+    /**
+     * The start of a branch - none if the constant condition never takes it
+     */
+    private void branch(List<Instruction> exits, boolean taken, PsiElement element, @Nullable DotNetExpression condition, boolean result) {
+        myBuilder.flowAbrupted();
+        if (!taken) {
+            return;
+        }
+        if (condition == null) {
+            join(exits, element);
+            return;
+        }
+        conditional(exits, element, condition, result);
     }
 
     @Override
@@ -278,8 +746,7 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     public void visitWhileStatement(CSharpWhileStatementImpl statement) {
         Instruction head = node(statement);
         DotNetExpression condition = statement.getConditionExpression();
-        accept(condition);
-        loop(statement, head, condition, myBuilder.prevInstruction, statement.getChildStatement(), List.of());
+        loop(statement, head, condition, condition(condition), statement.getChildStatement(), List.of());
     }
 
     @Override
@@ -315,8 +782,7 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
         }
 
         Instruction head = condition != null ? node(condition) : node(statement, "loop");
-        accept(condition);
-        loop(statement, head, condition, myBuilder.prevInstruction, body, iterators);
+        loop(statement, head, condition, condition(condition), body, iterators);
     }
 
     /**
@@ -326,16 +792,13 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     private void loop(DotNetStatement loop,
                       Instruction head,
                       @Nullable DotNetExpression condition,
-                      @Nullable Instruction conditionEnd,
+                      Exits exits,
                       @Nullable DotNetStatement body,
                       List<DotNetExpression> iterators) {
         // for (;;) - true
         Boolean value = condition == null ? Boolean.valueOf(loop instanceof CSharpForStatementImpl) : ConstantExpressionEvaluator.evaluateBoolean(condition);
 
-        myBuilder.prevInstruction = value == Boolean.FALSE ? null : conditionEnd;
-        if (condition != null && body != null && value != Boolean.FALSE) {
-            conditional(body, condition, true);
-        }
+        branch(exits.whenTrue(), value != Boolean.FALSE, body != null ? body : loop, condition, true);
         List<Instruction> ends = loopBody(loop, body);
         if (!iterators.isEmpty()) {
             Instruction iterator = node(iterators.get(0));
@@ -347,10 +810,7 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
         }
         edges(ends, head);
 
-        myBuilder.prevInstruction = value == Boolean.TRUE ? null : conditionEnd;
-        if (condition != null && value != Boolean.TRUE) {
-            conditional(loop, condition, false);
-        }
+        branch(exits.whenFalse(), value != Boolean.TRUE, loop, condition, false);
     }
 
     /**
@@ -381,20 +841,14 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
         }
 
         edges(ends, node(condition));
-        condition.accept(this);
-        Instruction conditionEnd = myBuilder.prevInstruction;
+        Exits exits = condition(condition);
         Boolean value = ConstantExpressionEvaluator.evaluateBoolean(condition);
 
-        if (value != Boolean.FALSE) {
-            DotNetStatement body = statement.getChildStatement();
-            conditional(body != null ? body : statement, condition, true);
-            myBuilder.addEdge(myBuilder.prevInstruction, head);
-        }
+        DotNetStatement body = statement.getChildStatement();
+        branch(exits.whenTrue(), value != Boolean.FALSE, body != null ? body : statement, condition, true);
+        myBuilder.addEdge(myBuilder.prevInstruction, head);
 
-        myBuilder.prevInstruction = value == Boolean.TRUE ? null : conditionEnd;
-        if (value != Boolean.TRUE) {
-            conditional(statement, condition, false);
-        }
+        branch(exits.whenFalse(), value != Boolean.TRUE, statement, condition, false);
     }
 
     @Override
@@ -405,7 +859,14 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
 
         // MoveNext - the next element to the variable, or the exit
         CSharpLocalVariable variable = statement.getVariable();
-        Instruction head = node(variable != null ? variable : statement, "next");
+        Instruction head;
+        if (variable != null) {
+            readWrite(variable, variable, CSharpReadWriteInstruction.Access.WRITE);
+            head = myBuilder.prevInstruction;
+        }
+        else {
+            head = node(statement, "next");
+        }
         myBuilder.addPendingEdge(statement, head);
 
         edges(loopBody(statement, statement.getChildStatement()), head);
@@ -441,8 +902,11 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
                     if (canMatch(label, value, matched)) {
                         myBuilder.addEdge(head, labelNode);
                     }
-                    if (label instanceof CSharpCasePatternStatementImpl pattern) {
-                        accept(pattern.getWhenExpression());
+                    for (DotNetVariable variable : patternVariables(label)) {
+                        readWrite(variable, variable, CSharpReadWriteInstruction.Access.WRITE);
+                    }
+                    if (label instanceof CSharpCasePatternStatementImpl pattern && pattern.getWhenExpression() != null) {
+                        join(condition(pattern.getWhenExpression()).whenTrue(), label);
                     }
                 }
 
@@ -605,7 +1069,7 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     public void visitReturnStatement(CSharpReturnStatementImpl statement) {
         node(statement);
         visitChildren(statement);
-        exitTo(null);
+        returnTo(statement);
     }
 
     @Override
@@ -699,17 +1163,28 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
             myFinallyTries.push(statement);
         }
         List<Instruction> normalEnds = new ArrayList<>();
+        List<Instruction> throwing = new ArrayList<>();
         try {
             if (tryBlock != null) {
                 tryBlock.accept(this);
                 normalEnds.addAll(collectEnds(tryBlock));
             }
+            // an exception from any node of the try block - with the state after it, or before its first one
+            throwing.add(tryNode);
+            throwing.addAll(myBuilder.instructions.subList(tryNode.num() + 1, myBuilder.instructions.size()));
 
-            // an exception from anywhere in the try block
             for (CSharpCatchStatementImpl catchStatement : statement.getCatchStatements()) {
-                myBuilder.prevInstruction = tryNode;
-                node(catchStatement);
-                visitChildren(catchStatement);
+                myBuilder.flowAbrupted();
+                edges(throwing, node(catchStatement));
+                CSharpLocalVariable variable = catchStatement.getVariable();
+                if (variable != null) {
+                    readWrite(variable, variable, CSharpReadWriteInstruction.Access.WRITE);
+                }
+                for (PsiElement child = catchStatement.getFirstChild(); child != null; child = child.getNextSibling()) {
+                    if (child != variable && child.getFirstChild() != null) {
+                        child.accept(this);
+                    }
+                }
                 normalEnds.addAll(collectEnds(catchStatement));
             }
         }
@@ -731,15 +1206,17 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
         int tryNumber = tryNode.num();
         myBuilder.processPending((pendingScope, instruction) -> {
             if (instruction.num() > tryNumber) {
-                jumps.computeIfAbsent(new JumpKey(pendingScope, myGotoJumps.remove(instruction)), it -> new ArrayList<>()).add(instruction);
+                JumpKey key = new JumpKey(pendingScope, myGotoJumps.remove(instruction), myReturns.containsKey(instruction));
+                jumps.computeIfAbsent(key, it -> new ArrayList<>()).add(instruction);
             }
             else {
                 myBuilder.addPendingEdge(pendingScope, instruction);
             }
         });
 
-        // an exception - the finally block, then up to the exit
-        for (Instruction end : finallyCopy(finallyStatement, List.of(tryNode))) {
+        // an exception from the try block or a catch - the finally block, then up to the exit
+        List<Instruction> failing = new ArrayList<>(myBuilder.instructions.subList(tryNode.num(), myBuilder.instructions.size()));
+        for (Instruction end : finallyCopy(finallyStatement, failing)) {
             myBuilder.addPendingEdge(null, end);
         }
 
@@ -751,7 +1228,16 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
 
         for (Map.Entry<JumpKey, List<Instruction>> jump : jumps.entrySet()) {
             JumpKey key = jump.getKey();
+            List<PsiElement> returns = new ArrayList<>();
+            if (key.returns()) {
+                for (Instruction instruction : jump.getValue()) {
+                    returns.addAll(myReturns.remove(instruction));
+                }
+            }
             for (Instruction end : finallyCopy(finallyStatement, jump.getValue())) {
+                if (key.returns()) {
+                    myReturns.computeIfAbsent(end, it -> new ArrayList<>()).addAll(returns);
+                }
                 if (key.gotoTarget() != null) {
                     jumpTo(end, key.gotoTarget());
                 }

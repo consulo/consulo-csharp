@@ -66,9 +66,11 @@ public enum CSharpCompilerChecks {
     CS0161(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  return check
     CS0162(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // unreachable code
     CS0163(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // switch section falls through to the next one
+    CS0165(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // use of unassigned local variable
     CS0168(CSharpLanguageVersion._1_0, CSharpHighlightInfoType::getUnusedDeclaration), // local variable usage check
     CS0169(CSharpLanguageVersion._1_0, CSharpHighlightInfoType::getUnusedDeclaration), // field is not used
     CS0173(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // failed to find conditional expression type
+    CS0177(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // out parameter not assigned when control leaves
     CS0200(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // readonly check
     CS0201(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expression statement can be only call, etc
     CS0206(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref/out expressions can be only indexer, etc
@@ -79,6 +81,7 @@ public enum CSharpCompilerChecks {
     CS0231(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // 'params' modifier must be last
     CS0236(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // can't reference to non static field, property, method from field initializer
     CS0264(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // generic parameter names must be equal for partial types
+    CS0269(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // use of unassigned out parameter
     CS0304(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // generic cant be new without new() constraint
     CS0305(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // check for generic count
     CS0401(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // new() constraint must be last

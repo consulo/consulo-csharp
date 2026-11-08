@@ -6,17 +6,18 @@
 # METHOD_DECLARATION void Catch()
   0(1) entry
   1(2,3) TRY_STATEMENT try { F(); } catch (Exception e) { return; }
-  2(5) EXPRESSION_STATEMENT F();
+  2(3,6) EXPRESSION_STATEMENT F();
   3(4) CATCH_STATEMENT catch (Exception e) { return; }
-  4(7) RETURN_STATEMENT return;
-  5(6) EXPRESSION_STATEMENT F();
-  6(7) end
-  7() exit
+  4(5) WRITE e
+  5(8) RETURN_STATEMENT return;
+  6(7) EXPRESSION_STATEMENT F();
+  7(8) end
+  8() exit
 
 # METHOD_DECLARATION void ReturnThroughFinally()
   0(1) entry
   1(2,3) TRY_STATEMENT try { return; } finally { F(); }
-  2(5) RETURN_STATEMENT return;
+  2(3,5) RETURN_STATEMENT return;
   3(4) FINALLY_STATEMENT finally { F(); }
   4(9) EXPRESSION_STATEMENT F();
   5(6) FINALLY_STATEMENT finally { F(); }
@@ -27,27 +28,28 @@
 
 # METHOD_DECLARATION void BreakThroughFinally()
   0(1) entry
-  1(2) WHILE_STATEMENT while (true) { try { if (b) break; } finally { F()...
-  2(3) BLOCK_STATEMENT { try { if (b) break; } finally { F(); } }. Condition: true:true
-  3(4,8) TRY_STATEMENT try { if (b) break; } finally { F(); }
-  4(5,7) IF_STATEMENT if (b) break;
-  5(6) BREAK_STATEMENT break;. Condition: b:true
-  6(12) BREAK_STATEMENT break;
-  7(10) IF_STATEMENT if (b) break;. Condition: b:false
-  8(9) FINALLY_STATEMENT finally { F(); }
-  9(16) EXPRESSION_STATEMENT F();
-  10(11) FINALLY_STATEMENT finally { F(); }
-  11(1) EXPRESSION_STATEMENT F();
-  12(13) FINALLY_STATEMENT finally { F(); }
-  13(14) EXPRESSION_STATEMENT F();
+  1(2,3) WHILE_STATEMENT while (true) { try { if (b) break; } finally { F()...
+  2() vacuous CONSTANT_EXPRESSION true
+  3(4) BLOCK_STATEMENT { try { if (b) break; } finally { F(); } }. Condition: true:true
+  4(5,9) TRY_STATEMENT try { if (b) break; } finally { F(); }
+  5(6,8,9) IF_STATEMENT if (b) break;
+  6(7,9) BREAK_STATEMENT break;. Condition: b:true
+  7(9,13) BREAK_STATEMENT break;
+  8(9,11) IF_STATEMENT if (b) break;. Condition: b:false
+  9(10) FINALLY_STATEMENT finally { F(); }
+  10(17) EXPRESSION_STATEMENT F();
+  11(12) FINALLY_STATEMENT finally { F(); }
+  12(1) EXPRESSION_STATEMENT F();
+  13(14) FINALLY_STATEMENT finally { F(); }
   14(15) EXPRESSION_STATEMENT F();
-  15(16) end
-  16() exit
+  15(16) EXPRESSION_STATEMENT F();
+  16(17) end
+  17() exit
 
 # METHOD_DECLARATION void GotoThroughFinally()
   0(1) entry
   1(2,3) TRY_STATEMENT try { goto end; } finally { F(); }
-  2(5) GOTO_STATEMENT goto end;
+  2(3,5) GOTO_STATEMENT goto end;
   3(4) FINALLY_STATEMENT finally { F(); }
   4(10) EXPRESSION_STATEMENT F();
   5(6) FINALLY_STATEMENT finally { F(); }

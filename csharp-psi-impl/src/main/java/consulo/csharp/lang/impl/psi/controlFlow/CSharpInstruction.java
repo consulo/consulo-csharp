@@ -24,7 +24,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * A node of a C# control flow graph - a statement, the creation of a lambda, or a marker (entry, end of the body,
- * exit, end of a switch section) named in the dump
+ * exit, end of a switch section, a join of branches) named in the dump
  *
  * @author VISTALL
  */
@@ -33,6 +33,11 @@ public class CSharpInstruction extends InstructionImpl {
     public static final String END = "end";
     public static final String EXIT = "exit";
     public static final String SECTION_END = "section end";
+    public static final String JOIN = "join";
+    // the other exit of a constant part of a condition - definitely assigned, nothing is reported after it
+    public static final String VACUOUS = "vacuous";
+    // a reference to a local function - the variables it reads must be assigned
+    public static final String CALL = "call";
 
     private final @Nullable String myMarker;
 

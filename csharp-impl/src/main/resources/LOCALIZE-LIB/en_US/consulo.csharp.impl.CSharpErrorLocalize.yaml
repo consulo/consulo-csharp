@@ -68,6 +68,8 @@ CS0162:
     text: Unreachable code detected
 CS0163:
     text: "Control cannot fall through from one case label (''{0}'') to another"
+CS0165:
+    text: "Use of unassigned local variable ''{0}''"
 CS0168:
     text: "The variable ''{0}'' is declared but never used"
 CS0169:
@@ -76,6 +78,8 @@ CS0173:
     text: "Type of conditional expression cannot be determined because there is no implicit conversion between ''{0}'' and ''{1}''"
 CS0176:
     text: "Static member ''{0}'' cannot be accessed with an instance reference, qualify it with a type name instead"
+CS0177:
+    text: "The out parameter ''{0}'' must be assigned to before control leaves the current method"
 CS0200:
     text: "Property or indexer ''{0}'' cannot be assigned to -- it is read only"
 CS0201:
@@ -96,6 +100,8 @@ CS0236:
     text: "A field initializer cannot reference the non-static field, method, or property ''{0}''"
 CS0264:
     text: "Partial declarations of ''{0}'' must have the same type parameter names in the same order"
+CS0269:
+    text: "Use of unassigned out parameter ''{0}''"
 CS0304:
     text: "Cannot create an instance of the variable type ''{0}'' because it does not have the new() constraint"
 CS0305:
