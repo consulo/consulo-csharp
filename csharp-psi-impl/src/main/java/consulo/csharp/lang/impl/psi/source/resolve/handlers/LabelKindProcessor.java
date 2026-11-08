@@ -18,20 +18,24 @@ package consulo.csharp.lang.impl.psi.source.resolve.handlers;
 
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.util.function.Processor;
+import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpLabeledStatementImpl;
 import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveOptions;
 import consulo.csharp.lang.impl.psi.source.resolve.ExecuteTarget;
 import consulo.csharp.lang.impl.psi.source.resolve.SimpleNamedScopeProcessor;
 import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
-import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
 import consulo.language.psi.resolve.ResolveState;
-import consulo.language.psi.util.PsiTreeUtil;
-import consulo.application.util.function.Processor;
 import org.jspecify.annotations.Nullable;
 
 /**
+ * The labels a goto sees - of its block and the blocks around it, up to the method, lambda or local function
+ * (C# spec 7.7.1: the scope of a label is the block declaring it, nested blocks included - not the ones in them)
+ *
  * @author VISTALL
  * @since 27.07.2015
  */
@@ -39,18 +43,32 @@ public class LabelKindProcessor implements KindProcessor {
     @RequiredReadAction
     @Override
     public void process(CSharpResolveOptions options,
-            DotNetGenericExtractor defaultExtractor,
-            @Nullable PsiElement forceQualifierElement,
-            Processor<ResolveResult> processor) {
+                        DotNetGenericExtractor defaultExtractor,
+                        @Nullable PsiElement forceQualifierElement,
+                        Processor<ResolveResult> processor) {
         PsiElement element = options.getElement();
 
         SimpleNamedScopeProcessor scopeProcessor = new SimpleNamedScopeProcessor(processor, options.isCompletion(), ExecuteTarget.LABEL);
 
-        DotNetQualifiedElement parentOfType = PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
-        assert parentOfType != null;
-
         ResolveState state = ResolveState.initial();
         state = state.put(CSharpResolveUtil.SELECTOR, options.getSelector());
-        CSharpResolveUtil.walkForLabel(scopeProcessor, parentOfType, state);
+        for (PsiElement parent = element.getParent(); parent != null && !(parent instanceof CSharpSimpleLikeMethodAsElement); parent = parent.getParent()) {
+            if (parent instanceof CSharpBlockStatementImpl && !processLabels(scopeProcessor, parent, state)) {
+                return;
+            }
+        }
+    }
+
+    /**
+     * The labeled statements of the block - a labeled statement holds the statements after it, the next labels too
+     */
+    @RequiredReadAction
+    private static boolean processLabels(SimpleNamedScopeProcessor processor, PsiElement parent, ResolveState state) {
+        for (PsiElement child = parent.getFirstChild(); child != null; child = child.getNextSibling()) {
+            if (child instanceof CSharpLabeledStatementImpl label && (!processor.execute(label, state) || !processLabels(processor, label, state))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
