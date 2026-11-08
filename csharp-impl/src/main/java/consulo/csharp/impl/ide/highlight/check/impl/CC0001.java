@@ -115,16 +115,16 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
 
         List<HighlightInfoFactory> list = new ArrayList<>(2);
         if (goodResult == null) {
-			if (callElement instanceof CSharpReferenceExpression refExpr
-				&& refExpr.isPlaceholderReference()
-				&& callElement.getParent() instanceof CSharpOutRefWrapExpressionImpl) {
-				return Collections.emptyList();
-			}
+            if (callElement instanceof CSharpReferenceExpression refExpr
+                && refExpr.isPlaceholderReference()
+                && callElement.getParent() instanceof CSharpOutRefWrapExpressionImpl) {
+                return Collections.emptyList();
+            }
 
             if (resolveResults.length == 0) {
                 for (PsiElement range : ranges) {
                     CompilerCheckBuilder result = new CompilerCheckBuilder() {
-						@Nullable
+                        @Nullable
                         @Override
                         @RequiredReadAction
                         public HighlightInfo create(boolean insideDoc) {
@@ -135,9 +135,9 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
                                     reference = ref;
                                 }
                                 else if (callElement instanceof CSharpMethodCallExpressionImpl call
-									&& call.getCallExpression() instanceof PsiReference ref) {
-									reference = ref;
-								}
+                                    && call.getCallExpression() instanceof PsiReference ref) {
+                                    reference = ref;
+                                }
 
                                 if (reference != null) {
                                     UnresolvedReferenceQuickFixProvider.registerReferenceFixes(
@@ -180,8 +180,8 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
     @Contract("null -> false")
     @RequiredReadAction
     public static boolean isNestedCall(@Nullable PsiElement callElement) {
-		return callElement instanceof CSharpMethodCallExpressionImpl call
-			&& !(call.getCallExpression() instanceof CSharpReferenceExpression);
+        return callElement instanceof CSharpMethodCallExpressionImpl call
+            && !(call.getCallExpression() instanceof CSharpReferenceExpression);
     }
 
     @RequiredReadAction
@@ -250,7 +250,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
             tooltipBuilder.append("<b>");
             // sometimes name can be null
             if (element instanceof CSharpOperatorReferenceImpl operatorRef) {
-				XmlStringUtil.escapeText(operatorRef.getCanonicalText(), tooltipBuilder);
+                XmlStringUtil.escapeText(operatorRef.getCanonicalText(), tooltipBuilder);
             }
             else if (element instanceof CSharpIndexAccessExpressionImpl) {
                 tooltipBuilder.append(""); //FIXME [VISTALL] some name?
@@ -263,7 +263,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
             tooltipBuilder.append("&#x9;").append(openAndCloseTokens[0]);
 
             if (resolveElement instanceof DotNetVariable variable) {
-				if (!(variable.toTypeRef(false).resolve() instanceof CSharpLambdaResolveResult lambdaResolveResult)) {
+                if (!(variable.toTypeRef(false).resolve() instanceof CSharpLambdaResolveResult lambdaResolveResult)) {
                     return null;
                 }
                 DotNetTypeRef[] parameterTypes = lambdaResolveResult.getParameterTypeRefs();
@@ -339,11 +339,11 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
         HighlightInfo highlightInfo
     ) {
         if (element instanceof CSharpMethodCallExpressionImpl call
-			&& call.getCallExpression() instanceof CSharpReferenceExpression refExpr) {
+            && call.getCallExpression() instanceof CSharpReferenceExpression refExpr) {
             if (resolveElement instanceof CSharpMethodDeclaration) {
                 QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedMethodFix(refExpr));
             }
-			else if (resolveElement instanceof CSharpConstructorDeclaration) {
+            else if (resolveElement instanceof CSharpConstructorDeclaration) {
                 QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedConstructorFix(refExpr));
             }
         }
