@@ -29,28 +29,23 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
  * @author VISTALL
  * @since 20.05.14
  */
-public class CS0219 extends CompilerCheck<CSharpLocalVariable>
-{
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpLocalVariable element)
-	{
-		if(element.getInitializer() == null)
-		{
-			return null;
-		}
+public class CS0219 extends CompilerCheck<CSharpLocalVariable> {
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpLocalVariable element) {
+        if (element.getInitializer() == null) {
+            return null;
+        }
 
-		if(CS0168.isUnused(element))
-		{
-			CompilerCheckBuilder builder = newBuilder(element.getNameIdentifier(), formatElement(element));
-			if(!(element.getParent() instanceof CSharpForeachStatementImpl))
-			{
-				builder.withQuickFix(new CS0168.DeleteLocalVariable(element));
-			}
-			return builder;
-		}
+        if (CS0168.isUnused(element)) {
+            CompilerCheckBuilder builder = newBuilder(element.getNameIdentifier(), formatElement(element));
+            if (!(element.getParent() instanceof CSharpForeachStatementImpl)) {
+                builder.withQuickFix(new CS0168.DeleteLocalVariable(element));
+            }
+            return builder;
+        }
 
-		return null;
-	}
+        return null;
+    }
 }
