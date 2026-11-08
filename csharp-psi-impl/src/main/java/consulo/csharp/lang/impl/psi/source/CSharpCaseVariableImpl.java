@@ -31,54 +31,45 @@ import org.jspecify.annotations.Nullable;
  * @author VISTALL
  * @since 2019-10-05
  */
-public class CSharpCaseVariableImpl extends CSharpVariableImpl
-{
-	public CSharpCaseVariableImpl(IElementType elementType)
-	{
-		super(elementType);
-	}
+public class CSharpCaseVariableImpl extends CSharpVariableImpl {
+    public CSharpCaseVariableImpl(IElementType elementType) {
+        super(elementType);
+    }
 
-	@Override
-	public void accept(CSharpElementVisitor visitor)
-	{
-		visitor.visitCaseVariable(this);
-	}
+    @Override
+    public void accept(CSharpElementVisitor visitor) {
+        visitor.visitCaseVariable(this);
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public DotNetType getType()
-	{
-		return findNotNullChildByClass(DotNetType.class);
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public DotNetType getType() {
+        return findNotNullChildByClass(DotNetType.class);
+    }
 
-	/**
-	 * {@code var v} of a switch expression arm is of the type of the value matched
-	 */
-	@RequiredReadAction
-	@Override
-	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
-	{
-		DotNetType type = getType();
-		DotNetTypeRef typeRef = type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
-		if(typeRef != DotNetTypeRef.AUTO_TYPE)
-		{
-			return typeRef;
-		}
+    /**
+     * {@code var v} of a switch expression arm is of the type of the value matched
+     */
+    @RequiredReadAction
+    @Override
+    public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer) {
+        DotNetType type = getType();
+        DotNetTypeRef typeRef = type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
+        if (typeRef != DotNetTypeRef.AUTO_TYPE) {
+            return typeRef;
+        }
 
-		PsiElement current = this;
-		while(current.getParent() instanceof CSharpPatternImpl pattern && pattern.getNode().getElementType() != CSharpElements.PROPERTY_PATTERN)
-		{
-			current = pattern;
-		}
-		if(current.getParent() instanceof CSharpSwitchExpressionArmImpl arm && arm.getParent() instanceof CSharpSwitchExpressionImpl switchExpression)
-		{
-			DotNetExpression value = switchExpression.getExpression();
-			if(value != null)
-			{
-				return value.toTypeRef(resolveFromInitializer);
-			}
-		}
-		return DotNetTypeRef.ERROR_TYPE;
-	}
+        PsiElement current = this;
+        while (current.getParent() instanceof CSharpPatternImpl pattern && pattern.getNode().getElementType() != CSharpElements.PROPERTY_PATTERN) {
+            current = pattern;
+        }
+        if (current.getParent() instanceof CSharpSwitchExpressionArmImpl arm && arm.getParent() instanceof CSharpSwitchExpressionImpl switchExpression) {
+            DotNetExpression value = switchExpression.getExpression();
+            if (value != null) {
+                return value.toTypeRef(resolveFromInitializer);
+            }
+        }
+        return DotNetTypeRef.ERROR_TYPE;
+    }
 }
