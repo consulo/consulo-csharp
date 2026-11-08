@@ -17,7 +17,6 @@
 package consulo.csharp.impl.ide.codeInsight.actions;
 
 import consulo.annotation.access.RequiredWriteAction;
-import consulo.application.WriteAction;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.EditorPopupHelper;
 import consulo.codeEditor.LogicalPosition;
@@ -28,9 +27,8 @@ import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.document.Document;
 import consulo.document.RangeMarker;
 import consulo.dotnet.DotNetBundle;
-import consulo.dotnet.impl.roots.orderEntry.DotNetLibraryOrderEntryType;
 import consulo.csharp.impl.libraryAnalyzer.NamespaceReference;
-import consulo.dotnet.module.extension.DotNetLibraryOrderEntryModel;
+import consulo.dotnet.assembly.summary.DotNetAddableLibrary;
 import consulo.language.editor.AutoImportHelper;
 import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.hint.QuestionAction;
@@ -40,8 +38,6 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.language.util.ModuleUtilCore;
 import consulo.logging.Logger;
 import consulo.module.Module;
-import consulo.module.content.ModuleRootManager;
-import consulo.module.content.layer.ModifiableRootModel;
 import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
@@ -149,19 +145,14 @@ public class AddUsingAction implements QuestionAction
 		{
 			addUsing(namespaceReference.getNamespace());
 
-			String libraryName = namespaceReference.getLibraryName();
-			if(libraryName != null)
+			DotNetAddableLibrary library = namespaceReference.getLibrary();
+			if(library != null)
 			{
 				Module moduleForFile = ModuleUtilCore.findModuleForPsiElement(myFile);
 				if(moduleForFile != null)
 				{
-					ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(moduleForFile);
-
-					final ModifiableRootModel modifiableModel = moduleRootManager.getModifiableModel();
-
-					modifiableModel.addCustomOderEntry(DotNetLibraryOrderEntryType.getInstance(), new DotNetLibraryOrderEntryModel(libraryName));
-
-					WriteAction.run(modifiableModel::commit);
+					// how a library is added is the business of the project model of the module
+					library.addTo(moduleForFile);
 				}
 			}
 		});

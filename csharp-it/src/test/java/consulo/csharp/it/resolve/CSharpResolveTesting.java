@@ -229,7 +229,7 @@ public final class CSharpResolveTesting
 		return result.getElement() == null ? "null-element" : ResultElementBuilder.build(result);
 	}
 
-	static Path resource(String path) throws URISyntaxException
+	public static Path resource(String path) throws URISyntaxException
 	{
 		URL url = CSharpResolveTesting.class.getClassLoader().getResource(path);
 		assertThat(url).as(path).isNotNull();

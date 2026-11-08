@@ -21,6 +21,10 @@ import consulo.application.progress.ProgressManager;
 import consulo.application.util.function.Processors;
 import consulo.codeEditor.Editor;
 import consulo.csharp.impl.libraryAnalyzer.NamespaceReference;
+import consulo.dotnet.assembly.summary.DotNetAddableLibraryLookup;
+import consulo.dotnet.assembly.summary.DotNetAssemblySummary;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
 import consulo.csharp.impl.localize.CSharpErrorLocalize;
 import consulo.csharp.lang.impl.psi.CSharpGenericConstraintUtil;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
@@ -166,12 +170,62 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction, Synthe
       collectAvailableNamespacesForMethodExtensions(ref, resultSet, referenceName);
     }
 
-//		Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(ref);
-//		if(moduleForPsiElement != null)
-//		{
-//			resultSet.addAll(DotNetLibraryAnalyzerComponent.getInstance(moduleForPsiElement.getProject()).get(moduleForPsiElement, referenceName));
-//		}
+    collectFromAddableLibraries(ref, kind, referenceName, resultSet);
     return resultSet;
+  }
+
+  /**
+   * The libraries the module does not reference yet (the assemblies of its SDK…): a using together with adding the library.
+   * A namespace the module already reaches is offered without a library.
+   */
+  @RequiredReadAction
+  private static void collectFromAddableLibraries(CSharpReferenceExpression ref,
+                                                  CSharpReferenceExpression.ResolveToKind kind,
+                                                  String referenceName,
+                                                  Set<NamespaceReference> set) {
+    Module module = ModuleUtilCore.findModuleForPsiElement(ref);
+    if (module == null) {
+      return;
+    }
+    Set<String> reachable = new HashSet<>();
+    for (NamespaceReference reference : set) {
+      reachable.add(reference.getNamespace());
+    }
+
+    DotNetAddableLibraryLookup lookup = DotNetAddableLibraryLookup.getInstance();
+    if (kind == CSharpReferenceExpression.ResolveToKind.METHOD) {
+      for (DotNetAddableLibraryLookup.ExtensionMethodMatch match : lookup.findExtensionMethods(module, referenceName)) {
+        if (!reachable.contains(match.namespace())) {
+          set.add(new NamespaceReference(match.namespace(), match.library()));
+        }
+      }
+      return;
+    }
+    if (ref.getQualifier() != null) {
+      return;
+    }
+
+    PsiElement parent = ref.getParent();
+    boolean attribute = parent instanceof CSharpAttribute;
+    boolean creation = kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR && !attribute;
+    List<DotNetAddableLibraryLookup.TypeMatch> matches = new ArrayList<>(lookup.findTypes(module, referenceName));
+    if (attribute) {
+      matches.addAll(lookup.findTypes(module, referenceName + AttributeByNameSelector.AttributeSuffix));
+    }
+    for (DotNetAddableLibraryLookup.TypeMatch match : matches) {
+      DotNetAssemblySummary.Type type = match.type();
+      // a forwarded type has no kind (0): it may be anything
+      if (attribute && type.kind() != 0 && !type.is(DotNetAssemblySummary.ATTRIBUTE)) {
+        continue;
+      }
+      if (creation && type.is(DotNetAssemblySummary.STATIC | DotNetAssemblySummary.INTERFACE | DotNetAssemblySummary.ABSTRACT)) {
+        continue;
+      }
+      if (type.namespace().isEmpty() || reachable.contains(type.namespace())) {
+        continue;
+      }
+      set.add(new NamespaceReference(type.namespace(), match.library()));
+    }
   }
 
   @RequiredReadAction

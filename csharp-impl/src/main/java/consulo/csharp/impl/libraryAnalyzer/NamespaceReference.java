@@ -16,7 +16,10 @@
 
 package consulo.csharp.impl.libraryAnalyzer;
 
+import consulo.dotnet.assembly.summary.DotNetAddableLibrary;
 import org.jspecify.annotations.Nullable;
+
+import java.util.Objects;
 
 /**
 * @author VISTALL
@@ -25,12 +28,16 @@ import org.jspecify.annotations.Nullable;
 public class NamespaceReference
 {
 	private String myNamespace;
-	private String myLibraryName;
+	@Nullable
+	private DotNetAddableLibrary myLibrary;
 
-	public NamespaceReference(String namespace, @Nullable String libraryName)
+	/**
+	 * @param library the library to add with the using - a library the module does not reference yet; null if it does
+	 */
+	public NamespaceReference(String namespace, @Nullable DotNetAddableLibrary library)
 	{
 		myNamespace = namespace;
-		myLibraryName = libraryName;
+		myLibrary = library;
 	}
 
 	public String getNamespace()
@@ -38,9 +45,16 @@ public class NamespaceReference
 		return myNamespace;
 	}
 
+	@Nullable
 	public String getLibraryName()
 	{
-		return myLibraryName;
+		return myLibrary == null ? null : myLibrary.getName();
+	}
+
+	@Nullable
+	public DotNetAddableLibrary getLibrary()
+	{
+		return myLibrary;
 	}
 
 	@Override
@@ -57,17 +71,13 @@ public class NamespaceReference
 
 		NamespaceReference that = (NamespaceReference) o;
 
-		if(!myNamespace.equals(that.myNamespace))
-		{
-			return false;
-		}
-
-		return true;
+		// the same namespace from two libraries is two choices
+		return myNamespace.equals(that.myNamespace) && Objects.equals(getLibraryName(), that.getLibraryName());
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return myNamespace.hashCode();
+		return Objects.hash(myNamespace, getLibraryName());
 	}
 }
