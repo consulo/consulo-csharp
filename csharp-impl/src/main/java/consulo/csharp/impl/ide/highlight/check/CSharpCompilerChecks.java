@@ -56,13 +56,17 @@ public enum CSharpCompilerChecks {
     CS0132(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static constructors are parameterless
     CS0133(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constant value must be compile time constant
     CS0136(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // variable redeclaration check in different scopes
+    CS0139(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // break or continue out of no loop
     CS0144(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // abstract types or interfaces cant created by new expression
     CS0145(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // const cant be without value
     CS0146(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // circular extends check
     CS0151(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // check for switch expression
+    CS0152(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // switch case value duplicated
     CS0153(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // check goto case&default without switch
     CS0155(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // throw object must be child of System.Exception
+    CS0156(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // throw; outside a catch
     CS0157(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // return is not allowed inside finally blocks
+    CS0159(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // no such label for a goto
     CS0161(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  return check
     CS0162(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // unreachable code
     CS0163(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // switch section falls through to the next one
@@ -114,6 +118,7 @@ public enum CSharpCompilerChecks {
     CS0721(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in parameters
     CS0722(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in methods
     CS0723(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in variables
+    CS0724(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // throw; in a finally in a catch
     CS0815(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // lambdas cant be cast to 'var'
     CS0818(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var cant be used if not initializer
     CS0820(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var cant be use it initializer is implicit array initializer
@@ -137,6 +142,7 @@ public enum CSharpCompilerChecks {
     CS1612(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // can't modify field value from non local reference
     CS1614(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // double resolving to X and XAttribute
     CS1620(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref out exp checks
+    CS1632(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // break or continue out of a lambda
     CS1643(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // not all code paths of a lambda or an anonymous method return a value
     CS1644(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // features checks
     CS1656(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // value can't be set to foreach
@@ -173,6 +179,8 @@ public enum CSharpCompilerChecks {
     CS8791(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // index from end in expression tree
     CS8792(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // range in expression tree
     CS8803(CSharpLanguageVersion._9_0, HighlightInfoType.ERROR), // top-level statements must precede namespace and type declarations
+    CS9014(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // struct auto-property read before assigned in a constructor
+    CS9015(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // struct field read before assigned in a constructor
     CS9035(CSharpLanguageVersion._10_0, HighlightInfoType.ERROR), // a required member not set by an object creation
     CS9175(CSharpLanguageVersion._10_0, HighlightInfoType.ERROR), // collection expression in expression tree
 

@@ -50,6 +50,8 @@ CS0133:
     text: "The expression being assigned to ''{0}'' must be constant"
 CS0136:
     text: "A local variable named ''{0}'' cannot be declared in this scope because it would give a different meaning to ''{1}'', which is already used in a ''{2}'' scope to denote something else"
+CS0139:
+    text: No enclosing loop out of which to break or continue
 CS0144:
     text: "Cannot create an instance of the abstract class or interface ''{0}''"
 CS0145:
@@ -58,12 +60,18 @@ CS0146:
     text: "Circular base class dependency involving ''{0}'' and ''{1}''"
 CS0151:
     text: "A switch expression of type ''{0}'' cannot be converted to an integral type, bool, char, string, enum or nullable type"
+CS0152:
+    text: "The switch statement contains multiple cases with the label value ''{0}''"
 CS0153:
     text: A goto case is only valid inside a switch statement
 CS0155:
     text: The type caught or thrown must be derived from System.Exception
+CS0156:
+    text: A throw statement with no arguments is not allowed outside of a catch clause
 CS0157:
     text: Control cannot leave the body of a finally clause
+CS0159:
+    text: "No such label ''{0}'' within the scope of the goto statement"
 CS0161:
     text: "''{0}'': not all code paths return a value"
 CS0162:
@@ -77,7 +85,7 @@ CS0168:
 CS0169:
     text: "The field ''{0}'' is never used"
 CS0171:
-    text: "Field ''{0}'' must be fully assigned before control is returned to the caller"
+    text: "Field ''{0}'' must be fully assigned before control is returned to the caller. Consider updating to language version ''{1}'' to auto-default the field"
 CS0173:
     text: "Type of conditional expression cannot be determined because there is no implicit conversion between ''{0}'' and ''{1}''"
 CS0176:
@@ -85,7 +93,7 @@ CS0176:
 CS0177:
     text: "The out parameter ''{0}'' must be assigned to before control leaves the current method"
 CS0188:
-    text: The 'this' object cannot be used before all of its fields have been assigned
+    text: "The ''this'' object cannot be used before all of its fields have been assigned. Consider updating to language version ''{0}'' to auto-default the unassigned fields"
 CS0200:
     text: "Property or indexer ''{0}'' cannot be assigned to -- it is read only"
 CS0201:
@@ -170,6 +178,8 @@ CS0722:
     text: "''{0}'': static types cannot be used as return types"
 CS0723:
     text: "''{0}'': cannot declare variables of static types"
+CS0724:
+    text: A throw statement with no arguments is not allowed in a finally clause that is nested inside the nearest enclosing catch clause
 CS0815:
     text: "An implicitly typed local variable declaration cannot be initialized with ''{0}''"
 CS0818:
@@ -185,7 +195,7 @@ CS0834:
 CS0838:
     text: An expression tree may not contain a multidimensional array initializer
 CS0843:
-    text: "Auto-implemented property ''{0}'' must be fully assigned before control is returned to the caller"
+    text: "Auto-implemented property ''{0}'' must be fully assigned before control is returned to the caller. Consider updating to language version ''{1}'' to auto-default the property"
 CS1004:
     text: "Duplicate ''{0}'' modifier"
 CS1008:
@@ -212,6 +222,8 @@ CS1614:
     text: "''{0}'' is ambiguous between ''{0}'' and ''{0}Attribute''. Use either ''@{0}'' or ''{0}Attribute''"
 CS1620:
     text: "Argument {0} must be passed with the ''{1}'' keyword"
+CS1632:
+    text: Control cannot leave the body of an anonymous method or lambda expression
 CS1643:
     text: "Not all code paths return a value in {0} of type ''{1}''"
 CS1644:
@@ -286,6 +298,10 @@ CS8792:
     text: "An expression tree may not contain a range ('..') expression"
 CS8803:
     text: Top-level statements must precede namespace and type declarations
+CS9014:
+    text: "Use of possibly unassigned auto-implemented property ''{0}''. Consider updating to language version ''{1}'' to auto-default the property"
+CS9015:
+    text: "Use of possibly unassigned field ''{0}''. Consider updating to language version ''{1}'' to auto-default the field"
 CS9035:
     text: "Required member ''{0}'' must be set in the object initializer or attribute constructor"
 CS9175:

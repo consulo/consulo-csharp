@@ -77,6 +77,10 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression> {
         if (parent instanceof CSharpMethodCallExpressionImpl || parent instanceof CSharpConstructorSuperCallImpl) {
             return Collections.emptyList();
         }
+        // goto L - CS0159
+        if (parent instanceof CSharpGotoStatementImpl) {
+            return Collections.emptyList();
+        }
 
         // a method as a qualifier is CS0119; a member of an unresolved qualifier has its error there - like Roslyn, no cascade
         if (CS0119.findMethodAsQualifier(expression) != null || isQualifierUnresolved(expression)) {

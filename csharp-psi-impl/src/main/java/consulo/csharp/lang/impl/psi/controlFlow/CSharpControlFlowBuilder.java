@@ -485,8 +485,11 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
             }
             PsiElement member = structMember(expression);
             if (member != null) {
-                // a field read - not a use of this; a method, a property with a body - a use
-                if (!myStructMembers.contains(member) && member instanceof DotNetModifierListOwner owner && !owner.hasModifier(CSharpModifier.STATIC)
+                // a field read - it must be assigned (CS9015), not a use of this; a method, a property with a body - a use
+                if (member instanceof DotNetVariable variable && myStructMembers.contains(member)) {
+                    readWrite(expression, variable, CSharpReadWriteInstruction.Access.READ);
+                }
+                else if (member instanceof DotNetModifierListOwner owner && !owner.hasModifier(CSharpModifier.STATIC)
                     && !(member instanceof DotNetVariable variable && variable.isConstant())) {
                     node(expression, CSharpInstruction.THIS_USE);
                 }
@@ -1218,11 +1221,11 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     @Override
     public void visitBreakStatement(CSharpBreakStatementImpl statement) {
         node(statement);
+        // out of no loop (CS0139) - as Roslyn, the flow goes on
         PsiElement target = myBreakTargets.peek();
         if (target != null) {
             exitTo(target);
         }
-        myBuilder.flowAbrupted();
     }
 
     @Override
@@ -1232,7 +1235,6 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
         if (target != null) {
             exitTo(target);
         }
-        myBuilder.flowAbrupted();
     }
 
     @Override
@@ -1283,10 +1285,11 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
             target = label;
         }
 
+        // to no label (CS0159) - as Roslyn, the flow goes on
         if (target != null) {
             jumpTo(instruction, target);
+            myBuilder.flowAbrupted();
         }
-        myBuilder.flowAbrupted();
     }
 
     /**

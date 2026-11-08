@@ -65,10 +65,13 @@ public class CS0171 extends CompilerCheck<CSharpConstructorDeclaration> {
                 continue;
             }
             PsiElement range = leave.element() instanceof CSharpReturnStatementImpl statement ? statement.getFirstChild() : getNameIdentifier(element);
-            results.add(check.newBuilder(range, formatElement(leave.parameter())));
+            results.add(check.newBuilder(range, formatElement(leave.parameter()), AUTO_DEFAULT_VERSION));
         }
         return results;
     }
+
+    // the version defaulting them, in the messages
+    static final String AUTO_DEFAULT_VERSION = "11.0";
 
     /**
      * C# 11 defaults the members not assigned

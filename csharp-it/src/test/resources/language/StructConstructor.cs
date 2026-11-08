@@ -102,6 +102,30 @@ struct Point
         Use(X + Computed + Get());
     }
 
+    public Point(int a, int b)
+    {
+        X = /*error:CS9015*/Y;
+        Y = 1;
+        Auto = 2;
+        Changed = null;
+    }
+
+    public Point(int a, long b)
+    {
+        X = /*error:CS9014*/Auto;
+        Y = 1;
+        Auto = 2;
+        Changed = null;
+    }
+
+    public Point(int a, short b)
+    {
+        /*error:CS9015*/this.Y += 1;
+        X = 1;
+        Auto = 2;
+        Changed = null;
+    }
+
     static void Pass(Point point) { }
 
     static void Init(out int value)

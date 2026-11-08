@@ -47,6 +47,6 @@ public class CS0188 extends CompilerCheck<CSharpReferenceExpression> {
         if (flow == null || flow.getOwner() != constructor || !flow.getDefiniteAssignment().getEarlyThisUses().contains(element)) {
             return null;
         }
-        return newBuilder(element);
+        return newBuilder(element, CS0171.AUTO_DEFAULT_VERSION);
     }
 }
