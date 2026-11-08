@@ -42,7 +42,7 @@ import java.util.*;
  * <li>the reads of a variable of an enclosing owner not assigned in this one before - its inputs, checked where a
  * lambda is created or a local function is referenced</li>
  * <li>the returns, and the end of the body, with an out parameter not assigned (CS0177), or a field or an
- * auto-property of the struct a constructor initializes (CS0171, CS0843)</li>
+ * auto-property a constructor initializes (CS0171, CS0843 of a struct, CS8618)</li>
  * <li>the uses of this in such a constructor before all of them are assigned (CS0188)</li>
  * </ul>
  *
@@ -130,7 +130,7 @@ public final class CSharpDefiniteAssignment {
             }
         }
         // must be assigned when the control leaves - with the out parameters
-        List<DotNetVariable> structMembers = flow.getStructMembers();
+        List<DotNetVariable> structMembers = flow.getConstructorMembers();
         for (DotNetVariable member : structMembers) {
             indexes.putIfAbsent(member, indexes.size());
             outParameters.add(member);

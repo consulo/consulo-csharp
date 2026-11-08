@@ -24,6 +24,7 @@ import consulo.csharp.lang.impl.psi.CSharpElements;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.lang.impl.psi.source.*;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
+import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpConstructorSuperCall;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
@@ -37,6 +38,8 @@ import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTupleVariable;
 import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.DotNetAttribute;
+import consulo.dotnet.psi.DotNetAttributeUtil;
 import consulo.dotnet.psi.DotNetEventDeclaration;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
@@ -135,26 +138,30 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     private final Set<String> myNames;
     // the out arguments of the call being visited - written after it
     private @Nullable List<Map.Entry<PsiElement, DotNetVariable>> myOutWrites;
-    // the fields and auto-properties a struct constructor must assign (C# 10 and lower, spec 9.4.1)
+    // the fields and auto-properties a constructor must assign - of a struct (C# 10 and lower, spec 9.4.1), the
+    // non-nullable ones of a class (CS8618); static ones by a static constructor
     private final List<DotNetVariable> myStructMembers;
     private final @Nullable DotNetTypeDeclaration myStruct;
+    // a struct - this may not be used before they all are assigned
+    private final boolean myThisChecked;
 
     @RequiredReadAction
     private CSharpControlFlowBuilder(PsiElement owner) {
         myOwner = owner;
         myTop = CSharpFlowVariables.topOwner(owner);
         myNames = myTop == null ? Set.of() : CSharpFlowVariables.names(myTop);
-        myStruct = owner instanceof CSharpConstructorDeclaration constructor ? constructedStruct(constructor) : null;
-        myStructMembers = myStruct == null ? List.of() : structMembers(myStruct);
+        myStruct = owner instanceof CSharpConstructorDeclaration constructor ? constructedType(constructor) : null;
+        boolean isStatic = myStruct != null && ((CSharpConstructorDeclaration) owner).hasModifier(CSharpModifier.STATIC);
+        myStructMembers = myStruct == null ? List.of() : structMembers(myStruct, isStatic);
+        myThisChecked = myStruct != null && myStruct.isStruct() && !isStatic;
     }
 
     /**
-     * The struct an instance constructor of it, not chained to another one, initializes
+     * The type a constructor of it, not chained to another one, initializes
      */
     @RequiredReadAction
-    private static @Nullable DotNetTypeDeclaration constructedStruct(CSharpConstructorDeclaration constructor) {
-        if (constructor.isDeConstructor() || constructor.hasModifier(CSharpModifier.STATIC)
-            || !(constructor.getParent() instanceof DotNetTypeDeclaration type) || !type.isStruct() || type.hasModifier(CSharpModifier.PARTIAL)) {
+    private static @Nullable DotNetTypeDeclaration constructedType(CSharpConstructorDeclaration constructor) {
+        if (constructor.isDeConstructor() || !(constructor.getParent() instanceof DotNetTypeDeclaration type) || type.hasModifier(CSharpModifier.PARTIAL)) {
             return null;
         }
         // : this(...) - assigns them all
@@ -166,22 +173,30 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     }
 
     /**
-     * The instance fields, field-like events and auto-properties without an initializer
+     * The fields, field-like events and auto-properties without an initializer - instance or static ones
      */
     @RequiredReadAction
-    private static List<DotNetVariable> structMembers(DotNetTypeDeclaration type) {
+    private static List<DotNetVariable> structMembers(DotNetTypeDeclaration type, boolean isStatic) {
         List<DotNetVariable> members = new ArrayList<>();
         for (PsiElement member : type.getMembers()) {
-            if (!(member instanceof DotNetVariable variable) || variable.hasModifier(CSharpModifier.STATIC) || variable.isConstant() || variable.getInitializer() != null) {
-                continue;
-            }
-            if (member instanceof DotNetFieldDeclaration
-                || member instanceof DotNetEventDeclaration event && event.getAccessors().length == 0
-                || member instanceof CSharpPropertyDeclaration property && isAutoProperty(property)) {
+            if (member instanceof DotNetVariable variable && isConstructorMember(variable, isStatic)) {
                 members.add(variable);
             }
         }
         return members;
+    }
+
+    /**
+     * A field, a field-like event or an auto-property without an initializer, a constructor assigns
+     */
+    @RequiredReadAction
+    public static boolean isConstructorMember(DotNetVariable variable, boolean isStatic) {
+        if (variable.hasModifier(CSharpModifier.STATIC) != isStatic || variable.isConstant() || variable.getInitializer() != null) {
+            return false;
+        }
+        return variable instanceof DotNetFieldDeclaration
+            || variable instanceof DotNetEventDeclaration event && event.getAccessors().length == 0
+            || variable instanceof CSharpPropertyDeclaration property && isAutoProperty(property);
     }
 
     @RequiredReadAction
@@ -463,7 +478,7 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     @Override
     @RequiredReadAction
     public void visitReferenceExpression(CSharpReferenceExpression expression) {
-        if (myStruct != null) {
+        if (myThisChecked) {
             if (isThis(expression)) {
                 node(expression, CSharpInstruction.THIS_USE);
                 return;
@@ -781,6 +796,42 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
         for (Map.Entry<PsiElement, DotNetVariable> write : outWrites) {
             readWrite(write.getKey(), write.getValue(), CSharpReadWriteInstruction.Access.WRITE);
         }
+        memberNotNull(expression);
+    }
+
+    /**
+     * Init() with [MemberNotNull(nameof(x))] - assigns x of the type constructed
+     */
+    @RequiredReadAction
+    private void memberNotNull(PsiElement expression) {
+        if (myStructMembers.isEmpty() || !(expression instanceof CSharpMethodCallExpressionImpl call)
+            || !(call.getCallExpression() instanceof CSharpReferenceExpression callee) || structMember(callee) == null
+            || !(callee.resolve() instanceof DotNetModifierListOwner method)) {
+            return;
+        }
+        DotNetAttribute attribute = DotNetAttributeUtil.findAttribute(method, MEMBER_NOT_NULL);
+        if (!(attribute instanceof CSharpAttribute csharpAttribute)) {
+            return;
+        }
+        for (DotNetExpression argument : csharpAttribute.getParameterExpressions()) {
+            String name = argument instanceof CSharpNameOfExpressionImpl nameOf ? nameOfName(nameOf) : new ConstantExpressionEvaluator(argument).getValueAs(String.class);
+            for (DotNetVariable member : myStructMembers) {
+                if (member.getName() != null && member.getName().equals(name)) {
+                    readWrite(expression, member, CSharpReadWriteInstruction.Access.WRITE);
+                }
+            }
+        }
+    }
+
+    private static final String MEMBER_NOT_NULL = "System.Diagnostics.CodeAnalysis.MemberNotNullAttribute";
+
+    /**
+     * nameof(x), nameof(this.x) - x
+     */
+    @RequiredReadAction
+    private static @Nullable String nameOfName(CSharpNameOfExpressionImpl nameOf) {
+        CSharpReferenceExpression reference = PsiTreeUtil.findChildOfType(nameOf, CSharpReferenceExpression.class);
+        return reference == null ? null : reference.getReferenceName();
     }
 
     // endregion

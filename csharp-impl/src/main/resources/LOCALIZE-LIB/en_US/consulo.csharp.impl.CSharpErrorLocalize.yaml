@@ -272,6 +272,8 @@ CS8207:
     text: An expression tree may not contain a discard
 CS8514:
     text: An expression tree may not contain a switch expression
+CS8618:
+    text: "Non-nullable {0} ''{1}'' must contain a non-null value when exiting constructor. Consider adding the ''required'' modifier or declaring the {0} as nullable"
 CS8625:
     text: Cannot convert null literal to non-nullable reference type.
 CS8632:

@@ -210,9 +210,10 @@ public final class CSharpControlFlow implements ControlFlow {
     }
 
     /**
-     * The fields and auto-properties of the struct a constructor must assign - empty for any other owner
+     * The fields, field-like events and auto-properties without an initializer a constructor not chained to another one
+     * assigns - instance or static ones; empty for any other owner
      */
-    public List<DotNetVariable> getStructMembers() {
+    public List<DotNetVariable> getConstructorMembers() {
         return myStructMembers;
     }
 

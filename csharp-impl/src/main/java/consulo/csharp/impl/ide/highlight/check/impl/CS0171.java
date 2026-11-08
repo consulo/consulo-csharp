@@ -22,8 +22,10 @@ import consulo.csharp.lang.impl.psi.controlFlow.CSharpControlFlow;
 import consulo.csharp.lang.impl.psi.controlFlow.CSharpDefiniteAssignment;
 import consulo.csharp.lang.impl.psi.source.CSharpReturnStatementImpl;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.language.psi.PsiElement;
 
 import java.util.ArrayList;
@@ -50,13 +52,16 @@ public class CS0171 extends CompilerCheck<CSharpConstructorDeclaration> {
         if (!isChecked(languageVersion)) {
             return List.of();
         }
+        if (!(element.getParent() instanceof DotNetTypeDeclaration type) || !type.isStruct() || element.hasModifier(CSharpModifier.STATIC)) {
+            return List.of();
+        }
         CSharpControlFlow flow = CSharpControlFlow.of(element);
-        if (flow == null || flow.getStructMembers().isEmpty()) {
+        if (flow == null || flow.getConstructorMembers().isEmpty()) {
             return List.of();
         }
         List<HighlightInfoFactory> results = new ArrayList<>();
         for (CSharpDefiniteAssignment.Leave leave : flow.getDefiniteAssignment().getUnassignedLeaves()) {
-            if (!flow.getStructMembers().contains(leave.parameter()) || leave.parameter() instanceof CSharpPropertyDeclaration != properties) {
+            if (!flow.getConstructorMembers().contains(leave.parameter()) || leave.parameter() instanceof CSharpPropertyDeclaration != properties) {
                 continue;
             }
             PsiElement range = leave.element() instanceof CSharpReturnStatementImpl statement ? statement.getFirstChild() : getNameIdentifier(element);

@@ -167,6 +167,7 @@ public enum CSharpCompilerChecks {
     CS8198(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // out variable in expression tree
     CS8207(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // discard in expression tree
     CS8514(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // switch expression in expression tree
+    CS8618(CSharpLanguageVersion._8_0, HighlightInfoType.WARNING), // non-nullable member not assigned by a constructor
     CS8632(CSharpLanguageVersion._8_0, HighlightInfoType.WARNING), // nullable type check
     CS8790(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // index or range indexer in expression tree
     CS8791(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // index from end in expression tree
