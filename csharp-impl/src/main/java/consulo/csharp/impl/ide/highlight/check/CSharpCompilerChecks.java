@@ -158,6 +158,9 @@ public enum CSharpCompilerChecks {
     CS8207(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // discard in expression tree
     CS8514(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // switch expression in expression tree
     CS8632(CSharpLanguageVersion._8_0, HighlightInfoType.WARNING), // nullable type check
+    CS8790(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // index or range indexer in expression tree
+    CS8791(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // index from end in expression tree
+    CS8792(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // range in expression tree
     CS8803(CSharpLanguageVersion._9_0, HighlightInfoType.ERROR), // top-level statements must precede namespace and type declarations
     CS9175(CSharpLanguageVersion._10_0, HighlightInfoType.ERROR), // collection expression in expression tree
 

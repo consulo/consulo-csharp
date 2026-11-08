@@ -16,7 +16,7 @@ class Test
 
     static ref int Ref() => throw null;
 
-    void Method(string s, object o)
+    void Method(string s, object o, int[] items)
     {
         Expression<Func<int>> statement = /*error:CS0834*/() => { return 1; };
         Expression<Func<int>> assignment = () => /*error:CS0832*/F = 1;
@@ -36,6 +36,8 @@ class Test
         Expression<Func<int>> discard = () => Out(/*error:CS8207*/out _);
         Expression<Func<int>> refReturn = () => /*error:CS8153*/Ref();
         Expression<Func<int[]>> collection = () => /*error:CS9175*/[1, 2];
+        Expression<Func<int>> fromEnd = () => /*error:CS8790*/items[/*error:CS8791*/^1];
+        Expression<Func<int[]>> range = () => /*error:CS8790*/items[/*error:CS8792*/1..2];
         Expression<Func<Func<int, int>>> nested = () => y => /*error:CS0832*/F = y;
         Take(() => /*error:CS0832*/F = 2);
 
@@ -47,6 +49,7 @@ class Test
         Func<int> function = () => { F = 1; return s?.Length ?? 0; };
         Func<int> asDelegate = delegate { return 1; };
         Func<(int, int)> delegateTuple = () => (1, 2);
+        Func<int[]> delegateRange = () => items[1..^1];
     }
 
     static void Take(Expression<Func<int>> expression)
