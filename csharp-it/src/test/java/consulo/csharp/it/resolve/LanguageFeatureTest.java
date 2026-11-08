@@ -67,6 +67,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <li>{@code /*type:T*&#47;} - the type of the expression starting there, or of the variable named there</li>
  * <li>{@code /*value:V*&#47;} - the value of the literal starting there</li>
  * <li>{@code /*error:CS0000*&#47;} - the compiler check reporting an error there; no other check may report one</li>
+ * <li>{@code /*warning:CS0000*&#47;} - the same for a warning</li>
  * <li>{@code /*modifier:readonly*&#47;} - a modifier of the declaration the name there resolves to</li>
  * <li>{@code /*attribute:System.ObsoleteAttribute*&#47;} - an attribute of the declaration the name there resolves to</li>
  * </ul>
@@ -85,7 +86,7 @@ public class LanguageFeatureTest {
 
     private static final Pattern SDK_MARKER = Pattern.compile("// sdk:([A-Z0-9_,]+)");
 
-    private static final Pattern MARKER = Pattern.compile("/\\*(type|value|error|modifier|attribute):(.+)\\*/");
+    private static final Pattern MARKER = Pattern.compile("/\\*(type|value|error|warning|modifier|attribute):(.+)\\*/");
 
     static Stream<Arguments> sources() throws Exception {
         List<String> files;
@@ -160,7 +161,7 @@ public class LanguageFeatureTest {
 
                 String kind = matcher.group(1);
                 String prefix = kind + ":" + leaf.getText() + "@" + leaf.getTextOffset() + " ";
-                if ("error".equals(kind)) {
+                if ("error".equals(kind) || "warning".equals(kind)) {
                     expected.add(prefix + matcher.group(2));
                     continue;
                 }
@@ -180,7 +181,7 @@ public class LanguageFeatureTest {
     }
 
     /**
-     * The compiler checks reporting an error, as {@code error:<leaf>@<offset> <check>} at the start of their range
+     * The compiler checks reporting an error or a warning, as {@code error:<leaf>@<offset> <check>} at the start of their range
      */
     @RequiredReadAction
     private static List<String> compilerErrors(PsiFile file) {
@@ -195,9 +196,11 @@ public class LanguageFeatureTest {
                 }
 
                 for (CompilerCheck.HighlightInfoFactory result : check.check(languageVersion, context, element)) {
-                    if (result instanceof CompilerCheck.CompilerCheckBuilder builder && builder.getHighlightInfoType() == HighlightInfoType.ERROR) {
+                    if (result instanceof CompilerCheck.CompilerCheckBuilder builder
+                        && (builder.getHighlightInfoType() == HighlightInfoType.ERROR || builder.getHighlightInfoType() == HighlightInfoType.WARNING)) {
+                        String kind = builder.getHighlightInfoType() == HighlightInfoType.ERROR ? "error:" : "warning:";
                         PsiElement leaf = file.findElementAt(builder.getTextRange().getStartOffset());
-                        errors.add("error:" + (leaf == null ? "" : leaf.getText()) + "@" + builder.getTextRange().getStartOffset() + " " + check.name());
+                        errors.add(kind + (leaf == null ? "" : leaf.getText()) + "@" + builder.getTextRange().getStartOffset() + " " + check.name());
                     }
                 }
             }

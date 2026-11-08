@@ -64,6 +64,10 @@ CS0157:
     text: Control cannot leave the body of a finally clause
 CS0161:
     text: "''{0}'': not all code paths return a value"
+CS0162:
+    text: Unreachable code detected
+CS0163:
+    text: "Control cannot fall through from one case label (''{0}'') to another"
 CS0168:
     text: "The variable ''{0}'' is declared but never used"
 CS0169:
@@ -194,6 +198,8 @@ CS1614:
     text: "''{0}'' is ambiguous between ''{0}'' and ''{0}Attribute''. Use either ''@{0}'' or ''{0}Attribute''"
 CS1620:
     text: "Argument {0} must be passed with the ''{1}'' keyword"
+CS1643:
+    text: "Not all code paths return a value in {0} of type ''{1}''"
 CS1644:
     text: "Feature ''{0}'' cannot be used because it is not part of the C# {1} language specification"
 CS1656:
@@ -232,6 +238,8 @@ CS1998:
     text: "Async block lacks 'await' operator and will run synchronously"
 CS4009:
     text: "''{0}'': an entry point cannot be async method"
+CS8070:
+    text: "Control cannot fall out of switch from final case label (''{0}'')"
 CS8072:
     text: An expression tree lambda may not contain a null propagating operator
 CS8110:

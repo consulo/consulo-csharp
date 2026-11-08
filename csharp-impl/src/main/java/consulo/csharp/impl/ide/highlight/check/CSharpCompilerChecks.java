@@ -64,6 +64,8 @@ public enum CSharpCompilerChecks {
     CS0155(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // throw object must be child of System.Exception
     CS0157(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // return is not allowed inside finally blocks
     CS0161(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  return check
+    CS0162(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // unreachable code
+    CS0163(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // switch section falls through to the next one
     CS0168(CSharpLanguageVersion._1_0, CSharpHighlightInfoType::getUnusedDeclaration), // local variable usage check
     CS0169(CSharpLanguageVersion._1_0, CSharpHighlightInfoType::getUnusedDeclaration), // field is not used
     CS0173(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // failed to find conditional expression type
@@ -129,6 +131,7 @@ public enum CSharpCompilerChecks {
     CS1612(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // can't modify field value from non local reference
     CS1614(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // double resolving to X and XAttribute
     CS1620(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref out exp checks
+    CS1643(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // not all code paths of a lambda or an anonymous method return a value
     CS1644(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // features checks
     CS1656(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // value can't be set to foreach
     CS1674(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // using statement expression or variable must be System.IDisposable
@@ -148,6 +151,7 @@ public enum CSharpCompilerChecks {
     CS1989(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // async lambda as expression tree
     CS1998(CSharpLanguageVersion._4_0, CSharpHighlightInfoType::getUnusedDeclaration), // async modifier - then no await
     CS4009(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // async modifier cant be at entry point
+    CS8070(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // the final switch section falls out of the switch
     CS8072(CSharpLanguageVersion._6_0, HighlightInfoType.ERROR), // null propagating operator in expression tree
     CS8110(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // local function in expression tree
     CS8122(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // is pattern in expression tree

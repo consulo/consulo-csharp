@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2017 consulo.io
+ * Copyright 2013-2026 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,58 +13,72 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-import consulo.util.lang.ObjectUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.impl.psi.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.impl.psi.source.CSharpCheckedStatementImpl;
+import consulo.csharp.lang.impl.psi.CSharpImplicitReturnModel;
+import consulo.csharp.lang.impl.psi.controlFlow.CSharpControlFlow;
+import consulo.csharp.lang.impl.psi.source.CSharpAnonymousMethodExpression;
+import consulo.csharp.lang.impl.psi.source.CSharpTopLevelStatementsImpl;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.DotNetConstructorDeclaration;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
-import consulo.language.psi.PsiElement;
-
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jspecify.annotations.Nullable;
 
 /**
+ * Not all code paths return a value - the end point of the body of a method, an operator, an accessor, a local function
+ * or the top-level statements returning a value is reachable
+ *
  * @author VISTALL
  * @since 16-Nov-17
- * <p>
- * TODO [VISTALL] need rewrite this check, after introducing control flow
  */
-public class CS0161 extends CompilerCheck<CSharpMethodDeclaration> {
+public class CS0161 extends CompilerCheck<CSharpSimpleLikeMethodAsElement> {
     @RequiredReadAction
     @Nullable
     @Override
-    public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpMethodDeclaration element) {
-        DotNetTypeRef returnTypeRef = element.getReturnTypeRef();
-        if (DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, DotNetTypes.System.Void)) {
+    public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpSimpleLikeMethodAsElement element) {
+        // lambdas and anonymous methods - CS1643
+        if (element instanceof CSharpAnonymousMethodExpression || element instanceof DotNetConstructorDeclaration
+            || !returnsValue(element, element.getReturnTypeRef()) || !isEndReachable(element)) {
             return null;
         }
 
-        PsiElement codeBlock = element.getCodeBlock().getElement();
-        if (codeBlock instanceof CSharpBlockStatementImpl) {
-            DotNetStatement[] statements = ((CSharpBlockStatementImpl) codeBlock).getStatements();
-            if (statements.length == 0) {
-                return newBuilder(ObjectUtil.chooseNotNull(((CSharpBlockStatementImpl) codeBlock).getRightBrace(), getNameIdentifier(element)), formatElement(element));
-            }
-            else if (statements.length == 1) {
-                DotNetStatement statement = statements[0];
-                if (statement instanceof CSharpCheckedStatementImpl) {
-                    DotNetStatement[] childStatements = ((CSharpCheckedStatementImpl) statement).getStatements();
-                    if (childStatements.length == 0) {
-                        return newBuilder(ObjectUtil.chooseNotNull(((CSharpBlockStatementImpl) codeBlock).getRightBrace(), getNameIdentifier(element)), formatElement(element));
-                    }
-                }
+        if (element instanceof CSharpTopLevelStatementsImpl) {
+            DotNetStatement first = PsiTreeUtil.getChildOfType(element, DotNetStatement.class);
+            return newBuilder(first != null ? first : element, "<top-level-statements-entry-point>");
+        }
+        return newBuilder(getNameIdentifier(element), formatElement(element));
+    }
+
+    /**
+     * The end point of the body is reachable, and it is not an iterator
+     */
+    @RequiredReadAction
+    public static boolean isEndReachable(CSharpSimpleLikeMethodAsElement element) {
+        CSharpControlFlow flow = CSharpControlFlow.of(element);
+        return flow != null && !flow.isIterator() && flow.isEndReachable();
+    }
+
+    /**
+     * A return statement must have a value - not void, nor Task or ValueTask of an async one
+     */
+    @RequiredReadAction
+    public static boolean returnsValue(CSharpSimpleLikeMethodAsElement element, DotNetTypeRef returnTypeRef) {
+        if (element.hasModifier(CSharpModifier.ASYNC)) {
+            returnTypeRef = CSharpImplicitReturnModel.Async.extractTypeRefImpl(returnTypeRef);
+            if (returnTypeRef == null) {
+                return false;
             }
         }
-
-        return null;
+        return returnTypeRef != DotNetTypeRef.ERROR_TYPE && returnTypeRef != DotNetTypeRef.UNKNOWN_TYPE && returnTypeRef != DotNetTypeRef.AUTO_TYPE
+            && !DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, DotNetTypes.System.Void);
     }
 }
