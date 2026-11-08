@@ -153,6 +153,37 @@ class ReturnPaths
         }
     }
 
+    int SwitchVar(object o)
+    {
+        switch (o)
+        {
+            case string s:
+                return s.Length;
+            case var x:
+                return x.GetHashCode();
+        }
+    }
+
+    int SwitchDiscard(string text)
+    {
+        switch (text)
+        {
+            case var /*type:string*/value when value.Length > 0:
+                return value.Length;
+            case var _:
+                return 0;
+        }
+    }
+
+    int /*error:CS0161*/SwitchVarWhen(object o)
+    {
+        switch (o)
+        {
+            case var x when x != null:
+                return 1;
+        }
+    }
+
     int /*error:CS0161*/SwitchNullable(int? i)
     {
         switch (i)

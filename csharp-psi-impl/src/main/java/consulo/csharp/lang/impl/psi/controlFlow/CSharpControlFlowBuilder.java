@@ -23,7 +23,9 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.lang.impl.psi.source.*;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.CSharpNativeType;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
@@ -488,7 +490,7 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
 
     /**
      * No way past all the labels: a default, a constant switch matching a label, the labels true and false of a bool,
-     * a type pattern of the non-nullable value type switched on
+     * a var pattern, a type pattern of the non-nullable value type switched on
      */
     @RequiredReadAction
     private static boolean isExhaustive(@Nullable DotNetExpression expression, List<CSharpSwitchSection> sections, @Nullable Object value, boolean matched) {
@@ -528,6 +530,9 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
 
         for (CSharpCasePatternStatementImpl pattern : patterns) {
             DotNetType type = pattern.getVariable().getType();
+            if (type instanceof CSharpNativeType nativeType && nativeType.getTypeElementType() == CSharpSoftTokens.VAR_KEYWORD) {
+                return true;
+            }
             if (type == null) {
                 continue;
             }

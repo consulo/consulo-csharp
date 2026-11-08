@@ -49,7 +49,7 @@ public class CSharpCaseVariableImpl extends CSharpVariableImpl {
     }
 
     /**
-     * {@code var v} of a switch expression arm is of the type of the value matched
+     * {@code var v} of a switch expression arm or of a case label is of the type of the value matched
      */
     @RequiredReadAction
     @Override
@@ -64,11 +64,17 @@ public class CSharpCaseVariableImpl extends CSharpVariableImpl {
         while (current.getParent() instanceof CSharpPatternImpl pattern && pattern.getNode().getElementType() != CSharpElements.PROPERTY_PATTERN) {
             current = pattern;
         }
+        DotNetExpression value = null;
         if (current.getParent() instanceof CSharpSwitchExpressionArmImpl arm && arm.getParent() instanceof CSharpSwitchExpressionImpl switchExpression) {
-            DotNetExpression value = switchExpression.getExpression();
-            if (value != null) {
-                return value.toTypeRef(resolveFromInitializer);
-            }
+            value = switchExpression.getExpression();
+        }
+        // case var v: - the labels are in the block of the switch statement
+        else if (current.getParent() instanceof CSharpCasePatternStatementImpl label
+            && label.getParent() instanceof CSharpBlockStatementImpl block && block.getParent() instanceof CSharpSwitchStatementImpl switchStatement) {
+            value = switchStatement.getExpression();
+        }
+        if (value != null) {
+            return value.toTypeRef(resolveFromInitializer);
         }
         return DotNetTypeRef.ERROR_TYPE;
     }

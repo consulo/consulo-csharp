@@ -681,7 +681,8 @@ public class StatementParsing extends SharedParsingHelpers {
     private static boolean parseCasePatternStatement(CSharpBuilderWrapper builder, ModifierSet set) {
         PsiBuilder.Marker patternVarMarker = builder.mark();
 
-        TypeInfo typeInfo = parseType(builder, UNEXPECTED_TUPLE);
+        // case var x: - var is the type of the value matched
+        TypeInfo typeInfo = parseType(builder, UNEXPECTED_TUPLE | VAR_SUPPORT);
         if (typeInfo == null) {
             patternVarMarker.rollbackTo();
             return false;
