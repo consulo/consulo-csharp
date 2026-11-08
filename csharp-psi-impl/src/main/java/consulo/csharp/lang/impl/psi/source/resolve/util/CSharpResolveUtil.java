@@ -490,7 +490,9 @@ public class CSharpResolveUtil
 			DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", null, patternMethod.getReturnTypeRef());
 			if(current != null)
 			{
-				return current.toTypeRef(false);
+				// ref readonly T Current of Span<T> - the element is the value
+				DotNetTypeRef currentTypeRef = current.toTypeRef(false);
+				return currentTypeRef instanceof DotNetRefTypeRef refTypeRef ? refTypeRef.getInnerTypeRef() : currentTypeRef;
 			}
 		}
 
