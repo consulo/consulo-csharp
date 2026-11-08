@@ -56,6 +56,14 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	private static final String[] ourAttributeBans = new String[]{
 			DotNetTypes.System.ParamArrayAttribute,
 			DotNetTypes2.System.Runtime.CompilerServices.ParamCollectionAttribute,
+			// C# itself here - dynamic, tuple names, in, ref struct, readonly struct, const decimal, indexers
+			DotNetTypes2.System.Runtime.CompilerServices.DynamicAttribute,
+			DotNetTypes2.System.Runtime.CompilerServices.TupleElementNamesAttribute,
+			DotNetTypes2.System.Runtime.CompilerServices.IsReadOnlyAttribute,
+			DotNetTypes2.System.Runtime.CompilerServices.RequiresLocationAttribute,
+			DotNetTypes2.System.Runtime.CompilerServices.IsByRefLikeAttribute,
+			DotNetTypes2.System.Runtime.CompilerServices.DecimalConstantAttribute,
+			DotNetTypes2.System.Reflection.DefaultMemberAttribute,
 			DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute,
 			DotNetTypes2.System.Runtime.CompilerServices.AsyncStateMachineAttribute
 	};

@@ -6,7 +6,7 @@ class Test
 {
     void Method(Tuples tuples)
     {
-        var /*type:(int Id, string Name)*/field = tuples.Field;
+        var /*type:(int Id, string Name)*/field = tuples./*attribute:!System.Runtime.CompilerServices.TupleElementNamesAttribute*/Field;
         var /*type:int*/id = tuples.Field.Id;
         var /*type:string*/name = tuples.Property.Name;
         var /*type:(int Item1, string Name)*/partial = tuples.Partial;

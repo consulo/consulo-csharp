@@ -6,7 +6,7 @@ class Test
 {
     void Method(Dynamics dynamics)
     {
-        var /*type:dynamic*/field = dynamics.Field;
+        var /*type:dynamic*/field = dynamics./*attribute:!System.Runtime.CompilerServices.DynamicAttribute*/Field;
         var /*type:object*/value = dynamics.Object;
         var /*type:dynamic[]*/array = dynamics.Array;
         var /*type:System.Collections.Generic.List<dynamic>*/list = dynamics.List;

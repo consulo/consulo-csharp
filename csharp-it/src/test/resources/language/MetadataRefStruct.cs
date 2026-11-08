@@ -6,7 +6,7 @@ class Test
 {
     void Method()
     {
-        /*modifier:ref*/Buffer buffer = default;
+        /*modifier:ref*//*attribute:!System.Runtime.CompilerServices.IsByRefLikeAttribute*/Buffer buffer = default;
         var /*type:int*/length = buffer.Length;
         Plain plain = default;
     }

@@ -10,6 +10,6 @@ class Test
 
     void Method()
     {
-        var /*type:decimal*/price = Prices.Price;
+        var /*type:decimal*/price = Prices./*attribute:!System.Runtime.CompilerServices.DecimalConstantAttribute*/Price;
     }
 }
