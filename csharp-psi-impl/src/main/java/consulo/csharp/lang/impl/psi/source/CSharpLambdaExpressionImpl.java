@@ -36,6 +36,7 @@ import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.impl.psi.CSharpImplicitReturnModel;
+import consulo.csharp.lang.impl.psi.controlFlow.CSharpControlFlow;
 import consulo.csharp.lang.impl.psi.source.resolve.genericInference.GenericInferenceManager;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpGenericWrapperTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpLambdaResolveResult;
@@ -129,7 +130,32 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
         if (forceTypeRef != null) {
             return forceTypeRef;
         }
-        return new CSharpLambdaTypeRef(getProject(), getResolveScope(), null, getParameterInfos(resolveFromParent), resolveFromParent ? getReturnTypeRef() : DotNetTypeRef.AUTO_TYPE);
+        return new CSharpLambdaTypeRef(getProject(), getResolveScope(), null, getParameterInfos(resolveFromParent), resolveFromParent ? getReturnTypeRef() : getOwnReturnTypeRef());
+    }
+
+    /**
+     * The return type the lambda allows by itself: void for a block body with a {@code return;}, or without a return
+     * and with a reachable end point - it converts to no delegate returning a value (C# spec 10.7.1, {@code () => { }}
+     * to Action, not to Func&lt;string&gt;); any type else, a body ending in a throw included
+     */
+    @RequiredReadAction
+    private DotNetTypeRef getOwnReturnTypeRef() {
+        if (hasModifier(CSharpModifier.ASYNC) || !(getCodeBlock().getElement() instanceof CSharpBlockStatementImpl)) {
+            return DotNetTypeRef.AUTO_TYPE;
+        }
+        List<DotNetExpression> returned = getReturnExpressions();
+        if (returned.contains(null)) {
+            // return; - void
+            return new CSharpTypeRefByQName(getProject(), getResolveScope(), DotNetTypes.System.Void);
+        }
+        if (!returned.isEmpty()) {
+            return DotNetTypeRef.AUTO_TYPE;
+        }
+        Boolean endReachable = RecursionManager.doPreventingRecursion(this, false, () -> {
+            CSharpControlFlow flow = CSharpControlFlow.of(this);
+            return flow != null && !flow.isIterator() && flow.isEndReachable();
+        });
+        return endReachable == Boolean.TRUE ? new CSharpTypeRefByQName(getProject(), getResolveScope(), DotNetTypes.System.Void) : DotNetTypeRef.AUTO_TYPE;
     }
 
     @RequiredReadAction
@@ -144,7 +170,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 
     /**
      * The expressions the lambda returns - its body, or those of its return statements (null for {@code return;}),
-     * nested lambdas not looked into.
+     * nested lambdas and local functions not looked into.
      */
     @RequiredReadAction
     public List<DotNetExpression> getReturnExpressions() {
@@ -164,6 +190,10 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 
             @Override
             public void visitLambdaExpression(CSharpLambdaExpressionImpl expression) {
+            }
+
+            @Override
+            public void visitLocalMethodDeclarationStatement(CSharpLocalMethodDeclarationStatementImpl statement) {
             }
 
             @Override
@@ -196,6 +226,11 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
             @Override
             public void visitLambdaExpression(CSharpLambdaExpressionImpl expression) {
                 // We don't need to check return inside lambda
+            }
+
+            @Override
+            public void visitLocalMethodDeclarationStatement(CSharpLocalMethodDeclarationStatementImpl statement) {
+                // nor inside a local function
             }
 
             @Override
