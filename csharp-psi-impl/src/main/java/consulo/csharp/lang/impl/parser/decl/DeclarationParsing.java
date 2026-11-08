@@ -163,7 +163,7 @@ public class DeclarationParsing extends SharedParsingHelpers {
     private static void parse(CSharpBuilderWrapper builder, boolean namespaceLevel) {
         PsiBuilder.Marker marker = builder.mark();
 
-        Pair<PsiBuilder.Marker, ModifierSet> modifierListPair = parseWithSoftElements(b -> parseModifierListWithAttributes(b, STUB_SUPPORT), builder, PARTIAL_KEYWORD, ASYNC_KEYWORD);
+        Pair<PsiBuilder.Marker, ModifierSet> modifierListPair = parseWithSoftElements(b -> parseModifierListWithAttributes(b, STUB_SUPPORT), builder, PARTIAL_KEYWORD, ASYNC_KEYWORD, REQUIRED_KEYWORD);
 
         PsiBuilder.Marker modifierListMarker = modifierListPair.getFirst();
         ModifierSet modifierSet = modifierListPair.getSecond();

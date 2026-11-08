@@ -59,6 +59,7 @@ public class CSharpModifierListImplUtil {
         ourModifiers.put(CSharpModifier.NEW, CSharpTokens.NEW_KEYWORD);
         ourModifiers.put(CSharpModifier.OVERRIDE, CSharpTokens.OVERRIDE_KEYWORD);
         ourModifiers.put(CSharpModifier.ASYNC, CSharpSoftTokens.ASYNC_KEYWORD);
+        ourModifiers.put(CSharpModifier.REQUIRED, CSharpSoftTokens.REQUIRED_KEYWORD);
         ourModifiers.put(CSharpModifier.IN, CSharpSoftTokens.IN_KEYWORD);
         ourModifiers.put(CSharpModifier.EXTERN, CSharpSoftTokens.EXTERN_KEYWORD);
         ourModifiers.put(CSharpModifier.FIXED, CSharpSoftTokens.FIXED_KEYWORD);

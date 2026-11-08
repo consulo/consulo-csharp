@@ -34,6 +34,7 @@ public interface DotNetTypes2 {
                 String CompilerFeatureRequiredAttribute = "System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute";
                 String ParamCollectionAttribute = "System.Runtime.CompilerServices.ParamCollectionAttribute";
                 String DecimalConstantAttribute = "System.Runtime.CompilerServices.DecimalConstantAttribute";
+                String RequiredMemberAttribute = "System.Runtime.CompilerServices.RequiredMemberAttribute";
             }
 
             interface InteropServices {
@@ -74,6 +75,10 @@ public interface DotNetTypes2 {
 
         interface Diagnostics {
             String DebuggerDisplayAttribute = "System.Diagnostics.DebuggerDisplayAttribute";
+
+            interface CodeAnalysis {
+                String SetsRequiredMembersAttribute = "System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute";
+            }
         }
 
         String RuntimeArgumentHandle = "System.RuntimeArgumentHandle";

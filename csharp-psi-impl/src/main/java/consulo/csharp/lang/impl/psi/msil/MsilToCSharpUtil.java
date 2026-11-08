@@ -98,6 +98,8 @@ public class MsilToCSharpUtil {
                 break;
             case ASYNC:
                 return hasAttribute(modifierList, DotNetTypes2.System.Runtime.CompilerServices.AsyncStateMachineAttribute);
+            case REQUIRED:
+                return hasAttribute(modifierList, DotNetTypes2.System.Runtime.CompilerServices.RequiredMemberAttribute);
             case INTERNAL:
                 if (modifierList.hasModifier(MsilTokens.FAMORASSEMBLY_KEYWORD)) {
                     return true;

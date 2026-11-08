@@ -64,7 +64,8 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
             DotNetTypes2.System.Runtime.CompilerServices.DecimalConstantAttribute,
             DotNetTypes2.System.Reflection.DefaultMemberAttribute,
             DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute,
-            DotNetTypes2.System.Runtime.CompilerServices.AsyncStateMachineAttribute
+            DotNetTypes2.System.Runtime.CompilerServices.AsyncStateMachineAttribute,
+            DotNetTypes2.System.Runtime.CompilerServices.RequiredMemberAttribute
     };
 
     /**

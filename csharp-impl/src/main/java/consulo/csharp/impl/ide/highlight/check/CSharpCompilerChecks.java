@@ -173,6 +173,7 @@ public enum CSharpCompilerChecks {
     CS8791(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // index from end in expression tree
     CS8792(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // range in expression tree
     CS8803(CSharpLanguageVersion._9_0, HighlightInfoType.ERROR), // top-level statements must precede namespace and type declarations
+    CS9035(CSharpLanguageVersion._10_0, HighlightInfoType.ERROR), // a required member not set by an object creation
     CS9175(CSharpLanguageVersion._10_0, HighlightInfoType.ERROR), // collection expression in expression tree
 
     CC0001(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //reference checks

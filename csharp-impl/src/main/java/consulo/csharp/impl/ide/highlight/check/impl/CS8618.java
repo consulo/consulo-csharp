@@ -37,7 +37,6 @@ import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetEventDeclaration;
 import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
@@ -111,7 +110,7 @@ public class CS8618 extends CompilerCheck<DotNetModifierListOwner> {
         CSharpSimpleModuleExtension<?> extension = highlightContext.getCSharpModuleExtension();
         CSharpNullableOption option = CSharpNullableContext.get(highlightContext.getFile())
             .getNullable(member, extension == null ? CSharpNullableOption.UNSPECIFIED : extension.getNullableOption());
-        if (option != CSharpNullableOption.ENABLE || member.getType() instanceof CSharpNullableType || isRequired(member)) {
+        if (option != CSharpNullableOption.ENABLE || member.getType() instanceof CSharpNullableType || member.hasModifier(CSharpModifier.REQUIRED)) {
             return false;
         }
         DotNetTypeResolveResult result = member.toTypeRef(false).resolve();
@@ -133,23 +132,6 @@ public class CS8618 extends CompilerCheck<DotNetModifierListOwner> {
         for (CSharpGenericConstraintValue value : constraint.getGenericConstraintValues()) {
             if (value instanceof CSharpGenericConstraintKeywordValue keyword
                 && (keyword.getKeywordElementType() == CSharpTokens.STRUCT_KEYWORD || "unmanaged".equals(keyword.getText()))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * required (C# 11) - set by the object initializer
-     */
-    @RequiredReadAction
-    private static boolean isRequired(DotNetVariable member) {
-        DotNetModifierList modifierList = member.getModifierList();
-        if (modifierList == null) {
-            return false;
-        }
-        for (PsiElement child = modifierList.getFirstChild(); child != null; child = child.getNextSibling()) {
-            if ("required".equals(child.getText())) {
                 return true;
             }
         }

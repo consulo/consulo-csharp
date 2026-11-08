@@ -286,6 +286,8 @@ CS8792:
     text: "An expression tree may not contain a range ('..') expression"
 CS8803:
     text: Top-level statements must precede namespace and type declarations
+CS9035:
+    text: "Required member ''{0}'' must be set in the object initializer or attribute constructor"
 CS9175:
     text: An expression tree may not contain a collection expression
 add.using:

@@ -50,7 +50,8 @@ public enum CSharpModifier implements DotNetModifier {
     EXTERN,
     INTERFACE_ABSTRACT, // dummy modifier
     OPTIONAL, // dummy modifier
-    FIXED;
+    FIXED,
+    REQUIRED;
 
     public static final CSharpModifier[] EMPTY_ARRAY = new CSharpModifier[0];
 
