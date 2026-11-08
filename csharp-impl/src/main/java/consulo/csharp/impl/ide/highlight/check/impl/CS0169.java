@@ -28,6 +28,7 @@ import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.dotnet.psi.DotNetAttributeUtil;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.language.psi.PsiReference;
 import org.jspecify.annotations.Nullable;
@@ -41,12 +42,14 @@ public class CS0169 extends CompilerCheck<CSharpFieldDeclaration> {
     @Nullable
     @Override
     public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpFieldDeclaration element) {
-        if (!element.hasModifier(CSharpModifier.PRIVATE)) {
+        // with an initializer - assigned, CS0414
+        if (!element.hasModifier(CSharpModifier.PRIVATE) || element.getInitializer() != null) {
             return null;
         }
 
         PsiElement parent = element.getParent();
-        if (!(parent instanceof CSharpTypeDeclaration)) {
+        // [StructLayout] - its fields are its layout
+        if (!(parent instanceof CSharpTypeDeclaration) || DotNetAttributeUtil.hasAttribute(parent, "System.Runtime.InteropServices.StructLayoutAttribute")) {
             return null;
         }
 

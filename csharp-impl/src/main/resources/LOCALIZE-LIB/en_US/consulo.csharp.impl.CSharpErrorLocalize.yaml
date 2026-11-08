@@ -136,6 +136,8 @@ CS0409:
     text: "A constraint clause has already been specified for type parameter ''{0}''"
 CS0413:
     text: "The ''{0}'' operator cannot be used with a non-reference type parameter ''{1}''. Consider adding 'class' or a reference type constraint"
+CS0414:
+    text: "The field ''{0}'' is assigned but its value is never used"
 CS0418:
     text: "''{0}'' : an abstract class cannot be sealed or static"
 CS0441:
@@ -170,6 +172,8 @@ CS0556:
     text: User-defined conversion must convert to or from the enclosing type
 CS0568:
     text: Structs cannot contain explicit parameterless constructors
+CS0649:
+    text: "Field ''{0}'' is never assigned to, and will always have its default value {1}"
 CS0673:
     text: "System.Void cannot be used from C#. Consider using ''void''"
 CS0692:

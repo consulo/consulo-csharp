@@ -98,6 +98,7 @@ public enum CSharpCompilerChecks {
     CS0401(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // new() constraint must be last
     CS0409(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // generic constraint already defined for generic
     CS0413(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // 'S' operator  cant use to generic without class constraint, or reference
+    CS0414(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // private field assigned, never read
     CS0418(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // abstract type cant be static or sealed
     CS0441(CSharpLanguageVersion._2_0, HighlightInfoType.WRONG_REF), // static and sealed cant be combined
     CS0449(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // struct or class constraint must be first
@@ -114,6 +115,7 @@ public enum CSharpCompilerChecks {
     CS0555(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implicit and explicit cant convert to itself
     CS0556(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implicit and explicit cant be hold type without owner
     CS0568(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // structs cant have parameterless constructor
+    CS0649(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // private field never assigned
     CS0673(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // Void cant be used in C#
     CS0692(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // duplicate parameter name
     CS0693(CSharpLanguageVersion._2_0, HighlightInfoType.WARNING), // check by generic
