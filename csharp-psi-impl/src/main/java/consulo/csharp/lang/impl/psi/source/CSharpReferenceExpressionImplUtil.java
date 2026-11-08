@@ -1133,7 +1133,12 @@ public class CSharpReferenceExpressionImplUtil {
             return new CSharpLambdaTypeRef((CSharpMethodDeclaration) resolvedElement);
         }
         else if (resolvedElement instanceof DotNetVariable) {
-            return ((DotNetVariable) resolvedElement).toTypeRef(true);
+            DotNetTypeRef typeRef = ((DotNetVariable) resolvedElement).toTypeRef(true);
+            // a ref or out parameter is a variable of its type - ref p passes it by reference again
+            if (resolvedElement instanceof DotNetParameter && typeRef instanceof CSharpRefTypeRef refTypeRef) {
+                return refTypeRef.getInnerTypeRef();
+            }
+            return typeRef;
         }
         else if (resolvedElement instanceof CSharpElementGroup) {
             return new CSharpElementGroupTypeRef(resolveScope.getProject(), resolveScope, (CSharpElementGroup<?>) resolvedElement);
