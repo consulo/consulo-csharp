@@ -23,6 +23,8 @@ import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.impl.psi.source.CSharpAsExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpBinaryExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpConstantExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpParenthesesExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpPrefixExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpTypeCastExpressionImpl;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
@@ -38,12 +40,30 @@ import org.jspecify.annotations.Nullable;
  * @since 28.08.14
  */
 public class ConstantExpressionEvaluator extends CSharpElementVisitor {
+    private final boolean myConstantOnly;
+
     private Object myValue;
 
     public ConstantExpressionEvaluator(@Nullable DotNetExpression expression) {
+        this(expression, false);
+    }
+
+    /**
+     * @param constantOnly only a constant expression of the C# spec (12.23) - {@code const} variables, not {@code readonly} ones
+     */
+    public ConstantExpressionEvaluator(@Nullable DotNetExpression expression, boolean constantOnly) {
+        myConstantOnly = constantOnly;
         if (expression != null) {
             expression.accept(this);
         }
+    }
+
+    /**
+     * The value of a constant bool expression - {@code false}, {@code !true}, {@code 1 == 1}, a {@code const bool} - else null
+     */
+    @Nullable
+    public static Boolean evaluateBoolean(@Nullable DotNetExpression expression) {
+        return new ConstantExpressionEvaluator(expression, true).getValueAs(Boolean.class);
     }
 
     @Override
@@ -67,8 +87,8 @@ public class ConstantExpressionEvaluator extends CSharpElementVisitor {
             return;
         }
 
-        Object leftValue = new ConstantExpressionEvaluator(leftExpression).getValue();
-        Object rightValue = new ConstantExpressionEvaluator(rightExpression).getValue();
+        Object leftValue = new ConstantExpressionEvaluator(leftExpression, myConstantOnly).getValue();
+        Object rightValue = new ConstantExpressionEvaluator(rightExpression, myConstantOnly).getValue();
         if (leftValue == null || rightValue == null) {
             return;
         }
@@ -77,25 +97,38 @@ public class ConstantExpressionEvaluator extends CSharpElementVisitor {
     }
 
     @Override
+    public void visitParenthesesExpression(CSharpParenthesesExpressionImpl expression) {
+        myValue = new ConstantExpressionEvaluator(expression.getInnerExpression(), myConstantOnly).getValue();
+    }
+
+    @Override
+    public void visitPrefixExpression(CSharpPrefixExpressionImpl expression) {
+        Object value = new ConstantExpressionEvaluator(expression.getExpression(), myConstantOnly).getValue();
+        if (value != null) {
+            myValue = OperatorEvaluator.calcPrefix(expression.getOperatorElement().getOperatorElementType(), value);
+        }
+    }
+
+    @Override
     public void visitTypeCastExpression(CSharpTypeCastExpressionImpl expression) {
-        myValue = castTo(new ConstantExpressionEvaluator(expression.getInnerExpression()).getValue(), expression);
+        myValue = castTo(new ConstantExpressionEvaluator(expression.getInnerExpression(), myConstantOnly).getValue(), expression);
     }
 
     @Override
     public void visitAsExpression(CSharpAsExpressionImpl expression) {
-        myValue = castTo(new ConstantExpressionEvaluator(expression.getInnerExpression()).getValue(), expression);
+        myValue = castTo(new ConstantExpressionEvaluator(expression.getInnerExpression(), myConstantOnly).getValue(), expression);
     }
 
     @Override
     public void visitReferenceExpression(CSharpReferenceExpression expression) {
         PsiElement resolvedElement = expression.resolve();
         if (resolvedElement instanceof DotNetVariable) {
-            if (((DotNetVariable) resolvedElement).isConstant() || ((DotNetVariable) resolvedElement).hasModifier(CSharpModifier.READONLY)) {
+            if (((DotNetVariable) resolvedElement).isConstant() || !myConstantOnly && ((DotNetVariable) resolvedElement).hasModifier(CSharpModifier.READONLY)) {
                 DotNetExpression initializer = ((DotNetVariable) resolvedElement).getInitializer();
                 if (initializer == null) {
                     return;
                 }
-                myValue = new ConstantExpressionEvaluator(initializer).getValue();
+                myValue = new ConstantExpressionEvaluator(initializer, myConstantOnly).getValue();
             }
         }
     }

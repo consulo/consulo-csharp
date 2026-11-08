@@ -169,6 +169,23 @@ public class OperatorEvaluator {
                 return t / v;
             }
         });
+
+        // -----------------------------------  comparisons, bool -----------------------------------------------------
+
+        register(Integer.class, Integer.class, CSharpTokens.EQEQ, (Integer t, Integer v) -> t.intValue() == v.intValue());
+        register(Integer.class, Integer.class, CSharpTokens.NTEQ, (Integer t, Integer v) -> t.intValue() != v.intValue());
+        register(Integer.class, Integer.class, CSharpTokens.LT, (Integer t, Integer v) -> t < v);
+        register(Integer.class, Integer.class, CSharpTokens.LTEQ, (Integer t, Integer v) -> t <= v);
+        register(Integer.class, Integer.class, CSharpTokens.GT, (Integer t, Integer v) -> t > v);
+        register(Integer.class, Integer.class, CSharpTokens.GTEQ, (Integer t, Integer v) -> t >= v);
+
+        register(Boolean.class, Boolean.class, CSharpTokens.EQEQ, (Boolean t, Boolean v) -> t.booleanValue() == v.booleanValue());
+        register(Boolean.class, Boolean.class, CSharpTokens.NTEQ, (Boolean t, Boolean v) -> t.booleanValue() != v.booleanValue());
+        register(Boolean.class, Boolean.class, CSharpTokens.AND, (Boolean t, Boolean v) -> t & v);
+        register(Boolean.class, Boolean.class, CSharpTokens.OR, (Boolean t, Boolean v) -> t | v);
+        register(Boolean.class, Boolean.class, CSharpTokens.XOR, (Boolean t, Boolean v) -> t ^ v);
+        register(Boolean.class, Boolean.class, CSharpTokens.ANDAND, (Boolean t, Boolean v) -> t && v);
+        register(Boolean.class, Boolean.class, CSharpTokens.OROR, (Boolean t, Boolean v) -> t || v);
     }
 
     @SuppressWarnings("unchecked")
@@ -179,6 +196,23 @@ public class OperatorEvaluator {
             ourOperators.put(key, map = new HashMap<IElementType, PairFunction<Object, Object, Object>>());
         }
         map.put(elementType, (PairFunction<Object, Object, Object>) function);
+    }
+
+    /**
+     * {@code !} of a bool, {@code -} and {@code +} of an int - else null
+     */
+    @Nullable
+    public static Object calcPrefix(IElementType elementType, Object value) {
+        if (elementType == CSharpTokens.EXCL && value instanceof Boolean b) {
+            return !b;
+        }
+        if (elementType == CSharpTokens.MINUS && value instanceof Integer i) {
+            return -i;
+        }
+        if (elementType == CSharpTokens.PLUS && value instanceof Integer) {
+            return value;
+        }
+        return null;
     }
 
     @Nullable

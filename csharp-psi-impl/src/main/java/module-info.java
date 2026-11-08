@@ -34,6 +34,7 @@ open module consulo.csharp.psi.impl {
     exports consulo.csharp.lang.impl.parser.preprocessor;
     exports consulo.csharp.lang.impl.parser.stmt;
     exports consulo.csharp.lang.impl.psi;
+    exports consulo.csharp.lang.impl.psi.controlFlow;
     exports consulo.csharp.lang.impl.psi.elementType;
     exports consulo.csharp.lang.impl.psi.fragment;
     exports consulo.csharp.lang.impl.psi.light;

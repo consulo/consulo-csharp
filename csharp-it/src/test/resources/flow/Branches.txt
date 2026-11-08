@@ -1,0 +1,67 @@
+# METHOD_DECLARATION void F()
+  0(1) entry
+  1(2) end
+  2() exit
+
+# METHOD_DECLARATION void Sequence()
+  0(1) entry
+  1(2) EXPRESSION_STATEMENT F();
+  2(3) LOCAL_VARIABLE_DECLARATION_STATEMENT int x = 1;
+  3(4) EXPRESSION_STATEMENT F();
+  4(5) end
+  5() exit
+
+# METHOD_DECLARATION void IfElse()
+  0(1) entry
+  1(2,4) IF_STATEMENT if (b) F(); else x();
+  2(3) EXPRESSION_STATEMENT F();. Condition: b:true
+  3(6) EXPRESSION_STATEMENT F();
+  4(5) EXPRESSION_STATEMENT x();. Condition: b:false
+  5(6) EXPRESSION_STATEMENT x();
+  6(7) EXPRESSION_STATEMENT F();
+  7(8) end
+  8() exit
+
+# METHOD_DECLARATION void x()
+  0(1) entry
+  1(2) end
+  2() exit
+
+# METHOD_DECLARATION void IfWithoutElse()
+  0(1) entry
+  1(2,4) IF_STATEMENT if (b) { return; }
+  2(3) BLOCK_STATEMENT { return; }. Condition: b:true
+  3(7) RETURN_STATEMENT return;
+  4(5) IF_STATEMENT if (b) { return; }. Condition: b:false
+  5(6) EXPRESSION_STATEMENT F();
+  6(7) end
+  7() exit
+
+# METHOD_DECLARATION void ConstantFalse()
+  0(1) entry
+  1(3) IF_STATEMENT if (false) { F(); }
+! 2(4) EXPRESSION_STATEMENT F();
+  3(4) IF_STATEMENT if (false) { F(); }. Condition: false:false
+  4(5) EXPRESSION_STATEMENT F();
+  5(6) end
+  6() exit
+
+# METHOD_DECLARATION void ConstantNot()
+  0(1) entry
+  1(2) IF_STATEMENT if (!false) return; else F();
+  2(3) RETURN_STATEMENT return;. Condition: !false:true
+  3(6) RETURN_STATEMENT return;
+! 4(5) EXPRESSION_STATEMENT F();
+! 5(6) end
+  6() exit
+
+# METHOD_DECLARATION int ConstantTrue()
+  0(1) entry
+  1(2) LOCAL_VARIABLE_DECLARATION_STATEMENT const bool always = true;
+  2(3) IF_STATEMENT if (!!always) { return 1; } else { F(); }
+  3(4) BLOCK_STATEMENT { return 1; }. Condition: !!always:true
+  4(7) RETURN_STATEMENT return 1;
+! 5(6) EXPRESSION_STATEMENT F();
+! 6(7) end
+  7() exit
+

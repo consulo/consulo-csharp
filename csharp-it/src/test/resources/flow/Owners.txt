@@ -1,0 +1,46 @@
+# XACCESSOR get
+  0(1) entry
+  1(2,4) IF_STATEMENT if (b) return 1;
+  2(3) RETURN_STATEMENT return 1;. Condition: b:true
+  3(7) RETURN_STATEMENT return 1;
+  4(5) IF_STATEMENT if (b) return 1;. Condition: b:false
+  5(7) RETURN_STATEMENT return 2;
+! 6(7) end
+  7() exit
+
+# METHOD_DECLARATION int Expression() => 1;
+  0(2) entry
+! 1(2) end
+  2() exit
+
+# METHOD_DECLARATION void Nested()
+  0(1) entry
+  1(2) LOCAL_VARIABLE_DECLARATION_STATEMENT Func<int> lambda = () => { if (b) return 1; return...
+  2(3) LAMBDA_EXPRESSION () => { if (b) return 1; return 2; }
+  3(4) LOCAL_VARIABLE_DECLARATION_STATEMENT Func<int> anonymous = delegate { return 1; };
+  4(5) DELEGATE_EXPRESSION delegate { return 1; }
+  5(6) EXPRESSION_STATEMENT Console.WriteLine(lambda() + anonymous() + Local()...
+  6(7) end
+  7() exit
+
+# LAMBDA_EXPRESSION () =>
+  0(1) entry
+  1(2,4) IF_STATEMENT if (b) return 1;
+  2(3) RETURN_STATEMENT return 1;. Condition: b:true
+  3(7) RETURN_STATEMENT return 1;
+  4(5) IF_STATEMENT if (b) return 1;. Condition: b:false
+  5(7) RETURN_STATEMENT return 2;
+! 6(7) end
+  7() exit
+
+# DELEGATE_EXPRESSION delegate
+  0(1) entry
+  1(3) RETURN_STATEMENT return 1;
+! 2(3) end
+  3() exit
+
+# LOCAL_METHOD int Local() => 3;
+  0(2) entry
+! 1(2) end
+  2() exit
+

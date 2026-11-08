@@ -1,0 +1,15 @@
+# TOP_LEVEL_STATEMENTS if (args.Length == 0)
+  0(1) entry
+  1(2,4) IF_STATEMENT if (args.Length == 0) { return; }
+  2(3) BLOCK_STATEMENT { return; }. Condition: args.Length == 0:true
+  3(7) RETURN_STATEMENT return;
+  4(5) IF_STATEMENT if (args.Length == 0) { return; }. Condition: args.Length == 0:false
+  5(6) EXPRESSION_STATEMENT Console.WriteLine(Local());
+  6(7) end
+  7() exit
+
+# LOCAL_METHOD int Local() => 1;
+  0(2) entry
+! 1(2) end
+  2() exit
+

@@ -1,0 +1,80 @@
+# METHOD_DECLARATION void F()
+  0(1) entry
+  1(2) end
+  2() exit
+
+# METHOD_DECLARATION void While()
+  0(1) entry
+  1(2,8) WHILE_STATEMENT while (b) { if (b) continue; F(); }
+  2(3) BLOCK_STATEMENT { if (b) continue; F(); }. Condition: b:true
+  3(4,6) IF_STATEMENT if (b) continue;
+  4(5) CONTINUE_STATEMENT continue;. Condition: b:true
+  5(1) CONTINUE_STATEMENT continue;
+  6(7) IF_STATEMENT if (b) continue;. Condition: b:false
+  7(1) EXPRESSION_STATEMENT F();
+  8(9) WHILE_STATEMENT while (b) { if (b) continue; F(); }. Condition: b:false
+  9(10) EXPRESSION_STATEMENT F();
+  10(11) end
+  11() exit
+
+# METHOD_DECLARATION int WhileTrue()
+  0(1) entry
+  1(2) WHILE_STATEMENT while (true) { if (b) break; }
+  2(3) BLOCK_STATEMENT { if (b) break; }. Condition: true:true
+  3(4,6) IF_STATEMENT if (b) break;
+  4(5) BREAK_STATEMENT break;. Condition: b:true
+  5(7) BREAK_STATEMENT break;
+  6(1) IF_STATEMENT if (b) break;. Condition: b:false
+  7(9) RETURN_STATEMENT return 1;
+! 8(9) end
+  9() exit
+
+# METHOD_DECLARATION void Do()
+  0(1) entry
+  1(2) DO_WHILE_STATEMENT do { if (b) break; F(); } while (b);
+  2(3,5) IF_STATEMENT if (b) break;
+  3(4) BREAK_STATEMENT break;. Condition: b:true
+  4(10) BREAK_STATEMENT break;
+  5(6) IF_STATEMENT if (b) break;. Condition: b:false
+  6(7) EXPRESSION_STATEMENT F();
+  7(8,9) REFERENCE_EXPRESSION b
+  8(1) BLOCK_STATEMENT { if (b) break; F(); }. Condition: b:true
+  9(10) DO_WHILE_STATEMENT do { if (b) break; F(); } while (b);. Condition: b:false
+  10(11) end
+  11() exit
+
+# METHOD_DECLARATION void For()
+  0(1) entry
+  1(2) FOR_STATEMENT for (int i = 0; i < 10; i++) { if (b) continue; F(...
+  2(3,10) BINARY_EXPRESSION i < 10
+  3(4) BLOCK_STATEMENT { if (b) continue; F(); }. Condition: i < 10:true
+  4(5,7) IF_STATEMENT if (b) continue;
+  5(6) CONTINUE_STATEMENT continue;. Condition: b:true
+  6(9) CONTINUE_STATEMENT continue;
+  7(8) IF_STATEMENT if (b) continue;. Condition: b:false
+  8(9) EXPRESSION_STATEMENT F();
+  9(2) POSTFIX_EXPRESSION i++
+  10(11) FOR_STATEMENT for (int i = 0; i < 10; i++) { if (b) continue; F(.... Condition: i < 10:false
+  11(12) end
+  12() exit
+
+# METHOD_DECLARATION int ForEver()
+  0(1) entry
+  1(2) FOR_STATEMENT for (;;) { F(); }
+  2(3) loop FOR_STATEMENT for (;;) { F(); }
+  3(2) EXPRESSION_STATEMENT F();
+! 4(5) end
+! 5() exit
+
+# METHOD_DECLARATION void Foreach(List<int> list)
+  0(1) entry
+  1(2) FOREACH_STATEMENT foreach (int i in list) { if (i == 0) break; }
+  2(3,7) next LOCAL_VARIABLE int i
+  3(4,6) IF_STATEMENT if (i == 0) break;
+  4(5) BREAK_STATEMENT break;. Condition: i == 0:true
+  5(7) BREAK_STATEMENT break;
+  6(2) IF_STATEMENT if (i == 0) break;. Condition: i == 0:false
+  7(8) EXPRESSION_STATEMENT F();
+  8(9) end
+  9() exit
+

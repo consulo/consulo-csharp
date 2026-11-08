@@ -1,0 +1,64 @@
+# METHOD_DECLARATION void F()
+  0(1) entry
+  1(2) end
+  2() exit
+
+# METHOD_DECLARATION void Sections(int i)
+  0(1) entry
+  1(2,3,7,10) SWITCH_STATEMENT switch (i) { case 1: case 2: F(); break; case 3: g...
+  2(3) CASE_OR_DEFAULT_STATEMENT case 1:
+  3(4) CASE_OR_DEFAULT_STATEMENT case 2:
+  4(5) EXPRESSION_STATEMENT F();
+  5(13) BREAK_STATEMENT break;
+! 6() section end CASE_OR_DEFAULT_STATEMENT case 2:
+  7(8) CASE_OR_DEFAULT_STATEMENT case 3:
+  8(2) GOTO_STATEMENT goto case 1;
+! 9() section end CASE_OR_DEFAULT_STATEMENT case 3:
+  10(11) CASE_OR_DEFAULT_STATEMENT default:
+  11(15) RETURN_STATEMENT return;
+! 12() section end CASE_OR_DEFAULT_STATEMENT default:
+  13(14) EXPRESSION_STATEMENT F();
+  14(15) end
+  15() exit
+
+# METHOD_DECLARATION int Bool(bool b)
+  0(1) entry
+  1(2,5) SWITCH_STATEMENT switch (b) { case true: return 1; case false: retu...
+  2(3) CASE_OR_DEFAULT_STATEMENT case true:
+  3(9) RETURN_STATEMENT return 1;
+! 4() section end CASE_OR_DEFAULT_STATEMENT case true:
+  5(6) CASE_OR_DEFAULT_STATEMENT case false:
+  6(9) RETURN_STATEMENT return 0;
+! 7() section end CASE_OR_DEFAULT_STATEMENT case false:
+! 8(9) end
+  9() exit
+
+# METHOD_DECLARATION void Constant()
+  0(1) entry
+  1(2) LOCAL_VARIABLE_DECLARATION_STATEMENT const int k = 2;
+  2(7) SWITCH_STATEMENT switch (k) { case 1: F(); break; case 2: goto defa...
+! 3(4) CASE_OR_DEFAULT_STATEMENT case 1:
+! 4(5) EXPRESSION_STATEMENT F();
+! 5(13) BREAK_STATEMENT break;
+! 6() section end CASE_OR_DEFAULT_STATEMENT case 1:
+  7(8) CASE_OR_DEFAULT_STATEMENT case 2:
+  8(10) GOTO_STATEMENT goto default;
+! 9() section end CASE_OR_DEFAULT_STATEMENT case 2:
+  10(11) CASE_OR_DEFAULT_STATEMENT default:
+  11(13) BREAK_STATEMENT break;
+! 12() section end CASE_OR_DEFAULT_STATEMENT default:
+  13(14) end
+  14() exit
+
+# METHOD_DECLARATION void FallThrough(int i)
+  0(1) entry
+  1(2,5,8) SWITCH_STATEMENT switch (i) { case 1: F(); case 2: break; }
+  2(3) CASE_OR_DEFAULT_STATEMENT case 1:
+  3(4) EXPRESSION_STATEMENT F();
+  4() section end CASE_OR_DEFAULT_STATEMENT case 1:
+  5(6) CASE_OR_DEFAULT_STATEMENT case 2:
+  6(8) BREAK_STATEMENT break;
+! 7() section end CASE_OR_DEFAULT_STATEMENT case 2:
+  8(9) end
+  9() exit
+
