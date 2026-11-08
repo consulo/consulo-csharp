@@ -17,7 +17,6 @@
 package consulo.csharp.impl.ide.highlight.check.impl;
 
 import consulo.annotation.access.RequiredReadAction;
-import consulo.application.eap.EarlyAccessProgramManager;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.editor.highlight.CSharpHighlightKey;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
@@ -27,6 +26,7 @@ import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.impl.psi.CSharpInheritableChecker;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
+import consulo.csharp.lang.impl.psi.cast.ExplicitConversions;
 import consulo.csharp.lang.impl.psi.source.CSharpForeachStatementImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpTypeCastExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
@@ -114,6 +114,12 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				}
 				DotNetTypeRef expressionTypeRef = innerExpression.toTypeRef(false);
 
+				if(!ExplicitConversions.isCastable(expressionTypeRef, castTypeRef, expression.getResolveScope()))
+				{
+					ref.set(newBuilder(expression, formatTypeRef(expressionTypeRef), formatTypeRef(castTypeRef)));
+					return;
+				}
+
 				CSharpTypeUtil.InheritResult inheritResult = CSharpInheritableChecker.create(expressionTypeRef, castTypeRef).withCastType(CSharpCastType.EXPLICIT, expression.getResolveScope())
 						.check();
 
@@ -121,16 +127,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				{
 					inheritResult = CSharpInheritableChecker.create(expressionTypeRef, castTypeRef).withCastType(CSharpCastType.IMPLICIT, expression.getResolveScope()).check();
 
-					if(!inheritResult.isSuccess())
-					{
-						CompilerCheckBuilder builder = newBuilder(type, formatTypeRef(expressionTypeRef), formatTypeRef(castTypeRef));
-
-						if(EarlyAccessProgramManager.is(CS0030TypeCastEapDescriptor.class))
-						{
-							ref.set(builder);
-						}
-					}
-					else if(inheritResult.isConversion())
+					if(inheritResult.isSuccess() && inheritResult.isConversion())
 					{
 						CompilerCheckBuilder builder = newBuilder(innerExpression);
 						builder.withTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
