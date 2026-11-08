@@ -420,7 +420,8 @@ public class StatementParsing extends SharedParsingHelpers {
                 return LocalVarType.WITH_NAME;
             }
             else {
-                if (typeInfo.isTuple && builder.getTokenType() == CSharpTokens.EQ) {
+                // (x, y) = ... - an assignment to a tuple, not a declaration
+                if (typeInfo.isNamedTuple && builder.getTokenType() == CSharpTokens.EQ) {
                     return LocalVarType.TYPED_DECONSTRUCTION;
                 }
 

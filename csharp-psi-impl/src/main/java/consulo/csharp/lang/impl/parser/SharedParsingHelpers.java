@@ -89,6 +89,8 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
         public boolean isArrayError;
         public boolean isMultiArray;
         public boolean isTuple;
+        // (int a, var b) - every element is named
+        public boolean isNamedTuple;
         public PsiBuilder.Marker marker;
     }
 
@@ -310,12 +312,13 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
         else if (builder.getTokenType() == CSharpTokens.LPAR) {
             builder.advanceLexer();
 
+            int count = 0;
+            int named = 0;
             if (builder.getTokenType() == CSharpTokens.RPAR) {
                 builder.error("Expected type");
                 builder.advanceLexer();
             }
             else {
-                int count = 0;
                 while (!builder.eof()) {
                     TypeInfo inner = parseType(builder, flags);
                     if (inner == null) {
@@ -325,6 +328,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
                         PsiBuilder.Marker precede = inner.marker.precede();
                         if (builder.getTokenType() == CSharpTokens.IDENTIFIER) {
                             doneIdentifier(builder, flags);
+                            named++;
                         }
 
                         precede.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.TUPLE_VARIABLE : CSharpElements.TUPLE_VARIABLE);
@@ -354,6 +358,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
                 }
             }
             typeInfo.isTuple = true;
+            typeInfo.isNamedTuple = count > 0 && named == count;
             marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.TUPLE_TYPE : CSharpElements.TUPLE_TYPE);
         }
         else if (builder.getTokenType() == CSharpTokens.IDENTIFIER || builder.getTokenType() == CSharpSoftTokens.GLOBAL_KEYWORD) {
