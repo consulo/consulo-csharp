@@ -35,24 +35,22 @@ import org.jspecify.annotations.Nullable;
  * @author VISTALL
  * @since 27.07.2015
  */
-public class LabelKindProcessor implements KindProcessor
-{
-	@RequiredReadAction
-	@Override
-	public void process(CSharpResolveOptions options,
-			DotNetGenericExtractor defaultExtractor,
-			@Nullable PsiElement forceQualifierElement,
-			Processor<ResolveResult> processor)
-	{
-		PsiElement element = options.getElement();
+public class LabelKindProcessor implements KindProcessor {
+    @RequiredReadAction
+    @Override
+    public void process(CSharpResolveOptions options,
+            DotNetGenericExtractor defaultExtractor,
+            @Nullable PsiElement forceQualifierElement,
+            Processor<ResolveResult> processor) {
+        PsiElement element = options.getElement();
 
-		SimpleNamedScopeProcessor scopeProcessor = new SimpleNamedScopeProcessor(processor, options.isCompletion(), ExecuteTarget.LABEL);
+        SimpleNamedScopeProcessor scopeProcessor = new SimpleNamedScopeProcessor(processor, options.isCompletion(), ExecuteTarget.LABEL);
 
-		DotNetQualifiedElement parentOfType = PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
-		assert parentOfType != null;
+        DotNetQualifiedElement parentOfType = PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
+        assert parentOfType != null;
 
-		ResolveState state = ResolveState.initial();
-		state = state.put(CSharpResolveUtil.SELECTOR, options.getSelector());
-		CSharpResolveUtil.walkForLabel(scopeProcessor, parentOfType, state);
-	}
+        ResolveState state = ResolveState.initial();
+        state = state.put(CSharpResolveUtil.SELECTOR, options.getSelector());
+        CSharpResolveUtil.walkForLabel(scopeProcessor, parentOfType, state);
+    }
 }
