@@ -21,6 +21,7 @@ import consulo.application.util.CachedValueProvider;
 import consulo.csharp.lang.impl.psi.source.*;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.dotnet.psi.DotNetStatement;
+import consulo.dotnet.psi.DotNetVariable;
 import consulo.language.controlFlow.ControlFlow;
 import consulo.language.controlFlow.Instruction;
 import consulo.language.psi.PsiElement;
@@ -52,6 +53,7 @@ public final class CSharpControlFlow implements ControlFlow {
     private final boolean myIterator;
     private final List<SectionEnd> mySectionEnds;
     private final Map<Instruction, List<PsiElement>> myReturns;
+    private final List<DotNetVariable> myStructMembers;
     private final Map<PsiElement, List<Instruction>> myIndex = new HashMap<>();
     private final BitSet myReachable = new BitSet();
 
@@ -64,13 +66,15 @@ public final class CSharpControlFlow implements ControlFlow {
                       Instruction end,
                       boolean iterator,
                       List<SectionEnd> sectionEnds,
-                      Map<Instruction, List<PsiElement>> returns) {
+                      Map<Instruction, List<PsiElement>> returns,
+                      List<DotNetVariable> structMembers) {
         myOwner = owner;
         myInstructions = instructions;
         myEnd = end;
         myIterator = iterator;
         mySectionEnds = sectionEnds;
         myReturns = returns;
+        myStructMembers = structMembers;
 
         for (Instruction instruction : instructions) {
             PsiElement element = instruction.getElement();
@@ -203,6 +207,13 @@ public final class CSharpControlFlow implements ControlFlow {
             myUnusedValues = result = CSharpUnusedValues.compute(this);
         }
         return result;
+    }
+
+    /**
+     * The fields and auto-properties of the struct a constructor must assign - empty for any other owner
+     */
+    public List<DotNetVariable> getStructMembers() {
+        return myStructMembers;
     }
 
     @RequiredReadAction

@@ -41,7 +41,9 @@ import java.util.*;
  * <li>the reads of a variable of the owner not assigned there (CS0165, CS0269 for an out parameter)</li>
  * <li>the reads of a variable of an enclosing owner not assigned in this one before - its inputs, checked where a
  * lambda is created or a local function is referenced</li>
- * <li>the returns, and the end of the body, with an out parameter not assigned (CS0177)</li>
+ * <li>the returns, and the end of the body, with an out parameter not assigned (CS0177), or a field or an
+ * auto-property of the struct a constructor initializes (CS0171, CS0843)</li>
+ * <li>the uses of this in such a constructor before all of them are assigned (CS0188)</li>
  * </ul>
  *
  * @author VISTALL
@@ -54,23 +56,26 @@ public final class CSharpDefiniteAssignment {
     }
 
     /**
-     * An out parameter not assigned when the control leaves - at a return, or at the owner for the end of its body
+     * An out parameter, a struct member, not assigned when the control leaves - at a return, or at the owner for the
+     * end of its body
      */
     public record Leave(PsiElement element, DotNetVariable parameter) {
     }
 
-    private static final CSharpDefiniteAssignment EMPTY = new CSharpDefiniteAssignment(List.of(), List.of(), List.of());
+    private static final CSharpDefiniteAssignment EMPTY = new CSharpDefiniteAssignment(List.of(), List.of(), List.of(), Set.of());
 
     private final Map<PsiElement, List<DotNetVariable>> myUnassignedReads = new HashMap<>();
     private final List<Read> myInputs;
     private final List<Leave> myUnassignedLeaves;
+    private final Set<PsiElement> myEarlyThisUses;
 
-    private CSharpDefiniteAssignment(Collection<Read> unassignedReads, List<Read> inputs, List<Leave> unassignedLeaves) {
+    private CSharpDefiniteAssignment(Collection<Read> unassignedReads, List<Read> inputs, List<Leave> unassignedLeaves, Set<PsiElement> earlyThisUses) {
         for (Read read : unassignedReads) {
             myUnassignedReads.computeIfAbsent(read.element(), it -> new ArrayList<>(1)).add(read.variable());
         }
         myInputs = inputs;
         myUnassignedLeaves = unassignedLeaves;
+        myEarlyThisUses = earlyThisUses;
     }
 
     /**
@@ -86,6 +91,13 @@ public final class CSharpDefiniteAssignment {
 
     public List<Leave> getUnassignedLeaves() {
         return myUnassignedLeaves;
+    }
+
+    /**
+     * The uses of this in a struct constructor before all its members are assigned
+     */
+    public Set<PsiElement> getEarlyThisUses() {
+        return myEarlyThisUses;
     }
 
     /**
@@ -117,6 +129,12 @@ public final class CSharpDefiniteAssignment {
                 }
             }
         }
+        // must be assigned when the control leaves - with the out parameters
+        List<DotNetVariable> structMembers = flow.getStructMembers();
+        for (DotNetVariable member : structMembers) {
+            indexes.putIfAbsent(member, indexes.size());
+            outParameters.add(member);
+        }
         if (indexes.isEmpty() && !hasNested(instructions)) {
             return EMPTY;
         }
@@ -133,11 +151,21 @@ public final class CSharpDefiniteAssignment {
         PsiElement owner = flow.getOwner();
         Set<Read> unassignedReads = new LinkedHashSet<>();
         Set<Read> inputs = new LinkedHashSet<>();
+        Set<PsiElement> earlyThisUses = new LinkedHashSet<>();
         for (Instruction instruction : instructions) {
             if (!flow.isReachable(instruction)) {
                 continue;
             }
             State state = states.get(instruction.num());
+            if (instruction instanceof CSharpInstruction marked && marked.is(CSharpInstruction.THIS_USE)) {
+                for (DotNetVariable member : structMembers) {
+                    if (!state.has(indexes.get(member))) {
+                        earlyThisUses.add(instruction.getElement());
+                        break;
+                    }
+                }
+                continue;
+            }
             if (instruction instanceof CSharpReadWriteInstruction readWrite && readWrite.getAccess() == CSharpReadWriteInstruction.Access.READ) {
                 if (!state.has(indexes.get(readWrite.getVariable()))) {
                     Read read = new Read(readWrite.getElement(), readWrite.getVariable());
@@ -171,7 +199,7 @@ public final class CSharpDefiniteAssignment {
                 leaves(states.get(end.num()), List.of(owner), outParameters, indexes, leaves);
             }
         }
-        return new CSharpDefiniteAssignment(unassignedReads, List.copyOf(inputs), leaves);
+        return new CSharpDefiniteAssignment(unassignedReads, List.copyOf(inputs), leaves, earlyThisUses);
     }
 
     private static void leaves(State state, List<PsiElement> elements, List<DotNetVariable> outParameters, Map<DotNetVariable, Integer> indexes, List<Leave> leaves) {

@@ -76,12 +76,16 @@ CS0168:
     text: "The variable ''{0}'' is declared but never used"
 CS0169:
     text: "The field ''{0}'' is never used"
+CS0171:
+    text: "Field ''{0}'' must be fully assigned before control is returned to the caller"
 CS0173:
     text: "Type of conditional expression cannot be determined because there is no implicit conversion between ''{0}'' and ''{1}''"
 CS0176:
     text: "Static member ''{0}'' cannot be accessed with an instance reference, qualify it with a type name instead"
 CS0177:
     text: "The out parameter ''{0}'' must be assigned to before control leaves the current method"
+CS0188:
+    text: The 'this' object cannot be used before all of its fields have been assigned
 CS0200:
     text: "Property or indexer ''{0}'' cannot be assigned to -- it is read only"
 CS0201:
@@ -180,6 +184,8 @@ CS0834:
     text: A lambda expression with a statement body cannot be converted to an expression tree
 CS0838:
     text: An expression tree may not contain a multidimensional array initializer
+CS0843:
+    text: "Auto-implemented property ''{0}'' must be fully assigned before control is returned to the caller"
 CS1004:
     text: "Duplicate ''{0}'' modifier"
 CS1008:

@@ -76,6 +76,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A {@code !} before a modifier or an attribute expects the declaration to have none such.
  * <ul>
  * </ul>
+ * A {@code // csharp:9.0} comment checks the file as that language version.
  * A {@code /*unresolved*&#47;} comment before a name expects it not to resolve; a {@code // sdk:NET_10} comment limits the
  * file to the listed {@link MockSdk}s. A {@code language/<name>.dll} is a library of {@code <name>.cs}, built from
  * {@code src/test/library/<name>.cs} by {@code build.sh} there.
@@ -87,6 +88,8 @@ public class LanguageFeatureTest {
     private static final String DIRECTORY = "language";
 
     private static final Pattern SDK_MARKER = Pattern.compile("// sdk:([A-Z0-9_,]+)");
+
+    private static final Pattern VERSION_MARKER = Pattern.compile("// csharp:([0-9.]+)");
 
     private static final Pattern MARKER = Pattern.compile("/\\*(type|value|error|warning|unused|modifier|attribute):(.+)\\*/");
 
@@ -174,7 +177,9 @@ public class LanguageFeatureTest {
                     default -> valueAt(leaf);
                 });
             }
-            actual.addAll(compilerErrors(file, source.contains("// check:unused")));
+            Matcher version = VERSION_MARKER.matcher(source);
+            CSharpLanguageVersion languageVersion = version.find() ? CSharpLanguageVersion.valueOf("_" + version.group(1).replace('.', '_')) : null;
+            actual.addAll(compilerErrors(file, source.contains("// check:unused"), languageVersion));
 
             expected.sort(null);
             actual.sort(null);
@@ -186,9 +191,9 @@ public class LanguageFeatureTest {
      * The compiler checks reporting an error or a warning, as {@code error:<leaf>@<offset> <check>} at the start of their range
      */
     @RequiredReadAction
-    private static List<String> compilerErrors(PsiFile file, boolean unused) {
+    private static List<String> compilerErrors(PsiFile file, boolean unused, @Nullable CSharpLanguageVersion version) {
         CSharpHighlightContext context = new CSharpHighlightContext(file);
-        CSharpLanguageVersion languageVersion = context.getLanguageVersion();
+        CSharpLanguageVersion languageVersion = version != null ? version : context.getLanguageVersion();
 
         List<String> errors = new ArrayList<>();
         for (DotNetElement element : PsiTreeUtil.findChildrenOfType(file, DotNetElement.class)) {

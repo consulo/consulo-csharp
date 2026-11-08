@@ -20,6 +20,7 @@ import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.impl.psi.controlFlow.CSharpControlFlow;
 import consulo.csharp.lang.impl.psi.controlFlow.CSharpDefiniteAssignment;
+import consulo.csharp.lang.impl.psi.controlFlow.CSharpFlowVariables;
 import consulo.csharp.lang.impl.psi.source.CSharpReturnStatementImpl;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -44,6 +45,10 @@ public class CS0177 extends CompilerCheck<CSharpSimpleLikeMethodAsElement> {
         }
         List<HighlightInfoFactory> results = new ArrayList<>();
         for (CSharpDefiniteAssignment.Leave leave : flow.getDefiniteAssignment().getUnassignedLeaves()) {
+            // a struct member - CS0171, CS0843
+            if (!CSharpFlowVariables.isOut(leave.parameter())) {
+                continue;
+            }
             PsiElement range = leave.element() instanceof CSharpReturnStatementImpl statement ? statement.getFirstChild() : getNameIdentifier(element);
             results.add(newBuilder(range, leave.parameter().getName()));
         }

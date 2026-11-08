@@ -38,6 +38,8 @@ public class CSharpInstruction extends InstructionImpl {
     public static final String VACUOUS = "vacuous";
     // a reference to a local function - the variables it reads must be assigned
     public static final String CALL = "call";
+    // a use of this in a struct constructor - all its fields must be assigned
+    public static final String THIS_USE = "this";
 
     private final @Nullable String myMarker;
 

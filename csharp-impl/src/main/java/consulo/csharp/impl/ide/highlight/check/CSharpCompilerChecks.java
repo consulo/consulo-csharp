@@ -69,8 +69,10 @@ public enum CSharpCompilerChecks {
     CS0165(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // use of unassigned local variable
     CS0168(CSharpLanguageVersion._1_0, CSharpHighlightInfoType::getUnusedDeclaration), // local variable usage check
     CS0169(CSharpLanguageVersion._1_0, CSharpHighlightInfoType::getUnusedDeclaration), // field is not used
+    CS0171(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // struct field not assigned by a constructor
     CS0173(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // failed to find conditional expression type
     CS0177(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // out parameter not assigned when control leaves
+    CS0188(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // this of a struct used before all its fields are assigned
     CS0200(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // readonly check
     CS0201(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expression statement can be only call, etc
     CS0206(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref/out expressions can be only indexer, etc
@@ -119,6 +121,7 @@ public enum CSharpCompilerChecks {
     CS0832(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // assignment in expression tree
     CS0834(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // statement lambda as expression tree
     CS0838(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // multidimensional array initializer in expression tree
+    CS0843(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // struct auto-property not assigned by a constructor
     CS1004(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // duplicate modifier check
     CS1008(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // eum type can be only byte,sbyte,short,ushort,int,uint,long,ulong
     CS1021(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // too big number

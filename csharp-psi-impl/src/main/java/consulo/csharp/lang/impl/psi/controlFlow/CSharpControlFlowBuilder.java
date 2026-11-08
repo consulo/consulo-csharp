@@ -24,21 +24,29 @@ import consulo.csharp.lang.impl.psi.CSharpElements;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.lang.impl.psi.source.*;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpRefTypeRef;
+import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import consulo.csharp.lang.psi.CSharpConstructorSuperCall;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpNativeType;
 import consulo.csharp.lang.psi.CSharpNewExpression;
+import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTupleVariable;
 import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.DotNetEventDeclaration;
 import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetFieldDeclaration;
+import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import consulo.language.ast.IElementType;
@@ -46,6 +54,7 @@ import consulo.language.controlFlow.ControlFlow;
 import consulo.language.controlFlow.ControlFlowBuilder;
 import consulo.language.controlFlow.Instruction;
 import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
 import consulo.language.psi.util.PsiTreeUtil;
 import org.jspecify.annotations.Nullable;
 
@@ -126,12 +135,86 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     private final Set<String> myNames;
     // the out arguments of the call being visited - written after it
     private @Nullable List<Map.Entry<PsiElement, DotNetVariable>> myOutWrites;
+    // the fields and auto-properties a struct constructor must assign (C# 10 and lower, spec 9.4.1)
+    private final List<DotNetVariable> myStructMembers;
+    private final @Nullable DotNetTypeDeclaration myStruct;
 
     @RequiredReadAction
     private CSharpControlFlowBuilder(PsiElement owner) {
         myOwner = owner;
         myTop = CSharpFlowVariables.topOwner(owner);
         myNames = myTop == null ? Set.of() : CSharpFlowVariables.names(myTop);
+        myStruct = owner instanceof CSharpConstructorDeclaration constructor ? constructedStruct(constructor) : null;
+        myStructMembers = myStruct == null ? List.of() : structMembers(myStruct);
+    }
+
+    /**
+     * The struct an instance constructor of it, not chained to another one, initializes
+     */
+    @RequiredReadAction
+    private static @Nullable DotNetTypeDeclaration constructedStruct(CSharpConstructorDeclaration constructor) {
+        if (constructor.isDeConstructor() || constructor.hasModifier(CSharpModifier.STATIC)
+            || !(constructor.getParent() instanceof DotNetTypeDeclaration type) || !type.isStruct() || type.hasModifier(CSharpModifier.PARTIAL)) {
+            return null;
+        }
+        // : this(...) - assigns them all
+        CSharpConstructorSuperCall superCall = constructor.getConstructorSuperCall();
+        if (superCall != null && isThis(superCall.getExpression())) {
+            return null;
+        }
+        return type;
+    }
+
+    /**
+     * The instance fields, field-like events and auto-properties without an initializer
+     */
+    @RequiredReadAction
+    private static List<DotNetVariable> structMembers(DotNetTypeDeclaration type) {
+        List<DotNetVariable> members = new ArrayList<>();
+        for (PsiElement member : type.getMembers()) {
+            if (!(member instanceof DotNetVariable variable) || variable.hasModifier(CSharpModifier.STATIC) || variable.isConstant() || variable.getInitializer() != null) {
+                continue;
+            }
+            if (member instanceof DotNetFieldDeclaration
+                || member instanceof DotNetEventDeclaration event && event.getAccessors().length == 0
+                || member instanceof CSharpPropertyDeclaration property && isAutoProperty(property)) {
+                members.add(variable);
+            }
+        }
+        return members;
+    }
+
+    @RequiredReadAction
+    private static boolean isAutoProperty(CSharpPropertyDeclaration property) {
+        DotNetXAccessor[] accessors = property.getAccessors();
+        if (accessors.length == 0 || property.isAutoGet() || property.hasModifier(CSharpModifier.ABSTRACT) || property.hasModifier(CSharpModifier.EXTERN)) {
+            return false;
+        }
+        for (DotNetXAccessor accessor : accessors) {
+            if (!(accessor instanceof CSharpSimpleLikeMethodAsElement method) || !method.getCodeBlock().isSemicolonOrEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @RequiredReadAction
+    private static boolean isThis(@Nullable PsiElement expression) {
+        return expression instanceof CSharpReferenceExpression reference && reference.getQualifier() == null
+            && PsiUtilCore.getElementType(reference.getReferenceElement()) == CSharpTokens.THIS_KEYWORD;
+    }
+
+    /**
+     * x, this.x - a member of the struct constructed
+     */
+    @RequiredReadAction
+    private @Nullable PsiElement structMember(@Nullable PsiElement expression) {
+        if (myStruct == null || !(expression instanceof CSharpReferenceExpression reference) || isThis(reference)
+            || reference.getQualifier() != null && !isThis(reference.getQualifier())) {
+            return null;
+        }
+        PsiElement target = reference.resolve();
+        return target != null && target.getParent() == myStruct ? target : null;
     }
 
     @RequiredReadAction
@@ -168,7 +251,7 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
         node(null, CSharpInstruction.EXIT);
 
         ControlFlow flow = myBuilder.completeControlFlow();
-        return new CSharpControlFlow(owner, flow.getInstructions(), end, myIterator, mySectionEnds, myReturns);
+        return new CSharpControlFlow(owner, flow.getInstructions(), end, myIterator, mySectionEnds, myReturns, myStructMembers);
     }
 
     // region nodes
@@ -380,6 +463,21 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     @Override
     @RequiredReadAction
     public void visitReferenceExpression(CSharpReferenceExpression expression) {
+        if (myStruct != null) {
+            if (isThis(expression)) {
+                node(expression, CSharpInstruction.THIS_USE);
+                return;
+            }
+            PsiElement member = structMember(expression);
+            if (member != null) {
+                // a field read - not a use of this; a method, a property with a body - a use
+                if (!myStructMembers.contains(member) && member instanceof DotNetModifierListOwner owner && !owner.hasModifier(CSharpModifier.STATIC)
+                    && !(member instanceof DotNetVariable variable && variable.isConstant())) {
+                    node(expression, CSharpInstruction.THIS_USE);
+                }
+                return;
+            }
+        }
         PsiElement target = resolveLocal(expression);
         if (target instanceof DotNetVariable variable) {
             readWrite(expression, variable, CSharpReadWriteInstruction.Access.READ);
@@ -466,6 +564,23 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
     private void write(@Nullable DotNetExpression target, boolean prepare) {
         while (target instanceof CSharpParenthesesExpressionImpl parentheses) {
             target = parentheses.getInnerExpression();
+        }
+        if (myStruct != null) {
+            // this = default - all of it
+            if (isThis(target)) {
+                if (!prepare) {
+                    for (DotNetVariable member : myStructMembers) {
+                        readWrite(target, member, CSharpReadWriteInstruction.Access.WRITE);
+                    }
+                }
+                return;
+            }
+            if (structMember(target) instanceof DotNetVariable member && myStructMembers.contains(member)) {
+                if (!prepare) {
+                    readWrite(target, member, CSharpReadWriteInstruction.Access.WRITE);
+                }
+                return;
+            }
         }
         if (target instanceof CSharpReferenceExpression reference && resolveLocal(reference) instanceof DotNetVariable variable) {
             if (!prepare) {
@@ -607,6 +722,10 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
         }
         if (inner instanceof CSharpReferenceExpression reference && resolveLocal(reference) instanceof DotNetVariable variable) {
             outWrite(reference, variable);
+            return;
+        }
+        if (structMember(inner) instanceof DotNetVariable member && myStructMembers.contains(member)) {
+            outWrite(inner, member);
             return;
         }
         accept(inner);
