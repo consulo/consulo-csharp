@@ -38,41 +38,33 @@ import org.jspecify.annotations.Nullable;
  * <p>
  * TODO [VISTALL] need rewrite this check, after introducing control flow
  */
-public class CS0161 extends CompilerCheck<CSharpMethodDeclaration>
-{
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpMethodDeclaration element)
-	{
-		DotNetTypeRef returnTypeRef = element.getReturnTypeRef();
-		if(DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, DotNetTypes.System.Void))
-		{
-			return null;
-		}
+public class CS0161 extends CompilerCheck<CSharpMethodDeclaration> {
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpMethodDeclaration element) {
+        DotNetTypeRef returnTypeRef = element.getReturnTypeRef();
+        if (DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, DotNetTypes.System.Void)) {
+            return null;
+        }
 
-		PsiElement codeBlock = element.getCodeBlock().getElement();
-		if(codeBlock instanceof CSharpBlockStatementImpl)
-		{
-			DotNetStatement[] statements = ((CSharpBlockStatementImpl) codeBlock).getStatements();
-			if(statements.length == 0)
-			{
-				return newBuilder(ObjectUtil.chooseNotNull(((CSharpBlockStatementImpl) codeBlock).getRightBrace(), getNameIdentifier(element)), formatElement(element));
-			}
-			else if(statements.length == 1)
-			{
-				DotNetStatement statement = statements[0];
-				if(statement instanceof CSharpCheckedStatementImpl)
-				{
-					DotNetStatement[] childStatements = ((CSharpCheckedStatementImpl) statement).getStatements();
-					if(childStatements.length == 0)
-					{
-						return newBuilder(ObjectUtil.chooseNotNull(((CSharpBlockStatementImpl) codeBlock).getRightBrace(), getNameIdentifier(element)), formatElement(element));
-					}
-				}
-			}
-		}
+        PsiElement codeBlock = element.getCodeBlock().getElement();
+        if (codeBlock instanceof CSharpBlockStatementImpl) {
+            DotNetStatement[] statements = ((CSharpBlockStatementImpl) codeBlock).getStatements();
+            if (statements.length == 0) {
+                return newBuilder(ObjectUtil.chooseNotNull(((CSharpBlockStatementImpl) codeBlock).getRightBrace(), getNameIdentifier(element)), formatElement(element));
+            }
+            else if (statements.length == 1) {
+                DotNetStatement statement = statements[0];
+                if (statement instanceof CSharpCheckedStatementImpl) {
+                    DotNetStatement[] childStatements = ((CSharpCheckedStatementImpl) statement).getStatements();
+                    if (childStatements.length == 0) {
+                        return newBuilder(ObjectUtil.chooseNotNull(((CSharpBlockStatementImpl) codeBlock).getRightBrace(), getNameIdentifier(element)), formatElement(element));
+                    }
+                }
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

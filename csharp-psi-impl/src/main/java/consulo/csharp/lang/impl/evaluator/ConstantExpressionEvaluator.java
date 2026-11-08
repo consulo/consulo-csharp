@@ -37,162 +37,127 @@ import org.jspecify.annotations.Nullable;
  * @author VISTALL
  * @since 28.08.14
  */
-public class ConstantExpressionEvaluator extends CSharpElementVisitor
-{
-	private Object myValue;
+public class ConstantExpressionEvaluator extends CSharpElementVisitor {
+    private Object myValue;
 
-	public ConstantExpressionEvaluator(@Nullable DotNetExpression expression)
-	{
-		if(expression != null)
-		{
-			expression.accept(this);
-		}
-	}
+    public ConstantExpressionEvaluator(@Nullable DotNetExpression expression) {
+        if (expression != null) {
+            expression.accept(this);
+        }
+    }
 
-	@Override
-	public void visitConstantExpression(CSharpConstantExpressionImpl expression)
-	{
-		try
-		{
-			myValue = expression.getValue();
-		}
-		catch(ProcessCanceledException e)
-		{
-			throw e;
-		}
-		catch(Exception e)
-		{
-			//
-		}
-	}
+    @Override
+    public void visitConstantExpression(CSharpConstantExpressionImpl expression) {
+        try {
+            myValue = expression.getValue();
+        }
+        catch (ProcessCanceledException e) {
+            throw e;
+        }
+        catch (Exception e) {
+            //
+        }
+    }
 
-	@Override
-	public void visitBinaryExpression(CSharpBinaryExpressionImpl expression)
-	{
-		DotNetExpression leftExpression = expression.getLeftExpression();
-		DotNetExpression rightExpression = expression.getRightExpression();
-		if(leftExpression == null || rightExpression == null)
-		{
-			return;
-		}
+    @Override
+    public void visitBinaryExpression(CSharpBinaryExpressionImpl expression) {
+        DotNetExpression leftExpression = expression.getLeftExpression();
+        DotNetExpression rightExpression = expression.getRightExpression();
+        if (leftExpression == null || rightExpression == null) {
+            return;
+        }
 
-		Object leftValue = new ConstantExpressionEvaluator(leftExpression).getValue();
-		Object rightValue = new ConstantExpressionEvaluator(rightExpression).getValue();
-		if(leftValue == null || rightValue == null)
-		{
-			return;
-		}
+        Object leftValue = new ConstantExpressionEvaluator(leftExpression).getValue();
+        Object rightValue = new ConstantExpressionEvaluator(rightExpression).getValue();
+        if (leftValue == null || rightValue == null) {
+            return;
+        }
 
-		myValue = OperatorEvaluator.calcBinary(expression.getOperatorElement().getOperatorElementType(), leftValue, rightValue);
-	}
+        myValue = OperatorEvaluator.calcBinary(expression.getOperatorElement().getOperatorElementType(), leftValue, rightValue);
+    }
 
-	@Override
-	public void visitTypeCastExpression(CSharpTypeCastExpressionImpl expression)
-	{
-		myValue = castTo(new ConstantExpressionEvaluator(expression.getInnerExpression()).getValue(), expression);
-	}
+    @Override
+    public void visitTypeCastExpression(CSharpTypeCastExpressionImpl expression) {
+        myValue = castTo(new ConstantExpressionEvaluator(expression.getInnerExpression()).getValue(), expression);
+    }
 
-	@Override
-	public void visitAsExpression(CSharpAsExpressionImpl expression)
-	{
-		myValue = castTo(new ConstantExpressionEvaluator(expression.getInnerExpression()).getValue(), expression);
-	}
+    @Override
+    public void visitAsExpression(CSharpAsExpressionImpl expression) {
+        myValue = castTo(new ConstantExpressionEvaluator(expression.getInnerExpression()).getValue(), expression);
+    }
 
-	@Override
-	public void visitReferenceExpression(CSharpReferenceExpression expression)
-	{
-		PsiElement resolvedElement = expression.resolve();
-		if(resolvedElement instanceof DotNetVariable)
-		{
-			if(((DotNetVariable) resolvedElement).isConstant() || ((DotNetVariable) resolvedElement).hasModifier(CSharpModifier.READONLY))
-			{
-				DotNetExpression initializer = ((DotNetVariable) resolvedElement).getInitializer();
-				if(initializer == null)
-				{
-					return;
-				}
-				myValue = new ConstantExpressionEvaluator(initializer).getValue();
-			}
-		}
-	}
+    @Override
+    public void visitReferenceExpression(CSharpReferenceExpression expression) {
+        PsiElement resolvedElement = expression.resolve();
+        if (resolvedElement instanceof DotNetVariable) {
+            if (((DotNetVariable) resolvedElement).isConstant() || ((DotNetVariable) resolvedElement).hasModifier(CSharpModifier.READONLY)) {
+                DotNetExpression initializer = ((DotNetVariable) resolvedElement).getInitializer();
+                if (initializer == null) {
+                    return;
+                }
+                myValue = new ConstantExpressionEvaluator(initializer).getValue();
+            }
+        }
+    }
 
-	private static Object castTo(Object value, DotNetExpression element)
-	{
-		if(value == null)
-		{
-			return null;
-		}
-		DotNetTypeRef typeRef = element.toTypeRef(false);
-		PsiElement psiElement = typeRef.resolve().getElement();
-		if(!(psiElement instanceof DotNetTypeDeclaration))
-		{
-			return value;
-		}
+    private static Object castTo(Object value, DotNetExpression element) {
+        if (value == null) {
+            return null;
+        }
+        DotNetTypeRef typeRef = element.toTypeRef(false);
+        PsiElement psiElement = typeRef.resolve().getElement();
+        if (!(psiElement instanceof DotNetTypeDeclaration)) {
+            return value;
+        }
 
-		String vmQName = ((DotNetTypeDeclaration) psiElement).getVmQName();
-		if(DotNetTypes.System.Int32.equals(vmQName))
-		{
-			if(value instanceof Number)
-			{
-				return ((Number) value).intValue();
-			}
-		}
-		else if(DotNetTypes.System.Int16.equals(vmQName))
-		{
-			if(value instanceof Number)
-			{
-				return ((Number) value).shortValue();
-			}
-		}
-		else if(DotNetTypes.System.Int64.equals(vmQName))
-		{
-			if(value instanceof Number)
-			{
-				return ((Number) value).longValue();
-			}
-		}
-		else if(DotNetTypes.System.SByte.equals(vmQName))
-		{
-			if(value instanceof Number)
-			{
-				return ((Number) value).byteValue();
-			}
-		}
-		else if(DotNetTypes.System.Single.equals(vmQName))
-		{
-			if(value instanceof Number)
-			{
-				return ((Number) value).floatValue();
-			}
-		}
-		else if(DotNetTypes.System.Double.equals(vmQName))
-		{
-			if(value instanceof Number)
-			{
-				return ((Number) value).doubleValue();
-			}
-		}
-		else if(DotNetTypes.System.String.equals(vmQName))
-		{
-			return value.toString();
-		}
-		return value;
-	}
+        String vmQName = ((DotNetTypeDeclaration) psiElement).getVmQName();
+        if (DotNetTypes.System.Int32.equals(vmQName)) {
+            if (value instanceof Number) {
+                return ((Number) value).intValue();
+            }
+        }
+        else if (DotNetTypes.System.Int16.equals(vmQName)) {
+            if (value instanceof Number) {
+                return ((Number) value).shortValue();
+            }
+        }
+        else if (DotNetTypes.System.Int64.equals(vmQName)) {
+            if (value instanceof Number) {
+                return ((Number) value).longValue();
+            }
+        }
+        else if (DotNetTypes.System.SByte.equals(vmQName)) {
+            if (value instanceof Number) {
+                return ((Number) value).byteValue();
+            }
+        }
+        else if (DotNetTypes.System.Single.equals(vmQName)) {
+            if (value instanceof Number) {
+                return ((Number) value).floatValue();
+            }
+        }
+        else if (DotNetTypes.System.Double.equals(vmQName)) {
+            if (value instanceof Number) {
+                return ((Number) value).doubleValue();
+            }
+        }
+        else if (DotNetTypes.System.String.equals(vmQName)) {
+            return value.toString();
+        }
+        return value;
+    }
 
-	@Nullable
-	@SuppressWarnings("unchecked")
-	public <T> T getValueAs(Class<T> clazz)
-	{
-		Object object = getValue();
-		if(clazz.isInstance(object))
-		{
-			return (T) object;
-		}
-		return null;
-	}
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public <T> T getValueAs(Class<T> clazz) {
+        Object object = getValue();
+        if (clazz.isInstance(object)) {
+            return (T) object;
+        }
+        return null;
+    }
 
-	public Object getValue()
-	{
-		return myValue;
-	}
+    public Object getValue() {
+        return myValue;
+    }
 }
