@@ -36,36 +36,30 @@ import org.jspecify.annotations.Nullable;
  * @author VISTALL
  * @since 06-Nov-17
  */
-public class CS0169 extends CompilerCheck<CSharpFieldDeclaration>
-{
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpFieldDeclaration element)
-	{
-		if(!element.hasModifier(CSharpModifier.PRIVATE))
-		{
-			return null;
-		}
+public class CS0169 extends CompilerCheck<CSharpFieldDeclaration> {
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpFieldDeclaration element) {
+        if (!element.hasModifier(CSharpModifier.PRIVATE)) {
+            return null;
+        }
 
-		PsiElement parent = element.getParent();
-		if(!(parent instanceof CSharpTypeDeclaration))
-		{
-			return null;
-		}
+        PsiElement parent = element.getParent();
+        if (!(parent instanceof CSharpTypeDeclaration)) {
+            return null;
+        }
 
-		PsiElement nameIdentifier = element.getNameIdentifier();
-		if(nameIdentifier == null)
-		{
-			return null;
-		}
+        PsiElement nameIdentifier = element.getNameIdentifier();
+        if (nameIdentifier == null) {
+            return null;
+        }
 
-		Query<PsiReference> search = ReferencesSearch.search(element, CSharpCompositeTypeDeclaration.createLocalScope((DotNetTypeDeclaration) parent));
-		if(search.findFirst() == null)
-		{
-			return newBuilder(nameIdentifier, formatElement(element));
-		}
+        Query<PsiReference> search = ReferencesSearch.search(element, CSharpCompositeTypeDeclaration.createLocalScope((DotNetTypeDeclaration) parent));
+        if (search.findFirst() == null) {
+            return newBuilder(nameIdentifier, formatElement(element));
+        }
 
-		return null;
-	}
+        return null;
+    }
 }
