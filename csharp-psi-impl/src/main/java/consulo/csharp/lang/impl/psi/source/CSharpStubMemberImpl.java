@@ -40,124 +40,104 @@ import org.jspecify.annotations.Nullable;
  * @since 15.12.13.
  */
 public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSharpStubElementImpl<S> implements PsiNameIdentifierOwner,
-		DotNetModifierListOwner, DotNetQualifiedElement, ContributedReferenceHost, CSharpNamedElement
-{
-	public CSharpStubMemberImpl(ASTNode node)
-	{
-		super(node);
-	}
+        DotNetModifierListOwner, DotNetQualifiedElement, ContributedReferenceHost, CSharpNamedElement {
+    public CSharpStubMemberImpl(ASTNode node) {
+        super(node);
+    }
 
-	public CSharpStubMemberImpl(S stub, IStubElementType<? extends S, ?> nodeType)
-	{
-		super(stub, nodeType);
-	}
+    public CSharpStubMemberImpl(S stub, IStubElementType<? extends S, ?> nodeType) {
+        super(stub, nodeType);
+    }
 
-	@Override
-	public PsiReference[] getReferences()
-	{
-		return PsiReferenceService.getService().getContributedReferences(this);
-	}
+    @Override
+    public PsiReference[] getReferences() {
+        return PsiReferenceService.getService().getContributedReferences(this);
+    }
 
-	@RequiredReadAction
-	@Override
-	@Nullable
-	public DotNetModifierList getModifierList()
-	{
-		return getStubOrPsiChild(CSharpStubElements.MODIFIER_LIST);
-	}
+    @RequiredReadAction
+    @Override
+    @Nullable
+    public DotNetModifierList getModifierList() {
+        return getStubOrPsiChild(CSharpStubElements.MODIFIER_LIST);
+    }
 
-	@Override
-	@RequiredReadAction
-	public boolean hasModifier(DotNetModifier modifier)
-	{
-		DotNetModifierList modifierList = getModifierList();
-		return modifierList != null && modifierList.hasModifier(modifier);
-	}
+    @Override
+    @RequiredReadAction
+    public boolean hasModifier(DotNetModifier modifier) {
+        DotNetModifierList modifierList = getModifierList();
+        return modifierList != null && modifierList.hasModifier(modifier);
+    }
 
-	@RequiredReadAction
-	public void addModifier(DotNetModifier modifier)
-	{
-		DotNetModifierList modifierList = getModifierList();
-		if(modifierList != null)
-		{
-			modifierList.addModifier(modifier);
-		}
-	}
+    @RequiredReadAction
+    public void addModifier(DotNetModifier modifier) {
+        DotNetModifierList modifierList = getModifierList();
+        if (modifierList != null) {
+            modifierList.addModifier(modifier);
+        }
+    }
 
-	@Override
-	@Nullable
-	@RequiredReadAction
-	public PsiElement getNameIdentifier()
-	{
-		return getStubOrPsiChild(CSharpStubElements.IDENTIFIER);
-	}
+    @Override
+    @Nullable
+    @RequiredReadAction
+    public PsiElement getNameIdentifier() {
+        return getStubOrPsiChild(CSharpStubElements.IDENTIFIER);
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public String getPresentableQName()
-	{
-		String parentQName = getPresentableParentQName();
-		if(StringUtil.isEmpty(parentQName))
-		{
-			return getName();
-		}
-		return parentQName + "." + getName();
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public String getPresentableQName() {
+        String parentQName = getPresentableParentQName();
+        if (StringUtil.isEmpty(parentQName)) {
+            return getName();
+        }
+        return parentQName + "." + getName();
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public String getPresentableParentQName()
-	{
-		S stub = getGreenStub();
-		if(stub != null)
-		{
-			return stub.getParentQName();
-		}
-		PsiElement parent = getParent();
-		if(parent instanceof DotNetQualifiedElement)
-		{
-			return ((DotNetQualifiedElement) parent).getPresentableQName();
-		}
-		else if(parent instanceof CSharpFile file)
-		{
-			CSharpNamespaceStatement namespaceStatement = file.getNamespaceStatement();
-			if(namespaceStatement != null)
-			{
-				return namespaceStatement.getPresentableQName();
-			}
-		}
-		return "";
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public String getPresentableParentQName() {
+        S stub = getGreenStub();
+        if (stub != null) {
+            return stub.getParentQName();
+        }
+        PsiElement parent = getParent();
+        if (parent instanceof DotNetQualifiedElement) {
+            return ((DotNetQualifiedElement) parent).getPresentableQName();
+        }
+        else if (parent instanceof CSharpFile file) {
+            CSharpNamespaceStatement namespaceStatement = file.getNamespaceStatement();
+            if (namespaceStatement != null) {
+                return namespaceStatement.getPresentableQName();
+            }
+        }
+        return "";
+    }
 
-	@RequiredReadAction
-	@Override
-	public int getTextOffset()
-	{
-		PsiElement nameIdentifier = getNameIdentifier();
-		return nameIdentifier != null ? nameIdentifier.getTextOffset() : super.getTextOffset();
-	}
+    @RequiredReadAction
+    @Override
+    public int getTextOffset() {
+        PsiElement nameIdentifier = getNameIdentifier();
+        return nameIdentifier != null ? nameIdentifier.getTextOffset() : super.getTextOffset();
+    }
 
-	@Override
-	@RequiredReadAction
-	public String getName()
-	{
-		return CSharpPsiUtilImpl.getNameWithoutAt(this);
-	}
+    @Override
+    @RequiredReadAction
+    public String getName() {
+        return CSharpPsiUtilImpl.getNameWithoutAt(this);
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public String getNameWithAt()
-	{
-		return CSharpPsiUtilImpl.getNameWithAt(this);
-	}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public String getNameWithAt() {
+        return CSharpPsiUtilImpl.getNameWithAt(this);
+    }
 
-	@Override
-	public PsiElement setName(String s) throws IncorrectOperationException
-	{
-		CSharpRefactoringUtil.replaceNameIdentifier(this, s);
-		return this;
-	}
+    @Override
+    public PsiElement setName(String s) throws IncorrectOperationException {
+        CSharpRefactoringUtil.replaceNameIdentifier(this, s);
+        return this;
+    }
 }
