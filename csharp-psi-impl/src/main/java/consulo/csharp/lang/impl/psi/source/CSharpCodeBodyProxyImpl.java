@@ -35,105 +35,85 @@ import org.jspecify.annotations.Nullable;
  * @author VISTALL
  * @since 2019-10-28
  */
-public class CSharpCodeBodyProxyImpl implements CSharpCodeBodyProxy
-{
-	private final CSharpSimpleLikeMethodAsElement myMethodElement;
+public class CSharpCodeBodyProxyImpl implements CSharpCodeBodyProxy {
+    private final CSharpSimpleLikeMethodAsElement myMethodElement;
 
-	public CSharpCodeBodyProxyImpl(CSharpSimpleLikeMethodAsElement methodElement)
-	{
-		myMethodElement = methodElement;
-	}
+    public CSharpCodeBodyProxyImpl(CSharpSimpleLikeMethodAsElement methodElement) {
+        myMethodElement = methodElement;
+    }
 
-	@Override
-	@RequiredReadAction
-	public boolean isSemicolonOrEmpty()
-	{
-		PsiElement element = getElement();
-		return element == null || PsiUtilCore.getElementType(element) == CSharpTokens.SEMICOLON;
-	}
+    @Override
+    @RequiredReadAction
+    public boolean isSemicolonOrEmpty() {
+        PsiElement element = getElement();
+        return element == null || PsiUtilCore.getElementType(element) == CSharpTokens.SEMICOLON;
+    }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public PsiElement getElement()
-	{
-		ASTNode node = myMethodElement.getNode().findChildByType(CSharpElements.METHOD_BODIES);
-		if(node != null)
-		{
-			CSharpMethodBodyImpl psi = (CSharpMethodBodyImpl) node.getPsi();
-			return psi.getInnerElement();
-		}
+    @RequiredReadAction
+    @Nullable
+    @Override
+    public PsiElement getElement() {
+        ASTNode node = myMethodElement.getNode().findChildByType(CSharpElements.METHOD_BODIES);
+        if (node != null) {
+            CSharpMethodBodyImpl psi = (CSharpMethodBodyImpl) node.getPsi();
+            return psi.getInnerElement();
+        }
 
 
-		DotNetElement element = PsiTreeUtil.findChildOfAnyType(myMethodElement, DotNetStatement.class, DotNetExpression.class);
-		if(element != null)
-		{
-			return element;
-		}
+        DotNetElement element = PsiTreeUtil.findChildOfAnyType(myMethodElement, DotNetStatement.class, DotNetExpression.class);
+        if (element != null) {
+            return element;
+        }
 
-		node = myMethodElement.getNode().findChildByType(CSharpTokens.SEMICOLON);
-		if(node != null)
-		{
-			return node.getPsi();
-		}
-		return null;
-	}
+        node = myMethodElement.getNode().findChildByType(CSharpTokens.SEMICOLON);
+        if (node != null) {
+            return node.getPsi();
+        }
+        return null;
+    }
 
-	@Override
-	public void replace(@Nullable PsiElement newElement)
-	{
-		ASTNode lazyNode = myMethodElement.getNode().findChildByType(CSharpElements.METHOD_BODIES);
-		if(lazyNode != null)
-		{
-			if(newElement == null)
-			{
-				lazyNode.getPsi().delete();
-			}
-			else
-			{
-				lazyNode.getPsi().replace(newElement);
-			}
-		}
-		else
-		{
-			PsiElement element = getElement();
+    @Override
+    public void replace(@Nullable PsiElement newElement) {
+        ASTNode lazyNode = myMethodElement.getNode().findChildByType(CSharpElements.METHOD_BODIES);
+        if (lazyNode != null) {
+            if (newElement == null) {
+                lazyNode.getPsi().delete();
+            }
+            else {
+                lazyNode.getPsi().replace(newElement);
+            }
+        }
+        else {
+            PsiElement element = getElement();
 
-			if(newElement != null)
-			{
-				if(element == null)
-				{
-					myMethodElement.add(newElement);
-				}
-				else
-				{
-					element.replace(newElement);
-				}
-			}
-			else if(element != null)
-			{
-				element.delete();
-			}
-		}
-	}
+            if (newElement != null) {
+                if (element == null) {
+                    myMethodElement.add(newElement);
+                }
+                else {
+                    element.replace(newElement);
+                }
+            }
+            else if (element != null) {
+                element.delete();
+            }
+        }
+    }
 
-	@Override
-	@RequiredWriteAction
-	public void replaceBySemicolon()
-	{
-		ASTNode lazyNode = myMethodElement.getNode().findChildByType(CSharpElements.METHOD_BODIES);
-		if(lazyNode != null)
-		{
-			lazyNode.getPsi().delete();
-		}
-		else
-		{
-			PsiElement element = getElement();
-			if(element != null)
-			{
-				element.delete();
-			}
-		}
+    @Override
+    @RequiredWriteAction
+    public void replaceBySemicolon() {
+        ASTNode lazyNode = myMethodElement.getNode().findChildByType(CSharpElements.METHOD_BODIES);
+        if (lazyNode != null) {
+            lazyNode.getPsi().delete();
+        }
+        else {
+            PsiElement element = getElement();
+            if (element != null) {
+                element.delete();
+            }
+        }
 
-		myMethodElement.getNode().addLeaf(CSharpTokens.SEMICOLON, ";", null);
-	}
+        myMethodElement.getNode().addLeaf(CSharpTokens.SEMICOLON, ";", null);
+    }
 }
