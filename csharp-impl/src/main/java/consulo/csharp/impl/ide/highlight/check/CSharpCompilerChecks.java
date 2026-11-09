@@ -46,7 +46,11 @@ public enum CSharpCompilerChecks {
     CS0102(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members duplicate in type declaration
     CS0106(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // modifier check
     CS0107(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // modifier protection check
+    CS0108(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // member hides an inherited one without new
+    CS0109(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // new on a member hiding nothing
     CS0113(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // virtual/new can't be with override
+    CS0114(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // member hides an inherited virtual one without override or new
+    CS0115(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override of nothing
     CS0116(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // namespaces can contains only classes or delegate methods
     CS0118(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expected variable but found type
     CS0119(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // a method as the qualifier of a member access
@@ -105,6 +109,8 @@ public enum CSharpCompilerChecks {
     CS0453(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // nullable type required notnull type
     CS0500(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // code block with abstract modifier
     CS0501(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // empty code block checks
+    CS0506(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override of a member not virtual
+    CS0507(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override changing the access
     CS0509(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // classes cant extend sealed type
     CS0516(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constructor cant call itself
     CS0531(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for body for only abstract items

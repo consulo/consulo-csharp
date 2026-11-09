@@ -30,8 +30,16 @@ CS0106:
     text: "The modifier ''{0}'' is not valid for this item"
 CS0107:
     text: More than one protection modifier specified
+CS0108:
+    text: "''{0}'' hides inherited member ''{1}''. Use the new keyword if hiding was intended"
+CS0109:
+    text: "The member ''{0}'' does not hide an accessible member. The new keyword is not required"
 CS0113:
     text: "A member ''{0}'' marked as override cannot be marked as new or virtual"
+CS0114:
+    text: "''{0}'' hides inherited member ''{1}''. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword"
+CS0115:
+    text: "''{0}'': no suitable method found to override"
 CS0116:
     text: A namespace cannot directly contain members such as fields or methods
 CS0118:
@@ -150,6 +158,10 @@ CS0500:
     text: "''{0}'' cannot declare a body because it is marked abstract(or delegate)"
 CS0501:
     text: "''{0}'' must have a body because it is not marked abstract, extern, partial, or delegate"
+CS0506:
+    text: "''{0}'': cannot override inherited member ''{1}'' because it is not marked virtual, abstract, or override"
+CS0507:
+    text: "''{0}'': cannot change access modifiers when overriding ''{1}'' inherited member ''{2}''"
 CS0509:
     text: "''{0}'': cannot derive from sealed type ''{1}''"
 CS0516:
