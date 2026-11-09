@@ -156,8 +156,18 @@ CS0231:
     text: A parameter array must be the last parameter in a formal parameter list
 CS0236:
     text: "A field initializer cannot reference the non-static field, method, or property ''{0}''"
+CS0260:
+    text: "Missing partial modifier on declaration of type ''{0}''; another partial declaration of this type exists"
+CS0261:
+    text: "Partial declarations of ''{0}'' must be all classes, all structs, or all interfaces"
+CS0262:
+    text: "Partial declarations of ''{0}'' have conflicting accessibility modifiers"
+CS0263:
+    text: "Partial declarations of ''{0}'' must not specify different base classes"
 CS0264:
     text: "Partial declarations of ''{0}'' must have the same type parameter names in the same order"
+CS0265:
+    text: "Partial declarations of ''{0}'' have inconsistent constraints for type parameter ''{1}''"
 CS0269:
     text: "Use of unassigned out parameter ''{0}''"
 CS0304:

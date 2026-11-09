@@ -72,9 +72,9 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration> {
 
                 String targetName = mayDuplicate.getName();
                 if (searchName.equals(targetName)) {
-                    // skip type declarations if partial
+                    // skip type declarations if partial - a part without the modifier is CS0260
                     if (searchElement instanceof CSharpTypeDeclaration && mayDuplicate instanceof CSharpTypeDeclaration && CSharpElementCompareUtil.isEqualWithVirtualImpl(searchElement, mayDuplicate
-                    ) && isPartial(searchElement) && isPartial(mayDuplicate)) {
+                    ) && (isPartial(searchElement) || isPartial(mayDuplicate))) {
                         continue;
                     }
 

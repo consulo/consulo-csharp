@@ -108,7 +108,12 @@ public enum CSharpCompilerChecks {
     CS0227(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // 'unsafe' modifier check
     CS0231(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // 'params' modifier must be last
     CS0236(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // can't reference to non static field, property, method from field initializer
+    CS0260(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // a declaration without partial of a partial type
+    CS0261(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // partial declarations of other kinds
+    CS0262(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // partial declarations of other access modifiers
+    CS0263(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // partial declarations of other base classes
     CS0264(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // generic parameter names must be equal for partial types
+    CS0265(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // partial declarations of other constraints of a type parameter
     CS0269(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // use of unassigned out parameter
     CS0304(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // generic cant be new without new() constraint
     CS0305(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // check for generic count
