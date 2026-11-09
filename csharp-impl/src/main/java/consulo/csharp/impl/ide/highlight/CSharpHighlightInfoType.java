@@ -18,6 +18,7 @@ package consulo.csharp.impl.ide.highlight;
 
 import consulo.codeEditor.CodeInsightColors;
 import consulo.csharp.impl.ide.codeInspection.UnusedSymbolInspection;
+import consulo.csharp.impl.ide.codeInspection.UnusedTypeInspection;
 import consulo.language.editor.inspection.HighlightInfoTypeSeverityByKey;
 import consulo.language.editor.rawHighlight.HighlightDisplayKey;
 import consulo.language.editor.rawHighlight.HighlightInfoType;
@@ -31,6 +32,11 @@ import java.util.Objects;
 public interface CSharpHighlightInfoType {
     static HighlightInfoType getUnusedDeclaration() {
         HighlightDisplayKey key = HighlightDisplayKey.find(UnusedSymbolInspection.ID);
+        return new HighlightInfoTypeSeverityByKey(Objects.requireNonNull(key), CodeInsightColors.NOT_USED_ELEMENT_ATTRIBUTES);
+    }
+
+    static HighlightInfoType getUnusedType() {
+        HighlightDisplayKey key = HighlightDisplayKey.find(UnusedTypeInspection.ID);
         return new HighlightInfoTypeSeverityByKey(Objects.requireNonNull(key), CodeInsightColors.NOT_USED_ELEMENT_ATTRIBUTES);
     }
 }

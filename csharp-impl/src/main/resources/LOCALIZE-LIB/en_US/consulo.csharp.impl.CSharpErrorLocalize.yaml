@@ -4,6 +4,8 @@ CC0007:
     text: "Unnecessary assignment of a value to ''{0}''"
 CC0008:
     text: "Private member ''{0}'' is unused"
+CC0009:
+    text: "Type ''{0}'' is never used"
 CS0017:
     text: Program has more than one entry point defined. Compile with /main to specify the type that contains the entry point.
 CS0019:

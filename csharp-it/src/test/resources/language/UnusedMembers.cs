@@ -53,12 +53,12 @@ interface I
     void Method();
 }
 
-class Impl : I
+class /*unused:CC0009*/Impl : I
 {
     void I.Method() { }
 }
 
-partial class P
+partial class /*unused:CC0009*/P
 {
     private void InOtherPart() { }
     private void /*unused:CC0008*/Unused() { }
@@ -70,19 +70,19 @@ partial class P
 }
 
 [StructLayout(LayoutKind.Sequential)]
-class Layout
+class /*unused:CC0009*/Layout
 {
     private void Method() { }
 }
 
 [DebuggerDisplay("{Shown}")]
-class Display
+class /*unused:CC0009*/Display
 {
     private int Shown => 1;
     private int /*unused:CC0008*/Hidden => 2;
 }
 
-class Runtime
+class /*unused:CC0009*/Runtime
 {
     [OnDeserialized] private void Deserialized(StreamingContext context) { }
     private void Handler(object sender, EventArgs e) { }
@@ -95,7 +95,7 @@ class Runtime
     public Runtime() { Size = 1; }
 }
 
-class Awaiter : INotifyCompletion
+class /*unused:CC0009*/Awaiter : INotifyCompletion
 {
     public void OnCompleted(Action continuation) { }
     private bool IsCompleted => true;
@@ -104,7 +104,7 @@ class Awaiter : INotifyCompletion
 }
 
 [Serializable]
-class Serialized : ISerializable
+class /*unused:CC0009*/Serialized : ISerializable
 {
     private Serialized(SerializationInfo info, StreamingContext context) { }
     public void GetObjectData(SerializationInfo info, StreamingContext context) { }

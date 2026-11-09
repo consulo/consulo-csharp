@@ -1,7 +1,7 @@
 // check:unused
 using System;
 
-class UnusedVariables
+class /*unused:CC0009*/UnusedVariables
 {
     const int Constant = 1;
 

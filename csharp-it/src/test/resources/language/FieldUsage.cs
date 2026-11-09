@@ -2,7 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-class FieldUsage
+class /*unused:CC0009*/FieldUsage
 {
     private int /*unused:CS0169*/unused;
     private int /*warning:CS0414*/initialized = 1;
@@ -73,7 +73,7 @@ class FieldUsage
 }
 
 [StructLayout(LayoutKind.Sequential)]
-class Layout
+class /*unused:CC0009*/Layout
 {
     private int unused;
     private int assigned;
@@ -84,7 +84,7 @@ class Layout
     }
 }
 
-partial class Parts
+partial class /*unused:CC0009*/Parts
 {
     private int /*warning:CS0414*/assigned;
 }

@@ -1,7 +1,7 @@
 // check:unused
 using System;
 
-class UnnecessaryAssignment
+class /*unused:CC0009*/UnnecessaryAssignment
 {
     bool b;
     object o;

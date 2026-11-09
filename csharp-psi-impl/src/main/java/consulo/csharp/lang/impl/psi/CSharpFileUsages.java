@@ -35,7 +35,7 @@ import java.util.Map;
  * The declarations the references of a file resolve to - what is used in the file; a reference of a doc comment
  * (cref) is not a use, a method group (nameof) is a use of all its methods. Computed by one walk over the file, whose
  * resolves the highlighting of the file has mostly cached already; a declaration is in the set as its original element
- * (not a generic or extension wrapper)
+ * (not a generic or extension wrapper; the type for its default constructor)
  *
  * @author VISTALL
  */
@@ -111,6 +111,13 @@ public final class CSharpFileUsages {
         CSharpMethodDeclaration extension = target.getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER);
         PsiElement element = extension != null ? extension : target;
         PsiElement original = element.getOriginalElement();
-        return original != null ? original : element;
+        if (original == null) {
+            original = element;
+        }
+        // a built member - the default constructor of a type is the type
+        if (!original.isPhysical() && original.getNavigationElement() != original) {
+            return original.getNavigationElement();
+        }
+        return original;
     }
 }

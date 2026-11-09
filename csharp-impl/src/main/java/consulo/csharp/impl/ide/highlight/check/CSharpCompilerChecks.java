@@ -231,7 +231,8 @@ public enum CSharpCompilerChecks {
     CC0005(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // super constructor call checks
     CC0006(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // checks for string literals
     CC0007(CSharpLanguageVersion._1_0, CSharpHighlightInfoType::getUnusedDeclaration), // a value assigned and never read
-    CC0008(CSharpLanguageVersion._1_0, CSharpHighlightInfoType::getUnusedDeclaration); // a private member never used
+    CC0008(CSharpLanguageVersion._1_0, CSharpHighlightInfoType::getUnusedDeclaration), // a private member never used
+    CC0009(CSharpLanguageVersion._1_0, CSharpHighlightInfoType::getUnusedType); // a type not of the public API never used
 
     public static final CSharpCompilerChecks[] VALUES = CSharpCompilerChecks.values();
 

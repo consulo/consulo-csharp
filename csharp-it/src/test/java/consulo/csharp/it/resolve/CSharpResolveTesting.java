@@ -38,6 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,9 +101,18 @@ public final class CSharpResolveTesting {
      * {@code sdk} and {@code testLibraries}, indexed and ready to resolve in.
      */
     public static PsiFile openSource(HeadlessProjects projects, MockSdk sdk, String fileName, String text, List<Path> testLibraries) throws Exception {
+        return openSources(projects, sdk, Map.of(fileName, text), testLibraries).get(fileName);
+    }
+
+    /**
+     * The same of several files of one module - by their names
+     */
+    public static Map<String, PsiFile> openSources(HeadlessProjects projects, MockSdk sdk, Map<String, String> texts, List<Path> testLibraries) throws Exception {
         Path directory = projects.newDirectory();
         Path srcDirectory = Files.createDirectories(directory.resolve("src"));
-        Files.writeString(srcDirectory.resolve(fileName), text, StandardCharsets.UTF_8);
+        for (Map.Entry<String, String> entry : texts.entrySet()) {
+            Files.writeString(srcDirectory.resolve(entry.getKey()), entry.getValue(), StandardCharsets.UTF_8);
+        }
 
         Project project = projects.open(directory);
 
@@ -120,12 +130,16 @@ public final class CSharpResolveTesting {
 
         HeadlessProjects.awaitIdle(project);
 
-        VirtualFile file = srcRoot.findChild(fileName);
-        assertThat(file).isNotNull();
+        Map<String, PsiFile> files = new HashMap<>();
+        for (String fileName : texts.keySet()) {
+            VirtualFile file = srcRoot.findChild(fileName);
+            assertThat(file).isNotNull();
 
-        PsiFile psiFile = ReadAction.compute(() -> PsiManager.getInstance(project).findFile(file));
-        assertThat(psiFile).isNotNull();
-        return psiFile;
+            PsiFile psiFile = ReadAction.compute(() -> PsiManager.getInstance(project).findFile(file));
+            assertThat(psiFile).isNotNull();
+            files.put(fileName, psiFile);
+        }
+        return files;
     }
 
     private static String loadExpected(Path expected) throws Exception {
