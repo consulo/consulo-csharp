@@ -19,6 +19,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.impl.psi.CSharpFileUsages;
+import consulo.csharp.lang.impl.psi.CSharpUseScopes;
 import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -73,11 +74,7 @@ public class CC0008 extends CompilerCheck<DotNetModifierListOwner> {
 
     @RequiredReadAction
     private static boolean isChecked(DotNetModifierListOwner element, CSharpTypeDeclaration type) {
-        CSharpAccessModifier access = CSharpAccessModifier.findModifier(element);
-        if (access != CSharpAccessModifier.PRIVATE && (access != CSharpAccessModifier.NONE || type.isInterface())) {
-            return false;
-        }
-        if (element instanceof DotNetVirtualImplementOwner implementOwner && implementOwner.getTypeForImplement() != null) {
+        if (CSharpUseScopes.getPrivateMemberScope(element) == null) {
             return false;
         }
         if (DotNetAttributeUtil.hasAttribute(type, "System.Runtime.InteropServices.StructLayoutAttribute") || isInDebuggerDisplay(element, type)) {

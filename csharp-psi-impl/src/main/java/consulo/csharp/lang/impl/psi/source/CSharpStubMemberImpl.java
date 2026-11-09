@@ -19,6 +19,7 @@ package consulo.csharp.lang.impl.psi.source;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
+import consulo.csharp.lang.impl.psi.CSharpUseScopes;
 import consulo.csharp.lang.impl.psi.stub.MemberStub;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.CSharpNamedElement;
@@ -29,6 +30,8 @@ import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.*;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.content.scope.SearchScope;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.util.IncorrectOperationException;
 import consulo.util.lang.StringUtil;
@@ -139,5 +142,12 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
     public PsiElement setName(String s) throws IncorrectOperationException {
         CSharpRefactoringUtil.replaceNameIdentifier(this, s);
         return this;
+    }
+
+    @Override
+    @RequiredReadAction
+    public SearchScope getUseScope() {
+        LocalSearchScope scope = CSharpUseScopes.getPrivateMemberScope(this);
+        return scope != null ? scope : super.getUseScope();
     }
 }
