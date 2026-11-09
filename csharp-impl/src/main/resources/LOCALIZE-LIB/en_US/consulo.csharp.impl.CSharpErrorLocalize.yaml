@@ -34,6 +34,8 @@ CS0108:
     text: "''{0}'' hides inherited member ''{1}''. Use the new keyword if hiding was intended"
 CS0109:
     text: "The member ''{0}'' does not hide an accessible member. The new keyword is not required"
+CS0111:
+    text: "Type ''{0}'' already defines a member called ''{1}'' with the same parameter types"
 CS0113:
     text: "A member ''{0}'' marked as override cannot be marked as new or virtual"
 CS0114:

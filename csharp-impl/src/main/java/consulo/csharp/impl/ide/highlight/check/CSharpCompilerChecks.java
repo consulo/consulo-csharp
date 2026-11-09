@@ -48,6 +48,7 @@ public enum CSharpCompilerChecks {
     CS0107(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // modifier protection check
     CS0108(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // member hides an inherited one without new
     CS0109(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // new on a member hiding nothing
+    CS0111(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // methods of a name and the same parameters
     CS0113(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // virtual/new can't be with override
     CS0114(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // member hides an inherited virtual one without override or new
     CS0115(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override of nothing

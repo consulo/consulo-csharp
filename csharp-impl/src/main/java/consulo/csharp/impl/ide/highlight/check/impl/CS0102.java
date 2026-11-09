@@ -50,8 +50,10 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration> {
 
         final DotNetNamedElement[] members = t.getMembers();
 
+        // the later of two - as Roslyn
         List<DotNetNamedElement> duplicateMembers = new ArrayList<>();
-        for (DotNetNamedElement searchElement : members) {
+        for (int i = 0; i < members.length; i++) {
+            DotNetNamedElement searchElement = members[i];
             if (!(searchElement instanceof PsiNameIdentifierOwner)) {
                 continue;
             }
@@ -61,10 +63,8 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration> {
                 continue;
             }
 
-            for (DotNetNamedElement mayDuplicate : members) {
-                if (searchElement == mayDuplicate) {
-                    continue;
-                }
+            for (int j = i + 1; j < members.length; j++) {
+                DotNetNamedElement mayDuplicate = members[j];
 
                 if (!(mayDuplicate instanceof PsiNameIdentifierOwner)) {
                     continue;
@@ -83,8 +83,8 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration> {
                         continue;
                     }
 
-                    if (searchElement instanceof DotNetLikeMethodDeclaration && mayDuplicate instanceof DotNetLikeMethodDeclaration && !CSharpElementCompareUtil.isEqualWithVirtualImpl(searchElement,
-                            mayDuplicate)) {
+                    // overloads, or the same parameters - CS0111
+                    if (searchElement instanceof DotNetLikeMethodDeclaration && mayDuplicate instanceof DotNetLikeMethodDeclaration) {
                         continue;
                     }
 
@@ -93,7 +93,9 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration> {
                         continue;
                     }
 
-                    duplicateMembers.add(mayDuplicate);
+                    if (!duplicateMembers.contains(mayDuplicate)) {
+                        duplicateMembers.add(mayDuplicate);
+                    }
                 }
             }
         }
