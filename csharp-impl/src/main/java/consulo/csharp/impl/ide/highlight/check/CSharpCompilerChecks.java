@@ -39,6 +39,18 @@ public enum CSharpCompilerChecks {
     CS0027(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), //  this can't used inside field declaration
     CS0029(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  cant convert A to B with implicit
     CS0030(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // cant convert A to B
+    CS0050(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - a method return type
+    CS0051(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - a method parameter type
+    CS0052(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - a field type
+    CS0053(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - a property type
+    CS0054(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - an indexer return type
+    CS0055(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - an indexer parameter type
+    CS0056(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - an operator return type
+    CS0057(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - an operator parameter type
+    CS0058(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - a delegate return type
+    CS0059(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - a delegate parameter type
+    CS0060(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - a base class
+    CS0061(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - a base interface
     CS0070(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // events can not be called outside declaration type
     CS0077(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // as operator cant be used with notnull types
     CS0100(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter is duplicate
@@ -184,6 +196,7 @@ public enum CSharpCompilerChecks {
     CS4032(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // await in a method not async
     CS4033(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // await in a void method not async
     CS4034(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // await in a lambda or anonymous method not async
+    CS7025(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - an event type
     CS8030(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // return with a value from a lambda of a void delegate
     CS8070(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // the final switch section falls out of the switch
     CS8072(CSharpLanguageVersion._6_0, HighlightInfoType.ERROR), // null propagating operator in expression tree

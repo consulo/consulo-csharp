@@ -16,6 +16,30 @@ CS0029:
     text: "Cannot implicitly convert type ''{0}'' to ''{1}''"
 CS0030:
     text: "Cannot convert type ''{0}'' to ''{1}''"
+CS0050:
+    text: "Inconsistent accessibility: return type ''{0}'' is less accessible than method ''{1}''"
+CS0051:
+    text: "Inconsistent accessibility: parameter type ''{0}'' is less accessible than method ''{1}''"
+CS0052:
+    text: "Inconsistent accessibility: field type ''{0}'' is less accessible than field ''{1}''"
+CS0053:
+    text: "Inconsistent accessibility: property type ''{0}'' is less accessible than property ''{1}''"
+CS0054:
+    text: "Inconsistent accessibility: indexer return type ''{0}'' is less accessible than indexer ''{1}''"
+CS0055:
+    text: "Inconsistent accessibility: parameter type ''{0}'' is less accessible than indexer or property ''{1}''"
+CS0056:
+    text: "Inconsistent accessibility: return type ''{0}'' is less accessible than operator ''{1}''"
+CS0057:
+    text: "Inconsistent accessibility: parameter type ''{0}'' is less accessible than operator ''{1}''"
+CS0058:
+    text: "Inconsistent accessibility: return type ''{0}'' is less accessible than delegate ''{1}''"
+CS0059:
+    text: "Inconsistent accessibility: parameter type ''{0}'' is less accessible than delegate ''{1}''"
+CS0060:
+    text: "Inconsistent accessibility: base class ''{0}'' is less accessible than class ''{1}''"
+CS0061:
+    text: "Inconsistent accessibility: base interface ''{0}'' is less accessible than interface ''{1}''"
 CS0070:
     text: "The event ''{0}'' can only appear on the left hand side of += or -= (except when used from within the type ''{1}'')"
 CS0077:
@@ -306,6 +330,8 @@ CS4033:
     text: The 'await' operator can only be used within an async method. Consider marking this method with the 'async' modifier and changing its return type to 'Task'
 CS4034:
     text: "The ''await'' operator can only be used within an async {0}. Consider marking this {0} with the ''async'' modifier"
+CS7025:
+    text: "Inconsistent accessibility: event type ''{0}'' is less accessible than event ''{1}''"
 CS8030:
     text: Anonymous function converted to a void returning delegate cannot return a value
 CS8070:

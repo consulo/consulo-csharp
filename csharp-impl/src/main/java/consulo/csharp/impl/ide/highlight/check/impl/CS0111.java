@@ -82,7 +82,7 @@ public class CS0111 extends CompilerCheck<CSharpTypeDeclaration> {
     }
 
     @RequiredReadAction
-    private static PsiElement range(DotNetNamedElement member) {
+    static PsiElement range(DotNetNamedElement member) {
         if (member instanceof CSharpIndexMethodDeclaration) {
             for (PsiElement child = member.getFirstChild(); child != null; child = child.getNextSibling()) {
                 if (PsiUtilCore.getElementType(child) == CSharpTokens.THIS_KEYWORD) {

@@ -54,18 +54,7 @@ public class CSharpVisibilityUtil {
             case PRIVATE_PROTECTED:
                 return isVisible(target, place, CSharpAccessModifier.INTERNAL) && isVisible(target, place, CSharpAccessModifier.PROTECTED);
             case INTERNAL:
-                AssemblyModuleService assemblyModuleService = AssemblyModuleService.getInstance(place.getProject());
-
-                AssemblyModule targetModule = assemblyModuleService.resolve(target);
-                AssemblyModule placeModule = assemblyModuleService.resolve(place);
-
-                if (targetModule.equals(placeModule)) {
-                    return true;
-                }
-
-                String placeAssemblyName = placeModule.getName();
-
-                return targetModule.isAllowedAssembly(placeAssemblyName);
+                return hasInternalAccess(target, place);
             case PROTECTED: {
                 List<DotNetTypeDeclaration> targetTypes = collectAllTypes(target);
                 List<DotNetTypeDeclaration> placeTypes = collectAllTypes(place);
@@ -97,6 +86,25 @@ public class CSharpVisibilityUtil {
             }
         }
         return false;
+    }
+
+    /**
+     * The place is of the assembly of the target, or of one its InternalsVisibleTo names
+     */
+    @RequiredReadAction
+    public static boolean hasInternalAccess(PsiElement target, PsiElement place) {
+        AssemblyModuleService assemblyModuleService = AssemblyModuleService.getInstance(place.getProject());
+
+        AssemblyModule targetModule = assemblyModuleService.resolve(target);
+        AssemblyModule placeModule = assemblyModuleService.resolve(place);
+
+        if (targetModule.equals(placeModule)) {
+            return true;
+        }
+
+        String placeAssemblyName = placeModule.getName();
+
+        return targetModule.isAllowedAssembly(placeAssemblyName);
     }
 
     @RequiredReadAction
