@@ -18,14 +18,12 @@ package consulo.csharp.lang.impl.psi.source;
 
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiUtilCore;
-import consulo.language.psi.util.PsiTreeUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
 import consulo.csharp.lang.impl.psi.CSharpElements;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.psi.PsiElement;
@@ -60,9 +58,11 @@ public class CSharpCodeBodyProxyImpl implements CSharpCodeBodyProxy {
         }
 
 
-        DotNetElement element = PsiTreeUtil.findChildOfAnyType(myMethodElement, DotNetStatement.class, DotNetExpression.class);
-        if (element != null) {
-            return element;
+        // a child - not an expression of the signature, as the interface of I.M() => ...
+        for (PsiElement child = myMethodElement.getFirstChild(); child != null; child = child.getNextSibling()) {
+            if (child instanceof DotNetStatement || child instanceof DotNetExpression) {
+                return child;
+            }
         }
 
         node = myMethodElement.getNode().findChildByType(CSharpTokens.SEMICOLON);
