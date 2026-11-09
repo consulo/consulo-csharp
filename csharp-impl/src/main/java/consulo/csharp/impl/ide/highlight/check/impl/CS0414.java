@@ -19,15 +19,16 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.CachedValueProvider;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.impl.psi.CSharpFileUsages;
 import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.impl.psi.source.CSharpAssignmentExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpNameOfExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpOutRefWrapExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpParenthesesExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpTupleExpressionImpl;
+import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -40,10 +41,14 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiModificationTracker;
 import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.LocalSearchScope;
 import consulo.language.psi.search.ReferencesSearch;
 import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.language.psi.util.PsiTreeUtil;
 import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The field is assigned but its value is never used - a private field never read, all its assignments (the
@@ -79,7 +84,8 @@ public class CS0414 extends CompilerCheck<CSharpFieldDeclaration> {
 
     @RequiredReadAction
     private static @Nullable Usage computeUsage(CSharpFieldDeclaration field) {
-        if (!field.hasModifier(CSharpModifier.PRIVATE) || field.isConstant() || field.getNameIdentifier() == null
+        // private protected is not private - it is used by the derived types
+        if (CSharpAccessModifier.findModifier(field) != CSharpAccessModifier.PRIVATE || field.isConstant() || field.getNameIdentifier() == null
             || !(field.getParent() instanceof CSharpTypeDeclaration type)
             || DotNetAttributeUtil.hasAttribute(type, "System.Runtime.InteropServices.StructLayoutAttribute")) {
             return null;
@@ -89,9 +95,8 @@ public class CS0414 extends CompilerCheck<CSharpFieldDeclaration> {
         boolean referenced = false;
         boolean written = initializer != null;
         boolean constantWrites = initializer == null || CS0219.isConstantValue(field, initializer);
-        for (PsiReference reference : ReferencesSearch.search(field, CSharpCompositeTypeDeclaration.createLocalScope((DotNetTypeDeclaration) type))) {
+        for (PsiElement element : references(field, type)) {
             referenced = true;
-            PsiElement element = reference.getElement();
             if (PsiTreeUtil.getParentOfType(element, CSharpNameOfExpressionImpl.class) != null) {
                 read = true;
                 continue;
@@ -109,6 +114,25 @@ public class CS0414 extends CompilerCheck<CSharpFieldDeclaration> {
             }
         }
         return new Usage(referenced, read, written, constantWrites);
+    }
+
+    /**
+     * The references to the field - of its file, collected by the highlighting; searched if the type has parts in other
+     * files
+     */
+    @RequiredReadAction
+    private static List<PsiElement> references(CSharpFieldDeclaration field, CSharpTypeDeclaration type) {
+        LocalSearchScope scope = CSharpCompositeTypeDeclaration.createLocalScope(type);
+        for (PsiElement part : scope.getScope()) {
+            if (part.getContainingFile() != field.getContainingFile()) {
+                List<PsiElement> references = new ArrayList<>();
+                for (PsiReference reference : ReferencesSearch.search(field, scope)) {
+                    references.add(reference.getElement());
+                }
+                return references;
+            }
+        }
+        return CSharpFileUsages.getReferences(field);
     }
 
     /**

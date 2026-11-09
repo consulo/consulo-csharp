@@ -16,21 +16,12 @@
 
 package consulo.csharp.impl.ide.highlight.check.impl;
 
-
-import consulo.language.psi.PsiElement;
-import consulo.language.psi.search.ReferencesSearch;
-import consulo.application.util.query.Query;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.impl.psi.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.dotnet.psi.DotNetAttributeUtil;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.language.psi.PsiReference;
+import consulo.language.psi.PsiElement;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -43,23 +34,13 @@ public class CS0169 extends CompilerCheck<CSharpFieldDeclaration> {
     @Override
     public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpFieldDeclaration element) {
         // with an initializer - assigned, CS0414
-        if (!element.hasModifier(CSharpModifier.PRIVATE) || element.getInitializer() != null) {
+        if (element.getInitializer() != null) {
             return null;
         }
 
-        PsiElement parent = element.getParent();
-        // [StructLayout] - its fields are its layout
-        if (!(parent instanceof CSharpTypeDeclaration) || DotNetAttributeUtil.hasAttribute(parent, "System.Runtime.InteropServices.StructLayoutAttribute")) {
-            return null;
-        }
-
+        CS0414.Usage usage = CS0414.usage(element);
         PsiElement nameIdentifier = element.getNameIdentifier();
-        if (nameIdentifier == null) {
-            return null;
-        }
-
-        Query<PsiReference> search = ReferencesSearch.search(element, CSharpCompositeTypeDeclaration.createLocalScope((DotNetTypeDeclaration) parent));
-        if (search.findFirst() == null) {
+        if (usage != null && !usage.referenced() && nameIdentifier != null) {
             return newBuilder(nameIdentifier, formatElement(element));
         }
 

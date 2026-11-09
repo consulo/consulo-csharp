@@ -26,8 +26,10 @@ import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.language.psi.*;
 import consulo.language.psi.util.LanguageCachedValueUtil;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The declarations the references of a file resolve to - what is used in the file; a reference of a doc comment
@@ -43,18 +45,26 @@ public final class CSharpFileUsages {
 
     @RequiredReadAction
     public static boolean isUsed(PsiElement declaration) {
+        return !getReferences(declaration).isEmpty();
+    }
+
+    /**
+     * The references of the file of the declaration to it - the reference elements
+     */
+    @RequiredReadAction
+    public static List<PsiElement> getReferences(PsiElement declaration) {
         PsiFile file = declaration.getContainingFile();
-        return file != null && of(file).contains(declaration);
+        return file == null ? List.of() : of(file).getOrDefault(declaration, List.of());
     }
 
     @RequiredReadAction
-    public static Set<PsiElement> of(PsiFile file) {
+    private static Map<PsiElement, List<PsiElement>> of(PsiFile file) {
         return LanguageCachedValueUtil.getCachedValue(file, () -> CachedValueProvider.Result.create(compute(file), PsiModificationTracker.MODIFICATION_COUNT));
     }
 
     @RequiredReadAction
-    private static Set<PsiElement> compute(PsiFile file) {
-        Set<PsiElement> used = new HashSet<>();
+    private static Map<PsiElement, List<PsiElement>> compute(PsiFile file) {
+        Map<PsiElement, List<PsiElement>> used = new HashMap<>();
         file.accept(new PsiRecursiveElementWalkingVisitor() {
             @Override
             @RequiredReadAction
@@ -73,11 +83,11 @@ public final class CSharpFileUsages {
                         // a method group - nameof(M)
                         if (target instanceof CSharpElementGroup<?> group) {
                             for (PsiElement groupElement : group.getElements()) {
-                                used.add(original(groupElement));
+                                add(used, groupElement, element);
                             }
                         }
                         else if (target != null) {
-                            used.add(original(target));
+                            add(used, target, element);
                         }
                     }
                 }
@@ -85,6 +95,15 @@ public final class CSharpFileUsages {
             }
         });
         return used;
+    }
+
+    @RequiredReadAction
+    private static void add(Map<PsiElement, List<PsiElement>> used, PsiElement target, PsiElement reference) {
+        List<PsiElement> references = used.computeIfAbsent(original(target), k -> new ArrayList<>(2));
+        // a reference resolving to several overloads of one declaration - once
+        if (references.isEmpty() || references.get(references.size() - 1) != reference) {
+            references.add(reference);
+        }
     }
 
     @RequiredReadAction
