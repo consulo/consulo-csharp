@@ -17,7 +17,7 @@ class UnusedVariables
 
     void Use(int value) { }
 
-    void Constants()
+    void /*unused:CC0008*/Constants()
     {
         int /*unused:CS0219*//*unused:CC0007*/reassigned = 1;
         /*unused:CC0007*/reassigned = 2;
@@ -41,7 +41,7 @@ class UnusedVariables
         }
     }
 
-    void NotConstant()
+    void /*unused:CC0008*/NotConstant()
     {
         object /*unused:CC0007*/boxed = 1;
         int /*unused:CC0007*/call = F();

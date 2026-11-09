@@ -51,7 +51,7 @@ class FieldUsage
 
     int Get() => 1;
 
-    void Method(FieldUsage other)
+    void /*unused:CC0008*/Method(FieldUsage other)
     {
         assigned = 1;
         incremented++;
@@ -91,7 +91,7 @@ partial class Parts
 
 partial class Parts
 {
-    void Method()
+    void /*unused:CC0008*/Method()
     {
         assigned = 1;
     }

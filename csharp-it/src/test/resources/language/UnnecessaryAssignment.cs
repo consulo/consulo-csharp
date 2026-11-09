@@ -19,27 +19,27 @@ class UnnecessaryAssignment
         return true;
     }
 
-    void Overwritten()
+    void /*unused:CC0008*/Overwritten()
     {
         int /*unused:CC0007*/x = F();
         x = F();
         Use(x);
     }
 
-    void NeverRead()
+    void /*unused:CC0008*/NeverRead()
     {
         int /*unused:CC0007*/x = F();
         /*unused:CC0007*/x = 2;
     }
 
-    void Last()
+    void /*unused:CC0008*/Last()
     {
         int x = F();
         Use(x);
         /*unused:CC0007*/x = 2;
     }
 
-    void Increment()
+    void /*unused:CC0008*/Increment()
     {
         int x = F();
         /*unused:CC0007*/x++;
@@ -47,14 +47,14 @@ class UnnecessaryAssignment
         /*unused:CC0007*/y += F();
     }
 
-    void Out()
+    void /*unused:CC0008*/Out()
     {
         int x;
         Try(out /*unused:CC0007*/x);
         Try(out var /*unused:CC0007*/y);
     }
 
-    void Patterns()
+    void /*unused:CC0008*/Patterns()
     {
         if (o is int /*unused:CC0007*/i)
         {
@@ -63,7 +63,7 @@ class UnnecessaryAssignment
         Use(first);
     }
 
-    void Loop()
+    void /*unused:CC0008*/Loop()
     {
         int /*unused:CC0007*/x = F();
         for (int i = 0; i < 3; i++)
@@ -72,7 +72,7 @@ class UnnecessaryAssignment
         }
     }
 
-    void TryFinally()
+    void /*unused:CC0008*/TryFinally()
     {
         int /*unused:CC0007*/x = F();
         try
@@ -85,7 +85,7 @@ class UnnecessaryAssignment
         }
     }
 
-    void Accepted(int parameter)
+    void /*unused:CC0008*/Accepted(int parameter)
     {
         int branch = F();
         if (b) branch = F();
