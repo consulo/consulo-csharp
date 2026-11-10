@@ -23,14 +23,19 @@ import consulo.csharp.lang.impl.psi.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.language.editor.refactoring.rename.RenamePsiElementProcessor;
 import consulo.language.psi.PsiElement;
-import consulo.ui.ex.awt.MessageDialogBuilder;
-import consulo.ui.ex.awt.Messages;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import consulo.ui.MessageBoxBuilder;
+import consulo.ui.MessageButtonRole;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.StringUtil;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author VISTALL
@@ -39,7 +44,8 @@ import java.util.Set;
 @ExtensionImpl
 public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 {
-	private int myLastResult;
+	@Nullable
+	private Boolean myRenameAll;
 
 	@Override
 	@RequiredReadAction
@@ -48,34 +54,82 @@ public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 		// if name is empty that mean start rename
 		if(StringUtil.isEmpty(newName))
 		{
-			myLastResult = -1;
+			myRenameAll = null;
 		}
 
-		if(myLastResult == -1)
+		if(myRenameAll == null)
 		{
 			Set<DotNetVirtualImplementOwner> allElements = getAllElements(element);
 			if(!allElements.isEmpty())
 			{
-				MessageDialogBuilder.YesNo builder = MessageDialogBuilder.yesNo("Rename", "Rename all override/implement targets or this target?");
-				builder = builder.yesText("All Targets");
-				builder = builder.noText("This Target");
-
-				if((myLastResult = builder.show()) == Messages.YES)
+				myRenameAll = askRenameAll(element).getNow(Boolean.FALSE);
+				if(myRenameAll)
 				{
-					for(DotNetVirtualImplementOwner tempElement : allElements)
-					{
-						allRenames.put(tempElement, newName);
-					}
+					putAll(allElements, newName, allRenames);
 				}
 			}
 		}
-		else if(myLastResult == Messages.YES)
+		else if(myRenameAll)
 		{
-			Set<DotNetVirtualImplementOwner> allElements = getAllElements(element);
-			for(DotNetVirtualImplementOwner tempElement : allElements)
+			putAll(getAllElements(element), newName, allRenames);
+		}
+	}
+
+	@Override
+	@RequiredUIAccess
+	public CompletableFuture<?> prepareRenamingAsync(PsiElement element, String newName, Map<PsiElement, String> allRenames)
+	{
+		if(StringUtil.isEmpty(newName))
+		{
+			myRenameAll = null;
+		}
+
+		Set<DotNetVirtualImplementOwner> allElements = getAllElements(element);
+		if(myRenameAll != null || allElements.isEmpty())
+		{
+			if(Boolean.TRUE.equals(myRenameAll))
 			{
-				allRenames.put(tempElement, newName);
+				putAll(allElements, newName, allRenames);
 			}
+			return CompletableFuture.completedFuture(null);
+		}
+
+		return askRenameAll(element).thenAccept(renameAll ->
+		{
+			myRenameAll = renameAll;
+			if(renameAll)
+			{
+				putAll(allElements, newName, allRenames);
+			}
+		});
+	}
+
+	@RequiredUIAccess
+	private static CompletableFuture<Boolean> askRenameAll(PsiElement element)
+	{
+		Project project = element.getProject();
+		if(project.getApplication().isUnitTestMode())
+		{
+			return CompletableFuture.completedFuture(Boolean.TRUE);
+		}
+
+		return MessageBoxBuilder.<Boolean>create()
+				.asQuestion()
+				.title(LocalizeValue.localizeTODO("Rename"))
+				.text(LocalizeValue.localizeTODO("Rename all override/implement targets or this target?"))
+				.button(MessageButtonRole.YES, LocalizeValue.localizeTODO("All Targets"), Boolean.TRUE)
+				.asDefaultButton()
+				.button(MessageButtonRole.NO, LocalizeValue.localizeTODO("This Target"), Boolean.FALSE)
+				.exitValue(Boolean.FALSE)
+				.showAsync(project)
+				.thenApply(Boolean.TRUE::equals);
+	}
+
+	private static void putAll(Set<DotNetVirtualImplementOwner> elements, String newName, Map<PsiElement, String> allRenames)
+	{
+		for(DotNetVirtualImplementOwner tempElement : elements)
+		{
+			allRenames.put(tempElement, newName);
 		}
 	}
 
