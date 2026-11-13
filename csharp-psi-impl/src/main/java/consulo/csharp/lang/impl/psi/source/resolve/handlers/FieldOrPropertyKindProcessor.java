@@ -20,6 +20,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.function.Processor;
 import consulo.csharp.lang.impl.psi.source.CSharpReferenceExpressionImplUtil;
 import consulo.csharp.lang.impl.psi.source.CSharpShortObjectInitializerExpressionImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpWithExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveOptions;
 import consulo.csharp.lang.impl.psi.source.resolve.StubScopeProcessor;
 import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
@@ -61,6 +62,11 @@ public class FieldOrPropertyKindProcessor implements KindProcessor
 			if(parent instanceof CSharpShortObjectInitializerExpressionImpl)
 			{
 				resolvedTypeRef = ((CSharpShortObjectInitializerExpressionImpl) parent).toTypeRef(true);
+			}
+			else if(parent instanceof CSharpWithExpressionImpl withExpression)
+			{
+				// r with { X = 1 } - the members of the type of r
+				resolvedTypeRef = withExpression.toTypeRef(true);
 			}
 		}
 

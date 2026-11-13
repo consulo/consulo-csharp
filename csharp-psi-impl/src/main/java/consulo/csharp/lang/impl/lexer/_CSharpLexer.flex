@@ -11,6 +11,10 @@ import consulo.language.lexer.LexerBase;
 
 %{
   private int myStringInterpolationBalance;
+  // the count of the quotes opening a raw string literal - the closing run is as long
+  private int myRawQuotes;
+  // the token of the raw string being lexed - RAW_STRING_LITERAL or, after $, INTERPOLATION_STRING_LITERAL
+  private IElementType myRawToken;
   private int myInsideStringInterpolationParenthesesBalance;
   private java.util.ArrayDeque<Boolean> myStates = new java.util.ArrayDeque<>();
   private java.util.ArrayDeque<Integer> myStacks = new java.util.ArrayDeque<>();
@@ -43,16 +47,35 @@ import consulo.language.lexer.LexerBase;
    * @return true if no string interpolation is open - the lexer state is all in {@link #yystate()}
    */
   public boolean isClean() {
-     return myStringInterpolationBalance == 0 && myInsideStringInterpolationParenthesesBalance == 0 && myStates.isEmpty() && myStacks.isEmpty();
+     return myStringInterpolationBalance == 0 && myInsideStringInterpolationParenthesesBalance == 0 && myStates.isEmpty() && myStacks.isEmpty() && myRawQuotes == 0;
   }
 
   public void clear() {
      myStringInterpolationBalance = 0;
+     myRawQuotes = 0;
      myStates.clear();
      myInsideStringInterpolationParenthesesBalance = 0;
      myStacks.clear();
   }
 
+
+  private int countQuotes() {
+     int count = 0;
+     CharSequence text = yytext();
+     for (int i = 0; i < text.length(); i++) {
+        if (text.charAt(i) == '"') {
+           count++;
+        }
+     }
+     return count;
+  }
+
+  private IElementType beginRaw(IElementType token) {
+     myRawQuotes = countQuotes();
+     myRawToken = token;
+     yybegin(RAW_STRING);
+     return token;
+  }
 
   public void back() {
      if(myStacks.isEmpty()) {
@@ -76,6 +99,7 @@ import consulo.language.lexer.LexerBase;
 %state STRING_INTERPOLATION
 %state STRING_INTERPOLATION_FORMAT_WAIT
 %state STRING_INTERPOLATION_PARSE
+%state RAW_STRING
 
 DIGIT=[0-9]
 WHITE_SPACE=[ \n\r\t\f]+
@@ -224,6 +248,21 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 	[^]  { return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL; }
 }
 
+<RAW_STRING>
+{
+	\"+
+	{
+		if(yylength() >= myRawQuotes)
+		{
+			myRawQuotes = 0;
+			yybegin(YYINITIAL);
+		}
+		return myRawToken;
+	}
+
+	[^\"]+   { return myRawToken; }
+}
+
 <YYINITIAL>
 {
 	{MACRO_START}
@@ -242,6 +281,27 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 	{
 		push(STRING_INTERPOLATION);
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
+	}
+
+	"@$\""
+	{
+		push(STRING_INTERPOLATION);
+		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
+	}
+
+	\"\"\"\"*
+	{
+		return beginRaw(CSharpTokens.RAW_STRING_LITERAL);
+	}
+
+	\$+\"\"\"\"*
+	{
+		return beginRaw(CSharpTokensImpl.INTERPOLATION_STRING_LITERAL);
+	}
+
+	{VERBATIM_STRING_LITERAL}[uU]8
+	{
+		return CSharpTokens.UTF8_STRING_LITERAL;
 	}
 
 	{VERBATIM_STRING_LITERAL}
@@ -542,6 +602,7 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"?"                       { return CSharpTokens.QUEST; }
 
+	"??="                     { return CSharpTokens.QUESTQUESTEQ; }
 	"??"                      { return CSharpTokens.QUESTQUEST; }
 
 	"false"                   { return CSharpTokens.FALSE_KEYWORD; }
@@ -572,6 +633,7 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	{CHARACTER_LITERAL}       { return CSharpTokens.CHARACTER_LITERAL; }
 
+	{STRING_LITERAL}[uU]8     { return CSharpTokens.UTF8_STRING_LITERAL; }
 	{STRING_LITERAL}          { return CSharpTokens.STRING_LITERAL; }
 
 	{IDENTIFIER}              { return CSharpTokens.IDENTIFIER; }

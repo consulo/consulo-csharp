@@ -145,13 +145,33 @@ public class GenericParameterParsing extends SharedParsingHelpers
 				if(builder.getTokenType() == CLASS_KEYWORD || builder.getTokenType() == STRUCT_KEYWORD || builder.getTokenType() == NEW_KEYWORD)
 				{
 					boolean newKeyword = builder.getTokenType() == NEW_KEYWORD;
+					boolean classKeyword = builder.getTokenType() == CLASS_KEYWORD;
 					builder.advanceLexer();
 					if(newKeyword)
 					{
 						expect(builder, LPAR, "'(' expected");
 						expect(builder, RPAR, "')' expected");
 					}
+					// where T : class? - C# 8 a nullable reference type
+					else if(classKeyword && builder.getTokenType() == QUEST)
+					{
+						builder.advanceLexer();
+					}
 
+					doneElement = GENERIC_CONSTRAINT_KEYWORD_VALUE;
+				}
+				// where T : default - C# 9, of an override with an unconstrained type parameter
+				else if(builder.getTokenType() == DEFAULT_KEYWORD)
+				{
+					builder.advanceLexer();
+					doneElement = GENERIC_CONSTRAINT_KEYWORD_VALUE;
+				}
+				// where T : allows ref struct - C# 13 an anti-constraint
+				else if(builder.getTokenType() == CSharpTokens.IDENTIFIER && "allows".equals(builder.getTokenText()) && builder.lookAhead(1) == REF_KEYWORD)
+				{
+					builder.advanceLexer();
+					builder.advanceLexer();
+					expect(builder, STRUCT_KEYWORD, "'struct' expected");
 					doneElement = GENERIC_CONSTRAINT_KEYWORD_VALUE;
 				}
 				else

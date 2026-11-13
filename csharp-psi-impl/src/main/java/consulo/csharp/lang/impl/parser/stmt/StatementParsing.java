@@ -56,6 +56,30 @@ public class StatementParsing extends SharedParsingHelpers {
         builder.disableSoftKeyword(CSharpSoftTokens.YIELD_KEYWORD);
         builder.disableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
 
+        // await foreach (var x in e), await using (d), await using var x = d; - C# 8
+        if (tokenType == CSharpTokens.IDENTIFIER && "await".equals(builder.getTokenText())
+            && (builder.lookAhead(1) == FOREACH_KEYWORD || builder.lookAhead(1) == USING_KEYWORD)) {
+            builder.remapCurrentToken(CSharpSoftTokens.AWAIT_KEYWORD);
+            builder.advanceLexer();
+            tokenType = builder.getTokenType();
+            if (tokenType == FOREACH_KEYWORD) {
+                parseForeachStatement(builder, marker, set);
+            }
+            else if (builder.lookAhead(1) == LPAR) {
+                parseUsingOrFixed(builder, marker, USING_STATEMENT, set);
+            }
+            else {
+                parseLocalVariableWithLeadingKeywords(builder, marker, set);
+            }
+            return marker;
+        }
+
+        // scoped Span<int> s = ...; scoped ref int x = ref y; - C# 11
+        if (ExpressionParsing.isScopedModifier(builder, false)) {
+            parseLocalVariableWithLeadingKeywords(builder, marker, set);
+            return marker;
+        }
+
         if (tokenType == LOCK_KEYWORD) {
             parseStatementWithParenthesesExpression(builder, marker, LOCK_STATEMENT, set);
         }
@@ -142,6 +166,14 @@ public class StatementParsing extends SharedParsingHelpers {
             builder.advanceLexer();
             marker.done(EMPTY_STATEMENT);
         }
+        else if (tokenType == LBRACKET) {
+            // [Obsolete] static void Local() {} - C# 9 attributes of a local function, else a collection expression
+            PsiBuilder.Marker methodMarker = parseLocalMethodDeclaration(builder, marker, true);
+            if (methodMarker != null) {
+                return methodMarker;
+            }
+            return parseLabelOrVariableOrExpression(tokenType, builder, marker, set);
+        }
         else if (tokenType == UNSAFE_KEYWORD) {
             PsiBuilder.Marker methodMarker = parseLocalMethodDeclaration(builder, marker, false);
             if (methodMarker != null) {
@@ -205,6 +237,11 @@ public class StatementParsing extends SharedParsingHelpers {
     private static void parseLocalVariableWithLeadingKeywords(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set) {
         PsiBuilder.Marker varMark = builder.mark();
 
+        if (ExpressionParsing.isScopedModifier(builder, false)) {
+            builder.remapCurrentToken(CSharpSoftTokens.SCOPED_KEYWORD);
+            builder.advanceLexer();
+        }
+
         if (builder.getTokenType() == USING_KEYWORD) {
             builder.advanceLexer();
         }
@@ -243,7 +280,11 @@ public class StatementParsing extends SharedParsingHelpers {
         ModifierSet modifierSet = ModifierSet.EMPTY;
 
         IElementType tokenType = builder.getTokenType();
-        if (tokenType == UNSAFE_KEYWORD || tokenType == ASYNC_KEYWORD || tokenType == STATIC_KEYWORD) {
+        if (tokenType == LBRACKET) {
+            Pair<PsiBuilder.Marker, ModifierSet> pair = parseWithSoftElements(b -> parseModifierListWithAttributes(b, NONE), builder, ASYNC_KEYWORD);
+            modifierSet = pair.getSecond();
+        }
+        else if (tokenType == UNSAFE_KEYWORD || tokenType == ASYNC_KEYWORD || tokenType == STATIC_KEYWORD) {
             Pair<PsiBuilder.Marker, ModifierSet> pair = parseWithSoftElements(b -> parseModifierList(b, NONE), builder, ASYNC_KEYWORD);
             modifierSet = pair.getSecond();
         }

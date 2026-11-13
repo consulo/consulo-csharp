@@ -59,7 +59,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
             put("op_ExclusiveOr", new MsiMappingOperator("^", CSharpTokens.XOR));
             put("op_LeftShift", new MsiMappingOperator("<<", CSharpTokens.LTLT));
             put("op_RightShift", new MsiMappingOperator(">>", CSharpTokens.GTGT));
-            put("op_UnsignedRightShift", new MsiMappingOperator(">>", CSharpTokens.GTGT, true));
+            put("op_UnsignedRightShift", new MsiMappingOperator(">>>", CSharpTokens.GTGTGT));
             put("op_Equality", new MsiMappingOperator("==", CSharpTokens.EQEQ));
             put("op_Inequality", new MsiMappingOperator("!=", CSharpTokens.NTEQ));
             put("op_LessThan", new MsiMappingOperator("<", CSharpTokens.LT));

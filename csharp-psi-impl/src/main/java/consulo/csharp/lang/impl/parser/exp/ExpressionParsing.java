@@ -58,7 +58,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
     private static final TokenSet AND_OPS = TokenSet.create(AND);
     private static final TokenSet EQUALITY_OPS = TokenSet.create(EQEQ, NTEQ);
     private static final TokenSet RELATIONAL_OPS = TokenSet.create(LT, GT, LTEQ, GTEQ);
-    private static final TokenSet SHIFT_OPS = TokenSet.create(LTLT, GTGT);
+    private static final TokenSet SHIFT_OPS = TokenSet.create(LTLT, GTGT, GTGTGT);
     private static final TokenSet ADDITIVE_OPS = TokenSet.create(PLUS, MINUS);
     private static final TokenSet MULTIPLICATIVE_OPS = TokenSet.create(MUL, DIV, PERC);
     private static final TokenSet POSTFIX_OPS = TokenSet.create(PLUSPLUS, MINUSMINUS);
@@ -287,7 +287,18 @@ public class ExpressionParsing extends SharedParsingHelpers {
             return null;
         }
 
-        while (builder.getTokenType() == SWITCH_KEYWORD && builder.lookAhead(1) == LBRACE) {
+        while (builder.getTokenType() == SWITCH_KEYWORD && builder.lookAhead(1) == LBRACE || isWithExpressionStart(builder)) {
+            if (builder.getTokenType() != SWITCH_KEYWORD) {
+                // C# 9 r with { X = 1 } - a copy of r with the members set
+                PsiBuilder.Marker withExpression = value.precede();
+                builder.remapCurrentToken(CSharpSoftTokens.WITH_KEYWORD);
+                builder.advanceLexer();
+                parseNamedFieldOrPropertySetBlock(builder, set, flags);
+                withExpression.done(WITH_EXPRESSION);
+                value = withExpression;
+                continue;
+            }
+
             PsiBuilder.Marker switchExpression = value.precede();
             builder.advanceLexer();
             builder.advanceLexer();
@@ -313,6 +324,11 @@ public class ExpressionParsing extends SharedParsingHelpers {
             value = switchExpression;
         }
         return value;
+    }
+
+    private static boolean isWithExpressionStart(CSharpBuilderWrapper builder) {
+        return builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == LBRACE && "with".equals(builder.getTokenText())
+            && builder.getVersion().isAtLeast(CSharpLanguageVersion._9_0);
     }
 
     private static void parseSwitchExpressionArm(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
@@ -417,13 +433,53 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
 
         if (tokenType == LPAR) {
-            PsiBuilder.Marker parenthesized = builder.mark();
-            builder.advanceLexer();
-            if (!parsePattern(builder, set, flags)) {
-                builder.error("Pattern expected");
+            // (p) - a parenthesized pattern; (p, p) or (name: p) - a positional one
+            PsiBuilder.Marker pattern = builder.mark();
+            boolean positional = parsePositionalPatternClause(builder, set, flags);
+            if (positional) {
+                parsePatternDesignationOrPropertyClause(builder, set, flags);
             }
-            expect(builder, RPAR, "')' expected");
-            parenthesized.done(PARENTHESIZED_PATTERN);
+            pattern.done(positional ? POSITIONAL_PATTERN : PARENTHESIZED_PATTERN);
+            return true;
+        }
+
+        // [1, .., var last] var list
+        if (tokenType == LBRACKET) {
+            PsiBuilder.Marker list = builder.mark();
+            builder.advanceLexer();
+            while (!builder.eof() && builder.getTokenType() != RBRACKET) {
+                int offset = builder.getCurrentOffset();
+                if (builder.getTokenType() == DOT && builder.lookAhead(1) == DOT) {
+                    PsiBuilder.Marker slice = builder.mark();
+                    builder.advanceLexer();
+                    builder.advanceLexer();
+                    if (builder.getTokenType() != COMMA && builder.getTokenType() != RBRACKET) {
+                        if (!parsePattern(builder, set, flags)) {
+                            builder.error("Pattern expected");
+                        }
+                    }
+                    slice.done(SLICE_PATTERN);
+                }
+                else if (!parsePattern(builder, set, flags)) {
+                    builder.error("Pattern expected");
+                }
+
+                if (builder.getTokenType() == COMMA) {
+                    builder.advanceLexer();
+                }
+                else if (builder.getTokenType() != RBRACKET) {
+                    builder.error("',' or ']' expected");
+                    if (builder.getCurrentOffset() == offset) {
+                        builder.advanceLexer();
+                    }
+                    break;
+                }
+            }
+            expect(builder, RBRACKET, "']' expected");
+            if (builder.getTokenType() == CSharpTokens.IDENTIFIER && !isPatternWord(builder)) {
+                doneIdentifier(builder, NONE);
+            }
+            list.done(LIST_PATTERN);
             return true;
         }
 
@@ -442,6 +498,13 @@ public class ExpressionParsing extends SharedParsingHelpers {
         PsiBuilder.Marker declaration = builder.mark();
         TypeInfo typeInfo = parseType(builder, VAR_SUPPORT);
         if (typeInfo != null) {
+            // Point(var x, _) { Name: "a" } p
+            if (builder.getTokenType() == LPAR) {
+                parsePositionalPatternClause(builder, set, flags);
+                parsePatternDesignationOrPropertyClause(builder, set, flags);
+                declaration.done(POSITIONAL_PATTERN);
+                return true;
+            }
             if (builder.getTokenType() == LBRACE) {
                 parsePropertyPatternClause(builder, set, flags);
                 if (builder.getTokenType() == CSharpTokens.IDENTIFIER && !isPatternWord(builder)) {
@@ -469,6 +532,55 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
         constant.done(CONSTANT_PATTERN);
         return true;
+    }
+
+    /**
+     * {@code (p)}, {@code (p, p)}, {@code (name: p)}, {@code ()} - at the left parenthesis
+     *
+     * @return true if it is a positional clause - not a single pattern in parentheses
+     */
+    private static boolean parsePositionalPatternClause(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+        builder.advanceLexer();
+        boolean positional = builder.getTokenType() == RPAR;
+        int count = 0;
+        while (!builder.eof() && builder.getTokenType() != RPAR) {
+            int offset = builder.getCurrentOffset();
+            PsiBuilder.Marker subpattern = builder.mark();
+            if (builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == COLON) {
+                builder.advanceLexer();
+                builder.advanceLexer();
+                positional = true;
+            }
+            if (!parsePattern(builder, set, flags)) {
+                builder.error("Pattern expected");
+            }
+            subpattern.done(PROPERTY_SUBPATTERN);
+            count++;
+
+            if (builder.getTokenType() == COMMA) {
+                builder.advanceLexer();
+                positional = true;
+            }
+            else if (builder.getTokenType() != RPAR) {
+                builder.error("',' or ')' expected");
+                if (builder.getCurrentOffset() == offset) {
+                    builder.advanceLexer();
+                }
+                break;
+            }
+        }
+        expect(builder, RPAR, "')' expected");
+        return positional || count != 1;
+    }
+
+    // after a positional clause: { Name: p } and a designation
+    private static void parsePatternDesignationOrPropertyClause(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+        if (builder.getTokenType() == LBRACE) {
+            parsePropertyPatternClause(builder, set, flags);
+        }
+        if (builder.getTokenType() == CSharpTokens.IDENTIFIER && !isPatternWord(builder)) {
+            doneIdentifier(builder, NONE);
+        }
     }
 
     private static void parsePropertyPatternClause(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
@@ -737,7 +849,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
      */
     private static boolean parseIsPatternOrType(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         IElementType tokenType = builder.getTokenType();
-        if (tokenType == LBRACE || RELATIONAL_OPS.contains(tokenType) || isContextualWord(builder, "not")) {
+        if (tokenType == LBRACE || tokenType == LPAR || tokenType == LBRACKET || RELATIONAL_OPS.contains(tokenType) || isContextualWord(builder, "not")) {
             return parsePattern(builder, set, flags);
         }
 
@@ -799,6 +911,13 @@ public class ExpressionParsing extends SharedParsingHelpers {
                     expr = refExpr;
                 }
             }
+            else if (tokenType == EXCL) {
+                // C# 8 null-forgiving x! - after an operand ! is no prefix not, and x != y is one token
+                final PsiBuilder.Marker nullForgiving = expr.precede();
+                builder.advanceLexer();
+                nullForgiving.done(NULL_FORGIVING_EXPRESSION);
+                expr = nullForgiving;
+            }
             else if (tokenType == ARROW) {
                 builder.advanceLexer();
 
@@ -830,7 +949,8 @@ public class ExpressionParsing extends SharedParsingHelpers {
             }
             else if (tokenType == LPAR) {
                 IElementType expType = exprType(expr);
-                if (expType != referenceExpression(flags) && expType != INDEX_ACCESS_EXPRESSION && expType != PARENTHESES_EXPRESSION && expType != METHOD_CALL_EXPRESSION) {
+                if (expType != referenceExpression(flags) && expType != INDEX_ACCESS_EXPRESSION && expType != PARENTHESES_EXPRESSION && expType != METHOD_CALL_EXPRESSION
+                    && expType != NULL_FORGIVING_EXPRESSION) {
                     startMarker.drop();
                     return expr;
                 }
@@ -993,6 +1113,10 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
 
         builder.disableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
+
+        if (version.isAtLeast(CSharpLanguageVersion._9_0) && isExtendedLambdaCandidate(builder, tokenType) && isExtendedLambda(builder)) {
+            return parseExtendedLambda(builder, modifierSet);
+        }
 
         if (tokenType == LBRACKET) {
             return parseCollectionExpression(builder, modifierSet);
@@ -1201,6 +1325,11 @@ public class ExpressionParsing extends SharedParsingHelpers {
             marker.rollbackTo();
             return parseTupleExpression(builder, set);
         }
+        else if (isTupleDeclarationElement(builder)) {
+            // (int x, y) = ... - C# 10 a declaration and an assignment in one deconstruction
+            marker.rollbackTo();
+            return parseTupleExpression(builder, set);
+        }
         else {
             PsiBuilder.Marker expression = parse(builder, set);
             if (expression == null || builder.getTokenType() != CSharpTokens.COMMA) {
@@ -1249,6 +1378,12 @@ public class ExpressionParsing extends SharedParsingHelpers {
                 valid = false;
             }
         }
+        else if (isTupleDeclarationElement(builder)) {
+            PsiBuilder.Marker variable = builder.mark();
+            parseType(builder, VAR_SUPPORT);
+            doneIdentifier(builder, NONE);
+            variable.done(TUPLE_VARIABLE);
+        }
         else {
             if (parse(builder, set) == null) {
                 builder.error("Expression expected");
@@ -1257,6 +1392,22 @@ public class ExpressionParsing extends SharedParsingHelpers {
         }
         mark.done(CSharpElements.TUPLE_ELEMENT);
         return valid;
+    }
+
+    // int x, var y - a declaration of a deconstruction: a type and a name before , or )
+    private static boolean isTupleDeclarationElement(CSharpBuilderWrapper builder) {
+        PsiBuilder.Marker probe = builder.mark();
+        try {
+            TypeInfo type = parseType(builder, VAR_SUPPORT);
+            if (type == null || type.isArrayError || builder.getTokenType() != CSharpTokens.IDENTIFIER) {
+                return false;
+            }
+            IElementType next = builder.lookAhead(1);
+            return next == COMMA || next == RPAR;
+        }
+        finally {
+            probe.rollbackTo();
+        }
     }
 
     private static PsiBuilder.Marker parseArglistExpression(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
@@ -1363,6 +1514,163 @@ public class ExpressionParsing extends SharedParsingHelpers {
 
         marker.done(DELEGATE_EXPRESSION);
         return marker;
+    }
+
+    /**
+     * The start of a lambda the plain forms do not cover: C# 9 {@code static x => x}, C# 10 {@code [A] x => x},
+     * {@code int (int x) => x}, {@code ref int (ref int x) => ref x}
+     */
+    private static boolean isExtendedLambdaCandidate(CSharpBuilderWrapper builder, @Nullable IElementType tokenType) {
+        if (tokenType == STATIC_KEYWORD || tokenType == LBRACKET) {
+            return true;
+        }
+        if (!builder.getVersion().isAtLeast(CSharpLanguageVersion._10_0)) {
+            return false;
+        }
+        IElementType next = builder.lookAhead(1);
+        if (tokenType == REF_KEYWORD) {
+            return true;
+        }
+        if (NATIVE_TYPES.contains(tokenType)) {
+            return next == LPAR;
+        }
+        if (tokenType == CSharpTokens.IDENTIFIER) {
+            // async static x => x, T (x) => x, List<int> () => []
+            return next == LPAR || next == LT || next == STATIC_KEYWORD && "async".equals(builder.getTokenText());
+        }
+        return false;
+    }
+
+    /**
+     * A look ahead with no remapping of a token - a remapped token stays so after a roll back
+     */
+    private static boolean isExtendedLambda(CSharpBuilderWrapper builder) {
+        PsiBuilder.Marker probe = builder.mark();
+        try {
+            boolean extended = false;
+            if (builder.getTokenType() == LBRACKET) {
+                parseAttributeList(builder, ModifierSet.EMPTY, NONE);
+                extended = true;
+            }
+
+            while (true) {
+                if (builder.getTokenType() == STATIC_KEYWORD) {
+                    builder.advanceLexer();
+                    extended = true;
+                }
+                else if (isLambdaAsync(builder)) {
+                    builder.advanceLexer();
+                    extended = true;
+                }
+                else {
+                    break;
+                }
+            }
+
+            if (!isLambdaParametersStart(builder)) {
+                if (builder.getTokenType() == REF_KEYWORD) {
+                    builder.advanceLexer();
+                    if (builder.getTokenType() == READONLY_KEYWORD) {
+                        builder.advanceLexer();
+                    }
+                }
+                TypeInfo returnType = parseType(builder, NONE);
+                if (returnType == null || builder.getTokenType() != LPAR) {
+                    return false;
+                }
+                extended = true;
+            }
+
+            return extended && (builder.getTokenType() != LPAR || isParenthesizedLambda(builder));
+        }
+        finally {
+            probe.rollbackTo();
+        }
+    }
+
+    // x => or ( - the parameters of a lambda, with no return type before them
+    private static boolean isLambdaParametersStart(CSharpBuilderWrapper builder) {
+        return builder.getTokenType() == LPAR || builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == DARROW;
+    }
+
+    // async before a lambda - not a parameter named async
+    private static boolean isLambdaAsync(CSharpBuilderWrapper builder) {
+        return builder.getTokenType() == CSharpTokens.IDENTIFIER && "async".equals(builder.getTokenText()) && builder.lookAhead(1) != DARROW;
+    }
+
+    // (...) => - at the left parenthesis
+    private static boolean isParenthesizedLambda(CSharpBuilderWrapper builder) {
+        PsiBuilder.Marker probe = builder.mark();
+        try {
+            int depth = 0;
+            while (!builder.eof()) {
+                IElementType tokenType = builder.getTokenType();
+                if (tokenType == LPAR) {
+                    depth++;
+                }
+                else if (tokenType == RPAR) {
+                    depth--;
+                    if (depth == 0) {
+                        builder.advanceLexer();
+                        return builder.getTokenType() == DARROW;
+                    }
+                }
+                else if (tokenType == SEMICOLON || tokenType == LBRACE || tokenType == RBRACE) {
+                    return false;
+                }
+                builder.advanceLexer();
+            }
+            return false;
+        }
+        finally {
+            probe.rollbackTo();
+        }
+    }
+
+    private static PsiBuilder.Marker parseExtendedLambda(CSharpBuilderWrapper builder, ModifierSet set) {
+        PsiBuilder.Marker lambda = builder.mark();
+
+        if (builder.getTokenType() == LBRACKET) {
+            parseAttributeList(builder, set, NONE);
+        }
+
+        ModifierSet lambdaSet = set.remove(CSharpSoftTokens.ASYNC_KEYWORD);
+        while (true) {
+            if (builder.getTokenType() == STATIC_KEYWORD) {
+                builder.advanceLexer();
+            }
+            else if (isLambdaAsync(builder)) {
+                builder.remapCurrentToken(CSharpSoftTokens.ASYNC_KEYWORD);
+                builder.advanceLexer();
+                lambdaSet = lambdaSet.add(CSharpSoftTokens.ASYNC_KEYWORD);
+            }
+            else {
+                break;
+            }
+        }
+
+        // the explicit return type
+        if (!isLambdaParametersStart(builder)) {
+            if (builder.getTokenType() == REF_KEYWORD) {
+                builder.advanceLexer();
+                if (builder.getTokenType() == READONLY_KEYWORD) {
+                    builder.advanceLexer();
+                }
+            }
+            parseType(builder, NONE);
+        }
+
+        parseLambdaParameterList(builder);
+
+        if (expect(builder, DARROW, "'=>' expected")) {
+            PsiBuilder.Marker body = builder.getTokenType() == LBRACE ? StatementParsing.parse(builder, lambdaSet) : parse(builder, lambdaSet);
+            if (body == null) {
+                builder.error("Expression expected");
+            }
+        }
+
+        lambda.done(LAMBDA_EXPRESSION);
+        return lambda;
     }
 
     private static PsiBuilder.@Nullable Marker parseLambdaAfterParenth(final CSharpBuilderWrapper builder, final PsiBuilder.@Nullable Marker typeList, ModifierSet set) {
@@ -1479,9 +1787,16 @@ public class ExpressionParsing extends SharedParsingHelpers {
 
             mark.done(CSharpElements.LAMBDA_PARAMETER);
         }
-        else if (builder.getTokenType() == CSharpTokens.OUT_KEYWORD || builder.getTokenType() == CSharpTokens.REF_KEYWORD || builder.getTokenType() == CSharpTokens.IN_KEYWORD) {
+        else if (builder.getTokenType() == CSharpTokens.OUT_KEYWORD || builder.getTokenType() == CSharpTokens.REF_KEYWORD || builder.getTokenType() == CSharpTokens.IN_KEYWORD
+            || builder.getTokenType() == PARAMS_KEYWORD || isScopedModifier(builder)) {
             PsiBuilder.Marker modifierList = builder.mark();
-            builder.advanceLexer();
+            while (builder.getTokenType() == CSharpTokens.OUT_KEYWORD || builder.getTokenType() == CSharpTokens.REF_KEYWORD || builder.getTokenType() == CSharpTokens.IN_KEYWORD
+                || builder.getTokenType() == PARAMS_KEYWORD || builder.getTokenType() == READONLY_KEYWORD || isScopedModifier(builder)) {
+                if (isScopedModifier(builder)) {
+                    builder.remapCurrentToken(CSharpSoftTokens.SCOPED_KEYWORD);
+                }
+                builder.advanceLexer();
+            }
             modifierList.done(CSharpElements.MODIFIER_LIST);
 
             boolean wasIdentifier = builder.getTokenType() == CSharpTokens.IDENTIFIER;
@@ -1501,6 +1816,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
                     expectOrReportIdentifier(builder, 0);
                 }
 
+                parseLambdaParameterDefault(builder);
                 mark.done(LAMBDA_PARAMETER);
             }
             else {
@@ -1518,6 +1834,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
                 if (builder.getTokenType() == CSharpTokens.IDENTIFIER) {
                     expectOrReportIdentifier(builder, 0);
 
+                    parseLambdaParameterDefault(builder);
                     mark.done(LAMBDA_PARAMETER);
                 }
                 else if (wasIdentifier) {
@@ -1525,6 +1842,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
 
                     expectOrReportIdentifier(builder, 0);
 
+                    parseLambdaParameterDefault(builder);
                     mark.done(LAMBDA_PARAMETER);
                 }
                 else {
@@ -1535,6 +1853,46 @@ public class ExpressionParsing extends SharedParsingHelpers {
             }
             else {
                 mark.error("Identifier expected");
+            }
+        }
+    }
+
+    /**
+     * C# 11 scoped - of a parameter or a local: {@code scoped ref int x}, {@code scoped Span<int> s}, {@code (scoped x) => x}
+     */
+    public static boolean isScopedModifier(CSharpBuilderWrapper builder) {
+        return isScopedModifier(builder, true);
+    }
+
+    /**
+     * @param implicitlyTyped a parameter of a lambda - scoped x is the modifier and the name there, a type named scoped and a name elsewhere
+     */
+    public static boolean isScopedModifier(CSharpBuilderWrapper builder, boolean implicitlyTyped) {
+        if (builder.getTokenType() != CSharpTokens.IDENTIFIER || !builder.getVersion().isAtLeast(CSharpLanguageVersion._11_0)
+            || !"scoped".equals(builder.getTokenText())) {
+            return false;
+        }
+        IElementType next = builder.lookAhead(1);
+        if (next == REF_KEYWORD || next == IN_KEYWORD || next == OUT_KEYWORD) {
+            return true;
+        }
+        if (next != CSharpTokens.IDENTIFIER && !NATIVE_TYPES.contains(next)) {
+            return false;
+        }
+        if (implicitlyTyped) {
+            return true;
+        }
+        // scoped Span<int> s, scoped int x - a type and a name after it
+        IElementType afterType = builder.lookAhead(2);
+        return afterType == CSharpTokens.IDENTIFIER || afterType == LT || afterType == DOT || afterType == QUEST || afterType == LBRACKET;
+    }
+
+    // (int x = 1) => x - C# 12
+    private static void parseLambdaParameterDefault(CSharpBuilderWrapper builder) {
+        if (builder.getTokenType() == EQ) {
+            builder.advanceLexer();
+            if (parse(builder, ModifierSet.EMPTY) == null) {
+                builder.error("Expression expected");
             }
         }
     }
@@ -1662,8 +2020,9 @@ public class ExpressionParsing extends SharedParsingHelpers {
 
         builder.advanceLexer();
 
-        TypeInfo typeMarker = parseType(builder, BRACKET_RETURN_BEFORE);
-        if (typeMarker == null) {
+        // stackalloc[] { 1, 2 } - C# 7.3 an implicitly typed one
+        TypeInfo typeMarker = builder.getTokenType() == LBRACKET ? null : parseType(builder, BRACKET_RETURN_BEFORE);
+        if (typeMarker == null && builder.getTokenType() != LBRACKET) {
             builder.error("Expected type");
         }
 
@@ -1683,6 +2042,11 @@ public class ExpressionParsing extends SharedParsingHelpers {
 
             expect(builder, RBRACKET, "']' expected");
             arrayMarker.done(NEW_ARRAY_LENGTH);
+        }
+
+        // stackalloc int[] { 1, 2 } - C# 7.3
+        if (builder.getTokenType() == LBRACE) {
+            parseArrayInitializer(builder, ARRAY_INITIALIZER, set, NONE);
         }
 
         newExpr.done(STACKALLOC_EXPRESSION);

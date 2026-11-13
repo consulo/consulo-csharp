@@ -37,6 +37,7 @@ import consulo.csharp.lang.impl.psi.DotNetTypes2;
 import consulo.csharp.lang.impl.psi.source.injection.CSharpStringLiteralEscaper;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpConstantTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpFastImplicitTypeRef;
+import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpGenericWrapperTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpNullTypeRef;
 import consulo.csharp.lang.impl.psi.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
@@ -134,8 +135,12 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
         else if (elementType == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL) {
             return new FormattableStringTypeRef(getProject(), getResolveScope(), DotNetTypes.System.String);
         }
-        else if (elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL) {
+        else if (elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL || elementType == CSharpTokens.RAW_STRING_LITERAL) {
             return new CSharpTypeRefByQName(this, DotNetTypes.System.String);
+        }
+        else if (elementType == CSharpTokens.UTF8_STRING_LITERAL) {
+            return new CSharpGenericWrapperTypeRef(getProject(), getResolveScope(), new CSharpTypeRefByQName(this, "System.ReadOnlySpan`1"),
+                new CSharpTypeRefByQName(this, DotNetTypes.System.Byte));
         }
         else if (elementType == CSharpTokens.CHARACTER_LITERAL) {
             return new CSharpTypeRefByQName(this, DotNetTypes.System.Char);
@@ -176,6 +181,9 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
         }
         else if (elementType == CSharpTokens.VERBATIM_STRING_LITERAL) {
             return getText(); //TODO [VISTALL] unquote @ "" and escape \n \t
+        }
+        else if (elementType == CSharpTokens.RAW_STRING_LITERAL) {
+            return getRawStringValue(getText());
         }
         else if (elementType == CSharpTokens.CHARACTER_LITERAL) {
             return StringUtil.unquoteString(text).charAt(0);
@@ -274,7 +282,7 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
         if (elementType == CSharpTokens.STRING_LITERAL) {
             return new CSharpStringLiteralEscaper<>(this);
         }
-        else if (elementType == CSharpTokens.VERBATIM_STRING_LITERAL) {
+        else if (elementType == CSharpTokens.VERBATIM_STRING_LITERAL || elementType == CSharpTokens.RAW_STRING_LITERAL) {
             return LiteralTextEscaper.createSimple(this);
         }
         throw new IllegalArgumentException("Unknown " + elementType);
@@ -289,6 +297,58 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
         else if (literalType == CSharpTokens.STRING_LITERAL) {
             return new TextRange(1, expression.getTextLength() - 1);
         }
+        else if (literalType == CSharpTokens.UTF8_STRING_LITERAL) {
+            // "text"u8
+            return new TextRange(1, Math.max(1, expression.getTextLength() - 3));
+        }
+        else if (literalType == CSharpTokens.RAW_STRING_LITERAL) {
+            String text = expression.getText();
+            int quotes = countQuotes(text, 0);
+            int end = text.length();
+            while (end > quotes && text.charAt(end - 1) == '"') {
+                end--;
+            }
+            return new TextRange(quotes, Math.max(quotes, end));
+        }
         return new TextRange(0, expression.getTextLength());
+    }
+
+    private static int countQuotes(String text, int from) {
+        int count = 0;
+        while (from + count < text.length() && text.charAt(from + count) == '"') {
+            count++;
+        }
+        return count;
+    }
+
+    /**
+     * The value of a raw string literal: a single line one is the text between the quotes; a multi-line one is the lines
+     * between the opening and the closing quotes, without the whitespace before the closing quotes at the start of each line
+     */
+    static String getRawStringValue(String text) {
+        int quotes = countQuotes(text, 0);
+        int end = text.length();
+        int closing = 0;
+        while (end > quotes && text.charAt(end - 1) == '"' && closing < quotes) {
+            end--;
+            closing++;
+        }
+        String content = text.substring(quotes, Math.max(quotes, end));
+        int firstNewLine = content.indexOf('\n');
+        if (firstNewLine < 0) {
+            return content;
+        }
+        int lastNewLine = content.lastIndexOf('\n');
+        String indent = content.substring(lastNewLine + 1);
+        String body = lastNewLine > firstNewLine ? content.substring(firstNewLine + 1, lastNewLine) : "";
+        StringBuilder result = new StringBuilder();
+        for (String line : body.split("\n", -1)) {
+            if (result.length() > 0) {
+                result.append('\n');
+            }
+            String withoutCr = line.endsWith("\r") ? line.substring(0, line.length() - 1) : line;
+            result.append(withoutCr.startsWith(indent) ? withoutCr.substring(indent.length()) : withoutCr.stripLeading());
+        }
+        return result.toString();
     }
 }

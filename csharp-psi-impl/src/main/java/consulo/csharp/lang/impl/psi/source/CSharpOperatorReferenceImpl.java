@@ -136,6 +136,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
         ourAssignmentOperatorMap.put(CSharpTokens.GTEQ, CSharpTokens.GT);
         ourAssignmentOperatorMap.put(CSharpTokens.LTEQ, CSharpTokens.LT);
         ourAssignmentOperatorMap.put(CSharpTokens.GTGTEQ, CSharpTokens.GTGT);
+        ourAssignmentOperatorMap.put(CSharpTokens.GTGTGTEQ, CSharpTokens.GTGTGT);
         ourAssignmentOperatorMap.put(CSharpTokens.LTLTEQ, CSharpTokens.LTLT);
         ourAssignmentOperatorMap.put(CSharpTokens.ANDEQ, CSharpTokens.AND);
         ourAssignmentOperatorMap.put(CSharpTokens.OREQ, CSharpTokens.OR);
@@ -237,7 +238,8 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
             }
 
             DotNetExpression[] parameterExpressions = getParameterExpressions();
-            if (elementType == CSharpTokenSets.EQ) {
+            // x ??= y has the type of x, as x = y
+            if (elementType == CSharpTokenSets.EQ || elementType == CSharpTokens.QUESTQUESTEQ) {
                 if (parameterExpressions.length > 0) {
                     return parameterExpressions[0].toTypeRef(false);
                 }

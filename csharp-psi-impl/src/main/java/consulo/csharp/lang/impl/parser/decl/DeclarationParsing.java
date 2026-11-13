@@ -137,6 +137,10 @@ public class DeclarationParsing extends SharedParsingHelpers {
             return false;
         }
 
+        if (TypeDeclarationParsing.isRecordStart(builder)) {
+            return false;
+        }
+
         int i = 0;
         IElementType current = tokenType;
         while (MODIFIERS.contains(current)) {
@@ -163,7 +167,7 @@ public class DeclarationParsing extends SharedParsingHelpers {
     private static void parse(CSharpBuilderWrapper builder, boolean namespaceLevel) {
         PsiBuilder.Marker marker = builder.mark();
 
-        Pair<PsiBuilder.Marker, ModifierSet> modifierListPair = parseWithSoftElements(b -> parseModifierListWithAttributes(b, STUB_SUPPORT), builder, PARTIAL_KEYWORD, ASYNC_KEYWORD, REQUIRED_KEYWORD);
+        Pair<PsiBuilder.Marker, ModifierSet> modifierListPair = parseWithSoftElements(b -> parseModifierListWithAttributes(b, STUB_SUPPORT), builder, PARTIAL_KEYWORD, ASYNC_KEYWORD, REQUIRED_KEYWORD, FILE_KEYWORD);
 
         PsiBuilder.Marker modifierListMarker = modifierListPair.getFirst();
         ModifierSet modifierSet = modifierListPair.getSecond();
@@ -190,7 +194,7 @@ public class DeclarationParsing extends SharedParsingHelpers {
 
             NamespaceDeclarationParsing.parse(builder, marker);
         }
-        else if (CSharpTokenSets.TYPE_DECLARATION_START.contains(tokenType)) {
+        else if (CSharpTokenSets.TYPE_DECLARATION_START.contains(tokenType) || TypeDeclarationParsing.isRecordStart(builder)) {
             TypeDeclarationParsing.parse(builder, marker);
         }
         else if (tokenType == EVENT_KEYWORD) {

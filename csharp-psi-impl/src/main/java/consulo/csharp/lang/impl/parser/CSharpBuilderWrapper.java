@@ -128,9 +128,16 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		}
 		else if(tokenType == CSharpTokens.GT)
 		{
-			if(lookAhead(1) == CSharpTokens.GT)
+			IElementType next = lookAhead(1);
+			if(next == CSharpTokens.GT)
 			{
-				return CSharpTokens.GTGT;
+				// x >>> y - the lexer has no >>> for the > of generics
+				return lookAhead(2) == CSharpTokens.GT ? CSharpTokens.GTGTGT : CSharpTokens.GTGT;
+			}
+			// x >>>= y - lexed as > and >>=
+			if(next == CSharpTokens.GTGTEQ)
+			{
+				return CSharpTokens.GTGTGTEQ;
 			}
 		}
 		return tokenType;
@@ -139,7 +146,15 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 	public void advanceLexerGGLL()
 	{
 		IElementType tokenTypeGGLL = getTokenTypeGGLL();
-		if(tokenTypeGGLL == CSharpTokens.GTGT || tokenTypeGGLL == CSharpTokens.LTLT)
+		if(tokenTypeGGLL == CSharpTokens.GTGTGT)
+		{
+			Marker mark = mark();
+			advanceLexer();
+			advanceLexer();
+			advanceLexer();
+			mark.collapse(tokenTypeGGLL);
+		}
+		else if(tokenTypeGGLL == CSharpTokens.GTGT || tokenTypeGGLL == CSharpTokens.LTLT || tokenTypeGGLL == CSharpTokens.GTGTGTEQ)
 		{
 			Marker mark = mark();
 			advanceLexer();

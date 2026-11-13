@@ -217,7 +217,8 @@ public class CSharpXAccessorImpl extends CSharpStubMemberImpl<CSharpXAccessorStu
 		{
 			return Kind.GET;
 		}
-		else if(elementType == CSharpSoftTokens.SET_KEYWORD)
+		// C# 9 init - a set accessor callable only while the object is initialized
+		else if(elementType == CSharpSoftTokens.SET_KEYWORD || elementType == CSharpSoftTokens.INIT_KEYWORD)
 		{
 			return Kind.SET;
 		}

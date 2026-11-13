@@ -33,7 +33,7 @@ import consulo.language.lexer.MergingLexerAdapterBase;
  */
 public class CSharpLexer extends MergingLexerAdapterBase
 {
-	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.PREPROCESSOR_FRAGMENT, CSharpTokensImpl.LINE_DOC_COMMENT, CSharpTokensImpl.INTERPOLATION_STRING_LITERAL,
+	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.PREPROCESSOR_FRAGMENT, CSharpTokensImpl.LINE_DOC_COMMENT, CSharpTokensImpl.INTERPOLATION_STRING_LITERAL, CSharpTokens.RAW_STRING_LITERAL,
 			CfsTokens.FORMAT);
 
 	private static class MyMergeFunction implements MergeFunction

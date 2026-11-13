@@ -222,6 +222,8 @@ public interface CSharpTokens extends StandardTokenTypes {
 
     IElementType GTGTEQ = new IElementType("GTGTEQ", CSharpLanguage.INSTANCE);
 
+    IElementType GTGTGTEQ = new IElementType("GTGTGTEQ", CSharpLanguage.INSTANCE);
+
     IElementType COLON = new IElementType("COLON", CSharpLanguage.INSTANCE);
 
     IElementType COLONCOLON = new IElementType("COLONCOLON", CSharpLanguage.INSTANCE);
@@ -266,6 +268,8 @@ public interface CSharpTokens extends StandardTokenTypes {
 
     IElementType GTGT = new IElementType("GTGT", CSharpLanguage.INSTANCE);
 
+    IElementType GTGTGT = new IElementType("GTGTGT", CSharpLanguage.INSTANCE);
+
     IElementType LTLT = new IElementType("LTLT", CSharpLanguage.INSTANCE);
 
     IElementType LTEQ = new IElementType("LTEQ", CSharpLanguage.INSTANCE);
@@ -287,6 +291,8 @@ public interface CSharpTokens extends StandardTokenTypes {
     IElementType QUEST = new IElementType("QUEST", CSharpLanguage.INSTANCE);
 
     IElementType QUESTQUEST = new IElementType("QUESTQUEST", CSharpLanguage.INSTANCE);
+
+    IElementType QUESTQUESTEQ = new IElementType("QUESTQUESTEQ", CSharpLanguage.INSTANCE);
 
     IElementType LINE_COMMENT = new IElementType("LINE_COMMENT", CSharpLanguage.INSTANCE);
 
@@ -315,6 +321,16 @@ public interface CSharpTokens extends StandardTokenTypes {
     IElementType STRING_LITERAL = new IElementType("STRING_LITERAL", CSharpLanguage.INSTANCE);
 
     IElementType VERBATIM_STRING_LITERAL = new IElementType("VERBATIM_STRING_LITERAL", CSharpLanguage.INSTANCE);
+
+    /**
+     * C# 11 {@code """text"""} - three or more quotes, the closing run as long as the opening one
+     */
+    IElementType RAW_STRING_LITERAL = new IElementType("RAW_STRING_LITERAL", CSharpLanguage.INSTANCE);
+
+    /**
+     * C# 11 {@code "text"u8} - the UTF-8 bytes of a string, a ReadOnlySpan&lt;byte&gt;
+     */
+    IElementType UTF8_STRING_LITERAL = new IElementType("UTF8_STRING_LITERAL", CSharpLanguage.INSTANCE);
 
     IElementType IDENTIFIER = new IElementType("IDENTIFIER", CSharpLanguage.INSTANCE);
 }

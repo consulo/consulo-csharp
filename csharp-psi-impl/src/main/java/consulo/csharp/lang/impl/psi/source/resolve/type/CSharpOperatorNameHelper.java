@@ -53,6 +53,8 @@ public class CSharpOperatorNameHelper
 		ourOperatorNames.put(CSharpTokens.LTLTEQ, "<<");
 		ourOperatorNames.put(CSharpTokens.GTGT, ">>");
 		ourOperatorNames.put(CSharpTokens.GTGTEQ, ">>");
+		ourOperatorNames.put(CSharpTokens.GTGTGT, ">>>");
+		ourOperatorNames.put(CSharpTokens.GTGTGTEQ, ">>>");
 		ourOperatorNames.put(CSharpTokens.EXCL, "!");
 		ourOperatorNames.put(CSharpTokens.AND, "&");
 		ourOperatorNames.put(CSharpTokens.ANDEQ, "&");

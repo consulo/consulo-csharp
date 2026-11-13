@@ -155,6 +155,10 @@ public interface CSharpElements {
 
     IElementType THROW_EXPRESSION = new CompositeElementTypeAsPsiFactory("THROW_EXPRESSION", CSharpLanguage.INSTANCE, CSharpThrowExpressionImpl::new);
 
+    IElementType NULL_FORGIVING_EXPRESSION = new CompositeElementTypeAsPsiFactory("NULL_FORGIVING_EXPRESSION", CSharpLanguage.INSTANCE, CSharpNullForgivingExpressionImpl::new);
+
+    IElementType WITH_EXPRESSION = new CompositeElementTypeAsPsiFactory("WITH_EXPRESSION", CSharpLanguage.INSTANCE, CSharpWithExpressionImpl::new);
+
     IElementType RANGE_EXPRESSION = new CompositeElementTypeAsPsiFactory("RANGE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpRangeExpressionImpl::new);
 
     IElementType DISCARD_PATTERN = new CompositeElementTypeAsPsiFactory("DISCARD_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
@@ -172,6 +176,15 @@ public interface CSharpElements {
     IElementType PROPERTY_PATTERN = new CompositeElementTypeAsPsiFactory("PROPERTY_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
 
     IElementType PROPERTY_SUBPATTERN = new CompositeElementTypeAsPsiFactory("PROPERTY_SUBPATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
+
+    // (1, var y), Point(var x, _) - C# 8
+    IElementType POSITIONAL_PATTERN = new CompositeElementTypeAsPsiFactory("POSITIONAL_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
+
+    // [1, .., var last] - C# 11
+    IElementType LIST_PATTERN = new CompositeElementTypeAsPsiFactory("LIST_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
+
+    // .. or .. var rest - in a list pattern
+    IElementType SLICE_PATTERN = new CompositeElementTypeAsPsiFactory("SLICE_PATTERN", CSharpLanguage.INSTANCE, CSharpPatternImpl::new);
 
     IElementType AS_EXPRESSION = new CompositeElementTypeAsPsiFactory("AS_EXPRESSION", CSharpLanguage.INSTANCE, CSharpAsExpressionImpl::new);
 

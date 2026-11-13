@@ -310,7 +310,7 @@ public class CSharpSpacingSettings implements CSharpTokens, CSharpElements
 		// field, local var, etc initialization
 		myBuilder.around(CSharpTokens.EQ).spaceIf(commonSettings.SPACE_AROUND_ASSIGNMENT_OPERATORS);
 
-		operatorReferenceSpacing(commonSettings.SPACE_AROUND_SHIFT_OPERATORS, CSharpTokens.GTGT, CSharpTokens.GTGTEQ, CSharpTokens.LTLT, CSharpTokens.LTLTEQ);
+		operatorReferenceSpacing(commonSettings.SPACE_AROUND_SHIFT_OPERATORS, CSharpTokens.GTGT, CSharpTokens.GTGTEQ, CSharpTokens.GTGTGT, CSharpTokens.GTGTGTEQ, CSharpTokens.LTLT, CSharpTokens.LTLTEQ);
 
 		operatorReferenceSpacingWithParent(commonSettings.SPACE_AROUND_UNARY_OPERATOR, TokenSet.create(POSTFIX_EXPRESSION, PREFIX_EXPRESSION), CSharpTokens.PLUS, CSharpTokens.MINUS,
 				CSharpTokens.PLUSPLUS, CSharpTokens.MINUSMINUS, CSharpTokens.MUL, CSharpTokens.AND);

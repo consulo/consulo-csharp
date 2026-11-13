@@ -18,6 +18,7 @@ package consulo.csharp.lang.impl.parser.decl;
 import consulo.csharp.lang.impl.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.impl.parser.ModifierSet;
 import consulo.csharp.lang.impl.parser.exp.ExpressionParsing;
+import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.impl.parser.stmt.StatementParsing;
 import consulo.csharp.lang.impl.psi.CSharpElements;
 import consulo.csharp.lang.impl.psi.CSharpStubElements;
@@ -257,7 +258,10 @@ public class MethodParsing extends MemberWithBodyParsing {
     private static void parseParameter(CSharpBuilderWrapper builder, IElementType end, int flags, ModifierSet set) {
         PsiBuilder.Marker mark = builder.mark();
 
-        Pair<PsiBuilder.Marker, ModifierSet> modifierPair = parseModifierListWithAttributes(builder, flags);
+        // scoped ref int x, scoped Span<int> s - C# 11
+        Pair<PsiBuilder.Marker, ModifierSet> modifierPair = ExpressionParsing.isScopedModifier(builder, false)
+            ? parseWithSoftElements(b -> parseModifierListWithAttributes(b, flags), builder, CSharpSoftTokens.SCOPED_KEYWORD)
+            : parseModifierListWithAttributes(builder, flags);
 
         TypeInfo typeInfo = parseType(builder, flags);
         if (typeInfo == null) {

@@ -51,7 +51,10 @@ public enum CSharpModifier implements DotNetModifier {
     INTERFACE_ABSTRACT, // dummy modifier
     OPTIONAL, // dummy modifier
     FIXED,
-    REQUIRED;
+    REQUIRED,
+    // appended only - a modifier list stub keeps a mask by the ordinal
+    FILE,
+    SCOPED;
 
     public static final CSharpModifier[] EMPTY_ARRAY = new CSharpModifier[0];
 
