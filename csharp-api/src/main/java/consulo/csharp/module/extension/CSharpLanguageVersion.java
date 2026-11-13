@@ -37,9 +37,13 @@ public enum CSharpLanguageVersion implements Named, NamedPointer<CSharpLanguageV
     _7_3(CSharpLocalize.csharpVersion_7_3()),
     _8_0(CSharpLocalize.csharpVersion_8_0()),
     _9_0(CSharpLocalize.csharpVersion_9_0()),
-    _10_0(CSharpLocalize.csharpVersion_10_0());
+    _10_0(CSharpLocalize.csharpVersion_10_0()),
+    _11_0(CSharpLocalize.csharpVersion_11_0()),
+    _12_0(CSharpLocalize.csharpVersion_12_0()),
+    _13_0(CSharpLocalize.csharpVersion_13_0()),
+    _14_0(CSharpLocalize.csharpVersion_14_0());
 
-    public static final CSharpLanguageVersion HIGHEST = _10_0;
+    public static final CSharpLanguageVersion HIGHEST = _14_0;
 
     private final LocalizeValue myDescription;
 

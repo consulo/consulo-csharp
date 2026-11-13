@@ -221,8 +221,8 @@ public enum CSharpCompilerChecks {
     CS8803(CSharpLanguageVersion._9_0, HighlightInfoType.ERROR), // top-level statements must precede namespace and type declarations
     CS9014(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // struct auto-property read before assigned in a constructor
     CS9015(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // struct field read before assigned in a constructor
-    CS9035(CSharpLanguageVersion._10_0, HighlightInfoType.ERROR), // a required member not set by an object creation
-    CS9175(CSharpLanguageVersion._10_0, HighlightInfoType.ERROR), // collection expression in expression tree
+    CS9035(CSharpLanguageVersion._11_0, HighlightInfoType.ERROR), // a required member not set by an object creation
+    CS9175(CSharpLanguageVersion._12_0, HighlightInfoType.ERROR), // collection expression in expression tree
 
     CC0001(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //reference checks
     CC0002(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //operator reference checks

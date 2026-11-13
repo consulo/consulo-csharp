@@ -42,6 +42,14 @@ csharp.preprocessor.language.display.name:
     text: C# Preprocessor
 csharp.version._10_0:
     text: ''
+csharp.version._11_0:
+    text: ''
+csharp.version._12_0:
+    text: ''
+csharp.version._13_0:
+    text: ''
+csharp.version._14_0:
+    text: ''
 csharp.version._1_0:
     text: ''
 csharp.version._2_0:
