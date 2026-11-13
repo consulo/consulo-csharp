@@ -491,4 +491,34 @@ public class CSharpModernSyntaxParsingTest extends CSharpBaseParsingTest {
     public void testWithExpression(Context context) throws Exception {
         doTest(context, null);
     }
+
+    @SetLanguageVersion(version = CSharpLanguageVersion._14_0)
+    @Test
+    public void testForeachDeconstruction(Context context) throws Exception {
+        doTest(context, null);
+    }
+
+    @SetLanguageVersion(version = CSharpLanguageVersion._14_0)
+    @Test
+    public void testPatternDesignation(Context context) throws Exception {
+        doTest(context, null);
+    }
+
+    @SetLanguageVersion(version = CSharpLanguageVersion._14_0)
+    @Test
+    public void testCasePatternLabel(Context context) throws Exception {
+        doTest(context, null);
+    }
+
+    @SetLanguageVersion(version = CSharpLanguageVersion._14_0)
+    @Test
+    public void testInterpolationStringInHole(Context context) throws Exception {
+        doTest(context, null);
+    }
+
+    @SetLanguageVersion(version = CSharpLanguageVersion._8_0)
+    @Test
+    public void testSoftModifiersBeforeCSharp11(Context context) throws Exception {
+        doTest(context, null);
+    }
 }

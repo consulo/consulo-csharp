@@ -1,0 +1,1 @@
+class C { void M(object o, int i) { switch (o) { case (1, var y): break; case > 5: break; case null or "": break; case string { Length: 0 } s: break; case int n when n > 0: break; case 3: break; } } }

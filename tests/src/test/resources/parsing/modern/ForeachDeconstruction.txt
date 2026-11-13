@@ -1,0 +1,121 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('C')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(VOID_KEYWORD)('void')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('M')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+                CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+                  CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+                    PsiElement(IDENTIFIER)('System')
+                  PsiElement(DOT)('.')
+                  PsiElement(IDENTIFIER)('Collections')
+                PsiElement(DOT)('.')
+                PsiElement(IDENTIFIER)('Generic')
+              PsiElement(DOT)('.')
+              PsiElement(IDENTIFIER)('Dictionary')
+              CSharpStubTypeListImpl [TYPE_ARGUMENTS]
+                PsiElement(LT)('<')
+                CSharpStubNativeTypeImpl [NATIVE_TYPE]
+                  PsiElement(STRING_KEYWORD)('string')
+                PsiElement(COMMA)(',')
+                PsiWhiteSpace(' ')
+                CSharpStubNativeTypeImpl [NATIVE_TYPE]
+                  PsiElement(INT_KEYWORD)('int')
+                PsiElement(GT)('>')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('d')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(CSHARP_STATEMENT_METHOD_BODY)
+        CSharpBlockStatementImpl(BLOCK_STATEMENT)
+          PsiElement(LBRACE)('{')
+          PsiWhiteSpace(' ')
+          CSharpForeachStatementImpl(FOREACH_STATEMENT)
+            PsiElement(FOREACH_KEYWORD)('foreach')
+            PsiWhiteSpace(' ')
+            PsiElement(LPAR)('(')
+            CSharpNativeTypeImpl(NATIVE_TYPE)
+              PsiElement(VAR_KEYWORD)('var')
+            PsiWhiteSpace(' ')
+            CSharpTupleTypeImpl(TUPLE_TYPE)
+              PsiElement(LPAR)('(')
+              CSharpTupleVariableImpl(TUPLE_VARIABLE)
+                CSharpIdentifierImpl(IDENTIFIER)
+                  PsiElement(IDENTIFIER)('k')
+              PsiElement(COMMA)(',')
+              PsiWhiteSpace(' ')
+              CSharpTupleVariableImpl(TUPLE_VARIABLE)
+                CSharpIdentifierImpl(IDENTIFIER)
+                  PsiElement(IDENTIFIER)('v')
+              PsiElement(RPAR)(')')
+            PsiWhiteSpace(' ')
+            PsiElement(IN_KEYWORD)('in')
+            PsiWhiteSpace(' ')
+            CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+              PsiElement(IDENTIFIER)('d')
+            PsiElement(RPAR)(')')
+            PsiWhiteSpace(' ')
+            CSharpBlockStatementImpl(BLOCK_STATEMENT)
+              PsiElement(LBRACE)('{')
+              PsiWhiteSpace(' ')
+              PsiElement(RBRACE)('}')
+          PsiWhiteSpace(' ')
+          CSharpForeachStatementImpl(FOREACH_STATEMENT)
+            PsiElement(FOREACH_KEYWORD)('foreach')
+            PsiWhiteSpace(' ')
+            PsiElement(LPAR)('(')
+            CSharpTupleTypeImpl(TUPLE_TYPE)
+              PsiElement(LPAR)('(')
+              CSharpTupleVariableImpl(TUPLE_VARIABLE)
+                CSharpNativeTypeImpl(NATIVE_TYPE)
+                  PsiElement(STRING_KEYWORD)('string')
+                PsiWhiteSpace(' ')
+                CSharpIdentifierImpl(IDENTIFIER)
+                  PsiElement(IDENTIFIER)('k')
+              PsiElement(COMMA)(',')
+              PsiWhiteSpace(' ')
+              CSharpTupleVariableImpl(TUPLE_VARIABLE)
+                CSharpNativeTypeImpl(NATIVE_TYPE)
+                  PsiElement(INT_KEYWORD)('int')
+                PsiWhiteSpace(' ')
+                CSharpIdentifierImpl(IDENTIFIER)
+                  PsiElement(IDENTIFIER)('v')
+              PsiElement(RPAR)(')')
+            PsiWhiteSpace(' ')
+            PsiElement(IN_KEYWORD)('in')
+            PsiWhiteSpace(' ')
+            CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+              PsiElement(IDENTIFIER)('d')
+            PsiElement(RPAR)(')')
+            PsiWhiteSpace(' ')
+            CSharpBlockStatementImpl(BLOCK_STATEMENT)
+              PsiElement(LBRACE)('{')
+              PsiWhiteSpace(' ')
+              PsiElement(RBRACE)('}')
+          PsiWhiteSpace(' ')
+          PsiElement(RBRACE)('}')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')
