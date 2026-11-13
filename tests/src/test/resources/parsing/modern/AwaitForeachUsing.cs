@@ -1,0 +1,1 @@
+class C { async System.Threading.Tasks.Task M(System.Collections.Generic.IAsyncEnumerable<int> e, System.IAsyncDisposable d) { await foreach (var x in e) {} await using (d) {} await using var z = d; } }

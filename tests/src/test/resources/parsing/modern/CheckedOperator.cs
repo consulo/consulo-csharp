@@ -1,0 +1,1 @@
+struct N { public static N operator checked +(N a, N b) => a; public static N operator +(N a, N b) => a; public static explicit operator checked int(N n) => 0; public static explicit operator int(N n) => 0; }

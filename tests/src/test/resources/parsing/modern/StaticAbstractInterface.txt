@@ -1,0 +1,126 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(INTERFACE_KEYWORD)('interface')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('I')
+    CSharpGenericParameterListImpl [GENERIC_PARAMETER_LIST]
+      PsiElement(LT)('<')
+      CSharpGenericParameterImpl [GENERIC_PARAMETER]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          <empty list>
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('T')
+      PsiElement(GT)('>')
+    PsiWhiteSpace(' ')
+    CSharpGenericConstraintListImpl [GENERIC_CONSTRAINT_LIST]
+      CSharpGenericConstraintImpl [GENERIC_CONSTRAINT]
+        PsiElement(WHERE_KEYWORD)('where')
+        PsiWhiteSpace(' ')
+        CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+          PsiElement(IDENTIFIER)('T')
+        PsiWhiteSpace(' ')
+        PsiElement(COLON)(':')
+        PsiWhiteSpace(' ')
+        CSharpGenericConstraintTypeValueImpl [GENERIC_CONSTRAINT_TYPE_VALUE]
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('I')
+              CSharpStubTypeListImpl [TYPE_ARGUMENTS]
+                PsiElement(LT)('<')
+                CSharpStubUserTypeImpl [USER_TYPE]
+                  CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+                    PsiElement(IDENTIFIER)('T')
+                PsiElement(GT)('>')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpPropertyDeclarationImpl [PROPERTY_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(STATIC_KEYWORD)('static')
+        PsiWhiteSpace(' ')
+        PsiElement(ABSTRACT_KEYWORD)('abstract')
+      PsiWhiteSpace(' ')
+      CSharpStubUserTypeImpl [USER_TYPE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          PsiElement(IDENTIFIER)('T')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('Zero')
+      PsiWhiteSpace(' ')
+      PsiElement(LBRACE)('{')
+      PsiWhiteSpace(' ')
+      CSharpXAccessorImpl [XACCESSOR]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          <empty list>
+        PsiElement(GET_KEYWORD)('get')
+        PsiElement(CSHARP_EMPTY_METHOD_BODY)
+          PsiElement(SEMICOLON)(';')
+      PsiWhiteSpace(' ')
+      PsiElement(RBRACE)('}')
+    PsiWhiteSpace(' ')
+    CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(STATIC_KEYWORD)('static')
+        PsiWhiteSpace(' ')
+        PsiElement(VIRTUAL_KEYWORD)('virtual')
+      PsiWhiteSpace(' ')
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(INT_KEYWORD)('int')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('One')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(CSHARP_EXPRESSION_METHOD_BODY)
+        PsiElement(DARROW)('=>')
+        PsiWhiteSpace(' ')
+        CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+          PsiElement(INTEGER_LITERAL)('1')
+        PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(STATIC_KEYWORD)('static')
+        PsiWhiteSpace(' ')
+        PsiElement(ABSTRACT_KEYWORD)('abstract')
+      PsiWhiteSpace(' ')
+      CSharpStubUserTypeImpl [USER_TYPE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          PsiElement(IDENTIFIER)('T')
+      PsiWhiteSpace(' ')
+      PsiElement(OPERATOR_KEYWORD)('operator')
+      PsiWhiteSpace(' ')
+      PsiElement(PLUS)('+')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('T')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('a')
+        PsiElement(COMMA)(',')
+        PsiWhiteSpace(' ')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('T')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('b')
+        PsiElement(RPAR)(')')
+      PsiElement(CSHARP_EMPTY_METHOD_BODY)
+        PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

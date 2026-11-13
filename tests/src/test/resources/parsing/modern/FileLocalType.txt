@@ -1,0 +1,47 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(FILE_KEYWORD)('file')
+    PsiWhiteSpace(' ')
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('C')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace(' ')
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(FILE_KEYWORD)('file')
+    PsiWhiteSpace(' ')
+    PsiElement(RECORD_KEYWORD)('record')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('R')
+    PsiElement(SEMICOLON)(';')
+  PsiWhiteSpace(' ')
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(FILE_KEYWORD)('file')
+    PsiWhiteSpace(' ')
+    PsiElement(STRUCT_KEYWORD)('struct')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('S')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace(' ')
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(FILE_KEYWORD)('file')
+    PsiWhiteSpace(' ')
+    PsiElement(INTERFACE_KEYWORD)('interface')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('I')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

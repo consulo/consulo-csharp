@@ -1,0 +1,71 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('C')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpFieldDeclarationImpl [FIELD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(INT_KEYWORD)('int')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('x')
+      PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    CSharpFieldDeclarationImpl [FIELD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(STRING_KEYWORD)('string')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('a')
+      PsiWhiteSpace(' ')
+      PsiElement(EQ)('=')
+      PsiWhiteSpace(' ')
+      CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+        PsiElement(INTERPOLATION_STRING_LITERAL)
+          PsiElement(CFS_TEXT)('$$"""')
+          CfsItem(CFS_ITEM)
+            PsiElement(CFS_START)('{')
+            PsiElement(EXPRESSION)
+              CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+                PsiElement(STRING_LITERAL)('"k"')
+            PsiElement(CFS_COLON)(':')
+            PsiElement(CFS_FORMAT)(' {{x')
+            PsiElement(CFS_END)('}')
+          PsiElement(CFS_TEXT)('}}"""')
+      PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    CSharpFieldDeclarationImpl [FIELD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(STRING_KEYWORD)('string')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('b')
+      PsiWhiteSpace(' ')
+      PsiElement(EQ)('=')
+      PsiWhiteSpace(' ')
+      CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+        PsiElement(INTERPOLATION_STRING_LITERAL)
+          PsiElement(CFS_TEXT)('$"""v')
+          CfsItem(CFS_ITEM)
+            PsiElement(CFS_START)('{')
+            PsiElement(EXPRESSION)
+              CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+                PsiElement(IDENTIFIER)('x')
+            PsiElement(CFS_END)('}')
+          PsiElement(CFS_TEXT)('"""')
+      PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

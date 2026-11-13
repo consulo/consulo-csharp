@@ -1,0 +1,52 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(STRUCT_KEYWORD)('struct')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('S')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpFieldDeclarationImpl [FIELD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+      PsiWhiteSpace(' ')
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(INT_KEYWORD)('int')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('X')
+      PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    CSharpConstructorDeclarationImpl [CONSTRUCTOR_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('S')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(CSHARP_STATEMENT_METHOD_BODY)
+        CSharpBlockStatementImpl(BLOCK_STATEMENT)
+          PsiElement(LBRACE)('{')
+          PsiWhiteSpace(' ')
+          CSharpExpressionStatementImpl(EXPRESSION_STATEMENT)
+            CSharpAssignmentExpressionImpl(ASSIGNMENT_EXPRESSION)
+              CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+                PsiElement(IDENTIFIER)('X')
+              PsiWhiteSpace(' ')
+              CSharpOperatorReferenceImpl(OPERATOR_REFERENCE)
+                PsiElement(EQ)('=')
+              PsiWhiteSpace(' ')
+              CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+                PsiElement(INTEGER_LITERAL)('1')
+            PsiElement(SEMICOLON)(';')
+          PsiWhiteSpace(' ')
+          PsiElement(RBRACE)('}')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

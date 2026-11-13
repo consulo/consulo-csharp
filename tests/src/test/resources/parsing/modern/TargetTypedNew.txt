@@ -1,0 +1,117 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('C')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpFieldDeclarationImpl [FIELD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      CSharpStubUserTypeImpl [USER_TYPE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+                PsiElement(IDENTIFIER)('System')
+              PsiElement(DOT)('.')
+              PsiElement(IDENTIFIER)('Collections')
+            PsiElement(DOT)('.')
+            PsiElement(IDENTIFIER)('Generic')
+          PsiElement(DOT)('.')
+          PsiElement(IDENTIFIER)('List')
+          CSharpStubTypeListImpl [TYPE_ARGUMENTS]
+            PsiElement(LT)('<')
+            CSharpStubNativeTypeImpl [NATIVE_TYPE]
+              PsiElement(INT_KEYWORD)('int')
+            PsiElement(GT)('>')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('l')
+      PsiWhiteSpace(' ')
+      PsiElement(EQ)('=')
+      PsiWhiteSpace(' ')
+      CSharpNewExpressionImpl(NEW_EXPRESSION)
+        PsiElement(NEW_KEYWORD)('new')
+        CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+          PsiElement(LPAR)('(')
+          PsiElement(RPAR)(')')
+      PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    CSharpFieldDeclarationImpl [FIELD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      CSharpStubUserTypeImpl [USER_TYPE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          PsiElement(IDENTIFIER)('C')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('c')
+      PsiWhiteSpace(' ')
+      PsiElement(EQ)('=')
+      PsiWhiteSpace(' ')
+      CSharpNewExpressionImpl(NEW_EXPRESSION)
+        PsiElement(NEW_KEYWORD)('new')
+        CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+          PsiElement(LPAR)('(')
+          PsiElement(RPAR)(')')
+        PsiWhiteSpace(' ')
+        CSharpArrayInitializerImpl(ARRAY_INITIALIZER)
+          PsiElement(LBRACE)('{')
+          PsiWhiteSpace(' ')
+          PsiElement(RBRACE)('}')
+      PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(VOID_KEYWORD)('void')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('M')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('C')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('x')
+          PsiWhiteSpace(' ')
+          PsiElement(EQ)('=')
+          PsiWhiteSpace(' ')
+          CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+            PsiElement(NULL_LITERAL)('null')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(CSHARP_STATEMENT_METHOD_BODY)
+        CSharpBlockStatementImpl(BLOCK_STATEMENT)
+          PsiElement(LBRACE)('{')
+          PsiWhiteSpace(' ')
+          CSharpExpressionStatementImpl(EXPRESSION_STATEMENT)
+            CSharpMethodCallExpressionImpl(METHOD_CALL_EXPRESSION)
+              CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+                PsiElement(IDENTIFIER)('M')
+              CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+                PsiElement(LPAR)('(')
+                CSharpCallArgumentImpl(CALL_ARGUMENT)
+                  CSharpNewExpressionImpl(NEW_EXPRESSION)
+                    PsiElement(NEW_KEYWORD)('new')
+                    CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+                      PsiElement(LPAR)('(')
+                      PsiElement(RPAR)(')')
+                PsiElement(RPAR)(')')
+            PsiElement(SEMICOLON)(';')
+          PsiWhiteSpace(' ')
+          PsiElement(RBRACE)('}')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

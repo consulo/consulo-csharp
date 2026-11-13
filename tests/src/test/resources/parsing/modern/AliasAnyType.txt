@@ -1,0 +1,84 @@
+CSHARP_FILE
+  CSharpTypeDefStatementImpl [TYPE_DEF]
+    PsiElement(USING_KEYWORD)('using')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('P')
+    PsiWhiteSpace(' ')
+    PsiElement(EQ)('=')
+    PsiWhiteSpace(' ')
+    CSharpStubTupleTypeImpl [TUPLE_TYPE]
+      PsiElement(LPAR)('(')
+      CSharpStubTupleVariableImpl [TUPLE_VARIABLE]
+        CSharpStubNativeTypeImpl [NATIVE_TYPE]
+          PsiElement(INT_KEYWORD)('int')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('X')
+      PsiElement(COMMA)(',')
+      PsiWhiteSpace(' ')
+      CSharpStubTupleVariableImpl [TUPLE_VARIABLE]
+        CSharpStubNativeTypeImpl [NATIVE_TYPE]
+          PsiElement(INT_KEYWORD)('int')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('Y')
+      PsiElement(RPAR)(')')
+    PsiElement(SEMICOLON)(';')
+  PsiWhiteSpace(' ')
+  CSharpTypeDefStatementImpl [TYPE_DEF]
+    PsiElement(USING_KEYWORD)('using')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('A')
+    PsiWhiteSpace(' ')
+    PsiElement(EQ)('=')
+    PsiWhiteSpace(' ')
+    CSharpStubArrayTypeImpl [ARRAY_TYPE]
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(INT_KEYWORD)('int')
+      PsiElement(LBRACKET)('[')
+      PsiElement(RBRACKET)(']')
+    PsiElement(SEMICOLON)(';')
+  PsiWhiteSpace(' ')
+  CSharpTypeDefStatementImpl [TYPE_DEF]
+    PsiElement(USING_KEYWORD)('using')
+    PsiWhiteSpace(' ')
+    PsiElement(UNSAFE_KEYWORD)('unsafe')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('Ptr')
+    PsiWhiteSpace(' ')
+    PsiElement(EQ)('=')
+    PsiWhiteSpace(' ')
+    CSharpStubPointerTypeImpl [POINTER_TYPE]
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(INT_KEYWORD)('int')
+      PsiElement(MUL)('*')
+    PsiElement(SEMICOLON)(';')
+  PsiWhiteSpace(' ')
+  CSharpTypeDefStatementImpl [TYPE_DEF]
+    PsiElement(USING_KEYWORD)('using')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('N')
+    PsiWhiteSpace(' ')
+    PsiElement(EQ)('=')
+    PsiWhiteSpace(' ')
+    CSharpStubNullableTypeImpl [NULLABLE_TYPE]
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(INT_KEYWORD)('int')
+      PsiElement(QUEST)('?')
+    PsiElement(SEMICOLON)(';')
+  PsiWhiteSpace(' ')
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('C')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

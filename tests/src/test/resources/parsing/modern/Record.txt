@@ -1,0 +1,138 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(RECORD_KEYWORD)('record')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('R')
+    CSharpStubParameterListImpl [PARAMETER_LIST]
+      PsiElement(LPAR)('(')
+      CSharpStubParameterImpl [PARAMETER]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          <empty list>
+        CSharpStubNativeTypeImpl [NATIVE_TYPE]
+          PsiElement(INT_KEYWORD)('int')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('X')
+      PsiElement(COMMA)(',')
+      PsiWhiteSpace(' ')
+      CSharpStubParameterImpl [PARAMETER]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          <empty list>
+        CSharpStubNativeTypeImpl [NATIVE_TYPE]
+          PsiElement(STRING_KEYWORD)('string')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('Y')
+      PsiElement(RPAR)(')')
+    PsiElement(SEMICOLON)(';')
+  PsiWhiteSpace(' ')
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(RECORD_KEYWORD)('record')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('Q')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpPropertyDeclarationImpl [PROPERTY_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+      PsiWhiteSpace(' ')
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(INT_KEYWORD)('int')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('A')
+      PsiWhiteSpace(' ')
+      PsiElement(LBRACE)('{')
+      PsiWhiteSpace(' ')
+      CSharpXAccessorImpl [XACCESSOR]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          <empty list>
+        PsiElement(GET_KEYWORD)('get')
+        PsiElement(CSHARP_EMPTY_METHOD_BODY)
+          PsiElement(SEMICOLON)(';')
+      PsiWhiteSpace(' ')
+      CSharpXAccessorImpl [XACCESSOR]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          <empty list>
+        PsiElement(INIT_KEYWORD)('init')
+        PsiElement(CSHARP_EMPTY_METHOD_BODY)
+          PsiElement(SEMICOLON)(';')
+      PsiWhiteSpace(' ')
+      PsiElement(RBRACE)('}')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace(' ')
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(RECORD_KEYWORD)('record')
+    PsiWhiteSpace(' ')
+    PsiElement(STRUCT_KEYWORD)('struct')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('P')
+    CSharpStubParameterListImpl [PARAMETER_LIST]
+      PsiElement(LPAR)('(')
+      CSharpStubParameterImpl [PARAMETER]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          <empty list>
+        CSharpStubNativeTypeImpl [NATIVE_TYPE]
+          PsiElement(INT_KEYWORD)('int')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('Z')
+      PsiElement(RPAR)(')')
+    PsiElement(SEMICOLON)(';')
+  PsiWhiteSpace(' ')
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(READONLY_KEYWORD)('readonly')
+    PsiWhiteSpace(' ')
+    PsiElement(RECORD_KEYWORD)('record')
+    PsiWhiteSpace(' ')
+    PsiElement(STRUCT_KEYWORD)('struct')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('T')
+    CSharpStubParameterListImpl [PARAMETER_LIST]
+      PsiElement(LPAR)('(')
+      CSharpStubParameterImpl [PARAMETER]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          <empty list>
+        CSharpStubNativeTypeImpl [NATIVE_TYPE]
+          PsiElement(INT_KEYWORD)('int')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('W')
+      PsiElement(RPAR)(')')
+    PsiElement(SEMICOLON)(';')
+  PsiWhiteSpace(' ')
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(RECORD_KEYWORD)('record')
+    PsiWhiteSpace(' ')
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('U')
+    CSharpStubParameterListImpl [PARAMETER_LIST]
+      PsiElement(LPAR)('(')
+      CSharpStubParameterImpl [PARAMETER]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          <empty list>
+        CSharpStubNativeTypeImpl [NATIVE_TYPE]
+          PsiElement(INT_KEYWORD)('int')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('V')
+      PsiElement(RPAR)(')')
+    PsiElement(SEMICOLON)(';')
+  PsiWhiteSpace('\n')

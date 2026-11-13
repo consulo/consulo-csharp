@@ -1,0 +1,1 @@
+static class E { extension(string s) { public int Len => s.Length; public void Print() {} } extension<T>(System.Collections.Generic.List<T> l) where T : class { public static T? First() => null; } extension(int) { public static int Zero => 0; } }

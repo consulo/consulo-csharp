@@ -1,0 +1,88 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('C')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpFieldDeclarationImpl [FIELD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      CSharpStubNullableTypeImpl [NULLABLE_TYPE]
+        CSharpStubNativeTypeImpl [NATIVE_TYPE]
+          PsiElement(STRING_KEYWORD)('string')
+        PsiElement(QUEST)('?')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('s')
+      PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(VOID_KEYWORD)('void')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('M')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubNullableTypeImpl [NULLABLE_TYPE]
+            CSharpStubNativeTypeImpl [NATIVE_TYPE]
+              PsiElement(STRING_KEYWORD)('string')
+            PsiElement(QUEST)('?')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('a')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(CSHARP_STATEMENT_METHOD_BODY)
+        CSharpBlockStatementImpl(BLOCK_STATEMENT)
+          PsiElement(LBRACE)('{')
+          PsiWhiteSpace(' ')
+          CSharpLocalVariableDeclarationStatementImpl(LOCAL_VARIABLE_DECLARATION_STATEMENT)
+            CSharpLocalVariableImpl(LOCAL_VARIABLE)
+              CSharpNativeTypeImpl(NATIVE_TYPE)
+                PsiElement(VAR_KEYWORD)('var')
+              PsiWhiteSpace(' ')
+              CSharpIdentifierImpl(IDENTIFIER)
+                PsiElement(IDENTIFIER)('b')
+              PsiWhiteSpace(' ')
+              PsiElement(EQ)('=')
+              PsiWhiteSpace(' ')
+              CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+                CSharpNullForgivingExpressionImpl(NULL_FORGIVING_EXPRESSION)
+                  CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+                    PsiElement(IDENTIFIER)('a')
+                  PsiElement(EXCL)('!')
+                PsiElement(DOT)('.')
+                PsiElement(IDENTIFIER)('Length')
+            PsiElement(SEMICOLON)(';')
+          PsiWhiteSpace(' ')
+          CSharpLocalVariableDeclarationStatementImpl(LOCAL_VARIABLE_DECLARATION_STATEMENT)
+            CSharpLocalVariableImpl(LOCAL_VARIABLE)
+              CSharpNativeTypeImpl(NATIVE_TYPE)
+                PsiElement(VAR_KEYWORD)('var')
+              PsiWhiteSpace(' ')
+              CSharpIdentifierImpl(IDENTIFIER)
+                PsiElement(IDENTIFIER)('c')
+              PsiWhiteSpace(' ')
+              PsiElement(EQ)('=')
+              PsiWhiteSpace(' ')
+              CSharpNullForgivingExpressionImpl(NULL_FORGIVING_EXPRESSION)
+                CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+                  PsiElement(IDENTIFIER)('s')
+                PsiElement(EXCL)('!')
+            PsiElement(SEMICOLON)(';')
+          PsiWhiteSpace(' ')
+          PsiElement(RBRACE)('}')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

@@ -1,0 +1,181 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(STATIC_KEYWORD)('static')
+    PsiWhiteSpace(' ')
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('E')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpExtensionDeclarationImpl [EXTENSION_DECLARATION]
+      PsiElement(EXTENSION_KEYWORD)('extension')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubNativeTypeImpl [NATIVE_TYPE]
+            PsiElement(STRING_KEYWORD)('string')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('s')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(LBRACE)('{')
+      PsiWhiteSpace(' ')
+      CSharpPropertyDeclarationImpl [PROPERTY_DECLARATION]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          PsiElement(PUBLIC_KEYWORD)('public')
+        PsiWhiteSpace(' ')
+        CSharpStubNativeTypeImpl [NATIVE_TYPE]
+          PsiElement(INT_KEYWORD)('int')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('Len')
+        PsiWhiteSpace(' ')
+        PsiElement(DARROW)('=>')
+        PsiWhiteSpace(' ')
+        CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+          CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+            PsiElement(IDENTIFIER)('s')
+          PsiElement(DOT)('.')
+          PsiElement(IDENTIFIER)('Length')
+        PsiElement(SEMICOLON)(';')
+      PsiWhiteSpace(' ')
+      CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          PsiElement(PUBLIC_KEYWORD)('public')
+        PsiWhiteSpace(' ')
+        CSharpStubNativeTypeImpl [NATIVE_TYPE]
+          PsiElement(VOID_KEYWORD)('void')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('Print')
+        CSharpStubParameterListImpl [PARAMETER_LIST]
+          PsiElement(LPAR)('(')
+          PsiElement(RPAR)(')')
+        PsiWhiteSpace(' ')
+        PsiElement(CSHARP_STATEMENT_METHOD_BODY)
+          CSharpBlockStatementImpl(BLOCK_STATEMENT)
+            PsiElement(LBRACE)('{')
+            PsiElement(RBRACE)('}')
+      PsiWhiteSpace(' ')
+      PsiElement(RBRACE)('}')
+    PsiWhiteSpace(' ')
+    CSharpExtensionDeclarationImpl [EXTENSION_DECLARATION]
+      PsiElement(EXTENSION_KEYWORD)('extension')
+      CSharpGenericParameterListImpl [GENERIC_PARAMETER_LIST]
+        PsiElement(LT)('<')
+        CSharpGenericParameterImpl [GENERIC_PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('T')
+        PsiElement(GT)('>')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+                CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+                  CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+                    PsiElement(IDENTIFIER)('System')
+                  PsiElement(DOT)('.')
+                  PsiElement(IDENTIFIER)('Collections')
+                PsiElement(DOT)('.')
+                PsiElement(IDENTIFIER)('Generic')
+              PsiElement(DOT)('.')
+              PsiElement(IDENTIFIER)('List')
+              CSharpStubTypeListImpl [TYPE_ARGUMENTS]
+                PsiElement(LT)('<')
+                CSharpStubUserTypeImpl [USER_TYPE]
+                  CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+                    PsiElement(IDENTIFIER)('T')
+                PsiElement(GT)('>')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('l')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      CSharpGenericConstraintListImpl [GENERIC_CONSTRAINT_LIST]
+        CSharpGenericConstraintImpl [GENERIC_CONSTRAINT]
+          PsiElement(WHERE_KEYWORD)('where')
+          PsiWhiteSpace(' ')
+          CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+            PsiElement(IDENTIFIER)('T')
+          PsiWhiteSpace(' ')
+          PsiElement(COLON)(':')
+          PsiWhiteSpace(' ')
+          CSharpGenericConstraintKeywordValueImpl [GENERIC_CONSTRAINT_KEYWORD_VALUE]
+            PsiElement(CLASS_KEYWORD)('class')
+      PsiWhiteSpace(' ')
+      PsiElement(LBRACE)('{')
+      PsiWhiteSpace(' ')
+      CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          PsiElement(PUBLIC_KEYWORD)('public')
+          PsiWhiteSpace(' ')
+          PsiElement(STATIC_KEYWORD)('static')
+        PsiWhiteSpace(' ')
+        CSharpStubNullableTypeImpl [NULLABLE_TYPE]
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('T')
+          PsiElement(QUEST)('?')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('First')
+        CSharpStubParameterListImpl [PARAMETER_LIST]
+          PsiElement(LPAR)('(')
+          PsiElement(RPAR)(')')
+        PsiWhiteSpace(' ')
+        PsiElement(CSHARP_EXPRESSION_METHOD_BODY)
+          PsiElement(DARROW)('=>')
+          PsiWhiteSpace(' ')
+          CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+            PsiElement(NULL_LITERAL)('null')
+          PsiElement(SEMICOLON)(';')
+      PsiWhiteSpace(' ')
+      PsiElement(RBRACE)('}')
+    PsiWhiteSpace(' ')
+    CSharpExtensionDeclarationImpl [EXTENSION_DECLARATION]
+      PsiElement(EXTENSION_KEYWORD)('extension')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubNativeTypeImpl [NATIVE_TYPE]
+            PsiElement(INT_KEYWORD)('int')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(LBRACE)('{')
+      PsiWhiteSpace(' ')
+      CSharpPropertyDeclarationImpl [PROPERTY_DECLARATION]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          PsiElement(PUBLIC_KEYWORD)('public')
+          PsiWhiteSpace(' ')
+          PsiElement(STATIC_KEYWORD)('static')
+        PsiWhiteSpace(' ')
+        CSharpStubNativeTypeImpl [NATIVE_TYPE]
+          PsiElement(INT_KEYWORD)('int')
+        PsiWhiteSpace(' ')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('Zero')
+        PsiWhiteSpace(' ')
+        PsiElement(DARROW)('=>')
+        PsiWhiteSpace(' ')
+        CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+          PsiElement(INTEGER_LITERAL)('0')
+        PsiElement(SEMICOLON)(';')
+      PsiWhiteSpace(' ')
+      PsiElement(RBRACE)('}')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

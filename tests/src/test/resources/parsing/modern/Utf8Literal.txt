@@ -1,0 +1,61 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('C')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpFieldDeclarationImpl [FIELD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      CSharpStubUserTypeImpl [USER_TYPE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('System')
+          PsiElement(DOT)('.')
+          PsiElement(IDENTIFIER)('ReadOnlySpan')
+          CSharpStubTypeListImpl [TYPE_ARGUMENTS]
+            PsiElement(LT)('<')
+            CSharpStubNativeTypeImpl [NATIVE_TYPE]
+              PsiElement(BYTE_KEYWORD)('byte')
+            PsiElement(GT)('>')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('a')
+      PsiWhiteSpace(' ')
+      PsiElement(EQ)('=')
+      PsiWhiteSpace(' ')
+      CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+        PsiElement(UTF8_STRING_LITERAL)('"abc"u8')
+      PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    CSharpFieldDeclarationImpl [FIELD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      CSharpStubUserTypeImpl [USER_TYPE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('System')
+          PsiElement(DOT)('.')
+          PsiElement(IDENTIFIER)('ReadOnlySpan')
+          CSharpStubTypeListImpl [TYPE_ARGUMENTS]
+            PsiElement(LT)('<')
+            CSharpStubNativeTypeImpl [NATIVE_TYPE]
+              PsiElement(BYTE_KEYWORD)('byte')
+            PsiElement(GT)('>')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('b')
+      PsiWhiteSpace(' ')
+      PsiElement(EQ)('=')
+      PsiWhiteSpace(' ')
+      CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+        PsiElement(UTF8_STRING_LITERAL)('"x"U8')
+      PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

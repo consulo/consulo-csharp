@@ -1,0 +1,37 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(RECORD_KEYWORD)('record')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('R')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+        PsiWhiteSpace(' ')
+        PsiElement(SEALED_KEYWORD)('sealed')
+        PsiWhiteSpace(' ')
+        PsiElement(OVERRIDE_KEYWORD)('override')
+      PsiWhiteSpace(' ')
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(STRING_KEYWORD)('string')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('ToString')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(CSHARP_EXPRESSION_METHOD_BODY)
+        PsiElement(DARROW)('=>')
+        PsiWhiteSpace(' ')
+        CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+          PsiElement(STRING_LITERAL)('""')
+        PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

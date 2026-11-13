@@ -1,0 +1,171 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(STRUCT_KEYWORD)('struct')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('N')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+        PsiWhiteSpace(' ')
+        PsiElement(STATIC_KEYWORD)('static')
+      PsiWhiteSpace(' ')
+      CSharpStubUserTypeImpl [USER_TYPE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          PsiElement(IDENTIFIER)('N')
+      PsiWhiteSpace(' ')
+      PsiElement(OPERATOR_KEYWORD)('operator')
+      PsiWhiteSpace(' ')
+      PsiElement(CHECKED_KEYWORD)('checked')
+      PsiWhiteSpace(' ')
+      PsiElement(PLUS)('+')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('N')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('a')
+        PsiElement(COMMA)(',')
+        PsiWhiteSpace(' ')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('N')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('b')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(CSHARP_EXPRESSION_METHOD_BODY)
+        PsiElement(DARROW)('=>')
+        PsiWhiteSpace(' ')
+        CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+          PsiElement(IDENTIFIER)('a')
+        PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+        PsiWhiteSpace(' ')
+        PsiElement(STATIC_KEYWORD)('static')
+      PsiWhiteSpace(' ')
+      CSharpStubUserTypeImpl [USER_TYPE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          PsiElement(IDENTIFIER)('N')
+      PsiWhiteSpace(' ')
+      PsiElement(OPERATOR_KEYWORD)('operator')
+      PsiWhiteSpace(' ')
+      PsiElement(PLUS)('+')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('N')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('a')
+        PsiElement(COMMA)(',')
+        PsiWhiteSpace(' ')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('N')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('b')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(CSHARP_EXPRESSION_METHOD_BODY)
+        PsiElement(DARROW)('=>')
+        PsiWhiteSpace(' ')
+        CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+          PsiElement(IDENTIFIER)('a')
+        PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    CSharpConversionMethodDeclarationImpl [CONVERSION_METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+        PsiWhiteSpace(' ')
+        PsiElement(STATIC_KEYWORD)('static')
+      PsiWhiteSpace(' ')
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(EXPLICIT_KEYWORD)('explicit')
+      PsiWhiteSpace(' ')
+      PsiElement(OPERATOR_KEYWORD)('operator')
+      PsiWhiteSpace(' ')
+      PsiElement(CHECKED_KEYWORD)('checked')
+      PsiWhiteSpace(' ')
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(INT_KEYWORD)('int')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('N')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('n')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(CSHARP_EXPRESSION_METHOD_BODY)
+        PsiElement(DARROW)('=>')
+        PsiWhiteSpace(' ')
+        CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+          PsiElement(INTEGER_LITERAL)('0')
+        PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    CSharpConversionMethodDeclarationImpl [CONVERSION_METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+        PsiWhiteSpace(' ')
+        PsiElement(STATIC_KEYWORD)('static')
+      PsiWhiteSpace(' ')
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(EXPLICIT_KEYWORD)('explicit')
+      PsiWhiteSpace(' ')
+      PsiElement(OPERATOR_KEYWORD)('operator')
+      PsiWhiteSpace(' ')
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(INT_KEYWORD)('int')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('N')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('n')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(CSHARP_EXPRESSION_METHOD_BODY)
+        PsiElement(DARROW)('=>')
+        PsiWhiteSpace(' ')
+        CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+          PsiElement(INTEGER_LITERAL)('0')
+        PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

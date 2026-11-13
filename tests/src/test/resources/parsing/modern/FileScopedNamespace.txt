@@ -1,0 +1,22 @@
+CSHARP_FILE
+  CSharpNamespaceStatementImpl [NAMESPACE_STATEMENT]
+    PsiElement(NAMESPACE_KEYWORD)('namespace')
+    PsiWhiteSpace(' ')
+    CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+      CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+        PsiElement(IDENTIFIER)('A')
+      PsiElement(DOT)('.')
+      PsiElement(IDENTIFIER)('B')
+    PsiElement(SEMICOLON)(';')
+  PsiWhiteSpace('\n\n')
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('C')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

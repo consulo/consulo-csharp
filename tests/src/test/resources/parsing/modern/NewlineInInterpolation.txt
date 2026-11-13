@@ -1,0 +1,75 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('C')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(STRING_KEYWORD)('string')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('M')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            <empty list>
+          CSharpStubNativeTypeImpl [NATIVE_TYPE]
+            PsiElement(INT_KEYWORD)('int')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('x')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(CSHARP_EXPRESSION_METHOD_BODY)
+        PsiElement(DARROW)('=>')
+        PsiWhiteSpace(' ')
+        CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+          PsiElement(INTERPOLATION_STRING_LITERAL)
+            PsiElement(CFS_TEXT)('$"a')
+            CfsItem(CFS_ITEM)
+              PsiElement(CFS_START)('{')
+              PsiElement(EXPRESSION)
+                CSharpSwitchExpressionImpl(SWITCH_EXPRESSION)
+                  CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+                    PsiElement(IDENTIFIER)('x')
+                  PsiWhiteSpace(' ')
+                  PsiElement(SWITCH_KEYWORD)('switch')
+                  PsiWhiteSpace('\n')
+                  PsiElement(LBRACE)('{')
+                  PsiWhiteSpace('\n    ')
+                  CSharpSwitchExpressionArmImpl(SWITCH_EXPRESSION_ARM)
+                    CSharpPatternImpl(CONSTANT_PATTERN)
+                      CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+                        PsiElement(INTEGER_LITERAL)('1')
+                    PsiWhiteSpace(' ')
+                    PsiElement(DARROW)('=>')
+                    PsiWhiteSpace(' ')
+                    CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+                      PsiElement(STRING_LITERAL)('"one"')
+                  PsiElement(COMMA)(',')
+                  PsiWhiteSpace('\n    ')
+                  CSharpSwitchExpressionArmImpl(SWITCH_EXPRESSION_ARM)
+                    CSharpPatternImpl(DISCARD_PATTERN)
+                      PsiElement(IDENTIFIER)('_')
+                    PsiWhiteSpace(' ')
+                    PsiElement(DARROW)('=>')
+                    PsiWhiteSpace(' ')
+                    CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+                      PsiElement(STRING_LITERAL)('"other"')
+                  PsiWhiteSpace('\n')
+                  PsiElement(RBRACE)('}')
+              PsiElement(CFS_END)('}')
+            PsiElement(CFS_TEXT)('b"')
+        PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

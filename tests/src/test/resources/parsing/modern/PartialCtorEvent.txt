@@ -1,0 +1,106 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(PARTIAL_KEYWORD)('partial')
+    PsiWhiteSpace(' ')
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('C')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpConstructorDeclarationImpl [CONSTRUCTOR_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+        PsiWhiteSpace(' ')
+        PsiElement(PARTIAL_KEYWORD)('partial')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('C')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        PsiElement(RPAR)(')')
+      PsiElement(CSHARP_EMPTY_METHOD_BODY)
+        PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    CSharpConstructorDeclarationImpl [CONSTRUCTOR_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+        PsiWhiteSpace(' ')
+        PsiElement(PARTIAL_KEYWORD)('partial')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('C')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(CSHARP_STATEMENT_METHOD_BODY)
+        CSharpBlockStatementImpl(BLOCK_STATEMENT)
+          PsiElement(LBRACE)('{')
+          PsiElement(RBRACE)('}')
+    PsiWhiteSpace(' ')
+    CSharpEventDeclarationImpl [EVENT_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+        PsiWhiteSpace(' ')
+        PsiElement(PARTIAL_KEYWORD)('partial')
+      PsiWhiteSpace(' ')
+      PsiElement(EVENT_KEYWORD)('event')
+      PsiWhiteSpace(' ')
+      CSharpStubUserTypeImpl [USER_TYPE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('System')
+          PsiElement(DOT)('.')
+          PsiElement(IDENTIFIER)('Action')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('E')
+      PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace(' ')
+    CSharpEventDeclarationImpl [EVENT_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+        PsiWhiteSpace(' ')
+        PsiElement(PARTIAL_KEYWORD)('partial')
+      PsiWhiteSpace(' ')
+      PsiElement(EVENT_KEYWORD)('event')
+      PsiWhiteSpace(' ')
+      CSharpStubUserTypeImpl [USER_TYPE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('System')
+          PsiElement(DOT)('.')
+          PsiElement(IDENTIFIER)('Action')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('E')
+      PsiWhiteSpace(' ')
+      PsiElement(LBRACE)('{')
+      PsiWhiteSpace(' ')
+      CSharpXAccessorImpl [XACCESSOR]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          <empty list>
+        PsiElement(ADD_KEYWORD)('add')
+        PsiWhiteSpace(' ')
+        PsiElement(CSHARP_STATEMENT_METHOD_BODY)
+          CSharpBlockStatementImpl(BLOCK_STATEMENT)
+            PsiElement(LBRACE)('{')
+            PsiElement(RBRACE)('}')
+      PsiWhiteSpace(' ')
+      CSharpXAccessorImpl [XACCESSOR]
+        CSharpStubModifierListImpl [MODIFIER_LIST]
+          <empty list>
+        PsiElement(REMOVE_KEYWORD)('remove')
+        PsiWhiteSpace(' ')
+        PsiElement(CSHARP_STATEMENT_METHOD_BODY)
+          CSharpBlockStatementImpl(BLOCK_STATEMENT)
+            PsiElement(LBRACE)('{')
+            PsiElement(RBRACE)('}')
+      PsiWhiteSpace(' ')
+      PsiElement(RBRACE)('}')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')

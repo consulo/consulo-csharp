@@ -1,0 +1,89 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(REF_KEYWORD)('ref')
+    PsiWhiteSpace(' ')
+    PsiElement(STRUCT_KEYWORD)('struct')
+    PsiWhiteSpace(' ')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('S')
+    PsiWhiteSpace(' ')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace(' ')
+    CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+      PsiWhiteSpace(' ')
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(VOID_KEYWORD)('void')
+      PsiWhiteSpace(' ')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('M')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            PsiElement(SCOPED_KEYWORD)('scoped')
+            PsiWhiteSpace(' ')
+            PsiElement(REF_KEYWORD)('ref')
+          PsiWhiteSpace(' ')
+          CSharpStubNativeTypeImpl [NATIVE_TYPE]
+            PsiElement(INT_KEYWORD)('int')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('x')
+        PsiElement(COMMA)(',')
+        PsiWhiteSpace(' ')
+        CSharpStubParameterImpl [PARAMETER]
+          CSharpStubModifierListImpl [MODIFIER_LIST]
+            PsiElement(SCOPED_KEYWORD)('scoped')
+          PsiWhiteSpace(' ')
+          CSharpStubUserTypeImpl [USER_TYPE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+                PsiElement(IDENTIFIER)('System')
+              PsiElement(DOT)('.')
+              PsiElement(IDENTIFIER)('Span')
+              CSharpStubTypeListImpl [TYPE_ARGUMENTS]
+                PsiElement(LT)('<')
+                CSharpStubNativeTypeImpl [NATIVE_TYPE]
+                  PsiElement(INT_KEYWORD)('int')
+                PsiElement(GT)('>')
+          PsiWhiteSpace(' ')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('s')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace(' ')
+      PsiElement(CSHARP_STATEMENT_METHOD_BODY)
+        CSharpBlockStatementImpl(BLOCK_STATEMENT)
+          PsiElement(LBRACE)('{')
+          PsiWhiteSpace(' ')
+          CSharpLocalVariableDeclarationStatementImpl(LOCAL_VARIABLE_DECLARATION_STATEMENT)
+            CSharpLocalVariableImpl(LOCAL_VARIABLE)
+              PsiElement(SCOPED_KEYWORD)('scoped')
+              PsiWhiteSpace(' ')
+              CSharpUserTypeImpl(USER_TYPE)
+                CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+                  CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+                    PsiElement(IDENTIFIER)('System')
+                  PsiElement(DOT)('.')
+                  PsiElement(IDENTIFIER)('Span')
+                  CSharpTypeListImpl(TYPE_ARGUMENTS)
+                    PsiElement(LT)('<')
+                    CSharpNativeTypeImpl(NATIVE_TYPE)
+                      PsiElement(INT_KEYWORD)('int')
+                    PsiElement(GT)('>')
+              PsiWhiteSpace(' ')
+              CSharpIdentifierImpl(IDENTIFIER)
+                PsiElement(IDENTIFIER)('l')
+              PsiWhiteSpace(' ')
+              PsiElement(EQ)('=')
+              PsiWhiteSpace(' ')
+              CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+                PsiElement(IDENTIFIER)('s')
+            PsiElement(SEMICOLON)(';')
+          PsiWhiteSpace(' ')
+          PsiElement(RBRACE)('}')
+    PsiWhiteSpace(' ')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n')
