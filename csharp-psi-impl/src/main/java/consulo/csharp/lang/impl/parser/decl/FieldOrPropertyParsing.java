@@ -19,7 +19,10 @@ package consulo.csharp.lang.impl.parser.decl;
 import consulo.csharp.lang.impl.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.impl.parser.ModifierSet;
 import consulo.csharp.lang.impl.parser.exp.ExpressionParsing;
+import consulo.csharp.lang.psi.CSharpSoftTokens;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
 import consulo.language.parser.PsiBuilder;
 
 /**
@@ -27,6 +30,12 @@ import consulo.language.parser.PsiBuilder;
  * @since 28.11.13.
  */
 public class FieldOrPropertyParsing extends MemberWithBodyParsing {
+    // before C# 9 init is a name, not an accessor
+    private static final TokenSet PROPERTY_ACCESSOR_START_BEFORE_9 = TokenSet.andNot(PROPERTY_ACCESSOR_START, TokenSet.create(CSharpSoftTokens.INIT_KEYWORD));
+
+    private static TokenSet propertyAccessorStart(CSharpBuilderWrapper builder) {
+        return builder.getVersion().isAtLeast(CSharpLanguageVersion._9_0) ? PROPERTY_ACCESSOR_START : PROPERTY_ACCESSOR_START_BEFORE_9;
+    }
     public static void parseFieldOrLocalVariableAtTypeWithDone(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType to, int typeFlags, boolean semicolonEat, ModifierSet set) {
         TypeInfo typeInfo = parseType(builder, typeFlags);
         if (typeInfo == null) {
@@ -108,7 +117,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing {
             MethodParsing.parseExpressionCodeBlock(builder);
         }
         else {
-            parseAccessors(builder, XACCESSOR, PROPERTY_ACCESSOR_START);
+            parseAccessors(builder, XACCESSOR, propertyAccessorStart(builder));
         }
 
         done(marker, INDEX_METHOD_DECLARATION);
@@ -116,7 +125,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing {
 
     public static void parseFieldOrPropertyAfterName(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set) {
         if (builder.getTokenType() == LBRACE) {
-            parseAccessors(builder, XACCESSOR, PROPERTY_ACCESSOR_START);
+            parseAccessors(builder, XACCESSOR, propertyAccessorStart(builder));
 
             if (builder.getTokenType() == EQ) {
                 builder.advanceLexer();

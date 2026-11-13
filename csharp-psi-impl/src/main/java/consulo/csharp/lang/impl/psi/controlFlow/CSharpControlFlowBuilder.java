@@ -1166,7 +1166,11 @@ public class CSharpControlFlowBuilder extends CSharpElementVisitor {
         }
 
         for (CSharpCasePatternStatementImpl pattern : patterns) {
-            DotNetType type = pattern.getVariable().getType();
+            DotNetVariable variable = pattern.getVariable();
+            if (variable == null) {
+                continue;
+            }
+            DotNetType type = variable.getType();
             if (type instanceof CSharpNativeType nativeType && nativeType.getTypeElementType() == CSharpSoftTokens.VAR_KEYWORD) {
                 return true;
             }

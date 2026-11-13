@@ -27,6 +27,8 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.language.psi.util.PsiTreeUtil;
 
+import consulo.csharp.lang.psi.CSharpTupleType;
+import consulo.csharp.lang.psi.CSharpTupleVariable;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -72,6 +74,19 @@ public class CSharpForeachStatementImpl extends CSharpElementImpl implements Dot
 			if(!processor.execute(variable, state))
 			{
 				return false;
+			}
+		}
+
+		// foreach (var (k, v) in map)
+		CSharpTupleType tupleType = findChildByClass(CSharpTupleType.class);
+		if(tupleType != null)
+		{
+			for(CSharpTupleVariable tupleVariable : tupleType.getVariables())
+			{
+				if(!processor.execute(tupleVariable, state))
+				{
+					return false;
+				}
 			}
 		}
 		return true;

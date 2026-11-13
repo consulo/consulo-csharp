@@ -24,7 +24,9 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTupleType;
 import consulo.csharp.lang.psi.CSharpTupleVariable;
+import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetStatement;
+import org.jspecify.annotations.Nullable;
 
 
 /**
@@ -42,6 +44,16 @@ public class CSharpDeconstructionStatementImpl extends CSharpElementImpl impleme
 	public CSharpTupleType getTupleType()
 	{
 		return findNotNullChildByClass(CSharpTupleType.class);
+	}
+
+	/**
+	 * @return the deconstructed value
+	 */
+	@Nullable
+	@RequiredReadAction
+	public DotNetExpression getExpression()
+	{
+		return findChildByClass(DotNetExpression.class);
 	}
 
 	@RequiredReadAction

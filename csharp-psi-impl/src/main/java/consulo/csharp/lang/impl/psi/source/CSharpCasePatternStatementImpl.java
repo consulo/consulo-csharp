@@ -18,6 +18,7 @@ package consulo.csharp.lang.impl.psi.source;
 
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetExpression;
@@ -38,10 +39,14 @@ public class CSharpCasePatternStatementImpl extends CSharpElementImpl implements
 		super(elementType);
 	}
 
+	/**
+	 * @return the variable of {@code case Circle c:} - null for a recursive pattern {@code case (1, var y):}
+	 */
+	@Nullable
 	@RequiredReadAction
 	public DotNetVariable getVariable()
 	{
-		return findNotNullChildByClass(CSharpCaseVariableImpl.class);
+		return findChildByClass(CSharpCaseVariableImpl.class);
 	}
 
 	@Nullable
@@ -61,10 +66,13 @@ public class CSharpCasePatternStatementImpl extends CSharpElementImpl implements
 	@RequiredReadAction
 	public boolean processDeclarations(PsiScopeProcessor processor, ResolveState state, PsiElement lastParent, PsiElement place)
 	{
-		DotNetVariable variable = getVariable();
-		if(!processor.execute(variable, state))
+		// case Circle c:, case (1, var y):, case { Length: > 0 } s:
+		for(CSharpCaseVariableImpl variable : PsiTreeUtil.findChildrenOfType(this, CSharpCaseVariableImpl.class))
 		{
-			return false;
+			if(!processor.execute(variable, state))
+			{
+				return false;
+			}
 		}
 
 		DotNetExpression whenExpression = getWhenExpression();

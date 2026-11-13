@@ -120,6 +120,10 @@ public class DeclarationParsing extends SharedParsingHelpers {
      * Not a namespace, a type, a using directive or an attributed / accessible member - they are declarations at the
      * file root as before C# 9
      */
+    private static final TokenSet SOFT_MODIFIERS = TokenSet.create(PARTIAL_KEYWORD, ASYNC_KEYWORD, REQUIRED_KEYWORD, FILE_KEYWORD);
+    // required and file are C# 11
+    private static final TokenSet SOFT_MODIFIERS_BEFORE_11 = TokenSet.create(PARTIAL_KEYWORD, ASYNC_KEYWORD);
+
     private static boolean isRecordNameFollower(@Nullable IElementType tokenType) {
         return tokenType == LPAR || tokenType == LT || tokenType == LBRACE || tokenType == COLON || tokenType == SEMICOLON;
     }
@@ -243,7 +247,8 @@ public class DeclarationParsing extends SharedParsingHelpers {
             return;
         }
 
-        Pair<PsiBuilder.Marker, ModifierSet> modifierListPair = parseWithSoftElements(b -> parseModifierListWithAttributes(b, STUB_SUPPORT), builder, PARTIAL_KEYWORD, ASYNC_KEYWORD, REQUIRED_KEYWORD, FILE_KEYWORD);
+        Pair<PsiBuilder.Marker, ModifierSet> modifierListPair = parseWithSoftElements(b -> parseModifierListWithAttributes(b, STUB_SUPPORT), builder,
+            builder.getVersion().isAtLeast(CSharpLanguageVersion._11_0) ? SOFT_MODIFIERS : SOFT_MODIFIERS_BEFORE_11);
 
         PsiBuilder.Marker modifierListMarker = modifierListPair.getFirst();
         ModifierSet modifierSet = modifierListPair.getSecond();

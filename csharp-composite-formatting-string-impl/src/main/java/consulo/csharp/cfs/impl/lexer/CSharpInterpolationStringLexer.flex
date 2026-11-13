@@ -26,6 +26,11 @@ import consulo.dotnet.cfs.lang.CfsTokens;
 %eof{  return;
 %eof}
 
+ESCAPE_SEQUENCE=\\[^\r\n]
+CHARACTER_LITERAL="'"([^\\\'\r\n]|{ESCAPE_SEQUENCE})*("'"|\\)?
+STRING_LITERAL=\"([^\\\"\r\n]|{ESCAPE_SEQUENCE})*(\"|\\)?
+VERBATIM_STRING_LITERAL=@\"([^\"]|\"\")*\"
+
 %state ARGUMENT_WAIT
 %state FORMAT_WAIT
 
@@ -42,6 +47,13 @@ import consulo.dotnet.cfs.lang.CfsTokens;
 
 <ARGUMENT_WAIT>
 {
+	// {x ?? "}"} - a string or a char inside the argument, the braces and the colons in it are text
+	{VERBATIM_STRING_LITERAL} { return myArgumentElementType; }
+
+	{STRING_LITERAL}          { return myArgumentElementType; }
+
+	{CHARACTER_LITERAL}       { return myArgumentElementType; }
+
 	"("
 	{
 		myInsideParenthesesBalance ++;

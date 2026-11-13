@@ -23,7 +23,12 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTupleVariable;
 import consulo.csharp.lang.impl.psi.source.resolve.type.wrapper.CSharpTupleTypeDeclaration;
+import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
+import consulo.csharp.lang.psi.CSharpTupleType;
+import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
+import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.util.collection.ArrayUtil;
 import consulo.language.psi.resolve.ResolveState;
 
 import org.jspecify.annotations.Nullable;
@@ -51,6 +56,52 @@ public class CSharpTupleVariableImpl extends CSharpVariableImpl implements CShar
 	public DotNetType getType()
 	{
 		return findChildByClass(DotNetType.class);
+	}
+
+	@RequiredReadAction
+	@Override
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
+	{
+		DotNetType type = getType();
+		DotNetTypeRef typeRef = type == null ? DotNetTypeRef.AUTO_TYPE : type.toTypeRef();
+		if(typeRef != DotNetTypeRef.AUTO_TYPE)
+		{
+			return typeRef;
+		}
+
+		// var (a, b) = x; (int a, var b) = x; foreach (var (k, v) in map)
+		PsiElement tupleType = getParent();
+		if(tupleType instanceof CSharpTupleType)
+		{
+			DotNetTypeRef source = getDeconstructionSource(tupleType.getParent());
+			if(source != null)
+			{
+				if(!resolveFromInitializer)
+				{
+					return DotNetTypeRef.AUTO_TYPE;
+				}
+				CSharpTupleVariable[] variables = ((CSharpTupleType) tupleType).getVariables();
+				int index = ArrayUtil.indexOf(variables, this);
+				return CSharpDeconstructionUtil.getElementTypeRef(source, index, variables.length);
+			}
+		}
+		return super.toTypeRefImpl(resolveFromInitializer);
+	}
+
+	@Nullable
+	@RequiredReadAction
+	private static DotNetTypeRef getDeconstructionSource(PsiElement owner)
+	{
+		if(owner instanceof CSharpDeconstructionStatementImpl deconstruction)
+		{
+			DotNetExpression expression = deconstruction.getExpression();
+			return expression == null ? DotNetTypeRef.ERROR_TYPE : expression.toTypeRef(true);
+		}
+		if(owner instanceof CSharpForeachStatementImpl foreachStatement)
+		{
+			return CSharpResolveUtil.resolveIterableType(foreachStatement);
+		}
+		return null;
 	}
 
 	@Override

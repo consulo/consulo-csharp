@@ -231,6 +231,13 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
 
+	// {x ?? "}"} - a string or a char inside the argument, the braces in it are text
+	{VERBATIM_STRING_LITERAL} { return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL; }
+
+	{STRING_LITERAL}          { return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL; }
+
+	{CHARACTER_LITERAL}       { return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL; }
+
 	"{"
 	{
 		openBrace();

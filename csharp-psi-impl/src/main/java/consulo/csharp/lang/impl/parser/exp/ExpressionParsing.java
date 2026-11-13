@@ -437,9 +437,12 @@ public class ExpressionParsing extends SharedParsingHelpers {
             PsiBuilder.Marker pattern = builder.mark();
             boolean positional = parsePositionalPatternClause(builder, set, flags);
             if (positional) {
-                parsePatternDesignationOrPropertyClause(builder, set, flags);
+                parsePropertyClauseAfterPositional(builder, set, flags);
             }
             pattern.done(positional ? POSITIONAL_PATTERN : PARENTHESIZED_PATTERN);
+            if (positional) {
+                parsePatternDesignation(builder, pattern);
+            }
             return true;
         }
 
@@ -475,10 +478,8 @@ public class ExpressionParsing extends SharedParsingHelpers {
                 }
             }
             expect(builder, RBRACKET, "']' expected");
-            if (builder.getTokenType() == CSharpTokens.IDENTIFIER && !isPatternWord(builder)) {
-                doneIdentifier(builder, NONE);
-            }
             list.done(LIST_PATTERN);
+            parsePatternDesignation(builder, list);
             return true;
         }
 
@@ -486,10 +487,8 @@ public class ExpressionParsing extends SharedParsingHelpers {
         if (tokenType == LBRACE) {
             PsiBuilder.Marker property = builder.mark();
             parsePropertyPatternClause(builder, set, flags);
-            if (builder.getTokenType() == CSharpTokens.IDENTIFIER && !isPatternWord(builder)) {
-                builder.advanceLexer();
-            }
             property.done(PROPERTY_PATTERN);
+            parsePatternDesignation(builder, property);
             return true;
         }
 
@@ -500,8 +499,9 @@ public class ExpressionParsing extends SharedParsingHelpers {
             // Point(var x, _) { Name: "a" } p
             if (builder.getTokenType() == LPAR) {
                 parsePositionalPatternClause(builder, set, flags);
-                parsePatternDesignationOrPropertyClause(builder, set, flags);
+                parsePropertyClauseAfterPositional(builder, set, flags);
                 declaration.done(POSITIONAL_PATTERN);
+                parsePatternDesignation(builder, declaration);
                 return true;
             }
             if (builder.getTokenType() == LBRACE) {
@@ -572,13 +572,22 @@ public class ExpressionParsing extends SharedParsingHelpers {
         return positional || count != 1;
     }
 
-    // after a positional clause: { Name: p } and a designation
-    private static void parsePatternDesignationOrPropertyClause(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
+    // after a positional clause: { Name: p }
+    private static void parsePropertyClauseAfterPositional(CSharpBuilderWrapper builder, ModifierSet set, int flags) {
         if (builder.getTokenType() == LBRACE) {
             parsePropertyPatternClause(builder, set, flags);
         }
+    }
+
+    /**
+     * {@code (1, var y) t}, {@code [1, ..] list}, {@code { Length: > 0 } s} - the designation is a variable of the
+     * pattern before it, the type of it is the type matched
+     */
+    private static void parsePatternDesignation(CSharpBuilderWrapper builder, PsiBuilder.Marker pattern) {
         if (builder.getTokenType() == CSharpTokens.IDENTIFIER && !isPatternWord(builder)) {
+            PsiBuilder.Marker variable = pattern.precede();
             doneIdentifier(builder, NONE);
+            variable.done(CASE_VARIABLE);
         }
     }
 
@@ -854,7 +863,8 @@ public class ExpressionParsing extends SharedParsingHelpers {
 
         PsiBuilder.Marker typeMarker = builder.mark();
         PsiBuilder.Marker type = parseExpression(builder, ExprType.MAYBE_NULLABLE_WITH_VARIABLE, set, flags);
-        if (type != null && builder.getTokenType() != LBRACE && !isContextualWord(builder, "and") && !isContextualWord(builder, "or")) {
+        // Point(var x, _) - a positional pattern of the type
+        if (type != null && builder.getTokenType() != LBRACE && builder.getTokenType() != LPAR && !isContextualWord(builder, "and") && !isContextualWord(builder, "or")) {
             typeMarker.drop();
             return true;
         }

@@ -20,10 +20,7 @@ import consulo.language.ast.IElementType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.csharp.lang.impl.psi.CSharpElementVisitor;
 import consulo.dotnet.psi.DotNetType;
-import consulo.language.psi.PsiElement;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.csharp.lang.impl.psi.CSharpElements;
 
 import org.jspecify.annotations.Nullable;
 
@@ -45,37 +42,26 @@ public class CSharpCaseVariableImpl extends CSharpVariableImpl {
     @Nullable
     @Override
     public DotNetType getType() {
-        return findNotNullChildByClass(DotNetType.class);
+        return findChildByClass(DotNetType.class);
     }
 
     /**
-     * {@code var v} of a switch expression arm or of a case label is of the type of the value matched
+     * {@code var v} is of the type of the value matched - the switch value, an element of a positional or a list pattern,
+     * a property of a property pattern. The designation of {@code (1, var y) t} has no type of its own
      */
     @RequiredReadAction
     @Override
     public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer) {
         DotNetType type = getType();
-        DotNetTypeRef typeRef = type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
+        if (type == null) {
+            CSharpPatternImpl pattern = findChildByClass(CSharpPatternImpl.class);
+            return pattern == null ? DotNetTypeRef.ERROR_TYPE : CSharpPatternTypeUtil.getMatchedTypeRef(pattern);
+        }
+
+        DotNetTypeRef typeRef = type.toTypeRef();
         if (typeRef != DotNetTypeRef.AUTO_TYPE) {
             return typeRef;
         }
-
-        PsiElement current = this;
-        while (current.getParent() instanceof CSharpPatternImpl pattern && pattern.getNode().getElementType() != CSharpElements.PROPERTY_PATTERN) {
-            current = pattern;
-        }
-        DotNetExpression value = null;
-        if (current.getParent() instanceof CSharpSwitchExpressionArmImpl arm && arm.getParent() instanceof CSharpSwitchExpressionImpl switchExpression) {
-            value = switchExpression.getExpression();
-        }
-        // case var v: - the labels are in the block of the switch statement
-        else if (current.getParent() instanceof CSharpCasePatternStatementImpl label
-            && label.getParent() instanceof CSharpBlockStatementImpl block && block.getParent() instanceof CSharpSwitchStatementImpl switchStatement) {
-            value = switchStatement.getExpression();
-        }
-        if (value != null) {
-            return value.toTypeRef(resolveFromInitializer);
-        }
-        return DotNetTypeRef.ERROR_TYPE;
+        return CSharpPatternTypeUtil.getInputTypeRef(this);
     }
 }

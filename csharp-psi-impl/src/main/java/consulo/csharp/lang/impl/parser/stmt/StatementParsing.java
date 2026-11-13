@@ -386,8 +386,14 @@ public class StatementParsing extends SharedParsingHelpers {
                     statementMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
                 }
                 return ParseVariableOrExpressionResult.VARIABLE;
+            case VAR_DECONSTRUCTION:
             case TYPED_DECONSTRUCTION:
-                parseType(builder);
+                if (localVarType == LocalVarType.VAR_DECONSTRUCTION) {
+                    parseVarDeconstruction(builder);
+                }
+                else {
+                    parseType(builder);
+                }
 
                 if (builder.getTokenType() == EQ) {
                     builder.advanceLexer();
@@ -416,10 +422,61 @@ public class StatementParsing extends SharedParsingHelpers {
         WITH_NAME,
         LOCAL_METHOD,
         NO_NAME,
-        TYPED_DECONSTRUCTION
+        TYPED_DECONSTRUCTION,
+        VAR_DECONSTRUCTION
+    }
+
+    /**
+     * C# 7 {@code var (a, b)}, {@code var (x, _)} followed by {@code follower} - not a call of a method named var
+     */
+    private static boolean isVarDeconstruction(CSharpBuilderWrapper builder, IElementType follower) {
+        if (builder.getTokenType() != CSharpTokens.IDENTIFIER || builder.lookAhead(1) != LPAR
+            || !builder.getVersion().isAtLeast(CSharpLanguageVersion._7_0) || !"var".equals(builder.getTokenText())) {
+            return false;
+        }
+        int i = 2;
+        int count = 0;
+        while (builder.lookAhead(i) == CSharpTokens.IDENTIFIER) {
+            count++;
+            IElementType next = builder.lookAhead(i + 1);
+            if (next == RPAR) {
+                return count >= 2 && builder.lookAhead(i + 2) == follower;
+            }
+            if (next != COMMA) {
+                return false;
+            }
+            i += 2;
+        }
+        return false;
+    }
+
+    /**
+     * {@code var (a, b)} - the var type and a tuple of the names, the types of them come from the deconstructed value
+     */
+    private static void parseVarDeconstruction(CSharpBuilderWrapper builder) {
+        parseType(builder, VAR_SUPPORT);
+
+        PsiBuilder.Marker tupleType = builder.mark();
+        builder.advanceLexer(); // (
+        while (!builder.eof()) {
+            PsiBuilder.Marker variable = builder.mark();
+            doneIdentifier(builder, NONE);
+            variable.done(TUPLE_VARIABLE);
+
+            if (builder.getTokenType() != COMMA) {
+                break;
+            }
+            builder.advanceLexer();
+        }
+        expect(builder, RPAR, "')' expected");
+        tupleType.done(TUPLE_TYPE);
     }
 
     private static LocalVarType canParseAsVariable(CSharpBuilderWrapper builder, ModifierSet set) {
+        if (isVarDeconstruction(builder, EQ)) {
+            return LocalVarType.VAR_DECONSTRUCTION;
+        }
+
         PsiBuilder.Marker newMarker = builder.mark();
 
         try {
@@ -714,19 +771,57 @@ public class StatementParsing extends SharedParsingHelpers {
         IElementType doneElement = CASE_OR_DEFAULT_STATEMENT;
 
         if (caseLabel) {
-            if (!parseCasePatternStatement(builder, set)) {
-                if (ExpressionParsing.parse(builder, set) == null) {
-                    builder.error("Expression expected");
-                }
-            }
-            else {
+            if (parseCasePatternStatement(builder, set)) {
                 doneElement = CASE_PATTERN_STATEMENT;
+            }
+            else if (builder.getVersion().isAtLeast(CSharpLanguageVersion._7_0) && !isConstantCaseLabel(builder, set)) {
+                // case (1, var y):, case > 0:, case null or "":, case 1 when x > 0: - C# 7 - 9 patterns
+                if (!ExpressionParsing.parsePattern(builder, set, NONE)) {
+                    builder.error("Pattern expected");
+                }
+                parseWhenClause(builder, set);
+                doneElement = CASE_PATTERN_STATEMENT;
+            }
+            else if (ExpressionParsing.parse(builder, set) == null) {
+                builder.error("Expression expected");
             }
         }
 
         expect(builder, COLON, "':' expected");
 
         marker.done(doneElement);
+    }
+
+    /**
+     * {@code case 1:}, {@code case Kind.A:} - a constant pattern and the colon after it, the label of a constant -
+     * not {@code case Point(var x, _):}
+     */
+    private static boolean isConstantCaseLabel(CSharpBuilderWrapper builder, ModifierSet set) {
+        PsiBuilder.Marker probe = builder.mark();
+        try {
+            if (!ExpressionParsing.parsePattern(builder, set, NONE) || builder.getTokenType() != COLON) {
+                return false;
+            }
+            LighterASTNode pattern = builder.getLatestDoneMarker();
+            return pattern != null && pattern.getTokenType() == CONSTANT_PATTERN;
+        }
+        finally {
+            probe.rollbackTo();
+        }
+    }
+
+    private static void parseWhenClause(CSharpBuilderWrapper builder, ModifierSet set) {
+        builder.enableSoftKeyword(CSharpSoftTokens.WHEN_KEYWORD);
+        IElementType possibleWhenTokenType = builder.getTokenType();
+        builder.disableSoftKeyword(CSharpSoftTokens.WHEN_KEYWORD);
+
+        if (possibleWhenTokenType == CSharpSoftTokens.WHEN_KEYWORD) {
+            builder.advanceLexer();
+
+            if (ExpressionParsing.parse(builder, set) == null) {
+                builder.error("Expression expected");
+            }
+        }
     }
 
     private static boolean parseCasePatternStatement(CSharpBuilderWrapper builder, ModifierSet set) {
@@ -822,16 +917,29 @@ public class StatementParsing extends SharedParsingHelpers {
         builder.advanceLexer();
 
         if (expect(builder, LPAR, "'(' expected")) {
-            PsiBuilder.Marker varMarker = builder.mark();
-
-            if (parseType(builder, VAR_SUPPORT) != null) {
-                expectOrReportIdentifier(builder, 0);
+            if (isVarDeconstruction(builder, IN_KEYWORD)) {
+                // foreach (var (k, v) in map)
+                parseVarDeconstruction(builder);
             }
             else {
-                builder.error("Type expected");
-            }
+                PsiBuilder.Marker varMarker = builder.mark();
 
-            varMarker.done(LOCAL_VARIABLE);
+                TypeInfo typeInfo = parseType(builder, VAR_SUPPORT);
+                if (typeInfo != null && typeInfo.isNamedTuple && builder.getTokenType() == IN_KEYWORD) {
+                    // foreach ((string k, int v) in map)
+                    varMarker.drop();
+                }
+                else {
+                    if (typeInfo != null) {
+                        expectOrReportIdentifier(builder, 0);
+                    }
+                    else {
+                        builder.error("Type expected");
+                    }
+
+                    varMarker.done(LOCAL_VARIABLE);
+                }
+            }
 
             if (expect(builder, IN_KEYWORD, "'in' expected")) {
                 if (ExpressionParsing.parse(builder, set) == null) {
