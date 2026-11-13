@@ -27,6 +27,7 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.resolve.DotNetGenericExtractor;
 import consulo.dotnet.psi.resolve.DotNetTypeRef;
+import consulo.csharp.lang.impl.psi.source.CSharpExtensionBlockUtil;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -52,6 +53,11 @@ public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTyp
 
             element.accept(visitor);
         }
+
+        // C# 14 extension blocks - E.Print(s) and s.Print()
+        for (CSharpMethodDeclaration extensionMethod : CSharpExtensionBlockUtil.getExtensionMethods(myElement)) {
+            extensionMethod.accept(visitor);
+        }
     }
 
     @RequiredReadAction
@@ -62,6 +68,11 @@ public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTyp
                 if (!processor.process((CSharpMethodDeclaration) element)) {
                     return false;
                 }
+            }
+        }
+        for (CSharpMethodDeclaration extensionMethod : CSharpExtensionBlockUtil.getExtensionMethods(myElement)) {
+            if (!processor.process(extensionMethod)) {
+                return false;
             }
         }
         return true;

@@ -23,6 +23,7 @@ import consulo.csharp.lang.impl.psi.source.resolve.ExecuteTarget;
 import consulo.csharp.lang.impl.psi.source.resolve.ExecuteTargetUtil;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterList;
+import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetParameterList;
@@ -41,7 +42,7 @@ import org.jspecify.annotations.Nullable;
  * @author VISTALL
  * @since 2026-11-14
  */
-public class CSharpExtensionDeclarationImpl extends CSharpStubElementImpl<EmptyStub<CSharpExtensionDeclarationImpl>> {
+public class CSharpExtensionDeclarationImpl extends CSharpStubElementImpl<EmptyStub<CSharpExtensionDeclarationImpl>> implements DotNetGenericParameterListOwner {
     public CSharpExtensionDeclarationImpl(ASTNode node) {
         super(node);
     }
@@ -57,13 +58,21 @@ public class CSharpExtensionDeclarationImpl extends CSharpStubElementImpl<EmptyS
     }
 
     @Nullable
+    @Override
     public DotNetGenericParameterList getGenericParameterList() {
         return getStubOrPsiChild(CSharpStubElements.GENERIC_PARAMETER_LIST);
     }
 
+    @Override
     public DotNetGenericParameter[] getGenericParameters() {
         DotNetGenericParameterList genericParameterList = getGenericParameterList();
         return genericParameterList == null ? DotNetGenericParameter.EMPTY_ARRAY : genericParameterList.getParameters();
+    }
+
+    @Override
+    public int getGenericParametersCount() {
+        DotNetGenericParameterList genericParameterList = getGenericParameterList();
+        return genericParameterList == null ? 0 : genericParameterList.getGenericParametersCount();
     }
 
     @Nullable

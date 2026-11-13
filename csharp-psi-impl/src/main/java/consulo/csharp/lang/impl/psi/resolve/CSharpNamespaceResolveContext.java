@@ -22,6 +22,7 @@ import consulo.application.util.ConcurrentFactoryMap;
 import consulo.application.util.function.Processor;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.impl.psi.ToNativeElementTransformers;
 import consulo.csharp.lang.impl.psi.msil.CSharpTransformer;
@@ -34,6 +35,7 @@ import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.dotnet.psi.DotNetPropertyDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.resolve.DotNetPsiSearcher;
 import consulo.language.psi.util.PsiTreeUtil;
@@ -51,6 +53,7 @@ import consulo.util.collection.SmartList;
 import consulo.util.dataholder.UserDataHolder;
 import consulo.util.lang.ObjectUtil;
 import consulo.util.lang.StringUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpExtensionBlockUtil;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -102,7 +105,11 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		// extension methods of other .NET languages (VB modules), they are not in C# indexes
 		declarations.addAll(DotNetPsiSearcher.getInstance(myNamespaceAsElement.getProject()).findExtensionMethods(StringUtil.notNullize(myNamespaceAsElement.getPresentableQName()), name, myResolveScope));
 
-		if(declarations.isEmpty())
+		// the properties of C# 14 extension blocks - as getter-like extension methods
+		Collection<DotNetPropertyDeclaration> properties = StubIndex.getElements(CSharpIndexKeys.EXTENSION_PROPERTY_BY_NAMESPACE_AND_NAME_INDEX, indexKey,
+				myNamespaceAsElement.getProject(), myResolveScope, DotNetPropertyDeclaration.class);
+
+		if(declarations.isEmpty() && properties.isEmpty())
 		{
 			return null;
 		}
@@ -113,6 +120,17 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 			ProgressManager.checkCanceled();
 
 			ContainerUtil.addIfNotNull(methodDeclarations, convertMethodIfNeed(methodDeclaration));
+		}
+		for(DotNetPropertyDeclaration property : properties)
+		{
+			if(property instanceof CSharpPropertyDeclaration csharpProperty)
+			{
+				ContainerUtil.addIfNotNull(methodDeclarations, CSharpExtensionBlockUtil.toExtensionPropertyGetter(csharpProperty));
+			}
+		}
+		if(methodDeclarations.isEmpty())
+		{
+			return null;
 		}
 		return new CSharpElementGroupImpl<>(myNamespaceAsElement.getProject(), name, methodDeclarations);
 	}
@@ -170,9 +188,11 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 				}
 			}
 		}
-		else if(methodDeclaration instanceof CSharpMethodDeclaration)
+		else if(methodDeclaration instanceof CSharpMethodDeclaration method)
 		{
-			return (CSharpMethodDeclaration) methodDeclaration;
+			// a method of a C# 14 extension block - as the classic extension method
+			CSharpMethodDeclaration extensionMethod = CSharpExtensionBlockUtil.toExtensionMethod(method);
+			return extensionMethod != null ? extensionMethod : method;
 		}
 		else
 		{

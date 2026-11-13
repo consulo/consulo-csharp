@@ -27,6 +27,7 @@ import consulo.language.ast.IElementType;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.psi.stub.StubElement;
 import consulo.util.collection.ArrayUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpExtensionBlockUtil;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -39,6 +40,8 @@ public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration> {
     public static final int DE_CONSTRUCTOR_MASK = 1 << 2;
     public static final int CHECKED_OPERATOR = 1 << 3;
     public static final int REF_DELEGATE = 1 << 4;
+    // an instance method of a C# 14 extension block - indexed as an extension method
+    public static final int EXTENSION_BLOCK_MASK = 1 << 5;
 
     private final int myOperatorIndex;
 
@@ -75,6 +78,9 @@ public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration> {
         }
         if (methodDeclaration instanceof CSharpMethodDeclaration method && method.isExtension()) {
             i |= EXTENSION_MASK;
+        }
+        if (methodDeclaration instanceof CSharpMethodDeclaration method && CSharpExtensionBlockUtil.isExtensionBlockInstanceMethod(method)) {
+            i |= EXTENSION_BLOCK_MASK;
         }
         if (methodDeclaration instanceof CSharpConstructorDeclaration constructor && constructor.isDeConstructor()) {
             i |= DE_CONSTRUCTOR_MASK;

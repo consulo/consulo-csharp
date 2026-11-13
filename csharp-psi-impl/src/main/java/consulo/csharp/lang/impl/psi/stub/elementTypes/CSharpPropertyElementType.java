@@ -18,11 +18,15 @@ package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.impl.psi.source.CSharpPropertyDeclarationImpl;
+import consulo.csharp.lang.impl.psi.stub.CSharpMsilStubIndexer;
+import consulo.csharp.lang.impl.psi.stub.CSharpTypeDeclStub;
 import consulo.csharp.lang.impl.psi.stub.CSharpVariableDeclStub;
 import consulo.csharp.lang.impl.psi.stub.index.CSharpIndexKeys;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.stub.IndexSink;
+import consulo.language.psi.stub.StubElement;
 import consulo.util.lang.StringUtil;
 
 /**
@@ -56,6 +60,15 @@ public class CSharpPropertyElementType extends CSharpQVariableStubElementType<CS
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.PROPERTY_INDEX, name);
+
+			// a property of a C# 14 extension block - s.Len
+			StubElement blockStub = stub.getParentStub();
+			if(blockStub != null && blockStub.getStubType() == CSharpStubElements.EXTENSION_DECLARATION
+					&& blockStub.getParentStub() instanceof CSharpTypeDeclStub typeStub && !typeStub.isNested())
+			{
+				indexSink.occurrence(CSharpIndexKeys.EXTENSION_PROPERTY_BY_NAMESPACE_AND_NAME_INDEX,
+						CSharpMsilStubIndexer.makeExtensionMethodIndexKey(typeStub.getParentQName(), name));
+			}
 		}
 	}
 }

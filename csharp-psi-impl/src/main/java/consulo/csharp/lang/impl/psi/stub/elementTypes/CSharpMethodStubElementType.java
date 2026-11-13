@@ -17,6 +17,7 @@
 package consulo.csharp.lang.impl.psi.stub.elementTypes;
 
 import consulo.annotation.access.RequiredReadAction;
+import consulo.csharp.lang.impl.psi.CSharpStubElements;
 import consulo.csharp.lang.impl.psi.source.CSharpMethodDeclarationImpl;
 import consulo.csharp.lang.impl.psi.stub.CSharpMethodDeclStub;
 import consulo.csharp.lang.impl.psi.stub.CSharpMsilStubIndexer;
@@ -93,7 +94,8 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
                 }
             }
 
-            if (BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.EXTENSION_MASK)) {
+            if (BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.EXTENSION_MASK)
+                || BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.EXTENSION_BLOCK_MASK)) {
                 indexExtensionMethod(indexSink, stub, name);
             }
 
@@ -107,6 +109,10 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
         indexSink.occurrence(CSharpIndexKeys.EXTENSION_METHOD_BY_NAME_INDEX, name.hashCode());
 
         StubElement parentStub = stub.getParentStub();
+        // C# 14 extension block - the static class around it
+        if (parentStub != null && parentStub.getStubType() == CSharpStubElements.EXTENSION_DECLARATION) {
+            parentStub = parentStub.getParentStub();
+        }
         if (!(parentStub instanceof CSharpTypeDeclStub)) {
             return;
         }

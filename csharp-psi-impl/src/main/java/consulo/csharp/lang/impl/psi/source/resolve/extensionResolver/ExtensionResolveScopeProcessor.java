@@ -22,9 +22,12 @@ import consulo.csharp.lang.impl.psi.CSharpNullableTypeUtil;
 import consulo.csharp.lang.impl.psi.CSharpTypeUtil;
 import consulo.csharp.lang.impl.psi.light.CSharpLightMethodDeclaration;
 import consulo.csharp.lang.impl.psi.light.CSharpLightParameterList;
+import consulo.csharp.lang.impl.psi.light.builder.CSharpLightPropertyDeclarationBuilder;
 import consulo.csharp.lang.impl.psi.resolve.CSharpElementGroupImpl;
 import consulo.csharp.lang.impl.psi.resolve.CSharpResolveContextUtil;
 import consulo.csharp.lang.impl.psi.source.CSharpExpressionWithOperatorImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpExtensionBlockUtil;
+import consulo.csharp.lang.impl.psi.source.CSharpMethodCallExpressionImpl;
 import consulo.csharp.lang.impl.psi.source.resolve.CSharpResolveResult;
 import consulo.csharp.lang.impl.psi.source.resolve.StubScopeProcessor;
 import consulo.csharp.lang.impl.psi.source.resolve.genericInference.GenericInferenceUtil;
@@ -33,6 +36,8 @@ import consulo.csharp.lang.impl.psi.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.csharp.lang.psi.resolve.CSharpResolveContext;
@@ -66,6 +71,8 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 	private final CSharpCallArgumentListOwner myCallArgumentListOwner;
 
 	private final List<CSharpMethodDeclaration> myResolvedElements = new SmartList<>();
+	// the properties of C# 14 extension blocks - s.Len
+	private final List<CSharpPropertyDeclaration> myResolvedProperties = new SmartList<>();
 
 	private ExtensionQualifierAsCallArgumentWrapper myArgumentWrapper;
 	private DotNetTypeRef myQualifierTypeRef;
@@ -129,7 +136,9 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 					return true;
 				}
 
-				myProcessor.pushResultExternally(new CSharpResolveResult(transform(psiElement, inferenceResult, null)));
+				CSharpPropertyDeclaration extensionProperty = psiElement.getUserData(CSharpExtensionBlockUtil.EXTENSION_PROPERTY);
+				CSharpMethodDeclaration transformed = transform(psiElement, inferenceResult, null);
+				myProcessor.pushResultExternally(new CSharpResolveResult(extensionProperty == null ? transformed : transformProperty(extensionProperty, transformed)));
 				return true;
 			});
 		}
@@ -169,6 +178,16 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 
 					if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression.getResolveScope()))
 					{
+						continue;
+					}
+
+					CSharpPropertyDeclaration extensionProperty = methodDeclaration.getUserData(CSharpExtensionBlockUtil.EXTENSION_PROPERTY);
+					if(extensionProperty != null)
+					{
+						if(!isMethodCall())
+						{
+							myResolvedProperties.add(transformProperty(extensionProperty, transform(methodDeclaration, inferenceResult, element)));
+						}
 						continue;
 					}
 
@@ -231,10 +250,41 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 		return GenericInferenceUtil.inferenceGenericExtractor(newArguments, typeArgumentRefs, myExpression, methodDeclaration);
 	}
 
+	private boolean isMethodCall()
+	{
+		return myCallArgumentListOwner instanceof CSharpMethodCallExpressionImpl call && call.getCallExpression() == myExpression;
+	}
+
+	/**
+	 * @return the property of an extension block for the receiver - the type is of the getter-like method with the type
+	 * arguments of the receiver
+	 */
+	@RequiredReadAction
+	private static CSharpPropertyDeclaration transformProperty(CSharpPropertyDeclaration property, CSharpMethodDeclaration getter)
+	{
+		CSharpLightPropertyDeclarationBuilder builder = new CSharpLightPropertyDeclarationBuilder(property.getProject());
+		builder.withName(String.valueOf(property.getName()));
+		builder.withTypeRef(getter.getReturnTypeRef());
+		builder.addModifier(CSharpModifier.PUBLIC);
+		builder.setNavigationElement(property);
+		builder.withHashAndEqualObject(property);
+		return builder;
+	}
+
 	@RequiredReadAction
 	public void consumeAsMethodGroup()
 	{
-		if(myCompletion || myResolvedElements.isEmpty())
+		if(myCompletion)
+		{
+			return;
+		}
+
+		for(CSharpPropertyDeclaration property : myResolvedProperties)
+		{
+			myProcessor.pushResultExternally(new CSharpResolveResult(property, true));
+		}
+
+		if(myResolvedElements.isEmpty())
 		{
 			return;
 		}

@@ -35,6 +35,8 @@ public interface CSharpIndexKeys
 	StubIndexKey<Integer, DotNetLikeMethodDeclaration> EXTENSION_METHOD_BY_NAME_INDEX = StubIndexKey.createIndexKey("csharp.extension.method.by.name.index");
 	StubIndexKey<Integer, DotNetLikeMethodDeclaration> EXTENSION_METHOD_BY_NAMESPACE = StubIndexKey.createIndexKey("csharp.extension.method.by.namespace.index");
 	StubIndexKey<Integer, DotNetLikeMethodDeclaration> EXTENSION_METHOD_BY_NAMESPACE_AND_NAME_INDEX = StubIndexKey.createIndexKey("csharp.extension.method.by.namespace.and.name.index");
+	// the properties of C# 14 extension blocks
+	StubIndexKey<Integer, DotNetPropertyDeclaration> EXTENSION_PROPERTY_BY_NAMESPACE_AND_NAME_INDEX = StubIndexKey.createIndexKey("csharp.extension.property.by.namespace.and.name.index");
 
 	StubIndexKey<String, CSharpMethodDeclaration> DELEGATE_METHOD_BY_NAME_INDEX = StubIndexKey.createIndexKey("csharp.delegate.method.by.name.index");
 

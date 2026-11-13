@@ -1029,7 +1029,8 @@ public class CSharpReferenceExpressionImplUtil {
                 }
             }
             else if (temp instanceof DotNetParameter) {
-                targetToWalkChildren = PsiTreeUtil.getParentOfType(temp, DotNetParameterListOwner.class);
+                // the receiver of a C# 14 extension block - extension<T>(List<T> list)
+                targetToWalkChildren = PsiTreeUtil.getParentOfType(temp, DotNetParameterListOwner.class, CSharpExtensionDeclarationImpl.class);
                 assert targetToWalkChildren != null;
                 last = targetToWalkChildren.getParent();
             }
