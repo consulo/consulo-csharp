@@ -80,6 +80,10 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
      * {@code Circle => true} of a switch expression arm is a pattern and a result, not a lambda
      */
     public static final int NO_LAMBDA = 1 << 9;
+    /**
+     * the receiver of a C# 14 extension block may have no name - {@code extension(int)}
+     */
+    public static final int NAMELESS_PARAMETER = 1 << 10;
 
     public static class TypeInfo {
         public IElementType nativeElementType;
@@ -270,7 +274,8 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
             marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.POINTER_TYPE : CSharpElements.POINTER_TYPE);
         }
 
-        if (!typeInfo.isArray && !alreadyNullable) {
+        // int?, int[]? and int?[]? - a nullable reference array
+        if (typeInfo.isArray || !alreadyNullable) {
             if (!BitUtil.isSet(flags, WITHOUT_NULLABLE)) {
                 if (builder.getTokenType() == QUEST) {
                     typeInfo = new TypeInfo();
@@ -303,7 +308,11 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
         }
 
         typeInfo.marker = marker;
-        if (CSharpTokenSets.NATIVE_TYPES.contains(tokenType)) {
+        if (tokenType == CSharpTokens.DELEGATE_KEYWORD && builder.lookAhead(1) == MUL) {
+            parseFunctionPointerType(builder, flags);
+            marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.FUNCTION_POINTER_TYPE : CSharpElements.FUNCTION_POINTER_TYPE);
+        }
+        else if (CSharpTokenSets.NATIVE_TYPES.contains(tokenType)) {
             builder.advanceLexer();
             marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.NATIVE_TYPE : CSharpElements.NATIVE_TYPE);
 
@@ -373,6 +382,65 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
         }
 
         return typeInfo;
+    }
+
+    /**
+     * {@code delegate* managed<ref int, out string, void>}, {@code delegate* unmanaged[Cdecl, SuppressGCTransition]<int>} - the last type is the return one
+     */
+    private static void parseFunctionPointerType(CSharpBuilderWrapper builder, int flags) {
+        builder.advanceLexer(); // delegate
+        builder.advanceLexer(); // *
+
+        if (builder.getTokenType() == CSharpTokens.IDENTIFIER) {
+            String convention = builder.getTokenText();
+            if ("managed".equals(convention)) {
+                builder.advanceLexer();
+            }
+            else if ("unmanaged".equals(convention)) {
+                builder.advanceLexer();
+                if (builder.getTokenType() == LBRACKET) {
+                    builder.advanceLexer();
+                    while (builder.getTokenType() == CSharpTokens.IDENTIFIER) {
+                        builder.advanceLexer();
+                        if (builder.getTokenType() != COMMA) {
+                            break;
+                        }
+                        builder.advanceLexer();
+                    }
+                    expect(builder, RBRACKET, "']' expected");
+                }
+            }
+        }
+
+        if (!expect(builder, LT, "'<' expected")) {
+            return;
+        }
+
+        while (!builder.eof()) {
+            if (builder.getTokenType() == REF_KEYWORD) {
+                builder.advanceLexer();
+                if (builder.getTokenType() == READONLY_KEYWORD) {
+                    builder.advanceLexer();
+                }
+            }
+            else if (builder.getTokenType() == IN_KEYWORD || builder.getTokenType() == OUT_KEYWORD) {
+                builder.advanceLexer();
+            }
+
+            if (parseType(builder, flags & ~VAR_SUPPORT) == null) {
+                builder.error("Expected type");
+                break;
+            }
+
+            if (builder.getTokenType() == COMMA) {
+                builder.advanceLexer();
+            }
+            else {
+                break;
+            }
+        }
+
+        expect(builder, GT, "'>' expected");
     }
 
     protected static boolean parseAttributeList(CSharpBuilderWrapper builder, ModifierSet set, int flags) {

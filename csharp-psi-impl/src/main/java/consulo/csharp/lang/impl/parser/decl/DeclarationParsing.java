@@ -120,6 +120,31 @@ public class DeclarationParsing extends SharedParsingHelpers {
      * Not a namespace, a type, a using directive or an attributed / accessible member - they are declarations at the
      * file root as before C# 9
      */
+    private static boolean isRecordNameFollower(@Nullable IElementType tokenType) {
+        return tokenType == LPAR || tokenType == LT || tokenType == LBRACE || tokenType == COLON || tokenType == SEMICOLON;
+    }
+
+    /**
+     * {@code file record R} or {@code partial record R} - a soft modifier at {@code index} and {@code record} after it
+     */
+    private static boolean isSoftModifierFollowedByRecord(CSharpBuilderWrapper builder, int index) {
+        PsiBuilder.Marker marker = builder.mark();
+        try {
+            for (int j = 0; j < index; j++) {
+                builder.advanceLexer();
+            }
+            String modifier = builder.getTokenText();
+            if (!"file".equals(modifier) && !"partial".equals(modifier)) {
+                return false;
+            }
+            builder.advanceLexer();
+            return "record".equals(builder.getTokenText());
+        }
+        finally {
+            marker.rollbackTo();
+        }
+    }
+
     private static boolean isTopLevelStatementStart(CSharpBuilderWrapper builder) {
         IElementType tokenType = builder.getTokenType();
         if (tokenType == null || tokenType == NAMESPACE_KEYWORD || tokenType == LBRACKET || tokenType == RBRACE || tokenType == DELEGATE_KEYWORD
@@ -150,9 +175,18 @@ public class DeclarationParsing extends SharedParsingHelpers {
             current = builder.lookAhead(++i);
         }
 
-        // partial class, static partial class
+        // partial class, static partial class, file record R, partial record struct R
         if (current == CSharpTokens.IDENTIFIER && CSharpTokenSets.TYPE_DECLARATION_START.contains(builder.lookAhead(i + 1))) {
             return false;
+        }
+        if (current == CSharpTokens.IDENTIFIER && builder.lookAhead(i + 1) == CSharpTokens.IDENTIFIER) {
+            IElementType afterRecord = builder.lookAhead(i + 2);
+            if (afterRecord == CLASS_KEYWORD || afterRecord == STRUCT_KEYWORD || afterRecord == CSharpTokens.IDENTIFIER
+                && isRecordNameFollower(builder.lookAhead(i + 3))) {
+                if (isSoftModifierFollowedByRecord(builder, i)) {
+                    return false;
+                }
+            }
         }
         return !(i > 0 && (CSharpTokenSets.TYPE_DECLARATION_START.contains(current) || current == DELEGATE_KEYWORD || current == EVENT_KEYWORD));
     }
@@ -164,8 +198,50 @@ public class DeclarationParsing extends SharedParsingHelpers {
      * @param namespaceLevel the file or a namespace body - attributes and modifiers with no member after them are an
      *                       incomplete member there (Roslyn IncompleteMemberSyntax), not a field without a type
      */
+    /**
+     * C# 14 {@code extension(string s)}, {@code extension<T>(List<T> list)} - a soft keyword: a method named extension has a
+     * return type before the name
+     */
+    private static boolean isExtensionStart(CSharpBuilderWrapper builder) {
+        if (builder.getTokenType() != CSharpTokens.IDENTIFIER || !builder.getVersion().isAtLeast(CSharpLanguageVersion._14_0)
+            || !"extension".equals(builder.getTokenText())) {
+            return false;
+        }
+        IElementType next = builder.lookAhead(1);
+        return next == LPAR || next == LT;
+    }
+
+    private static void parseExtension(CSharpBuilderWrapper builder, PsiBuilder.Marker marker) {
+        builder.remapCurrentToken(CSharpSoftTokens.EXTENSION_KEYWORD);
+        builder.advanceLexer();
+
+        GenericParameterParsing.parseList(builder);
+
+        if (builder.getTokenType() == LPAR) {
+            MethodParsing.parseParameterList(builder, STUB_SUPPORT | NAMELESS_PARAMETER, RPAR, ModifierSet.EMPTY);
+        }
+        else {
+            builder.error("'(' expected");
+        }
+
+        GenericParameterParsing.parseGenericConstraintList(builder);
+
+        if (expect(builder, LBRACE, "'{' expected")) {
+            parseAll(builder, false, false);
+
+            expect(builder, RBRACE, "'}' expected");
+        }
+
+        marker.done(CSharpStubElements.EXTENSION_DECLARATION);
+    }
+
     private static void parse(CSharpBuilderWrapper builder, boolean namespaceLevel) {
         PsiBuilder.Marker marker = builder.mark();
+
+        if (!namespaceLevel && isExtensionStart(builder)) {
+            parseExtension(builder, marker);
+            return;
+        }
 
         Pair<PsiBuilder.Marker, ModifierSet> modifierListPair = parseWithSoftElements(b -> parseModifierListWithAttributes(b, STUB_SUPPORT), builder, PARTIAL_KEYWORD, ASYNC_KEYWORD, REQUIRED_KEYWORD, FILE_KEYWORD);
 
@@ -202,7 +278,7 @@ public class DeclarationParsing extends SharedParsingHelpers {
 
             EventParsing.parse(builder, marker, modifierSet);
         }
-        else if (tokenType == DELEGATE_KEYWORD) {
+        else if (tokenType == DELEGATE_KEYWORD && builder.lookAhead(1) != MUL) {
             builder.advanceLexer();
 
             // delegate ref int D(); delegate ref readonly int D();

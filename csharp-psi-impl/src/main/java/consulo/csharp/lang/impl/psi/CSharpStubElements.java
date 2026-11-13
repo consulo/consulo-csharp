@@ -17,12 +17,15 @@
 package consulo.csharp.lang.impl.psi;
 
 import consulo.csharp.lang.impl.psi.source.CSharpStubNullableTypeImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpExtensionDeclarationImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpStubFunctionPointerTypeImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpStubPointerTypeImpl;
 import consulo.csharp.lang.impl.psi.source.CSharpUsingTypeStatementImpl;
 import consulo.csharp.lang.impl.psi.stub.elementTypes.*;
 import consulo.csharp.lang.psi.CSharpNullableType;
 import consulo.csharp.lang.psi.CSharpUsingTypeStatement;
 import consulo.dotnet.psi.DotNetPointerType;
+import consulo.dotnet.psi.DotNetType;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.EmptyStub;
@@ -104,6 +107,36 @@ public interface CSharpStubElements
 		public CSharpStubPointerTypeImpl createPsi(EmptyStub<DotNetPointerType> stub)
 		{
 			return new CSharpStubPointerTypeImpl(stub, this);
+		}
+	};
+
+	CSharpEmptyStubElementType<DotNetType> FUNCTION_POINTER_TYPE = new CSharpEmptyStubElementType<>("FUNCTION_POINTER_TYPE")
+	{
+		@Override
+		public PsiElement createElement(ASTNode astNode)
+		{
+			return new CSharpStubFunctionPointerTypeImpl(astNode);
+		}
+
+		@Override
+		public CSharpStubFunctionPointerTypeImpl createPsi(EmptyStub<DotNetType> stub)
+		{
+			return new CSharpStubFunctionPointerTypeImpl(stub, this);
+		}
+	};
+
+	CSharpEmptyStubElementType<CSharpExtensionDeclarationImpl> EXTENSION_DECLARATION = new CSharpEmptyStubElementType<>("EXTENSION_DECLARATION")
+	{
+		@Override
+		public PsiElement createElement(ASTNode astNode)
+		{
+			return new CSharpExtensionDeclarationImpl(astNode);
+		}
+
+		@Override
+		public CSharpExtensionDeclarationImpl createPsi(EmptyStub<CSharpExtensionDeclarationImpl> stub)
+		{
+			return new CSharpExtensionDeclarationImpl(stub, this);
 		}
 	};
 

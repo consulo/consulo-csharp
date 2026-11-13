@@ -91,6 +91,8 @@ public interface CSharpElements {
 
     IElementType POINTER_TYPE = new CompositeElementTypeAsPsiFactory("POINTER_TYPE", CSharpLanguage.INSTANCE, CSharpPointerTypeImpl::new);
 
+    IElementType FUNCTION_POINTER_TYPE = new CompositeElementTypeAsPsiFactory("FUNCTION_POINTER_TYPE", CSharpLanguage.INSTANCE, CSharpFunctionPointerTypeImpl::new);
+
     IElementType TUPLE_TYPE = new CompositeElementTypeAsPsiFactory("TUPLE_TYPE", CSharpLanguage.INSTANCE, CSharpTupleTypeImpl::new);
 
     IElementType TUPLE_VARIABLE = new CompositeElementTypeAsPsiFactory("TUPLE_VARIABLE", CSharpLanguage.INSTANCE, CSharpTupleVariableImpl::new);

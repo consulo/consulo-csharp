@@ -449,9 +449,8 @@ public class ExpressionParsing extends SharedParsingHelpers {
             builder.advanceLexer();
             while (!builder.eof() && builder.getTokenType() != RBRACKET) {
                 int offset = builder.getCurrentOffset();
-                if (builder.getTokenType() == DOT && builder.lookAhead(1) == DOT) {
+                if (builder.getTokenType() == DOTDOT) {
                     PsiBuilder.Marker slice = builder.mark();
-                    builder.advanceLexer();
                     builder.advanceLexer();
                     if (builder.getTokenType() != COMMA && builder.getTokenType() != RBRACKET) {
                         if (!parsePattern(builder, set, flags)) {
@@ -906,7 +905,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
                         return refExpr;
                     }
 
-                    parseReferenceTypeArgumentList(builder, NONE);
+                    parseReferenceTypeArgumentList(builder, ALLOW_EMPTY_TYPE_ARGUMENTS);
                     refExpr.done(referenceExpression(flags));
                     expr = refExpr;
                 }
@@ -943,7 +942,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
                     return refExpr;
                 }
 
-                parseReferenceTypeArgumentList(builder, NONE);
+                parseReferenceTypeArgumentList(builder, ALLOW_EMPTY_TYPE_ARGUMENTS);
                 refExpr.done(referenceExpression(flags));
                 expr = refExpr;
             }
@@ -1124,7 +1123,13 @@ public class ExpressionParsing extends SharedParsingHelpers {
 
         if (tokenType == LBRACE && modifierSet.isAllowShortObjectInitializer()) {
             PsiBuilder.Marker mark = builder.mark();
-            parseNamedFieldOrPropertySetBlock(builder, modifierSet, flags);
+            if (builder.lookAhead(1) == LBRACKET) {
+                // Items = { [^1] = 2 } - index initializers of a nested object
+                parseDictionaryInitializerList(builder, modifierSet);
+            }
+            else {
+                parseNamedFieldOrPropertySetBlock(builder, modifierSet, flags);
+            }
             mark.done(SHORT_OBJECT_INITIALIZER_EXPRESSION);
             return mark;
         }
@@ -1272,7 +1277,7 @@ public class ExpressionParsing extends SharedParsingHelpers {
             PsiBuilder.Marker refExpr = builder.mark();
 
             builder.advanceLexer();
-            parseReferenceTypeArgumentList(builder, NONE);
+            parseReferenceTypeArgumentList(builder, ALLOW_EMPTY_TYPE_ARGUMENTS);
             refExpr.done(referenceExpression(flags));
             return refExpr;
         }

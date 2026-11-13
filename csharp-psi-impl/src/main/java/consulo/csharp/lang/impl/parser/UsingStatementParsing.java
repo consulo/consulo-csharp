@@ -37,6 +37,12 @@ public class UsingStatementParsing extends SharedParsingHelpers
 	{
 		consumer.accept(builder);
 
+		// using unsafe Ptr = int*; - C# 12
+		if(builder.getTokenType() == CSharpTokens.UNSAFE_KEYWORD && builder.lookAhead(1) == CSharpTokens.IDENTIFIER && builder.lookAhead(2) == CSharpTokens.EQ)
+		{
+			builder.advanceLexer();
+		}
+
 		IElementType to = null;
 		if(builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == CSharpTokens.EQ)
 		{

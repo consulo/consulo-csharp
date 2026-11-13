@@ -275,7 +275,10 @@ public class MethodParsing extends MemberWithBodyParsing {
             mark.error("Type expected");
         }
         else {
-            if (typeInfo.nativeElementType != CSharpTokens.__ARGLIST_KEYWORD) {
+            if (BitUtil.isSet(flags, NAMELESS_PARAMETER) && (builder.getTokenType() == end || builder.getTokenType() == COMMA)) {
+                // extension(int)
+            }
+            else if (typeInfo.nativeElementType != CSharpTokens.__ARGLIST_KEYWORD) {
                 expectOrReportIdentifier(builder, flags);
 
                 if (expect(builder, EQ, null)) {

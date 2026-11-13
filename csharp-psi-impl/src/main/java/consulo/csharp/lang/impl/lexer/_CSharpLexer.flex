@@ -16,7 +16,8 @@ import consulo.language.lexer.LexerBase;
   // the token of the raw string being lexed - RAW_STRING_LITERAL or, after $, INTERPOLATION_STRING_LITERAL
   private IElementType myRawToken;
   private int myInsideStringInterpolationParenthesesBalance;
-  private java.util.ArrayDeque<Boolean> myStates = new java.util.ArrayDeque<>();
+  // per open interpolation hole - the depth of the braces inside it, {x switch { ... }}
+  private java.util.ArrayDeque<int[]> myStates = new java.util.ArrayDeque<>();
   private java.util.ArrayDeque<Integer> myStacks = new java.util.ArrayDeque<>();
 
   private final boolean myHighlight;
@@ -30,7 +31,26 @@ import consulo.language.lexer.LexerBase;
   }
 
   public void beginArgumentExpression() {
-     myStates.addLast(Boolean.TRUE);
+     myStates.addLast(new int[1]);
+  }
+
+  private void openBrace() {
+     int[] braces = myStates.peekLast();
+     if (braces != null) {
+        braces[0]++;
+     }
+  }
+
+  /**
+   * @return true if the closing brace belongs to a brace opened inside the interpolation hole, not to the hole
+   */
+  private boolean closeNestedBrace() {
+     int[] braces = myStates.peekLast();
+     if (braces != null && braces[0] > 0) {
+        braces[0]--;
+        return true;
+     }
+     return false;
   }
 
   public void endArgumentExpression() {
@@ -211,8 +231,18 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
 	}
 
+	"{"
+	{
+		openBrace();
+		return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
+	}
+
 	"}"
 	{
+		if(closeNestedBrace())
+		{
+			return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL;
+		}
 		endArgumentExpression();
 
 		if(myStringInterpolationBalance != 0)
@@ -472,10 +502,14 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 	"else"                    { return CSharpTokens.ELSE_KEYWORD; }
 
 //
-	"{"                       { return CSharpTokens.LBRACE; }
+	"{"                       { openBrace(); return CSharpTokens.LBRACE; }
 
 	"}"
 	{
+		if(closeNestedBrace())
+		{
+			return CSharpTokens.RBRACE;
+		}
 		if(myStringInterpolationBalance != 0)
 		{
 			endArgumentExpression();

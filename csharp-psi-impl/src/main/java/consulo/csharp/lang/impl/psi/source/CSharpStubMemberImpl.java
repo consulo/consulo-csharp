@@ -106,6 +106,10 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
             return stub.getParentQName();
         }
         PsiElement parent = getParent();
+        // a member of a C# 14 extension block belongs to the static class around it
+        if (parent instanceof CSharpExtensionDeclarationImpl) {
+            parent = parent.getParent();
+        }
         if (parent instanceof DotNetQualifiedElement) {
             return ((DotNetQualifiedElement) parent).getPresentableQName();
         }

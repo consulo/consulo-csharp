@@ -9,6 +9,8 @@ import consulo.dotnet.cfs.lang.CfsTokens;
 %{
   private IElementType myArgumentElementType;
   private int myInsideParenthesesBalance;
+  // braces inside the argument - {x switch { 1 => "one", _ => "other" }}
+  private int myInsideBracesBalance;
 
   public CSharpInterpolationStringLexer(IElementType argumentElementType) {
      myArgumentElementType = argumentElementType;
@@ -54,7 +56,7 @@ import consulo.dotnet.cfs.lang.CfsTokens;
 
 	":"
 	{
-		if(myInsideParenthesesBalance > 0)
+		if(myInsideParenthesesBalance > 0 || myInsideBracesBalance > 0)
 		{
 			return myArgumentElementType;
 		}
@@ -65,7 +67,22 @@ import consulo.dotnet.cfs.lang.CfsTokens;
 		}
    }
 
-   "}" { yybegin(YYINITIAL); return CfsTokens.END; }
+	"{"
+	{
+		myInsideBracesBalance ++;
+		return myArgumentElementType;
+	}
+
+	"}"
+	{
+		if(myInsideBracesBalance > 0)
+		{
+			myInsideBracesBalance --;
+			return myArgumentElementType;
+		}
+		yybegin(YYINITIAL);
+		return CfsTokens.END;
+	}
 
    [^]   { return myArgumentElementType; }
 }
