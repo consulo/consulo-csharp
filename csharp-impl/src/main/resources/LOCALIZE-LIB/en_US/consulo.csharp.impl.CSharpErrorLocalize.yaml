@@ -342,8 +342,20 @@ CS1614:
     text: "''{0}'' is ambiguous between ''{0}'' and ''{0}Attribute''. Use either ''@{0}'' or ''{0}Attribute''"
 CS1620:
     text: "Argument {0} must be passed with the ''{1}'' keyword"
+CS1621:
+    text: "The yield statement cannot be used inside an anonymous method or lambda expression"
 CS1622:
     text: Cannot return a value from an iterator. Use the yield return statement to return a value, or yield break to end the iteration
+CS1623:
+    text: "Iterators cannot have ref, in or out parameters"
+CS1624:
+    text: "The body of ''{0}'' cannot be an iterator block because ''{1}'' is not an iterator interface type"
+CS1625:
+    text: "Cannot yield in the body of a finally clause"
+CS1626:
+    text: "Cannot yield a value in the body of a try block with a catch clause"
+CS1631:
+    text: "Cannot yield a value in the body of a catch clause"
 CS1632:
     text: Control cannot leave the body of an anonymous method or lambda expression
 CS1643:
@@ -418,6 +430,8 @@ CS8198:
     text: An expression tree may not contain an out argument variable declaration
 CS8207:
     text: An expression tree may not contain a discard
+CS8403:
+    text: "Method ''{0}'' with an iterator block must be ''async'' to return ''{1}''"
 CS8514:
     text: An expression tree may not contain a switch expression
 CS8618:

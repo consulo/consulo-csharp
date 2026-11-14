@@ -21,6 +21,8 @@ import consulo.codeEditor.Editor;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.impl.psi.source.CSharpFinallyStatementImpl;
+import consulo.csharp.lang.impl.psi.source.CSharpYieldStatementImpl;
+import consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import consulo.csharp.lang.impl.psi.source.CSharpReturnStatementImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.language.editor.intention.SyntheticIntentionAction;
@@ -72,7 +74,12 @@ public class CS0157 extends CompilerCheck<CSharpReturnStatementImpl> {
   public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion,
                                         CSharpHighlightContext highlightContext,
                                         CSharpReturnStatementImpl element) {
-    CSharpFinallyStatementImpl finallyStatement = PsiTreeUtil.getParentOfType(element, CSharpFinallyStatementImpl.class);
+    // yield return in finally is CS1625
+    if (element.getParent() instanceof CSharpYieldStatementImpl) {
+      return null;
+    }
+    // a return of a lambda in finally leaves the lambda only
+    CSharpFinallyStatementImpl finallyStatement = PsiTreeUtil.getParentOfType(element, CSharpFinallyStatementImpl.class, true, CSharpSimpleLikeMethodAsElement.class);
     if (finallyStatement != null) {
       return newBuilder(element).withQuickFix(new RemoveReturnStatementFix(element));
     }

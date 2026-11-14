@@ -106,7 +106,7 @@ public class CS0127 extends CompilerCheck<CSharpReturnStatementImpl> {
     }
 
     @RequiredReadAction
-    private static boolean isIterator(CSharpSimpleLikeMethodAsElement owner) {
+    static boolean isIterator(CSharpSimpleLikeMethodAsElement owner) {
         CSharpControlFlow flow = CSharpControlFlow.of(owner);
         if (flow != null) {
             return flow.isIterator();

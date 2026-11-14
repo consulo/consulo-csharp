@@ -200,7 +200,13 @@ public enum CSharpCompilerChecks {
     CS1612(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // can't modify field value from non local reference
     CS1614(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // double resolving to X and XAttribute
     CS1620(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref out exp checks
+    CS1621(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // yield in a lambda
     CS1622(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // return in an iterator
+    CS1623(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // iterator with a ref parameter
+    CS1624(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // iterator of a non-iterator type
+    CS1625(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // yield in finally
+    CS1626(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // yield return in try with catch
+    CS1631(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // yield return in catch
     CS1632(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // break or continue out of a lambda
     CS1643(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // not all code paths of a lambda or an anonymous method return a value
     CS1644(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // features checks
@@ -238,6 +244,7 @@ public enum CSharpCompilerChecks {
     CS8188(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // throw expression in expression tree
     CS8198(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // out variable in expression tree
     CS8207(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // discard in expression tree
+    CS8403(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // async iterator without async
     CS8514(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // switch expression in expression tree
     CS8618(CSharpLanguageVersion._8_0, HighlightInfoType.WARNING), // non-nullable member not assigned by a constructor
     CS8632(CSharpLanguageVersion._8_0, HighlightInfoType.WARNING), // nullable type check
