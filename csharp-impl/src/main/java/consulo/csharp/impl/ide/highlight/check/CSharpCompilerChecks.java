@@ -100,6 +100,7 @@ public enum CSharpCompilerChecks {
     CS0171(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // struct field not assigned by a constructor
     CS0173(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // failed to find conditional expression type
     CS0177(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // out parameter not assigned when control leaves
+    CS0185(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // lock of a value type
     CS0188(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // this of a struct used before all its fields are assigned
     CS0191(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // readonly field assigned out of a constructor
     CS0192(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // readonly field by ref
@@ -108,6 +109,7 @@ public enum CSharpCompilerChecks {
     CS0200(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // readonly check
     CS0201(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expression statement can be only call, etc
     CS0206(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref/out expressions can be only indexer, etc
+    CS0208(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // pointer to a managed type
     CS0211(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // cant take address for expression
     CS0214(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // fixed can be used inside unsafe context
     CS0215(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // operator true or false not returning bool
@@ -138,6 +140,7 @@ public enum CSharpCompilerChecks {
     CS0414(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // private field assigned, never read
     CS0418(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // abstract type cant be static or sealed
     CS0441(CSharpLanguageVersion._2_0, HighlightInfoType.WRONG_REF), // static and sealed cant be combined
+    CS0446(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // foreach of a method group
     CS0448(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ++ or -- returning another type
     CS0449(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // struct or class constraint must be first
     CS0452(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // value type argument of a class constraint
@@ -185,6 +188,7 @@ public enum CSharpCompilerChecks {
     CS0616(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // not an attribute class
     CS0621(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // private virtual member
     CS0628(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // protected member of a sealed type
+    CS0642(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // empty statement of if
     CS0649(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // private field never assigned
     CS0657(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // invalid attribute location
     CS0659(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // Equals without GetHashCode
@@ -240,6 +244,7 @@ public enum CSharpCompilerChecks {
     CS1008(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // eum type can be only byte,sbyte,short,ushort,int,uint,long,ulong
     CS1017(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // catch after the general catch
     CS1021(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // too big number
+    CS1023(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // embedded declaration statement
     CS1029(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // check for #error
     CS1030(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // check for #warning
     CS1100(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only set to first parameter
@@ -251,6 +256,7 @@ public enum CSharpCompilerChecks {
     CS1511(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // 'base' inside static context
     CS1535(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implicit and explicit can hold only one param
     CS1547(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // 'void' can used only in return type
+    CS1579(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // foreach of a type without GetEnumerator
     CS1612(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // can't modify field value from non local reference
     CS1614(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // double resolving to X and XAttribute
     CS1620(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref out exp checks
@@ -307,6 +313,7 @@ public enum CSharpCompilerChecks {
     CS8328(CSharpLanguageVersion._7_2, HighlightInfoType.ERROR), // conflicting parameter modifiers
     CS8337(CSharpLanguageVersion._7_2, HighlightInfoType.ERROR), // ref extension of a reference type
     CS8403(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // async iterator without async
+    CS8500(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // pointer to a managed type
     CS8514(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // switch expression in expression tree
     CS8618(CSharpLanguageVersion._8_0, HighlightInfoType.WARNING), // non-nullable member not assigned by a constructor
     CS8632(CSharpLanguageVersion._8_0, HighlightInfoType.WARNING), // nullable type check
