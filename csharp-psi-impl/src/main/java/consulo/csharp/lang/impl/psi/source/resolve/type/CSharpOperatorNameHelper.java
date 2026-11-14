@@ -65,6 +65,8 @@ public class CSharpOperatorNameHelper
 		ourOperatorNames.put(CSharpTokens.TILDE, "~");
 		ourOperatorNames.put(CSharpTokens.PERC, "%");
 		ourOperatorNames.put(CSharpTokens.PERCEQ, "%");
+		ourOperatorNames.put(CSharpTokens.TRUE_KEYWORD, "true");
+		ourOperatorNames.put(CSharpTokens.FALSE_KEYWORD, "false");
 	}
 
 	@Nullable

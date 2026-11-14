@@ -26,6 +26,7 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.dotnet.cfs.lang.CfsTokens;
 import consulo.language.ast.IElementType;
 import consulo.language.ast.StringEscapesTokenTypes;
+import consulo.language.ast.TokenSet;
 import consulo.language.editor.highlight.SyntaxHighlighterBase;
 import consulo.language.lexer.Lexer;
 
@@ -66,7 +67,8 @@ public class CSharpSyntaxHighlighter extends SyntaxHighlighterBase
 		safeMap(ourKeys, CSharpTokens.DOT, CSharpHighlightKey.DOT);
 		safeMap(ourKeys, CSharpTokens.DARROW, CSharpHighlightKey.ARROW);
 		safeMap(ourKeys, CSharpTokens.ARROW, CSharpHighlightKey.ARROW);
-		safeMap(ourKeys, CSharpTokenSets.OVERLOADING_OPERATORS, CSharpHighlightKey.OPERATION_SIGN);
+		// true and false are keywords - operator true
+		safeMap(ourKeys, TokenSet.andNot(CSharpTokenSets.OVERLOADING_OPERATORS, TokenSet.create(CSharpTokens.TRUE_KEYWORD, CSharpTokens.FALSE_KEYWORD)), CSharpHighlightKey.OPERATION_SIGN);
 		safeMap(ourKeys, CSharpTokenSets.ASSIGNMENT_OPERATORS, CSharpHighlightKey.OPERATION_SIGN);
 		safeMap(ourKeys, CSharpTokens.OROR, CSharpHighlightKey.OPERATION_SIGN);
 		safeMap(ourKeys, CSharpTokens.ANDAND, CSharpHighlightKey.OPERATION_SIGN);

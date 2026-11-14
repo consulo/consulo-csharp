@@ -68,6 +68,8 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
             put("op_GreaterThanOrEqual", new MsiMappingOperator(">=", CSharpTokens.GTEQ));
             put("op_OnesComplement", new MsiMappingOperator("~", CSharpTokens.TILDE));
             put("op_LogicalNot", new MsiMappingOperator("!", CSharpTokens.EXCL));
+            put("op_True", new MsiMappingOperator("true", CSharpTokens.TRUE_KEYWORD));
+            put("op_False", new MsiMappingOperator("false", CSharpTokens.FALSE_KEYWORD));
             put("op_Increment", new MsiMappingOperator("++", CSharpTokens.PLUSPLUS));
             put("op_CheckedIncrement", new MsiMappingOperator("++", CSharpTokens.PLUSPLUS, true));
             put("op_Decrement", new MsiMappingOperator("--", CSharpTokens.MINUSMINUS));

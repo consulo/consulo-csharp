@@ -87,7 +87,10 @@ public interface CSharpTokenSets extends CSharpSoftTokens, CSharpTokensImpl {
         XOREQ,
         LTLTEQ,
         GTGTEQ,
-        GTGTGTEQ
+        GTGTGTEQ,
+        // operator true, operator false
+        TRUE_KEYWORD,
+        FALSE_KEYWORD
     };
     TokenSet OVERLOADING_OPERATORS = TokenSet.create(OVERLOADING_OPERATORS_AS_ARRAY);
 
