@@ -113,6 +113,7 @@ public enum CSharpCompilerChecks {
     CS0215(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // operator true or false not returning bool
     CS0216(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // operator without its pair
     CS0219(CSharpLanguageVersion._1_0, CSharpHighlightInfoType::getUnusedDeclaration), // local variable usage check with initializer
+    CS0225(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // params of an invalid type
     CS0227(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // 'unsafe' modifier check
     CS0231(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // 'params' modifier must be last
     CS0236(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // can't reference to non static field, property, method from field initializer
@@ -242,8 +243,10 @@ public enum CSharpCompilerChecks {
     CS1029(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // check for #error
     CS1030(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // check for #warning
     CS1100(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only set to first parameter
+    CS1104(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // params this parameter
     CS1105(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only in method with static modifier
     CS1106(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only in type with static modifier and no generic
+    CS1109(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // extension method of a nested class
     CS1510(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref/out can accept only variable
     CS1511(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // 'base' inside static context
     CS1535(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implicit and explicit can hold only one param
@@ -275,11 +278,13 @@ public enum CSharpCompilerChecks {
     CS1737(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter default values check for order
     CS1738(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter default values check for order
     CS1741(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // default value cant be specified for ref/out parameters
+    CS1750(CSharpLanguageVersion._4_0, HighlightInfoType.ERROR), // default value of another type
     CS1945(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // anonymous method in expression tree
     CS1960(CSharpLanguageVersion._2_0, HighlightInfoType.WRONG_REF), // in and out modifiers can be only for interface(or delegate) generic parameter
     CS1980(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // dynamic checks
     CS1984(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside finally statements
     CS1985(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside catch statements
+    CS1988(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // async method with a ref parameter
     CS1989(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // async lambda as expression tree
     CS1996(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // await in the body of a lock
     CS1997(CSharpLanguageVersion._5_0, HighlightInfoType.ERROR), // return with a value from an async Task method
@@ -299,6 +304,8 @@ public enum CSharpCompilerChecks {
     CS8188(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // throw expression in expression tree
     CS8198(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // out variable in expression tree
     CS8207(CSharpLanguageVersion._7_0, HighlightInfoType.ERROR), // discard in expression tree
+    CS8328(CSharpLanguageVersion._7_2, HighlightInfoType.ERROR), // conflicting parameter modifiers
+    CS8337(CSharpLanguageVersion._7_2, HighlightInfoType.ERROR), // ref extension of a reference type
     CS8403(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // async iterator without async
     CS8514(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // switch expression in expression tree
     CS8618(CSharpLanguageVersion._8_0, HighlightInfoType.WARNING), // non-nullable member not assigned by a constructor

@@ -270,7 +270,8 @@ public class CS0029 extends CompilerCheck<PsiElement> {
             }
             return target(elementTypeRef, expression.toTypeRef(true), expression);
         }
-        else if (element instanceof DotNetVariable) {
+        // the default value of a parameter is CS1750
+        else if (element instanceof DotNetVariable && !(element instanceof consulo.dotnet.psi.DotNetParameter)) {
             DotNetExpression initializer = ((DotNetVariable) element).getInitializer();
             if (initializer == null) {
                 return null;

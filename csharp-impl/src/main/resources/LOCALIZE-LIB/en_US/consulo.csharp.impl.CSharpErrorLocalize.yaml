@@ -170,6 +170,8 @@ CS0216:
     text: "The operator ''{0}'' requires a matching operator ''{1}'' to also be defined"
 CS0219:
     text: "The variable ''{0}'' is assigned but its value is never used"
+CS0225:
+    text: "The params parameter must have a valid collection type"
 CS0227:
     text: "Unsafe code requires the 'unsafe' command line option to be specified"
 CS0231:
@@ -424,10 +426,14 @@ CS1021:
     text: Integral constant is too large
 CS1100:
     text: "Method ''{0}'' has a parameter modifier 'this' which is not on the first parameter"
+CS1104:
+    text: "A parameter array cannot be used with ''this'' modifier on an extension method"
 CS1105:
     text: "''{0}'': Extension methods must be declared static"
 CS1106:
     text: "''{0}'': Extension methods must be defined in a non-generic static class"
+CS1109:
+    text: "Extension methods must be defined in a top level static class; {0} is a nested class"
 CS1510:
     text: A ref or out argument must be an assignable variable
 CS1511:
@@ -490,6 +496,8 @@ CS1738:
     text: Named argument specifications must appear after all fixed arguments have been specified
 CS1741:
     text: "Cannot specify a default value for the ''{0}'' parameter"
+CS1750:
+    text: "A value of type ''{0}'' cannot be used as a default parameter because there are no standard conversions to type ''{1}''"
 CS1945:
     text: An expression tree may not contain an anonymous method expression
 CS1960:
@@ -500,6 +508,8 @@ CS1984:
     text: "The ''{0}'' operator cannot be used in the body of a finally clause"
 CS1985:
     text: "The ''{0}'' operator cannot be used in the body of a catch clause"
+CS1988:
+    text: "Async methods cannot have ref, in or out parameters"
 CS1989:
     text: Async lambda expressions cannot be converted to expression trees
 CS1996:
@@ -538,6 +548,10 @@ CS8198:
     text: An expression tree may not contain an out argument variable declaration
 CS8207:
     text: An expression tree may not contain a discard
+CS8328:
+    text: "The parameter modifier ''{0}'' cannot be used with ''{1}''"
+CS8337:
+    text: "The first parameter of a ''ref'' extension method ''{0}'' must be a value type or a generic type constrained to struct."
 CS8403:
     text: "Method ''{0}'' with an iterator block must be ''async'' to return ''{1}''"
 CS8514:

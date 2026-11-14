@@ -83,6 +83,19 @@ public class CS0031 extends CompilerCheck<PsiElement> {
         return big.compareTo(range[0]) < 0 || big.compareTo(range[1]) > 0;
     }
 
+    /**
+     * @return true for an integral constant of an integral type, in its range or not - a constant conversion
+     */
+    @RequiredReadAction
+    static boolean isIntegralConstant(DotNetExpression expression, DotNetTypeRef expected) {
+        String vmQName = integralVmQName(expected);
+        if (vmQName == null || !RANGES.containsKey(vmQName)) {
+            return false;
+        }
+        Object value = new ConstantExpressionEvaluator(expression).getValue();
+        return value instanceof Number && !(value instanceof Double || value instanceof Float || value instanceof java.math.BigDecimal);
+    }
+
     @Nullable
     @RequiredReadAction
     private static String integralVmQName(DotNetTypeRef typeRef) {
