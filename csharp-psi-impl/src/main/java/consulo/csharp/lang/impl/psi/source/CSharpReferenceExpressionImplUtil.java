@@ -641,6 +641,11 @@ public class CSharpReferenceExpressionImplUtil {
 
         CommonProcessors.CollectProcessor<ResolveResult> processor = new CommonProcessors.CollectProcessor<ResolveResult>();
         collectResults(new CSharpResolveOptions(kind, selector, element, callArgumentListOwner, false, resolveFromParent), DotNetGenericExtractor.EMPTY, forceQualifierElement, processor);
+        // no attribute class - [NotAttr] binds to a type which is not one, CS0616
+        if (processor.getResults().isEmpty() && selector instanceof AttributeByNameSelector) {
+            selector = new AttributeByNameSelector(element.getReferenceNameWithAt(), true);
+            collectResults(new CSharpResolveOptions(kind, selector, element, callArgumentListOwner, false, resolveFromParent), DotNetGenericExtractor.EMPTY, forceQualifierElement, processor);
+        }
         return processor.toArray(ResolveResult.ARRAY_FACTORY);
     }
 

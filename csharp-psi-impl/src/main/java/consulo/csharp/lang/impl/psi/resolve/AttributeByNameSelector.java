@@ -42,10 +42,20 @@ public class AttributeByNameSelector implements CSharpResolveSelector
 	public static final String AttributeSuffix = "Attribute";
 
 	private String myNameWithAt;
+	private final boolean myNonAttributes;
 
 	public AttributeByNameSelector(String nameWithAt)
 	{
+		this(nameWithAt, false);
+	}
+
+	/**
+	 * @param nonAttributes the types which are not attribute classes too - when no attribute class is found
+	 */
+	public AttributeByNameSelector(String nameWithAt, boolean nonAttributes)
+	{
 		myNameWithAt = nameWithAt;
+		myNonAttributes = nonAttributes;
 	}
 
 	@Override
@@ -70,7 +80,8 @@ public class AttributeByNameSelector implements CSharpResolveSelector
 
 			List<PsiElement> collection = CSharpResolveUtil.mergeGroupsToIterable(array);
 
-			return ContainerUtil.findAll(collection, element -> element instanceof CSharpTypeDeclaration && DotNetInheritUtil.isAttribute((CSharpTypeDeclaration) element));
+			// [NotAttr] binds to the type which is not an attribute class when no attribute class is found - CS0616, as Roslyn
+			return ContainerUtil.findAll(collection, element -> element instanceof CSharpTypeDeclaration && (myNonAttributes || DotNetInheritUtil.isAttribute((CSharpTypeDeclaration) element)));
 		}
 	}
 }
