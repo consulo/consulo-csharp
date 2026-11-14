@@ -64,12 +64,12 @@ import java.util.List;
  * @since 15.05.14
  */
 public class CS0029 extends CompilerCheck<PsiElement> {
-    private static class CheckTarget {
-        private List<DotNetTypeRef> myExpectedTypeRefs = new ArrayList<>();
+    static class CheckTarget {
+        List<DotNetTypeRef> myExpectedTypeRefs = new ArrayList<>();
 
-        private DotNetTypeRef myActualTypeRef;
+        DotNetTypeRef myActualTypeRef;
 
-        private PsiElement myTarget;
+        PsiElement myTarget;
 
         private CheckTarget expect(DotNetTypeRef typeRef) {
             myExpectedTypeRefs.add(typeRef);
@@ -205,6 +205,11 @@ public class CS0029 extends CompilerCheck<PsiElement> {
         if (successResult == null) {
             DotNetTypeRef firstExpectedTypeRef = ContainerUtil.getFirstItem(expectedTypeRefs);
 
+            // byte b = 300; - a constant out of the range is CS0031
+            if (elementToHighlight instanceof DotNetExpression expression && CS0031.isOutOfRange(expression, firstExpectedTypeRef)) {
+                return null;
+            }
+
             CompilerCheckBuilder builder = newBuilder(elementToHighlight, formatTypeRef(actualTypeRef), formatTypeRef(firstExpectedTypeRef));
 
             if (elementToHighlight instanceof DotNetExpression) {
@@ -246,7 +251,7 @@ public class CS0029 extends CompilerCheck<PsiElement> {
     }
 
     @RequiredReadAction
-    private CheckTarget resolve(PsiElement element) {
+    static CheckTarget resolve(PsiElement element) {
         if (element instanceof CSharpEnumConstantDeclarationImpl enumConstant) {
             DotNetExpression initializer = PsiTreeUtil.getChildOfType(enumConstant, DotNetExpression.class);
             CSharpTypeDeclaration enumType = PsiTreeUtil.getParentOfType(enumConstant, CSharpTypeDeclaration.class);

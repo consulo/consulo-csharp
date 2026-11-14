@@ -39,6 +39,7 @@ public enum CSharpCompilerChecks {
     CS0027(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), //  this can't used inside field declaration
     CS0029(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  cant convert A to B with implicit
     CS0030(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // cant convert A to B
+    CS0031(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // enum constant out of the underlying range
     CS0050(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - a method return type
     CS0051(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - a method parameter type
     CS0052(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // inconsistent accessibility - a field type
@@ -150,8 +151,11 @@ public enum CSharpCompilerChecks {
     CS0509(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // classes cant extend sealed type
     CS0513(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // abstract member of a non-abstract class
     CS0516(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constructor cant call itself
+    CS0523(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // struct layout cycle
     CS0525(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface with an instance field
     CS0526(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface with a constructor
+    CS0527(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // class in an interface list
+    CS0528(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface listed twice
     CS0531(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for body for only abstract items
     CS0534(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for missed impl of interfaces
     //CS0535(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for missed impl of abstract members
@@ -186,6 +190,7 @@ public enum CSharpCompilerChecks {
     CS0660(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // operator == without Equals
     CS0661(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // operator == without GetHashCode
     CS0665(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // constant assignment in a condition
+    CS0666(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // protected member of a struct
     CS0673(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // Void cant be used in C#
     CS0692(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // duplicate parameter name
     CS0693(CSharpLanguageVersion._2_0, HighlightInfoType.WARNING), // check by generic
@@ -262,6 +267,7 @@ public enum CSharpCompilerChecks {
     CS1715(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override property of another type
     CS1717(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // assignment to the same variable
     CS1718(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // comparison to the same variable
+    CS1721(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // multiple base classes
     CS1722(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // base type must be first in extend list
     CS1729(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constructor ref to not existed empty base constructor
     CS1730(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // assembly and module attributes must precede all declarations

@@ -20,6 +20,8 @@ CS0029:
     text: "Cannot implicitly convert type ''{0}'' to ''{1}''"
 CS0030:
     text: "Cannot convert type ''{0}'' to ''{1}''"
+CS0031:
+    text: "Constant value ''{0}'' cannot be converted to a ''{1}''"
 CS0050:
     text: "Inconsistent accessibility: return type ''{0}'' is less accessible than method ''{1}''"
 CS0051:
@@ -246,10 +248,16 @@ CS0516:
     text: "Constructor ''{0}'' cannot call itself"
 CS0518:
     text: "Dynamic operation cannot be compiled without 'Microsoft.CSharp.dll' assembly reference"
+CS0523:
+    text: "Struct member ''{0}'' of type ''{1}'' causes a cycle in the struct layout"
 CS0525:
     text: "Interfaces cannot contain instance fields"
 CS0526:
     text: "Interfaces cannot contain instance constructors"
+CS0527:
+    text: "Type ''{0}'' in interface list is not an interface"
+CS0528:
+    text: "''{0}'' is already listed in interface list"
 CS0531:
     text: "''{0}'': interface members cannot have a definition"
 CS0534:
@@ -316,6 +324,8 @@ CS0661:
     text: "''{0}'' defines operator == or operator != but does not override Object.GetHashCode()"
 CS0665:
     text: "Assignment in conditional expression is always constant; did you mean to use == instead of = ?"
+CS0666:
+    text: "''{0}'': new protected member declared in struct"
 CS0673:
     text: "System.Void cannot be used from C#. Consider using ''void''"
 CS0692:
@@ -464,6 +474,8 @@ CS1717:
     text: "Assignment made to same variable; did you mean to assign something else?"
 CS1718:
     text: "Comparison made to same variable; did you mean to compare something else?"
+CS1721:
+    text: "Class ''{0}'' cannot have multiple base classes: ''{1}'' and ''{2}''"
 CS1722:
     text: "''{0}'': Base class ''{1}'' must be specified as first"
 CS1729:
