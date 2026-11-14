@@ -254,10 +254,18 @@ CS0564:
     text: "The first operand of an overloaded shift operator must have the same type as the containing type"
 CS0568:
     text: Structs cannot contain explicit parameterless constructors
+CS0579:
+    text: "Duplicate ''{0}'' attribute"
 CS0590:
     text: "User-defined operators cannot return void"
+CS0592:
+    text: "Attribute ''{0}'' is not valid on this declaration type"
+CS0616:
+    text: "''{0}'' is not an attribute class"
 CS0649:
     text: "Field ''{0}'' is never assigned to, and will always have its default value {1}"
+CS0657:
+    text: "''{0}'' is not a valid attribute location for this declaration. All attributes in this block will be ignored."
 CS0660:
     text: "''{0}'' defines operator == or operator != but does not override Object.Equals(object o)"
 CS0661:

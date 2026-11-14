@@ -155,8 +155,12 @@ public enum CSharpCompilerChecks {
     CS0563(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // binary operator of other types
     CS0564(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // shift operator of another type
     CS0568(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // structs cant have parameterless constructor
+    CS0579(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // duplicate attribute
     CS0590(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // operator returning void
+    CS0592(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // attribute not valid on the declaration
+    CS0616(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // not an attribute class
     CS0649(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // private field never assigned
+    CS0657(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // invalid attribute location
     CS0660(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // operator == without Equals
     CS0661(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // operator == without GetHashCode
     CS0673(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // Void cant be used in C#
