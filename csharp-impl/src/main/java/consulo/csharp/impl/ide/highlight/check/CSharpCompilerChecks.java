@@ -104,6 +104,8 @@ public enum CSharpCompilerChecks {
     CS0206(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref/out expressions can be only indexer, etc
     CS0211(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // cant take address for expression
     CS0214(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // fixed can be used inside unsafe context
+    CS0215(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // operator true or false not returning bool
+    CS0216(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // operator without its pair
     CS0219(CSharpLanguageVersion._1_0, CSharpHighlightInfoType::getUnusedDeclaration), // local variable usage check with initializer
     CS0227(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // 'unsafe' modifier check
     CS0231(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // 'params' modifier must be last
@@ -123,6 +125,7 @@ public enum CSharpCompilerChecks {
     CS0414(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // private field assigned, never read
     CS0418(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // abstract type cant be static or sealed
     CS0441(CSharpLanguageVersion._2_0, HighlightInfoType.WRONG_REF), // static and sealed cant be combined
+    CS0448(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ++ or -- returning another type
     CS0449(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // struct or class constraint must be first
     CS0453(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // nullable type required notnull type
     CS0500(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // code block with abstract modifier
@@ -136,10 +139,22 @@ public enum CSharpCompilerChecks {
     //CS0535(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for missed impl of abstract members
     CS0539(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // checks for private impl of abstract methods
     CS0542(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members cant be named as parent
+    CS0552(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // conversion to or from an interface
+    CS0553(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // conversion to or from a base type
+    CS0554(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // conversion to or from a derived type
     CS0555(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implicit and explicit cant convert to itself
     CS0556(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implicit and explicit cant be hold type without owner
+    CS0557(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // duplicate conversion
+    CS0558(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // operator not public static
+    CS0559(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ++ or -- of another type
+    CS0562(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // unary operator of another type
+    CS0563(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // binary operator of other types
+    CS0564(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // shift operator of another type
     CS0568(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // structs cant have parameterless constructor
+    CS0590(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // operator returning void
     CS0649(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // private field never assigned
+    CS0660(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // operator == without Equals
+    CS0661(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // operator == without GetHashCode
     CS0673(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // Void cant be used in C#
     CS0692(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // duplicate parameter name
     CS0693(CSharpLanguageVersion._2_0, HighlightInfoType.WARNING), // check by generic
