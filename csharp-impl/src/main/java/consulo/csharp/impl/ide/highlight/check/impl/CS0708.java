@@ -22,6 +22,8 @@ import consulo.csharp.impl.ide.codeInsight.actions.AddModifierFix;
 import consulo.csharp.impl.ide.highlight.CSharpHighlightContext;
 import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.impl.psi.source.CSharpPsiUtilImpl;
+import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierListOwner;
@@ -45,6 +47,11 @@ public class CS0708 extends CompilerCheck<DotNetModifierListOwner>
 		if(parent instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) parent).hasModifier(DotNetModifier.STATIC))
 		{
 			if(CSharpPsiUtilImpl.isTypeLikeElement(element))
+			{
+				return null;
+			}
+			// the constructors, the destructors and the indexers are CS0710, CS0711 and CS0720
+			if(element instanceof CSharpConstructorDeclaration || element instanceof CSharpIndexMethodDeclaration)
 			{
 				return null;
 			}

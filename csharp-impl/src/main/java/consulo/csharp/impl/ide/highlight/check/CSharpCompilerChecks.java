@@ -146,6 +146,17 @@ public enum CSharpCompilerChecks {
     CS0702(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // System.Object or System.ValueType cant use by constraints
     CS0708(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members inside static type need define static modifier
     CS0709(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static types cant be parent
+    CS0710(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // static class with an instance constructor
+    CS0711(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // static class with a destructor
+    CS0712(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // new of a static class
+    CS0713(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // static class with a base class
+    CS0714(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // static class implementing an interface
+    CS0715(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // static class with an operator
+    CS0716(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // cast to a static class
+    CS0717(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // static class as a constraint
+    CS0718(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // static class as a type argument
+    CS0719(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // array of a static class
+    CS0720(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // static class with an indexer
     CS0721(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in parameters
     CS0722(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in methods
     CS0723(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in variables

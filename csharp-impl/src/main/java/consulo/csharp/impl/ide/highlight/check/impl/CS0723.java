@@ -27,6 +27,8 @@ import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.csharp.lang.psi.CSharpNativeType;
+import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.resolve.DotNetTypeRefUtil;
 import consulo.language.psi.PsiElement;
@@ -49,6 +51,11 @@ public class CS0723 extends CompilerCheck<DotNetVariable>
 		}
 		DotNetType type = element.getType();
 		PsiElement resolve = DotNetTypeRefUtil.resolve(type);
+		// var s = new S() - the inferred type
+		if(type instanceof CSharpNativeType nativeType && nativeType.getTypeElementType() == CSharpSoftTokens.VAR_KEYWORD)
+		{
+			resolve = element.toTypeRef(true).resolve().getElement();
+		}
 		if(resolve instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) resolve).hasModifier(DotNetModifier.STATIC))
 		{
 			return newBuilder(type, formatElement(element)).withQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolve));
