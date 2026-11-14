@@ -22,6 +22,7 @@ import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetCodeBlockOwner;
+import consulo.dotnet.psi.DotNetConstructorDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetXAccessor;
 import consulo.language.psi.PsiElement;
@@ -40,6 +41,12 @@ public class CS0531 extends CompilerCheck<DotNetCodeBlockOwner>
 	@Override
 	public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, DotNetCodeBlockOwner element)
 	{
+		// C# 8 default interface members; a constructor of an interface is CS0526
+		if(languageVersion.isAtLeast(CSharpLanguageVersion._8_0) || element instanceof DotNetConstructorDeclaration)
+		{
+			return null;
+		}
+
 		PsiElement superParent = null;
 
 		if(element instanceof DotNetXAccessor)

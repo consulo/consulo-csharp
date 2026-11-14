@@ -91,11 +91,9 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration> {
 
       boolean isAbstract = CSharpCompositeTypeDeclaration.selectCompositeOrSelfType(element).hasModifier(CSharpModifier.ABSTRACT);
 
+      // the interface members are CS0535 - at the interface in the base list
       for (DotNetModifierListOwner abstractElement : abstractElements) {
-        if (abstractElement.hasModifier(CSharpModifier.INTERFACE_ABSTRACT)) {
-          targets.add(abstractElement);
-        }
-        else if (!isAbstract) {
+        if (!isAbstract && !abstractElement.hasModifier(CSharpModifier.INTERFACE_ABSTRACT)) {
           targets.add(abstractElement);
         }
       }
@@ -106,14 +104,7 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration> {
 
       DotNetModifierListOwner firstItem = targets.get(0);
 
-      CompilerCheckBuilder compilerCheckBuilder;
-
-      if (firstItem.hasModifier(CSharpModifier.INTERFACE_ABSTRACT)) {
-        compilerCheckBuilder = newBuilderImpl(CS0535.class, nameIdentifier, formatElement(element), formatElement(firstItem));
-      }
-      else {
-        compilerCheckBuilder = newBuilder(nameIdentifier, formatElement(element), formatElement(firstItem));
-      }
+      CompilerCheckBuilder compilerCheckBuilder = newBuilder(nameIdentifier, formatElement(element), formatElement(firstItem));
 
       compilerCheckBuilder.withQuickFix(new ImplementMembersQuickFix());
       return compilerCheckBuilder;

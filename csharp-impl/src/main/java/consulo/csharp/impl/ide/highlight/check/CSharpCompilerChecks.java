@@ -134,10 +134,14 @@ public enum CSharpCompilerChecks {
     CS0507(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override changing the access
     CS0509(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // classes cant extend sealed type
     CS0516(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constructor cant call itself
+    CS0525(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface with an instance field
+    CS0526(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface with a constructor
     CS0531(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for body for only abstract items
     CS0534(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for missed impl of interfaces
     //CS0535(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for missed impl of abstract members
+    CS0535(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface member not implemented
     CS0539(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // checks for private impl of abstract methods
+    CS0540(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // explicit implementation of an interface not implemented
     CS0542(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members cant be named as parent
     CS0552(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // conversion to or from an interface
     CS0553(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // conversion to or from a base type
@@ -176,6 +180,9 @@ public enum CSharpCompilerChecks {
     CS0722(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in methods
     CS0723(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in variables
     CS0724(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // throw; in a finally in a catch
+    CS0736(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface member implemented by a static member
+    CS0737(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface member implemented by a non-public member
+    CS0738(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface member implemented with another return type
     CS0815(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // lambdas cant be cast to 'var'
     CS0818(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var cant be used if not initializer
     CS0820(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var cant be use it initializer is implicit array initializer

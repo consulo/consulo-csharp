@@ -214,6 +214,10 @@ CS0516:
     text: "Constructor ''{0}'' cannot call itself"
 CS0518:
     text: "Dynamic operation cannot be compiled without 'Microsoft.CSharp.dll' assembly reference"
+CS0525:
+    text: "Interfaces cannot contain instance fields"
+CS0526:
+    text: "Interfaces cannot contain instance constructors"
 CS0531:
     text: "''{0}'': interface members cannot have a definition"
 CS0534:
@@ -222,6 +226,8 @@ CS0535:
     text: "''{0}'' does not implement interface member ''{1}''"
 CS0539:
     text: "''{0}'' in explicit interface declaration is not a member of interface"
+CS0540:
+    text: "''{0}'': containing type does not implement interface ''{1}''"
 CS0542:
     text: "''{0}'': member names cannot be the same as their enclosing type"
 CS0552:
@@ -298,6 +304,12 @@ CS0723:
     text: "''{0}'': cannot declare variables of static types"
 CS0724:
     text: A throw statement with no arguments is not allowed in a finally clause that is nested inside the nearest enclosing catch clause
+CS0736:
+    text: "''{0}'' does not implement instance interface member ''{1}''. ''{2}'' cannot implement the interface member because it is static."
+CS0737:
+    text: "''{0}'' does not implement interface member ''{1}''. ''{2}'' cannot implement an interface member because it is not public."
+CS0738:
+    text: "''{0}'' does not implement interface member ''{1}''. ''{2}'' cannot implement ''{1}'' because it does not have the matching return type of ''{3}''."
 CS0815:
     text: "An implicitly typed local variable declaration cannot be initialized with ''{0}''"
 CS0818:

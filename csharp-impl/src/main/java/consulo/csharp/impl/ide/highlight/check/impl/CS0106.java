@@ -41,6 +41,9 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner> {
         Constant(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
         DeConstructor,
         InterfaceMember(CSharpModifier.NEW),
+        // C# 8 default interface members, C# 11 static abstract members
+        InterfaceMember8(CSharpModifier.NEW, CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.STATIC,
+            CSharpModifier.VIRTUAL, CSharpModifier.SEALED, CSharpModifier.ABSTRACT, CSharpModifier.EXTERN, CSharpModifier.PARTIAL, CSharpModifier.ASYNC, CSharpModifier.UNSAFE),
         GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
         Parameter(CSharpModifier.REF, CSharpModifier.OUT, CSharpModifier.IN, CSharpModifier.PARAMS, CSharpModifier.THIS),
         NamespaceStruct(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.UNSAFE, CSharpModifier.PARTIAL),
@@ -76,6 +79,9 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner> {
 
         List<CompilerCheckBuilder> list = Collections.emptyList();
         Owners owners = toOwners(element);
+        if (owners == Owners.InterfaceMember && languageVersion.isAtLeast(CSharpLanguageVersion._8_0)) {
+            owners = Owners.InterfaceMember8;
+        }
 
         DotNetModifier[] modifiers = modifierList.getModifiers();
         if (modifiers.length == 0) {

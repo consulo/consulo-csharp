@@ -24,6 +24,8 @@ import consulo.csharp.impl.ide.highlight.check.CompilerCheck;
 import consulo.csharp.lang.psi.CSharpCodeBodyProxy;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.dotnet.psi.DotNetModifierList;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetCodeBlockOwner;
 import consulo.language.editor.intention.SyntheticIntentionAction;
@@ -80,7 +82,7 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration> {
     if (nameIdentifier == null) {
       return null;
     }
-    if ((element.hasModifier(CSharpModifier.ABSTRACT) || element.isDelegate()) && element.getCodeBlock().isNotSemicolonAndNotEmpty()) {
+    if ((isAbstract(element) || element.isDelegate()) && element.getCodeBlock().isNotSemicolonAndNotEmpty()) {
       CompilerCheckBuilder compilerCheckBuilder = newBuilder(nameIdentifier, formatElement(element));
       compilerCheckBuilder.withQuickFix(new RemoveCodeBlockFix(element));
       if (element.hasModifier(CSharpModifier.ABSTRACT)) {
@@ -89,5 +91,20 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration> {
       return compilerCheckBuilder;
     }
     return null;
+  }
+
+  /**
+   * An interface member is abstract without the modifier - with a body it is a C# 8 default implementation, not an error
+   */
+  @RequiredReadAction
+  private static boolean isAbstract(CSharpMethodDeclaration element) {
+    if (!element.hasModifier(CSharpModifier.ABSTRACT)) {
+      return false;
+    }
+    if (element.getParent() instanceof DotNetTypeDeclaration type && type.isInterface()) {
+      DotNetModifierList modifierList = element.getModifierList();
+      return modifierList != null && modifierList.getModifierElement(CSharpModifier.ABSTRACT) != null;
+    }
+    return true;
   }
 }
