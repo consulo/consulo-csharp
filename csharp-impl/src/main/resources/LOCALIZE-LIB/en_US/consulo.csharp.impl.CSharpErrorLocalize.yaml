@@ -190,6 +190,14 @@ CS0304:
     text: "Cannot create an instance of the variable type ''{0}'' because it does not have the new() constraint"
 CS0305:
     text: "Using the generic type ''{0}'' requires ''{1}'' type argument(s)"
+CS0310:
+    text: "''{0}'' must be a non-abstract type with a public parameterless constructor in order to use it as parameter ''{1}'' in the generic type or method ''{2}''"
+CS0311:
+    text: "The type ''{0}'' cannot be used as type parameter ''{1}'' in the generic type or method ''{2}''. There is no implicit reference conversion from ''{0}'' to ''{3}''."
+CS0314:
+    text: "The type ''{0}'' cannot be used as type parameter ''{1}'' in the generic type or method ''{2}''. There is no boxing conversion or type parameter conversion from ''{0}'' to ''{3}''."
+CS0315:
+    text: "The type ''{0}'' cannot be used as type parameter ''{1}'' in the generic type or method ''{2}''. There is no boxing conversion from ''{0}'' to ''{3}''."
 CS0401:
     text: "The 'new()' constraint must be the last constraint specified"
 CS0409:
@@ -206,8 +214,10 @@ CS0448:
     text: "The return type for ++ or -- operator must match the parameter type or be derived from the parameter type"
 CS0449:
     text: "The 'class' or 'struct' constraint must be the first constraint specified (CS0449)"
+CS0452:
+    text: "The type ''{0}'' must be a reference type in order to use it as parameter ''{1}'' in the generic type or method ''{2}''"
 CS0453:
-    text: "The type ''{0}'' must be a non-nullable value type in order to use it as type parameter 'T' in the generic type or method 'System.Nullable<T>'"
+    text: "The type ''{0}'' must be a non-nullable value type in order to use it as parameter ''{1}'' in the generic type or method ''{2}''"
 CS0472:
     text: "The result of the expression is always ''{0}'' since a value of type ''{1}'' is never equal to ''null''"
 CS0500:

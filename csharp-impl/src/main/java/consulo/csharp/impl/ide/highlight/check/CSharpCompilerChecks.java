@@ -123,6 +123,10 @@ public enum CSharpCompilerChecks {
     CS0269(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // use of unassigned out parameter
     CS0304(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // generic cant be new without new() constraint
     CS0305(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // check for generic count
+    CS0310(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // type argument without a parameterless constructor
+    CS0311(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // type argument without a reference conversion to the constraint
+    CS0314(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // type parameter argument not converting to the constraint
+    CS0315(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // struct argument not boxing to the constraint
     CS0401(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // new() constraint must be last
     CS0409(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // generic constraint already defined for generic
     CS0413(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // 'S' operator  cant use to generic without class constraint, or reference
@@ -131,6 +135,7 @@ public enum CSharpCompilerChecks {
     CS0441(CSharpLanguageVersion._2_0, HighlightInfoType.WRONG_REF), // static and sealed cant be combined
     CS0448(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ++ or -- returning another type
     CS0449(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // struct or class constraint must be first
+    CS0452(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // value type argument of a class constraint
     CS0453(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // nullable type required notnull type
     CS0472(CSharpLanguageVersion._2_0, HighlightInfoType.WARNING), // comparison of a value type with null
     CS0500(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // code block with abstract modifier

@@ -42,7 +42,7 @@ import org.jspecify.annotations.Nullable;
  * @author VISTALL
  * @since 15.09.14
  */
-public class CS0453 extends CompilerCheck<CSharpNullableType> {
+public class CS0453 extends CompilerCheck<DotNetType> {
   public static class DeleteQuestMarkQuickFix extends BaseIntentionAction implements SyntheticIntentionAction {
     private SmartPsiElementPointer<CSharpNullableType> myPointer;
 
@@ -78,9 +78,15 @@ public class CS0453 extends CompilerCheck<CSharpNullableType> {
   @Override
   public CompilerCheckBuilder checkImpl(CSharpLanguageVersion languageVersion,
                                         CSharpHighlightContext highlightContext,
-                                        CSharpNullableType element) {
-    // C# 8 have special handle
-    if (languageVersion.isAtLeast(CSharpLanguageVersion._8_0)) {
+                                        DotNetType type) {
+    // G<string> of where T : struct
+    ConstraintCheckUtil.Violation violation = ConstraintCheckUtil.getViolation(type);
+    if (violation != null && violation.code().equals("CS0453")) {
+      return newBuilder(ConstraintCheckUtil.getLocation(type, violation), formatTypeRef(type.toTypeRef()), violation.parameter().getName(), formatElement(violation.owner()));
+    }
+
+    // string? before C# 8 - nullable is of a value type; C# 8 have special handle
+    if (!(type instanceof CSharpNullableType element) || languageVersion.isAtLeast(CSharpLanguageVersion._8_0)) {
       return null;
     }
 
@@ -96,6 +102,6 @@ public class CS0453 extends CompilerCheck<CSharpNullableType> {
       return null;
     }
     PsiElement questElement = element.getQuestElement();
-    return newBuilder(questElement, formatTypeRef(dotNetTypeRef)).withQuickFix(new DeleteQuestMarkQuickFix(element));
+    return newBuilder(questElement, formatTypeRef(dotNetTypeRef), "T", "System.Nullable<T>").withQuickFix(new DeleteQuestMarkQuickFix(element));
   }
 }
