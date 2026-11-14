@@ -184,6 +184,11 @@ public class CSharpInheritableChecker {
                 return fail();
             }
 
+            // int* p = null - the null literal converts to any pointer type
+            if (top instanceof DotNetPointerTypeRef && target instanceof CSharpNullTypeRef) {
+                return CSharpTypeUtil.SIMPLE_SUCCESS;
+            }
+
             if (top instanceof DotNetPointerTypeRef && !(target instanceof DotNetPointerTypeRef)) {
                 return fail();
             }
