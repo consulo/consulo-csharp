@@ -220,7 +220,7 @@ public class StatementParsing extends SharedParsingHelpers {
 
             builder.advanceLexer();
 
-            FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, varMark, LOCAL_VARIABLE, NONE, true, set);
+            FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, varMark, LOCAL_VARIABLE, VAR_SUPPORT, true, set); // const var k = 1; - CS0822
 
             marker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
         }
