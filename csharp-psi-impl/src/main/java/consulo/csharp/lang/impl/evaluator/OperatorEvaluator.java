@@ -212,6 +212,27 @@ public class OperatorEvaluator {
         if (elementType == CSharpTokens.PLUS && value instanceof Integer) {
             return value;
         }
+        // -1 - an integer literal is a BigInteger
+        if (elementType == CSharpTokens.MINUS) {
+            if (value instanceof java.math.BigInteger big) {
+                return big.negate();
+            }
+            if (value instanceof Long l) {
+                return -l;
+            }
+            if (value instanceof Double d) {
+                return -d;
+            }
+            if (value instanceof Float f) {
+                return -f;
+            }
+            if (value instanceof java.math.BigDecimal decimal) {
+                return decimal.negate();
+            }
+        }
+        if (elementType == CSharpTokens.PLUS && value instanceof Number) {
+            return value;
+        }
         return null;
     }
 
