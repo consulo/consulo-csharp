@@ -128,6 +128,7 @@ public enum CSharpCompilerChecks {
     CS0448(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ++ or -- returning another type
     CS0449(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // struct or class constraint must be first
     CS0453(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // nullable type required notnull type
+    CS0472(CSharpLanguageVersion._2_0, HighlightInfoType.WARNING), // comparison of a value type with null
     CS0500(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // code block with abstract modifier
     CS0501(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // empty code block checks
     CS0506(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override of a member not virtual
@@ -159,10 +160,13 @@ public enum CSharpCompilerChecks {
     CS0590(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // operator returning void
     CS0592(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // attribute not valid on the declaration
     CS0616(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // not an attribute class
+    CS0628(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // protected member of a sealed type
     CS0649(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // private field never assigned
     CS0657(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // invalid attribute location
+    CS0659(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // Equals without GetHashCode
     CS0660(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // operator == without Equals
     CS0661(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // operator == without GetHashCode
+    CS0665(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // constant assignment in a condition
     CS0673(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // Void cant be used in C#
     CS0692(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // duplicate parameter name
     CS0693(CSharpLanguageVersion._2_0, HighlightInfoType.WARNING), // check by generic
@@ -189,7 +193,10 @@ public enum CSharpCompilerChecks {
     CS0738(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface member implemented with another return type
     CS0815(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // lambdas cant be cast to 'var'
     CS0818(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var cant be used if not initializer
+    CS0819(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var with multiple declarators
     CS0820(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var cant be use it initializer is implicit array initializer
+    CS0822(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // const var
+    CS0825(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var outside a local
     CS0826(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // fail inherit type of typed array initializer
     CS0832(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // assignment in expression tree
     CS0834(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // statement lambda as expression tree
@@ -224,6 +231,8 @@ public enum CSharpCompilerChecks {
     CS1656(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // value can't be set to foreach
     CS1674(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // using statement expression or variable must be System.IDisposable
     CS1676(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // lambda parameter validation with out / ref params
+    CS1717(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // assignment to the same variable
+    CS1718(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // comparison to the same variable
     CS1722(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // base type must be first in extend list
     CS1729(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constructor ref to not existed empty base constructor
     CS1730(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // assembly and module attributes must precede all declarations

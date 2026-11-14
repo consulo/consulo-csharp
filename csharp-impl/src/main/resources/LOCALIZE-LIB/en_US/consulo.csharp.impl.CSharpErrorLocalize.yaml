@@ -200,6 +200,8 @@ CS0449:
     text: "The 'class' or 'struct' constraint must be the first constraint specified (CS0449)"
 CS0453:
     text: "The type ''{0}'' must be a non-nullable value type in order to use it as type parameter 'T' in the generic type or method 'System.Nullable<T>'"
+CS0472:
+    text: "The result of the expression is always ''{0}'' since a value of type ''{1}'' is never equal to ''null''"
 CS0500:
     text: "''{0}'' cannot declare a body because it is marked abstract(or delegate)"
 CS0501:
@@ -262,14 +264,20 @@ CS0592:
     text: "Attribute ''{0}'' is not valid on this declaration type"
 CS0616:
     text: "''{0}'' is not an attribute class"
+CS0628:
+    text: "''{0}'': new protected member declared in sealed type"
 CS0649:
     text: "Field ''{0}'' is never assigned to, and will always have its default value {1}"
 CS0657:
     text: "''{0}'' is not a valid attribute location for this declaration. All attributes in this block will be ignored."
+CS0659:
+    text: "''{0}'' overrides Object.Equals(object o) but does not override Object.GetHashCode()"
 CS0660:
     text: "''{0}'' defines operator == or operator != but does not override Object.Equals(object o)"
 CS0661:
     text: "''{0}'' defines operator == or operator != but does not override Object.GetHashCode()"
+CS0665:
+    text: "Assignment in conditional expression is always constant; did you mean to use == instead of = ?"
 CS0673:
     text: "System.Void cannot be used from C#. Consider using ''void''"
 CS0692:
@@ -322,8 +330,14 @@ CS0815:
     text: "An implicitly typed local variable declaration cannot be initialized with ''{0}''"
 CS0818:
     text: An implicitly typed local variable declarator must include an initializer
+CS0819:
+    text: "Implicitly-typed variables cannot have multiple declarators"
 CS0820:
     text: An implicitly typed local variable declarator cannot use an array initializer
+CS0822:
+    text: "Implicitly-typed variables cannot be constant"
+CS0825:
+    text: "The contextual keyword ''var'' may only appear within a local variable declaration or in script code"
 CS0826:
     text: The type of an implicitly typed array cannot be inferred from the initializer. Try specifying array type explicitly
 CS0832:
@@ -388,6 +402,10 @@ CS1674:
     text: "''{0}'': type used in a using statement must be implicitly convertible to 'System.IDisposable'"
 CS1676:
     text: "Parameter ''{0}'' must be declared with the ''{1}'' keyword"
+CS1717:
+    text: "Assignment made to same variable; did you mean to assign something else?"
+CS1718:
+    text: "Comparison made to same variable; did you mean to compare something else?"
 CS1722:
     text: "''{0}'': Base class ''{1}'' must be specified as first"
 CS1729:
