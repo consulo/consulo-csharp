@@ -46,11 +46,15 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner> {
             CSharpModifier.VIRTUAL, CSharpModifier.SEALED, CSharpModifier.ABSTRACT, CSharpModifier.EXTERN, CSharpModifier.PARTIAL, CSharpModifier.ASYNC, CSharpModifier.UNSAFE),
         GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
         Parameter(CSharpModifier.REF, CSharpModifier.OUT, CSharpModifier.IN, CSharpModifier.PARAMS, CSharpModifier.THIS),
-        NamespaceStruct(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.UNSAFE, CSharpModifier.PARTIAL),
-        NestedStruct(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.PRIVATE, CSharpModifier.INTERNAL, CSharpModifier.UNSAFE, CSharpModifier.PARTIAL),
-        NamespaceType(CSharpModifier.STATIC, CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED),
+        // readonly struct, ref struct - C# 7.2; file - C# 11
+        NamespaceStruct(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.UNSAFE, CSharpModifier.PARTIAL, CSharpModifier.READONLY,
+            CSharpModifier.REF, CSharpModifier.FILE),
+        NestedStruct(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.PRIVATE, CSharpModifier.INTERNAL, CSharpModifier.UNSAFE, CSharpModifier.PARTIAL,
+            CSharpModifier.READONLY, CSharpModifier.REF, CSharpModifier.NEW),
+        NamespaceType(CSharpModifier.STATIC, CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED,
+            CSharpModifier.UNSAFE, CSharpModifier.FILE),
         NestedType(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED,
-            CSharpModifier.STATIC, CSharpModifier.NEW),
+            CSharpModifier.STATIC, CSharpModifier.NEW, CSharpModifier.UNSAFE),
         Unknown {
             @Override
             public boolean isValidModifier(DotNetModifier modifier) {

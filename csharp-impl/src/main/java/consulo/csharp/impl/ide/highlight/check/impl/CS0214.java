@@ -128,6 +128,14 @@ public class CS0214 extends CompilerCheck<DotNetElement>
 		}
 
 		DotNetModifierListOwner modifierListOwner = (DotNetModifierListOwner) qualifiedElement;
-		return Pair.create(modifierListOwner.hasModifier(CSharpModifier.UNSAFE), modifierListOwner);
+		// unsafe class C { void M() { int* p; } } - the members of an unsafe type are in an unsafe context
+		for(PsiElement owner = modifierListOwner; owner != null; owner = owner.getParent())
+		{
+			if(owner instanceof DotNetModifierListOwner listOwner && listOwner.hasModifier(CSharpModifier.UNSAFE))
+			{
+				return Pair.create(Boolean.TRUE, null);
+			}
+		}
+		return Pair.create(Boolean.FALSE, modifierListOwner);
 	}
 }

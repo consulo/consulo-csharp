@@ -26,6 +26,7 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.impl.psi.source.CSharpTypeOfExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
+import consulo.dotnet.psi.DotNetPointerType;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetType;
 import consulo.language.psi.PsiElement;
@@ -57,7 +58,8 @@ public class CS1547 extends CompilerCheck<CSharpNativeType>
 		if(typeElementType == CSharpTokens.VOID_KEYWORD)
 		{
 			PsiElement parent = element.getParent();
-			if(parent instanceof CSharpTypeOfExpressionImpl)
+			// typeof(void), void*
+			if(parent instanceof CSharpTypeOfExpressionImpl || parent instanceof DotNetPointerType)
 			{
 				return null;
 			}
