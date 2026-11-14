@@ -31,6 +31,9 @@ import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.DotNetFieldDeclaration;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.language.psi.PsiUtilCore;
 import consulo.language.psi.PsiElement;
 import org.jspecify.annotations.Nullable;
 
@@ -45,6 +48,10 @@ public class CS1510 extends CompilerCheck<CSharpOutRefWrapExpressionImpl> {
     @Nullable
     @Override
     public HighlightInfoFactory checkImpl(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, CSharpOutRefWrapExpressionImpl element) {
+        // in 1 - an in argument takes a value too
+        if (PsiUtilCore.getElementType(element.getStartElement()) == CSharpTokens.IN_KEYWORD) {
+            return null;
+        }
         DotNetExpression innerExpression = element.getInnerExpression();
         if (innerExpression == null || innerExpression instanceof CSharpIndexAccessExpressionImpl)  // ignore index access see CS0206
         {
@@ -73,7 +80,9 @@ public class CS1510 extends CompilerCheck<CSharpOutRefWrapExpressionImpl> {
         if (psiElement == null) {
             return null;
         }
-        if (!(psiElement instanceof DotNetVariable) || ((DotNetVariable) psiElement).isConstant() || ((DotNetVariable) psiElement).hasModifier(CSharpModifier.READONLY)) {
+        // a readonly field is CS0192 and CS0199 - fine in a constructor
+        boolean readonly = ((psiElement instanceof DotNetVariable variable) && variable.hasModifier(CSharpModifier.READONLY) && !(psiElement instanceof DotNetFieldDeclaration));
+        if (!(psiElement instanceof DotNetVariable) || ((DotNetVariable) psiElement).isConstant() || readonly) {
             return newBuilder(innerExpression);
         }
         return null;

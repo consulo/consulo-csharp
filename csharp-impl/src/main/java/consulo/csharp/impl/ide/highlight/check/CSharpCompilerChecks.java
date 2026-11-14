@@ -83,10 +83,12 @@ public enum CSharpCompilerChecks {
     CS0151(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // check for switch expression
     CS0152(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // switch case value duplicated
     CS0153(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // check goto case&default without switch
+    CS0154(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // property without a getter read
     CS0155(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // throw object must be child of System.Exception
     CS0156(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // throw; outside a catch
     CS0157(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // return is not allowed inside finally blocks
     CS0159(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // no such label for a goto
+    CS0160(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // catch after a catch of a base type
     CS0161(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  return check
     CS0162(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // unreachable code
     CS0163(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // switch section falls through to the next one
@@ -98,7 +100,9 @@ public enum CSharpCompilerChecks {
     CS0177(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // out parameter not assigned when control leaves
     CS0188(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // this of a struct used before all its fields are assigned
     CS0191(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // readonly field assigned out of a constructor
+    CS0192(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // readonly field by ref
     CS0198(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static readonly field assigned out of the static constructor
+    CS0199(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static readonly field by ref
     CS0200(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // readonly check
     CS0201(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expression statement can be only call, etc
     CS0206(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref/out expressions can be only indexer, etc
@@ -210,8 +214,10 @@ public enum CSharpCompilerChecks {
     CS0838(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // multidimensional array initializer in expression tree
     CS0841(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // local used before its declaration
     CS0843(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // struct auto-property not assigned by a constructor
+    CS0847(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // array initializer of another length
     CS1004(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // duplicate modifier check
     CS1008(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // eum type can be only byte,sbyte,short,ushort,int,uint,long,ulong
+    CS1017(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // catch after the general catch
     CS1021(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // too big number
     CS1029(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // check for #error
     CS1030(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // check for #warning

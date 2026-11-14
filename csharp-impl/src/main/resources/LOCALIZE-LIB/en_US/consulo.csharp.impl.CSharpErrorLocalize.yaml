@@ -108,6 +108,8 @@ CS0152:
     text: "The switch statement contains multiple cases with the label value ''{0}''"
 CS0153:
     text: A goto case is only valid inside a switch statement
+CS0154:
+    text: "The property or indexer ''{0}'' cannot be used in this context because it lacks the get accessor"
 CS0155:
     text: The type caught or thrown must be derived from System.Exception
 CS0156:
@@ -116,6 +118,8 @@ CS0157:
     text: Control cannot leave the body of a finally clause
 CS0159:
     text: "No such label ''{0}'' within the scope of the goto statement"
+CS0160:
+    text: "A previous catch clause already catches all exceptions of this or of a super type (''{0}'')"
 CS0161:
     text: "''{0}'': not all code paths return a value"
 CS0162:
@@ -140,8 +144,12 @@ CS0188:
     text: "The ''this'' object cannot be used before all of its fields have been assigned. Consider updating to language version ''{0}'' to auto-default the unassigned fields"
 CS0191:
     text: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+CS0192:
+    text: "A readonly field cannot be used as a ref or out value (except in a constructor)"
 CS0198:
     text: A static readonly field cannot be assigned to (except in a static constructor or a variable initializer)
+CS0199:
+    text: "A static readonly field cannot be used as a ref or out value (except in a static constructor)"
 CS0200:
     text: "Property or indexer ''{0}'' cannot be assigned to -- it is read only"
 CS0201:
@@ -364,10 +372,14 @@ CS0841:
     text: "Cannot use local variable ''{0}'' before it is declared"
 CS0843:
     text: "Auto-implemented property ''{0}'' must be fully assigned before control is returned to the caller. Consider updating to language version ''{1}'' to auto-default the property"
+CS0847:
+    text: "An array initializer of length ''{0}'' is expected"
 CS1004:
     text: "Duplicate ''{0}'' modifier"
 CS1008:
     text: Type byte, sbyte, short, ushort, int, uint, long or ulong expected
+CS1017:
+    text: "Catch clauses cannot follow the general catch clause of a try statement"
 CS1021:
     text: Integral constant is too large
 CS1100:
