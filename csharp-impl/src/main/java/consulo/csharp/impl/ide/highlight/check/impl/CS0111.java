@@ -51,7 +51,8 @@ public class CS0111 extends CompilerCheck<CSharpTypeDeclaration> {
                 continue;
             }
             for (int i = 0; i < j; i++) {
-                if (isChecked(members[i]) && sameName(members[i], members[j]) && CSharpElementCompareUtil.isEqualWithVirtualImpl(members[i], members[j])) {
+                if (isChecked(members[i]) && sameName(members[i], members[j]) && CSharpElementCompareUtil.isEqualWithVirtualImpl(members[i], members[j])
+                    && !isPartialPair(members[i], members[j])) {
                     results.add(newBuilder(range(members[j]), element.getName(), name(members[j])));
                     break;
                 }
@@ -69,6 +70,15 @@ public class CS0111 extends CompilerCheck<CSharpTypeDeclaration> {
             return !method.isOperator() && !method.isDelegate();
         }
         return member instanceof DotNetLikeMethodDeclaration && !(member instanceof CSharpConversionMethodDeclaration);
+    }
+
+    /**
+     * The defining and the implementing declarations of a partial method - not duplicates
+     */
+    @RequiredReadAction
+    private static boolean isPartialPair(PsiElement first, PsiElement second) {
+        return first instanceof CSharpMethodDeclaration a && second instanceof CSharpMethodDeclaration b && PartialMethodUtil.isPartial(a) && PartialMethodUtil.isPartial(b)
+            && PartialMethodUtil.isImplementing(a) != PartialMethodUtil.isImplementing(b);
     }
 
     @RequiredReadAction

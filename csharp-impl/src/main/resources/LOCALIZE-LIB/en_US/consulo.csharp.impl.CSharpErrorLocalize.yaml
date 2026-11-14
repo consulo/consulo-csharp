@@ -326,6 +326,20 @@ CS0737:
     text: "''{0}'' does not implement interface member ''{1}''. ''{2}'' cannot implement an interface member because it is not public."
 CS0738:
     text: "''{0}'' does not implement interface member ''{1}''. ''{2}'' cannot implement ''{1}'' because it does not have the matching return type of ''{3}''."
+CS0751:
+    text: "A partial member must be declared within a partial type"
+CS0756:
+    text: "A partial method may not have multiple defining declarations"
+CS0757:
+    text: "A partial method may not have multiple implementing declarations"
+CS0758:
+    text: "Both partial member declarations must use a params parameter or neither may use a params parameter"
+CS0759:
+    text: "No defining declaration found for implementing declaration of partial method ''{0}''"
+CS0761:
+    text: "Partial method declarations of ''{0}'' have inconsistent constraints for type parameter ''{1}''"
+CS0763:
+    text: "Both partial member declarations must be static or neither may be static"
 CS0815:
     text: "An implicitly typed local variable declaration cannot be initialized with ''{0}''"
 CS0818:
@@ -484,8 +498,20 @@ CS8791:
     text: "An expression tree may not contain a from-end index ('^') expression"
 CS8792:
     text: "An expression tree may not contain a range ('..') expression"
+CS8795:
+    text: "Partial method ''{0}'' must have an implementation part because it has accessibility modifiers."
+CS8796:
+    text: "Partial method ''{0}'' must have accessibility modifiers because it has a non-void return type."
+CS8797:
+    text: "Partial method ''{0}'' must have accessibility modifiers because it has ''out'' parameters."
+CS8799:
+    text: "Both partial member declarations must have identical accessibility modifiers."
+CS8800:
+    text: "Both partial member declarations must have identical combinations of ''virtual'', ''override'', ''sealed'', and ''new'' modifiers."
 CS8803:
     text: Top-level statements must precede namespace and type declarations
+CS8817:
+    text: "Both partial method declarations must have the same return type."
 CS9014:
     text: "Use of possibly unassigned auto-implemented property ''{0}''. Consider updating to language version ''{1}'' to auto-default the property"
 CS9015:

@@ -191,6 +191,13 @@ public enum CSharpCompilerChecks {
     CS0736(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface member implemented by a static member
     CS0737(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface member implemented by a non-public member
     CS0738(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface member implemented with another return type
+    CS0751(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // partial method of a non-partial type
+    CS0756(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // partial method with two defining parts
+    CS0757(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // partial method with two implementing parts
+    CS0758(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // partial method parts with params in one
+    CS0759(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // implementing partial method without defining
+    CS0761(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // partial method parts with other constraints
+    CS0763(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // partial method parts static in one
     CS0815(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // lambdas cant be cast to 'var'
     CS0818(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var cant be used if not initializer
     CS0819(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var with multiple declarators
@@ -271,7 +278,13 @@ public enum CSharpCompilerChecks {
     CS8790(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // index or range indexer in expression tree
     CS8791(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // index from end in expression tree
     CS8792(CSharpLanguageVersion._8_0, HighlightInfoType.ERROR), // range in expression tree
+    CS8795(CSharpLanguageVersion._9_0, HighlightInfoType.ERROR), // accessible partial method without implementation
+    CS8796(CSharpLanguageVersion._9_0, HighlightInfoType.ERROR), // partial method returning a value without accessibility
+    CS8797(CSharpLanguageVersion._9_0, HighlightInfoType.ERROR), // partial method with out without accessibility
+    CS8799(CSharpLanguageVersion._9_0, HighlightInfoType.ERROR), // partial method parts of other accessibility
+    CS8800(CSharpLanguageVersion._9_0, HighlightInfoType.ERROR), // partial method parts of other virtual modifiers
     CS8803(CSharpLanguageVersion._9_0, HighlightInfoType.ERROR), // top-level statements must precede namespace and type declarations
+    CS8817(CSharpLanguageVersion._9_0, HighlightInfoType.ERROR), // partial method parts of other return types
     CS9014(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // struct auto-property read before assigned in a constructor
     CS9015(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // struct field read before assigned in a constructor
     CS9035(CSharpLanguageVersion._11_0, HighlightInfoType.ERROR), // a required member not set by an object creation
