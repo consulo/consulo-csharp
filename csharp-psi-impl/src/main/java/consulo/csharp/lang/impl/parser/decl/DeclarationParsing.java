@@ -38,8 +38,8 @@ import org.jspecify.annotations.Nullable;
  * @since 28.11.13.
  */
 public class DeclarationParsing extends SharedParsingHelpers {
-    // { (
-    private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR, THIS_KEYWORD, OPERATOR_KEYWORD);
+    // { ( => - int I.P => 0;
+    private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR, THIS_KEYWORD, OPERATOR_KEYWORD, DARROW);
 
     public static void parseAll(CSharpBuilderWrapper builder, boolean root, boolean isEnum) {
         parseAll(builder, root, isEnum, root);
