@@ -148,7 +148,7 @@ public class CS0108 extends CompilerCheck<DotNetModifierListOwner> {
      * The class it extends - null for none
      */
     @RequiredReadAction
-    private static @Nullable DotNetTypeRef baseClass(DotNetTypeDeclaration type) {
+    static @Nullable DotNetTypeRef baseClass(DotNetTypeDeclaration type) {
         for (DotNetTypeRef typeRef : type.getExtendTypeRefs()) {
             if (typeRef.resolve().getElement() instanceof DotNetTypeDeclaration base && !base.isInterface()) {
                 return typeRef;

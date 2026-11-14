@@ -64,6 +64,8 @@ CS0109:
     text: "The member ''{0}'' does not hide an accessible member. The new keyword is not required"
 CS0111:
     text: "Type ''{0}'' already defines a member called ''{1}'' with the same parameter types"
+CS0112:
+    text: "A static member cannot be marked as ''{0}''"
 CS0113:
     text: "A member ''{0}'' marked as override cannot be marked as new or virtual"
 CS0114:
@@ -172,6 +174,10 @@ CS0231:
     text: A parameter array must be the last parameter in a formal parameter list
 CS0236:
     text: "A field initializer cannot reference the non-static field, method, or property ''{0}''"
+CS0238:
+    text: "''{0}'' cannot be sealed because it is not an override"
+CS0239:
+    text: "''{0}'': cannot override inherited member ''{1}'' because it is sealed"
 CS0260:
     text: "Missing partial modifier on declaration of type ''{0}''; another partial declaration of this type exists"
 CS0261:
@@ -224,12 +230,18 @@ CS0500:
     text: "''{0}'' cannot declare a body because it is marked abstract(or delegate)"
 CS0501:
     text: "''{0}'' must have a body because it is not marked abstract, extern, partial, or delegate"
+CS0505:
+    text: "''{0}'': cannot override because ''{1}'' is not a function"
 CS0506:
     text: "''{0}'': cannot override inherited member ''{1}'' because it is not marked virtual, abstract, or override"
 CS0507:
     text: "''{0}'': cannot change access modifiers when overriding ''{1}'' inherited member ''{2}''"
+CS0508:
+    text: "''{0}'': return type must be ''{1}'' to match overridden member ''{2}''"
 CS0509:
     text: "''{0}'': cannot derive from sealed type ''{1}''"
+CS0513:
+    text: "''{0}'' is abstract but it is contained in non-abstract type ''{1}''"
 CS0516:
     text: "Constructor ''{0}'' cannot call itself"
 CS0518:
@@ -250,6 +262,12 @@ CS0540:
     text: "''{0}'': containing type does not implement interface ''{1}''"
 CS0542:
     text: "''{0}'': member names cannot be the same as their enclosing type"
+CS0544:
+    text: "''{0}'': cannot override because ''{1}'' is not a property"
+CS0545:
+    text: "''{0}'': cannot override because ''{1}'' does not have an overridable get accessor"
+CS0546:
+    text: "''{0}'': cannot override because ''{1}'' does not have an overridable set accessor"
 CS0552:
     text: "''{0}'': user-defined conversions to or from an interface are not allowed"
 CS0553:
@@ -282,6 +300,8 @@ CS0592:
     text: "Attribute ''{0}'' is not valid on this declaration type"
 CS0616:
     text: "''{0}'' is not an attribute class"
+CS0621:
+    text: "''{0}'': virtual or abstract members cannot be private"
 CS0628:
     text: "''{0}'': new protected member declared in sealed type"
 CS0649:
@@ -438,6 +458,8 @@ CS1674:
     text: "''{0}'': type used in a using statement must be implicitly convertible to 'System.IDisposable'"
 CS1676:
     text: "Parameter ''{0}'' must be declared with the ''{1}'' keyword"
+CS1715:
+    text: "''{0}'': type must be ''{1}'' to match overridden member ''{2}''"
 CS1717:
     text: "Assignment made to same variable; did you mean to assign something else?"
 CS1718:

@@ -61,6 +61,7 @@ public enum CSharpCompilerChecks {
     CS0108(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // member hides an inherited one without new
     CS0109(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // new on a member hiding nothing
     CS0111(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // methods of a name and the same parameters
+    CS0112(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static virtual member of a class
     CS0113(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // virtual/new can't be with override
     CS0114(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // member hides an inherited virtual one without override or new
     CS0115(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override of nothing
@@ -114,6 +115,8 @@ public enum CSharpCompilerChecks {
     CS0227(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // 'unsafe' modifier check
     CS0231(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // 'params' modifier must be last
     CS0236(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // can't reference to non static field, property, method from field initializer
+    CS0238(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // sealed member without override
+    CS0239(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override of a sealed member
     CS0260(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // a declaration without partial of a partial type
     CS0261(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // partial declarations of other kinds
     CS0262(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // partial declarations of other access modifiers
@@ -140,9 +143,12 @@ public enum CSharpCompilerChecks {
     CS0472(CSharpLanguageVersion._2_0, HighlightInfoType.WARNING), // comparison of a value type with null
     CS0500(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // code block with abstract modifier
     CS0501(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // empty code block checks
+    CS0505(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override of a member which is not a method
     CS0506(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override of a member not virtual
     CS0507(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override changing the access
+    CS0508(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override with another return type
     CS0509(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // classes cant extend sealed type
+    CS0513(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // abstract member of a non-abstract class
     CS0516(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constructor cant call itself
     CS0525(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface with an instance field
     CS0526(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // interface with a constructor
@@ -153,6 +159,9 @@ public enum CSharpCompilerChecks {
     CS0539(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // checks for private impl of abstract methods
     CS0540(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // explicit implementation of an interface not implemented
     CS0542(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members cant be named as parent
+    CS0544(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override of a member which is not a property
+    CS0545(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override of a get accessor which is not overridable
+    CS0546(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override of a set accessor which is not overridable
     CS0552(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // conversion to or from an interface
     CS0553(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // conversion to or from a base type
     CS0554(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // conversion to or from a derived type
@@ -169,6 +178,7 @@ public enum CSharpCompilerChecks {
     CS0590(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // operator returning void
     CS0592(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // attribute not valid on the declaration
     CS0616(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // not an attribute class
+    CS0621(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // private virtual member
     CS0628(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // protected member of a sealed type
     CS0649(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // private field never assigned
     CS0657(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // invalid attribute location
@@ -249,6 +259,7 @@ public enum CSharpCompilerChecks {
     CS1656(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // value can't be set to foreach
     CS1674(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // using statement expression or variable must be System.IDisposable
     CS1676(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // lambda parameter validation with out / ref params
+    CS1715(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // override property of another type
     CS1717(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // assignment to the same variable
     CS1718(CSharpLanguageVersion._1_0, HighlightInfoType.WARNING), // comparison to the same variable
     CS1722(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // base type must be first in extend list

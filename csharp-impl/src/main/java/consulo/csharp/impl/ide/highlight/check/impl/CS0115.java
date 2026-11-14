@@ -37,6 +37,10 @@ public class CS0115 extends CompilerCheck<DotNetModifierListOwner> {
         if (!element.hasModifier(CSharpModifier.OVERRIDE) || !CS0108.isHiding(element)) {
             return null;
         }
-        return CS0108.hiddenMember(element) == null ? newBuilder(getNameIdentifier(element), formatElement(element)) : null;
+        // a base member of another kind is CS0505 or CS0544
+        if (CS0108.hiddenMember(element) != null || OverrideCheckUtil.getOtherKindMember(element) != null) {
+            return null;
+        }
+        return newBuilder(getNameIdentifier(element), formatElement(element));
     }
 }
